@@ -11,12 +11,13 @@ HMariaDb::HMariaDb( const std::string& server, const std::string& user, const st
 	pConnectionHandlerPtr = mysql_init(NULL);
 	if (NULL == mysql_real_connect(pConnectionHandlerPtr, server.c_str(), user.c_str(), password.c_str(), database.c_str(), 0, NULL, 0))
 	{
-		throw DataBaseError("Failed to connect to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
+		throw HSqlError("Failed to connect to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
 	}
 }
 
 HMariaDb::~HMariaDb(void)
 {
+	close();
 }
 void HMariaDb::connect(const std::string& server, const std::string& user, const std::string& password, const std::string& database)
 {		
@@ -24,26 +25,35 @@ void HMariaDb::connect(const std::string& server, const std::string& user, const
 
 	if (NULL == mysql_real_connect(pConnectionHandlerPtr, server.c_str(), user.c_str(), password.c_str(), database.c_str(), 0, NULL, 0)) 
 	{ 
-		throw DataBaseError("Failed to connect to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
+		throw HSqlError("Failed to connect to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
 	} 
+}
+
+
+void HMariaDb::query(const std::string& sql)
+{
+	if (NULL == pConnectionHandlerPtr)
+		return;
+	if (!(mysql_query(pConnectionHandlerPtr, sql.c_str()) == 0))
+	{
+		throw HSqlError("Failed to execute sql: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
+	}
 }
 
 void HMariaDb::execute(const std::string& sql)
 {
-
-}
-
-void HMariaDb::query(const std::string& sql)
-{
+	if (NULL == pConnectionHandlerPtr)
+		return;
 	if (!(mysql_query(pConnectionHandlerPtr, sql.c_str()) == 0))
 	{
-		throw DataBaseError("Failed to execute sql: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
+		throw HSqlError("Failed to execute sql: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
 	}
 }
 
-
 void HMariaDb::getresult(ResultSet& rs)
 {
+	if (NULL == pConnectionHandlerPtr)
+		return;
 	MYSQL_RES *result = NULL; // result of querying for all rows in table 
 	MYSQL_FIELD *fields = NULL;
 

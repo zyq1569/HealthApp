@@ -36,4 +36,5 @@ public:
 	afx_msg void OnBnQuery();
 	// –≈œ¢œ‘ æ
 	CString m_strlog;
+	afx_msg void OnBnExcueSql();
 };

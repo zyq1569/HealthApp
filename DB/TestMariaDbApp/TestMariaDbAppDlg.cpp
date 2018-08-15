@@ -67,6 +67,7 @@ BEGIN_MESSAGE_MAP(CTestMariaDbAppDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_BUTTON1, &CTestMariaDbAppDlg::OnBnConnect)
 	ON_BN_CLICKED(IDC_BUTTON2, &CTestMariaDbAppDlg::OnBnQuery)
+	ON_BN_CLICKED(IDC_BUTTON3, &CTestMariaDbAppDlg::OnBnExcueSql)
 END_MESSAGE_MAP()
 
 
@@ -232,8 +233,10 @@ void CTestMariaDbAppDlg::OnBnConnect()
 		m_strlog += datainfo;
 		GetDlgItem(IDC_LOG)->SetWindowText(m_strlog);
 /*		MessageBox(datainfo);*/
+
+		srand((unsigned)time(NULL));
 	}
-	catch (const DataBaseError& e)
+	catch (const HSqlError& e)
 	{
 		MessageBox(S2W(e.what()).c_str());
 	}
@@ -262,15 +265,55 @@ void CTestMariaDbAppDlg::OnBnQuery()
 			{
 				sdata += row[i] + " | ";
 			}
+			sdata += "\r\n";
 		}
-		sdata += "\r\n";
 		std::wstring strinfo;
 		StringToWString(sdata,strinfo);
 		//MessageBox(strinfo.c_str());
 		m_strlog += strinfo.c_str();
 		GetDlgItem(IDC_LOG)->SetWindowText(m_strlog);
+		int a = rand();
+		strsql = "insert into H_istudy (patientid,studyuid) value(";
+
+		CString s;
+		s.Format(_T("%d"),a);
+		std::string v = W2S(s.GetBuffer());
+		strsql += v;
+		strsql += ",'1.2.826.0.1.3680043.9.7604.";
+		strsql += v;
+		strsql += "');";
+		pMariaDb->query(strsql);
 	}
-	catch (const DataBaseError& e)
+	catch (const HSqlError& e)
+	{
+		MessageBox(S2W(e.what()).c_str());
+	}
+}
+
+void CTestMariaDbAppDlg::OnBnExcueSql()
+{
+	if (pMariaDb == NULL)
+		return;
+
+	try
+	{	
+		ResultSet rs;
+		std::vector<std::string> row;
+		std::string sdata;
+		std::string strsql;
+
+		int a = rand()+1000000;
+		strsql = "update H_istudy set studyuid = ";
+
+		CString s;
+		s.Format(_T("%d"),a);
+		std::string v = W2S(s.GetBuffer());
+		strsql += "'1.2.826.0.1.3680043.9.7604.";
+		strsql += v;
+		strsql += "' where patientid = 7666;";
+		pMariaDb->execute(strsql);
+	}
+	catch (const HSqlError& e)
 	{
 		MessageBox(S2W(e.what()).c_str());
 	}
