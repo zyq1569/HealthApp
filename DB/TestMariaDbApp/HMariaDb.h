@@ -12,7 +12,7 @@ struct MySQLData
 	enum_field_types type;
 	int NumericScale;//精度
 	int Precision;
-	std::string name;
+	char* name;
 	short int16_data;
 	short tiny_data;
 	int int32_data;
@@ -25,14 +25,13 @@ struct MySQLData
 	char* *blob_data;
 	unsigned long length;
 	my_bool is_null;
-	std::string value;//记录返回值
+	char* value;//记录返回值
 	bool init;//记录返回值是否初始化
 };
 
 class ResultSet
 {
 public:
-
 	ResultSet()
 		: _current(0)
 	{
@@ -113,15 +112,13 @@ private:
 
 }; // ResultSet
 
-class DataBaseError : public std::exception
-
+class HSqlError : public std::exception
 {
 public:
-	DataBaseError(const std::string& what)
+	HSqlError(const std::string& what)
 		: exception(what.c_str())
 	{
 	}
-
 };
 
 
@@ -132,14 +129,19 @@ public:
 	HMariaDb(const std::string& server, const std::string& user, const std::string& password, const std::string& database);
 	~HMariaDb(void);
 
-	void close(void)
-	{
-		mysql_close(pConnectionHandlerPtr); 
-	}
 	void connect(const std::string& server, const std::string& user, const std::string& password, const std::string& database);
 	void execute(const std::string& sql);
 	void query(const std::string& sql);
 	void getresult(ResultSet& rs);
 private:
 	MYSQL* pConnectionHandlerPtr;
+protected:
+	void close(void)
+	{
+		if (NULL != pConnectionHandlerPtr)
+		{
+			mysql_close(pConnectionHandlerPtr);
+			pConnectionHandlerPtr = NULL;
+		}
+	}
 };
