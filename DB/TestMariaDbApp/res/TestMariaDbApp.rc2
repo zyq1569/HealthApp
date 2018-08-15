@@ -1,13 +1,13 @@
 //
-// Sample.RC2 - resources Microsoft Visual C++ does not edit directly
+// TestMariaDbApp.RC2 - Microsoft Visual C++ 不会直接编辑的资源
 //
 
 #ifdef APSTUDIO_INVOKED
-#error this file is not editable by Microsoft Visual C++
+#error 此文件不能用 Microsoft Visual C++ 编辑
 #endif //APSTUDIO_INVOKED
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Add manually edited resources here...
+// 在此处添加手动编辑的资源...
 
 /////////////////////////////////////////////////////////////////////////////
