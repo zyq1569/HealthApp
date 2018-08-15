@@ -34,4 +34,6 @@ public:
 	HMariaDb *pMariaDb;
 	afx_msg void OnBnConnect();
 	afx_msg void OnBnQuery();
+	// –≈œ¢œ‘ æ
+	CString m_strlog;
 };

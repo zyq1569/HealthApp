@@ -49,6 +49,7 @@ END_MESSAGE_MAP()
 
 CTestMariaDbAppDlg::CTestMariaDbAppDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CTestMariaDbAppDlg::IDD, pParent)
+	, m_strlog(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -56,6 +57,7 @@ CTestMariaDbAppDlg::CTestMariaDbAppDlg(CWnd* pParent /*=NULL*/)
 void CTestMariaDbAppDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_LOG, m_strlog);
 }
 
 BEGIN_MESSAGE_MAP(CTestMariaDbAppDlg, CDialog)
@@ -69,6 +71,49 @@ END_MESSAGE_MAP()
 
 
 // CTestMariaDbAppDlg 消息处理程序
+BOOL StringToWString(const std::string &str,std::wstring &wstr)
+{    
+	int nLen = (int)str.length();    
+	wstr.resize(nLen,L' ');
+
+	int nResult = MultiByteToWideChar(CP_ACP,0,(LPCSTR)str.c_str(),nLen,(LPWSTR)wstr.c_str(),nLen);
+
+	if (nResult == 0)
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
+//wstring高字节不为0，返回FALSE
+BOOL WStringToString(const std::wstring &wstr,std::string &str)
+{    
+	int nLen = (int)wstr.length();    
+	str.resize(nLen,' ');
+
+	int nResult = WideCharToMultiByte(CP_ACP,0,(LPCWSTR)wstr.c_str(),nLen,(LPSTR)str.c_str(),nLen,NULL,NULL);
+
+	if (nResult == 0)
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+std::string W2S(const std::wstring &wstr)
+{
+	std::string str;
+	WStringToString(wstr,str);
+	return str;
+}
+
+std::wstring S2W(const std::string &str)
+{
+	std::wstring wstr;
+	StringToWString(str,wstr);
+	return wstr;
+}
 
 BOOL CTestMariaDbAppDlg::OnInitDialog()
 {
@@ -101,6 +146,12 @@ BOOL CTestMariaDbAppDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 
+	GetDlgItem(IDC_IP)->SetWindowText(_T("127.0.0.1"));
+	GetDlgItem(IDC_NAME)->SetWindowText(_T("root"));
+	GetDlgItem(IDC_PWD)->SetWindowText(_T("root"));
+	GetDlgItem(IDC_DATANAME)->SetWindowText(_T("HIT"));
+
+	GetDlgItem(IDC_SQL)->SetWindowText(_T("SELECT * FROM H_istudy"));
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -158,16 +209,33 @@ void CTestMariaDbAppDlg::OnBnConnect()
 {
 	try
 	{	
-		//theApp._pDataBase = new DataBase<MySqlDB>("127.0.0.1", "root", "root", "HIT");
-		pMariaDb = new HMariaDb("127.0.0.1", "root", "root", "HIT");
+		CString strIP("127.0.0.1"),strUser("root"),strPwd("root"),strDadaName("HIT");
+		GetDlgItem(IDC_IP)->GetWindowText(strIP);
+		GetDlgItem(IDC_NAME)->GetWindowText(strUser);
+		GetDlgItem(IDC_PWD)->GetWindowText(strPwd);
+		GetDlgItem(IDC_DATANAME)->GetWindowText(strDadaName);
 
-// 		GetDlgItem(IDC_BUTTON_CONN)->EnableWindow(false);
-// 		GetDlgItem(IDC_BUTTON_CONN)->SetWindowText("connected");
-// 		GetDlgItem(IDC_BUTTON_TEST)->EnableWindow(true);
+		pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
+			                    W2S(strPwd.GetBuffer()).c_str(),W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+
+		GetDlgItem(IDC_BUTTON1)->EnableWindow(false);
+		CString datainfo = CString("IP:") + strIP;
+		datainfo += CString("| user:");
+		datainfo += strUser;
+		datainfo += CString("| pwd:");
+		datainfo += CString("| database name:");
+		datainfo += strDadaName;
+		datainfo += CString(" @ connected ok!\r\n");
+		GetDlgItem(IDC_BUTTON1)->SetWindowText(_T("connected"));
+		GetDlgItem(IDC_BUTTON2)->EnableWindow(true);
+
+		m_strlog += datainfo;
+		GetDlgItem(IDC_LOG)->SetWindowText(m_strlog);
+/*		MessageBox(datainfo);*/
 	}
 	catch (const DataBaseError& e)
 	{
-		//MessageBox(e.what());
+		MessageBox(S2W(e.what()).c_str());
 	}
 }
 
@@ -178,9 +246,13 @@ void CTestMariaDbAppDlg::OnBnQuery()
 		ResultSet rs;
 		std::vector<std::string> row;
 		std::string sdata;
-
-		//(*theApp._pDataBase)  << "SELECT * FROM H_istudy", rs;
 		std::string strsql = "SELECT * FROM H_istudy";
+		CString wsql;
+		GetDlgItem(IDC_SQL)->GetWindowText(wsql);
+		if (wsql.GetLength()>1)
+		{
+			strsql = W2S(wsql.GetBuffer());
+		}
 		pMariaDb->query(strsql);
 		pMariaDb->getresult(rs);
 
@@ -191,11 +263,15 @@ void CTestMariaDbAppDlg::OnBnQuery()
 				sdata += row[i] + " | ";
 			}
 		}
-
-		//MessageBox(sdata.c);
+		sdata += "\r\n";
+		std::wstring strinfo;
+		StringToWString(sdata,strinfo);
+		//MessageBox(strinfo.c_str());
+		m_strlog += strinfo.c_str();
+		GetDlgItem(IDC_LOG)->SetWindowText(m_strlog);
 	}
 	catch (const DataBaseError& e)
 	{
-		//MessageBox(e.what());
+		MessageBox(S2W(e.what()).c_str());
 	}
 }
