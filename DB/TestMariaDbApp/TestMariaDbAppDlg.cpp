@@ -294,7 +294,6 @@ void CTestMariaDbAppDlg::OnBnExcueSql()
 {
 	if (pMariaDb == NULL)
 		return;
-
 	try
 	{	
 		ResultSet rs;
