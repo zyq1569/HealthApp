@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="StoreDcmSCP"
-	ProjectGUID="{7F191F2F-D9C3-3F53-9D37-69DAC8749E55}"
+	Name="StoreDcmSCU"
+	ProjectGUID="{8474911D-D74B-4D92-BBA4-B49F06B818FF}"
 	RootNamespace="storescp"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="0"
@@ -406,7 +406,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\storescp.cc"
+			RelativePath=".\storescu.cc"
 			>
 		</File>
 	</Files>
