@@ -88,9 +88,9 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\temp\$(ProjectName\$(ConfigurationName)\$(ProjectName)_d.pdb"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName)_d.pdb"
 				SubSystem="1"
-				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\Debug\storescp.lib"
+				ImportLibrary=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -117,7 +117,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release"
-			IntermediateDirectory="storescp.dir\Release"
+			IntermediateDirectory="..\..\temp\$(ProjectName\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -183,9 +183,9 @@
 				Version="0.0"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
-				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release/storescp.pdb"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"
-				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\Release\storescp.lib"
+				ImportLibrary=""
 			/>
 			<Tool
 				Name="VCALinkTool"
