@@ -1,7 +1,6 @@
 #pragma once
 
 #include "mysql.h" 
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -103,13 +102,25 @@ public:
 
 		return _resultSet[0].size();
 	}
-
+	void clear()
+	{
+		if (_resultSet.empty())
+		{
+			return;
+		}
+		else
+		{
+			size_t s = _resultSet.size();
+			for (size_t i = 0; i<s; i++)
+			{
+				_resultSet[i].clear();
+			}
+			_resultSet.clear();
+		}
+	}
 private:
-
 	std::vector<std::vector<std::string> > _resultSet;
-
 	size_t _current;
-
 }; // ResultSet
 
 class HSqlError : public std::exception
@@ -132,9 +143,18 @@ public:
 	void connect(const std::string& server, const std::string& user, const std::string& password, const std::string& database);
 	void execute(const std::string& sql);
 	void query(const std::string& sql);
-	void getresult(ResultSet& rs);
+	// if return NULL :no result!
+	ResultSet * QueryResult()
+	{
+		if (resultset.countRows() < 1)
+		{
+			return NULL;
+		}
+		return &resultset;
+	}
 private:
 	MYSQL* pConnectionHandlerPtr;
+	ResultSet resultset;
 protected:
 	void close(void)
 	{
@@ -144,4 +164,5 @@ protected:
 			pConnectionHandlerPtr = NULL;
 		}
 	}
+	void getresult(ResultSet& rs);
 };
