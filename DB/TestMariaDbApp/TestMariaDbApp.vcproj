@@ -75,6 +75,7 @@
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName)_d.pdb"
 				SubSystem="2"
 				TargetMachine="1"
 			/>
