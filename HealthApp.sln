@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "storescp", "dcm\StoreDcmScp\StoreDcmScp.vcproj", "{7F191F2F-D9C3-3F53-9D37-69DAC8749E55}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StoreDcmSCP", "dcm\StoreDcmScp\StoreDcmScp.vcproj", "{7F191F2F-D9C3-3F53-9D37-69DAC8749E55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestMariaDbApp", "DB\TestMariaDbApp\TestMariaDbApp.vcproj", "{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StoreDcmSCU", "dcm\StoreDcmScu\StoreDcmScu.vcproj", "{8474911D-D74B-4D92-BBA4-B49F06B818FF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WorklistScp", "dcm\WorklistScp\WorklistScp.vcproj", "{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DcmWlm", "dcm\DcmWlm\DcmWlm.vcproj", "{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,30 @@ Global
 		{8474911D-D74B-4D92-BBA4-B49F06B818FF}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
 		{8474911D-D74B-4D92-BBA4-B49F06B818FF}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
 		{8474911D-D74B-4D92-BBA4-B49F06B818FF}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.Debug|Win32.ActiveCfg = Debug|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.Debug|Win32.Build.0 = Debug|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.Debug|x64.ActiveCfg = Debug|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.MinSizeRel|x64.ActiveCfg = MinSizeRel|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.Release|Win32.ActiveCfg = Release|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.Release|Win32.Build.0 = Release|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.Release|x64.ActiveCfg = Release|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.Debug|Win32.Build.0 = Debug|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.Debug|x64.ActiveCfg = Debug|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.MinSizeRel|x64.ActiveCfg = MinSizeRel|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.Release|Win32.ActiveCfg = Release|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.Release|Win32.Build.0 = Release|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.Release|x64.ActiveCfg = Release|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
