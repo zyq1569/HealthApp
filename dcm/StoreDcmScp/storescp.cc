@@ -272,7 +272,7 @@ OFBool CreatDir(OFString dir)
     }
     return OFTrue;
 }
-
+//1040 -od \\192.168.0.11\common\Test_dcmtk_rec\SCP
 int main(int argc, char *argv[])
 {
     //--------------------增加日志文件的方式----------------------------------------------------------------
