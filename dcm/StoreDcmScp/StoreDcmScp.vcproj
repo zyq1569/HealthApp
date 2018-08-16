@@ -88,7 +88,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Debug/storescp.pdb"
+				ProgramDatabaseFile="..\..\temp\$(ProjectName\$(ConfigurationName)\$(ProjectName)_d.pdb"
 				SubSystem="1"
 				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\Debug\storescp.lib"
 			/>
@@ -178,7 +178,7 @@
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
 				AdditionalOptions="/machine:X86 setargv"
-				AdditionalDependencies="$(NOINHERIT) kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib ..\..\lib\Release\dcmtls.lib ..\..\lib\Release\dcmnet.lib ..\..\lib\Release\dcmdata.lib ..\..\lib\Release\oflog.lib ..\..\lib\Release\ofstd.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib "
+				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\dcmtls.lib ..\..\lib\dcm\win32\dcmnet.lib ..\..\lib\dcm\win32\dcmdata.lib ..\..\lib\dcm\win32\oflog.lib ..\..\lib\dcm\win32\ofstd.lib $(NOINHERIT)"
 				OutputFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release\storescp.exe"
 				Version="0.0"
 				LinkIncremental="1"
