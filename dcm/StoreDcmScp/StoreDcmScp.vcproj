@@ -405,58 +405,6 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Source Files"
-			>
-		</Filter>
-		<File
-			RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\apps\CMakeLists.txt"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmnet/apps/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmnet/apps/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\apps\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\apps\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmnet\apps\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmnet/apps/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmnet/apps/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\apps\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\apps\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmnet\apps\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="MinSizeRel|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmnet/apps/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmnet/apps/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\apps\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\apps\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmnet\apps\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="RelWithDebInfo|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmnet/apps/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmnet/apps/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\apps\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\apps\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmnet\apps\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-		</File>
 		<File
 			RelativePath=".\storescp.cc"
 			>
