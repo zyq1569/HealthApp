@@ -246,9 +246,7 @@ void CTestMariaDbAppDlg::OnBnQuery()
 {
 	try
 	{	
-		ResultSet rs;
 		std::vector<std::string> row;
-		std::string sdata;
 		std::string strsql = "SELECT * FROM H_istudy";
 		CString wsql;
 		GetDlgItem(IDC_SQL)->GetWindowText(wsql);
@@ -257,21 +255,25 @@ void CTestMariaDbAppDlg::OnBnQuery()
 			strsql = W2S(wsql.GetBuffer());
 		}
 		pMariaDb->query(strsql);
-		pMariaDb->getresult(rs);
-
-		while(rs.fetch(row))
+/*		pMariaDb->getresult(rs);*/
+		ResultSet * rs = pMariaDb->QueryResult();
+		if (NULL != rs)
 		{
-			for (size_t i = 0; i < row.size(); i++)
+			std::string sdata;
+			while(rs->fetch(row))
 			{
-				sdata += row[i] + " | ";
+				for (size_t i = 0; i < row.size(); i++)
+				{
+					sdata += row[i] + " | ";
+				}
+				sdata += "\r\n";
 			}
-			sdata += "\r\n";
+			std::wstring strinfo;
+			StringToWString(sdata,strinfo);
+			//MessageBox(strinfo.c_str());
+			m_strlog += strinfo.c_str();
+			GetDlgItem(IDC_LOG)->SetWindowText(m_strlog);
 		}
-		std::wstring strinfo;
-		StringToWString(sdata,strinfo);
-		//MessageBox(strinfo.c_str());
-		m_strlog += strinfo.c_str();
-		GetDlgItem(IDC_LOG)->SetWindowText(m_strlog);
 		int a = rand();
 		strsql = "insert into H_istudy (patientid,studyuid) value(";
 
@@ -282,7 +284,7 @@ void CTestMariaDbAppDlg::OnBnQuery()
 		strsql += ",'1.2.826.0.1.3680043.9.7604.";
 		strsql += v;
 		strsql += "');";
-		pMariaDb->query(strsql);
+		pMariaDb->execute(strsql);
 	}
 	catch (const HSqlError& e)
 	{

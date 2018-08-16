@@ -38,6 +38,11 @@ void HMariaDb::query(const std::string& sql)
 	{
 		throw HSqlError("Failed to execute sql: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
 	}
+	else
+	{
+		resultset.clear();
+		getresult(resultset);
+	}
 }
 
 void HMariaDb::execute(const std::string& sql)
@@ -54,19 +59,21 @@ void HMariaDb::getresult(ResultSet& rs)
 {
 	if (NULL == pConnectionHandlerPtr)
 		return;
-	MYSQL_RES *result = NULL; // result of querying for all rows in table 
+	MYSQL_RES *result = NULL;
 	MYSQL_FIELD *fields = NULL;
 
 	// You must call mysql_store_result() or mysql_use_result() 
 	// for every query that successfully retrieves data (SELECT, SHOW, DESCRIBE, EXPLAIN). 
 
-	result = mysql_use_result(pConnectionHandlerPtr); 
+	result = mysql_use_result(pConnectionHandlerPtr);
+	if (result == NULL)
+	{
+		return;
+	}
 
 	MYSQL_ROW row;
 	unsigned int num_fields;
 	unsigned int i;
-
-
 
 	num_fields = mysql_num_fields(result);
 	fields = mysql_fetch_fields(result);
