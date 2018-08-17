@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -E make_directory C:/Tool/code/HealthApp/dcm/dcmtk_win32/lib/Debug&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -172,7 +172,7 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -E make_directory C:/Tool/code/HealthApp/dcm/dcmtk_win32/lib/Release&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCLinkerTool"
