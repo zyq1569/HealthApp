@@ -201,6 +201,64 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
 
 // ----------------------------------------------------------------------------
 
+/******************************************************************************************
+将所有文件放在D盘下面DCMTK目录下面
+即：D：\DCMTK
+dcmtkXP_2008_x86.7z vs2008 windows 32位
+dcmtkXP_2008.7z     vs2008 windows 64位
+编译后生成的lib和exe分别会在D：\DCMTK\这个目录下面一个自动新建文件夹下
+参数
+-s -dfr -dfp  D:\DCMTK\dcmtk-3.6.0\dcmwlm\data\wlistdb  104
+-s 是单独进程模式或者线程模式
+
+unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmDataset *searchMask )
+
+//相关类似资料
+http://bbs.hc3i.cn/thread-111610-1-1.html
+
+
+在D:\DCMTK\dcmtk-3.6.0\dcmwlm\libsrc\wlfsim.cc 文件里面增加了参考修改dcm文件的代码
+void SetWorklistData(DcmDataset *dataset)
+
+scp 选择 wlmscpfs 工程 debug设置 成 -s -dfr -dfp  D:\DCMTK\dcmtk-3.6.0\dcmwlm\data\wlistdb  104
+代码在dcmtk-3.6.0\dcmwlm\libsrc\wlfsim.cc
+scu 使用先把wlistqry.wl 拷贝到 D:\DCMTK\dcmtkXP\bin\Debug下面 再在D:\DCMTK\dcmtkXP\bin
+findscu 127.0.0.1 104 wlistqry.wl -aec OFFIS
+************************************************************************************************/
+//可以创建一个dcm文件，然后根据查询的条件,搜索数据库,再修改dcm文件，返回值
+// -s -dfr -dfp  D:\DCMTK\dcmtk-3.6.0\dcmwlm\data\wlistdb  104
+void SetWorklistData(DcmDataset *dataset)
+{
+    dataset->putAndInsertString(DCM_PatientName, "Doe^John");
+    dataset->putAndInsertString(DCM_AccessionNumber,"A00001");
+    dataset->putAndInsertString(DCM_PatientID,"A000001");
+    dataset->putAndInsertString(DCM_PatientBirthDate,"19991001");
+    dataset->putAndInsertString(DCM_PatientBirthTime,"20:22:20");
+    dataset->putAndInsertString(DCM_MedicalAlerts,"ABZESS");
+    dataset->putAndInsertString(DCM_Allergies,"BARIUMSULFAT");
+    dataset->putAndInsertString(DCM_StudyInstanceUID,"1.2.276.0.179081.1207");
+    dataset->putAndInsertString(DCM_RequestingPhysician,"NEIER");
+    dataset->putAndInsertString(DCM_RequestedProcedureDescription,"EXAM78");
+    dataset->putAndInsertString(DCM_PatientSex,"W");
+    //const char *time = NULL;
+    dataset->putAndInsertString(DCM_ScheduledProcedureStepStartDate,"20131208");
+    DcmItem *ditem = NULL;
+    if (dataset->findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence,ditem).good())
+    {
+        ditem->putAndInsertString(DCM_Modality,"CT");
+        ditem->putAndInsertString(DCM_ScheduledStationAETitle,"20141012");
+        ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate,"20131208");
+        ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime,"21:44:00");
+        ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription,"EXAM56");
+        ditem->putAndInsertString(DCM_ScheduledProcedureStepID,"SPD575841");
+        ditem->putAndInsertString(DCM_ScheduledStationName,"STN345");
+        ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation,"B55P56");
+    }
+    dataset->putAndInsertString(DCM_RequestedProcedureID,"RP34734H328");
+    dataset->putAndInsertString(DCM_RequestedProcedurePriority,"HIGH");
+}
+//*************************addd********************************************************************
+
 unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmDataset *searchMask )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
@@ -217,6 +275,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
   matchingRecords = NULL;
   numOfMatchingRecords = 0;
 
+  //SetWorklistData();增加查询数据库功能
   // determine all worklist files
   DetermineWorklistFiles( worklistFiles );
 
