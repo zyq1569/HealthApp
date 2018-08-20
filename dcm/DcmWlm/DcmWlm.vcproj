@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="DcmWlm"
+	Name="dcmwlm"
 	ProjectGUID="{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}"
-	RootNamespace="storescp"
+	RootNamespace="dcmwlm"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="0"
 	>
@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\bin\win32\"
+			OutputDirectory="..\..\bin\win32"
 			IntermediateDirectory="..\..\temp\$(ProjectName\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -71,26 +71,24 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32;_WINDOWS;DEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;Debug\&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;DEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;Debug\&quot;;dcmwlm_EXPORTS"
 				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine=""
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
-				AdditionalOptions="/machine:X86 /debug setargv"
-				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\dcmnet_d.lib ..\..\lib\dcm\win32\dcmdata_d.lib ..\..\lib\dcm\win32\oflog_d.lib ..\..\lib\dcm\win32\ofstd_d.lib ..\..\lib\dcm\win32\dcmtls_d.lib ..\..\lib\dcm\win32\dcmwlm_d.lib $(NOINHERIT)"
-				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
-				Version="0.0"
+				AdditionalOptions="/machine:X86 /debug"
+				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\dcmnet_d.lib ..\..\lib\dcm\win32\dcmdata_d.lib ..\..\lib\dcm\win32\oflog_d.lib ..\..\lib\dcm\win32\ofstd_d.lib $(NOINHERIT)"
+				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
+				Version="3.6"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetDir)$(TargetName)_d.pdb"
-				SubSystem="1"
-				ImportLibrary=""
+				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Debug\dcmwlm.pdb"
+				ImportLibrary="..\..\lib\dcm\win32\$(ProjectName)_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -117,7 +115,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release"
-			IntermediateDirectory="..\..\temp\$(ProjectName\$(ConfigurationName)"
+			IntermediateDirectory="dcmwlm.dir\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -152,7 +150,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include&quot;;&quot;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include&quot;"
+				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;Release\&quot;;dcmwlm_EXPORTS"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -167,25 +165,23 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;Release\&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;Release\&quot;;dcmwlm_EXPORTS"
 				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine=""
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
-				AdditionalOptions="/machine:X86 setargv"
-				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\dcmtls.lib ..\..\lib\dcm\win32\dcmnet.lib ..\..\lib\dcm\win32\dcmdata.lib ..\..\lib\dcm\win32\oflog.lib ..\..\lib\dcm\win32\ofstd.lib ..\..\lib\dcm\win32\dcmwlm.lib $(NOINHERIT)"
-				OutputFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release\storescp.exe"
-				Version="0.0"
+				AdditionalOptions="/machine:X86"
+				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\dcmnet.lib ..\..\lib\dcm\win32\dcmdata.lib ..\..\lib\dcm\win32\oflog.lib ..\..\lib\dcm\win32\ofstd.lib"
+				OutputFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release\dcmwlm.dll"
+				Version="3.6"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
-				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
-				SubSystem="1"
-				ImportLibrary=""
+				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release\dcmwlm.pdb"
+				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\Release\dcmwlm.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -212,8 +208,8 @@
 		<Configuration
 			Name="MinSizeRel|Win32"
 			OutputDirectory="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\MinSizeRel"
-			IntermediateDirectory="storescp.dir\MinSizeRel"
-			ConfigurationType="1"
+			IntermediateDirectory="dcmwlm.dir\MinSizeRel"
+			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -248,7 +244,7 @@
 				Optimization="1"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;MinSizeRel\&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;MinSizeRel\&quot;;dcmwlm_EXPORTS"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -262,25 +258,23 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;MinSizeRel\&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;MinSizeRel\&quot;;dcmwlm_EXPORTS"
 				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -E make_directory C:/Tool/code/HealthApp/dcm/dcmtk_win32/lib/MinSizeRel&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
-				AdditionalOptions="/machine:X86 setargv"
-				AdditionalDependencies="$(NOINHERIT) kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib ..\..\lib\MinSizeRel\dcmtls.lib ..\..\lib\MinSizeRel\dcmnet.lib ..\..\lib\MinSizeRel\dcmdata.lib ..\..\lib\MinSizeRel\oflog.lib ..\..\lib\MinSizeRel\ofstd.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib "
-				OutputFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\MinSizeRel\storescp.exe"
-				Version="0.0"
+				AdditionalOptions="/machine:X86"
+				AdditionalDependencies="$(NOINHERIT) kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib ..\..\lib\MinSizeRel\dcmnet.lib ..\..\lib\MinSizeRel\dcmdata.lib ..\..\lib\MinSizeRel\oflog.lib ..\..\lib\MinSizeRel\ofstd.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib "
+				OutputFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\MinSizeRel\dcmwlm.dll"
+				Version="3.6"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
-				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\MinSizeRel/storescp.pdb"
-				SubSystem="1"
-				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\MinSizeRel\storescp.lib"
+				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\MinSizeRel\dcmwlm.pdb"
+				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\MinSizeRel\dcmwlm.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -307,8 +301,8 @@
 		<Configuration
 			Name="RelWithDebInfo|Win32"
 			OutputDirectory="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\RelWithDebInfo"
-			IntermediateDirectory="storescp.dir\RelWithDebInfo"
-			ConfigurationType="1"
+			IntermediateDirectory="dcmwlm.dir\RelWithDebInfo"
+			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -343,7 +337,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;;dcmwlm_EXPORTS"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -358,26 +352,24 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;;dcmwlm_EXPORTS"
 				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -E make_directory C:/Tool/code/HealthApp/dcm/dcmtk_win32/lib/RelWithDebInfo&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
-				AdditionalOptions="/machine:X86 /debug setargv"
-				AdditionalDependencies="$(NOINHERIT) kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib ..\..\lib\RelWithDebInfo\dcmtls.lib ..\..\lib\RelWithDebInfo\dcmnet.lib ..\..\lib\RelWithDebInfo\dcmdata.lib ..\..\lib\RelWithDebInfo\oflog.lib ..\..\lib\RelWithDebInfo\ofstd.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib "
-				OutputFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\RelWithDebInfo\storescp.exe"
-				Version="0.0"
+				AdditionalOptions="/machine:X86 /debug"
+				AdditionalDependencies="$(NOINHERIT) kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib ..\..\lib\RelWithDebInfo\dcmnet.lib ..\..\lib\RelWithDebInfo\dcmdata.lib ..\..\lib\RelWithDebInfo\oflog.lib ..\..\lib\RelWithDebInfo\ofstd.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib "
+				OutputFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\RelWithDebInfo\dcmwlm.dll"
+				Version="3.6"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\RelWithDebInfo/storescp.pdb"
-				SubSystem="1"
-				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\RelWithDebInfo\storescp.lib"
+				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\RelWithDebInfo\dcmwlm.pdb"
+				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\RelWithDebInfo\dcmwlm.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -406,10 +398,6 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Header Files"
-			>
-		</Filter>
-		<Filter
 			Name="Source Files"
 			>
 			<File
@@ -429,6 +417,54 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmwlm/libsrc/CMakeLists.txt"
+					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmwlm/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
+					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;"
+					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmwlm\libsrc\CMakeFiles\generate.stamp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmwlm/libsrc/CMakeLists.txt"
+					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmwlm/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
+					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;"
+					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmwlm\libsrc\CMakeFiles\generate.stamp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="MinSizeRel|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmwlm/libsrc/CMakeLists.txt"
+					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmwlm/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
+					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;"
+					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmwlm\libsrc\CMakeFiles\generate.stamp"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="RelWithDebInfo|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmwlm/libsrc/CMakeLists.txt"
+					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmwlm/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
+					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;"
+					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmwlm\libsrc\CMakeFiles\generate.stamp"
+				/>
+			</FileConfiguration>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
