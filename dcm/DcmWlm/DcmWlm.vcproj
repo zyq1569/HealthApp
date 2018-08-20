@@ -87,7 +87,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Debug\dcmwlm.pdb"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName)_d.pdb"
 				ImportLibrary="..\..\lib\dcm\win32\$(ProjectName)_d.lib"
 			/>
 			<Tool
@@ -114,8 +114,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release"
-			IntermediateDirectory="dcmwlm.dir\Release"
+			OutputDirectory="..\..\bin\win32"
+			IntermediateDirectory="..\..\temp\$(ProjectName\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -150,7 +150,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
+				AdditionalIncludeDirectories="..\..\include\dcm\win32\config;..\..\include\dcm\win32\ofstd;..\..\include\dcm\win32\oflog;..\..\include\dcm\win32\\dcmdata;..\..\include\dcm\win32\dcmimgle;..\..\include\dcm\win32\dcmimage;..\..\include\dcm\win32\dcmjpeg;..\..\include\dcm\win32\dcmjpls;..\..\include\dcm\win32\dcmtls;..\..\include\dcm\win32\dcmnet;..\..\include\dcm\win32\dcmsr;..\..\include\dcm\win32\dcmsign;..\..\include\dcm\win32\dcmwlm;..\..\include\dcm\win32\dcmqrdb;..\..\include\dcm\win32\dcmpstat;..\..\include\dcm\win32\dcmrt;..\..\include\dcm\win32\dcmiod;..\..\include\dcm\win32\dcmfg;..\..\include\dcm\win32\dcmseg;..\..\include\dcm\win32\dcmtract;..\..\include\dcm\win32\dcmpmap"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;Release\&quot;;dcmwlm_EXPORTS"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -176,12 +176,12 @@
 				LinkLibraryDependencies="false"
 				AdditionalOptions="/machine:X86"
 				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\dcmnet.lib ..\..\lib\dcm\win32\dcmdata.lib ..\..\lib\dcm\win32\oflog.lib ..\..\lib\dcm\win32\ofstd.lib"
-				OutputFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release\dcmwlm.dll"
+				OutputFile="$(OutDir)\$(ProjectName).dll"
 				Version="3.6"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
-				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release\dcmwlm.pdb"
-				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\Release\dcmwlm.lib"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
+				ImportLibrary="..\..\lib\dcm\win32\$(ProjectName)_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
