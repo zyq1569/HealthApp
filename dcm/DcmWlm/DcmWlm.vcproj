@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\bin\win32"
+			OutputDirectory="..\..\bin\win32\"
 			IntermediateDirectory="..\..\temp\$(ProjectName\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -300,7 +300,7 @@
 		</Configuration>
 		<Configuration
 			Name="RelWithDebInfo|Win32"
-			OutputDirectory="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\RelWithDebInfo"
+			OutputDirectory="..\..\bin\win32\"
 			IntermediateDirectory="dcmwlm.dir\RelWithDebInfo"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -336,7 +336,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
+				AdditionalIncludeDirectories="..\..\include\dcm\win32\config;..\..\include\dcm\win32\ofstd;..\..\include\dcm\win32\oflog;..\..\include\dcm\win32\\dcmdata;..\..\include\dcm\win32\dcmimgle;..\..\include\dcm\win32\dcmimage;..\..\include\dcm\win32\dcmjpeg;..\..\include\dcm\win32\dcmjpls;..\..\include\dcm\win32\dcmtls;..\..\include\dcm\win32\dcmnet;..\..\include\dcm\win32\dcmsr;..\..\include\dcm\win32\dcmsign;..\..\include\dcm\win32\dcmwlm;..\..\include\dcm\win32\dcmqrdb;..\..\include\dcm\win32\dcmpstat;..\..\include\dcm\win32\dcmrt;..\..\include\dcm\win32\dcmiod;..\..\include\dcm\win32\dcmfg;..\..\include\dcm\win32\dcmseg;..\..\include\dcm\win32\dcmtract;..\..\include\dcm\win32\dcmpmap"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;RelWithDebInfo\&quot;;dcmwlm_EXPORTS"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -417,54 +417,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmwlm/libsrc/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmwlm/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmwlm\libsrc\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmwlm/libsrc/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmwlm/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmwlm\libsrc\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="MinSizeRel|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmwlm/libsrc/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmwlm/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmwlm\libsrc\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="RelWithDebInfo|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/dcmwlm/libsrc/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/dcmwlm/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\libsrc\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\dcmwlm\libsrc\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
