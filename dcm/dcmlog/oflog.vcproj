@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Debug"
-			IntermediateDirectory="oflog.dir\Debug"
+			OutputDirectory="..\..\bin\win32"
+			IntermediateDirectory="..\..\temp\$(ProjectName\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -54,11 +54,11 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="0"
-				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
+				AdditionalIncludeDirectories="..\..\include\dcm\win32\config;..\..\include\dcm\win32\ofstd;..\..\include\dcm\win32\oflog;..\..\include\dcm\win32\\dcmdata;..\..\include\dcm\win32\dcmimgle;..\..\include\dcm\win32\dcmimage;..\..\include\dcm\win32\dcmjpeg;..\..\include\dcm\win32\dcmjpls;..\..\include\dcm\win32\dcmtls;..\..\include\dcm\win32\dcmnet;..\..\include\dcm\win32\dcmsr;..\..\include\dcm\win32\dcmsign;..\..\include\dcm\win32\dcmwlm;..\..\include\dcm\win32\dcmqrdb;..\..\include\dcm\win32\dcmpstat;..\..\include\dcm\win32\dcmrt;..\..\include\dcm\win32\dcmiod;..\..\include\dcm\win32\dcmfg;..\..\include\dcm\win32\dcmseg;..\..\include\dcm\win32\dcmtract;..\..\include\dcm\win32\dcmpmap"
 				PreprocessorDefinitions="WIN32;_WINDOWS;DEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;Debug\&quot;;oflog_EXPORTS"
 				ExceptionHandling="1"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				RuntimeTypeInfo="true"
 				AssemblerListingLocation="Debug/"
 				ObjectFile="$(IntDir)\"
@@ -81,14 +81,14 @@
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
 				AdditionalOptions="/machine:X86 /debug"
-				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib ..\..\lib\Debug\ofstd_d.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib $(NOINHERIT)"
-				OutputFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Debug\oflog_d.dll"
+				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib Clfsw32.lib ..\..\lib\dcm\win32\ofstd_d.lib $(NOINHERIT)"
+				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				Version="3.6"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Debug\oflog.pdb"
-				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\Debug\oflog_d.lib"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName)_d.pdb"
+				ImportLibrary="..\..\lib\dcm\win32\$(ProjectName)_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -114,8 +114,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release"
-			IntermediateDirectory="oflog.dir\Release"
+			OutputDirectory="..\..\bin\win32"
+			IntermediateDirectory="..\..\temp\$(ProjectName\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -150,7 +150,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include"
+				AdditionalIncludeDirectories="..\..\include\dcm\win32\config;..\..\include\dcm\win32\ofstd;..\..\include\dcm\win32\oflog;..\..\include\dcm\win32\\dcmdata;..\..\include\dcm\win32\dcmimgle;..\..\include\dcm\win32\dcmimage;..\..\include\dcm\win32\dcmjpeg;..\..\include\dcm\win32\dcmjpls;..\..\include\dcm\win32\dcmtls;..\..\include\dcm\win32\dcmnet;..\..\include\dcm\win32\dcmsr;..\..\include\dcm\win32\dcmsign;..\..\include\dcm\win32\dcmwlm;..\..\include\dcm\win32\dcmqrdb;..\..\include\dcm\win32\dcmpstat;..\..\include\dcm\win32\dcmrt;..\..\include\dcm\win32\dcmiod;..\..\include\dcm\win32\dcmfg;..\..\include\dcm\win32\dcmseg;..\..\include\dcm\win32\dcmtract;..\..\include\dcm\win32\dcmpmap"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;Release\&quot;;oflog_EXPORTS"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -175,13 +175,13 @@
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
 				AdditionalOptions="/machine:X86"
-				AdditionalDependencies="$(NOINHERIT) kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib ..\..\lib\Release\ofstd.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib "
-				OutputFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release\oflog.dll"
+				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\ofstd.lib $(NOINHERIT)"
+				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				Version="3.6"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
-				ProgramDatabaseFile="C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\Release\oflog.pdb"
-				ImportLibrary="C:\Tool\code\HealthApp\dcm\dcmtk_win32\lib\Release\oflog.lib"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName)_d.pdb"
+				ImportLibrary="..\..\lib\dcm\win32\$(ProjectName)_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -401,270 +401,230 @@
 			Name="Source Files"
 			>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\apndimpl.cc"
+				RelativePath=".\apndimpl.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\appender.cc"
+				RelativePath=".\appender.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\asyncap.cc"
+				RelativePath=".\asyncap.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\clogger.cc"
+				RelativePath=".\clfsap.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\config.cc"
+				RelativePath=".\clogger.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\consap.cc"
+				RelativePath=".\config.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\cygwin32.cc"
+				RelativePath=".\consap.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\env.cc"
+				RelativePath=".\cygwin32.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\factory.cc"
+				RelativePath=".\env.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\fileap.cc"
+				RelativePath=".\factory.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\fileinfo.cc"
+				RelativePath=".\fileap.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\filter.cc"
+				RelativePath=".\fileinfo.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\globinit.cc"
+				RelativePath=".\filter.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\hierarchy.cc"
+				RelativePath=".\globinit.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\hierlock.cc"
+				RelativePath=".\hierarchy.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\layout.cc"
+				RelativePath=".\hierlock.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\lloguser.cc"
+				RelativePath=".\layout.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\lockfile.cc"
+				RelativePath=".\lloguser.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\log4judp.cc"
+				RelativePath=".\lockfile.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\logevent.cc"
+				RelativePath=".\log4judp.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\logger.cc"
+				RelativePath=".\logevent.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\logimpl.cc"
+				RelativePath=".\logger.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\loglevel.cc"
+				RelativePath=".\logimpl.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\loglog.cc"
+				RelativePath=".\loglevel.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\logmacro.cc"
+				RelativePath=".\loglog.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\mdc.cc"
+				RelativePath=".\logmacro.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\ndc.cc"
+				RelativePath=".\mdc.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\ntelogap.cc"
+				RelativePath=".\ndc.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\nullap.cc"
+				RelativePath=".\ntelogap.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\objreg.cc"
+				RelativePath=".\nullap.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\oflog.cc"
+				RelativePath=".\objreg.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\patlay.cc"
+				RelativePath=".\oflog.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\pointer.cc"
+				RelativePath=".\patlay.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\property.cc"
+				RelativePath=".\pointer.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\queue.cc"
+				RelativePath=".\property.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\rootlog.cc"
+				RelativePath=".\queue.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\sleep.cc"
+				RelativePath=".\rootlog.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\snprintf.cc"
+				RelativePath=".\sleep.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\sockbuff.cc"
+				RelativePath=".\snprintf.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\socket.cc"
+				RelativePath=".\sockbuff.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\socketap.cc"
+				RelativePath=".\socket.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\strccloc.cc"
+				RelativePath=".\socketap.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\strcloc.cc"
+				RelativePath=".\strccloc.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\strhelp.cc"
+				RelativePath=".\strcloc.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\striconv.cc"
+				RelativePath=".\strhelp.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\syncprims.cc"
+				RelativePath=".\striconv.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\syslogap.cc"
+				RelativePath=".\syncprims.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\threads.cc"
+				RelativePath=".\syslogap.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\timehelp.cc"
+				RelativePath=".\threads.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\tls.cc"
+				RelativePath=".\timehelp.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\version.cc"
+				RelativePath=".\tls.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\winconap.cc"
+				RelativePath=".\unixsock.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\windebap.cc"
+				RelativePath=".\version.cc"
 				>
 			</File>
 			<File
-				RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\winsock.cc"
+				RelativePath=".\winconap.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\windebap.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\winsock.cc"
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\CMakeLists.txt"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/oflog/libsrc/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/oflog/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\oflog\libsrc\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/oflog/libsrc/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/oflog/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\oflog\libsrc\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="MinSizeRel|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/oflog/libsrc/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/oflog/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\oflog\libsrc\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="RelWithDebInfo|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Custom Rule C:/Tool/code/HealthApp/dcm/dcmtk-3.6.3/oflog/libsrc/CMakeLists.txt"
-					CommandLine="C:\Tool\cmake-3.12.1-win64-x64\bin\cmake.exe -HC:/Tool/code/HealthApp/dcm/dcmtk-3.6.3 -BC:/Tool/code/HealthApp/dcm/dcmtk_win32 --check-stamp-file C:/Tool/code/HealthApp/dcm/dcmtk_win32/oflog/libsrc/CMakeFiles/generate.stamp&#x0D;&#x0A;if errorlevel 1 goto :VCReportError&#x0D;&#x0A;"
-					AdditionalDependencies="C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\CMakeLists.txt;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\libsrc\CMakeLists.txt;"
-					Outputs="C:\Tool\code\HealthApp\dcm\dcmtk_win32\oflog\libsrc\CMakeFiles\generate.stamp"
-				/>
-			</FileConfiguration>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
