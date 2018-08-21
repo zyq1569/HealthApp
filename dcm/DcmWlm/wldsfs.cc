@@ -1,23 +1,23 @@
 /*
- *
- *  Copyright (C) 1996-2017, OFFIS e.V.
- *  All rights reserved.  See COPYRIGHT file for details.
- *
- *  This software and supporting documentation were developed by
- *
- *    OFFIS e.V.
- *    R&D Division Health
- *    Escherweg 2
- *    D-26121 Oldenburg, Germany
- *
- *
- *  Module:  dcmwlm
- *
- *  Author:  Thomas Wilkens
- *
- *  Purpose: Class for connecting to a file-based data source.
- *
- */
+*
+*  Copyright (C) 1996-2017, OFFIS e.V.
+*  All rights reserved.  See COPYRIGHT file for details.
+*
+*  This software and supporting documentation were developed by
+*
+*    OFFIS e.V.
+*    R&D Division Health
+*    Escherweg 2
+*    D-26121 Oldenburg, Germany
+*
+*
+*  Module:  dcmwlm
+*
+*  Author:  Thomas Wilkens
+*
+*  Purpose: Class for connecting to a file-based data source.
+*
+*/
 
 // ----------------------------------------------------------------------------
 
@@ -50,8 +50,8 @@ WlmDataSourceFileSystem::WlmDataSourceFileSystem()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : fileSystemInteractionManager( ), dfPath( "" ), enableRejectionOfIncompleteWlFiles( OFTrue ),
-    handleToReadLockFile( 0 )
+: fileSystemInteractionManager( ), dfPath( "" ), enableRejectionOfIncompleteWlFiles( OFTrue ),
+handleToReadLockFile( 0 )
 {
 }
 
@@ -64,8 +64,8 @@ WlmDataSourceFileSystem::~WlmDataSourceFileSystem()
 // Parameters   : none.
 // Return Value : none.
 {
-  // release read lock on data source if it is set
-  if( readLockSetOnDataSource ) ReleaseReadlock();
+	// release read lock on data source if it is set
+	if( readLockSetOnDataSource ) ReleaseReadlock();
 
 }
 
@@ -78,14 +78,14 @@ OFCondition WlmDataSourceFileSystem::ConnectToDataSource()
 // Parameters   : none.
 // Return Value : Indicates if the connection was established successfully.
 {
-  // set variables in fileSystemInteractionManager object
-  fileSystemInteractionManager.SetEnableRejectionOfIncompleteWlFiles( enableRejectionOfIncompleteWlFiles );
+	// set variables in fileSystemInteractionManager object
+	fileSystemInteractionManager.SetEnableRejectionOfIncompleteWlFiles( enableRejectionOfIncompleteWlFiles );
 
-  // connect to file system
-  OFCondition cond = fileSystemInteractionManager.ConnectToFileSystem( dfPath );
+	// connect to file system
+	OFCondition cond = fileSystemInteractionManager.ConnectToFileSystem( dfPath );
 
-  // return result
-  return( cond );
+	// return result
+	return( cond );
 }
 
 // ----------------------------------------------------------------------------
@@ -97,11 +97,11 @@ OFCondition WlmDataSourceFileSystem::DisconnectFromDataSource()
 // Parameters   : none.
 // Return Value : Indicates if the disconnection was completed successfully.
 {
-  // disconnect from file system
-  OFCondition cond = fileSystemInteractionManager.DisconnectFromFileSystem();
+	// disconnect from file system
+	OFCondition cond = fileSystemInteractionManager.DisconnectFromFileSystem();
 
-  // return result
-  return( cond );
+	// return result
+	return( cond );
 }
 
 // ----------------------------------------------------------------------------
@@ -113,7 +113,7 @@ void WlmDataSourceFileSystem::SetDfPath( const OFString& value )
 // Parameters   : value - Value for member variable.
 // Return Value : none.
 {
-  dfPath = value;
+	dfPath = value;
 }
 
 // ----------------------------------------------------------------------------
@@ -125,7 +125,7 @@ void WlmDataSourceFileSystem::SetEnableRejectionOfIncompleteWlFiles( OFBool valu
 // Parameters   : value - Value for member variable.
 // Return Value : none.
 {
-  enableRejectionOfIncompleteWlFiles = value;
+	enableRejectionOfIncompleteWlFiles = value;
 }
 
 // ----------------------------------------------------------------------------
@@ -141,11 +141,11 @@ OFBool WlmDataSourceFileSystem::IsCalledApplicationEntityTitleSupported()
 // Return Value : OFTrue  - The called application entity title is supported.
 //                OFFalse - The called application entity title is not supported or it is not given.
 {
-  // Check if calledApplicationEntityTitle does not have a valid value
-  if( calledApplicationEntityTitle.empty() )
-    return( OFFalse );
-  else
-    return( fileSystemInteractionManager.IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
+	// Check if calledApplicationEntityTitle does not have a valid value
+	if( calledApplicationEntityTitle.empty() )
+		return( OFFalse );
+	else
+		return( fileSystemInteractionManager.IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -170,37 +170,37 @@ void WlmDataSourceFileSystem::HandleExistentButEmptyDescriptionAndCodeSequenceAt
 //                codeSequenceTagKey - [in] DcmTagKey of the codeSequence attribute which shall be checked.
 // Return Value : none.
 {
-  DcmElement *codeSequenceAttribute = NULL, *descriptionAttribute = NULL;
-  DcmElement *elementToRemove = NULL, *codeValueAttribute = NULL, *codingSchemeDesignatorAttribute = NULL;
-  OFBool codeSequenceAttributeRemoved = OFFalse;
+	DcmElement *codeSequenceAttribute = NULL, *descriptionAttribute = NULL;
+	DcmElement *elementToRemove = NULL, *codeValueAttribute = NULL, *codingSchemeDesignatorAttribute = NULL;
+	OFBool codeSequenceAttributeRemoved = OFFalse;
 
-  // only do something with the code sequence attribute if it is contained in the dataset
-  if( dataset->findAndGetElement( codeSequenceTagKey, codeSequenceAttribute ).good() )
-  {
-    // if the code sequence attribute is empty or contains exactly one item with an empty
-    // CodeValue and an empty CodingSchemeDesignator, remove the attribute from the dataset
-    if( ( ((DcmSequenceOfItems*)codeSequenceAttribute)->card() == 0 ) ||
-        ( ((DcmSequenceOfItems*)codeSequenceAttribute)->card() == 1 &&
-          ((DcmSequenceOfItems*)codeSequenceAttribute)->getItem(0)->findAndGetElement( DCM_CodeValue, codeValueAttribute ).good() &&
-          codeValueAttribute->getLength() == 0 &&
-          ((DcmSequenceOfItems*)codeSequenceAttribute)->getItem(0)->findAndGetElement( DCM_CodingSchemeDesignator, codingSchemeDesignatorAttribute ).good() &&
-          codingSchemeDesignatorAttribute->getLength() == 0 ) )
-    {
-      elementToRemove = dataset->remove( codeSequenceAttribute );
-      delete elementToRemove;
-      codeSequenceAttributeRemoved = OFTrue;
-    }
-  }
+	// only do something with the code sequence attribute if it is contained in the dataset
+	if( dataset->findAndGetElement( codeSequenceTagKey, codeSequenceAttribute ).good() )
+	{
+		// if the code sequence attribute is empty or contains exactly one item with an empty
+		// CodeValue and an empty CodingSchemeDesignator, remove the attribute from the dataset
+		if( ( ((DcmSequenceOfItems*)codeSequenceAttribute)->card() == 0 ) ||
+			( ((DcmSequenceOfItems*)codeSequenceAttribute)->card() == 1 &&
+			((DcmSequenceOfItems*)codeSequenceAttribute)->getItem(0)->findAndGetElement( DCM_CodeValue, codeValueAttribute ).good() &&
+			codeValueAttribute->getLength() == 0 &&
+			((DcmSequenceOfItems*)codeSequenceAttribute)->getItem(0)->findAndGetElement( DCM_CodingSchemeDesignator, codingSchemeDesignatorAttribute ).good() &&
+			codingSchemeDesignatorAttribute->getLength() == 0 ) )
+		{
+			elementToRemove = dataset->remove( codeSequenceAttribute );
+			delete elementToRemove;
+			codeSequenceAttributeRemoved = OFTrue;
+		}
+	}
 
-  // if the code sequence attribute has not been removed and if the description
-  // attribute is empty, remove the description attribute from the dataset
-  if( !codeSequenceAttributeRemoved &&
-      dataset->findAndGetElement( descriptionTagKey, descriptionAttribute ).good() &&
-      descriptionAttribute->getLength() == 0 )
-  {
-    elementToRemove = dataset->remove( descriptionAttribute );
-    delete elementToRemove;
-  }
+	// if the code sequence attribute has not been removed and if the description
+	// attribute is empty, remove the description attribute from the dataset
+	if( !codeSequenceAttributeRemoved &&
+		dataset->findAndGetElement( descriptionTagKey, descriptionAttribute ).good() &&
+		descriptionAttribute->getLength() == 0 )
+	{
+		elementToRemove = dataset->remove( descriptionAttribute );
+		delete elementToRemove;
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -220,20 +220,20 @@ void WlmDataSourceFileSystem::HandleExistentButEmptyReferencedStudyOrPatientSequ
 //                sequenceTagKey  - [in] DcmTagKey of the sequence attribute which shall be checked.
 // Return Value : none.
 {
-  DcmElement *sequenceAttribute = NULL, *referencedSOPClassUIDAttribute = NULL, *referencedSOPInstanceUIDAttribute = NULL;
+	DcmElement *sequenceAttribute = NULL, *referencedSOPClassUIDAttribute = NULL, *referencedSOPInstanceUIDAttribute = NULL;
 
-  // in case the sequence attribute contains exactly one item with an empty
-  // ReferencedSOPClassUID and an empty ReferencedSOPInstanceUID, remove the item
-  if( dataset->findAndGetElement( sequenceTagKey, sequenceAttribute ).good() &&
-      ( (DcmSequenceOfItems*)sequenceAttribute )->card() == 1 &&
-      ( (DcmSequenceOfItems*)sequenceAttribute )->getItem(0)->findAndGetElement( DCM_ReferencedSOPClassUID, referencedSOPClassUIDAttribute ).good() &&
-      referencedSOPClassUIDAttribute->getLength() == 0 &&
-      ( (DcmSequenceOfItems*)sequenceAttribute )->getItem(0)->findAndGetElement( DCM_ReferencedSOPInstanceUID, referencedSOPInstanceUIDAttribute, OFFalse ).good() &&
-      referencedSOPInstanceUIDAttribute->getLength() == 0 )
-  {
-    DcmItem *item = ((DcmSequenceOfItems*)sequenceAttribute)->remove( ((DcmSequenceOfItems*)sequenceAttribute)->getItem(0) );
-    delete item;
-  }
+	// in case the sequence attribute contains exactly one item with an empty
+	// ReferencedSOPClassUID and an empty ReferencedSOPInstanceUID, remove the item
+	if( dataset->findAndGetElement( sequenceTagKey, sequenceAttribute ).good() &&
+		( (DcmSequenceOfItems*)sequenceAttribute )->card() == 1 &&
+		( (DcmSequenceOfItems*)sequenceAttribute )->getItem(0)->findAndGetElement( DCM_ReferencedSOPClassUID, referencedSOPClassUIDAttribute ).good() &&
+		referencedSOPClassUIDAttribute->getLength() == 0 &&
+		( (DcmSequenceOfItems*)sequenceAttribute )->getItem(0)->findAndGetElement( DCM_ReferencedSOPInstanceUID, referencedSOPInstanceUIDAttribute, OFFalse ).good() &&
+		referencedSOPInstanceUIDAttribute->getLength() == 0 )
+	{
+		DcmItem *item = ((DcmSequenceOfItems*)sequenceAttribute)->remove( ((DcmSequenceOfItems*)sequenceAttribute)->getItem(0) );
+		delete item;
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -255,166 +255,211 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
 //                                      application.
 //                WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS - Error in the search mask encountered.
 {
-  unsigned long i, j;
-  DcmElement *scheduledProcedureStepSequenceAttribute = NULL;
+	unsigned long i, j;
+	DcmElement *scheduledProcedureStepSequenceAttribute = NULL;
 
-  // Initialize offending elements, error elements and error comment.
-  delete offendingElements;
-  delete errorElements;
-  delete errorComment;
-  offendingElements = new DcmAttributeTag( DCM_OffendingElement);
-  errorElements = new DcmAttributeTag( DCM_OffendingElement);
-  errorComment = new DcmLongString( DCM_ErrorComment);
+	// Initialize offending elements, error elements and error comment.
+	delete offendingElements;
+	delete errorElements;
+	delete errorComment;
+	offendingElements = new DcmAttributeTag( DCM_OffendingElement);
+	errorElements = new DcmAttributeTag( DCM_OffendingElement);
+	errorComment = new DcmLongString( DCM_ErrorComment);
 
-  // Initialize member variable identifiers; this variable will contain the search mask.
-  ClearDataset( identifiers );
-  delete identifiers;
-  identifiers = new DcmDataset( findRequestIdentifiers );
+	// Initialize member variable identifiers; this variable will contain the search mask.
+	ClearDataset( identifiers );
+	delete identifiers;
+	identifiers = new DcmDataset( findRequestIdentifiers );
 
-  // Remove group length and padding elements from the search mask.
-  identifiers->computeGroupLengthAndPadding( EGL_withoutGL, EPD_withoutPadding );
+	// Remove group length and padding elements from the search mask.
+	identifiers->computeGroupLengthAndPadding( EGL_withoutGL, EPD_withoutPadding );
+	//----------获取查询条件
+	OFString PatientID, PatientName, PatientSex, AccessionNumber, AETitle, Modality;
+	if (!identifiers->findAndGetOFString(DCM_PatientID,PatientID).bad())
+	{
+		if (!PatientID.empty())
+		{
+			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientID << OFendl);
+		}
+	}
+	if (!identifiers->findAndGetOFString(DCM_PatientName,PatientName).bad())
+	{
+		if (!PatientName.empty())
+			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientName << OFendl);
+	}
+	if (!identifiers->findAndGetOFString(DCM_PatientSex,PatientSex).bad())
+	{
+		if (!PatientSex.empty())
+			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientSex << OFendl);
+	}
+	//DCM_ScheduledProcedureStepSequence
+	DcmElement* queritem=NULL;//identifiers->getElement();
 
-  // Actually there should be no elements in array matchingDatasets. Delete them to be sure.
-  // matchingDatasets will in the end contain all records (datasets) that match the search mask.
-  while ( !matchingDatasets.empty() )
-  {
-    DcmDataset *dset = matchingDatasets.front();
-    delete dset; dset = NULL;
-    matchingDatasets.pop_front();
-  }
+	if( identifiers->findAndGetElement( DCM_ScheduledProcedureStepSequence, queritem, OFFalse ).good() )
+	{
+		DcmItem *scheduledProcedureStepSequenceItem = ((DcmSequenceOfItems*)queritem)->getItem(0);
+		if (!scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_ScheduledStationAETitle,AETitle).bad())
+		{
+			if (!AETitle.empty())
+				DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << AETitle << OFendl);
+		}
+		if (!scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_Modality,Modality).bad())
+		{
+			if (!Modality.empty())
+				DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << Modality << OFendl);
+		}
+	}
 
-  // This member variable indicates if we encountered an unsupported
-  // optional key attribute in the search mask; initialize it with false.
-  // It might be updated whithin CheckSearchMask().
-  foundUnsupportedOptionalKey = OFFalse;
 
-  // Scrutinize the search mask.
-  if( !CheckSearchMask( identifiers ) )
-  {
-    // In case we encountered an error in the search
-    // mask, we may have to return to the caller
-    if( failOnInvalidQuery )
-      return( WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS );
-  }
+	//   OFString PatientName = ;//DCM_PatientName
+	//   OFString Sex = ;//DCM_PatientSex
+	//   OFString AccessionNumber =;//DCM_AccessionNumber
+	//   OFString AETitle;//DCM_StationAETitle
+	//   OFString Modality; //DCM_Modality
+	//----------------------
 
-  // dump search mask (it might have been expanded)
-  DCMWLM_INFO("Expanded Find SCP Request Identifiers:" << OFendl
-    << DcmObject::PrintHelper(*identifiers) << OFendl
-    << "=============================");
+	// Actually there should be no elements in array matchingDatasets. Delete them to be sure.
+	// matchingDatasets will in the end contain all records (datasets) that match the search mask.
+	while ( !matchingDatasets.empty() )
+	{
+		DcmDataset *dset = matchingDatasets.front();
+		delete dset;
+		dset = NULL;
+		matchingDatasets.pop_front();
+	}
 
-  // Set a read lock on the worklist files which shall be read from.
-  if( !SetReadlock() )
-    return( WLM_REFUSED_OUT_OF_RESOURCES );
+	// This member variable indicates if we encountered an unsupported
+	// optional key attribute in the search mask; initialize it with false.
+	// It might be updated whithin CheckSearchMask().
+	foundUnsupportedOptionalKey = OFFalse;
 
-  // dump some information if required
-  DCMWLM_INFO("Determining matching records from worklist files");
+	// Scrutinize the search mask.
+	if( !CheckSearchMask( identifiers ) )
+	{
+		// In case we encountered an error in the search
+		// mask, we may have to return to the caller
+		if( failOnInvalidQuery )
+			return( WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS );
+	}
 
-  // Determine records from worklist files which match the search mask
-  unsigned long numOfMatchingRecords = fileSystemInteractionManager.DetermineMatchingRecords( identifiers );
+	// dump search mask (it might have been expanded)
+	DCMWLM_INFO("Expanded Find SCP Request Identifiers:" << OFendl
+		<< DcmObject::PrintHelper(*identifiers) << OFendl
+		<< "=============================");
 
-  // dump some information if required
-  DCMWLM_INFO("Matching results: " << numOfMatchingRecords << " matching records found in worklist files");
+	// Set a read lock on the worklist files which shall be read from.
+	if( !SetReadlock() )
+		return( WLM_REFUSED_OUT_OF_RESOURCES );
 
-  // determine a correct return value. In case no matching records
-  // were found, WLM_SUCCESS shall be returned. This is our assumption.
-  WlmDataSourceStatusType status = WLM_SUCCESS;
+	// dump some information if required
+	DCMWLM_INFO("Determining matching records from worklist files");
 
-  // Check if matching records were found in the database.
-  // If that is the case, do the following:
-  if( numOfMatchingRecords != 0 )
-  {
-    // for each matching record do the following
-    for( i=0 ; i<numOfMatchingRecords ; i++ )
-    {
-      // For every matching record ID, add one result dataset to result list and
-      // initialize it with search mask
-      DcmDataset *resultRecord = new DcmDataset(*identifiers);
-      matchingDatasets.push_back(resultRecord);
+	// Determine records from worklist files which match the search mask
+	unsigned long numOfMatchingRecords = fileSystemInteractionManager.DetermineMatchingRecords( identifiers );
 
-      // dump some information if required
-      DCMWLM_INFO("  Processing matching result no. " << i);
+	// dump some information if required
+	DCMWLM_INFO("Matching results: " << numOfMatchingRecords << " matching records found in worklist files");
 
-      // Determine the number of elements in matchingDatasets[i].
-      unsigned long numOfElementsInDataset = resultRecord->card();
+	// determine a correct return value. In case no matching records
+	// were found, WLM_SUCCESS shall be returned. This is our assumption.
+	WlmDataSourceStatusType status = WLM_SUCCESS;
 
-      // Go through all the elements in matchingDatasets[i].
-      for( j=0 ; j < numOfElementsInDataset ; j++ )
-      {
-        // Determine the current element.
-        DcmElement *element = resultRecord->getElement(j);
+	// Check if matching records were found in the database.
+	// If that is the case, do the following:
+	if( numOfMatchingRecords != 0 )
+	{
+		// for each matching record do the following
+		for( i=0 ; i<numOfMatchingRecords ; i++ )
+		{
+			// For every matching record ID, add one result dataset to result list and
+			// initialize it with search mask
+			DcmDataset *resultRecord = new DcmDataset(*identifiers);
+			matchingDatasets.push_back(resultRecord);
 
-        // Depending on if the current element is a sequence or not, process this element.
-        if( element->ident() != EVR_SQ )
-          HandleNonSequenceElementInResultDataset( element, i );
-        else
-          HandleSequenceElementInResultDataset( element, i );
-      }
+			// dump some information if required
+			DCMWLM_INFO("  Processing matching result no. " << i);
 
-      // if the ScheduledProcedureStepSequence can be found in the current dataset, handle
-      // existent but empty ScheduledProcedureStepDescription and ScheduledProtocolCodeSequence
-      if( resultRecord->findAndGetElement( DCM_ScheduledProcedureStepSequence, scheduledProcedureStepSequenceAttribute, OFFalse ).good() )
-        HandleExistentButEmptyDescriptionAndCodeSequenceAttributes( ((DcmDataset*)((DcmSequenceOfItems*)scheduledProcedureStepSequenceAttribute)->getItem(0)), DCM_ScheduledProcedureStepDescription, DCM_ScheduledProtocolCodeSequence );
+			// Determine the number of elements in matchingDatasets[i].
+			unsigned long numOfElementsInDataset = resultRecord->card();
 
-      // handle existent but empty RequestedProcedureDescription and RequestedProcedureCodeSequence
-      HandleExistentButEmptyDescriptionAndCodeSequenceAttributes( resultRecord, DCM_RequestedProcedureDescription, DCM_RequestedProcedureCodeSequence );
+			// Go through all the elements in matchingDatasets[i].
+			for( j=0 ; j < numOfElementsInDataset ; j++ )
+			{
+				// Determine the current element.
+				DcmElement *element = resultRecord->getElement(j);
 
-      // handle existent but empty ReferencedStudySequence
-      HandleExistentButEmptyReferencedStudyOrPatientSequenceAttributes( resultRecord, DCM_ReferencedStudySequence );
+				// Depending on if the current element is a sequence or not, process this element.
+				if( element->ident() != EVR_SQ )
+					HandleNonSequenceElementInResultDataset( element, i );
+				else
+					HandleSequenceElementInResultDataset( element, i );
+			}
 
-      // handle existent but empty ReferencedPatientSequence
-      HandleExistentButEmptyReferencedStudyOrPatientSequenceAttributes( resultRecord, DCM_ReferencedPatientSequence );
+			// if the ScheduledProcedureStepSequence can be found in the current dataset, handle
+			// existent but empty ScheduledProcedureStepDescription and ScheduledProtocolCodeSequence
+			if( resultRecord->findAndGetElement( DCM_ScheduledProcedureStepSequence, scheduledProcedureStepSequenceAttribute, OFFalse ).good() )
+				HandleExistentButEmptyDescriptionAndCodeSequenceAttributes( ((DcmDataset*)((DcmSequenceOfItems*)scheduledProcedureStepSequenceAttribute)->getItem(0)), DCM_ScheduledProcedureStepDescription, DCM_ScheduledProtocolCodeSequence );
 
-      // after having created the entire returned data set, deal with the "Specific Character Set" attribute.
-      // first option: remove character set element from result dataset
-      if( returnedCharacterSet == RETURN_NO_CHARACTER_SET )
-      {
-        // nothing to do since it was already removed from the search mask
-        // resultRecord->findAndDeleteElement( DCM_SpecificCharacterSet );
-      }
-      // check whether extended characters maybe used in the result dataset
-      else if ( resultRecord->isAffectedBySpecificCharacterSet() )
-      {
-        OFCondition cond = EC_Normal;
-        // second option: specify ISO 8859-1 (Latin-1) character set
-        if( returnedCharacterSet == RETURN_CHARACTER_SET_ISO_IR_100 )
-        {
-          cond = resultRecord->putAndInsertString( DCM_SpecificCharacterSet, "ISO_IR 100" );
-        }
-        // third option: use charactet set from worklist file
-        else if( returnedCharacterSet == RETURN_CHARACTER_SET_FROM_FILE )
-        {
-          char *value = NULL;
-          fileSystemInteractionManager.GetAttributeValueForMatchingRecord( DCM_SpecificCharacterSet, NULL, 0, i, value );
-          if( (value != NULL) && (strlen(value) > 0) )
-          {
-            cond = resultRecord->putAndInsertString( DCM_SpecificCharacterSet, value );
-          }
-        }
-        if( cond.bad() )
-          DCMWLM_WARN("Could not set value of attribute SpecificCharacterSet in result dataset");
-      }
-    }
+			// handle existent but empty RequestedProcedureDescription and RequestedProcedureCodeSequence
+			HandleExistentButEmptyDescriptionAndCodeSequenceAttributes( resultRecord, DCM_RequestedProcedureDescription, DCM_RequestedProcedureCodeSequence );
 
-    // Determine a corresponding return value: If matching records were found, WLM_PENDING or
-    // WLM_PENDING_WARNING shall be returned, depending on if an unsupported optional key was
-    // found in the search mask or not.
-    if( foundUnsupportedOptionalKey )
-      status = WLM_PENDING_WARNING;
-    else
-      status = WLM_PENDING;
-  }
+			// handle existent but empty ReferencedStudySequence
+			HandleExistentButEmptyReferencedStudyOrPatientSequenceAttributes( resultRecord, DCM_ReferencedStudySequence );
 
-  // forget the matching records in the fileSystemInteractionManager (free memory)
-  fileSystemInteractionManager.ClearMatchingRecords();
+			// handle existent but empty ReferencedPatientSequence
+			HandleExistentButEmptyReferencedStudyOrPatientSequenceAttributes( resultRecord, DCM_ReferencedPatientSequence );
 
-  // Now all the resulting data sets are contained in the member array matchingDatasets.
-  // The variable numOfMatchingDatasets specifies the number of array fields.
+			// after having created the entire returned data set, deal with the "Specific Character Set" attribute.
+			// first option: remove character set element from result dataset
+			if( returnedCharacterSet == RETURN_NO_CHARACTER_SET )
+			{
+				// nothing to do since it was already removed from the search mask
+				// resultRecord->findAndDeleteElement( DCM_SpecificCharacterSet );
+			}
+			// check whether extended characters maybe used in the result dataset
+			else if ( resultRecord->isAffectedBySpecificCharacterSet() )
+			{
+				OFCondition cond = EC_Normal;
+				// second option: specify ISO 8859-1 (Latin-1) character set
+				if( returnedCharacterSet == RETURN_CHARACTER_SET_ISO_IR_100 )
+				{
+					cond = resultRecord->putAndInsertString( DCM_SpecificCharacterSet, "ISO_IR 100" );
+				}
+				// third option: use charactet set from worklist file
+				else if( returnedCharacterSet == RETURN_CHARACTER_SET_FROM_FILE )
+				{
+					char *value = NULL;
+					fileSystemInteractionManager.GetAttributeValueForMatchingRecord( DCM_SpecificCharacterSet, NULL, 0, i, value );
+					if( (value != NULL) && (strlen(value) > 0) )
+					{
+						cond = resultRecord->putAndInsertString( DCM_SpecificCharacterSet, value );
+					}
+				}
+				if( cond.bad() )
+					DCMWLM_WARN("Could not set value of attribute SpecificCharacterSet in result dataset");
+			}
+		}
 
-  // Release the read lock which was set on the database tables.
-  ReleaseReadlock();
+		// Determine a corresponding return value: If matching records were found, WLM_PENDING or
+		// WLM_PENDING_WARNING shall be returned, depending on if an unsupported optional key was
+		// found in the search mask or not.
+		if( foundUnsupportedOptionalKey )
+			status = WLM_PENDING_WARNING;
+		else
+			status = WLM_PENDING;
+	}
 
-  // return result
-  return( status );
+	// forget the matching records in the fileSystemInteractionManager (free memory)
+	fileSystemInteractionManager.ClearMatchingRecords();
+
+	// Now all the resulting data sets are contained in the member array matchingDatasets.
+	// The variable numOfMatchingDatasets specifies the number of array fields.
+
+	// Release the read lock which was set on the database tables.
+	ReleaseReadlock();
+
+	// return result
+	return( status );
 }
 
 // ----------------------------------------------------------------------------
@@ -432,30 +477,30 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
 // Return Value : The next dataset that matches the given search mask, or an empty dataset if
 //                there are no more matching datasets in the worklist database files.
 {
-  DcmDataset *resultDataset = NULL;
+	DcmDataset *resultDataset = NULL;
 
-  // If there are no more datasets that can be returned, do the following
-  if( matchingDatasets.empty() )
-  {
-    // Set the return status to WLM_SUCCESS and return an empty dataset.
-    rStatus = WLM_SUCCESS;
-    resultDataset = NULL;
-  }
-  else
-  {
-    // We want to return the last array element and forget the pointer to this dataset here
-    resultDataset = matchingDatasets.back();
-    matchingDatasets.pop_back();
+	// If there are no more datasets that can be returned, do the following
+	if( matchingDatasets.empty() )
+	{
+		// Set the return status to WLM_SUCCESS and return an empty dataset.
+		rStatus = WLM_SUCCESS;
+		resultDataset = NULL;
+	}
+	else
+	{
+		// We want to return the last array element and forget the pointer to this dataset here
+		resultDataset = matchingDatasets.back();
+		matchingDatasets.pop_back();
 
-     // Determine a return status.
-    if( foundUnsupportedOptionalKey )
-      rStatus = WLM_PENDING_WARNING;
-    else
-      rStatus = WLM_PENDING;
-  }
+		// Determine a return status.
+		if( foundUnsupportedOptionalKey )
+			rStatus = WLM_PENDING_WARNING;
+		else
+			rStatus = WLM_PENDING;
+	}
 
-  // return resulting dataset
-  return( resultDataset );
+	// return resulting dataset
+	return( resultDataset );
 }
 
 // ----------------------------------------------------------------------------
@@ -473,39 +518,39 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
 //                idx     - [in] Index of the matching record (identifies this record).
 // Return Value : none.
 {
-  OFCondition cond;
+	OFCondition cond;
 
-  // determine the current elements tag.
-  DcmTagKey tag( element->getTag().getXTag() );
+	// determine the current elements tag.
+	DcmTagKey tag( element->getTag().getXTag() );
 
-  // check if the current element is the "Specific Character Set" (0008,0005) attribute;
-  // we do not want to deal with this attribute here.
-  if( tag != DCM_SpecificCharacterSet )
-  {
-    // in case the current element is not the "Specific Character Set" (0008,0005) attribute,
-    // get a value for the current element from database; note that all values for return key
-    // attributes are returned as strings by GetAttributeValueForMatchingRecord().
-    char *value = NULL;
-    fileSystemInteractionManager.GetAttributeValueForMatchingRecord( tag, superiorSequenceArray, numOfSuperiorSequences, idx, value );
+	// check if the current element is the "Specific Character Set" (0008,0005) attribute;
+	// we do not want to deal with this attribute here.
+	if( tag != DCM_SpecificCharacterSet )
+	{
+		// in case the current element is not the "Specific Character Set" (0008,0005) attribute,
+		// get a value for the current element from database; note that all values for return key
+		// attributes are returned as strings by GetAttributeValueForMatchingRecord().
+		char *value = NULL;
+		fileSystemInteractionManager.GetAttributeValueForMatchingRecord( tag, superiorSequenceArray, numOfSuperiorSequences, idx, value );
 
-    // put value in element
-    // (note that there is currently one attribute (DCM_PregnancyStatus) for which the value must not
-    // be set as a string but as an unsigned integer, because this attribute is of type US. Hence, in
-    // case we are dealing with the attribute DCM_PregnancyStatus, we have to convert the returned
-    // value into an unsigned integer and set it correspondingly in the element variable)
-    if( tag == DCM_PregnancyStatus )
-    {
-      Uint16 uintValue = atoi( value );
-      cond = element->putUint16( uintValue );
-    }
-    else
-      cond = element->putString( value );
-    if( cond.bad() )
-      DCMWLM_WARN("WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element");
+		// put value in element
+		// (note that there is currently one attribute (DCM_PregnancyStatus) for which the value must not
+		// be set as a string but as an unsigned integer, because this attribute is of type US. Hence, in
+		// case we are dealing with the attribute DCM_PregnancyStatus, we have to convert the returned
+		// value into an unsigned integer and set it correspondingly in the element variable)
+		if( tag == DCM_PregnancyStatus )
+		{
+			Uint16 uintValue = atoi( value );
+			cond = element->putUint16( uintValue );
+		}
+		else
+			cond = element->putString( value );
+		if( cond.bad() )
+			DCMWLM_WARN("WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element");
 
-    // free memory
-    delete[] value;
-  }
+		// free memory
+		delete[] value;
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -523,110 +568,110 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
 //                idx     - [in] Index of the matching record (identifies this record).
 // Return Value : none.
 {
-  unsigned long i, k, numOfItemsInResultSequence;
-  WlmSuperiorSequenceInfoType *tmp;
+	unsigned long i, k, numOfItemsInResultSequence;
+	WlmSuperiorSequenceInfoType *tmp;
 
-  // consider this element as a sequence of items.
-  DcmSequenceOfItems *sequenceOfItemsElement = (DcmSequenceOfItems*)element;
+	// consider this element as a sequence of items.
+	DcmSequenceOfItems *sequenceOfItemsElement = (DcmSequenceOfItems*)element;
 
-  // according to the DICOM standard, part 4, section C.2.2.2.6, a sequence in the search
-  // mask (and we made a copy of the search mask that we update here, so that it represents
-  // a result value) must have exactly one item which in turn can be empty
-  if( sequenceOfItemsElement->card() != 1 )
-  {
-    // if the sequence's cardinality does not equal 1, we want to dump a warning and do nothing here
-    DCMWLM_WARN( "    - Sequence with not exactly one item encountered in the search mask" << OFendl
-      << "      The corresponding sequence of the currently processed result data set will show the exact same structure as in the given search mask" );
-  }
-  else
-  {
-    // if the sequence's cardinality does equal 1, we want to process this sequence and
-    // add all information from the matching record in the data source to this sequence
+	// according to the DICOM standard, part 4, section C.2.2.2.6, a sequence in the search
+	// mask (and we made a copy of the search mask that we update here, so that it represents
+	// a result value) must have exactly one item which in turn can be empty
+	if( sequenceOfItemsElement->card() != 1 )
+	{
+		// if the sequence's cardinality does not equal 1, we want to dump a warning and do nothing here
+		DCMWLM_WARN( "    - Sequence with not exactly one item encountered in the search mask" << OFendl
+			<< "      The corresponding sequence of the currently processed result data set will show the exact same structure as in the given search mask" );
+	}
+	else
+	{
+		// if the sequence's cardinality does equal 1, we want to process this sequence and
+		// add all information from the matching record in the data source to this sequence
 
-    // determine the current sequence elements tag.
-    DcmTagKey sequenceTag( sequenceOfItemsElement->getTag().getXTag() );
+		// determine the current sequence elements tag.
+		DcmTagKey sequenceTag( sequenceOfItemsElement->getTag().getXTag() );
 
-    // determine how many items this sequence has in the matching record in the data source
-    numOfItemsInResultSequence = fileSystemInteractionManager.GetNumberOfSequenceItemsForMatchingRecord( sequenceTag, superiorSequenceArray, numOfSuperiorSequences, idx );
+		// determine how many items this sequence has in the matching record in the data source
+		numOfItemsInResultSequence = fileSystemInteractionManager.GetNumberOfSequenceItemsForMatchingRecord( sequenceTag, superiorSequenceArray, numOfSuperiorSequences, idx );
 
-    // remember all relevant information about this and all
-    // superior sequence elements in superiorSequenceArray
-    tmp = new WlmSuperiorSequenceInfoType[ numOfSuperiorSequences + 1 ];
-    for( i=0 ; i<numOfSuperiorSequences ; i++ )
-    {
-      tmp[i].sequenceTag = superiorSequenceArray[i].sequenceTag;
-      tmp[i].numOfItems  = superiorSequenceArray[i].numOfItems;
-      tmp[i].currentItem = superiorSequenceArray[i].currentItem;
-    }
-    tmp[numOfSuperiorSequences].sequenceTag = sequenceTag;
-    tmp[numOfSuperiorSequences].numOfItems = numOfItemsInResultSequence;
-    tmp[numOfSuperiorSequences].currentItem = 0;
+		// remember all relevant information about this and all
+		// superior sequence elements in superiorSequenceArray
+		tmp = new WlmSuperiorSequenceInfoType[ numOfSuperiorSequences + 1 ];
+		for( i=0 ; i<numOfSuperiorSequences ; i++ )
+		{
+			tmp[i].sequenceTag = superiorSequenceArray[i].sequenceTag;
+			tmp[i].numOfItems  = superiorSequenceArray[i].numOfItems;
+			tmp[i].currentItem = superiorSequenceArray[i].currentItem;
+		}
+		tmp[numOfSuperiorSequences].sequenceTag = sequenceTag;
+		tmp[numOfSuperiorSequences].numOfItems = numOfItemsInResultSequence;
+		tmp[numOfSuperiorSequences].currentItem = 0;
 
-    if( superiorSequenceArray != NULL )
-      delete[] superiorSequenceArray;
+		if( superiorSequenceArray != NULL )
+			delete[] superiorSequenceArray;
 
-    superiorSequenceArray = tmp;
+		superiorSequenceArray = tmp;
 
-    numOfSuperiorSequences++;
+		numOfSuperiorSequences++;
 
-    // in case this sequence has more than one item in the database, copy the first item
-    // an appropriate number of times and insert all items into the result dataset
-    DcmItem *firstItem = sequenceOfItemsElement->getItem(0);
-    for( i=1 ; i<numOfItemsInResultSequence ; i++ )
-    {
-      DcmItem *newItem = new DcmItem( *firstItem );
-      sequenceOfItemsElement->append( newItem );
-    }
+		// in case this sequence has more than one item in the database, copy the first item
+		// an appropriate number of times and insert all items into the result dataset
+		DcmItem *firstItem = sequenceOfItemsElement->getItem(0);
+		for( i=1 ; i<numOfItemsInResultSequence ; i++ )
+		{
+			DcmItem *newItem = new DcmItem( *firstItem );
+			sequenceOfItemsElement->append( newItem );
+		}
 
-    // go through all items of the result dataset
-    for( i=0 ; i<numOfItemsInResultSequence ; i++ )
-    {
-      // determine current item
-      DcmItem *itemInSequence = sequenceOfItemsElement->getItem(i);
+		// go through all items of the result dataset
+		for( i=0 ; i<numOfItemsInResultSequence ; i++ )
+		{
+			// determine current item
+			DcmItem *itemInSequence = sequenceOfItemsElement->getItem(i);
 
-      // get its cardinality.
-      unsigned long numOfElementsInItem = itemInSequence->card();
+			// get its cardinality.
+			unsigned long numOfElementsInItem = itemInSequence->card();
 
-      // update current item indicator in superiorSequenceArray
-      superiorSequenceArray[ numOfSuperiorSequences - 1 ].currentItem = i;
+			// update current item indicator in superiorSequenceArray
+			superiorSequenceArray[ numOfSuperiorSequences - 1 ].currentItem = i;
 
-      // go through all elements in this item
-      for( k=0 ; k<numOfElementsInItem ; k++ )
-      {
-        // get the current element.
-        DcmElement *elementInItem = itemInSequence->getElement(k);
+			// go through all elements in this item
+			for( k=0 ; k<numOfElementsInItem ; k++ )
+			{
+				// get the current element.
+				DcmElement *elementInItem = itemInSequence->getElement(k);
 
-        // depending on if the current element is a sequence or not, process this element
-        if( elementInItem->ident() != EVR_SQ )
-          HandleNonSequenceElementInResultDataset( elementInItem, idx );
-        else
-          HandleSequenceElementInResultDataset( elementInItem, idx );
-      }
-    }
+				// depending on if the current element is a sequence or not, process this element
+				if( elementInItem->ident() != EVR_SQ )
+					HandleNonSequenceElementInResultDataset( elementInItem, idx );
+				else
+					HandleSequenceElementInResultDataset( elementInItem, idx );
+			}
+		}
 
-    // delete information about current sequence from superiorSequenceArray
-    if( numOfSuperiorSequences == 1 )
-    {
-      delete[] superiorSequenceArray;
-      superiorSequenceArray = NULL;
-      numOfSuperiorSequences = 0;
-    }
-    else
-    {
-      tmp = new WlmSuperiorSequenceInfoType[ numOfSuperiorSequences - 1 ];
-      for( i=0 ; i<numOfSuperiorSequences - 1; i++ )
-      {
-        tmp[i].sequenceTag = superiorSequenceArray[i].sequenceTag;
-        tmp[i].numOfItems  = superiorSequenceArray[i].numOfItems;
-        tmp[i].currentItem = superiorSequenceArray[i].currentItem;
-      }
+		// delete information about current sequence from superiorSequenceArray
+		if( numOfSuperiorSequences == 1 )
+		{
+			delete[] superiorSequenceArray;
+			superiorSequenceArray = NULL;
+			numOfSuperiorSequences = 0;
+		}
+		else
+		{
+			tmp = new WlmSuperiorSequenceInfoType[ numOfSuperiorSequences - 1 ];
+			for( i=0 ; i<numOfSuperiorSequences - 1; i++ )
+			{
+				tmp[i].sequenceTag = superiorSequenceArray[i].sequenceTag;
+				tmp[i].numOfItems  = superiorSequenceArray[i].numOfItems;
+				tmp[i].currentItem = superiorSequenceArray[i].currentItem;
+			}
 
-      delete[] superiorSequenceArray;
-      superiorSequenceArray = tmp;
+			delete[] superiorSequenceArray;
+			superiorSequenceArray = tmp;
 
-      numOfSuperiorSequences--;
-    }
-  }
+			numOfSuperiorSequences--;
+		}
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -641,81 +686,81 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
 //                OFFalse - The read lock has not been set successfully.
 {
 #ifndef _WIN32
-  struct flock lockdata;
+	struct flock lockdata;
 #endif
-  int result;
+	int result;
 
-  // if no path or no calledApplicationEntityTitle is specified, return
-  if( dfPath.empty() || calledApplicationEntityTitle.empty() )
-  {
-    DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Path to data source files not specified");
-    return OFFalse;
-  }
+	// if no path or no calledApplicationEntityTitle is specified, return
+	if( dfPath.empty() || calledApplicationEntityTitle.empty() )
+	{
+		DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Path to data source files not specified");
+		return OFFalse;
+	}
 
-  // if a read lock has already been set, return
-  if( readLockSetOnDataSource )
-  {
-    DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Nested read locks not allowed!");
-    return OFFalse;
-  }
+	// if a read lock has already been set, return
+	if( readLockSetOnDataSource )
+	{
+		DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Nested read locks not allowed!");
+		return OFFalse;
+	}
 
-  // assign path to a local variable
-  OFString lockname = dfPath;
+	// assign path to a local variable
+	OFString lockname = dfPath;
 
-  // if the given path does not show a PATH_SEPERATOR at the end, append one
-  if( !lockname.empty() && lockname[lockname.length()-1] != PATH_SEPARATOR )
-    lockname += PATH_SEPARATOR;
+	// if the given path does not show a PATH_SEPERATOR at the end, append one
+	if( !lockname.empty() && lockname[lockname.length()-1] != PATH_SEPARATOR )
+		lockname += PATH_SEPARATOR;
 
-  // append calledApplicationEntityTitle, another PATH_SEPERATOR,
-  // and LOCKFILENAME to the given path (and seperator)
-  lockname += calledApplicationEntityTitle;
-  lockname += PATH_SEPARATOR;
-  lockname += LOCKFILENAME;
+	// append calledApplicationEntityTitle, another PATH_SEPERATOR,
+	// and LOCKFILENAME to the given path (and seperator)
+	lockname += calledApplicationEntityTitle;
+	lockname += PATH_SEPARATOR;
+	lockname += LOCKFILENAME;
 
-  // open corresponding file
-  handleToReadLockFile = open( lockname.c_str(), O_RDWR );
-  if( handleToReadLockFile == -1 )
-  {
-    handleToReadLockFile = 0;
-    DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Cannot open file " << lockname
-      << " (return code: " << OFStandard::getLastSystemErrorCode().message() << ")");
-    return OFFalse;
-  }
+	// open corresponding file
+	handleToReadLockFile = open( lockname.c_str(), O_RDWR );
+	if( handleToReadLockFile == -1 )
+	{
+		handleToReadLockFile = 0;
+		DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Cannot open file " << lockname
+			<< " (return code: " << OFStandard::getLastSystemErrorCode().message() << ")");
+		return OFFalse;
+	}
 
-  // now set a read lock on the corresponding file
+	// now set a read lock on the corresponding file
 
 #ifdef _WIN32
-  // windows does not have fcntl locking, we need to use our own function
-  result = dcmtk_flock( handleToReadLockFile, LOCK_SH );
+	// windows does not have fcntl locking, we need to use our own function
+	result = dcmtk_flock( handleToReadLockFile, LOCK_SH );
 #else
-  lockdata.l_type = F_RDLCK;
-  lockdata.l_whence=0;
-  lockdata.l_start=0;
-  lockdata.l_len=0;
+	lockdata.l_type = F_RDLCK;
+	lockdata.l_whence=0;
+	lockdata.l_start=0;
+	lockdata.l_len=0;
 #if SIZEOF_VOID_P == SIZEOF_INT
-  // some systems, e.g. NeXTStep, need the third argument for fcntl calls to be
-  // casted to int. Other systems, e.g. OSF1-Alpha, won't accept this because int
-  // and struct flock * have different sizes. The workaround used here is to use a
-  // typecast to int if sizeof(void *) == sizeof(int) and leave it away otherwise.
-  result = fcntl( handleToReadLockFile, F_SETLKW, (int)(&lockdata) );
+	// some systems, e.g. NeXTStep, need the third argument for fcntl calls to be
+	// casted to int. Other systems, e.g. OSF1-Alpha, won't accept this because int
+	// and struct flock * have different sizes. The workaround used here is to use a
+	// typecast to int if sizeof(void *) == sizeof(int) and leave it away otherwise.
+	result = fcntl( handleToReadLockFile, F_SETLKW, (int)(&lockdata) );
 #else
-  result = fcntl( handleToReadLockFile, F_SETLKW, &lockdata );
+	result = fcntl( handleToReadLockFile, F_SETLKW, &lockdata );
 #endif
 #endif
-  if( result == -1 )
-  {
-    DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Cannot set read lock on file " << lockname);
-    dcmtk_plockerr("return code");
-    close( handleToReadLockFile );
-    handleToReadLockFile = 0;
-    return OFFalse;
-  }
+	if( result == -1 )
+	{
+		DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Cannot set read lock on file " << lockname);
+		dcmtk_plockerr("return code");
+		close( handleToReadLockFile );
+		handleToReadLockFile = 0;
+		return OFFalse;
+	}
 
-  // update member variable to indicate that a read lock has been set successfully
-  readLockSetOnDataSource = OFTrue;
+	// update member variable to indicate that a read lock has been set successfully
+	readLockSetOnDataSource = OFTrue;
 
-  // return success
-  return OFTrue;
+	// return success
+	return OFTrue;
 }
 
 // ----------------------------------------------------------------------------
@@ -729,47 +774,47 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 //                OFFalse - The read lock has not been released successfully.
 {
 #ifndef _WIN32
-  struct flock lockdata;
+	struct flock lockdata;
 #endif
-  int result;
+	int result;
 
-  // if no read lock is set, return
-  if( !readLockSetOnDataSource )
-  {
-    DCMWLM_WARN("WlmDataSourceFileSystem::ReleaseReadlock: No readlock to release");
-    return OFFalse;
-  }
+	// if no read lock is set, return
+	if( !readLockSetOnDataSource )
+	{
+		DCMWLM_WARN("WlmDataSourceFileSystem::ReleaseReadlock: No readlock to release");
+		return OFFalse;
+	}
 
-  // now release read lock on the corresponding file
+	// now release read lock on the corresponding file
 
 #ifdef _WIN32
-  // windows does not have fcntl locking
-  result = dcmtk_flock( handleToReadLockFile, LOCK_UN );
+	// windows does not have fcntl locking
+	result = dcmtk_flock( handleToReadLockFile, LOCK_UN );
 #else
-  lockdata.l_type = F_UNLCK;
-  lockdata.l_whence=0;
-  lockdata.l_start=0;
-  lockdata.l_len=0;
+	lockdata.l_type = F_UNLCK;
+	lockdata.l_whence=0;
+	lockdata.l_start=0;
+	lockdata.l_len=0;
 #if SIZEOF_VOID_P == SIZEOF_INT
-  result = fcntl( handleToReadLockFile, F_SETLKW, (int)(&lockdata) );
+	result = fcntl( handleToReadLockFile, F_SETLKW, (int)(&lockdata) );
 #else
-  result = fcntl( handleToReadLockFile, F_SETLKW, &lockdata );
+	result = fcntl( handleToReadLockFile, F_SETLKW, &lockdata );
 #endif
 #endif
-  if( result == -1 )
-  {
-    DCMWLM_WARN("WlmDataSourceFileSystem::ReleaseReadlock: Cannot release read lock");
-    dcmtk_plockerr("return code");
-    return OFFalse;
-  }
+	if( result == -1 )
+	{
+		DCMWLM_WARN("WlmDataSourceFileSystem::ReleaseReadlock: Cannot release read lock");
+		dcmtk_plockerr("return code");
+		return OFFalse;
+	}
 
-  // close read lock file
-  close( handleToReadLockFile );
-  handleToReadLockFile = 0;
+	// close read lock file
+	close( handleToReadLockFile );
+	handleToReadLockFile = 0;
 
-  // update member variable to indicate that no read lock is set
-  readLockSetOnDataSource = OFFalse;
+	// update member variable to indicate that no read lock is set
+	readLockSetOnDataSource = OFFalse;
 
-  // return success
-  return OFTrue;
+	// return success
+	return OFTrue;
 }
