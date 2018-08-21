@@ -280,18 +280,21 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
   DetermineWorklistFiles( worklistFiles );
 
   // go through all worklist files
-  for( unsigned int i=0 ; i<worklistFiles.size() ; i++ )
+	unsigned int i = 0;
+  //for( unsigned int i=0 ; i<worklistFiles.size() ; i++ )
   {
     // read information from worklist file
     DcmFileFormat fileform;
-    if (fileform.loadFile(worklistFiles[i].c_str()).bad())
-    {
-      DCMWLM_WARN("Could not read worklist file " << worklistFiles[i] << " properly, file will be ignored");
-    }
-    else
+//     if (fileform.loadFile(worklistFiles[i].c_str()).bad())
+//     {
+//       DCMWLM_WARN("Could not read worklist file " << worklistFiles[i] << " properly, file will be ignored");
+//     }
+    //else
     {
       // determine the data set which is contained in the worklist file
-      DcmDataset *dataset = fileform.getDataset();
+      //DcmDataset *dataset = fileform.getDataset();
+	  DcmDataset *dataset = new DcmDataset();//fileform.getDataset();
+	  SetWorklistData(dataset);//bitter 20130501
       if( dataset == NULL )
       {
         DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is empty, file will be ignored");
