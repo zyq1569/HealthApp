@@ -309,13 +309,6 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
 				DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << Modality << OFendl);
 		}
 	}
-
-
-	//   OFString PatientName = ;//DCM_PatientName
-	//   OFString Sex = ;//DCM_PatientSex
-	//   OFString AccessionNumber =;//DCM_AccessionNumber
-	//   OFString AETitle;//DCM_StationAETitle
-	//   OFString Modality; //DCM_Modality
 	//----------------------
 
 	// Actually there should be no elements in array matchingDatasets. Delete them to be sure.

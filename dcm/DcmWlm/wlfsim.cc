@@ -58,6 +58,52 @@ END_EXTERN_C
 
 #include "dcmtk/dcmwlm/wlfsim.h"
 
+#include "HMariaDb.h"
+
+
+BOOL StringToWString(const std::string &str,std::wstring &wstr)
+{    
+	int nLen = (int)str.length();    
+	wstr.resize(nLen,L' ');
+
+	int nResult = MultiByteToWideChar(CP_ACP,0,(LPCSTR)str.c_str(),nLen,(LPWSTR)wstr.c_str(),nLen);
+
+	if (nResult == 0)
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
+//wstring高字节不为0，返回FALSE
+BOOL WStringToString(const std::wstring &wstr,std::string &str)
+{    
+	int nLen = (int)wstr.length();    
+	str.resize(nLen,' ');
+
+	int nResult = WideCharToMultiByte(CP_ACP,0,(LPCWSTR)wstr.c_str(),nLen,(LPSTR)str.c_str(),nLen,NULL,NULL);
+
+	if (nResult == 0)
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+std::string W2S(const std::wstring &wstr)
+{
+	std::string str;
+	WStringToString(wstr,str);
+	return str;
+}
+
+std::wstring S2W(const std::string &str)
+{
+	std::wstring wstr;
+	StringToWString(str,wstr);
+	return wstr;
+}
 // ----------------------------------------------------------------------------
 
 class WlmFileSystemInteractionManager::MatchingKeys
@@ -270,8 +316,96 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 // Parameters   : searchMask - [in] The search mask.
 // Return Value : Number of matching records.
 {
-	OFVector<OFString> worklistFiles;
+	//----------获取查询条件 DCM_StudyDate DCM_StudyTime DCM_ScheduledProcedureStepStartDate
+	OFString PatientID, PatientName, PatientSex, AccessionNumber, AETitle, Modality, StudyDate,StudyTime;
+	OFString SPS_StartDate,SPS_StartTime;
+	if (!searchMask->findAndGetOFString(DCM_PatientID,PatientID).bad())
+	{
+		if (!PatientID.empty())
+		{
+			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientID << OFendl);
+		}
+	}
+	if (!searchMask->findAndGetOFString(DCM_PatientName,PatientName).bad())
+	{
+		if (!PatientName.empty())
+			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientName << OFendl);
+	}
+	if (!searchMask->findAndGetOFString(DCM_PatientSex,PatientSex).bad())
+	{
+		if (!PatientSex.empty())
+			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientSex << OFendl);
+	}
+	if (!searchMask->findAndGetOFString(DCM_StudyDate,StudyDate).bad())
+	{
+		if (!StudyDate.empty())
+		{
+			DCMWLM_INFO("StudyDate:"<<StudyDate<<OFendl);
+		}
+	}
+	if (!searchMask->findAndGetOFString(DCM_StudyTime,StudyTime).bad())
+	{
+		if (!StudyTime.empty())
+		{
+			DCMWLM_INFO("StudyTime:"<<StudyTime<<OFendl);
+		}
+	}
+	DcmElement* queritem=NULL;//identifiers->getElement();
 
+	if( searchMask->findAndGetElement( DCM_ScheduledProcedureStepSequence, queritem, OFFalse ).good() )
+	{
+		DcmItem *scheduledProcedureStepSequenceItem = ((DcmSequenceOfItems*)queritem)->getItem(0);
+		if (!scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_ScheduledStationAETitle,AETitle).bad())
+		{
+			if (!AETitle.empty())
+				DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << AETitle << OFendl);
+		}
+		if (!scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_Modality,Modality).bad())
+		{
+			if (!Modality.empty())
+				DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << Modality << OFendl);
+		}
+		if (!scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_ScheduledProcedureStepStartDate,SPS_StartDate).bad())
+		{
+			if (!SPS_StartDate.empty())
+				DCMWLM_INFO("Expanded Find SCP Request ScheduledProcedureStepStartDate:" << OFendl << SPS_StartDate << OFendl);
+		}
+		if (!scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_ScheduledProcedureStepStartTime,SPS_StartTime).bad())
+		{
+			if (!SPS_StartTime.empty())
+				DCMWLM_INFO("Expanded Find SCP Request ScheduledProcedureStepStartTime:" << OFendl << SPS_StartTime << OFendl);
+		}
+	}
+	//query db database
+	std::string sdata;
+	try
+	{
+		HMariaDb *pMariaDb = new HMariaDb("127.0.0.1","root", "root", "HIT");
+		std::string strsql = "SELECT * FROM h_image";
+		pMariaDb->query(strsql);
+		ResultSet * rs = pMariaDb->QueryResult();
+		std::vector<std::string> row;
+
+		if (NULL != rs)
+		{
+
+			while(rs->fetch(row))
+			{
+				for (size_t i = 0; i < row.size(); i++)
+				{
+					sdata += row[i] + " | ";
+				}
+				sdata += "\r\n";
+			}
+		}
+	}
+	catch (const HSqlError& e)
+	{
+		DCMWLM_ERROR("HMariaDb query " << e.what() << " error!");
+	}
+	OFString info = sdata.c_str();
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	OFVector<OFString> worklistFiles;
 	// initialize member variables
 	matchingRecords = NULL;
 	numOfMatchingRecords = 0;
