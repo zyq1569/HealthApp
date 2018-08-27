@@ -54,7 +54,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="0"
-				AdditionalIncludeDirectories="..\..\include\dcm\win32\config;..\..\include\dcm\win32\ofstd;..\..\include\dcm\win32\oflog;..\..\include\dcm\win32\\dcmdata;..\..\include\dcm\win32\dcmimgle;..\..\include\dcm\win32\dcmimage;..\..\include\dcm\win32\dcmjpeg;..\..\include\dcm\win32\dcmjpls;..\..\include\dcm\win32\dcmtls;..\..\include\dcm\win32\dcmnet;..\..\include\dcm\win32\dcmsr;..\..\include\dcm\win32\dcmsign;..\..\include\dcm\win32\dcmwlm;..\..\include\dcm\win32\dcmqrdb;..\..\include\dcm\win32\dcmpstat;..\..\include\dcm\win32\dcmrt;..\..\include\dcm\win32\dcmiod;..\..\include\dcm\win32\dcmfg;..\..\include\dcm\win32\dcmseg;..\..\include\dcm\win32\dcmtract;..\..\include\dcm\win32\dcmpmap"
+				AdditionalIncludeDirectories="..\..\include\dcm\win32\config;..\..\include\dcm\win32\ofstd;..\..\include\dcm\win32\oflog;..\..\include\dcm\win32\\dcmdata;..\..\include\dcm\win32\dcmimgle;..\..\include\dcm\win32\dcmimage;..\..\include\dcm\win32\dcmjpeg;..\..\include\dcm\win32\dcmjpls;..\..\include\dcm\win32\dcmtls;..\..\include\dcm\win32\dcmnet;..\..\include\dcm\win32\dcmsr;..\..\include\dcm\win32\dcmsign;..\..\include\dcm\win32\dcmwlm;..\..\include\dcm\win32\dcmqrdb;..\..\include\dcm\win32\dcmpstat;..\..\include\dcm\win32\dcmrt;..\..\include\dcm\win32\dcmiod;..\..\include\dcm\win32\dcmfg;..\..\include\dcm\win32\dcmseg;..\..\include\dcm\win32\dcmtract;..\..\include\dcm\win32\dcmpmap;..\..\include\mysql\win32"
 				PreprocessorDefinitions="WIN32;_WINDOWS;DEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;Debug\&quot;;dcmwlm_EXPORTS"
 				ExceptionHandling="1"
 				BasicRuntimeChecks="3"
@@ -81,7 +81,7 @@
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
 				AdditionalOptions="/machine:X86 /debug"
-				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\dcmnet_d.lib ..\..\lib\dcm\win32\dcmdata_d.lib ..\..\lib\dcm\win32\oflog_d.lib ..\..\lib\dcm\win32\ofstd_d.lib $(NOINHERIT)"
+				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\dcmnet_d.lib ..\..\lib\dcm\win32\dcmdata_d.lib ..\..\lib\dcm\win32\oflog_d.lib ..\..\lib\dcm\win32\ofstd_d.lib ..\..\lib\mysql\win32\libmariadb.lib $(NOINHERIT)"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				Version="3.6"
 				LinkIncremental="2"
@@ -150,7 +150,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\include\dcm\win32\config;..\..\include\dcm\win32\ofstd;..\..\include\dcm\win32\oflog;..\..\include\dcm\win32\\dcmdata;..\..\include\dcm\win32\dcmimgle;..\..\include\dcm\win32\dcmimage;..\..\include\dcm\win32\dcmjpeg;..\..\include\dcm\win32\dcmjpls;..\..\include\dcm\win32\dcmtls;..\..\include\dcm\win32\dcmnet;..\..\include\dcm\win32\dcmsr;..\..\include\dcm\win32\dcmsign;..\..\include\dcm\win32\dcmwlm;..\..\include\dcm\win32\dcmqrdb;..\..\include\dcm\win32\dcmpstat;..\..\include\dcm\win32\dcmrt;..\..\include\dcm\win32\dcmiod;..\..\include\dcm\win32\dcmfg;..\..\include\dcm\win32\dcmseg;..\..\include\dcm\win32\dcmtract;..\..\include\dcm\win32\dcmpmap"
+				AdditionalIncludeDirectories="..\..\include\dcm\win32\config;..\..\include\dcm\win32\ofstd;..\..\include\dcm\win32\oflog;..\..\include\dcm\win32\\dcmdata;..\..\include\dcm\win32\dcmimgle;..\..\include\dcm\win32\dcmimage;..\..\include\dcm\win32\dcmjpeg;..\..\include\dcm\win32\dcmjpls;..\..\include\dcm\win32\dcmtls;..\..\include\dcm\win32\dcmnet;..\..\include\dcm\win32\dcmsr;..\..\include\dcm\win32\dcmsign;..\..\include\dcm\win32\dcmwlm;..\..\include\dcm\win32\dcmqrdb;..\..\include\dcm\win32\dcmpstat;..\..\include\dcm\win32\dcmrt;..\..\include\dcm\win32\dcmiod;..\..\include\dcm\win32\dcmfg;..\..\include\dcm\win32\dcmseg;..\..\include\dcm\win32\dcmtract;..\..\include\dcm\win32\dcmpmap;..\..\include\mysql\win32\"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\&quot;Release\&quot;;dcmwlm_EXPORTS"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -175,7 +175,7 @@
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
 				AdditionalOptions="/machine:X86"
-				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\dcmnet.lib ..\..\lib\dcm\win32\dcmdata.lib ..\..\lib\dcm\win32\oflog.lib ..\..\lib\dcm\win32\ofstd.lib"
+				AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib iphlpapi.lib ws2_32.lib netapi32.lib wsock32.lib ..\..\lib\dcm\win32\dcmnet.lib ..\..\lib\dcm\win32\dcmdata.lib ..\..\lib\dcm\win32\oflog.lib ..\..\lib\dcm\win32\ofstd.lib ..\..\lib\mysql\win32\libmariadb.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
 				Version="3.6"
 				LinkIncremental="1"
@@ -401,6 +401,10 @@
 			Name="Source Files"
 			>
 			<File
+				RelativePath=".\HMariaDb.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\wlds.cc"
 				>
 			</File>
@@ -414,6 +418,14 @@
 			</File>
 			<File
 				RelativePath=".\wlmactmg.cc"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			>
+			<File
+				RelativePath=".\HMariaDb.h"
 				>
 			</File>
 		</Filter>
