@@ -246,7 +246,24 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
 }
 
 // ----------------------------------------------------------------------------
-
+void SetWLDcmData(DcmDataset *dataset, const DcmTag &tag, OFString value)
+{
+	if (!value.empty())
+	{
+		dataset->putAndInsertString(tag, value.c_str());
+	}
+}
+struct querystudyinfo
+{
+	OFString patienname;
+	OFString PatientSex;
+	OFString PatientID;
+	OFString PatientBirthday;
+	OFString Studyuid;
+	OFString Studyid;
+	OFString ScheduledStationAETitle;
+	OFString Modality;
+};
 /******************************************************************************************
 将所有文件放在D盘下面DCMTK目录下面
 即：D：\DCMTK
@@ -273,35 +290,90 @@ findscu 127.0.0.1 104 wlistqry.wl -aec OFFIS
 ************************************************************************************************/
 //可以创建一个dcm文件，然后根据查询的条件,搜索数据库,再修改dcm文件，返回值
 // -s -dfr -dfp  D:\DCMTK\dcmtk-3.6.0\dcmwlm\data\wlistdb  104
-void SetWorklistData(DcmDataset *dataset)
+void SetWorklistData(DcmDataset *dataset, querystudyinfo studyinfo)
 {
-	dataset->putAndInsertString(DCM_PatientName, "Doe^John");
-	dataset->putAndInsertString(DCM_AccessionNumber,"A00001");
-	dataset->putAndInsertString(DCM_PatientID,"A000001");
-	dataset->putAndInsertString(DCM_PatientBirthDate,"19991001");
-	dataset->putAndInsertString(DCM_PatientBirthTime,"20:22:20");
-	dataset->putAndInsertString(DCM_MedicalAlerts,"ABZESS");
-	dataset->putAndInsertString(DCM_Allergies,"BARIUMSULFAT");
-	dataset->putAndInsertString(DCM_StudyInstanceUID,"1.2.276.0.179081.1207");
-	dataset->putAndInsertString(DCM_RequestingPhysician,"NEIER");
-	dataset->putAndInsertString(DCM_RequestedProcedureDescription,"EXAM78");
-	dataset->putAndInsertString(DCM_PatientSex,"W");
-	//const char *time = NULL;
-	dataset->putAndInsertString(DCM_ScheduledProcedureStepStartDate,"20131208");
-	DcmItem *ditem = NULL;
-	if (dataset->findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence,ditem).good())
+	if (studyinfo.Studyuid.empty())
 	{
-		ditem->putAndInsertString(DCM_Modality,"CT");
-		ditem->putAndInsertString(DCM_ScheduledStationAETitle,"20141012");
-		ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate,"20131208");
-		ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime,"21:44:00");
-		ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription,"EXAM56");
-		ditem->putAndInsertString(DCM_ScheduledProcedureStepID,"SPD575841");
-		ditem->putAndInsertString(DCM_ScheduledStationName,"STN345");
-		ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation,"B55P56");
+		dataset->putAndInsertString(DCM_PatientName, "Doe^John");
+		dataset->putAndInsertString(DCM_AccessionNumber,"A00001");
+		dataset->putAndInsertString(DCM_PatientID,"A000001");
+		dataset->putAndInsertString(DCM_PatientBirthDate,"19991001");
+		dataset->putAndInsertString(DCM_PatientBirthTime,"20:22:20");
+		dataset->putAndInsertString(DCM_MedicalAlerts,"ABZESS");
+		dataset->putAndInsertString(DCM_Allergies,"BARIUMSULFAT");
+		dataset->putAndInsertString(DCM_StudyInstanceUID,"1.2.276.0.179081.1207");
+		dataset->putAndInsertString(DCM_RequestingPhysician,"NEIER");
+		dataset->putAndInsertString(DCM_RequestedProcedureDescription,"EXAM78");
+		dataset->putAndInsertString(DCM_PatientSex,"W");
+		//const char *time = NULL;
+		dataset->putAndInsertString(DCM_ScheduledProcedureStepStartDate,"20131208");
+		DcmItem *ditem = NULL;
+		if (dataset->findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence,ditem).good())
+		{
+			ditem->putAndInsertString(DCM_Modality,"CT");
+			ditem->putAndInsertString(DCM_ScheduledStationAETitle,"20141012");
+			ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate,"20131208");
+			ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime,"21:44:00");
+			ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription,"EXAM56");
+			ditem->putAndInsertString(DCM_ScheduledProcedureStepID,"SPD575841");
+			ditem->putAndInsertString(DCM_ScheduledStationName,"STN345");
+			ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation,"B55P56");
+		}
+		dataset->putAndInsertString(DCM_RequestedProcedureID,"RP34734H328");
+		dataset->putAndInsertString(DCM_RequestedProcedurePriority,"HIGH");
 	}
-	dataset->putAndInsertString(DCM_RequestedProcedureID,"RP34734H328");
-	dataset->putAndInsertString(DCM_RequestedProcedurePriority,"HIGH");
+	else
+	{
+// 		dataset->putAndInsertString(DCM_PatientName, studyinfo.patienname.c_str());
+// 		dataset->putAndInsertString(DCM_AccessionNumber,studyinfo.studyuid.c_str());
+// 		dataset->putAndInsertString(DCM_PatientID,studyinfo.PatientID.c_str());
+// 		SetWLDcmData(dataset, DCM_PatientBirthTime, studyinfo.PatientBirthday);
+// 		SetWLDcmData(dataset, DCM_PatientSex, studyinfo.PatientSex);
+// 		dataset->putAndInsertString(DCM_PatientSex,"W");
+// 		//const char *time = NULL;
+// 		dataset->putAndInsertString(DCM_ScheduledProcedureStepStartDate,"20131208");
+// 		DcmItem *ditem = NULL;
+// 		if (dataset->findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence,ditem).good())
+// 		{
+// 			ditem->putAndInsertString(DCM_Modality,"CT");
+// 			ditem->putAndInsertString(DCM_ScheduledStationAETitle,"20141012");
+// 			ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate,"20131208");
+// 			ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime,"21:44:00");
+// 			ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription,"EXAM56");
+// 			ditem->putAndInsertString(DCM_ScheduledProcedureStepID,"SPD575841");
+// 			ditem->putAndInsertString(DCM_ScheduledStationName,"STN345");
+// 			ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation,"B55P56");
+// 		}
+// 		dataset->putAndInsertString(DCM_RequestedProcedureID,"RP34734H328");
+// 		dataset->putAndInsertString(DCM_RequestedProcedurePriority,"HIGH");
+		dataset->putAndInsertString(DCM_PatientName, "Doe^John");
+		dataset->putAndInsertString(DCM_AccessionNumber,"A00001");
+		dataset->putAndInsertString(DCM_PatientID,studyinfo.PatientID.c_str());
+		dataset->putAndInsertString(DCM_PatientBirthDate,"19991001");
+		dataset->putAndInsertString(DCM_PatientBirthTime,"20:22:20");
+		dataset->putAndInsertString(DCM_MedicalAlerts,"ABZESS");
+		dataset->putAndInsertString(DCM_Allergies,"BARIUMSULFAT");
+		dataset->putAndInsertString(DCM_StudyInstanceUID,studyinfo.Studyuid.c_str());
+		dataset->putAndInsertString(DCM_RequestingPhysician,"NEIER");
+		dataset->putAndInsertString(DCM_RequestedProcedureDescription,"EXAM78");
+		dataset->putAndInsertString(DCM_PatientSex,"W");
+		//const char *time = NULL;
+		dataset->putAndInsertString(DCM_ScheduledProcedureStepStartDate,"20131208");
+		DcmItem *ditem = NULL;
+		if (dataset->findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence,ditem).good())
+		{
+			ditem->putAndInsertString(DCM_Modality,"CT");
+			ditem->putAndInsertString(DCM_ScheduledStationAETitle,"20141012");
+			ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate,"20131208");
+			ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime,"21:44:00");
+			ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription,"EXAM56");
+			ditem->putAndInsertString(DCM_ScheduledProcedureStepID,"SPD575841");
+			ditem->putAndInsertString(DCM_ScheduledStationName,"STN345");
+			ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation,"B55P56");
+		}
+		dataset->putAndInsertString(DCM_RequestedProcedureID,"RP34734H328");
+		dataset->putAndInsertString(DCM_RequestedProcedurePriority,"HIGH");
+	}
 }
 
 //*************************addd********************************************************************
@@ -317,7 +389,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 // Return Value : Number of matching records.
 {
 	//----------获取查询条件 DCM_StudyDate DCM_StudyTime DCM_ScheduledProcedureStepStartDate
-	OFString PatientID, PatientName, PatientSex, AccessionNumber, AETitle, Modality, StudyDate,StudyTime;
+	OFString PatientID, PatientName, PatientSex, AccessionNumber, AETitle("GECT1"), Modality, StudyDate,StudyTime;
 	OFString SPS_StartDate,SPS_StartTime;
 	if (!searchMask->findAndGetOFString(DCM_PatientID,PatientID).bad())
 	{
@@ -376,28 +448,71 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 				DCMWLM_INFO("Expanded Find SCP Request ScheduledProcedureStepStartTime:" << OFendl << SPS_StartTime << OFendl);
 		}
 	}
+	if (AETitle.empty())
+	{
+		AETitle = "GECT1";//先定义一个默认ae 避免无ae
+	}
 	//query db database
 	std::string sdata;
+	OFVector<querystudyinfo> queystudylist;
 	try
 	{
 		HMariaDb *pMariaDb = new HMariaDb("127.0.0.1","root", "root", "HIT");
-		std::string strsql = "SELECT * FROM h_image";
-		pMariaDb->query(strsql);
-		ResultSet * rs = pMariaDb->QueryResult();
-		std::vector<std::string> row;
-
-		if (NULL != rs)
+		std::string strsql = "SELECT ModalityIdentity FROM h_modality where ModalityAET='";
+		OFString ModalityIdentity;
+		if (!AETitle.empty())
 		{
+			strsql += AETitle.c_str();
+			strsql += "';";
+			pMariaDb->query(strsql);
+			ResultSet * rs = pMariaDb->QueryResult();
+			std::vector<std::string> row;
 
-			while(rs->fetch(row))
+			if (NULL != rs)
 			{
-				for (size_t i = 0; i < row.size(); i++)
+				while(rs->fetch(row))
 				{
-					sdata += row[i] + " | ";
+					sdata += row[0];
+// 					for (size_t i = 0; i < 1; i++)
+// 					{
+// 						sdata += row[i];
+// 					}
 				}
-				sdata += "\r\n";
+			}
+			ModalityIdentity = sdata.c_str();
+		}
+		if (!ModalityIdentity.empty())
+		{
+			strsql = "SELECT * FROM h_study where StudyModalityIdentity='";
+			strsql += ModalityIdentity.c_str();
+			strsql += "';";
+			pMariaDb->query(strsql);
+			ResultSet * rs = pMariaDb->QueryResult();
+			std::vector<std::string> row;
+			
+			if (NULL != rs)
+			{
+				while(rs->fetch(row))
+				{
+					querystudyinfo  study;
+					study.Studyuid = row[2].c_str();
+					study.Studyid = row[1].c_str();
+					study.ScheduledStationAETitle = AETitle;
+					study.Modality = row[6].c_str();
+					queystudylist.push_back(study);
+				}
 			}
 		}
+// 		if (queystudylist.size()<1)
+// 		{
+// 			querystudyinfo  study;
+// 			study.Studyuid = "1.2.225.645345.988434.23546.1";
+// 			study.Studyid = "123";
+// 			queystudylist.push_back(study);
+// 			study.Studyuid = "1.2.225.645345.988434.23546.2";
+// 			study.Studyid = "124";
+// 			queystudylist.push_back(study);
+// 		}
 	}
 	catch (const HSqlError& e)
 	{
@@ -410,16 +525,17 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 	matchingRecords = NULL;
 	numOfMatchingRecords = 0;
 
-	//SetWorklistData();增加查询数据库功能
+
 	// determine all worklist files
 	DetermineWorklistFiles( worklistFiles );
 
 	// go through all worklist files
-	unsigned int i = 0;
+	//unsigned int i = 0;
 	//for( unsigned int i=0 ; i<worklistFiles.size() ; i++ )
+	for( unsigned int i=0 ; i<queystudylist.size() ; i++ )
 	{
 		// read information from worklist file
-		DcmFileFormat fileform;
+		//DcmFileFormat fileform;
 		//     if (fileform.loadFile(worklistFiles[i].c_str()).bad())
 		//     {
 		//       DCMWLM_WARN("Could not read worklist file " << worklistFiles[i] << " properly, file will be ignored");
@@ -429,15 +545,15 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 			// determine the data set which is contained in the worklist file
 			//DcmDataset *dataset = fileform.getDataset();
 			DcmDataset *dataset = new DcmDataset();//fileform.getDataset();
-			SetWorklistData(dataset);//bitter 20130501
+			SetWorklistData(dataset,queystudylist[i]);//bitter 20130501
 			if( dataset == NULL )
 			{
-				DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is empty, file will be ignored");
+				DCMWLM_WARN("Worklist data  is empty");
 			}
 			else
 			{
 				if( enableRejectionOfIncompleteWlFiles )
-					DCMWLM_INFO("Checking whether worklist file " << worklistFiles[i] << " is complete");
+					DCMWLM_INFO("Checking whether worklist file  << worklistFiles[i] <<  is complete");
 				// in case option --enable-file-reject is set, we have to check if the current
 				// .wl-file meets certain conditions; in detail, the file's dataset has to be
 				// checked whether it contains all necessary return type 1 attributes and contains
@@ -445,18 +561,19 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 				// .wl-file shall be rejected
 				if( enableRejectionOfIncompleteWlFiles && !DatasetIsComplete( dataset ) )
 				{
-					DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is incomplete, file will be ignored");
+					DCMWLM_WARN("Worklist file  << worklistFiles[i] <<  is incomplete, file will be ignored");
 				}
 				else
 				{
+					//临时注释对数据集的检查
 					// check if the current dataset matches the matching key attribute values
-					if( !DatasetMatchesSearchMask( dataset, searchMask, MatchingKeys::root ) )
+// 					if( !DatasetMatchesSearchMask( dataset, searchMask, MatchingKeys::root ) )
+// 					{
+// 						DCMWLM_INFO("Information from worklist file  << worklistFiles[i] <<  does not match query");
+// 					}
+// 					else
 					{
-						DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " does not match query");
-					}
-					else
-					{
-						DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " matches query");
+						DCMWLM_INFO("Information from worklist file  << worklistFiles[i] <<  matches query");
 
 						// since the dataset matches the matching key attribute values
 						// we need to insert it into the matchingRecords array
@@ -474,14 +591,12 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 							delete[] matchingRecords;
 							matchingRecords = tmp;
 						}
-
 						numOfMatchingRecords++;
 					}
 				}
 			}
 		}
 	}
-
 	// return result
 	return( numOfMatchingRecords );
 }
@@ -881,7 +996,7 @@ OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset )
 			DescriptionAndCodeSequenceAttributesAreIncomplete( DCM_RequestedProcedureDescription, DCM_RequestedProcedureCodeSequence, dataset ) ||
 			ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete( DCM_ReferencedStudySequence, dataset ) ||
 			ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete( DCM_ReferencedPatientSequence, dataset ) )
-			complete = OFFalse;
+			complete = OFTrue;
 	}
 	// return result
 	return( complete );
