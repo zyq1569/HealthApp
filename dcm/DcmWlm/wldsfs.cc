@@ -274,41 +274,41 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
 	// Remove group length and padding elements from the search mask.
 	identifiers->computeGroupLengthAndPadding( EGL_withoutGL, EPD_withoutPadding );
 	//----------获取查询条件
-	OFString PatientID, PatientName, PatientSex, AccessionNumber, AETitle, Modality;
-	if (!identifiers->findAndGetOFString(DCM_PatientID,PatientID).bad())
-	{
-		if (!PatientID.empty())
-		{
-			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientID << OFendl);
-		}
-	}
-	if (!identifiers->findAndGetOFString(DCM_PatientName,PatientName).bad())
-	{
-		if (!PatientName.empty())
-			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientName << OFendl);
-	}
-	if (!identifiers->findAndGetOFString(DCM_PatientSex,PatientSex).bad())
-	{
-		if (!PatientSex.empty())
-			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientSex << OFendl);
-	}
-	//DCM_ScheduledProcedureStepSequence
-	DcmElement* queritem=NULL;//identifiers->getElement();
-
-	if( identifiers->findAndGetElement( DCM_ScheduledProcedureStepSequence, queritem, OFFalse ).good() )
-	{
-		DcmItem *scheduledProcedureStepSequenceItem = ((DcmSequenceOfItems*)queritem)->getItem(0);
-		if (!scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_ScheduledStationAETitle,AETitle).bad())
-		{
-			if (!AETitle.empty())
-				DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << AETitle << OFendl);
-		}
-		if (!scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_Modality,Modality).bad())
-		{
-			if (!Modality.empty())
-				DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << Modality << OFendl);
-		}
-	}
+// 	OFString PatientID, PatientName, PatientSex, AccessionNumber, AETitle, Modality;
+// 	if (!identifiers->findAndGetOFString(DCM_PatientID,PatientID).bad())
+// 	{
+// 		if (!PatientID.empty())
+// 		{
+// 			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientID << OFendl);
+// 		}
+// 	}
+// 	if (!identifiers->findAndGetOFString(DCM_PatientName,PatientName).bad())
+// 	{
+// 		if (!PatientName.empty())
+// 			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientName << OFendl);
+// 	}
+// 	if (!identifiers->findAndGetOFString(DCM_PatientSex,PatientSex).bad())
+// 	{
+// 		if (!PatientSex.empty())
+// 			DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << PatientSex << OFendl);
+// 	}
+// 	//DCM_ScheduledProcedureStepSequence
+// 	DcmElement* queritem=NULL;//identifiers->getElement();
+// 
+// 	if( identifiers->findAndGetElement( DCM_ScheduledProcedureStepSequence, queritem, OFFalse ).good() )
+// 	{
+// 		DcmItem *scheduledProcedureStepSequenceItem = ((DcmSequenceOfItems*)queritem)->getItem(0);
+// 		if (!scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_ScheduledStationAETitle,AETitle).bad())
+// 		{
+// 			if (!AETitle.empty())
+// 				DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << AETitle << OFendl);
+// 		}
+// 		if (!scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_Modality,Modality).bad())
+// 		{
+// 			if (!Modality.empty())
+// 				DCMWLM_INFO("Expanded Find SCP Request Identifiers DCM_PatientID:" << OFendl << Modality << OFendl);
+// 		}
+// 	}
 	//----------------------
 
 	// Actually there should be no elements in array matchingDatasets. Delete them to be sure.
