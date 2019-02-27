@@ -13,6 +13,16 @@ HMariaDb::HMariaDb( const std::string& server, const std::string& user, const st
 	{
 		throw HSqlError("Failed to connect to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
 	}
+    if (!mysql_set_character_set(pConnectionHandlerPtr, "GBK"))
+    {
+       // const char *c = mysql_character_set_name(pconnectionhandlerptr);
+       //printf("new client character set: %s\n",
+       //     mysql_character_set_name(pconnectionhandlerptr));
+    }
+    else
+    {
+        throw HSqlError("Failed to mysql_set_character_set GBK" + std::string(mysql_error(pConnectionHandlerPtr)));
+    }
 }
 
 HMariaDb::~HMariaDb(void)
@@ -27,6 +37,16 @@ void HMariaDb::connect(const std::string& server, const std::string& user, const
 	{ 
 		throw HSqlError("Failed to connect to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
 	} 
+    if (!mysql_set_character_set(pConnectionHandlerPtr, "GBK"))
+    {
+        // const char *c = mysql_character_set_name(pconnectionhandlerptr);
+        //printf("new client character set: %s\n",
+        //     mysql_character_set_name(pconnectionhandlerptr));
+    }
+    else
+    {
+        throw HSqlError("Failed to mysql_set_character_set GBK" + std::string(mysql_error(pConnectionHandlerPtr)));
+    }
 }
 
 

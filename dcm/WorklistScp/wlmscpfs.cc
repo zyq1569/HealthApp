@@ -75,7 +75,7 @@ int main( int argc, char *argv[] )
 	dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getRoot();
 
 	logfile->setLayout(OFmove(layout));
-	log.removeAllAppenders();
+	//log.removeAllAppenders();
 	log.addAppender(logfile);
 
 	tempstr = "";

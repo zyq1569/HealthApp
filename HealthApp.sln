@@ -1,19 +1,21 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StoreDcmSCP", "dcm\StoreDcmScp\StoreDcmScp.vcproj", "{7F191F2F-D9C3-3F53-9D37-69DAC8749E55}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StoreDcmSCP", "dcm\StoreDcmScp\StoreDcmScp.vcxproj", "{7F191F2F-D9C3-3F53-9D37-69DAC8749E55}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestMariaDbApp", "DB\TestMariaDbApp\TestMariaDbApp.vcproj", "{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestMariaDbApp", "DB\TestMariaDbApp\TestMariaDbApp.vcxproj", "{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StoreDcmSCU", "dcm\StoreDcmScu\StoreDcmScu.vcproj", "{8474911D-D74B-4D92-BBA4-B49F06B818FF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StoreDcmSCU", "dcm\StoreDcmScu\StoreDcmScu.vcxproj", "{8474911D-D74B-4D92-BBA4-B49F06B818FF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WorklistScp", "dcm\WorklistScp\WorklistScp.vcproj", "{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WorklistScp", "dcm\WorklistScp\WorklistScp.vcxproj", "{39AAC2A4-7577-4FAE-9AF8-00B2C711C178}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcmwlm", "dcm\DcmWlm\DcmWlm.vcproj", "{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcmwlm", "dcm\DcmWlm\DcmWlm.vcxproj", "{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oflog", "dcm\dcmlog\oflog.vcproj", "{42F10FD3-F469-341C-8F21-65D94DF22C7B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oflog", "dcm\dcmlog\oflog.vcxproj", "{42F10FD3-F469-341C-8F21-65D94DF22C7B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ofstd", "dcm\dcmstd\ofstd.vcproj", "{FADFDBF7-91D4-3AC9-A20C-186F1654FF43}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ofstd", "dcm\dcmstd\ofstd.vcxproj", "{FADFDBF7-91D4-3AC9-A20C-186F1654FF43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
