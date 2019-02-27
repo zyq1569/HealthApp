@@ -152,7 +152,7 @@ BOOL CTestMariaDbAppDlg::OnInitDialog()
 	GetDlgItem(IDC_PWD)->SetWindowText(_T("root"));
 	GetDlgItem(IDC_DATANAME)->SetWindowText(_T("HIT"));
 
-	GetDlgItem(IDC_SQL)->SetWindowText(_T("SELECT * FROM H_istudy"));
+	GetDlgItem(IDC_SQL)->SetWindowText(_T("SELECT * FROM H_study"));
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -247,7 +247,7 @@ void CTestMariaDbAppDlg::OnBnQuery()
 	try
 	{	
 		std::vector<std::string> row;
-		std::string strsql = "SELECT * FROM H_istudy";
+		std::string strsql = "SELECT * FROM H_study";
 		CString wsql;
 		GetDlgItem(IDC_SQL)->GetWindowText(wsql);
 		if (wsql.GetLength()>1)
@@ -275,7 +275,7 @@ void CTestMariaDbAppDlg::OnBnQuery()
 			GetDlgItem(IDC_LOG)->SetWindowText(m_strlog);
 		}
 		int a = rand();
-		strsql = "insert into H_istudy (patientid,studyuid) value(";
+		strsql = "insert into H_study (PatientIdentity,StudyUID,StudyIdentity,StudyDept) value(";
 
 		CString s;
 		s.Format(_T("%d"),a);
@@ -283,7 +283,9 @@ void CTestMariaDbAppDlg::OnBnQuery()
 		strsql += v;
 		strsql += ",'1.2.826.0.1.3680043.9.7604.";
 		strsql += v;
-		strsql += "');";
+        strsql += "',";
+        strsql += v;
+		strsql += ",'放射');";
 		pMariaDb->execute(strsql);
 	}
 	catch (const HSqlError& e)
