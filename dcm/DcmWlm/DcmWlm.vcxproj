@@ -82,13 +82,13 @@
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
-    <OutDir>C:\Tool\code\HealthApp\dcm\dcmtk_win32\bin\MinSizeRel\</OutDir>
-    <IntDir>dcmwlm.dir\MinSizeRel\</IntDir>
+    <OutDir>$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
-    <OutDir>..\..\bin\win32\</OutDir>
-    <IntDir>dcmwlm.dir\RelWithDebInfo\</IntDir>
+    <OutDir>$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -113,7 +113,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -158,11 +158,12 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <WarningLevel>Level3</WarningLevel>
       <CompileAs>CompileAsCpp</CompileAs>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ProgramDataBaseFileName>..\..\temp\$(ProjectName)\$(Configuration)\$(ProjectName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release";dcmwlm_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -196,7 +197,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>C:\Tool\code\HealthApp\dcm\dcmtk_win32\config\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\ofstd\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\oflog\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmdata\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimgle\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmimage\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpeg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmjpls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtls\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmnet\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsr\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmsign\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmwlm\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmqrdb\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpstat\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmrt\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmiod\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmfg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmseg\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmtract\include;C:\Tool\code\HealthApp\dcm\dcmtk-3.6.3\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="MinSizeRel";dcmwlm_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
