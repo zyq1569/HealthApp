@@ -47,13 +47,13 @@
     <OutDir>$(SolutionDir)bin\win32\</OutDir>
     <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_d</TargetName>
-    <ExtensionsToDeleteOnClean>*_d.pdb;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
+    <ExtensionsToDeleteOnClean>*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\win32\</OutDir>
     <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
-    <ExtensionsToDeleteOnClean>*.pdb;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
+    <ExtensionsToDeleteOnClean>*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -94,13 +94,14 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\include\mysql\win32\;..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ProgramDataBaseFileName>..\..\temp\$(ProjectName)\$(Configuration)\$(ProjectName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\ofstd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\ofstd.lib;netapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProgramDatabaseFile>..\..\temp\$(ProjectName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
     <Midl>
