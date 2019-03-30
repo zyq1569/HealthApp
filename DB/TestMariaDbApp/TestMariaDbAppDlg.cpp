@@ -10,7 +10,14 @@
 #define new DEBUG_NEW
 #endif
 
+#ifdef PRIVATE_STORESCP_DECLARATIONS
+PRIVATE_STORESCP_DECLARATIONS
+#else
+#define OFFIS_CONSOLE_APPLICATION "MariaDb"
+#endif
 
+//-------------------------------------------------------------------------------
+static OFLogger maridbLogger = OFLog::getLogger("mysql.MariaDb" OFFIS_CONSOLE_APPLICATION);
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialog
@@ -153,6 +160,8 @@ BOOL CTestMariaDbAppDlg::OnInitDialog()
 	GetDlgItem(IDC_DATANAME)->SetWindowText(_T("HIT"));
 
 	GetDlgItem(IDC_SQL)->SetWindowText(_T("SELECT * FROM H_study"));
+    OFString tempstr = "默认配置信息";
+    OFLOG_INFO(maridbLogger, "---------argv[]:" + tempstr + " ----------------------");
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -216,9 +225,14 @@ void CTestMariaDbAppDlg::OnBnConnect()
 		GetDlgItem(IDC_PWD)->GetWindowText(strPwd);
 		GetDlgItem(IDC_DATANAME)->GetWindowText(strDadaName);
 
+#ifdef _UNICODE
 		pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
 			                    W2S(strPwd.GetBuffer()).c_str(),W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+#else
+        pMariaDb = new HMariaDb(strIP.GetBuffer(), strUser.GetBuffer(), \
+            strPwd.GetBuffer(), strDadaName.GetBuffer());///*"127.0.0.1"*/"root", "root", "HIT");
 
+#endif
 		GetDlgItem(IDC_BUTTON1)->EnableWindow(false);
 		CString datainfo = CString("IP:") + strIP;
 		datainfo += CString("| user:");
@@ -232,13 +246,20 @@ void CTestMariaDbAppDlg::OnBnConnect()
 
 		m_strlog += datainfo;
 		GetDlgItem(IDC_LOG)->SetWindowText(m_strlog);
-/*		MessageBox(datainfo);*/
+		MessageBox(datainfo);
 
 		srand((unsigned)time(NULL));
 	}
 	catch (const HSqlError& e)
 	{
-		MessageBox(S2W(e.what()).c_str());
+
+#ifdef _UNICODE
+        MessageBox(S2W(e.what()).c_str());
+#else
+        MessageBox(e.what());
+#endif
+        
+		//
 	}
 }
 
@@ -252,7 +273,12 @@ void CTestMariaDbAppDlg::OnBnQuery()
 		GetDlgItem(IDC_SQL)->GetWindowText(wsql);
 		if (wsql.GetLength()>1)
 		{
-			strsql = W2S(wsql.GetBuffer());
+#ifdef _UNICODE
+            strsql = W2S(wsql.GetBuffer());
+#else
+            strsql = wsql;
+#endif
+			
 		}
 		pMariaDb->query(strsql);
 /*		pMariaDb->getresult(rs);*/
@@ -279,7 +305,11 @@ void CTestMariaDbAppDlg::OnBnQuery()
 
 		CString s;
 		s.Format(_T("%d"),a);
-		std::string v = W2S(s.GetBuffer());
+#ifdef _UNICODE
+        std::string v = W2S(s.GetBuffer());
+#else
+        std::string v = s;
+#endif
 		strsql += v;
 		strsql += ",'1.2.826.0.1.3680043.9.7604.";
 		strsql += v;
@@ -290,7 +320,11 @@ void CTestMariaDbAppDlg::OnBnQuery()
 	}
 	catch (const HSqlError& e)
 	{
-		MessageBox(S2W(e.what()).c_str());
+#ifdef _UNICODE
+        MessageBox(S2W(e.what()).c_str());
+#else
+        MessageBox(e.what());
+#endif
 	}
 }
 
@@ -310,7 +344,11 @@ void CTestMariaDbAppDlg::OnBnExcueSql()
 
 		CString s;
 		s.Format(_T("%d"),a);
-		std::string v = W2S(s.GetBuffer());
+#ifdef _UNICODE
+        std::string v = W2S(s.GetBuffer());
+#else
+        std::string v = s;
+#endif
 		strsql += "'1.2.826.0.1.3680043.9.7604.";
 		strsql += v;
 		strsql += "' where patientid = 7666;";
@@ -318,6 +356,10 @@ void CTestMariaDbAppDlg::OnBnExcueSql()
 	}
 	catch (const HSqlError& e)
 	{
-		MessageBox(S2W(e.what()).c_str());
+#ifdef _UNICODE
+        MessageBox(S2W(e.what()).c_str());
+#else
+        MessageBox(e.what());
+#endif	
 	}
 }

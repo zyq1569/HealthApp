@@ -202,8 +202,10 @@ bool CCXWView::GetIntersection(double xo, double yo, int index_point, double &x_
     double a_n, b_n, c_n;
     //a = 1+k2 , b =2k(B-yo)-2xo , c=xo2+(B-yo)2-R2
     a_n = 1 + pow(K_n, 2);
-    b_n = 2 * K_n*(B_n - yo) - 2 * xo;
+    //b_n = 2 * K_n*(B_n - yo) - 2 * xo; //修改如下
+    b_n = (2 * (g_Yvalue[r_n] - g_Yvalue[r_n_1])*(B_n - yo)) / (g_Xvalue[r_n] - g_Xvalue[r_n_1]) - 2 * xo;
     c_n = pow(xo, 2) + pow(B_n - yo, 2) - pow(g_distance, 2);
+    //X=[-b+sqrt(b2-4*a*c)]/(2*a) X=[-b-sqrt(b2-4*a*c)]/(2*a)
     //开始解交点坐标
     double delt_n = pow(b_n, 2) - 4 * a_n*c_n;
     double sqrt_delt_n = sqrt(delt_n);
@@ -348,13 +350,14 @@ CCXWView::CCXWView()
     log.removeAllAppenders();
     log.addAppender(logfile);
 
-    LogMessage("FIndPoint start!");
+    //LogMessage("FIndPoint start!");
+    OFLOG_INFO(findPointLogger, "orilog info :FIndPoint start!");
 
 }
 
 CCXWView::~CCXWView()
 {
-    LogMessage("FIndPoints Exit!");
+    OFLOG_INFO(findPointLogger, "FIndPoints Exit!");
 }
 
 BOOL CCXWView::PreCreateWindow(CREATESTRUCT& cs)
@@ -560,7 +563,7 @@ void CCXWView::ReadExcelFie(CString pathfilename, CString filename)
         else
         {
             MessageBox(_T("数据表第二行第三列没有距离数据！请重新确认然后再读入数据!"));
-            LogError("在EXCEL表格文件中，第二行第三列没有定义距离数据或者距离数据单位格式非数字");
+            OFLOG_ERROR(findPointLogger, "在EXCEL表格文件中，第二行第三列没有定义距离数据或者距离数据单位格式非数字");
             return;
         }
 #ifdef _DEBUG
@@ -707,7 +710,7 @@ void CCXWView::ReadExcelFie(CString pathfilename, CString filename)
                 if (times > 10000)
                 {
                     OFString message = "计算可能出错，强制终止！，目前计算次数超出10000次";
-                    LogError(message.c_str());
+                    OFLOG_ERROR(findPointLogger, message.c_str());
                     MessageBox(message.c_str());
                     break;
                 }
@@ -822,7 +825,7 @@ void CCXWView::ReadExcelFie(CString pathfilename, CString filename)
         //#endif
         ConvertedPoint();
         MessageBox(message);
-        LogMessage(message.GetBuffer());
+        OFLOG_INFO(findPointLogger, message.GetBuffer());
     }
 }
 

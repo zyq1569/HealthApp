@@ -1,5 +1,9 @@
 #pragma once
-
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+//-------統一使用dcmtklog方式
+#include "dcmtk/oflog/fileap.h"
+#include "dcmtk/oflog/oflog.h"
+//--------------------
 #include "mysql.h" 
 #include <iostream>
 #include <string>
