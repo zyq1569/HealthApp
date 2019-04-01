@@ -306,7 +306,7 @@ bool ForceDirectories(const OFString Dir)
         {
             OFString msg;
             msg = "CreateDirectory() failed with error %s,(%s)" + GetLastError() + Dir;
-            LogWarning(msg.c_str());
+            LOG_WARN(findPointLogger, msg);
             return false;
         }
     }
@@ -351,13 +351,13 @@ CCXWView::CCXWView()
     log.addAppender(logfile);
 
     //LogMessage("FIndPoint start!");
-    OFLOG_INFO(findPointLogger, "orilog info :FIndPoint start!");
+    LOG_INFO(findPointLogger, "orilog info :FIndPoint start!");
 
 }
 
 CCXWView::~CCXWView()
 {
-    OFLOG_INFO(findPointLogger, "FIndPoints Exit!");
+    LOG_INFO(findPointLogger, "FIndPoints Exit!");
 }
 
 BOOL CCXWView::PreCreateWindow(CREATESTRUCT& cs)

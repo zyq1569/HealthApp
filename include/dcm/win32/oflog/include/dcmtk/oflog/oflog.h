@@ -38,6 +38,12 @@
 #define OFLOG_ERROR(logger, msg) DCMTK_LOG4CPLUS_ERROR(logger, msg)
 #define OFLOG_FATAL(logger, msg) DCMTK_LOG4CPLUS_FATAL(logger, msg)
 
+#define LOG_TRACE(logger, msg) DCMTK_LOG4CPLUS_TRACE(logger, msg)
+#define LOG_DEBUG(logger, msg) DCMTK_LOG4CPLUS_DEBUG(logger, msg)
+#define LOG_INFO(logger, msg)  DCMTK_LOG4CPLUS_INFO(logger, msg)
+#define LOG_WARN(logger, msg)  DCMTK_LOG4CPLUS_WARN(logger, msg)
+#define LOG_ERROR(logger, msg) DCMTK_LOG4CPLUS_ERROR(logger, msg)
+#define LOG_FATAL(logger, msg) DCMTK_LOG4CPLUS_FATAL(logger, msg)
 /** simple wrapper around the "low-level" Logger object to make it easier to
  *  switch to a different system
  */

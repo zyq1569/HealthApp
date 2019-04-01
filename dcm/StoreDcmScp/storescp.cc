@@ -106,8 +106,8 @@ static void executeOnReception();
 static void executeEndOfStudyEvents();
 static void executeOnEndOfStudy();
 static void renameOnEndOfStudy();
-static OFString replaceChars( const OFString &srcstr, const OFString &pattern, const OFString &substitute );
-static void executeCommand( const OFString &cmd );
+static OFString replaceChars(const OFString &srcstr, const OFString &pattern, const OFString &substitute);
+static void executeCommand(const OFString &cmd);
 static void cleanChildren(pid_t pid, OFBool synch);
 static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
     T_ASC_Parameters * params,
@@ -129,7 +129,7 @@ OFBool             opt_uniqueFilenames = OFFalse;
 OFString           opt_fileNameExtension;
 OFBool             opt_timeNames = OFFalse;
 int                timeNameCounter = -1;   // "serial number" to differentiate between files with same timestamp
-OFCmdUnsignedInt   opt_port = 0;
+OFCmdUnsignedInt   opt_port = 1024;//
 OFBool             opt_refuseAssociation = OFFalse;
 OFBool             opt_rejectWithoutImplementationUID = OFFalse;
 OFCmdUnsignedInt   opt_sleepAfter = 0;
@@ -179,9 +179,10 @@ T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
 int                opt_dimse_timeout = 0;
 int                opt_acse_timeout = 30;
 OFCmdSignedInt     opt_socket_timeout = 60;
+OFString           opt_outputFilePath; //设置文件保存的默认路径
 
 #if defined(HAVE_FORK) || defined(_WIN32)
-OFBool             opt_forkMode = OFFalse;
+OFBool             opt_forkMode = OFTrue/*OFFalse*/;//修改为默认多进程处理
 #endif
 
 OFBool             opt_forkedChild = OFFalse;
@@ -230,9 +231,53 @@ extern "C" void sigChildHandler(int)
 
 #define SHORTCOL 4
 #define LONGCOL 21
+struct OFHashValue
+{
+    INT16 first;
+    INT16 second;
+    OFHashValue()
+    {
+        first = second = 0;
+    }
+};
+//!根据字符计算两个Hash数值
+OFHashValue CreateHashValue(const char * buffer, unsigned int length)
+{
+    //2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 
+    //101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 
+    //181 191 193 197 199
+    static const int M1 = 71;
+    static const int M2 = 79;
 
+    static const int D1 = 197;
+    static const int D2 = 199;
+    int value = 0;
+    OFHashValue hashvalue;
+    for (int i = 0; i < length; i++)
+    {
+        value = value * M1 + buffer[i];
+    }
+    value %= D1;
+    if (value < 0)
+    {
+        value = value + D1;
+    }
+    hashvalue.first = value;
 
-unsigned long studyuid_hash( const char *str)
+    value = 0;
+    for (int i = 0; i < length; i++)
+    {
+        value = value * M2 + buffer[i];
+    }
+    value %= D2;
+    if (value < 0)
+    {
+        value = value + D2;
+    }
+    hashvalue.second = value;
+    return hashvalue;
+}
+unsigned long studyuid_hash(const char *str)
 {
     unsigned long hash = 32767;
     unsigned long pid = 65537;
@@ -251,27 +296,78 @@ static OFString longToString(unsigned long i)
     return numbuf;
 }
 
+//验证目录是否存在。
+bool DirectoryExists(const OFString Dir)
+{
+    if (Dir == "")
+        return false;
+    int Code = GetFileAttributes(Dir.c_str());
+    return (Code != -1) && ((FILE_ATTRIBUTE_DIRECTORY & Code) != 0);
+}
+//在全路径文件名中提取文件路径。
+OFString ExtractFileDir(const OFString FileName)
+{
+    OFString tempstr;
+    int pos  = FileName.find_last_of('/');
+    if (pos == - 1)
+    {
+        return "";
+    }
+    tempstr = FileName.substr(0, pos);
+    return tempstr;
+    OFString str = OFStandard::getDirNameFromPath(tempstr, FileName);
+    return OFStandard::getDirNameFromPath(tempstr, FileName);
+}
+//创建一个新目录
+bool ForceDirectories(const OFString Dir)
+{
+    OFString path = ExtractFileDir(Dir);
+    if (!OFStandard::dirExists(path))
+    {
+        char  temp = path[path.size() - 1];
+        if (path[path.size() - 1] != ':')
+            ForceDirectories(path);
+    }
+    if (DirectoryExists(Dir) != true)
+    {
+        //if (::CreateDirectory(Dir.c_str(), NULL) == 0)
+#ifdef HAVE_WINDOWS_H
+        if (_mkdir(Dir.c_str()) == -1)
+#else
+        if (mkdir(Dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
+#endif
+        {
+            OFString msg;
+            msg = "CreateDirectory() failed with error %s,(%s)" + GetLastError() + Dir;
+            OFLOG_ERROR(storescpLogger, msg);
+            return false;
+        }
+    }
+    return true;
+}
 
 OFBool CreatDir(OFString dir)
 {
-    if (!OFStandard::dirExists(dir))
-    {
-#ifdef HAVE_WINDOWS_H
-		if (_mkdir(dir.c_str()) == -1)
-#else
-		if( mkdir( dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
-#endif
+    return ForceDirectories(dir);
+        if (!OFStandard::dirExists(dir))
         {
-            OFLOG_ERROR(storescpLogger,"mkdir :"+dir+"  .error!");
-            return OFFalse;
+    #ifdef HAVE_WINDOWS_H
+    		if (_mkdir(dir.c_str()) == -1)
+    #else
+    		if( mkdir( dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
+    #endif
+            {
+                OFLOG_ERROR(storescpLogger,"mkdir :"+dir+"  .error!");
+                return OFFalse;
+            }
+            else
+            {
+                return OFTrue;
+            }
         }
-        else
-        {
-            return OFTrue;
-        }
-    }
-    return OFTrue;
+        return OFTrue;
 }
+//--single-process 默认为fork 模式，该设置为单进程
 //1040 -od \\192.168.0.11\common\Test_dcmtk_rec\SCP
 int main(int argc, char *argv[])
 {
@@ -279,12 +375,15 @@ int main(int argc, char *argv[])
 
     const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
     OFString tempstr, path = argv[0];
-    OFString log_dir = OFStandard::getDirNameFromPath(tempstr, path)+"/log";
+    OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
+    OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
+    opt_outputFilePath = currentAppPath+"/DCM_SAVE";
     if (!OFStandard::dirExists(log_dir))
     {
         CreatDir(log_dir);
     }
-    OFString logfilename = log_dir +"/DcmStoreSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
+
+    OFString logfilename = log_dir + "/DcmStoreSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
 
     OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
     dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(logfilename, STD_NAMESPACE ios::app));
@@ -295,14 +394,14 @@ int main(int argc, char *argv[])
     log.addAppender(logfile);
 
     tempstr = "";
-    for (int i=0; i<argc; i++)
+    for (int i = 0; i < argc; i++)
     {
         tempstr += argv[i];
         tempstr += " ";
     }
-    OFLOG_INFO(storescpLogger,"---------argv[]:"+tempstr+" ----------------------");
+    OFLOG_INFO(storescpLogger, "---------argv[]:" + tempstr + " ----------------------");
 
-    OFLOG_INFO(storescpLogger,"-----$$------DcmNet storescp start run!---------$$------------");
+    OFLOG_INFO(storescpLogger, "-----$$------DcmNet storescp start run!---------$$------------");
     //-----------------------------------------------------------------------------------------------------
     T_ASC_Network *net;
     DcmAssociationConfiguration asccfg;
@@ -320,180 +419,180 @@ int main(int argc, char *argv[])
 
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-    cmd.addOption("--help",                     "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
-    cmd.addOption("--version",                             "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--help", "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--version", "print version information and exit", OFCommandLine::AF_Exclusive);
     OFLog::addOptions(cmd);
-    cmd.addOption("--verbose-pc",               "+v",      "show presentation contexts in verbose mode");
+    cmd.addOption("--verbose-pc", "+v", "show presentation contexts in verbose mode");
 
 #if defined(HAVE_FORK) || defined(_WIN32)
     cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
-    cmd.addOption("--single-process",                      "single process mode (default)");
-    cmd.addOption("--fork",                                "fork child process for each association");
+    cmd.addOption("--single-process", "single process mode (default)");
+    cmd.addOption("--fork", "fork child process for each association");
 #ifdef _WIN32
-    cmd.addOption("--forked-child",                        "process is forked child, internal use only", OFCommandLine::AF_Internal);
+    cmd.addOption("--forked-child", "process is forked child, internal use only", OFCommandLine::AF_Internal);
 #endif
 #endif
 
     cmd.addGroup("network options:");
     cmd.addSubGroup("association negotiation profile from configuration file:");
-    cmd.addOption("--config-file",            "-xf",  2, "[f]ilename, [p]rofile: string",
-                  "use profile p from config file f");
+    cmd.addOption("--config-file", "-xf", 2, "[f]ilename, [p]rofile: string",
+        "use profile p from config file f");
     cmd.addSubGroup("preferred network transfer syntaxes (not with --config-file):");
-    cmd.addOption("--prefer-uncompr",         "+x=",     "prefer explicit VR local byte order (default)");
-    cmd.addOption("--prefer-little",          "+xe",     "prefer explicit VR little endian TS");
-    cmd.addOption("--prefer-big",             "+xb",     "prefer explicit VR big endian TS");
-    cmd.addOption("--prefer-lossless",        "+xs",     "prefer default JPEG lossless TS");
-    cmd.addOption("--prefer-jpeg8",           "+xy",     "prefer default JPEG lossy TS for 8 bit data");
-    cmd.addOption("--prefer-jpeg12",          "+xx",     "prefer default JPEG lossy TS for 12 bit data");
-    cmd.addOption("--prefer-j2k-lossless",    "+xv",     "prefer JPEG 2000 lossless TS");
-    cmd.addOption("--prefer-j2k-lossy",       "+xw",     "prefer JPEG 2000 lossy TS");
-    cmd.addOption("--prefer-jls-lossless",    "+xt",     "prefer JPEG-LS lossless TS");
-    cmd.addOption("--prefer-jls-lossy",       "+xu",     "prefer JPEG-LS lossy TS");
-    cmd.addOption("--prefer-mpeg2",           "+xm",     "prefer MPEG2 Main Profile @ Main Level TS");
-    cmd.addOption("--prefer-mpeg2-high",      "+xh",     "prefer MPEG2 Main Profile @ High Level TS");
-    cmd.addOption("--prefer-mpeg4",           "+xn",     "prefer MPEG4 AVC/H.264 HP / Level 4.1 TS");
-    cmd.addOption("--prefer-mpeg4-bd",        "+xl",     "prefer MPEG4 AVC/H.264 BD-compatible TS");
-    cmd.addOption("--prefer-mpeg4-2-2d",      "+x2",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (2D)");
-    cmd.addOption("--prefer-mpeg4-2-3d",      "+x3",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
-    cmd.addOption("--prefer-mpeg4-2-st",      "+xo",     "prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS");
-    cmd.addOption("--prefer-hevc",            "+x4",     "prefer HEVC/H.265 Main Profile / Level 5.1 TS");
-    cmd.addOption("--prefer-hevc10",          "+x5",     "prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS");
+    cmd.addOption("--prefer-uncompr", "+x=", "prefer explicit VR local byte order (default)");
+    cmd.addOption("--prefer-little", "+xe", "prefer explicit VR little endian TS");
+    cmd.addOption("--prefer-big", "+xb", "prefer explicit VR big endian TS");
+    cmd.addOption("--prefer-lossless", "+xs", "prefer default JPEG lossless TS");
+    cmd.addOption("--prefer-jpeg8", "+xy", "prefer default JPEG lossy TS for 8 bit data");
+    cmd.addOption("--prefer-jpeg12", "+xx", "prefer default JPEG lossy TS for 12 bit data");
+    cmd.addOption("--prefer-j2k-lossless", "+xv", "prefer JPEG 2000 lossless TS");
+    cmd.addOption("--prefer-j2k-lossy", "+xw", "prefer JPEG 2000 lossy TS");
+    cmd.addOption("--prefer-jls-lossless", "+xt", "prefer JPEG-LS lossless TS");
+    cmd.addOption("--prefer-jls-lossy", "+xu", "prefer JPEG-LS lossy TS");
+    cmd.addOption("--prefer-mpeg2", "+xm", "prefer MPEG2 Main Profile @ Main Level TS");
+    cmd.addOption("--prefer-mpeg2-high", "+xh", "prefer MPEG2 Main Profile @ High Level TS");
+    cmd.addOption("--prefer-mpeg4", "+xn", "prefer MPEG4 AVC/H.264 HP / Level 4.1 TS");
+    cmd.addOption("--prefer-mpeg4-bd", "+xl", "prefer MPEG4 AVC/H.264 BD-compatible TS");
+    cmd.addOption("--prefer-mpeg4-2-2d", "+x2", "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (2D)");
+    cmd.addOption("--prefer-mpeg4-2-3d", "+x3", "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
+    cmd.addOption("--prefer-mpeg4-2-st", "+xo", "prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS");
+    cmd.addOption("--prefer-hevc", "+x4", "prefer HEVC/H.265 Main Profile / Level 5.1 TS");
+    cmd.addOption("--prefer-hevc10", "+x5", "prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS");
     cmd.addOption("--prefer-rle",             "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
-    cmd.addOption("--prefer-deflated",        "+xd",     "prefer deflated expl. VR little endian TS");
+    cmd.addOption("--prefer-deflated", "+xd", "prefer deflated expl. VR little endian TS");
 #endif
-    cmd.addOption("--implicit",               "+xi",     "accept implicit VR little endian TS only");
-    cmd.addOption("--accept-all",             "+xa",     "accept all supported transfer syntaxes");
+    cmd.addOption("--implicit", "+xi", "accept implicit VR little endian TS only");
+    cmd.addOption("--accept-all", "+xa", "accept all supported transfer syntaxes");
 
 #ifdef WITH_TCPWRAPPER
     cmd.addSubGroup("network host access control (tcp wrapper):");
     cmd.addOption("--access-full",            "-ac",     "accept connections from any host (default)");
-    cmd.addOption("--access-control",         "+ac",     "enforce host access control rules");
+    cmd.addOption("--access-control", "+ac", "enforce host access control rules");
 #endif
 
     cmd.addSubGroup("other network options:");
 #ifdef INETD_AVAILABLE
     // this option is only offered on Posix platforms
-    cmd.addOption("--inetd",                  "-id",     "run from inetd super server (not with --fork)");
+    cmd.addOption("--inetd", "-id", "run from inetd super server (not with --fork)");
 #endif
     CONVERT_TO_STRING("[s]econds: integer (default: " << opt_socket_timeout << ")", optString1);
-    cmd.addOption("--socket-timeout",         "-ts",  1, optString1.c_str(), "timeout for network socket (0 for none)");
+    cmd.addOption("--socket-timeout", "-ts", 1, optString1.c_str(), "timeout for network socket (0 for none)");
     CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acse_timeout << ")", optString2);
-    cmd.addOption("--acse-timeout",           "-ta",  1, optString2.c_str(), "timeout for ACSE messages");
-    cmd.addOption("--dimse-timeout",          "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
-    cmd.addOption("--aetitle",                "-aet", 1, "[a]etitle: string", "set my AE title (default: " APPLICATIONTITLE ")");
+    cmd.addOption("--acse-timeout", "-ta", 1, optString2.c_str(), "timeout for ACSE messages");
+    cmd.addOption("--dimse-timeout", "-td", 1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+    cmd.addOption("--aetitle", "-aet", 1, "[a]etitle: string", "set my AE title (default: " APPLICATIONTITLE ")");
     CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString3);
     CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDU << ")", optString4);
-    cmd.addOption("--max-pdu",                "-pdu", 1, optString3.c_str(), optString4.c_str());
+    cmd.addOption("--max-pdu", "-pdu", 1, optString3.c_str(), optString4.c_str());
 
-    cmd.addOption("--disable-host-lookup",    "-dhl",    "disable hostname lookup");
-    cmd.addOption("--refuse",                            "refuse association");
-    cmd.addOption("--reject",                            "reject association if no implement. class UID");
-    cmd.addOption("--ignore",                            "ignore store data, receive but do not store");
-    cmd.addOption("--sleep-after",                    1, "[s]econds: integer",
-                  "sleep s seconds after store (default: 0)");
-    cmd.addOption("--sleep-during",                   1, "[s]econds: integer",
-                  "sleep s seconds during store (default: 0)");
-    cmd.addOption("--abort-after",                       "abort association after receipt of C-STORE-RQ\n(but before sending response)");
-    cmd.addOption("--abort-during",                      "abort association during receipt of C-STORE-RQ");
-    cmd.addOption("--promiscuous",            "-pm",     "promiscuous mode, accept unknown SOP classes\n(not with --config-file)");
-    cmd.addOption("--uid-padding",            "-up",     "silently correct space-padded UIDs");
+    cmd.addOption("--disable-host-lookup", "-dhl", "disable hostname lookup");
+    cmd.addOption("--refuse", "refuse association");
+    cmd.addOption("--reject", "reject association if no implement. class UID");
+    cmd.addOption("--ignore", "ignore store data, receive but do not store");
+    cmd.addOption("--sleep-after", 1, "[s]econds: integer",
+        "sleep s seconds after store (default: 0)");
+    cmd.addOption("--sleep-during", 1, "[s]econds: integer",
+        "sleep s seconds during store (default: 0)");
+    cmd.addOption("--abort-after", "abort association after receipt of C-STORE-RQ\n(but before sending response)");
+    cmd.addOption("--abort-during", "abort association during receipt of C-STORE-RQ");
+    cmd.addOption("--promiscuous", "-pm", "promiscuous mode, accept unknown SOP classes\n(not with --config-file)");
+    cmd.addOption("--uid-padding", "-up", "silently correct space-padded UIDs");
 
 #ifdef WITH_OPENSSL
     cmd.addGroup("transport layer security (TLS) options:");
     cmd.addSubGroup("transport protocol stack:");
     cmd.addOption("--disable-tls",            "-tls",    "use normal TCP/IP connection (default)");
     cmd.addOption("--enable-tls",             "+tls", 2, "[p]rivate key file, [c]ertificate file: string",
-                  "use authenticated secure TLS connection");
+        "use authenticated secure TLS connection");
     cmd.addSubGroup("private key password (only with --enable-tls):");
     cmd.addOption("--std-passwd",             "+ps",     "prompt user to type password on stdin (default)");
     cmd.addOption("--use-passwd",             "+pw",  1, "[p]assword: string",
-                  "use specified password");
+        "use specified password");
     cmd.addOption("--null-passwd",            "-pw",     "use empty string as password");
     cmd.addSubGroup("key and certificate file format:");
     cmd.addOption("--pem-keys",               "-pem",    "read keys and certificates as PEM file (def.)");
     cmd.addOption("--der-keys",               "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority:");
     cmd.addOption("--add-cert-file",          "+cf",  1, "[c]ertificate filename: string",
-                  "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
+        "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
     cmd.addOption("--add-cert-dir",           "+cd",  1, "[c]ertificate directory: string",
-                  "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
+        "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
     cmd.addSubGroup("ciphersuite:");
     cmd.addOption("--cipher",                 "+cs",  1, "[c]iphersuite name: string",
-                  "add ciphersuite to list of negotiated suites");
+        "add ciphersuite to list of negotiated suites");
     cmd.addOption("--dhparam",                "+dp",  1, "[f]ilename: string",
-                  "read DH parameters for DH/DSS ciphersuites");
+        "read DH parameters for DH/DSS ciphersuites");
     cmd.addSubGroup("pseudo random generator:");
     cmd.addOption("--seed",                   "+rs",  1, "[f]ilename: string",
-                  "seed random generator with contents of f");
+        "seed random generator with contents of f");
     cmd.addOption("--write-seed",             "+ws",     "write back modified seed (only with --seed)");
     cmd.addOption("--write-seed-file",        "+wf",  1, "[f]ilename: string (only with --seed)",
-                  "write modified seed to file f");
+        "write modified seed to file f");
     cmd.addSubGroup("peer authentication");
     cmd.addOption("--require-peer-cert",      "-rc",     "verify peer certificate, fail if absent (def.)");
     cmd.addOption("--verify-peer-cert",       "-vc",     "verify peer certificate if present");
-    cmd.addOption("--ignore-peer-cert",       "-ic",     "don't verify peer certificate");
+    cmd.addOption("--ignore-peer-cert", "-ic", "don't verify peer certificate");
 #endif
 
     cmd.addGroup("output options:");
     cmd.addSubGroup("general:");
-    cmd.addOption("--output-directory",       "-od",  1, "[d]irectory: string (default: \".\")", "write received objects to existing directory d");
+    cmd.addOption("--output-directory", "-od", 1, "[d]irectory: string (default: \".\")", "write received objects to existing directory d");
     cmd.addSubGroup("bit preserving mode:");
-    cmd.addOption("--normal",                 "-B",      "allow implicit format conversions (default)");
-    cmd.addOption("--bit-preserving",         "+B",      "write data exactly as read");
+    cmd.addOption("--normal", "-B", "allow implicit format conversions (default)");
+    cmd.addOption("--bit-preserving", "+B", "write data exactly as read");
     cmd.addSubGroup("output file format:");
-    cmd.addOption("--write-file",             "+F",      "write file format (default)");
-    cmd.addOption("--write-dataset",          "-F",      "write data set without file meta information");
+    cmd.addOption("--write-file", "+F", "write file format (default)");
+    cmd.addOption("--write-dataset", "-F", "write data set without file meta information");
     cmd.addSubGroup("output transfer syntax (not with --bit-preserving or compressed transmission):");
-    cmd.addOption("--write-xfer-same",        "+t=",     "write with same TS as input (default)");
-    cmd.addOption("--write-xfer-little",      "+te",     "write with explicit VR little endian TS");
-    cmd.addOption("--write-xfer-big",         "+tb",     "write with explicit VR big endian TS");
+    cmd.addOption("--write-xfer-same", "+t=", "write with same TS as input (default)");
+    cmd.addOption("--write-xfer-little", "+te", "write with explicit VR little endian TS");
+    cmd.addOption("--write-xfer-big", "+tb", "write with explicit VR big endian TS");
     cmd.addOption("--write-xfer-implicit",    "+ti",     "write with implicit VR little endian TS");
 #ifdef WITH_ZLIB
-    cmd.addOption("--write-xfer-deflated",    "+td",     "write with deflated expl. VR little endian TS");
+    cmd.addOption("--write-xfer-deflated", "+td", "write with deflated expl. VR little endian TS");
 #endif
     cmd.addSubGroup("post-1993 value representations (not with --bit-preserving):");
-    cmd.addOption("--enable-new-vr",          "+u",      "enable support for new VRs (UN/UT) (default)");
-    cmd.addOption("--disable-new-vr",         "-u",      "disable support for new VRs, convert to OB");
+    cmd.addOption("--enable-new-vr", "+u", "enable support for new VRs (UN/UT) (default)");
+    cmd.addOption("--disable-new-vr", "-u", "disable support for new VRs, convert to OB");
     cmd.addSubGroup("group length encoding (not with --bit-preserving):");
-    cmd.addOption("--group-length-recalc",    "+g=",     "recalculate group lengths if present (default)");
-    cmd.addOption("--group-length-create",    "+g",      "always write with group length elements");
-    cmd.addOption("--group-length-remove",    "-g",      "always write without group length elements");
+    cmd.addOption("--group-length-recalc", "+g=", "recalculate group lengths if present (default)");
+    cmd.addOption("--group-length-create", "+g", "always write with group length elements");
+    cmd.addOption("--group-length-remove", "-g", "always write without group length elements");
     cmd.addSubGroup("length encoding in sequences and items (not with --bit-preserving):");
-    cmd.addOption("--length-explicit",        "+e",      "write with explicit lengths (default)");
-    cmd.addOption("--length-undefined",       "-e",      "write with undefined lengths");
+    cmd.addOption("--length-explicit", "+e", "write with explicit lengths (default)");
+    cmd.addOption("--length-undefined", "-e", "write with undefined lengths");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset or --bit-preserving):");
-    cmd.addOption("--padding-off",            "-p",      "no padding (default)");
-    cmd.addOption("--padding-create",         "+p",   2, "[f]ile-pad [i]tem-pad: integer",
-                  "align file on multiple of f bytes and items\non multiple of i bytes");
+    cmd.addOption("--padding-off", "-p", "no padding (default)");
+    cmd.addOption("--padding-create", "+p", 2, "[f]ile-pad [i]tem-pad: integer",
+        "align file on multiple of f bytes and items\non multiple of i bytes");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated/same):");
     cmd.addOption("--compression-level",      "+cl",  1, "[l]evel: integer (default: 6)",
-                  "0=uncompressed, 1=fastest, 9=best compression");
+        "0=uncompressed, 1=fastest, 9=best compression");
 #endif
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
-    cmd.addOption("--sort-conc-studies",      "-ss",  1, "[p]refix: string",
-                  "sort studies using prefix p and a timestamp");
-    cmd.addOption("--sort-on-study-uid",      "-su",  1, "[p]refix: string",
-                  "sort studies using prefix p and the Study\nInstance UID");
-    cmd.addOption("--sort-on-patientname",    "-sp",     "sort studies using the Patient's Name and\na timestamp");
+    cmd.addOption("--sort-conc-studies", "-ss", 1, "[p]refix: string",
+        "sort studies using prefix p and a timestamp");
+    cmd.addOption("--sort-on-study-uid", "-su", 1, "[p]refix: string",
+        "sort studies using prefix p and the Study\nInstance UID");
+    cmd.addOption("--sort-on-patientname", "-sp", "sort studies using the Patient's Name and\na timestamp");
 
     cmd.addSubGroup("filename generation:");
-    cmd.addOption("--default-filenames",      "-uf",     "generate filename from instance UID (default)");
-    cmd.addOption("--unique-filenames",       "+uf",     "generate unique filenames");
-    cmd.addOption("--timenames",              "-tn",     "generate filename from creation time");
-    cmd.addOption("--filename-extension",     "-fe",  1, "[e]xtension: string",
-                  "append e to all filenames");
+    cmd.addOption("--default-filenames", "-uf", "generate filename from instance UID (default)");
+    cmd.addOption("--unique-filenames", "+uf", "generate unique filenames");
+    cmd.addOption("--timenames", "-tn", "generate filename from creation time");
+    cmd.addOption("--filename-extension", "-fe", 1, "[e]xtension: string",
+        "append e to all filenames");
 
     cmd.addGroup("event options:", LONGCOL, SHORTCOL + 2);
-    cmd.addOption("--exec-on-reception",        "-xcr", 1, "[c]ommand: string",
-                  "execute command c after having received and\nprocessed one C-STORE-RQ message");
-    cmd.addOption("--exec-on-eostudy",          "-xcs", 1, "[c]ommand: string",
-                  "execute command c after having received and\nprocessed all C-STORE-RQ messages that belong\nto one study");
-    cmd.addOption("--rename-on-eostudy",        "-rns",    "having received and processed all C-STORE-RQ\nmessages that belong to one study, rename\noutput files according to certain pattern");
-    cmd.addOption("--eostudy-timeout",          "-tos", 1, "[t]imeout: integer",
-                  "specifies a timeout of t seconds for\nend-of-study determination");
-    cmd.addOption("--exec-sync",                "-xs",     "execute command synchronously in foreground");
+    cmd.addOption("--exec-on-reception", "-xcr", 1, "[c]ommand: string",
+        "execute command c after having received and\nprocessed one C-STORE-RQ message");
+    cmd.addOption("--exec-on-eostudy", "-xcs", 1, "[c]ommand: string",
+        "execute command c after having received and\nprocessed all C-STORE-RQ messages that belong\nto one study");
+    cmd.addOption("--rename-on-eostudy", "-rns", "having received and processed all C-STORE-RQ\nmessages that belong to one study, rename\noutput files according to certain pattern");
+    cmd.addOption("--eostudy-timeout", "-tos", 1, "[t]imeout: integer",
+        "specifies a timeout of t seconds for\nend-of-study determination");
+    cmd.addOption("--exec-sync", "-xs", "execute command synchronously in foreground");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -501,7 +600,10 @@ int main(int argc, char *argv[])
     {
         /* print help text and exit */
         if (cmd.getArgCount() == 0)
-            app.printUsage();
+        {
+            app.printMessage("no cmd Param! use deauflt");
+            //app.printUsage();
+        }
 
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
@@ -559,7 +661,7 @@ int main(int argc, char *argv[])
             // the port number is not really used. Set to non-privileged port number
             // to avoid failing the privilege test.
             opt_port = 1024;
-        }
+    }
 #endif
 
 #if defined(HAVE_FORK) || defined(_WIN32)
@@ -587,9 +689,18 @@ int main(int argc, char *argv[])
         {
             // omitting the port number is only allowed in inetd mode
             if (cmd.getParamCount() == 0)
-                app.printError("Missing parameter port");
+            {
+                //app.printError("Missing parameter port");
+                OFString message = "deauflt port: " + longToString(opt_port);
+                app.printWarning(message.c_str());
+            }
             else
+            {
                 app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
+                OFString message = "port: " + longToString(opt_port);
+                app.printMessage(message.c_str());
+                OFLOG_INFO(storescpLogger, message);
+            }
         }
 
         OFLog::configureFromCommandLine(cmd, app);
@@ -736,7 +847,7 @@ int main(int argc, char *argv[])
             const unsigned char *c = OFreinterpret_cast(const unsigned char *, opt_profileName);
             while (*c)
             {
-                if (! isspace(*c))
+                if (!isspace(*c))
                     sprofile += OFstatic_cast(char, toupper(*c));
                 ++c;
             }
@@ -763,7 +874,23 @@ int main(int argc, char *argv[])
 #endif
 
         if (cmd.findOption("--output-directory"))
+        {
             app.checkValue(cmd.getValue(opt_outputDirectory));
+            OFString message = "outputDirectory:" + opt_outputDirectory;
+            app.printMessage(message.c_str());
+            OFLOG_INFO(storescpLogger, message);
+        }
+        else
+        {
+            if (!OFStandard::dirExists(opt_outputFilePath))
+            {
+                CreatDir(opt_outputFilePath);
+            }
+            opt_outputDirectory = opt_outputFilePath;
+            OFString message = "deault outputDirectory:" + opt_outputFilePath;
+            app.printMessage(message.c_str());
+            OFLOG_INFO(storescpLogger, message);
+        }
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
@@ -936,10 +1063,10 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--compression-level"))
         {
             app.checkDependence("--compression-level", "--write-xfer-deflated or --write-xfer-same",
-                                (opt_writeTransferSyntax == EXS_DeflatedLittleEndianExplicit) || (opt_writeTransferSyntax == EXS_Unknown));
+                (opt_writeTransferSyntax == EXS_DeflatedLittleEndianExplicit) || (opt_writeTransferSyntax == EXS_Unknown));
             app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
             dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
-        }
+}
 #endif
 
         cmd.beginOptionBlock();
@@ -980,7 +1107,7 @@ int main(int argc, char *argv[])
         {
             app.checkConflict("--exec-on-eostudy", "--fork", opt_forkMode);
             app.checkConflict("--exec-on-eostudy", "--inetd", opt_inetd_mode);
-            app.checkDependence("--exec-on-eostudy", "--sort-conc-studies, --sort-on-study-uid or --sort-on-patientname", opt_sortStudyMode != ESM_None );
+            app.checkDependence("--exec-on-eostudy", "--sort-conc-studies, --sort-on-study-uid or --sort-on-patientname", opt_sortStudyMode != ESM_None);
             app.checkValue(cmd.getValue(opt_execOnEndOfStudy));
         }
 
@@ -988,14 +1115,14 @@ int main(int argc, char *argv[])
         {
             app.checkConflict("--rename-on-eostudy", "--fork", opt_forkMode);
             app.checkConflict("--rename-on-eostudy", "--inetd", opt_inetd_mode);
-            app.checkDependence("--rename-on-eostudy", "--sort-conc-studies, --sort-on-study-uid or --sort-on-patientname", opt_sortStudyMode != ESM_None );
+            app.checkDependence("--rename-on-eostudy", "--sort-conc-studies, --sort-on-study-uid or --sort-on-patientname", opt_sortStudyMode != ESM_None);
             opt_renameOnEndOfStudy = OFTrue;
         }
 
         if (cmd.findOption("--eostudy-timeout"))
         {
             app.checkDependence("--eostudy-timeout", "--sort-conc-studies, --sort-on-study-uid, --sort-on-patientname, --exec-on-eostudy or --rename-on-eostudy",
-                                (opt_sortStudyMode != ESM_None) || (opt_execOnEndOfStudy != NULL) || opt_renameOnEndOfStudy);
+                (opt_sortStudyMode != ESM_None) || (opt_execOnEndOfStudy != NULL) || opt_renameOnEndOfStudy);
             app.checkValue(cmd.getValueAndCheckMin(opt_endOfStudyTimeout, 0));
         }
 
@@ -1105,7 +1232,7 @@ int main(int argc, char *argv[])
     {
         if (geteuid() != 0)
         {
-            OFLOG_FATAL(storescpLogger, "cannot listen on port " << opt_port << ", insufficient privileges");
+            OFLOG_FATAL(storescpLogger, "port must > 1024,cannot listen on port " << opt_port << ", insufficient privileges");
             return 1;
         }
     }
@@ -1116,7 +1243,7 @@ int main(int argc, char *argv[])
     if (!dcmDataDict.isDictionaryLoaded())
     {
         OFLOG_WARN(storescpLogger, "no data dictionary loaded, check environment variable: "
-                   << DCM_DICT_ENVIRONMENT_VARIABLE);
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* if the output directory does not equal "." (default directory) */
@@ -1278,7 +1405,7 @@ int main(int argc, char *argv[])
             {
                 OFLOG_WARN(storescpLogger, "cannot write random seed, ignoring");
             }
-        }
+    }
 #endif
         // if running in inetd mode, we always terminate after one association
         if (opt_inetd_mode) break;
@@ -1318,20 +1445,20 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     PRIVATE_STORESCP_VARIABLES
 #endif
 
-    const char* knownAbstractSyntaxes[] =
+        const char* knownAbstractSyntaxes[] =
     {
         UID_VerificationSOPClass
     };
 
     const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
-                                       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 20
-                                       NULL
-                                     };                                                      // +1
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 20
+        NULL
+    };                                                      // +1
     int numTransferSyntaxes = 0;
 
     // try to receive an association. Here we either want to use blocking or
     // non-blocking, depending on if the option --eostudy-timeout is set.
-    if( opt_endOfStudyTimeout == -1 )
+    if (opt_endOfStudyTimeout == -1)
         cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection);
     else
         cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection, DUL_NOBLOCK, OFstatic_cast(int, opt_endOfStudyTimeout));
@@ -1347,7 +1474,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     {
         // check what kind of error occurred. If no association was
         // received, check if certain other conditions are met
-        if( cond == DUL_NOASSOCIATIONREQUEST )
+        if (cond == DUL_NOASSOCIATIONREQUEST)
         {
             // If in addition to the fact that no association was received also option --eostudy-timeout is set
             // and if at the same time there is still a study which is considered to be open (i.e. we were actually
@@ -1355,7 +1482,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
             // does not equal NULL), we have to consider that all objects for the current study have been received.
             // In such an "end-of-study" case, we might have to execute certain optional functions which were specified
             // by the user through command line options passed to storescp.
-            if( opt_endOfStudyTimeout != -1 && !lastStudyInstanceUID.empty() )
+            if (opt_endOfStudyTimeout != -1 && !lastStudyInstanceUID.empty())
             {
                 // indicate that the end-of-study-event occurred through a timeout event.
                 // This knowledge will be necessary in function renameOnEndOFStudy().
@@ -1392,7 +1519,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 #if defined(HAVE_FORK) || defined(_WIN32)
     if (opt_forkMode)
         OFLOG_INFO(storescpLogger, "Association Received in " << (DUL_processIsForkedChild() ? "child" : "parent")
-                   << " process (pid: " << OFStandard::getProcessID() << ")");
+        << " process (pid: " << OFStandard::getProcessID() << ")");
     else
 #endif
         OFLOG_INFO(storescpLogger, "Association Received");
@@ -1668,7 +1795,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     else
     {
         /* accept the Verification SOP Class if presented */
-        cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes), transferSyntaxes, numTransferSyntaxes);
+        cond = ASC_acceptContextsWithPreferredTransferSyntaxes(assoc->params, knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes), transferSyntaxes, numTransferSyntaxes);
         if (cond.bad())
         {
             OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
@@ -1676,7 +1803,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         }
 
         /* the array of Storage SOP Class UIDs comes from dcuid.h */
-        cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, dcmAllStorageSOPClassUIDs, numberOfDcmAllStorageSOPClassUIDs, transferSyntaxes, numTransferSyntaxes);
+        cond = ASC_acceptContextsWithPreferredTransferSyntaxes(assoc->params, dcmAllStorageSOPClassUIDs, numberOfDcmAllStorageSOPClassUIDs, transferSyntaxes, numTransferSyntaxes);
         if (cond.bad())
         {
             OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
@@ -1687,7 +1814,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         {
             /* accept everything not known not to be a storage SOP class */
             cond = acceptUnknownContextsWithPreferredTransferSyntaxes(
-                       assoc->params, transferSyntaxes, numTransferSyntaxes);
+                assoc->params, transferSyntaxes, numTransferSyntaxes);
             if (cond.bad())
             {
                 OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
@@ -1743,7 +1870,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 #ifdef PRIVATE_STORESCP_CODE
         PRIVATE_STORESCP_CODE
 #endif
-        cond = ASC_acknowledgeAssociation(assoc);
+            cond = ASC_acknowledgeAssociation(assoc);
         if (cond.bad())
         {
             OFLOG_ERROR(storescpLogger, DimseCondition::dump(temp_str, cond));
@@ -1757,7 +1884,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
             OFLOG_INFO(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
         else
             OFLOG_DEBUG(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
-    }
+}
 
 #ifdef BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX
     /* active the dcmPeerRequiresExactUIDCopy workaround code
@@ -1765,8 +1892,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
      * prefix known to exhibit the buggy behaviour.
      */
     if (0 == strncmp(assoc->params->theirImplementationClassUID,
-                     BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX,
-                     strlen(BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX)))
+        BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX,
+        strlen(BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX)))
     {
         dcmEnableAutomaticInputDataCorrection.set(OFFalse);
         dcmPeerRequiresExactUIDCopy.set(OFTrue);
@@ -1859,17 +1986,17 @@ processCommands(T_ASC_Association * assoc)
     DcmDataset *statusDetail = NULL;
 
     // start a loop to be able to receive more than one DIMSE command
-    while( cond == EC_Normal || cond == DIMSE_NODATAAVAILABLE || cond == DIMSE_OUTOFRESOURCES )
+    while (cond == EC_Normal || cond == DIMSE_NODATAAVAILABLE || cond == DIMSE_OUTOFRESOURCES)
     {
         // receive a DIMSE command over the network
-        if( opt_endOfStudyTimeout == -1 )
+        if (opt_endOfStudyTimeout == -1)
             cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, &statusDetail);
         else
             cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, OFstatic_cast(int, opt_endOfStudyTimeout), &presID, &msg, &statusDetail);
 
         // check what kind of error occurred. If no data was
         // received, check if certain other conditions are met
-        if( cond == DIMSE_NODATAAVAILABLE )
+        if (cond == DIMSE_NODATAAVAILABLE)
         {
             // If in addition to the fact that no data was received also option --eostudy-timeout is set and
             // if at the same time there is still a study which is considered to be open (i.e. we were actually
@@ -1877,7 +2004,7 @@ processCommands(T_ASC_Association * assoc)
             // does not equal NULL), we have to consider that all objects for the current study have been received.
             // In such an "end-of-study" case, we might have to execute certain optional functions which were specified
             // by the user through command line options passed to storescp.
-            if( opt_endOfStudyTimeout != -1 && !lastStudyInstanceUID.empty() )
+            if (opt_endOfStudyTimeout != -1 && !lastStudyInstanceUID.empty())
             {
                 // indicate that the end-of-study-event occurred through a timeout event.
                 // This knowledge will be necessary in function renameOnEndOFStudy().
@@ -1930,8 +2057,8 @@ processCommands(T_ASC_Association * assoc)
                 // we cannot handle this kind of message
                 cond = DIMSE_BADCOMMANDTYPE;
                 OFLOG_ERROR(storescpLogger, "Expected C-ECHO or C-STORE request but received DIMSE command 0x"
-                            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-                            << OFstatic_cast(unsigned, msg.CommandField));
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+                    << OFstatic_cast(unsigned, msg.CommandField));
                 OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(tempStr, msg, DIMSE_INCOMING, NULL, presID));
                 break;
             }
@@ -1941,7 +2068,7 @@ processCommands(T_ASC_Association * assoc)
 }
 
 
-static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID)
+static OFCondition echoSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID)
 {
     OFString temp_str;
     // assign the actual information of the C-Echo-RQ command to a local variable
@@ -1967,7 +2094,7 @@ static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_
 
 // substitute non-ASCII characters with ASCII "equivalents"
 static void mapCharacterAndAppendToString(Uint8 c,
-        OFString &output)
+    OFString &output)
 {
     static const char *latin1_table[] =
     {
@@ -1983,10 +2110,10 @@ static void mapCharacterAndAppendToString(Uint8 c,
         "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", // Codes 144-159
         "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", // Codes 160-175
         "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", // Codes 176-191
-        "A", "A", "A", "A", "Ae","A", "A", "C", "E", "E", "E", "E", "I", "I", "I", "I", // Codes 192-107
-        "D", "N", "O", "O", "O", "O", "Oe","_", "O", "U", "U", "U", "Ue","Y", "_", "ss",// Codes 108-123
-        "a", "a", "a", "a", "ae","a", "a", "c", "e", "e", "e", "e", "i", "i", "i", "i", // Codes 124-141
-        "d", "n", "o", "o", "o", "o", "oe","_", "o", "u", "u", "u", "ue","y", "_", "y"  // Codes 142-157
+        "A", "A", "A", "A", "Ae", "A", "A", "C", "E", "E", "E", "E", "I", "I", "I", "I", // Codes 192-107
+        "D", "N", "O", "O", "O", "O", "Oe", "_", "O", "U", "U", "U", "Ue", "Y", "_", "ss",// Codes 108-123
+        "a", "a", "a", "a", "ae", "a", "a", "c", "e", "e", "e", "e", "i", "i", "i", "i", // Codes 124-141
+        "d", "n", "o", "o", "o", "o", "oe", "_", "o", "u", "u", "u", "ue", "y", "_", "y"  // Codes 142-157
     };
     output += latin1_table[c];
 }
@@ -2001,12 +2128,12 @@ struct StoreCallbackData
 
 static void
 storeSCPCallback(
-    void *callbackData,
-    T_DIMSE_StoreProgress *progress,
-    T_DIMSE_C_StoreRQ *req,
-    char * /*imageFileName*/, DcmDataset **imageDataSet,
-    T_DIMSE_C_StoreRSP *rsp,
-    DcmDataset **statusDetail)
+void *callbackData,
+T_DIMSE_StoreProgress *progress,
+T_DIMSE_C_StoreRQ *req,
+char * /*imageFileName*/, DcmDataset **imageDataSet,
+T_DIMSE_C_StoreRSP *rsp,
+DcmDataset **statusDetail)
 /*
  * This function.is used to indicate progress when storescp receives instance data over the
  * network. On the final call to this function (identified by progress->state == DIMSE_StoreEnd)
@@ -2030,8 +2157,8 @@ storeSCPCallback(
     DIC_UI sopInstance;
 
     // determine if the association shall be aborted
-    if( (opt_abortDuringStore && progress->state != DIMSE_StoreBegin) ||
-            (opt_abortAfterStore && progress->state == DIMSE_StoreEnd) )
+    if ((opt_abortDuringStore && progress->state != DIMSE_StoreBegin) ||
+        (opt_abortAfterStore && progress->state == DIMSE_StoreEnd))
     {
         OFLOG_INFO(storescpLogger, "ABORT initiated (due to command line options)");
         ASC_abortAssociation((OFstatic_cast(StoreCallbackData*, callbackData))->assoc);
@@ -2121,7 +2248,7 @@ storeSCPCallback(
                         // default if patient name is missing or empty
                         tmpName = "ANONYMOUS";
                         OFLOG_WARN(storescpLogger, "element PatientName " << DCM_PatientName << " absent or empty in data set, using '"
-                                   << tmpName << "' instead");
+                            << tmpName << "' instead");
                     }
                     else
                     {
@@ -2165,8 +2292,8 @@ storeSCPCallback(
                     // create a name for the new subdirectory.
                     char timestamp[32];
                     sprintf(timestamp, "%04u%02u%02u_%02u%02u%02u%03u",
-                            dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-                            dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
+                        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+                        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
 
                     OFString subdirectoryName;
                     switch (opt_sortStudyMode)
@@ -2184,21 +2311,23 @@ storeSCPCallback(
                         if (!subdirectoryName.empty())
                             subdirectoryName += '_';
                         //add 通过hash值方法，将接收的dcm文件存储-----------------------------------------------
-                        unsigned long hash_vaule = studyuid_hash(currentStudyInstanceUID.c_str())%100;
+                        OFHashValue path = CreateHashValue(currentStudyInstanceUID.c_str(), currentStudyInstanceUID.length());
+                        unsigned long hash_vaule = studyuid_hash(currentStudyInstanceUID.c_str()) % 100;
                         OFString hash_dir = longToString(hash_vaule);
-                        OFString tem_dir = "Images/"+hash_dir+"/"+currentStudyInstanceUID + "/" + currentSeriesInstanceUID;
+                        hash_dir = longToString(path.first) + "/" + longToString(path.second);
+                        OFString tem_dir = "Images/" + hash_dir + "/" + currentStudyInstanceUID + "/" + currentSeriesInstanceUID;
                         static OFString save_dir = OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName);
-                        static OFString task_dir =  save_dir + "/Task";
-                        static OFString ini_dir = task_dir+"/1";
-                        OFString tem_study_dir = save_dir + "/Images/"+hash_dir+"/"+currentStudyInstanceUID ;
+                        static OFString task_dir = save_dir + "/Task";
+                        static OFString ini_dir = task_dir + "/1";
+                        OFString tem_study_dir = save_dir + "/Images/" + hash_dir + "/" + currentStudyInstanceUID;
                         if (!OFStandard::dirExists(task_dir))
                         {
-                            OFLOG_WARN(storescpLogger,"mkdir:"+task_dir);
+                            OFLOG_WARN(storescpLogger, "mkdir:" + task_dir);
                             //mkdir(task_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO);
-							CreatDir(task_dir);
+                            CreatDir(task_dir);
                             if (!OFStandard::dirExists(ini_dir))
                             {
-                                OFLOG_WARN(storescpLogger,"mkdir:"+ini_dir);
+                                OFLOG_WARN(storescpLogger, "mkdir:" + ini_dir);
                                 CreatDir(ini_dir);
                             }
                         }
@@ -2206,46 +2335,46 @@ storeSCPCallback(
                         {
                             if (!OFStandard::dirExists(ini_dir))
                             {
-                                OFLOG_WARN(storescpLogger,"mkdir:"+ini_dir);
+                                OFLOG_WARN(storescpLogger, "mkdir:" + ini_dir);
                                 CreatDir(ini_dir);
                             }
                         }
 
                         //write ini file 写入每次收到检查uid时，产生一个ini文件
                         OFFile inifile;
-                        OFString ini_filename =  ini_dir+"/"+currentStudyInstanceUID+".ini";
+                        OFString ini_filename = ini_dir + "/" + currentStudyInstanceUID + ".ini";
                         if (!OFStandard::fileExists(ini_filename))
                         {
-                            inifile.fopen(ini_filename,"w");
-                            OFString str = "uid="+currentStudyInstanceUID;
+                            inifile.fopen(ini_filename, "w");
+                            OFString str = "uid=" + currentStudyInstanceUID;
                             inifile.fputs("[studyuid]");
                             inifile.fputs("\n");
                             inifile.fputs(str.c_str());
                             inifile.fclose();
                         }
                         //end write ini file
-                        OFString image_dir = save_dir+"/Images";
+                        OFString image_dir = save_dir + "/Images";
                         if (!OFStandard::dirExists(image_dir))
                         {
-                            OFLOG_WARN(storescpLogger,"mkdir:"+image_dir);
+                            OFLOG_WARN(storescpLogger, "mkdir:" + image_dir);
                             CreatDir(image_dir);//mkdir(image_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO );
                         }
-                        hash_dir = image_dir +"/"+hash_dir;
+                        hash_dir = image_dir + "/" + hash_dir;
                         if (!OFStandard::dirExists(hash_dir))
                         {
-                            OFLOG_WARN(storescpLogger,"mkdir:"+hash_dir);
+                            OFLOG_WARN(storescpLogger, "mkdir:" + hash_dir);
                             CreatDir(hash_dir);//mkdir(hash_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO );
                         }
                         if (!OFStandard::dirExists(tem_study_dir))
                         {
-                            OFLOG_INFO(storescpLogger,"mkdir:"+tem_study_dir);
+                            OFLOG_INFO(storescpLogger, "mkdir:" + tem_study_dir);
                             CreatDir(tem_study_dir);//mkdir(tem_study_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO );
                         }
                         subdirectoryName += tem_dir;
                         //------------------------------------------------
                         //subdirectoryName += currentStudyInstanceUID;//原来是保存stuyduid的文件夹方式
                     }
-                        // pattern: "[prefix]_[Study Instance UID]"
+                    // pattern: "[prefix]_[Study Instance UID]"
                     break;
                     case ESM_PatientName:
                         // pattern: "[Patient's Name]_[YYYYMMDD]_[HHMMSSMMM]"
@@ -2258,15 +2387,15 @@ storeSCPCallback(
                     }
 
                     // create subdirectoryPathAndName (string with full path to new subdirectory)
-//                    OFLOG_WARN(storescpLogger,"-----------subdirectoryPathAndName current:"+subdirectoryPathAndName);
-//                    OFLOG_WARN(storescpLogger,"-----------subdirectoryName current:"+subdirectoryName);
-//                    OFString path = OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName);
-//                    OFLOG_WARN(storescpLogger,"-----------path current:"+path);
+                    //                    OFLOG_WARN(storescpLogger,"-----------subdirectoryPathAndName current:"+subdirectoryPathAndName);
+                    //                    OFLOG_WARN(storescpLogger,"-----------subdirectoryName current:"+subdirectoryName);
+                    //                    OFString path = OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName);
+                    //                    OFLOG_WARN(storescpLogger,"-----------path current:"+path);
                     OFStandard::combineDirAndFilename(subdirectoryPathAndName, OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName), subdirectoryName);
 
                     // check if the subdirectory already exists
                     // if it already exists dump a warning
-                    if( OFStandard::dirExists(subdirectoryPathAndName) )
+                    if (OFStandard::dirExists(subdirectoryPathAndName))
                         OFLOG_WARN(storescpLogger, "subdirectory for study already exists: " << subdirectoryPathAndName);
                     else
                     {
@@ -2275,7 +2404,7 @@ storeSCPCallback(
 #ifdef HAVE_WINDOWS_H
                         if( _mkdir( subdirectoryPathAndName.c_str() ) == -1 )
 #else
-                        if( mkdir( subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
+                        if (mkdir(subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
 #endif
                         {
                             OFLOG_ERROR(storescpLogger, "could not create subdirectory for study: " << subdirectoryPathAndName);
@@ -2320,8 +2449,8 @@ storeSCPCallback(
                 OFLOG_WARN(storescpLogger, "DICOM file already exists, overwriting: " << fileName);
             }
             OFCondition cond = cbdata->dcmff->saveFile(fileName.c_str(), xfer, opt_sequenceType, opt_groupLength,
-                               opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
-                               (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
+                opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
+                (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
             if (cond.bad())
             {
                 OFLOG_ERROR(storescpLogger, "cannot write DICOM file: " << fileName << ": " << cond.text());
@@ -2353,7 +2482,7 @@ storeSCPCallback(
         }
 
         // in case opt_bitPreserving is set, do some other things
-        if( opt_bitPreserving )
+        if (opt_bitPreserving)
         {
             // we need to set outputFileNameArray and outputFileNameArrayCnt to be
             // able to perform the placeholder substitution in executeOnReception()
@@ -2367,16 +2496,16 @@ static OFCondition storeSCP(
     T_ASC_Association *assoc,
     T_DIMSE_Message *msg,
     T_ASC_PresentationContextID presID)
-/*
- * This function processes a DIMSE C-STORE-RQ command that was
- * received over the network connection.
- *
- * Parameters:
- *   assoc  - [in] The association (network connection to another DICOM application).
- *   msg    - [in] The DIMSE C-STORE-RQ message that was received.
- *   presID - [in] The ID of the presentation context which was specified in the PDV which contained
- *                 the DIMSE command.
- */
+    /*
+     * This function processes a DIMSE C-STORE-RQ command that was
+     * received over the network connection.
+     *
+     * Parameters:
+     *   assoc  - [in] The association (network connection to another DICOM application).
+     *   msg    - [in] The DIMSE C-STORE-RQ message that was received.
+     *   presID - [in] The ID of the presentation context which was specified in the PDV which contained
+     *                 the DIMSE command.
+     */
 {
     OFCondition cond = EC_Normal;
     T_DIMSE_C_StoreRQ *req;
@@ -2406,7 +2535,7 @@ static OFCondition storeSCP(
             char buf[70];
             dcmGenerateUniqueIdentifier(buf);
             sprintf(imageFileName, "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
-                    buf, opt_fileNameExtension.c_str());
+                buf, opt_fileNameExtension.c_str());
         }
         else if (opt_timeNames)
         {
@@ -2421,35 +2550,35 @@ static OFCondition storeSCP(
             {
                 // timeNameCounter not set -> last written filename has to be without "serial number"
                 sprintf(cmpFileName, "%04u%02u%02u%02u%02u%02u%03u.%s%s",
-                        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-                        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-                        dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
+                    dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+                    dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+                    dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
             }
             else
             {
                 // counter was active before, so generate filename with "serial number" for comparison
                 sprintf(cmpFileName, "%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", // millisecond version
-                        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-                        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-                        timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
+                    dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+                    dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+                    timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
             }
-            if ( (outputFileNameArray.size()!=0) && (outputFileNameArray.back() == cmpFileName) )
+            if ((outputFileNameArray.size() != 0) && (outputFileNameArray.back() == cmpFileName))
             {
                 // if this is not the first run and the prospective filename is equal to the last written filename
                 // generate one with a serial number (incremented by 1)
                 timeNameCounter++;
                 sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, // millisecond version
-                        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-                        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-                        timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
+                    dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+                    dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+                    timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
             }
             else
             {
                 // first run or filenames are different: create filename without serial number
                 sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, // millisecond version
-                        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-                        dateTime.getTime().getHour(), dateTime.getTime().getMinute(),dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-                        dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
+                    dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+                    dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+                    dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
                 // reset counter, because timestamp and therefore filename has changed
                 timeNameCounter = -1;
             }
@@ -2458,7 +2587,7 @@ static OFCondition storeSCP(
         {
             // don't create new UID, use the study instance UID as found in object
             sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
-                    req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
+                req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
         }
     }
 
@@ -2472,7 +2601,7 @@ static OFCondition storeSCP(
     else
     {
         OFLOG_INFO(storescpLogger, "Received Store Request (MsgID " << req->MessageID << ", "
-                   << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
+            << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
     }
 
     // initialize some variables
@@ -2499,12 +2628,12 @@ static OFCondition storeSCP(
     if (opt_bitPreserving)
     {
         cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL,
-                                   storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
+            storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
     }
     else
     {
         cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader, &dset,
-                                   storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
+            storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
     }
 
     // if some error occurred, dump corresponding information and remove the outfile if necessary
@@ -2529,11 +2658,11 @@ static OFCondition storeSCP(
 
     // if everything was successful so far and option --exec-on-reception is set,
     // we want to execute a certain command which was passed to the application
-    if( cond.good() && opt_execOnReception != NULL )
+    if (cond.good() && opt_execOnReception != NULL)
         executeOnReception();
 
     // if everything was successful so far, go ahead and handle possible end-of-study events
-    if( cond.good() )
+    if (cond.good())
         executeEndOfStudyEvents();
 
     // if opt_sleepAfter is set, the user requires that the application shall
@@ -2563,14 +2692,14 @@ static void executeEndOfStudyEvents()
     // does not equal NULL (i.e. we received all objects that belong to one study, or - in
     // other words - it is the end of one study) we want to rename the output files that
     // belong to the last study. (Note that these files are captured in outputFileNameArray)
-    if( opt_renameOnEndOfStudy && !lastStudySubdirectoryPathAndName.empty() )
+    if (opt_renameOnEndOfStudy && !lastStudySubdirectoryPathAndName.empty())
         renameOnEndOfStudy();
 
     // if option --exec-on-eostudy is set and variable lastStudySubdirectoryPathAndName does
     // not equal NULL (i.e. we received all objects that belong to one study, or - in other
     // words - it is the end of one study) we want to execute a certain command which was
     // passed to the application
-    if( opt_execOnEndOfStudy != NULL && !lastStudySubdirectoryPathAndName.empty() )
+    if (opt_execOnEndOfStudy != NULL && !lastStudySubdirectoryPathAndName.empty())
         executeOnEndOfStudy();
 
     lastStudySubdirectoryPathAndName.clear();
@@ -2594,29 +2723,29 @@ static void executeOnReception()
     OFString cmd = opt_execOnReception;
 
     // in case a file was actually written
-    if( !opt_ignore )
+    if (!opt_ignore)
     {
         // perform substitution for placeholder #p (depending on presence of any --sort-xxx option)
         OFString dir = (opt_sortStudyMode == ESM_None) ? opt_outputDirectory : subdirectoryPathAndName;
-        cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), dir );
+        cmd = replaceChars(cmd, OFString(PATH_PLACEHOLDER), dir);
 
         // perform substitution for placeholder #f; note that outputFileNameArray.back()
         // always contains the name of the file (without path) which was written last.
         OFString outputFileName = outputFileNameArray.back();
-        cmd = replaceChars( cmd, OFString(FILENAME_PLACEHOLDER), outputFileName );
+        cmd = replaceChars(cmd, OFString(FILENAME_PLACEHOLDER), outputFileName);
     }
 
     // perform substitution for placeholder #a
-    cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingAETitle );
+    cmd = replaceChars(cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingAETitle);
 
     // perform substitution for placeholder #c
-    cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledAETitle );
+    cmd = replaceChars(cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledAETitle);
 
     // perform substitution for placeholder #r
-    cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), callingPresentationAddress );
+    cmd = replaceChars(cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), callingPresentationAddress);
 
     // Execute command in a new process
-    executeCommand( cmd );
+    executeCommand(cmd);
 }
 
 
@@ -2646,7 +2775,7 @@ static void renameOnEndOfStudy()
     // following loop - not supposed to be deleted from the array. If endOfStudyThroughTimeoutEvent is true,
     // all filenames that are captured in the array, refer to files that belong to the same study. Hence,
     // all of these files shall be renamed and all of the filenames within the array shall be deleted.
-    if( !endOfStudyThroughTimeoutEvent ) --last;
+    if (!endOfStudyThroughTimeoutEvent) --last;
 
     // rename all files that belong to the last study
     while (first != last)
@@ -2662,19 +2791,19 @@ static void renameOnEndOfStudy()
             if (serialPos != OFString_npos)
             {
                 //serial present: copy modality prefix (skip serial: 1 digit "_" + 4 digits serial + 1 digit ".")
-                OFStandard::strlcpy( modalityId, (*first).substr(serialPos+6, 2).c_str(), 3 );
+                OFStandard::strlcpy(modalityId, (*first).substr(serialPos + 6, 2).c_str(), 3);
             }
             else
             {
                 //serial not present, copy starts directly after first "." (skip 17 for timestamp, one for ".")
-                OFStandard::strlcpy( modalityId, (*first).substr(18, 2).c_str(), 3 );
+                OFStandard::strlcpy(modalityId, (*first).substr(18, 2).c_str(), 3);
             }
         }
         else
         {
-            OFStandard::strlcpy( modalityId, (*first).c_str(), 3 );
+            OFStandard::strlcpy(modalityId, (*first).c_str(), 3);
         }
-        sprintf( newFileName, "%s%06d", modalityId, counter );
+        sprintf(newFileName, "%s%06d", modalityId, counter);
 
         // create two strings containing path and file name for
         // the current filename and the future filename
@@ -2689,7 +2818,7 @@ static void renameOnEndOfStudy()
         newPathAndFileName += newFileName;
 
         // rename file
-        if( rename( oldPathAndFileName.c_str(), newPathAndFileName.c_str() ) != 0 )
+        if (rename(oldPathAndFileName.c_str(), newPathAndFileName.c_str()) != 0)
             OFLOG_WARN(storescpLogger, "cannot rename file '" << oldPathAndFileName << "' to '" << newPathAndFileName << "'");
 
         // remove entry from list
@@ -2717,23 +2846,23 @@ static void executeOnEndOfStudy()
     OFString cmd = opt_execOnEndOfStudy;
 
     // perform substitution for placeholder #p; #p will be substituted by lastStudySubdirectoryPathAndName
-    cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), lastStudySubdirectoryPathAndName );
+    cmd = replaceChars(cmd, OFString(PATH_PLACEHOLDER), lastStudySubdirectoryPathAndName);
 
     // perform substitution for placeholder #a
-    cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? callingAETitle : lastCallingAETitle );
+    cmd = replaceChars(cmd, OFString(CALLING_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? callingAETitle : lastCallingAETitle);
 
     // perform substitution for placeholder #c
-    cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? calledAETitle : lastCalledAETitle );
+    cmd = replaceChars(cmd, OFString(CALLED_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? calledAETitle : lastCalledAETitle);
 
     // perform substitution for placeholder #r
-    cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? callingPresentationAddress : lastCallingPresentationAddress );
+    cmd = replaceChars(cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? callingPresentationAddress : lastCallingPresentationAddress);
 
     // Execute command in a new process
-    executeCommand( cmd );
+    executeCommand(cmd);
 }
 
 
-static OFString replaceChars( const OFString &srcstr, const OFString &pattern, const OFString &substitute )
+static OFString replaceChars(const OFString &srcstr, const OFString &pattern, const OFString &substitute)
 /*
  * This function replaces all occurrences of pattern in srcstr with substitute and returns
  * the result as a new OFString variable. Note that srcstr itself will not be changed,
@@ -2747,22 +2876,22 @@ static OFString replaceChars( const OFString &srcstr, const OFString &pattern, c
     OFString result = srcstr;
     size_t pos = 0;
 
-    while( pos != OFString_npos )
+    while (pos != OFString_npos)
     {
-        pos = result.find( pattern, pos );
+        pos = result.find(pattern, pos);
 
-        if( pos != OFString_npos )
+        if (pos != OFString_npos)
         {
-            result.replace( pos, pattern.size(), substitute );
+            result.replace(pos, pattern.size(), substitute);
             pos += substitute.size();
         }
     }
 
-    return( result );
+    return(result);
 }
 
 
-static void executeCommand( const OFString &cmd )
+static void executeCommand(const OFString &cmd)
 /*
  * This function executes the given command line. The execution will be
  * performed in a new process which can be run in the background
@@ -2804,7 +2933,7 @@ static void executeCommand( const OFString &cmd )
 
     // execute command (Attention: Do not pass DETACHED_PROCESS as sixth argument to the below
     // called function because in such a case the execution of batch-files is not going to work.)
-    if( !CreateProcess(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
+    if (!CreateProcess(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
         OFLOG_ERROR(storescpLogger, "cannot execute command '" << cmd << "'");
 
     if (opt_execSync)
@@ -2866,7 +2995,7 @@ static void cleanChildren(pid_t pid, OFBool synch)
 static
 DUL_PRESENTATIONCONTEXT *
 findPresentationContextID(LST_HEAD * head,
-                          T_ASC_PresentationContextID presentationContextID)
+T_ASC_PresentationContextID presentationContextID)
 {
     DUL_PRESENTATIONCONTEXT *pc;
     LST_HEAD **l;
@@ -2941,8 +3070,8 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
         if (accepted)
         {
             cond = ASC_acceptPresentationContext(
-                       params, pc.presentationContextID,
-                       transferSyntax, acceptedRole);
+                params, pc.presentationContextID,
+                transferSyntax, acceptedRole);
             if (cond.bad()) return cond;
         }
         else
@@ -2951,7 +3080,7 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
 
             /* do not refuse if already accepted */
             dpc = findPresentationContextID(params->DULparams.acceptedPresentationContext,
-                                            pc.presentationContextID);
+                pc.presentationContextID);
             if ((dpc == NULL) || ((dpc != NULL) && (dpc->result != ASC_P_ACCEPTANCE)))
             {
 

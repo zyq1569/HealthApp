@@ -592,7 +592,7 @@ int FindAndSendImage(int argc, char *argv[])
 
     OFOStringStream optStream;
     const char *opt_peer = NULL;
-    OFCmdUnsignedInt opt_port = 104;
+    OFCmdUnsignedInt opt_port = 1024;
     const char *opt_peerTitle = PEERAPPLICATIONTITLE;
     const char *opt_ourTitle = APPLICATIONTITLE;
 
