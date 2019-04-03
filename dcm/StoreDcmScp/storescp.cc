@@ -253,7 +253,7 @@ OFHashValue CreateHashValue(const char * buffer, unsigned int length)
     static const int D2 = 199;
     int value = 0;
     OFHashValue hashvalue;
-    for (int i = 0; i < length; i++)
+    for (unsigned int i = 0; i < length; i++)
     {
         value = value * M1 + buffer[i];
     }
@@ -265,7 +265,7 @@ OFHashValue CreateHashValue(const char * buffer, unsigned int length)
     hashvalue.first = value;
 
     value = 0;
-    for (int i = 0; i < length; i++)
+    for (unsigned int i = 0; i < length; i++)
     {
         value = value * M2 + buffer[i];
     }
@@ -308,8 +308,8 @@ bool DirectoryExists(const OFString Dir)
 OFString ExtractFileDir(const OFString FileName)
 {
     OFString tempstr;
-    int pos  = FileName.find_last_of('/');
-    if (pos == - 1)
+    int pos = FileName.find_last_of('/');
+    if (pos == -1)
     {
         return "";
     }
@@ -324,9 +324,13 @@ bool ForceDirectories(const OFString Dir)
     OFString path = ExtractFileDir(Dir);
     if (!OFStandard::dirExists(path))
     {
-        char  temp = path[path.size() - 1];
-        if (path[path.size() - 1] != ':')
-            ForceDirectories(path);
+        int len = path.size();
+        if (len > 1)
+        {
+            char  temp = path[path.size() - 1];
+            if (path[path.size() - 1] != ':')
+                ForceDirectories(path);
+        }
     }
     if (DirectoryExists(Dir) != true)
     {
@@ -349,35 +353,69 @@ bool ForceDirectories(const OFString Dir)
 OFBool CreatDir(OFString dir)
 {
     return ForceDirectories(dir);
-        if (!OFStandard::dirExists(dir))
+    if (!OFStandard::dirExists(dir))
+    {
+#ifdef HAVE_WINDOWS_H
+        if (_mkdir(dir.c_str()) == -1)
+#else
+        if (mkdir(dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
+#endif
         {
-    #ifdef HAVE_WINDOWS_H
-    		if (_mkdir(dir.c_str()) == -1)
-    #else
-    		if( mkdir( dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
-    #endif
-            {
-                OFLOG_ERROR(storescpLogger,"mkdir :"+dir+"  .error!");
-                return OFFalse;
-            }
-            else
-            {
-                return OFTrue;
-            }
+            OFLOG_ERROR(storescpLogger, "mkdir :" + dir + "  .error!");
+            return OFFalse;
         }
-        return OFTrue;
+        else
+        {
+            return OFTrue;
+        }
+    }
+    return OFTrue;
+}
+OFString GetCurrWorkingDir()
+{
+    OFString strPath;
+#ifdef HAVE_WINDOWS_H
+    TCHAR szFull[_MAX_PATH];
+    //TCHAR szDrive[_MAX_DRIVE];
+    //TCHAR szDir[_MAX_DIR];
+    ::GetModuleFileName(NULL, szFull, sizeof(szFull) / sizeof(TCHAR));
+    strPath = OFString(szFull);
+#else
+    //to do add!
+#endif
+    return strPath;
 }
 //--single-process 默认为fork 模式，该设置为单进程
 //1040 -od \\192.168.0.11\common\Test_dcmtk_rec\SCP
 int main(int argc, char *argv[])
 {
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
     //--------------------增加日志文件的方式----------------------------------------------------------------
-
     const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
     OFString tempstr, path = argv[0];
+    int pos = 0;
+#ifdef HAVE_WINDOWS_H
+    pos = path.find_last_of('\\');
+#else
+    //to do add!
+#endif
+    if (pos < 1)
+    {
+#ifdef HAVE_WINDOWS_H
+        OFString message = " start app by commline:";
+        app.printMessage(message.c_str());
+        path = GetCurrWorkingDir();
+        app.printMessage("GetCurrWorkingDir filePath:");
+        app.printMessage(path.c_str());
+#else
+        //to do add!
+#endif
+    }
     OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
     OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
-    opt_outputFilePath = currentAppPath+"/DCM_SAVE";
+    opt_outputFilePath = currentAppPath + "/DCM_SAVE";
+    app.printMessage("log_dir:");
+    app.printMessage(log_dir.c_str());
     if (!OFStandard::dirExists(log_dir))
     {
         CreatDir(log_dir);
@@ -411,7 +449,7 @@ int main(int argc, char *argv[])
     OFString temp_str;
     OFOStringStream optStream;
 
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
+
     OFCommandLine cmd;
 
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
@@ -457,7 +495,7 @@ int main(int argc, char *argv[])
     cmd.addOption("--prefer-mpeg4-2-st", "+xo", "prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS");
     cmd.addOption("--prefer-hevc", "+x4", "prefer HEVC/H.265 Main Profile / Level 5.1 TS");
     cmd.addOption("--prefer-hevc10", "+x5", "prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS");
-    cmd.addOption("--prefer-rle",             "+xr",     "prefer RLE lossless TS");
+    cmd.addOption("--prefer-rle", "+xr", "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
     cmd.addOption("--prefer-deflated", "+xd", "prefer deflated expl. VR little endian TS");
 #endif
@@ -466,7 +504,7 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_TCPWRAPPER
     cmd.addSubGroup("network host access control (tcp wrapper):");
-    cmd.addOption("--access-full",            "-ac",     "accept connections from any host (default)");
+    cmd.addOption("--access-full", "-ac", "accept connections from any host (default)");
     cmd.addOption("--access-control", "+ac", "enforce host access control rules");
 #endif
 
@@ -529,8 +567,8 @@ int main(int argc, char *argv[])
     cmd.addOption("--write-seed-file",        "+wf",  1, "[f]ilename: string (only with --seed)",
         "write modified seed to file f");
     cmd.addSubGroup("peer authentication");
-    cmd.addOption("--require-peer-cert",      "-rc",     "verify peer certificate, fail if absent (def.)");
-    cmd.addOption("--verify-peer-cert",       "-vc",     "verify peer certificate if present");
+    cmd.addOption("--require-peer-cert", "-rc", "verify peer certificate, fail if absent (def.)");
+    cmd.addOption("--verify-peer-cert", "-vc", "verify peer certificate if present");
     cmd.addOption("--ignore-peer-cert", "-ic", "don't verify peer certificate");
 #endif
 
@@ -547,7 +585,7 @@ int main(int argc, char *argv[])
     cmd.addOption("--write-xfer-same", "+t=", "write with same TS as input (default)");
     cmd.addOption("--write-xfer-little", "+te", "write with explicit VR little endian TS");
     cmd.addOption("--write-xfer-big", "+tb", "write with explicit VR big endian TS");
-    cmd.addOption("--write-xfer-implicit",    "+ti",     "write with implicit VR little endian TS");
+    cmd.addOption("--write-xfer-implicit", "+ti", "write with implicit VR little endian TS");
 #ifdef WITH_ZLIB
     cmd.addOption("--write-xfer-deflated", "+td", "write with deflated expl. VR little endian TS");
 #endif
@@ -567,7 +605,7 @@ int main(int argc, char *argv[])
         "align file on multiple of f bytes and items\non multiple of i bytes");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated/same):");
-    cmd.addOption("--compression-level",      "+cl",  1, "[l]evel: integer (default: 6)",
+    cmd.addOption("--compression-level", "+cl", 1, "[l]evel: integer (default: 6)",
         "0=uncompressed, 1=fastest, 9=best compression");
 #endif
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
@@ -661,7 +699,7 @@ int main(int argc, char *argv[])
             // the port number is not really used. Set to non-privileged port number
             // to avoid failing the privilege test.
             opt_port = 1024;
-    }
+        }
 #endif
 
 #if defined(HAVE_FORK) || defined(_WIN32)
@@ -1066,7 +1104,7 @@ int main(int argc, char *argv[])
                 (opt_writeTransferSyntax == EXS_DeflatedLittleEndianExplicit) || (opt_writeTransferSyntax == EXS_Unknown));
             app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
             dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
-}
+        }
 #endif
 
         cmd.beginOptionBlock();
@@ -1219,8 +1257,7 @@ int main(int argc, char *argv[])
                 if (!opt_ciphersuites.empty()) opt_ciphersuites += ":";
                 opt_ciphersuites += currentOpenSSL;
             }
-        }
-        while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));
+        } while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));
     }
 
 #endif
@@ -1405,7 +1442,7 @@ int main(int argc, char *argv[])
             {
                 OFLOG_WARN(storescpLogger, "cannot write random seed, ignoring");
             }
-    }
+        }
 #endif
         // if running in inetd mode, we always terminate after one association
         if (opt_inetd_mode) break;
@@ -1884,7 +1921,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
             OFLOG_INFO(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
         else
             OFLOG_DEBUG(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
-}
+    }
 
 #ifdef BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX
     /* active the dcmPeerRequiresExactUIDCopy workaround code
@@ -2402,7 +2439,7 @@ DcmDataset **statusDetail)
                         // if it does not exist create it
                         OFLOG_INFO(storescpLogger, "creating new subdirectory for study: " << subdirectoryPathAndName);
 #ifdef HAVE_WINDOWS_H
-                        if( _mkdir( subdirectoryPathAndName.c_str() ) == -1 )
+                        if (_mkdir(subdirectoryPathAndName.c_str()) == -1)
 #else
                         if (mkdir(subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
 #endif
