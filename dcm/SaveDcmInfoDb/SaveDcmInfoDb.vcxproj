@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HMariaDb.cpp" />
-    <ClCompile Include="StoreDcmInfoDb.cc" />
+    <ClCompile Include="SaveDcmInfoDb.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HMariaDb.h" />

@@ -231,6 +231,10 @@ extern "C" void sigChildHandler(int)
 
 #define SHORTCOL 4
 #define LONGCOL 21
+
+//----20190425增加配置参数允许NotMatchSOPClass
+OFBool Accept_NotMatchSOPClass = OFTrue;
+//--------------------------
 struct OFHashValue
 {
     INT16 first;
@@ -2444,7 +2448,7 @@ DcmDataset **statusDetail)
                         if (!OFStandard::fileExists(ini_filename))
                         {
                             inifile.fopen(ini_filename, "w");
-                           
+
                             inifile.fputs("[study]");
                             inifile.fputs("\n");
                             OFString str = "studyuid=" + currentStudyInstanceUID;
@@ -2606,7 +2610,12 @@ DcmDataset **statusDetail)
                 }
                 else if (strcmp(sopInstance, req->AffectedSOPInstanceUID) != 0)
                 {
-                    rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
+                    OFLOG_WARN(storescpLogger, "STATUS_STORE_Error_DataSetDoesNotMatchSOPClass " << fileName);
+                    // to do 补充配置 ,是否允许NotMatchSOPClass
+                    if (!Accept_NotMatchSOPClass)
+                    {
+                        rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
+                    }
                 }
             }
         }
@@ -2655,7 +2664,7 @@ static OFCondition storeSCP(
 #else
         strcpy(imageFileName, NULL_DEVICE_NAME);
 #endif
-    }
+}
     else
     {
         // 3 possibilities: create unique filenames (fn), create timestamp fn, create fn from SOP Instance UIDs
@@ -3040,7 +3049,7 @@ static void executeCommand(const OFString &cmd)
         /* we are the parent process */
         /* remove pending zombie child processes */
         cleanChildren(pid, opt_execSync);
-        }
+    }
     else // in case we are the child process, execute the command etc.
     {
         // execute command through execl will terminate the child process.

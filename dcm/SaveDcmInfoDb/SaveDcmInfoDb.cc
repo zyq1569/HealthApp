@@ -576,7 +576,7 @@ void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> 
 struct  HStudyInfo
 {
     OFString StudyInstanceUID, StudyPatientName, StudyPatientId, StudySex, StudyID, PatientNameEnglish;
-    OFString StudyAge, PatientBirth,  StudyState, StudyDateTime, StudyModality, StudyManufacturer, StudyInstitutionName;
+    OFString StudyAge, PatientBirth, StudyState, StudyDateTime, StudyModality, StudyManufacturer, StudyInstitutionName;
 };
 #include"HMariaDb.h"
 #include "dcmtk/ofstd/ofdatime.h"
@@ -721,16 +721,24 @@ OFBool SaveDcmInfo2Db(OFString filename)
         //OFCondition l_error = EC_Normal;
         try
         {
-            OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
-            HMariaDb *pMariaDb;
+            if (StudyInfo.StudyInstanceUID.length()< 1)
+            {
+                OFLOG_ERROR(SaveDcmInfoDbLogger, "NO StudyInstanceUID filename:" + filename);
+                return OFFalse;
+            }
+            static HMariaDb *pMariaDb = NULL;
+            if (pMariaDb == NULL)
+            {
+                OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
 #ifdef _UNICODE
-            pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
-                W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+                pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
+                    W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 #else
-            pMariaDb = new HMariaDb(strIP.c_str(), strUser.c_str(), \
-                strPwd.c_str(), strDadaName.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+                pMariaDb = new HMariaDb(strIP.c_str(), strUser.c_str(), \
+                    strPwd.c_str(), strDadaName.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 
 #endif
+            }
             OFString querysql = "select * from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
             pMariaDb->query(querysql.c_str());
             ResultSet * rs = pMariaDb->QueryResult();
@@ -742,7 +750,7 @@ OFBool SaveDcmInfo2Db(OFString filename)
                 sprintf(uuid, "%llu", CreateGUID());
                 PatientIdentity = uuid;
                 querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
-                                                                                                                                       PatientSex,PatientBirthday) value(";
+                                                   PatientSex,PatientBirthday) value(";
                 querysql += PatientIdentity;
                 querysql += ",'";
                 querysql += StudyInfo.StudyPatientId;
@@ -800,11 +808,13 @@ OFBool SaveDcmInfo2Db(OFString filename)
                 pMariaDb->execute(strsql.c_str());
             }
             OFStandard::deleteFile(filename);
+            OFLOG_INFO(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
         }
-        catch (STD_NAMESPACE bad_alloc const &)
+        catch (...)
         {
             //OFLOG_ERR(storescuLogger, "---------argv[]:" + tempstr + " ----------------------");
             OFLOG_ERROR(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
+            return OFFalse;
         }
         //  
     }
@@ -862,6 +872,11 @@ int main(int argc, char *argv[])
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------argv[]:" + tempstr + " ----------------------");
 
     OFString ini_filename, ini_dir = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
+    OFString ini_error_dir = currentAppPath + "/DCM_SAVE/Task/error";
+    if (!OFStandard::dirExists(ini_error_dir))
+    {
+        OFStandard::createDirectory(ini_error_dir, currentAppPath + "/DCM_SAVE/Task/");//CreatDir(log_dir);
+    }
     OFList<OFString> list_file_ini;
     while (true)
     {
@@ -874,7 +889,15 @@ int main(int argc, char *argv[])
             OFListIterator(OFString) enditer = list_file_ini.end();
             while (iter != enditer)
             {
-                SaveDcmInfo2Db(*iter);
+                if (!SaveDcmInfo2Db(*iter))
+                {
+                    OFString filename;
+                    OFStandard::getFilenameFromPath(filename, *iter);
+                    if (OFStandard::copyFile(*iter, ini_error_dir + "/" + filename),OFTrue)
+                    {
+                        OFStandard::deleteFile(*iter);
+                    }
+                }
                 ++iter;
             }
         }
