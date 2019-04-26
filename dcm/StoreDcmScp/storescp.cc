@@ -234,6 +234,7 @@ extern "C" void sigChildHandler(int)
 
 //----20190425增加配置参数允许NotMatchSOPClass
 OFBool Accept_NotMatchSOPClass = OFTrue;
+#define TEST_STORE  //line:2599 考虑存储空间有限，直接删除store 服务收到的dcm文件
 //--------------------------
 struct OFHashValue
 {
@@ -1492,7 +1493,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     };
 
     const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
-        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 20
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL,  // 21
         NULL
     };                                                      // +1
     int numTransferSyntaxes = 0;
@@ -1791,7 +1792,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
                 transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
             }
             transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
-            numTransferSyntaxes = 21;
+            transferSyntaxes[21] = UID_JPEGProcess14TransferSyntax;
+            numTransferSyntaxes = 22;
         }
         else
         {
@@ -2593,7 +2595,10 @@ DcmDataset **statusDetail)
                 // delete incomplete file
                 OFStandard::deleteFile(fileName);
             }
-
+            //测试dcm数据store,空间不够，直接删除.
+#ifdef TEST_STORE
+            OFStandard::deleteFile(fileName);
+#endif
             // check the image to make sure it is consistent, i.e. that its sopClass and sopInstance correspond
             // to those mentioned in the request. If not, set the status in the response message variable.
             if (rsp->DimseStatus == STATUS_Success)
@@ -2664,7 +2669,7 @@ static OFCondition storeSCP(
 #else
         strcpy(imageFileName, NULL_DEVICE_NAME);
 #endif
-}
+    }
     else
     {
         // 3 possibilities: create unique filenames (fn), create timestamp fn, create fn from SOP Instance UIDs
@@ -3128,7 +3133,7 @@ static void cleanChildren(pid_t pid, OFBool synch)
         if (synch) child = -1; // break out of loop
     }
 #endif
-    }
+}
 
 
 static

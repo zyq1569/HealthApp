@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ofstd", "dcm\dcmstd\ofstd.v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcmdata", "dcm\dcmdata\dcmdata.vcxproj", "{966AFCA2-8EE7-3F51-99A0-C49D9C2553FE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SaveDcmInfoDb", "dcm\SaveDcmInfoDb\SaveDcmInfoDb.vcxproj", "{40EB9402-B7B8-4D51-814E-840AED5948B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -170,6 +172,18 @@ Global
 		{966AFCA2-8EE7-3F51-99A0-C49D9C2553FE}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
 		{966AFCA2-8EE7-3F51-99A0-C49D9C2553FE}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
 		{966AFCA2-8EE7-3F51-99A0-C49D9C2553FE}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.Debug|Win32.Build.0 = Debug|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.Debug|x64.ActiveCfg = Debug|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.MinSizeRel|x64.ActiveCfg = MinSizeRel|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.Release|Win32.ActiveCfg = Release|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.Release|Win32.Build.0 = Release|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.Release|x64.ActiveCfg = Release|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{40EB9402-B7B8-4D51-814E-840AED5948B3}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
