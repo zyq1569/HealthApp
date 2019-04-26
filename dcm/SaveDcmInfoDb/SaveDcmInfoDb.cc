@@ -533,8 +533,12 @@ void SearchDirectory(const OFString Dir, OFList<OFString> &datas)
 
 //-----------------------------------------------------------------------------------
 //查找Dir目录下的扩展名为FileExt的内容，包含所有子级目录，如果FileExt为空表示查找所有文件
-void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> &datas, const bool Not = false)
+void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 50)
 {
+    if (datas.size() >= Count)
+    {
+        return;
+    }
 #ifdef HAVE_WINDOWS_H
     OFString dir = AdjustDir(Dir);
     if (dir == "")
@@ -788,7 +792,8 @@ OFBool SaveDcmInfo2Db(OFString filename)
                 char uuid[64];
                 sprintf(uuid, "%llu", CreateGUID());
                 OFString StudyIdentity = uuid;
-                OFString strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,StudyModality,InstitutionName,StudyManufacturer) value(";
+                OFString strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,\
+                                  StudyDateTime,StudyModality,InstitutionName,StudyManufacturer) value(";
                 strsql += StudyIdentity;
                 strsql += ",'";
                 strsql += StudyInfo.StudyID;
@@ -818,8 +823,6 @@ OFBool SaveDcmInfo2Db(OFString filename)
         }
         //  
     }
-
-
     return OFTrue;
 }
 int main(int argc, char *argv[])
