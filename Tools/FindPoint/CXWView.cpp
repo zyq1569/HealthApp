@@ -744,6 +744,10 @@ void CCXWView::ReadExcelFie(CString pathfilename, CString filename)
             cell->SetString("points number");
             cell = result_sheet->Cell(0, 3);
             cell->SetString("distance = point<->point");//
+            cell = result_sheet->Cell(0, 4);
+            cell->SetString("between two points:X");//
+            cell = result_sheet->Cell(0, 5);
+            cell->SetString("between two points:Y");//
 
             LONG64 row = g_X_get.size();
             cell = result_sheet->Cell(1, 2);
@@ -767,12 +771,15 @@ void CCXWView::ReadExcelFie(CString pathfilename, CString filename)
                 {
                     cell = result_sheet->Cell(r, 3);
                     cell->SetDouble(dis_list[index_dis++]);
+                    cell = result_sheet->Cell(r, 4);
+                    cell->SetDouble((g_X_get[r - 2] + g_X_get[r - 1]) / 2);
+                    cell = result_sheet->Cell(r, 5);
+                    cell->SetDouble((g_Y_get[r - 2] + g_Y_get[r - 1]) / 2);
                 }
             }
         }
         if (input_sheet1)
         {
-
             cell = input_sheet1->Cell(0, 0);
             cell->SetString("input x");
             cell = input_sheet1->Cell(0, 1);
