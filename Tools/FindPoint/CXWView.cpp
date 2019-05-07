@@ -72,6 +72,7 @@ bool IsExitPoint(double xo, double yo, double x1, double y1, double dis)
         return false;
     }
     //暂时不考虑刚好终点距离就是要求的距离
+	return false;
 }
 //// 得到当前执行的exe的全路径文件名，如果失败返回""
 //CString GetApplicationFullName()
@@ -426,9 +427,9 @@ void CCXWView::OnDraw(CDC* /*pDC*/)
     }
     else
     {
-        CString tip = _T("使用说明：菜单中 '文件(F)'，选择 '打开'，选择待读取的EXCEL数据文件，选择后，后台即刻开始计算，完成后对话框提示!");
+        CString tip = _T("使用说明:菜单中'文件(F)',选择'打开',选择待读取的EXCEL数据文件(路径不能包含中文),选择后,后台即刻开始计算,完成后对话框提示!");
         dc->TextOut(1, 10, tip);
-        tip = _T("备注：EXCEL文件数据格式.第一个表格，第一行：第一二列分别为X、Y，第二行第三列为圆心到交点距离，第二行开始时对应的数据,否则数据加载失败!");
+        tip = _T("备注:EXCEL文件数据格式.第一个表格,第一行:第一二列分别为X、Y,第二行第三列为圆心到交点距离,第二行开始时对应的数据,否则数据加载失败!");
         dc->TextOut(1, 30, tip);
     }
     //int point_number = g_display_Xvalue.size();

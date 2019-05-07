@@ -62,35 +62,35 @@ END_EXTERN_C
 
 class WlmFileSystemInteractionManager::MatchingKeys
 {
-  MatchingKeys(int)
-  {
-    keys.push_back(OFMake_pair(DCM_PatientName,OFTrue));
-    keys.push_back(OFMake_pair(DCM_ResponsiblePerson,OFTrue));
-    keys.push_back(OFMake_pair(DCM_ResponsiblePersonRole,OFTrue));
-    keys.push_back(OFMake_pair(DCM_PatientID,OFFalse));
-    keys.push_back(OFMake_pair(DCM_AccessionNumber,OFTrue));
-    keys.push_back(OFMake_pair(DCM_RequestedProcedureID,OFTrue));
-    keys.push_back(OFMake_pair(DCM_ReferringPhysicianName,OFTrue));
-    keys.push_back(OFMake_pair(DCM_PatientSex,OFTrue));
-    keys.push_back(OFMake_pair(DCM_RequestingPhysician,OFTrue));
-    keys.push_back(OFMake_pair(DCM_AdmissionID,OFTrue));
-    keys.push_back(OFMake_pair(DCM_RequestedProcedurePriority,OFTrue));
-    keys.push_back(OFMake_pair(DCM_PatientBirthDate,OFTrue));
-    keys.push_back(OFMake_pair(DCM_IssuerOfPatientID,OFTrue));
-    combinedKeys.push_back(OFMake_pair(DCM_StudyDate,DCM_StudyTime));
-    sequenceKeys.push_back(OFMake_pair(DCM_ScheduledProcedureStepSequence,MatchingKeys()));
-    sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_ScheduledStationAETitle,OFFalse));
-    sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_Modality,OFFalse));
-    sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_ScheduledPerformingPhysicianName,OFTrue));
-    sequenceKeys.back().second.combinedKeys.push_back(OFMake_pair(DCM_ScheduledProcedureStepStartDate,DCM_ScheduledProcedureStepStartTime));
-  }
+	MatchingKeys(int)
+	{
+		keys.push_back(OFMake_pair(DCM_PatientName, OFTrue));
+		keys.push_back(OFMake_pair(DCM_ResponsiblePerson, OFTrue));
+		keys.push_back(OFMake_pair(DCM_ResponsiblePersonRole, OFTrue));
+		keys.push_back(OFMake_pair(DCM_PatientID, OFFalse));
+		keys.push_back(OFMake_pair(DCM_AccessionNumber, OFTrue));
+		keys.push_back(OFMake_pair(DCM_RequestedProcedureID, OFTrue));
+		keys.push_back(OFMake_pair(DCM_ReferringPhysicianName, OFTrue));
+		keys.push_back(OFMake_pair(DCM_PatientSex, OFTrue));
+		keys.push_back(OFMake_pair(DCM_RequestingPhysician, OFTrue));
+		keys.push_back(OFMake_pair(DCM_AdmissionID, OFTrue));
+		keys.push_back(OFMake_pair(DCM_RequestedProcedurePriority, OFTrue));
+		keys.push_back(OFMake_pair(DCM_PatientBirthDate, OFTrue));
+		keys.push_back(OFMake_pair(DCM_IssuerOfPatientID, OFTrue));
+		combinedKeys.push_back(OFMake_pair(DCM_StudyDate, DCM_StudyTime));
+		sequenceKeys.push_back(OFMake_pair(DCM_ScheduledProcedureStepSequence, MatchingKeys()));
+		sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_ScheduledStationAETitle, OFFalse));
+		sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_Modality, OFFalse));
+		sequenceKeys.back().second.keys.push_back(OFMake_pair(DCM_ScheduledPerformingPhysicianName, OFTrue));
+		sequenceKeys.back().second.combinedKeys.push_back(OFMake_pair(DCM_ScheduledProcedureStepStartDate, DCM_ScheduledProcedureStepStartTime));
+	}
 
 public:
-  static const MatchingKeys root;
-  MatchingKeys() {}
-  OFVector<OFPair<DcmTagKey,OFBool> >       keys;
-  OFVector<OFPair<DcmTagKey,DcmTagKey> >    combinedKeys;
-  OFVector<OFPair<DcmTagKey,MatchingKeys> > sequenceKeys;
+	static const MatchingKeys root;
+	MatchingKeys() {}
+	OFVector<OFPair<DcmTagKey, OFBool> >       keys;
+	OFVector<OFPair<DcmTagKey, DcmTagKey> >    combinedKeys;
+	OFVector<OFPair<DcmTagKey, MatchingKeys> > sequenceKeys;
 };
 
 const WlmFileSystemInteractionManager::MatchingKeys WlmFileSystemInteractionManager::MatchingKeys::root(0);
@@ -103,9 +103,9 @@ WlmFileSystemInteractionManager::WlmFileSystemInteractionManager()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : dfPath( "" ),
-    enableRejectionOfIncompleteWlFiles( OFTrue ), calledApplicationEntityTitle( "" ),
-    matchingRecords( NULL ), numOfMatchingRecords( 0 )
+: dfPath(""),
+enableRejectionOfIncompleteWlFiles(OFTrue), calledApplicationEntityTitle(""),
+matchingRecords(NULL), numOfMatchingRecords(0)
 {
 }
 
@@ -122,40 +122,40 @@ WlmFileSystemInteractionManager::~WlmFileSystemInteractionManager()
 
 // ----------------------------------------------------------------------------
 
-void WlmFileSystemInteractionManager::SetEnableRejectionOfIncompleteWlFiles( OFBool value )
+void WlmFileSystemInteractionManager::SetEnableRejectionOfIncompleteWlFiles(OFBool value)
 // Date         : May 3, 2005
 // Author       : Thomas Wilkens
 // Task         : Set value in member variable.
 // Parameters   : value - [in] The value to set.
 // Return Value : none.
 {
-  enableRejectionOfIncompleteWlFiles = value;
+	enableRejectionOfIncompleteWlFiles = value;
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition WlmFileSystemInteractionManager::ConnectToFileSystem( const OFString& dfPathv )
+OFCondition WlmFileSystemInteractionManager::ConnectToFileSystem(const OFString& dfPathv)
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : Connects to the worklist file system database.
 // Parameters   : dfPathv - [in] Path to worklist file system database.
 // Return Value : Indicates if the connection could be established or not.
 {
-  // check parameter
-  if( dfPathv.empty() )
-  {
-    DCMWLM_ERROR("Invalid parameters, cannot connect to worklist file system database");
-    return( WLM_EC_CannotConnectToDataSource );
-  }
+	// check parameter
+	if (dfPathv.empty())
+	{
+		DCMWLM_ERROR("Invalid parameters, cannot connect to worklist file system database");
+		return(WLM_EC_CannotConnectToDataSource);
+	}
 
-  // copy value
-  dfPath = dfPathv;
+	// copy value
+	dfPath = dfPathv;
 
-  // check if the specified path is existent and accessible for reading
-  if( !OFStandard::dirExists( dfPath ) || !OFStandard::isReadable( dfPath ) )
-    return( WLM_EC_CannotConnectToDataSource );
-  else
-    return( EC_Normal );
+	// check if the specified path is existent and accessible for reading
+	if (!OFStandard::dirExists(dfPath) || !OFStandard::isReadable(dfPath))
+		return(WLM_EC_CannotConnectToDataSource);
+	else
+		return(EC_Normal);
 }
 
 // ----------------------------------------------------------------------------
@@ -167,12 +167,12 @@ OFCondition WlmFileSystemInteractionManager::DisconnectFromFileSystem()
 // Parameters   : none.
 // Return Value : Indicates if the connection was disconnected successfully.
 {
-  return( EC_Normal );
+	return(EC_Normal);
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported( const OFString& calledApplicationEntityTitlev )
+OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(const OFString& calledApplicationEntityTitlev)
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : Checks if the given called application entity title is supported. If this is the case,
@@ -182,26 +182,98 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
 // Return Value : OFTrue  - The called application entity title is supported.
 //                OFFalse - The called application entity title is not supported or it is not given.
 {
-  // copy value
-  calledApplicationEntityTitle = calledApplicationEntityTitlev;
+	// copy value
+	calledApplicationEntityTitle = calledApplicationEntityTitlev;
 
-  // Determine complete path to the files that make up the data source.
-  OFString fullPath( dfPath );
-  if( !fullPath.empty() && fullPath[fullPath.length()-1] != PATH_SEPARATOR )
-    fullPath += PATH_SEPARATOR;
-  fullPath += calledApplicationEntityTitle;
+	// Determine complete path to the files that make up the data source.
+	OFString fullPath(dfPath);
+	if (!fullPath.empty() && fullPath[fullPath.length() - 1] != PATH_SEPARATOR)
+		fullPath += PATH_SEPARATOR;
+	fullPath += calledApplicationEntityTitle;
 
-  // in case the path is not existent, we need to return OFFalse
-  if( !( OFStandard::dirExists( OFString( fullPath ) ) ) )
-    return( OFFalse );
+	// in case the path is not existent, we need to return OFFalse
+	if (!(OFStandard::dirExists(OFString(fullPath))))
+	{
+		DCMWLM_WARN("dfPath:in case the path is not existent "); //add zyq20190507
+		//return(OFFalse);
+	}
 
-  // if we get to here, the path is existent and we need to return OFTrue
-  return( OFTrue );
+	// if we get to here, the path is existent and we need to return OFTrue
+	return(OFTrue);
 }
 
 // ----------------------------------------------------------------------------
+/******************************************************************************************
+参数
+- s - dfr - dfp  D : \DCMTK\dcmtk - 3.6.0\dcmwlm\data\wlistdb  104
+- s 是单独进程模式或者线程模式
+unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDataset *searchMask)
+//相关类似资料
+http://bbs.hc3i.cn/thread-111610-1-1.html
+在D : \DCMTK\dcmtk - 3.6.0\dcmwlm\libsrc\wlfsim.cc 文件里面增加了参考修改dcm文件的代码
+void SetWorklistData(DcmDataset *dataset)
 
-unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmDataset *searchMask )
+scp 选择 wlmscpfs 工程 debug设置 成 - s - dfr - dfp  D : \DCMTK\dcmtk - 3.6.0\dcmwlm\data\wlistdb  104
+代码在dcmtk - 3.6.0\dcmwlm\libsrc\wlfsim.cc
+scu 使用先把wlistqry.wl 拷贝到 D : \DCMTK\dcmtkXP\bin\Debug下面 再在D : \DCMTK\dcmtkXP\bin
+findscu 127.0.0.1 104 wlistqry.wl - aec OFFIS
+************************************************************************************************ /
+//可以创建一个dcm文件，然后根据查询的条件,搜索数据库,再修改dcm文件，返回值
+// -s -dfr -dfp  D:\DCMTK\dcmtk-3.6.0\dcmwlm\data\wlistdb  104
+findscu 127.0.0.1 104 wlistqry.wl -aec OFFIS
+************************************************************************************************/
+void SetWorklistData(DcmDataset *dataset, DcmDataset *searchMask)
+{
+    //name pID date modality  ae
+    OFString PatientName, PatientID, StartDate, StartTime, Modality, AETitle;
+    DcmElement *ScheduledProcedureStepSequence;// = searchMask->getElement(DCM_ScheduledProcedureStepSequence);
+    if (!searchMask->findAndGetElement(DCM_ScheduledProcedureStepSequence, ScheduledProcedureStepSequence).bad() || ((DcmSequenceOfItems*)ScheduledProcedureStepSequence)->card() != 1)
+    //if ((searchMask)->findAndGetOFString(DCM_Modality, Modality).bad())
+    {
+        DcmItem *scheduledProcedureStepSequenceItem = ((DcmSequenceOfItems*)ScheduledProcedureStepSequence)->getItem(0);
+        if (scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_Modality, Modality).bad())
+        {
+            DCMWLM_WARN("searchMask no DCM_Modality");
+        }
+    }
+	dataset->putAndInsertString(DCM_PatientName, "Doe^John");
+	dataset->putAndInsertString(DCM_AccessionNumber, "A00001");
+	dataset->putAndInsertString(DCM_PatientID, "A000001");
+	dataset->putAndInsertString(DCM_PatientBirthDate, "19991001");
+	dataset->putAndInsertString(DCM_PatientBirthTime, "20:22:20");
+	dataset->putAndInsertString(DCM_MedicalAlerts, "ABZESS");
+	dataset->putAndInsertString(DCM_Allergies, "BARIUMSULFAT");
+	dataset->putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
+	dataset->putAndInsertString(DCM_RequestingPhysician, "NEIER");
+	dataset->putAndInsertString(DCM_RequestedProcedureDescription, "EXAM78");
+	dataset->putAndInsertString(DCM_PatientSex, "W");
+	//const char *time = NULL;
+	dataset->putAndInsertString(DCM_ScheduledProcedureStepStartDate, "20131208");
+	DcmItem *ditem = NULL;
+	if (dataset->findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence, ditem).good())
+	{
+        if (Modality.empty())
+        {
+            ditem->putAndInsertString(DCM_Modality, "CT");
+        }
+        else
+        {
+            ditem->putAndInsertString(DCM_Modality, Modality.c_str());
+        }
+		
+		ditem->putAndInsertString(DCM_ScheduledStationAETitle, "20141012");
+		ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate, "20131208");
+		ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime, "21:44:00");
+		ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription, "EXAM56");
+		ditem->putAndInsertString(DCM_ScheduledProcedureStepID, "SPD575841");
+		ditem->putAndInsertString(DCM_ScheduledStationName, "STN345");
+		ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation, "B55P56");
+	}
+	dataset->putAndInsertString(DCM_RequestedProcedureID, "RP34734H328");
+	dataset->putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
+}
+// ----------------------------------------------------------------------------
+unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDataset *searchMask)
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function determines the records from the worklist files which match
@@ -211,87 +283,91 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 // Parameters   : searchMask - [in] The search mask.
 // Return Value : Number of matching records.
 {
-  OFVector<OFString> worklistFiles;
+	OFVector<OFString> worklistFiles;
 
-  // initialize member variables
-  matchingRecords = NULL;
-  numOfMatchingRecords = 0;
+	// initialize member variables
+	matchingRecords = NULL;
+	numOfMatchingRecords = 0;
 
-  // determine all worklist files
-  DetermineWorklistFiles( worklistFiles );
+	// determine all worklist files
+	//DetermineWorklistFiles(worklistFiles);
 
-  // go through all worklist files
-  for( unsigned int i=0 ; i<worklistFiles.size() ; i++ )
-  {
-    // read information from worklist file
-    DcmFileFormat fileform;
-    if (fileform.loadFile(worklistFiles[i].c_str()).bad())
-    {
-      DCMWLM_WARN("Could not read worklist file " << worklistFiles[i] << " properly, file will be ignored");
-    }
-    else
-    {
-      // determine the data set which is contained in the worklist file
-      DcmDataset *dataset = fileform.getDataset();
-      if( dataset == NULL )
-      {
-        DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is empty, file will be ignored");
-      }
-      else
-      {
-        if( enableRejectionOfIncompleteWlFiles )
-          DCMWLM_INFO("Checking whether worklist file " << worklistFiles[i] << " is complete");
-        // in case option --enable-file-reject is set, we have to check if the current
-        // .wl-file meets certain conditions; in detail, the file's dataset has to be
-        // checked whether it contains all necessary return type 1 attributes and contains
-        // information in all these attributes; if this is condition is not met, the
-        // .wl-file shall be rejected
-        if( enableRejectionOfIncompleteWlFiles && !DatasetIsComplete( dataset ) )
-        {
-          DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is incomplete, file will be ignored");
-        }
-        else
-        {
-          // check if the current dataset matches the matching key attribute values
-          if( !DatasetMatchesSearchMask( dataset, searchMask, MatchingKeys::root ) )
-          {
-            DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " does not match query");
-          }
-          else
-          {
-            DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " matches query");
+	// go through all worklist files
+	//for (unsigned int i = 0; i < worklistFiles.size(); i++)
+	{
+		// read information from worklist file
+		DcmFileFormat fileform;
+		//if (fileform.loadFile(worklistFiles[i].c_str()).bad())
+		//{
+		//	DCMWLM_WARN("Could not read worklist file " << worklistFiles[i] << " properly, file will be ignored");
+		//}
+		//else
+		{
+			// determine the data set which is contained in the worklist file
+			//DcmDataset *dataset = fileform.getDataset();
+			DcmDataset *dataset = new DcmDataset();//fileform.getDataset();
+			SetWorklistData(dataset,searchMask);//bitter 20130501
+			if (dataset == NULL)
+			{
+				//DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is empty, file will be ignored");
+				DCMWLM_WARN("Creat Worklist file fail! will be ignored ");
+			}
+			else
+			{
+				if (enableRejectionOfIncompleteWlFiles)
+					DCMWLM_INFO("Checking whether Creat Worklist file  is complete");
+					//DCMWLM_INFO("Checking whether worklist file " << worklistFiles[i] << " is complete");
+				// in case option --enable-file-reject is set, we have to check if the current
+				// .wl-file meets certain conditions; in detail, the file's dataset has to be
+				// checked whether it contains all necessary return type 1 attributes and contains
+				// information in all these attributes; if this is condition is not met, the
+				// .wl-file shall be rejected
+				if (enableRejectionOfIncompleteWlFiles && !DatasetIsComplete(dataset))
+				{
+					//DCMWLM_WARN("Worklist file " << worklistFiles[i] << " is incomplete, file will be ignored");
+					DCMWLM_WARN("Creat Worklist file  is incomplete, file will be ignored");
+				}
+				else
+				{
+					// check if the current dataset matches the matching key attribute values
+					if (!DatasetMatchesSearchMask(dataset, searchMask, MatchingKeys::root))
+					{
+						//DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " does not match query");
+						DCMWLM_INFO("Information from Created Worklist file  does not match query");
+					}
+					else
+					{
+						//DCMWLM_INFO("Information from worklist file " << worklistFiles[i] << " matches query");
+						// since the dataset matches the matching key attribute values
+						// we need to insert it into the matchingRecords array
+						if (numOfMatchingRecords == 0)
+						{
+							matchingRecords = new DcmDataset*[1];
+							matchingRecords[0] = new DcmDataset(*dataset);
+						}
+						else
+						{
+							DcmDataset **tmp = new DcmDataset*[numOfMatchingRecords + 1];
+							for (unsigned long j = 0; j < numOfMatchingRecords; j++)
+								tmp[j] = matchingRecords[j];
+							tmp[numOfMatchingRecords] = new DcmDataset(*dataset);
+							delete[] matchingRecords;
+							matchingRecords = tmp;
+						}
+						numOfMatchingRecords++;
+					}
+				}
+			}
+		}
+	}
 
-            // since the dataset matches the matching key attribute values
-            // we need to insert it into the matchingRecords array
-            if( numOfMatchingRecords == 0 )
-            {
-              matchingRecords = new DcmDataset*[1];
-              matchingRecords[0] = new DcmDataset( *dataset );
-            }
-            else
-            {
-              DcmDataset **tmp = new DcmDataset*[numOfMatchingRecords + 1];
-              for( unsigned long j=0 ; j<numOfMatchingRecords ; j++ )
-                tmp[j] = matchingRecords[j];
-              tmp[numOfMatchingRecords] = new DcmDataset( *dataset );
-              delete[] matchingRecords;
-              matchingRecords = tmp;
-            }
-
-            numOfMatchingRecords++;
-          }
-        }
-      }
-    }
-  }
-
-  // return result
-  return( numOfMatchingRecords );
+	// return result
+	return(numOfMatchingRecords);
 }
 
 // ----------------------------------------------------------------------------
 
-unsigned long WlmFileSystemInteractionManager::GetNumberOfSequenceItemsForMatchingRecord( DcmTagKey sequenceTag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx )
+unsigned long WlmFileSystemInteractionManager::GetNumberOfSequenceItemsForMatchingRecord(DcmTagKey sequenceTag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx)
 // Date         : January 6, 2004
 // Author       : Thomas Wilkens
 // Task         : For the matching record that is identified through idx, this function returns the number
@@ -309,49 +385,49 @@ unsigned long WlmFileSystemInteractionManager::GetNumberOfSequenceItemsForMatchi
 // Return Value : The number of items that are contained in the sequence element that is referred to by
 //                sequenceTag and that can be found in sequence items which are specified in superiorSequenceArray.
 {
-  OFCondition cond;
-  DcmSequenceOfItems *sequenceElement = NULL, *tmp = NULL;
-  unsigned long i;
+	OFCondition cond;
+	DcmSequenceOfItems *sequenceElement = NULL, *tmp = NULL;
+	unsigned long i;
 
-  // initialize result variable
-  unsigned long numOfItems = 0;
+	// initialize result variable
+	unsigned long numOfItems = 0;
 
-  // if the sequence in question is not contained in another sequence
-  if( numOfSuperiorSequences == 0 )
-  {
-    // simply find and get this sequence in the matching dataset (on the main level)
-    cond = matchingRecords[idx]->findAndGetSequence( sequenceTag, sequenceElement, OFFalse );
-  }
-  else
-  {
-    // if it is contained in (an)other sequence(s), find it
-    cond = matchingRecords[idx]->findAndGetSequence( superiorSequenceArray[0].sequenceTag, sequenceElement, OFFalse );
-    for( i=1 ; i<numOfSuperiorSequences && cond.good() ; i++ )
-    {
-      cond = sequenceElement->getItem( superiorSequenceArray[i-1].currentItem )->findAndGetSequence( superiorSequenceArray[i].sequenceTag, tmp, OFFalse );
-      if( cond.good() )
-        sequenceElement = tmp;
-    }
+	// if the sequence in question is not contained in another sequence
+	if (numOfSuperiorSequences == 0)
+	{
+		// simply find and get this sequence in the matching dataset (on the main level)
+		cond = matchingRecords[idx]->findAndGetSequence(sequenceTag, sequenceElement, OFFalse);
+	}
+	else
+	{
+		// if it is contained in (an)other sequence(s), find it
+		cond = matchingRecords[idx]->findAndGetSequence(superiorSequenceArray[0].sequenceTag, sequenceElement, OFFalse);
+		for (i = 1; i < numOfSuperiorSequences && cond.good(); i++)
+		{
+			cond = sequenceElement->getItem(superiorSequenceArray[i - 1].currentItem)->findAndGetSequence(superiorSequenceArray[i].sequenceTag, tmp, OFFalse);
+			if (cond.good())
+				sequenceElement = tmp;
+		}
 
-    if( cond.good() )
-    {
-      cond = sequenceElement->getItem( superiorSequenceArray[ numOfSuperiorSequences - 1 ].currentItem )->findAndGetSequence( sequenceTag, tmp, OFFalse );
-      if( cond.good() )
-        sequenceElement = tmp;
-    }
-  }
+		if (cond.good())
+		{
+			cond = sequenceElement->getItem(superiorSequenceArray[numOfSuperiorSequences - 1].currentItem)->findAndGetSequence(sequenceTag, tmp, OFFalse);
+			if (cond.good())
+				sequenceElement = tmp;
+		}
+	}
 
-  // determine number of items for the sequence in question
-  if( cond.good() )
-    numOfItems = sequenceElement->card();
+	// determine number of items for the sequence in question
+	if (cond.good())
+		numOfItems = sequenceElement->card();
 
-  // return result
-  return( numOfItems );
+	// return result
+	return(numOfItems);
 }
 
 // ----------------------------------------------------------------------------
 
-void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey tag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx, char *&value )
+void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord(DcmTagKey tag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx, char *&value)
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function determines an attribute value of a matching record
@@ -365,83 +441,83 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
 //                                               If value was not found an emtpy string will be returned.
 // Return Value : none.
 {
-  OFCondition cond;
-  DcmSequenceOfItems *sequenceElement = NULL, *tmp = NULL;
-  unsigned long i;
-  const char *val = NULL;
-  Uint16 v;
+	OFCondition cond;
+	DcmSequenceOfItems *sequenceElement = NULL, *tmp = NULL;
+	unsigned long i;
+	const char *val = NULL;
+	Uint16 v;
 
-  // if the element in question is not contained in another sequence
-  if( numOfSuperiorSequences == 0 )
-  {
-    // simply find and get this element in the matching dataset (on the main level);
-    // here, we have to distinguish two cases: attribute PregnancyStatus has to be re-
-    // trieved as a Uint16 value (also note for this case, that this attribute can only
-    // occur on the main level, it will never be contained in a sequence), all other
-    // attributes have to be retrieved as strings
-    if( tag == DCM_PregnancyStatus )
-    {
-      cond = matchingRecords[idx]->findAndGetUint16( tag, v, 0, OFFalse );
-      if( cond.good() )
-      {
-        value = new char[20];
-        sprintf( value, "%u", v );
-      }
-      else
-      {
-        value = new char[ 2 ];
-        strcpy( value, "4" );           // a value of "4" in attribute PregnancyStatus means "unknown" in DICOM
-      }
-    }
-    else
-    {
-      cond = matchingRecords[idx]->findAndGetString( tag, val, OFFalse );
-      if( cond.good() && val != NULL )
-      {
-        value = new char[ strlen( val ) + 1 ];
-        strcpy( value, val );
-      }
-      else
-      {
-        value = new char[ 1 ];
-        strcpy( value, "" );
-      }
-    }
-  }
-  else
-  {
-    // if it is contained in (an)other sequence(s), go through all corresponding sequence items
-    cond = matchingRecords[idx]->findAndGetSequence( superiorSequenceArray[0].sequenceTag, sequenceElement, OFFalse );
-    for( i=1 ; i<numOfSuperiorSequences && cond.good() ; i++ )
-    {
-      cond = sequenceElement->getItem( superiorSequenceArray[i-1].currentItem )->findAndGetSequence( superiorSequenceArray[i].sequenceTag, tmp, OFFalse );
-      if( cond.good() )
-        sequenceElement = tmp;
-    }
+	// if the element in question is not contained in another sequence
+	if (numOfSuperiorSequences == 0)
+	{
+		// simply find and get this element in the matching dataset (on the main level);
+		// here, we have to distinguish two cases: attribute PregnancyStatus has to be re-
+		// trieved as a Uint16 value (also note for this case, that this attribute can only
+		// occur on the main level, it will never be contained in a sequence), all other
+		// attributes have to be retrieved as strings
+		if (tag == DCM_PregnancyStatus)
+		{
+			cond = matchingRecords[idx]->findAndGetUint16(tag, v, 0, OFFalse);
+			if (cond.good())
+			{
+				value = new char[20];
+				sprintf(value, "%u", v);
+			}
+			else
+			{
+				value = new char[2];
+				strcpy(value, "4");           // a value of "4" in attribute PregnancyStatus means "unknown" in DICOM
+			}
+		}
+		else
+		{
+			cond = matchingRecords[idx]->findAndGetString(tag, val, OFFalse);
+			if (cond.good() && val != NULL)
+			{
+				value = new char[strlen(val) + 1];
+				strcpy(value, val);
+			}
+			else
+			{
+				value = new char[1];
+				strcpy(value, "");
+			}
+		}
+	}
+	else
+	{
+		// if it is contained in (an)other sequence(s), go through all corresponding sequence items
+		cond = matchingRecords[idx]->findAndGetSequence(superiorSequenceArray[0].sequenceTag, sequenceElement, OFFalse);
+		for (i = 1; i < numOfSuperiorSequences && cond.good(); i++)
+		{
+			cond = sequenceElement->getItem(superiorSequenceArray[i - 1].currentItem)->findAndGetSequence(superiorSequenceArray[i].sequenceTag, tmp, OFFalse);
+			if (cond.good())
+				sequenceElement = tmp;
+		}
 
-    // now sequenceElement points to the sequence element in which the attribute
-    // in question can be found; retrieve a value for this attribute (note that
-    // all attributes in sequences can actually be retrieved as strings)
-    if( cond.good() )
-    {
-      cond = sequenceElement->getItem( superiorSequenceArray[ numOfSuperiorSequences - 1 ].currentItem )->findAndGetString( tag, val, OFFalse );
-      if( cond.good() && val != NULL )
-      {
-        value = new char[ strlen( val ) + 1 ];
-        strcpy( value, val );
-      }
-      else
-      {
-        value = new char[ 1 ];
-        strcpy( value, "" );
-      }
-    }
-    else
-    {
-      value = new char[ 1 ];
-      strcpy( value, "" );
-    }
-  }
+		// now sequenceElement points to the sequence element in which the attribute
+		// in question can be found; retrieve a value for this attribute (note that
+		// all attributes in sequences can actually be retrieved as strings)
+		if (cond.good())
+		{
+			cond = sequenceElement->getItem(superiorSequenceArray[numOfSuperiorSequences - 1].currentItem)->findAndGetString(tag, val, OFFalse);
+			if (cond.good() && val != NULL)
+			{
+				value = new char[strlen(val) + 1];
+				strcpy(value, val);
+			}
+			else
+			{
+				value = new char[1];
+				strcpy(value, "");
+			}
+		}
+		else
+		{
+			value = new char[1];
+			strcpy(value, "");
+		}
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -454,16 +530,16 @@ void WlmFileSystemInteractionManager::ClearMatchingRecords()
 // Parameters   : none.
 // Return Value : none.
 {
-  for( unsigned int i=0 ; i<numOfMatchingRecords ; i++ )
-    delete matchingRecords[i];
-  delete[] matchingRecords;
-  matchingRecords = NULL;
-  numOfMatchingRecords = 0;
+	for (unsigned int i = 0; i < numOfMatchingRecords; i++)
+		delete matchingRecords[i];
+	delete[] matchingRecords;
+	matchingRecords = NULL;
+	numOfMatchingRecords = 0;
 }
 
 // ----------------------------------------------------------------------------
 
-void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString> &worklistFiles )
+void WlmFileSystemInteractionManager::DetermineWorklistFiles(OFVector<OFString> &worklistFiles)
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function determines all worklist files in the directory specified by
@@ -473,100 +549,100 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString>
 //                                      to one worklist file.
 // Return Value : none.
 {
-  // initialize out parameters
-  worklistFiles.clear();
+	// initialize out parameters
+	worklistFiles.clear();
 
-  // determine complete path to data source files
-  // (dfPath + PATH_SEPARATOR + calledApplicationEntityTitle)
-  OFString path( dfPath );
-  if( !path.empty() && path[path.length()-1] != PATH_SEPARATOR )
-    path += PATH_SEPARATOR;
-  path += calledApplicationEntityTitle;
+	// determine complete path to data source files
+	// (dfPath + PATH_SEPARATOR + calledApplicationEntityTitle)
+	OFString path(dfPath);
+	if (!path.empty() && path[path.length() - 1] != PATH_SEPARATOR)
+		path += PATH_SEPARATOR;
+	path += calledApplicationEntityTitle;
 
-  // determine worklist files in this folder
+	// determine worklist files in this folder
 #ifdef HAVE__FINDFIRST
-  OFString searchname = path + PATH_SEPARATOR + '*';
-  struct _finddata_t fileData;
-  int ret = 0;
+	OFString searchname = path + PATH_SEPARATOR + '*';
+	struct _finddata_t fileData;
+	int ret = 0;
 
-  // start a loop; in each iteration another directory entry is determined
-  intptr_t hFile = _findfirst( (char*)searchname.c_str(), &fileData );
-  while( hFile != -1L && ret == 0 )
-  {
-    // if the current entry refers to a worklist file, do something
-    if( strcmp( fileData.name, "." )  !=0 && strcmp( fileData.name, ".." ) !=0 && IsWorklistFile( fileData.name ) )
-    {
-      // Create a string that contains path and filename of the current worklist file.
-      OFString subname( path );
-      subname += PATH_SEPARATOR;
-      subname += fileData.name;
+	// start a loop; in each iteration another directory entry is determined
+	intptr_t hFile = _findfirst((char*)searchname.c_str(), &fileData);
+	while (hFile != -1L && ret == 0)
+	{
+		// if the current entry refers to a worklist file, do something
+		if (strcmp(fileData.name, ".") != 0 && strcmp(fileData.name, "..") != 0 && IsWorklistFile(fileData.name))
+		{
+			// Create a string that contains path and filename of the current worklist file.
+			OFString subname(path);
+			subname += PATH_SEPARATOR;
+			subname += fileData.name;
 
-      // Add string to the set of strings
-      worklistFiles.push_back( subname );
-    }
-    ret = _findnext( hFile, &fileData );
-  }
-  _findclose( hFile );
+			// Add string to the set of strings
+			worklistFiles.push_back(subname);
+		}
+		ret = _findnext(hFile, &fileData);
+	}
+	_findclose(hFile);
 #else
-  struct dirent *dp = NULL;
+	struct dirent *dp = NULL;
 
-  // open directory
-  DIR *dirp = opendir( path.c_str() );
-  if( dirp != NULL )
-  {
-    // start a loop; in each iteration another directory entry is determined.
+	// open directory
+	DIR *dirp = opendir( path.c_str() );
+	if( dirp != NULL )
+	{
+		// start a loop; in each iteration another directory entry is determined.
 #ifdef HAVE_READDIR_R
-    unsigned char entryBuffer[sizeof(struct dirent) + _POSIX_PATH_MAX + 1];
+		unsigned char entryBuffer[sizeof(struct dirent) + _POSIX_PATH_MAX + 1];
 #ifdef HAVE_OLD_READDIR_R
-    for( dp = readdir_r( dirp, (struct dirent *)entryBuffer ) ; dp != NULL ; dp = readdir_r( dirp, (struct dirent *)entryBuffer ) )
+		for( dp = readdir_r( dirp, (struct dirent *)entryBuffer ) ; dp != NULL ; dp = readdir_r( dirp, (struct dirent *)entryBuffer ) )
 #else
-    for( int readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) ; readResult == 0 && dp ; readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) )
+		for( int readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) ; readResult == 0 && dp ; readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) )
 #endif
 #else // HAVE_READDIR_R
-    for( dp = readdir( dirp ) ; dp != NULL ; dp = readdir( dirp ) )
+		for( dp = readdir( dirp ) ; dp != NULL ; dp = readdir( dirp ) )
 #endif
-    {
-      // if the current entry refers to a worklist file
-      if( IsWorklistFile( dp->d_name ) )
-      {
-        // create a string that contains path and filename of the current worklist file.
-        OFString subname( path );
-        subname += PATH_SEPARATOR;
-        subname += dp->d_name;
+		{
+			// if the current entry refers to a worklist file
+			if( IsWorklistFile( dp->d_name ) )
+			{
+				// create a string that contains path and filename of the current worklist file.
+				OFString subname( path );
+				subname += PATH_SEPARATOR;
+				subname += dp->d_name;
 
-        // add string to the set of strings
-        worklistFiles.push_back( subname );
-      }
-    }
+				// add string to the set of strings
+				worklistFiles.push_back( subname );
+			}
+		}
 
-    // close directory
-    closedir( dirp );
-  }
+		// close directory
+		closedir( dirp );
+	}
 #endif
 
-  // in case we are running in verbose mode, dump all worklist file information
-  if (DCM_dcmwlmLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
-  {
-    DCMWLM_INFO("=============================");
-    DCMWLM_INFO("Worklist Database Files:");
-    if( worklistFiles.empty() )
-      DCMWLM_INFO("<no files found>");
-    else
-    {
-      OFVector<OFString>::const_iterator iter = worklistFiles.begin();
-      while( iter != worklistFiles.end() )
-      {
-        DCMWLM_INFO(*iter);
-        ++iter;
-      }
-    }
-    DCMWLM_INFO("=============================");
-  }
+	// in case we are running in verbose mode, dump all worklist file information
+	if (DCM_dcmwlmLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
+	{
+		DCMWLM_INFO("=============================");
+		DCMWLM_INFO("Worklist Database Files:");
+		if (worklistFiles.empty())
+			DCMWLM_INFO("<no files found>");
+		else
+		{
+			OFVector<OFString>::const_iterator iter = worklistFiles.begin();
+			while (iter != worklistFiles.end())
+			{
+				DCMWLM_INFO(*iter);
+				++iter;
+			}
+		}
+		DCMWLM_INFO("=============================");
+	}
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::IsWorklistFile( const char *fname )
+OFBool WlmFileSystemInteractionManager::IsWorklistFile(const char *fname)
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function returns OFTrue if the given filename refers to a worklist file,
@@ -575,28 +651,28 @@ OFBool WlmFileSystemInteractionManager::IsWorklistFile( const char *fname )
 // Return Value : OFTrue  - The given filename refers to a worklist file.
 //                OFFalse - The given filename does not refer to a worklist file.
 {
-  // If no filename is specified, return OFFalse
-  if( fname == NULL )
-    return( OFFalse );
+	// If no filename is specified, return OFFalse
+	if (fname == NULL)
+		return(OFFalse);
 
-  // look for an '.' in the filename
-  char *s = (char *)strrchr( fname, '.' );
+	// look for an '.' in the filename
+	char *s = (char *)strrchr(fname, '.');
 
-  // if there was no '.' return OFFalse
-  if( s == NULL )
-    return( OFFalse );
+	// if there was no '.' return OFFalse
+	if (s == NULL)
+		return(OFFalse);
 
-  // if the extension is ".wl" return OFTrue
-  if( strcmp( s, ".wl" ) == 0 )
-    return( OFTrue );
+	// if the extension is ".wl" return OFTrue
+	if (strcmp(s, ".wl") == 0)
+		return(OFTrue);
 
-  // return OFFalse in all other cases
-  return( OFFalse );
+	// return OFFalse in all other cases
+	return(OFFalse);
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset )
+OFBool WlmFileSystemInteractionManager::DatasetIsComplete(DcmDataset *dataset)
 // Date         : May 2, 2005
 // Author       : Thomas Wilkens
 // Task         : This function checks if the given dataset (which represents the information from a
@@ -632,67 +708,67 @@ OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset )
 // Return Value : OFTrue in case the given dataset contains all necessary return type 1 information,
 //                OFFalse otherwise.
 {
-  DcmElement *scheduledProcedureStepSequence = NULL;
+	DcmElement *scheduledProcedureStepSequence = NULL;
 
-  // intialize returnValue
-  OFBool complete = OFTrue;
+	// intialize returnValue
+	OFBool complete = OFTrue;
 
-  DCMWLM_DEBUG("Checking whether dataset is complete ...");
+	DCMWLM_DEBUG("Checking whether dataset is complete ...");
 
-  // the dataset is considered to be incomplete...
-  // ...if the ScheduledProcedureStepSequence is missing or
-  // ...if the ScheduledProcedureStepSequence does not have exactly one item
-  if( dataset->findAndGetElement( DCM_ScheduledProcedureStepSequence, scheduledProcedureStepSequence ).bad() || ((DcmSequenceOfItems*)scheduledProcedureStepSequence)->card() != 1 )
-  {
-    DCMWLM_DEBUG("- ScheduledProcedureStepSequence " << DCM_ScheduledProcedureStepSequence << " is missing or does not have exactly one item");
-    complete = OFFalse;
-  }
-  else
-  {
-    // so the ScheduledProcedureStepSequence is existent and has exactly one item;
-    // get this one and only item from the ScheduledProcedureStepSequence
-    DcmItem *scheduledProcedureStepSequenceItem = ((DcmSequenceOfItems*)scheduledProcedureStepSequence)->getItem(0);
+	// the dataset is considered to be incomplete...
+	// ...if the ScheduledProcedureStepSequence is missing or
+	// ...if the ScheduledProcedureStepSequence does not have exactly one item
+	if (dataset->findAndGetElement(DCM_ScheduledProcedureStepSequence, scheduledProcedureStepSequence).bad() || ((DcmSequenceOfItems*)scheduledProcedureStepSequence)->card() != 1)
+	{
+		DCMWLM_DEBUG("- ScheduledProcedureStepSequence " << DCM_ScheduledProcedureStepSequence << " is missing or does not have exactly one item");
+		complete = OFFalse;
+	}
+	else
+	{
+		// so the ScheduledProcedureStepSequence is existent and has exactly one item;
+		// get this one and only item from the ScheduledProcedureStepSequence
+		DcmItem *scheduledProcedureStepSequenceItem = ((DcmSequenceOfItems*)scheduledProcedureStepSequence)->getItem(0);
 
-    // the dataset is considered to be incomplete...
-    // ...if ScheduledStationAETitle is missing or empty in the ScheduledProcedureStepSequence, or
-    // ...if ScheduledProcedureStepStartDate is missing or empty in the ScheduledProcedureStepSequence, or
-    // ...if ScheduledProcedureStepStartTime is missing or empty in the ScheduledProcedureStepSequence, or
-    // ...if Modality is missing or empty in the ScheduledProcedureStepSequence, or
-    // ...if ScheduledProcedureStepID is missing or empty in the ScheduledProcedureStepSequence, or
-    // ...if RequestedProcedureID is missing or empty in the dataset, or
-    // ...if StudyInstanceUID is missing or empty in the dataset, or
-    // ...if PatientName is missing or empty in the dataset, or
-    // ...if PatientID is missing or empty in the dataset, or
-    // ...if inside the ScheduledProcedureStepSequence, no information can be retrieved from
-    //    the ScheduledProcedureStepDescription attribute and (at the same time) also no
-    //    complete information can be retrieved from the ScheduledProtocolCodeSequence attribute, or
-    // ...if inside the dataset, no information can be retrieved from the RequestedProcedureDescription
-    //    attribute and (at the same time) also no complete information can be retrieved from the
-    //    RequestedProcedureCodeSequence attribute, or
-    // ...if inside the dataset, the ReferencedStudySequence is either absent or it is existent and non-empty but incomplete, or
-    // ...if inside the dataset, the ReferencedPatientSequence is either absent or it is existent and non-empty but incomplete
-    if( AttributeIsAbsentOrEmpty( DCM_ScheduledStationAETitle, scheduledProcedureStepSequenceItem ) ||
-        AttributeIsAbsentOrEmpty( DCM_ScheduledProcedureStepStartDate, scheduledProcedureStepSequenceItem ) ||
-        AttributeIsAbsentOrEmpty( DCM_ScheduledProcedureStepStartTime, scheduledProcedureStepSequenceItem ) ||
-        AttributeIsAbsentOrEmpty( DCM_Modality, scheduledProcedureStepSequenceItem ) ||
-        AttributeIsAbsentOrEmpty( DCM_ScheduledProcedureStepID, scheduledProcedureStepSequenceItem ) ||
-        AttributeIsAbsentOrEmpty( DCM_RequestedProcedureID, dataset ) ||
-        AttributeIsAbsentOrEmpty( DCM_StudyInstanceUID, dataset ) ||
-        AttributeIsAbsentOrEmpty( DCM_PatientName, dataset ) ||
-        AttributeIsAbsentOrEmpty( DCM_PatientID, dataset ) ||
-        DescriptionAndCodeSequenceAttributesAreIncomplete( DCM_ScheduledProcedureStepDescription, DCM_ScheduledProtocolCodeSequence, scheduledProcedureStepSequenceItem ) ||
-        DescriptionAndCodeSequenceAttributesAreIncomplete( DCM_RequestedProcedureDescription, DCM_RequestedProcedureCodeSequence, dataset ) ||
-        ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete( DCM_ReferencedStudySequence, dataset ) ||
-        ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete( DCM_ReferencedPatientSequence, dataset ) )
-      complete = OFFalse;
-  }
-  // return result
-  return( complete );
+		// the dataset is considered to be incomplete...
+		// ...if ScheduledStationAETitle is missing or empty in the ScheduledProcedureStepSequence, or
+		// ...if ScheduledProcedureStepStartDate is missing or empty in the ScheduledProcedureStepSequence, or
+		// ...if ScheduledProcedureStepStartTime is missing or empty in the ScheduledProcedureStepSequence, or
+		// ...if Modality is missing or empty in the ScheduledProcedureStepSequence, or
+		// ...if ScheduledProcedureStepID is missing or empty in the ScheduledProcedureStepSequence, or
+		// ...if RequestedProcedureID is missing or empty in the dataset, or
+		// ...if StudyInstanceUID is missing or empty in the dataset, or
+		// ...if PatientName is missing or empty in the dataset, or
+		// ...if PatientID is missing or empty in the dataset, or
+		// ...if inside the ScheduledProcedureStepSequence, no information can be retrieved from
+		//    the ScheduledProcedureStepDescription attribute and (at the same time) also no
+		//    complete information can be retrieved from the ScheduledProtocolCodeSequence attribute, or
+		// ...if inside the dataset, no information can be retrieved from the RequestedProcedureDescription
+		//    attribute and (at the same time) also no complete information can be retrieved from the
+		//    RequestedProcedureCodeSequence attribute, or
+		// ...if inside the dataset, the ReferencedStudySequence is either absent or it is existent and non-empty but incomplete, or
+		// ...if inside the dataset, the ReferencedPatientSequence is either absent or it is existent and non-empty but incomplete
+		if (AttributeIsAbsentOrEmpty(DCM_ScheduledStationAETitle, scheduledProcedureStepSequenceItem) ||
+			AttributeIsAbsentOrEmpty(DCM_ScheduledProcedureStepStartDate, scheduledProcedureStepSequenceItem) ||
+			AttributeIsAbsentOrEmpty(DCM_ScheduledProcedureStepStartTime, scheduledProcedureStepSequenceItem) ||
+			AttributeIsAbsentOrEmpty(DCM_Modality, scheduledProcedureStepSequenceItem) ||
+			AttributeIsAbsentOrEmpty(DCM_ScheduledProcedureStepID, scheduledProcedureStepSequenceItem) ||
+			AttributeIsAbsentOrEmpty(DCM_RequestedProcedureID, dataset) ||
+			AttributeIsAbsentOrEmpty(DCM_StudyInstanceUID, dataset) ||
+			AttributeIsAbsentOrEmpty(DCM_PatientName, dataset) ||
+			AttributeIsAbsentOrEmpty(DCM_PatientID, dataset) ||
+			DescriptionAndCodeSequenceAttributesAreIncomplete(DCM_ScheduledProcedureStepDescription, DCM_ScheduledProtocolCodeSequence, scheduledProcedureStepSequenceItem) ||
+			DescriptionAndCodeSequenceAttributesAreIncomplete(DCM_RequestedProcedureDescription, DCM_RequestedProcedureCodeSequence, dataset) ||
+			ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete(DCM_ReferencedStudySequence, dataset) ||
+			ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete(DCM_ReferencedPatientSequence, dataset))
+			complete = OFFalse;
+	}
+	// return result
+	return(complete);
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete( DcmTagKey sequenceTagKey, DcmItem *dset )
+OFBool WlmFileSystemInteractionManager::ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete(DcmTagKey sequenceTagKey, DcmItem *dset)
 // Date         : May 4, 2005
 // Author       : Thomas Wilkens
 // Task         : This function checks if the specified sequence attribute is absent or existent but non-empty
@@ -702,51 +778,51 @@ OFBool WlmFileSystemInteractionManager::ReferencedStudyOrPatientSequenceIsAbsent
 // Return Value : OFTrue in case the sequence attribute is absent (and cannot be added to the dataset)
 //                or existent but non-empty and incomplete, OFFalse otherwise.
 {
-  DcmElement *sequence = NULL;
-  OFBool result;
+	DcmElement *sequence = NULL;
+	OFBool result;
 
-  // check whether the type 2 sequence attribute is absent
-  if( dset->findAndGetElement( sequenceTagKey, sequence ).bad() )
-  {
-    DCMWLM_DEBUG("- " << DcmTag(sequenceTagKey).getTagName() << " " << sequenceTagKey << " is missing");
-    // try to add it to the dataset and return OFFalse if successful
-    if ( dset->insertEmptyElement( sequenceTagKey ).good() )
-    {
-      DCMWLM_WARN("Added missing type 2 sequence attribute " << sequenceTagKey << " to the current record");
-      result = OFFalse;
-    }
-    else
-      result = OFTrue;
-  }
-  else
-  {
-    // if the sequence attribute is existent but empty, we want to return OFFalse
-    // (note that the sequence is actually type 2, so being empty is ok)
-    if( ((DcmSequenceOfItems*)sequence)->card() == 0 )
-      result = OFFalse;
-    else
-    {
-      // if the sequence attribute is existent and non-empty, we need
-      // to check every item in the sequence for completeness
-      result = OFFalse;
-      for( unsigned long i=0 ; i<((DcmSequenceOfItems*)sequence)->card() && !result ; i++ )
-      {
-        if( AttributeIsAbsentOrEmpty( DCM_ReferencedSOPClassUID, ((DcmSequenceOfItems*)sequence)->getItem(i) ) ||
-            AttributeIsAbsentOrEmpty( DCM_ReferencedSOPInstanceUID, ((DcmSequenceOfItems*)sequence)->getItem(i) ) )
-          result = OFTrue;
-      }
-      if ( result )
-        DCMWLM_DEBUG("- " << DcmTag(sequenceTagKey).getTagName() << " " << sequenceTagKey << " is incomplete");
-    }
-  }
+	// check whether the type 2 sequence attribute is absent
+	if (dset->findAndGetElement(sequenceTagKey, sequence).bad())
+	{
+		DCMWLM_DEBUG("- " << DcmTag(sequenceTagKey).getTagName() << " " << sequenceTagKey << " is missing");
+		// try to add it to the dataset and return OFFalse if successful
+		if (dset->insertEmptyElement(sequenceTagKey).good())
+		{
+			DCMWLM_WARN("Added missing type 2 sequence attribute " << sequenceTagKey << " to the current record");
+			result = OFFalse;
+		}
+		else
+			result = OFTrue;
+	}
+	else
+	{
+		// if the sequence attribute is existent but empty, we want to return OFFalse
+		// (note that the sequence is actually type 2, so being empty is ok)
+		if (((DcmSequenceOfItems*)sequence)->card() == 0)
+			result = OFFalse;
+		else
+		{
+			// if the sequence attribute is existent and non-empty, we need
+			// to check every item in the sequence for completeness
+			result = OFFalse;
+			for (unsigned long i = 0; i < ((DcmSequenceOfItems*)sequence)->card() && !result; i++)
+			{
+				if (AttributeIsAbsentOrEmpty(DCM_ReferencedSOPClassUID, ((DcmSequenceOfItems*)sequence)->getItem(i)) ||
+					AttributeIsAbsentOrEmpty(DCM_ReferencedSOPInstanceUID, ((DcmSequenceOfItems*)sequence)->getItem(i)))
+					result = OFTrue;
+			}
+			if (result)
+				DCMWLM_DEBUG("- " << DcmTag(sequenceTagKey).getTagName() << " " << sequenceTagKey << " is incomplete");
+		}
+	}
 
-  // return result
-  return( result );
+	// return result
+	return(result);
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::DescriptionAndCodeSequenceAttributesAreIncomplete( DcmTagKey descriptionTagKey, DcmTagKey codeSequenceTagKey, DcmItem *dset )
+OFBool WlmFileSystemInteractionManager::DescriptionAndCodeSequenceAttributesAreIncomplete(DcmTagKey descriptionTagKey, DcmTagKey codeSequenceTagKey, DcmItem *dset)
 // Date         : April 18, 2017
 // Author       : Michael Onken
 // Task         : This method ensures that either code or description is set to a non-empty value,
@@ -759,57 +835,57 @@ OFBool WlmFileSystemInteractionManager::DescriptionAndCodeSequenceAttributesAreI
 //                one of both attributes has a non-empty, valid value, and none
 //                is set to an empty value. OFTrue otherwise.
 {
-  // check if the code sequence attribute is complete,
-  // i.e. if complete information can be retrieved from this attribute
+	// check if the code sequence attribute is complete,
+	// i.e. if complete information can be retrieved from this attribute
 
-  // if the attribute is not existent or has no items, we consider it incomplete
-  DcmSequenceOfItems* seq = NULL;
-  if (dset->findAndGetSequence( codeSequenceTagKey, seq ).good())
-  {
-    if (seq->card() == 0)
-    {
-      DCMWLM_DEBUG("- " << DcmTag(codeSequenceTagKey).getTagName() << " " << codeSequenceTagKey << " is empty");
-      return OFTrue;
-    }
-    else if (seq->card() > 0)
-    {
-      // if it is existent and has items, check every item for completeness
-      for( unsigned long i=0; i< seq->card(); i++ )
-      {
-        if( AttributeIsAbsentOrEmpty( DCM_CodeValue, seq->getItem(i) ) ||
-            AttributeIsAbsentOrEmpty( DCM_CodingSchemeDesignator, seq->getItem(i) ) )
-        {
-          DCMWLM_DEBUG("- " << DcmTag(codeSequenceTagKey).getTagName() << " " << codeSequenceTagKey << " has incomplete or empty code entries");
-          return OFTrue;
-        }
-      }
-    }
-  }
-  // check whether description is valid. If sequence does exists, the attribute
-  // must exist with a valid value.
-  OFString description;
-  if (dset->findAndGetOFStringArray(descriptionTagKey, description).bad())
-  {
-    if (!seq)
-    {
-      DCMWLM_DEBUG("- " << DcmTag(codeSequenceTagKey).getTagName() << " " << codeSequenceTagKey
-        << " and " << DcmTag(descriptionTagKey) << " " << descriptionTagKey << " are both not set");
-      return OFTrue;
-    }
-  }
-  // in any case, description must not exist with empty value in the dataset
-  else if (description.empty())
-  {
-    DCMWLM_DEBUG("- " << DcmTag(descriptionTagKey).getTagName() << " " << descriptionTagKey << " is empty");
-    return OFTrue;
-  }
+	// if the attribute is not existent or has no items, we consider it incomplete
+	DcmSequenceOfItems* seq = NULL;
+	if (dset->findAndGetSequence(codeSequenceTagKey, seq).good())
+	{
+		if (seq->card() == 0)
+		{
+			DCMWLM_DEBUG("- " << DcmTag(codeSequenceTagKey).getTagName() << " " << codeSequenceTagKey << " is empty");
+			return OFTrue;
+		}
+		else if (seq->card() > 0)
+		{
+			// if it is existent and has items, check every item for completeness
+			for (unsigned long i = 0; i < seq->card(); i++)
+			{
+				if (AttributeIsAbsentOrEmpty(DCM_CodeValue, seq->getItem(i)) ||
+					AttributeIsAbsentOrEmpty(DCM_CodingSchemeDesignator, seq->getItem(i)))
+				{
+					DCMWLM_DEBUG("- " << DcmTag(codeSequenceTagKey).getTagName() << " " << codeSequenceTagKey << " has incomplete or empty code entries");
+					return OFTrue;
+				}
+			}
+		}
+	}
+	// check whether description is valid. If sequence does exists, the attribute
+	// must exist with a valid value.
+	OFString description;
+	if (dset->findAndGetOFStringArray(descriptionTagKey, description).bad())
+	{
+		if (!seq)
+		{
+			DCMWLM_DEBUG("- " << DcmTag(codeSequenceTagKey).getTagName() << " " << codeSequenceTagKey
+				<< " and " << DcmTag(descriptionTagKey) << " " << descriptionTagKey << " are both not set");
+			return OFTrue;
+		}
+	}
+	// in any case, description must not exist with empty value in the dataset
+	else if (description.empty())
+	{
+		DCMWLM_DEBUG("- " << DcmTag(descriptionTagKey).getTagName() << " " << descriptionTagKey << " is empty");
+		return OFTrue;
+	}
 
-  return OFFalse;
+	return OFFalse;
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::AttributeIsAbsentOrEmpty( DcmTagKey elemTagKey, DcmItem *dset )
+OFBool WlmFileSystemInteractionManager::AttributeIsAbsentOrEmpty(DcmTagKey elemTagKey, DcmItem *dset)
 // Date         : May 4, 2005
 // Author       : Thomas Wilkens
 // Task         : This function checks if the specified attribute is absent or contains an empty value in the given dataset.
@@ -817,171 +893,171 @@ OFBool WlmFileSystemInteractionManager::AttributeIsAbsentOrEmpty( DcmTagKey elem
 //                dset       - [in] The dataset in which the attribute is contained.
 // Return Value : OFTrue in case the attribute is absent or contains an empty value, OFFalse otherwise.
 {
-  DcmElement *elem = NULL;
+	DcmElement *elem = NULL;
 
-  if( dset->findAndGetElement( elemTagKey, elem ).bad() || elem->getLength() == 0 )
-  {
-    DCMWLM_DEBUG("- " << DcmTag(elemTagKey).getTagName() << " " << elemTagKey << " is missing or empty");
-    return( OFTrue );
-  }
-  else
-    return( OFFalse );
+	if (dset->findAndGetElement(elemTagKey, elem).bad() || elem->getLength() == 0)
+	{
+		DCMWLM_DEBUG("- " << DcmTag(elemTagKey).getTagName() << " " << elemTagKey << " is missing or empty");
+		return(OFTrue);
+	}
+	else
+		return(OFFalse);
 }
 
 
-OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences( DcmSequenceOfItems& query,
-                                                                      const MatchingKeys& matchingKeys,
-                                                                      const OFBool normalize,
-                                                                      const OFBool enableWildcardMatching )
+OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences(DcmSequenceOfItems& query,
+	const MatchingKeys& matchingKeys,
+	const OFBool normalize,
+	const OFBool enableWildcardMatching)
 {
-  DcmItem* pQueryItem = OFstatic_cast( DcmItem*, query.nextInContainer( OFnullptr ) );
-  if( pQueryItem ) {
+	DcmItem* pQueryItem = OFstatic_cast(DcmItem*, query.nextInContainer(OFnullptr));
+	if (pQueryItem) {
 #ifdef HAVE_CXX11
-      for( auto& key : matchingKeys.keys )
-      {
+		for (auto& key : matchingKeys.keys)
+		{
 #else
-      // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
-      for( OFVector<OFPair<DcmTagKey,OFBool> >::const_iterator it = matchingKeys.keys.begin(); it != matchingKeys.keys.end(); ++it )
-      {
-        const OFPair<DcmTagKey,OFBool>& key = *it;
+		// remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+		for (OFVector<OFPair<DcmTagKey, OFBool> >::const_iterator it = matchingKeys.keys.begin(); it != matchingKeys.keys.end(); ++it)
+		{
+			const OFPair<DcmTagKey, OFBool>& key = *it;
 #endif
-        DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, enableWildcardMatching ) )
-          return OFFalse;
-      }
+			DcmElement* query = OFnullptr;
+			if (pQueryItem->findAndGetElement(key.first, query, OFFalse).good() && query && !query->isUniversalMatch(normalize, enableWildcardMatching))
+				return OFFalse;
+		}
 
 #ifdef HAVE_CXX11
-      for( auto& combinedKey : matchingKeys.combinedKeys )
-      {
+		for (auto& combinedKey : matchingKeys.combinedKeys)
+		{
 #else
-      // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
-      for( OFVector<OFPair<DcmTagKey,DcmTagKey> >::const_iterator it = matchingKeys.combinedKeys.begin(); it != matchingKeys.combinedKeys.end(); ++it )
-      {
-        const OFPair<DcmTagKey,DcmTagKey>& combinedKey = *it;
+		// remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+		for (OFVector<OFPair<DcmTagKey, DcmTagKey> >::const_iterator it = matchingKeys.combinedKeys.begin(); it != matchingKeys.combinedKeys.end(); ++it)
+		{
+			const OFPair<DcmTagKey, DcmTagKey>& combinedKey = *it;
 #endif
-        DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, enableWildcardMatching ) )
-          return OFFalse;
-        else if( pQueryItem->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch( normalize, enableWildcardMatching ) )
-          return OFFalse;
-      }
+			DcmElement* query = OFnullptr;
+			if (pQueryItem->findAndGetElement(combinedKey.first, query, OFFalse).good() && query && !query->isUniversalMatch(normalize, enableWildcardMatching))
+				return OFFalse;
+			else if (pQueryItem->findAndGetElement(combinedKey.second, query, OFFalse).good() && query && !query->isUniversalMatch(normalize, enableWildcardMatching))
+				return OFFalse;
+		}
 
-      // sequence matching
+		// sequence matching
 #ifdef HAVE_CXX11
-      for( auto& sequenceKey : matchingKeys.sequenceKeys )
-      {
+		for (auto& sequenceKey : matchingKeys.sequenceKeys)
+		{
 #else
-      // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
-      for( OFVector<OFPair<DcmTagKey,MatchingKeys> >::const_iterator it = matchingKeys.sequenceKeys.begin(); it != matchingKeys.sequenceKeys.end(); ++it )
-      {
-        const OFPair<DcmTagKey,MatchingKeys>& sequenceKey = *it;
+		// remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+		for (OFVector<OFPair<DcmTagKey, MatchingKeys> >::const_iterator it = matchingKeys.sequenceKeys.begin(); it != matchingKeys.sequenceKeys.end(); ++it)
+		{
+			const OFPair<DcmTagKey, MatchingKeys>& sequenceKey = *it;
 #endif
-        DcmElement* query = OFnullptr;
-        if( pQueryItem->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second, normalize, enableWildcardMatching ) )
-          return OFFalse;
-      }
-  }
-  return OFTrue;
+			DcmElement* query = OFnullptr;
+			if (pQueryItem->findAndGetElement(sequenceKey.first, query, OFFalse).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences(OFstatic_cast(DcmSequenceOfItems&, *query), sequenceKey.second, normalize, enableWildcardMatching))
+				return OFFalse;
+		}
+	}
+	return OFTrue;
 }
 
-OFBool WlmFileSystemInteractionManager::MatchSequences( DcmSequenceOfItems& candidate,
-                                                        DcmSequenceOfItems& query,
-                                                        const MatchingKeys& matchingKeys )
+OFBool WlmFileSystemInteractionManager::MatchSequences(DcmSequenceOfItems& candidate,
+	DcmSequenceOfItems& query,
+	const MatchingKeys& matchingKeys)
 {
-  for( DcmObject* pQueryItem = query.nextInContainer( OFnullptr); pQueryItem; pQueryItem = query.nextInContainer( pQueryItem ) )
-    for( DcmObject* pCandidateItem = candidate.nextInContainer( OFnullptr); pCandidateItem; pCandidateItem = candidate.nextInContainer( pCandidateItem ) )
-      if( DatasetMatchesSearchMask( OFstatic_cast( DcmItem*, pCandidateItem ), OFstatic_cast( DcmItem*, pQueryItem ), matchingKeys ) )
-        return OFTrue;
-  return OFFalse;
+	for (DcmObject* pQueryItem = query.nextInContainer(OFnullptr); pQueryItem; pQueryItem = query.nextInContainer(pQueryItem))
+		for (DcmObject* pCandidateItem = candidate.nextInContainer(OFnullptr); pCandidateItem; pCandidateItem = candidate.nextInContainer(pCandidateItem))
+			if (DatasetMatchesSearchMask(OFstatic_cast(DcmItem*, pCandidateItem), OFstatic_cast(DcmItem*, pQueryItem), matchingKeys))
+				return OFTrue;
+	return OFFalse;
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmItem *dataset, DcmItem *searchMask,
-                                                                  const MatchingKeys& matchingKeys )
-// Date         : July 11, 2002
-// Author       : Thomas Wilkens
-// Task         : This function returns OFTrue, if the matching key attribute values in the
-//                dataset match the matching key attribute values in the search mask.
-// Parameters   : dataset    - [in] The dataset which shall be checked.
-//                searchMask - [in] The search mask.
-// Return Value : OFTrue  - The dataset matches the search mask in the matching key attribute values.
-//                OFFalse - The dataset does not match the search mask in the matching key attribute values.
+OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask(DcmItem *dataset, DcmItem *searchMask,
+	const MatchingKeys& matchingKeys)
+	// Date         : July 11, 2002
+	// Author       : Thomas Wilkens
+	// Task         : This function returns OFTrue, if the matching key attribute values in the
+	//                dataset match the matching key attribute values in the search mask.
+	// Parameters   : dataset    - [in] The dataset which shall be checked.
+	//                searchMask - [in] The search mask.
+	// Return Value : OFTrue  - The dataset matches the search mask in the matching key attribute values.
+	//                OFFalse - The dataset does not match the search mask in the matching key attribute values.
 {
-  assert( dataset );
-  assert( searchMask );
+	assert(dataset);
+	assert(searchMask);
 
 #ifdef HAVE_CXX11
-  for( auto& key : matchingKeys.keys )
-  {
+	for (auto& key : matchingKeys.keys)
+	{
 #else
-  // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
-  for( OFVector<OFPair<DcmTagKey,OFBool> >::const_iterator it = matchingKeys.keys.begin(); it != matchingKeys.keys.end(); ++it )
-  {
-    const OFPair<DcmTagKey,OFBool>& key = *it;
+	// remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+	for (OFVector<OFPair<DcmTagKey, OFBool> >::const_iterator it = matchingKeys.keys.begin(); it != matchingKeys.keys.end(); ++it)
+	{
+		const OFPair<DcmTagKey, OFBool>& key = *it;
 #endif
-    DcmElement* query = OFnullptr;
-    if( searchMask->findAndGetElement( key.first, query, OFFalse ).good() && query && !query->isUniversalMatch() )
-    {
-      DcmElement* candidate = OFnullptr;
-      if( dataset->findAndGetElement( key.first, candidate, OFFalse ).bad() || !candidate || !query->matches( *candidate, key.second ) )
-        return OFFalse;
-    }
-  }
+		DcmElement* query = OFnullptr;
+		if (searchMask->findAndGetElement(key.first, query, OFFalse).good() && query && !query->isUniversalMatch())
+		{
+			DcmElement* candidate = OFnullptr;
+			if (dataset->findAndGetElement(key.first, candidate, OFFalse).bad() || !candidate || !query->matches(*candidate, key.second))
+				return OFFalse;
+		}
+	}
 
 #ifdef HAVE_CXX11
-  for( auto& combinedKey : matchingKeys.combinedKeys )
-  {
+	for (auto& combinedKey : matchingKeys.combinedKeys)
+	{
 #else
-  // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
-  for( OFVector<OFPair<DcmTagKey,DcmTagKey> >::const_iterator it = matchingKeys.combinedKeys.begin(); it != matchingKeys.combinedKeys.end(); ++it )
-  {
-    const OFPair<DcmTagKey,DcmTagKey>& combinedKey = *it;
+	// remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+	for (OFVector<OFPair<DcmTagKey, DcmTagKey> >::const_iterator it = matchingKeys.combinedKeys.begin(); it != matchingKeys.combinedKeys.end(); ++it)
+	{
+		const OFPair<DcmTagKey, DcmTagKey>& combinedKey = *it;
 #endif
-    DcmElement* query = OFnullptr;
-    if( searchMask->findAndGetElement( combinedKey.first, query, OFFalse ).good() && query && !query->isUniversalMatch() )
-    {
-      DcmElement* candidate = OFnullptr;
-      if( dataset->findAndGetElement( combinedKey.first, candidate, OFFalse ).bad() || !candidate )
-        return OFFalse;
-      DcmElement* secondQuery = OFnullptr;
-      if( searchMask->findAndGetElement( combinedKey.second, secondQuery, OFFalse ).good() && secondQuery )
-      {
-        DcmElement* secondCandidate = OFnullptr;
-        if( dataset->findAndGetElement( combinedKey.second, secondCandidate, OFFalse ).bad() || !secondCandidate || !query->combinationMatches( *secondQuery, *candidate, *secondCandidate ) )
-            return OFFalse;
-      }
-      else if( !query->matches( *candidate ) )
-      {
-        return OFFalse;
-      }
-    }
-    else if( searchMask->findAndGetElement( combinedKey.second, query, OFFalse ).good() && query && !query->isUniversalMatch() )
-    {
-      DcmElement* candidate = OFnullptr;
-      if( dataset->findAndGetElement( combinedKey.second, candidate, OFFalse ).bad() || !candidate || !query->matches( *candidate ) )
-        return OFFalse;
-    }
-  }
+		DcmElement* query = OFnullptr;
+		if (searchMask->findAndGetElement(combinedKey.first, query, OFFalse).good() && query && !query->isUniversalMatch())
+		{
+			DcmElement* candidate = OFnullptr;
+			if (dataset->findAndGetElement(combinedKey.first, candidate, OFFalse).bad() || !candidate)
+				return OFFalse;
+			DcmElement* secondQuery = OFnullptr;
+			if (searchMask->findAndGetElement(combinedKey.second, secondQuery, OFFalse).good() && secondQuery)
+			{
+				DcmElement* secondCandidate = OFnullptr;
+				if (dataset->findAndGetElement(combinedKey.second, secondCandidate, OFFalse).bad() || !secondCandidate || !query->combinationMatches(*secondQuery, *candidate, *secondCandidate))
+					return OFFalse;
+			}
+			else if (!query->matches(*candidate))
+			{
+				return OFFalse;
+			}
+		}
+		else if (searchMask->findAndGetElement(combinedKey.second, query, OFFalse).good() && query && !query->isUniversalMatch())
+		{
+			DcmElement* candidate = OFnullptr;
+			if (dataset->findAndGetElement(combinedKey.second, candidate, OFFalse).bad() || !candidate || !query->matches(*candidate))
+				return OFFalse;
+		}
+	}
 
-  // sequence matching
+	// sequence matching
 
 #ifdef HAVE_CXX11
-  for( auto& sequenceKey : matchingKeys.sequenceKeys )
-  {
+	for (auto& sequenceKey : matchingKeys.sequenceKeys)
+	{
 #else
-  // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
-  for( OFVector<OFPair<DcmTagKey,MatchingKeys> >::const_iterator it = matchingKeys.sequenceKeys.begin(); it != matchingKeys.sequenceKeys.end(); ++it )
-  {
-    const OFPair<DcmTagKey,MatchingKeys>& sequenceKey = *it;
+	// remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+	for (OFVector<OFPair<DcmTagKey, MatchingKeys> >::const_iterator it = matchingKeys.sequenceKeys.begin(); it != matchingKeys.sequenceKeys.end(); ++it)
+	{
+		const OFPair<DcmTagKey, MatchingKeys>& sequenceKey = *it;
 #endif
-    DcmElement* query = OFnullptr;
-    if( searchMask->findAndGetElement( sequenceKey.first, query, OFFalse ).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences( OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )
-    {
-      DcmElement* candidate = OFnullptr;
-      if( dataset->findAndGetElement( sequenceKey.first, candidate, OFFalse ).bad() || !candidate || candidate->ident() != EVR_SQ || !MatchSequences( OFstatic_cast( DcmSequenceOfItems&, *candidate ), OFstatic_cast( DcmSequenceOfItems&, *query ), sequenceKey.second ) )
-        return OFFalse;
-    }
-  }
-  return OFTrue;
+		DcmElement* query = OFnullptr;
+		if (searchMask->findAndGetElement(sequenceKey.first, query, OFFalse).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences(OFstatic_cast(DcmSequenceOfItems&, *query), sequenceKey.second))
+		{
+			DcmElement* candidate = OFnullptr;
+			if (dataset->findAndGetElement(sequenceKey.first, candidate, OFFalse).bad() || !candidate || candidate->ident() != EVR_SQ || !MatchSequences(OFstatic_cast(DcmSequenceOfItems&, *candidate), OFstatic_cast(DcmSequenceOfItems&, *query), sequenceKey.second))
+				return OFFalse;
+		}
+	}
+	return OFTrue;
 }

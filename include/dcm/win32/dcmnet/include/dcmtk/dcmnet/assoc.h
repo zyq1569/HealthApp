@@ -107,7 +107,7 @@
  * Allow a 4K minimum and a 128K maximum. Any further extension requires
  * modifications in the DUL code.
  */
-#define ASC_DEFAULTMAXPDU       16384 /* 16K is default if nothing else specified */
+#define ASC_DEFAULTMAXPDU       65536//16384 /* 16K is default if nothing else specified */
 #define ASC_MINIMUMPDUSIZE       4096
 #define ASC_MAXIMUMPDUSIZE     131072 /* 128K - we only handle this big */
 
