@@ -142,8 +142,11 @@ OFBool WlmDataSourceFileSystem::IsCalledApplicationEntityTitleSupported()
 //                OFFalse - The called application entity title is not supported or it is not given.
 {
   // Check if calledApplicationEntityTitle does not have a valid value
-  if( calledApplicationEntityTitle.empty() )
-    return( OFFalse );
+	if (calledApplicationEntityTitle.empty())
+	{
+		DCMWLM_ERROR("calledApplicationEntityTitle .empty()£¬return(OFFalse)"); //add zyq20190507
+		return(OFFalse);
+	}
   else
     return( fileSystemInteractionManager.IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
 }
@@ -303,8 +306,9 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
     << "=============================");
 
   // Set a read lock on the worklist files which shall be read from.
-  if( !SetReadlock() )
-    return( WLM_REFUSED_OUT_OF_RESOURCES );
+  //del here code  £¬ to do  get data from database //zyq2019
+ /* if( !SetReadlock() )
+    return( WLM_REFUSED_OUT_OF_RESOURCES );*/
 
   // dump some information if required
   DCMWLM_INFO("Determining matching records from worklist files");

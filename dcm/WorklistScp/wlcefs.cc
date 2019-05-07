@@ -230,8 +230,10 @@ command_argv(argv), dataSource( dataSourcev )
 		if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
 
 		cmd->beginOptionBlock();
-		if( cmd->findOption("--enable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFTrue;
-		if( cmd->findOption("--disable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFFalse;
+		if( cmd->findOption("--enable-file-reject") )
+			opt_enableRejectionOfIncompleteWlFiles = OFTrue;
+		if( cmd->findOption("--disable-file-reject") )
+			opt_enableRejectionOfIncompleteWlFiles = OFFalse;
 		cmd->endOptionBlock();
 
 		cmd->beginOptionBlock();
@@ -240,7 +242,8 @@ command_argv(argv), dataSource( dataSourcev )
 		if( cmd->findOption("--keep-char-set") ) opt_returnedCharacterSet = RETURN_CHARACTER_SET_FROM_FILE;
 		cmd->endOptionBlock();
 
-		if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
+		if( cmd->findOption("--no-sq-expansion") )
+			opt_noSequenceExpansion = OFTrue;
 
 		cmd->beginOptionBlock();
 		if( cmd->findOption("--prefer-uncompr") ) opt_networkTransferSyntax = EXS_Unknown;
@@ -296,13 +299,20 @@ command_argv(argv), dataSource( dataSourcev )
 			app->checkValue(cmd->getValueAndCheckMin(maxAssoc, 1));
 			opt_maxAssociations = OFstatic_cast(int, maxAssoc);
 		}
-		if( cmd->findOption("--refuse") ) opt_refuseAssociation = OFTrue;
-		if( cmd->findOption("--reject") ) opt_rejectWithoutImplementationUID = OFTrue;
-		if( cmd->findOption("--no-fail") ) opt_failInvalidQuery = OFFalse;
-		if( cmd->findOption("--sleep-after") ) app->checkValue(cmd->getValueAndCheckMin(opt_sleepAfterFind, 0));
-		if( cmd->findOption("--sleep-during") ) app->checkValue(cmd->getValueAndCheckMin(opt_sleepDuringFind, 0));
-		if( cmd->findOption("--max-pdu") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
-		if( cmd->findOption("--disable-host-lookup") ) dcmDisableGethostbyaddr.set(OFTrue);
+		if( cmd->findOption("--refuse") )
+			opt_refuseAssociation = OFTrue;
+		if( cmd->findOption("--reject") )
+			opt_rejectWithoutImplementationUID = OFTrue;
+		if( cmd->findOption("--no-fail") )
+			opt_failInvalidQuery = OFFalse;
+		if( cmd->findOption("--sleep-after") )
+			app->checkValue(cmd->getValueAndCheckMin(opt_sleepAfterFind, 0));
+		if( cmd->findOption("--sleep-during") )
+			app->checkValue(cmd->getValueAndCheckMin(opt_sleepDuringFind, 0));
+		if( cmd->findOption("--max-pdu") )
+			app->checkValue(cmd->getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+		if( cmd->findOption("--disable-host-lookup") )
+			dcmDisableGethostbyaddr.set(OFTrue);
 	}
 
 	// dump application information

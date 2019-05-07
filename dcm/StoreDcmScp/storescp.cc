@@ -2596,9 +2596,9 @@ DcmDataset **statusDetail)
                 OFStandard::deleteFile(fileName);
             }
             //测试dcm数据store,空间不够，直接删除.
-#ifdef TEST_STORE
-            OFStandard::deleteFile(fileName);
-#endif
+//#ifdef TEST_STORE
+            //OFStandard::deleteFile(fileName);
+//#endif
             // check the image to make sure it is consistent, i.e. that its sopClass and sopInstance correspond
             // to those mentioned in the request. If not, set the status in the response message variable.
             if (rsp->DimseStatus == STATUS_Success)
