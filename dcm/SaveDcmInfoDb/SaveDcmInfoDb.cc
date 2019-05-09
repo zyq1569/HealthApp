@@ -42,6 +42,11 @@ END_EXTERN_C
 #include <direct.h>      /* for _mkdir() */
 #endif
 //--------------------
+//add mysql driver  后期需要将数据库的处理独立模块
+#include"HMariaDb.h"
+#include "dcmtk/ofstd/ofdatime.h"
+#include <objbase.h>
+//////////////
 
 #ifdef ON_THE_FLY_COMPRESSION
 #include "dcmtk/dcmjpeg/djdecode.h"  /* for JPEG decoders */
@@ -582,9 +587,7 @@ struct  HStudyInfo
     OFString StudyInstanceUID, StudyPatientName, StudyPatientId, StudySex, StudyID, PatientNameEnglish;
     OFString StudyAge, PatientBirth, StudyState, StudyDateTime, StudyModality, StudyManufacturer, StudyInstitutionName;
 };
-#include"HMariaDb.h"
-#include "dcmtk/ofstd/ofdatime.h"
-#include <objbase.h>
+
 UINT64 CreateGUID()
 {
     UINT32 uid[2];
