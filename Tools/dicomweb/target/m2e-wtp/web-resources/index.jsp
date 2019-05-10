@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <base href="<%=basePath%>">
 
-<title>DICOM管理系统</title>
+<title>影像管理系统</title>
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="cache-control" content="no-cache">
 <meta http-equiv="expires" content="0">
@@ -32,7 +32,7 @@ a:hover {
 </head>
 
 <body style="text-align: center">
-	<h1>欢迎使用--DICOM管理系统</h1><br><br><br>
+	<h1>欢迎使用-影像管理系统</h1><br><br><br>
 	<h2>
 		<b><a href="login.jsp">点击进入</a></b><b>
 	</b></h2><b>
