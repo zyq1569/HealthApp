@@ -1,9 +1,9 @@
 <%@page import="com.service.impl.GradeServiceimp"%>
 <%@page import="com.service.GradeService"%>
 <%@page import="com.entity.Grade"%>
-<%@page import="com.entity.Student"%>
-<%@page import="com.service.StudentService"%>
-<%@page import="com.service.impl.StudentServiceimp"%>
+<%@page import="com.entity.Study"%>
+<%@page import="com.service.StudyService"%>
+<%@page import="com.service.impl.StudyServiceimp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ page isELIgnored="false" %>
@@ -18,32 +18,32 @@
 <body>
 <h2>患者详细信息</h2>
 <%
-session.removeAttribute("student");
+session.removeAttribute("study");
 int id = Integer.parseInt(request.getParameter("id"));
-StudentService stuService = new StudentServiceimp();
-Student student = new Student();
-student.setId(id);
-student = stuService.getStudentMoreInfo(student);
+StudyService stuService = new StudyServiceimp();
+Study study = new Study();
+study.setId(id);
+study = stuService.getStudyMoreInfo(study);
 Grade grade = new Grade();
 GradeService gradeService = new GradeServiceimp();
-grade.setGradeId(student.getGradeId());
+grade.setGradeId(study.getGradeId());
 grade = gradeService.getGrade(grade);
-session.setAttribute("student", student);
+session.setAttribute("study", study);
  %>
 
 
 <table id="stuDetailList">
   <tr>
     <td>姓名：</td>
-    <td>${student.name }</td>
+    <td>${study.name }</td>
   </tr>
     <tr>
     <td>性别：</td>
-    <td>${student.sex }</td>
+    <td>${study.sex }</td>
   </tr>
     <tr>
     <td>年龄：</td>
-    <td>${student.age }</td>
+    <td>${study.age }</td>
   </tr>
     <tr>
     <td>检查类型：</td>
@@ -51,7 +51,7 @@ session.setAttribute("student", student);
   </tr>
     <tr>
     <td>检查内容：</td>
-    <td>${student.profile }</td>
+    <td>${study.profile }</td>
    </tr>
 </table>
 

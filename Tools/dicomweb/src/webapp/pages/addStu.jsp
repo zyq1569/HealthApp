@@ -22,7 +22,7 @@
 </head>
 <body>
 <h2>新增患者信息</h2>
-<form action="${pageContext.request.contextPath }/servlet/addStudent?opr=addStu" name="form1" method="post" onsubmit="return check()">
+<form action="${pageContext.request.contextPath }/servlet/addStudy?opr=addStu" name="form1" method="post" onsubmit="return check()">
   <table id="stuDetailList">
   <tr>
      <td>姓名：</td>
@@ -30,7 +30,7 @@
   </tr>
     <tr>
     <td>性别：</td>
-    <td><input type="radio" name="sex" value="男" checked="checked">男<input type="radio" name="sex" value="女">女</td>
+    <td><input type="radio" name="sex" value="男" checked="checked">男<input type="radio" name="sex" value="女">女<input type="radio" name="sex" value="其他">其他</td>
   </tr>
     <tr>
     <td>年龄：</td>
@@ -39,10 +39,10 @@
     <tr>
     <td>检查类别：</td>
     <td><select name="stuGrade">
-         <option value="RIS" >G1</option>
-         <option value="US">G2</option>
-         <option value="ES">G3</option>
-         <option value="other" selected="selected">学士后</option>
+         <option value="RIS" >放射影像</option>
+         <option value="US">超声</option>
+         <option value="ES">内窥镜</option>
+         <option value="other" selected="selected">其它</option>
        </select>
     </td>
   </tr>

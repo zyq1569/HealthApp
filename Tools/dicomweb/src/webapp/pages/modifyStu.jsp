@@ -1,6 +1,6 @@
-<%@page import="com.service.impl.StudentServiceimp"%>
-<%@page import="com.service.StudentService"%>
-<%@page import="com.entity.Student"%>
+<%@page import="com.service.impl.StudyServiceimp"%>
+<%@page import="com.service.StudyService"%>
+<%@page import="com.entity.Study"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ page isELIgnored="false" %>
@@ -14,15 +14,14 @@
 </head>
 <body>
 <h2>修改患者信息</h2>
-<form action="${pageContext.request.contextPath }/servlet/addStudent?opr=modifyStu" method="post">
+<form action="${pageContext.request.contextPath }/servlet/addStudy?opr=modifyStu" method="post">
   <table id="stuDetailList">
   <%
    int id = Integer.parseInt(request.getParameter("id"));
-   StudentService studentService = new StudentServiceimp();
-   Student stu = new Student();
+   StudyService studyService = new StudyServiceimp();
+   Study stu = new Study();
    stu.setId(id);
-   stu = studentService.getStudentMoreInfo(stu);
-  
+   stu = studyService.getStudyMoreInfo(stu);
    %>
   
   <tr>
@@ -31,7 +30,7 @@
   </tr>
     <tr>
     <td>性别：</td>
-    <td><input type="radio" name="sex" value="男" checked="checked">男<input type="radio" name="sex" value="女">女</td>
+    <td><input type="radio" name="sex" value="男" checked="checked">男<input type="radio" name="sex" value="女">女<input type="radio" name="sex" value="其他">其他</td>
   </tr>
     <tr>
     <td>年龄：</td>
