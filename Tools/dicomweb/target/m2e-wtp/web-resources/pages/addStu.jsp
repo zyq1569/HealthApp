@@ -26,19 +26,19 @@
   <table id="stuDetailList">
   <tr>
      <td>姓名：</td>
-    <td><input type="text" name="stuName"></td>
+    <td><input type="text" name="PatientName"></td>
   </tr>
     <tr>
     <td>性别：</td>
-    <td><input type="radio" name="sex" value="男" checked="checked">男<input type="radio" name="sex" value="女">女<input type="radio" name="sex" value="其他">其他</td>
+    <td><input type="radio" name="PatientSex" value="男" checked="checked">男<input type="radio" name="sex" value="女">女<input type="radio" name="sex" value="其他">其他</td>
   </tr>
     <tr>
-    <td>年龄：</td>
-    <td><input type="text" name="stuAge"></td>
+    <td>出生日期：</td>
+    <td><input type="text" name="PatientBirthday"></td>
   </tr>
     <tr>
     <td>检查类别：</td>
-    <td><select name="stuGrade">
+    <td><select name="stutype">
          <option value="RIS" >放射影像</option>
          <option value="US">超声</option>
          <option value="ES">内窥镜</option>

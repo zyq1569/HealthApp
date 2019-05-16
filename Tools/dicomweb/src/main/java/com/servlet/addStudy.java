@@ -41,14 +41,14 @@ public class addStudy extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String PatientName = request.getParameter("setPatientName");
+		String PatientName = request.getParameter("PatientName");
 		String PatientSex = request.getParameter("PatientSex");
 		String PatientBirthday = request.getParameter("PatientBirthday");//Integer.parseInt(
 		String PatientID = request.getParameter("PatientID");
 		String PatientTelNumber = request.getParameter("PatientTelNumber");
 		
 		
-		GradeService gService = new GradeServiceimp();
+		//GradeService gService = new GradeServiceimp();
 		//Grade grade = gService.getGrade(gradeName);
 		
 		Study stu = new Study();
@@ -56,7 +56,7 @@ public class addStudy extends HttpServlet {
 		stu.setPatientBirthday(PatientBirthday);
 		stu.setPatientSex(PatientSex);
 		stu.setPatientTelNumber(PatientTelNumber);
-		//stu.setPatientID(grade.getGradeId());
+		stu.setPatientID(PatientID);
 		
 		StudyService studyService = new StudyServiceimp();
 		
