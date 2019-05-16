@@ -27,7 +27,8 @@ public class StudyDaoimp extends BaseDao implements StudyDao {
 		try {
 			while (rs.next()) {
 				Study stu = new Study();
-				stu.setPatientIdentity(rs.getLong("PatientIdentity"));
+				//String s = rs.getString("PatientIdentity");
+				stu.setPatientIdentity(rs.getString("PatientIdentity"));
 				stu.setPatientName(rs.getString("PatientName"));
 				stu.setPatientID(rs.getString("PatientID"));
 				stu.setPatientSex(rs.getString("PatientSex"));
@@ -50,7 +51,7 @@ public class StudyDaoimp extends BaseDao implements StudyDao {
 		try {
 			while (rs.next()) {
 				stu.setPatientBirthday(rs.getString("PatientBirthday"));
-				stu.setPatientIdentity(rs.getLong("PatientIdentity"));
+				stu.setPatientIdentity(rs.getString("PatientIdentity"));
 				stu.setPatientSex(rs.getString("PatientSex"));
 				stu.setPatientName(rs.getString("PatientName"));
 				stu.setPatientTelNumber(rs.getString("PatientTelNumber"));

@@ -38,7 +38,7 @@
 
 	<table>
 		<tr>
-			<td class="listTable">ID</td>
+			<td class="listTable">患者ID</td>
 			<td class="listTable">姓名</td>
 			<td class="listTable">性别</td>
 			<td class="listTable">生日</td>
@@ -50,8 +50,6 @@
 		<%
 			session.removeAttribute("list");
 			StudyService stuService = new StudyServiceimp();
-			GradeService gradeService = new GradeServiceimp();
-			Grade grade = new Grade();
 			List<Study> list = stuService.getAllStudy();
 			session.setAttribute("list", list);
 			for (Study stu : list) {
@@ -61,8 +59,8 @@
 			<td><%=stu.getPatientName()%></td>
 			<td><%=stu.getPatientSex()%></td>
 			<td><%=stu.getPatientBirthday()%></td>
-			<td><%=grade.getGradeName()%></td>
 			<td><%=stu.getPatientTelNumber()%></td>
+			<td><%=stu.getPatientBirthday()%></td>
 			<td><a href="stuDetail.jsp?id=<%=stu.getPatientID()%>">查看&nbsp;&nbsp;</a>
 				<a href="modifyStu.jsp?id=<%=stu.getPatientID()%>">修改&nbsp;&nbsp;</a> <a
 				href="${pageContext.request.contextPath }/servlet/delStudy?id=<%=stu.getPatientID() %>"

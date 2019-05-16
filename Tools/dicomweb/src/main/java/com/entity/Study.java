@@ -5,7 +5,7 @@ package com.entity;
  */
 public class Study
 {
-	private long PatientIdentity;
+	private String PatientIdentity;
 	private String PatientName;
 	private String PatientID;
 	private String PatientSex;
@@ -17,10 +17,10 @@ public class Study
 		return System.currentTimeMillis();
 	}
 	
-	public long getPatientIdentity() {
+	public String getPatientIdentity() {
 		return PatientIdentity;
 	}
-	public void setPatientIdentity(long PatientIdentity) {
+	public void setPatientIdentity(String PatientIdentity) {
 		this.PatientIdentity = PatientIdentity;
 	}
 	
