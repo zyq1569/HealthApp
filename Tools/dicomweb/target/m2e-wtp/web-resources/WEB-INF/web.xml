@@ -27,16 +27,16 @@
 		<servlet-class>com.servlet.doLogin</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>addStudent</servlet-name>
+		<servlet-name>addStudy</servlet-name>
 		<display-name>This is the display name of my J2EE component</display-name>
 		<description>This is the description of my J2EE component</description>
-		<servlet-class>com.servlet.addStudent</servlet-class>
+		<servlet-class>com.servlet.addStudy</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>delStudent</servlet-name>
+		<servlet-name>delStudy</servlet-name>
 		<display-name>This is the display name of my J2EE component</display-name>
 		<description>This is the description of my J2EE component</description>
-		<servlet-class>com.servlet.delStudent</servlet-class>
+		<servlet-class>com.servlet.delStudy</servlet-class>
 	</servlet>
 
 
@@ -45,12 +45,12 @@
 		<url-pattern>/servlet/doLogin</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>addStudent</servlet-name>
-		<url-pattern>/servlet/addStudent</url-pattern>
+		<servlet-name>addStudy</servlet-name>
+		<url-pattern>/servlet/addStudy</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>delStudent</servlet-name>
-		<url-pattern>/servlet/delStudent</url-pattern>
+		<servlet-name>delStudy</servlet-name>
+		<url-pattern>/servlet/delStudy</url-pattern>
 	</servlet-mapping>
 
 	<error-page>
