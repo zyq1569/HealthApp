@@ -19,15 +19,11 @@
 <h2>患者详细信息</h2>
 <%
 session.removeAttribute("study");
-int id = Integer.parseInt(request.getParameter("id"));
+String id = request.getParameter("id");
 StudyService stuService = new StudyServiceimp();
 Study study = new Study();
-study.setId(id);
+study.setPatientID(id);
 study = stuService.getStudyMoreInfo(study);
-Grade grade = new Grade();
-GradeService gradeService = new GradeServiceimp();
-grade.setGradeId(study.getGradeId());
-grade = gradeService.getGrade(grade);
 session.setAttribute("study", study);
  %>
 
@@ -35,23 +31,23 @@ session.setAttribute("study", study);
 <table id="stuDetailList">
   <tr>
     <td>姓名：</td>
-    <td>${study.name }</td>
+    <td>${study.getPatientName() }</td>
   </tr>
     <tr>
     <td>性别：</td>
-    <td>${study.sex }</td>
+    <td>${study.getPatientSex() }</td>
   </tr>
     <tr>
-    <td>年龄：</td>
-    <td>${study.age }</td>
+    <td>出生日：</td>
+    <td>${study.getPatientBirthday() }</td>
   </tr>
     <tr>
     <td>检查类型：</td>
-    <td><%=grade.getGradeName() %></td>
+    <td>${study.getPatientTelNumber()}</td>
   </tr>
     <tr>
     <td>检查内容：</td>
-    <td>${study.profile }</td>
+    <td>${study.getPatientTelNumber() }</td>
    </tr>
 </table>
 
