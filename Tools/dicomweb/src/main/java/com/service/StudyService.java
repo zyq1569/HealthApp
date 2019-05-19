@@ -4,10 +4,6 @@ import java.util.List;
 
 import com.entity.Study;
 
-/*
- *
- *
- */
 public interface StudyService {
 	public List<Study> getAllStudy();
 	public Study getStudyMoreInfo(Study study);

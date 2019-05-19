@@ -9,14 +9,6 @@ import com.dao.BaseDao;
 import com.dao.StudyDao;
 import com.entity.Study;
 
-/*
- * 	private int PatientIdentity;
-	private String PatientName;
-	private String PatientID;
-	private String PatientSex;
-	private String PatientBirthday;
-	private String PatientTelNumber;
- */
 public class StudyDaoimp extends BaseDao implements StudyDao {
 	@Override
 	public List<Study> getAllStudy() {
@@ -27,7 +19,6 @@ public class StudyDaoimp extends BaseDao implements StudyDao {
 		try {
 			while (rs.next()) {
 				Study stu = new Study();
-				//String s = rs.getString("PatientIdentity");
 				stu.setPatientIdentity(rs.getString("PatientIdentity"));
 				stu.setPatientName(rs.getString("PatientName"));
 				stu.setPatientID(rs.getString("PatientID"));
