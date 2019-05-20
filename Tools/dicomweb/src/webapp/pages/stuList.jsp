@@ -1,6 +1,3 @@
-<%@page import="com.entity.Grade"%>
-<%@page import="com.service.GradeService"%>
-<%@page import="com.service.impl.GradeServiceimp"%>
 <%@page import="com.entity.Study"%>
 <%@page import="java.util.List"%>
 <%@page import="com.service.StudyService"%>
@@ -59,12 +56,15 @@
 			<td><%=stu.getPatientName()%></td>
 			<td><%=stu.getPatientSex()%></td>
 			<td><%=stu.getPatientBirthday()%></td>
-			<td><%=stu.getPatientTelNumber()%></td>
-			<td><%=stu.getPatientBirthday()%></td>
-			<td><a href="stuDetail.jsp?id=<%=stu.getPatientID()%>">查看&nbsp;&nbsp;</a>
-				<a href="modifyStu.jsp?id=<%=stu.getPatientID()%>">修改&nbsp;&nbsp;</a> <a
-				href="${pageContext.request.contextPath }/servlet/delStudy?id=<%=stu.getPatientID() %>"
-				onclick="return check()">删除&nbsp;&nbsp;</a></td>
+			<td><%=stu.getStudyModality()%></td>
+			<td><%=stu.getInstitutionName()%></td>
+			<td><a
+				href="stuDetail.jsp?StudyIdentity=<%=stu.getStudyIdentity()%>&PatientID=<%=stu.getPatientID()%>">查看&nbsp;&nbsp;</a>
+				<a
+				href="modifyStu.jsp?StudyIdentity=<%=stu.getStudyIdentity()%>&PatientID=<%=stu.getPatientID()%>">修改&nbsp;&nbsp;</a>
+				<a
+				href="${pageContext.request.contextPath }/servlet/delStudy?PatientID=<%=stu.getPatientID() %>"
+				onclick="return check()">删除&nbsp;&nbsp; </a></td>
 		</tr>
 		<%
 			}
