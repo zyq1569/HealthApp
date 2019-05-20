@@ -43,11 +43,12 @@ public class addStudy extends HttpServlet {
 		String PatientBirthday = request.getParameter("PatientBirthday");// Integer.parseInt(
 		String PatientID = request.getParameter("PatientID");
 		String PatientTelNumber = request.getParameter("PatientTelNumber");
-		String StudyType = request.getParameter("studytype");
 		String StudyDataTime = request.getParameter("StudyDataTime");
+		String StudyModality = request.getParameter("StudyModality");
+		String InstitutionName = request.getParameter("InstitutionName");
+		String StudyIdentity = request.getParameter("StudyIdentity");// Integer.parseInt
 
-		// GradeService gService = new GradeServiceimp();
-		// Grade grade = gService.getGrade(gradeName);
+
 
 		Study stu = new Study();
 		stu.setPatientName(PatientName);
@@ -55,6 +56,10 @@ public class addStudy extends HttpServlet {
 		stu.setPatientSex(PatientSex);
 		stu.setPatientTelNumber(PatientTelNumber);
 		stu.setPatientID(PatientID);
+		stu.setStudyModality(StudyModality );
+		stu.setInstitutionName(InstitutionName);
+		stu.setStudyDateTime(StudyDataTime); 
+		stu.setStudyIdentity(StudyIdentity);
 
 		StudyService studyService = new StudyServiceimp();
 
@@ -66,9 +71,8 @@ public class addStudy extends HttpServlet {
 			int n = 0;
 			if (opr.equals("addStu")) {
 				n = studyService.addStudy(stu);
-			} else if (opr.equals("modifyStu")) {
-				String id = request.getParameter("PatientID");// Integer.parseInt
-				stu.setPatientID(id);
+			} else if (opr.equals("modifyStu")) {						
+				stu.setPatientID(PatientID);
 				n = studyService.modifyStudy(stu);
 			}
 			if (n > 0) {

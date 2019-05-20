@@ -1,4 +1,8 @@
 package com.entity;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /*
  *
  *
@@ -12,9 +16,82 @@ public class Study
 	private String PatientBirthday;
 	private String PatientTelNumber;
 	
-	public long creatPatientIdentity()
-	{
-		return System.currentTimeMillis();
+	private String StudyIdentity;
+	private String StudyID;
+	private String StudyUID;
+	private String StudyDateTime;
+	private String InstitutionName;
+	private String StudyModality;
+	static String UID = "1.2.826.0.1.3680043.9.7604.";
+	
+	public String creatPatientIdentity()	{
+		return Long.toUnsignedString(System.currentTimeMillis()) ;
+	}
+	public String creatStudyIdentity()	{
+		return Long.toUnsignedString(System.currentTimeMillis()) ;
+	}
+	public String creatStudyID()	{
+		String id = "" ;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+		//得到long类型当前时间
+		long l = System.currentTimeMillis();
+		//new日期对象
+		Date date = new Date(l);
+		id = dateFormat.format(date);
+		return id;
+	}
+	public String creatStudyUID()	{
+		String uid = "" ;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss.");
+		//得到long类型当前时间
+		long l = System.currentTimeMillis();
+		//new日期对象
+		Date date = new Date(l);
+		uid = dateFormat.format(date) + Long.toUnsignedString(System.currentTimeMillis());
+		return  UID + uid;
+	}
+	
+	public String getStudyIdentity() {
+		return StudyIdentity;
+	}
+	public void setStudyIdentity(String StudyIdentity) {
+		this.StudyIdentity = StudyIdentity;
+	}
+	
+	public String getStudyDateTime() {
+		return StudyDateTime;
+	}
+	public void setStudyDateTime(String StudyDateTime) {
+		this.StudyDateTime = StudyDateTime;
+	}
+	
+	public String getStudyUID() {
+		return StudyUID;
+	}
+	public void setStudyUID(String StudyUID) {
+		this.StudyUID = StudyUID;
+	}
+	//
+	public String getInstitutionName() {
+		return InstitutionName;
+	}
+	public void setInstitutionName(String InstitutionName) {
+		this.InstitutionName = InstitutionName;
+	}
+	
+	public String getStudyModality() {
+		return StudyModality;
+	}
+	public void setStudyModality(String StudyModality) {
+		this.StudyModality = StudyModality;
+	}
+	
+	//
+	public String getStudyID() {
+		return StudyID;
+	}
+	public void setStudyID(String StudyID) {
+		this.StudyID = StudyID;
 	}
 	
 	public String getPatientIdentity() {
