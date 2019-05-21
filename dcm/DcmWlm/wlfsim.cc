@@ -318,12 +318,21 @@ void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
 #endif
     }
     int count;//数据库查询的记录条数
-    OFString sql = "select * from h_order where 1=1 ";
+    OFString sql = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,\
+                  s.StudyID, s.StudyUID, s.StudyDateTime, s.ProcedureStepStartDate, \
+                  s.StudyModality, s.AETitle from h_patient p, h_study s where p.PatientIdentity=s.PatientIdentity ";
     if (!Modality.empty())
     {
-        sql = sql + "and StudyModality = '" + Modality + "'";
+        sql = sql + "and s.StudyModality = '" + Modality + "'";
     }
-
+//    if (!StartDate.empty())
+//    {
+//        if (StartDate.replace(0,1,'-'))
+//        {
+////StartDate.replace
+//        }
+//        sql = sql + "and StudyDateTime = '" + StartDate + "'";
+//    }
     pMariaDb->query(sql.c_str());
     ResultSet * rs = pMariaDb->QueryResult();
     if (rs == NULL)
@@ -335,6 +344,8 @@ void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
     {
         std::vector<std::string> row;
         std::string sdata;
+        int row_size = rs->countRows();
+        int row_index = 0;
         while (rs->fetch(row))
         {
             OFString temp;
@@ -345,57 +356,114 @@ void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
             }
             sdata += "\r\n";
             DCMWLM_INFO(sdata.c_str());
-        }
-        int field_size = rs->countFields();
-        sdata = "";
-        std::string fieldData;
-        for (size_t i = 0; i < field_size; i++)
-        {
-            std::string temp;
-            rs->fetch(i, temp);
-            sdata += temp.c_str();
-            temp = rs->getFieldName(i);
-            fieldData += temp;
+            ////////////////////////////
+            std::string patienName, StudyInstanceUID, PatientID, StudyID, PatientBirthDate, PatientSex, StudyModality, StepStartDate;
+            
+            DcmDataset *dataset = new DcmDataset();
+            listDataset.push_back(dataset);
+            //dataset->putAndInsertString(DCM_PatientName, "Doe^John");
+            //dataset->putAndInsertString(DCM_AccessionNumber, "A00001");
+            //dataset->putAndInsertString(DCM_PatientID, "A000001");
+            //dataset->putAndInsertString(DCM_PatientBirthDate, "19991001");
+            //dataset->putAndInsertString(DCM_PatientBirthTime, "20:22:20");
+            //dataset->putAndInsertString(DCM_MedicalAlerts, "ABZESS");
+            //dataset->putAndInsertString(DCM_Allergies, "BARIUMSULFAT");
+
+            if (rs->getValue(row_index, "StudyUID", StudyInstanceUID))
+            {
+                dataset->putAndInsertString(DCM_StudyInstanceUID, StudyInstanceUID.c_str());
+            }
+            else
+            {
+                dataset->putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
+            }
+            if (rs->getValue(row_index, "PatientName", patienName))
+            {
+                dataset->putAndInsertString(DCM_PatientName, patienName.c_str());
+            }
+            else
+            {
+                dataset->putAndInsertString(DCM_PatientName, "unknow");
+            }
+            if (rs->getValue(row_index, "PatientID", PatientID))
+            {
+                dataset->putAndInsertString(DCM_PatientID, PatientID.c_str());
+            }
+            else
+            {
+                //dataset->putAndInsertString(DCM_PatientID, "0001");
+            }
+            if (rs->getValue(row_index, "StudyID", StudyID))
+            {
+                dataset->putAndInsertString(DCM_AccessionNumber, StudyID.c_str());
+            }
+            else
+            {
+                //dataset->putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
+            }
+            if (rs->getValue(row_index, "PatientBirthday", PatientBirthDate))
+            {
+                dataset->putAndInsertString(DCM_PatientBirthDate, PatientBirthDate.c_str());
+            }
+            else
+            {
+                //dataset->putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
+            }//PatientSex
+            if (rs->getValue(row_index, "PatientSex", PatientSex))
+            {
+                dataset->putAndInsertString(DCM_PatientSex, PatientSex.c_str());
+            }
+            else
+            {
+                //dataset->putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
+            }
+            dataset->putAndInsertString(DCM_RequestingPhysician, "NEIER");
+            dataset->putAndInsertString(DCM_RequestedProcedureDescription, "EXAM78");
+            //dataset->putAndInsertString(DCM_PatientSex, "W");
+
+            
+            DcmItem *ditem = NULL;
+            if (dataset->findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence, ditem).good())
+            {
+                if (rs->getValue(row_index, "StudyModality", StudyModality))
+                {
+                    ditem->putAndInsertString(DCM_Modality, StudyModality.c_str());
+                }
+                else
+                {
+                    ditem->putAndInsertString(DCM_Modality, Modality.c_str());
+                }
+                if (rs->getValue(row_index, "StudyDateTime", StepStartDate))
+                {
+                    ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate, StepStartDate.c_str());
+                    ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime, "00:00:00");
+                }
+                else
+                {
+                    //OFDate date = OFStandard
+                    //OFDateTime dateTime;
+                    //dateTime.setCurrentDateTime();
+                    //char timestamp[32];
+                    //char timestamp[32];
+                    //sprintf(timestamp, "%04u%02u%02u%02u%02u%02u%03u",
+                    //    dateTime.getDate().getYear(), dateTime.getDate().getMonth(),
+                    //    dateTime.getDate().getDay(), dateTime.getTime().getHour(),
+                    //    dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(),
+                    //    dateTime.getTime().getMilliSecond());
+                    ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate, "20190208");
+                    ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime, "21:44:00");
+                }
+                ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription, "EXAM56");
+                ditem->putAndInsertString(DCM_ScheduledProcedureStepID, "SPD575841");
+                //ditem->putAndInsertString(DCM_ScheduledStationName, "STN345");
+                //ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation, "B55P56");
+            }
+            dataset->putAndInsertString(DCM_RequestedProcedureID, "RP34734H328");
+            dataset->putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
+            ///////////////////////////
+            row_index++;
         }
     }
-    DcmDataset *dataset = new DcmDataset();
-    listDataset.push_back(dataset);
-    dataset->putAndInsertString(DCM_PatientName, "Doe^John");
-    dataset->putAndInsertString(DCM_AccessionNumber, "A00001");
-    dataset->putAndInsertString(DCM_PatientID, "A000001");
-    dataset->putAndInsertString(DCM_PatientBirthDate, "19991001");
-    dataset->putAndInsertString(DCM_PatientBirthTime, "20:22:20");
-    dataset->putAndInsertString(DCM_MedicalAlerts, "ABZESS");
-    dataset->putAndInsertString(DCM_Allergies, "BARIUMSULFAT");
-    dataset->putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
-    dataset->putAndInsertString(DCM_RequestingPhysician, "NEIER");
-    dataset->putAndInsertString(DCM_RequestedProcedureDescription, "EXAM78");
-    dataset->putAndInsertString(DCM_PatientSex, "W");
-
-    dataset->putAndInsertString(DCM_ScheduledProcedureStepStartDate, "20131208");
-    DcmItem *ditem = NULL;
-    if (dataset->findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence, ditem).good())
-    {
-        if (Modality.empty())
-        {
-            ditem->putAndInsertString(DCM_Modality, "CT");
-        }
-        else
-        {
-            ditem->putAndInsertString(DCM_Modality, Modality.c_str());
-        }
-
-        ditem->putAndInsertString(DCM_ScheduledStationAETitle, "20141012");
-        ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate, "20131208");
-        ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime, "21:44:00");
-        ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription, "EXAM56");
-        ditem->putAndInsertString(DCM_ScheduledProcedureStepID, "SPD575841");
-        ditem->putAndInsertString(DCM_ScheduledStationName, "STN345");
-        ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation, "B55P56");
-    }
-    dataset->putAndInsertString(DCM_RequestedProcedureID, "RP34734H328");
-    dataset->putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
-
 }
 void SetWorklistData(DcmDataset *dataset, DcmDataset *searchMask)
 {
@@ -519,13 +587,13 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDatas
         }
         else
         {
-            if (enableRejectionOfIncompleteWlFiles)
-                DCMWLM_INFO("Checking whether Creat Worklist file  is complete");
-            if (enableRejectionOfIncompleteWlFiles && !DatasetIsComplete(dataset))
-            {
-                DCMWLM_WARN("Creat Worklist file  is incomplete, file will be ignored");
-            }
-            else
+            //if (enableRejectionOfIncompleteWlFiles)
+            //    DCMWLM_INFO("Checking whether Creat Worklist file  is complete");
+            //if (enableRejectionOfIncompleteWlFiles && !DatasetIsComplete(dataset))//屏蔽对数据中部分字段
+            //{
+            //    DCMWLM_WARN("Creat Worklist file  is incomplete, file will be ignored");
+            //}
+            //else
             {
 
                 if (numOfMatchingRecords == 0)
@@ -541,6 +609,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDatas
                     tmp[numOfMatchingRecords] = new DcmDataset(*dataset);
                     delete[] matchingRecords;
                     matchingRecords = tmp;
+                    delete[] dataset;
                 }
                 numOfMatchingRecords++;
             }

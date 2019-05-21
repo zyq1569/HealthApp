@@ -57,12 +57,41 @@ OFBool CreatDir(OFString dir)
 	}
 	return OFTrue;
 }
-
+OFString GetCurrWorkingDir()
+{
+    OFString strPath;
+#ifdef HAVE_WINDOWS_H
+    TCHAR szFull[_MAX_PATH];
+    //TCHAR szDrive[_MAX_DRIVE];
+    //TCHAR szDir[_MAX_DIR];
+    ::GetModuleFileName(NULL, szFull, sizeof(szFull) / sizeof(TCHAR));
+    strPath = OFString(szFull);
+#else
+    //to do add!
+#endif
+    return strPath;
+}
 int main( int argc, char *argv[] )
 {
 	//--------------------增加日志文件的方式----------------------------------------------------------------
 	const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
 	OFString tempstr, path = argv[0];
+    int pos = 0;
+#ifdef HAVE_WINDOWS_H
+    pos = path.find_last_of('\\');
+#else
+    //to do add!
+#endif
+    if (pos < 1)
+    {
+#ifdef HAVE_WINDOWS_H
+        OFString message = " start app by commline:";
+        DCMWLM_INFO(message);
+        path = GetCurrWorkingDir();
+#else
+        //to do add!
+#endif
+    }
 	OFString log_dir = OFStandard::getDirNameFromPath(tempstr, path)+"/log";
 	if (!OFStandard::dirExists(log_dir))
 	{
