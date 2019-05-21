@@ -7,19 +7,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.entity.Student;
-import com.service.StudentService;
-import com.service.impl.StudentServiceimp;
+import com.entity.Study;
+import com.service.StudyService;
+import com.service.impl.StudyServiceimp;
 
 /*
  *
  *
  */
-public class delStudent extends HttpServlet {
+public class delStudy extends HttpServlet {
 
 	private static final long serialVersionUID = 8988759302676261138L;
 
-	public delStudent() {
+	public delStudy() {
 		super();
 	}
 
@@ -32,13 +32,14 @@ public class delStudent extends HttpServlet {
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		StudentService studentService = new StudentServiceimp();
+		StudyService studyService = new StudyServiceimp();
 		
-		int id = Integer.parseInt(request.getParameter("id"));
-		Student stu = new Student();
-		stu.setId(id);
+		//int id = Integer.parseInt(request.getParameter("id"));
+		String id = request.getParameter("PatientID");
+		Study stu = new Study();
+		stu.setPatientID(id);
 
-		studentService.delStudent(stu);
+		studyService.delStudy(stu);
 		response.sendRedirect("/dicomweb/pages/stuList.jsp");
 		
 	}
