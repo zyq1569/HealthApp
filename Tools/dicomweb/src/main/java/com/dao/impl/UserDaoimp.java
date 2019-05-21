@@ -15,7 +15,7 @@ public class UserDaoimp extends BaseDao implements UserDao{
 	@Override
 	public boolean findUser(User user) {
 		boolean flag = true;
-		String sql = "select count(1) from user where `username`=? and `password`=?";
+		String sql = "select count(1) from h_user where `username`=? and `password`=?";
 		Object[] params = {user.getUsername(),user.getPassword()};
 		ResultSet rs = this.executeQuerySQL(sql, params);
 		try {

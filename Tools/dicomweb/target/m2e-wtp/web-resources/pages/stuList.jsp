@@ -1,10 +1,7 @@
-<%@page import="com.entity.Grade"%>
-<%@page import="com.service.GradeService"%>
-<%@page import="com.service.impl.GradeServiceimp"%>
-<%@page import="com.entity.Student"%>
+<%@page import="com.entity.Study"%>
 <%@page import="java.util.List"%>
-<%@page import="com.service.StudentService"%>
-<%@page import="com.service.impl.StudentServiceimp"%>
+<%@page import="com.service.StudyService"%>
+<%@page import="com.service.impl.StudyServiceimp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page isELIgnored="false"%>
@@ -17,15 +14,14 @@
 <link href="${pageContext.request.contextPath }/css/common.css"
 	rel="stylesheet" type="text/css" />
 <script type="text/javascript">
-  function check(){
-    var mymessage=confirm("确定要删除吗？");  
-    if(mymessage==true){  
-       return true;
-    }  
-    else if(mymessage==false){  
-       return false;
-    }   
-  }
+	function check() {
+		var mymessage = confirm("确定要删除吗？");
+		if (mymessage == true) {
+			return true;
+		} else if (mymessage == false) {
+			return false;
+		}
+	}
 </script>
 </head>
 <body>
@@ -39,67 +35,40 @@
 
 	<table>
 		<tr>
-			<td class="listTable">ID</td>
+			<td class="listTable">患者ID</td>
 			<td class="listTable">姓名</td>
 			<td class="listTable">性别</td>
-			<td class="listTable">年龄</td>
+			<td class="listTable">生日</td>
 			<td class="listTable">检查类别</td>
 			<td id="profile">检查内容</td>
 			<td id="operate">操作</td>
 		</tr>
-		<%--第一种写法，使用JSP原生标签 --%>
+		<%-- 第一种写法，使用JSP原生标签 --%>
 		<%
-   session.removeAttribute("list");
-   StudentService stuService = new StudentServiceimp();
-   GradeService gradeService = new GradeServiceimp();
-   Grade grade = new Grade();
-   List<Student> list = stuService.getAllStudent();
-   session.setAttribute("list", list);
-   for(Student stu:list){
-    grade.setGradeId(stu.getGradeId());
-    grade = gradeService.getGrade(grade);
- %>
-
+			session.removeAttribute("list");
+			StudyService stuService = new StudyServiceimp();
+			List<Study> list = stuService.getAllStudy();
+			session.setAttribute("list", list);
+			for (Study stu : list) {
+		%>
 		<tr>
-			<td><%=stu.getId() %></td>
-			<td><%=stu.getName() %></td>
-			<td><%=stu.getSex() %></td>
-			<td><%=stu.getAge() %></td>
-			<td><%=grade.getGradeName() %></td>
-			<td><%=stu.getProfile() %></td>
-			<td><a href="stuDetail.jsp?id=<%=stu.getId() %>">查看&nbsp;&nbsp;</a>
-				<a href="modifyStu.jsp?id=<%=stu.getId() %>">修改&nbsp;&nbsp;</a> <a
-				href="${pageContext.request.contextPath }/servlet/delStudent?id=<%=stu.getId() %>"
-				onclick="return check()">删除&nbsp;&nbsp;</a></td>
+			<td><%=stu.getPatientID()%></td>
+			<td><%=stu.getPatientName()%></td>
+			<td><%=stu.getPatientSex()%></td>
+			<td><%=stu.getPatientBirthday()%></td>
+			<td><%=stu.getStudyModality()%></td>
+			<td><%=stu.getInstitutionName()%></td>
+			<td><a
+				href="stuDetail.jsp?StudyIdentity=<%=stu.getStudyIdentity()%>&PatientID=<%=stu.getPatientID()%>">查看&nbsp;&nbsp;</a>
+				<a
+				href="modifyStu.jsp?StudyIdentity=<%=stu.getStudyIdentity()%>&PatientID=<%=stu.getPatientID()%>">修改&nbsp;&nbsp;</a>
+				<a
+				href="${pageContext.request.contextPath }/servlet/delStudy?PatientID=<%=stu.getPatientID() %>"
+				onclick="return check()">删除&nbsp;&nbsp; </a></td>
 		</tr>
-		<%} %>
-
-
-		<%--第二种写法，使用JSTL标签 --%>
-		<%--  <%
-   StudentService stuService = new StudentServiceimp();
-   GradeService gradeService = new GradeServiceimp();
-   Grade grade = new Grade();
-   List<Student> list = stuService.getAllStudent();
-   session.setAttribute("list", list);
-
- %>
-<c:forEach items="${list }" var="stu">
-  <tr> 
-   <td>${stu.id } </td><td>${stu.name }</td>
-   <td>${stu.sex }</td>
-   <td>${stu.age }</td>
-   <td>${stu.gradeId }</td>
-   <td>${stu.profile }</td>
-   <td><a href="stuDetail.jsp">查看&nbsp;&nbsp;</a>
-   <a href="modifyStu.jsp">修改&nbsp;&nbsp;</a>
-   <a href="#">删除&nbsp;&nbsp;</a></td>
-  </tr>
-
-</c:forEach> --%>
-
-
-
+		<%
+			}
+		%>
 	</table>
 
 </body>
