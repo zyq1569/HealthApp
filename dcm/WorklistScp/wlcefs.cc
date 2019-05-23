@@ -219,15 +219,19 @@ command_argv(argv), dataSource( dataSourcev )
 
 #if defined(HAVE_FORK) || defined(_WIN32)
 		cmd->beginOptionBlock();
-		if (cmd->findOption("--single-process")) opt_singleProcess = OFTrue;
-		if (cmd->findOption("--fork")) opt_singleProcess = OFFalse;
+		if (cmd->findOption("--single-process"))
+            opt_singleProcess = OFTrue;
+		if (cmd->findOption("--fork"))
+            opt_singleProcess = OFFalse;
 		cmd->endOptionBlock();
 #ifdef _WIN32
-		if (cmd->findOption("--forked-child")) opt_forkedChild = OFTrue;
+		if (cmd->findOption("--forked-child"))
+            opt_forkedChild = OFTrue;
 #endif
 #endif
 
-		if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
+		if( cmd->findOption("--data-files-path") )
+            app->checkValue(cmd->getValue(opt_dfPath));
 
 		cmd->beginOptionBlock();
 		if( cmd->findOption("--enable-file-reject") )
@@ -237,34 +241,46 @@ command_argv(argv), dataSource( dataSourcev )
 		cmd->endOptionBlock();
 
 		cmd->beginOptionBlock();
-		if( cmd->findOption("--return-no-char-set") ) opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
-		if( cmd->findOption("--return-iso-ir-100") ) opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
-		if( cmd->findOption("--keep-char-set") ) opt_returnedCharacterSet = RETURN_CHARACTER_SET_FROM_FILE;
+		if( cmd->findOption("--return-no-char-set") )
+            opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
+		if( cmd->findOption("--return-iso-ir-100") )
+            opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
+		if( cmd->findOption("--keep-char-set") )
+            opt_returnedCharacterSet = RETURN_CHARACTER_SET_FROM_FILE;
 		cmd->endOptionBlock();
 
 		if( cmd->findOption("--no-sq-expansion") )
 			opt_noSequenceExpansion = OFTrue;
 
 		cmd->beginOptionBlock();
-		if( cmd->findOption("--prefer-uncompr") ) opt_networkTransferSyntax = EXS_Unknown;
-		if( cmd->findOption("--prefer-little") ) opt_networkTransferSyntax = EXS_LittleEndianExplicit;
-		if( cmd->findOption("--prefer-big") ) opt_networkTransferSyntax = EXS_BigEndianExplicit;
-		if( cmd->findOption("--implicit") ) opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+		if( cmd->findOption("--prefer-uncompr") )
+            opt_networkTransferSyntax = EXS_Unknown;
+		if( cmd->findOption("--prefer-little") )
+            opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+		if( cmd->findOption("--prefer-big") )
+            opt_networkTransferSyntax = EXS_BigEndianExplicit;
+		if( cmd->findOption("--implicit") )
+            opt_networkTransferSyntax = EXS_LittleEndianImplicit;
 #ifdef WITH_ZLIB
-		if (cmd->findOption("--prefer-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+		if (cmd->findOption("--prefer-deflated"))
+            opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
 		cmd->endOptionBlock();
 
 #ifdef WITH_TCPWRAPPER
 		cmd->beginOptionBlock();
-		if (cmd->findOption("--access-full")) dcmTCPWrapperDaemonName.set(NULL);
-		if (cmd->findOption("--access-control")) dcmTCPWrapperDaemonName.set(applicationName);
+		if (cmd->findOption("--access-full"))
+            dcmTCPWrapperDaemonName.set(NULL);
+		if (cmd->findOption("--access-control"))
+            dcmTCPWrapperDaemonName.set(applicationName);
 		cmd->endOptionBlock();
 #endif
 
 		cmd->beginOptionBlock();
-		if (cmd->findOption("--enable-new-vr")) dcmEnableGenerationOfNewVRs();
-		if (cmd->findOption("--disable-new-vr")) dcmDisableGenerationOfNewVRs();
+		if (cmd->findOption("--enable-new-vr"))
+            dcmEnableGenerationOfNewVRs();
+		if (cmd->findOption("--disable-new-vr"))
+            dcmDisableGenerationOfNewVRs();
 		cmd->endOptionBlock();
 
 #ifdef WITH_ZLIB

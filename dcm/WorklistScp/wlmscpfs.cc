@@ -71,6 +71,7 @@ OFString GetCurrWorkingDir()
 #endif
     return strPath;
 }
+// debug 1024 -d -s
 int main( int argc, char *argv[] )
 {
 	//--------------------增加日志文件的方式----------------------------------------------------------------
