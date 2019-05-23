@@ -227,7 +227,8 @@ findscu 127.0.0.1 104 wlistqry.wl - aec OFFIS
 // -s -dfr -dfp  D:\DCMTK\dcmtk-3.6.0\dcmwlm\data\wlistdb  104
 findscu 127.0.0.1 104 wlistqry.wl -aec OFFIS
 ************************************************************************************************/
-void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
+//void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
+void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
 {
     listDataset.clear();
     //DcmDataset *dataset = NULL;
@@ -348,19 +349,20 @@ void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
         int row_index = 0;
         while (rs->fetch(row))
         {
-            OFString temp;
-            for (size_t i = 0; i < row.size(); i++)
-            {
-                sdata += row[i] + " | ";
-                temp = row[i].c_str();
-            }
-            sdata += "\r\n";
-            DCMWLM_INFO(sdata.c_str());
+            //OFString temp;
+            //for (size_t i = 0; i < row.size(); i++)
+            //{
+            //    sdata += row[i] + " | ";
+            //    temp = row[i].c_str();
+            //}
+            //sdata += "\r\n";
+            //DCMWLM_INFO(sdata.c_str());
             ////////////////////////////
             std::string patienName, StudyInstanceUID, PatientID, StudyID, PatientBirthDate, PatientSex, StudyModality, StepStartDate;
             
-            DcmDataset *dataset = new DcmDataset();
-            listDataset.push_back(dataset);
+            //DcmDataset *dataset = new DcmDataset();
+            DcmDataset dataset;
+            
             //dataset->putAndInsertString(DCM_PatientName, "Doe^John");
             //dataset->putAndInsertString(DCM_AccessionNumber, "A00001");
             //dataset->putAndInsertString(DCM_PatientID, "A000001");
@@ -371,23 +373,23 @@ void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
 
             if (rs->getValue(row_index, "StudyUID", StudyInstanceUID))
             {
-                dataset->putAndInsertString(DCM_StudyInstanceUID, StudyInstanceUID.c_str());
+                dataset.putAndInsertString(DCM_StudyInstanceUID, StudyInstanceUID.c_str());
             }
             else
             {
-                dataset->putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
+                dataset.putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
             }
             if (rs->getValue(row_index, "PatientName", patienName))
             {
-                dataset->putAndInsertString(DCM_PatientName, patienName.c_str());
+                dataset.putAndInsertString(DCM_PatientName, patienName.c_str());
             }
             else
             {
-                dataset->putAndInsertString(DCM_PatientName, "unknow");
+                dataset.putAndInsertString(DCM_PatientName, "unknow");
             }
             if (rs->getValue(row_index, "PatientID", PatientID))
             {
-                dataset->putAndInsertString(DCM_PatientID, PatientID.c_str());
+                dataset.putAndInsertString(DCM_PatientID, PatientID.c_str());
             }
             else
             {
@@ -395,7 +397,7 @@ void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
             }
             if (rs->getValue(row_index, "StudyID", StudyID))
             {
-                dataset->putAndInsertString(DCM_AccessionNumber, StudyID.c_str());
+                dataset.putAndInsertString(DCM_AccessionNumber, StudyID.c_str());
             }
             else
             {
@@ -403,7 +405,7 @@ void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
             }
             if (rs->getValue(row_index, "PatientBirthday", PatientBirthDate))
             {
-                dataset->putAndInsertString(DCM_PatientBirthDate, PatientBirthDate.c_str());
+                dataset.putAndInsertString(DCM_PatientBirthDate, PatientBirthDate.c_str());
             }
             else
             {
@@ -411,19 +413,19 @@ void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
             }//PatientSex
             if (rs->getValue(row_index, "PatientSex", PatientSex))
             {
-                dataset->putAndInsertString(DCM_PatientSex, PatientSex.c_str());
+                dataset.putAndInsertString(DCM_PatientSex, PatientSex.c_str());
             }
             else
             {
                 //dataset->putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
             }
-            dataset->putAndInsertString(DCM_RequestingPhysician, "NEIER");
-            dataset->putAndInsertString(DCM_RequestedProcedureDescription, "EXAM78");
+            dataset.putAndInsertString(DCM_RequestingPhysician, "NEIER");
+            dataset.putAndInsertString(DCM_RequestedProcedureDescription, "EXAM78");
             //dataset->putAndInsertString(DCM_PatientSex, "W");
 
             
             DcmItem *ditem = NULL;
-            if (dataset->findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence, ditem).good())
+            if (dataset.findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence, ditem).good())
             {
                 if (rs->getValue(row_index, "StudyModality", StudyModality))
                 {
@@ -458,9 +460,10 @@ void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
                 //ditem->putAndInsertString(DCM_ScheduledStationName, "STN345");
                 //ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation, "B55P56");
             }
-            dataset->putAndInsertString(DCM_RequestedProcedureID, "RP34734H328");
-            dataset->putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
+            dataset.putAndInsertString(DCM_RequestedProcedureID, "RP34734H328");
+            dataset.putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
             ///////////////////////////
+            listDataset.push_back(dataset);
             row_index++;
         }
     }
@@ -574,14 +577,14 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDatas
     matchingRecords = NULL;
     numOfMatchingRecords = 0;
 
-    OFList<DcmDataset *> list_data;
+    OFList<DcmDataset > list_data;
     GetWorklistData(list_data, searchMask);//bitter 20130501
-    OFListIterator(DcmDataset *) if_iter = list_data.begin();
-    OFListIterator(DcmDataset *) if_last = list_data.end();
+    OFListIterator(DcmDataset ) if_iter = list_data.begin();
+    OFListIterator(DcmDataset ) if_last = list_data.end();
     while (if_iter != if_last)
     {
-        DcmDataset *dataset = *if_iter;
-        if (dataset == NULL)
+        DcmDataset dataset(*if_iter);
+        if (dataset.isEmpty())
         {
             DCMWLM_WARN("Creat Worklist file fail! will be ignored ");
         }
@@ -599,23 +602,24 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDatas
                 if (numOfMatchingRecords == 0)
                 {
                     matchingRecords = new DcmDataset*[1];
-                    matchingRecords[0] = new DcmDataset(*dataset);
+                    matchingRecords[0] = new DcmDataset(dataset);
                 }
                 else
                 {
                     DcmDataset **tmp = new DcmDataset*[numOfMatchingRecords + 1];
                     for (unsigned long j = 0; j < numOfMatchingRecords; j++)
                         tmp[j] = matchingRecords[j];
-                    tmp[numOfMatchingRecords] = new DcmDataset(*dataset);
+                    tmp[numOfMatchingRecords] = new DcmDataset(dataset);
                     delete[] matchingRecords;
                     matchingRecords = tmp;
-                    delete[] dataset;
+                    //delete[] dataset;
                 }
                 numOfMatchingRecords++;
             }
         }
         if_iter++;
     }
+    list_data.clear();
     return(numOfMatchingRecords);
 }
 
