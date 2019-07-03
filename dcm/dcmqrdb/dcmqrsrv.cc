@@ -33,61 +33,61 @@
 
 
 static void findCallback(
-  /* in */
-  void *callbackData,
-  OFBool cancelled, T_DIMSE_C_FindRQ *request,
-  DcmDataset *requestIdentifiers, int responseCount,
-  /* out */
-  T_DIMSE_C_FindRSP *response,
-  DcmDataset **responseIdentifiers,
-  DcmDataset **stDetail)
+    /* in */
+    void *callbackData,
+    OFBool cancelled, T_DIMSE_C_FindRQ *request,
+    DcmDataset *requestIdentifiers, int responseCount,
+    /* out */
+    T_DIMSE_C_FindRSP *response,
+    DcmDataset **responseIdentifiers,
+    DcmDataset **stDetail)
 {
-  DcmQueryRetrieveFindContext *context = OFstatic_cast(DcmQueryRetrieveFindContext *, callbackData);
-  context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, responseIdentifiers, stDetail);
+    DcmQueryRetrieveFindContext *context = OFstatic_cast(DcmQueryRetrieveFindContext *, callbackData);
+    context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, responseIdentifiers, stDetail);
 }
 
 
 static void getCallback(
-  /* in */
-  void *callbackData,
-  OFBool cancelled, T_DIMSE_C_GetRQ *request,
-  DcmDataset *requestIdentifiers, int responseCount,
-  /* out */
-  T_DIMSE_C_GetRSP *response, DcmDataset **stDetail,
-  DcmDataset **responseIdentifiers)
+    /* in */
+    void *callbackData,
+    OFBool cancelled, T_DIMSE_C_GetRQ *request,
+    DcmDataset *requestIdentifiers, int responseCount,
+    /* out */
+    T_DIMSE_C_GetRSP *response, DcmDataset **stDetail,
+    DcmDataset **responseIdentifiers)
 {
-  DcmQueryRetrieveGetContext *context = OFstatic_cast(DcmQueryRetrieveGetContext *, callbackData);
-  context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
+    DcmQueryRetrieveGetContext *context = OFstatic_cast(DcmQueryRetrieveGetContext *, callbackData);
+    context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
 }
 
 
 static void moveCallback(
-  /* in */
-  void *callbackData,
-  OFBool cancelled, T_DIMSE_C_MoveRQ *request,
-  DcmDataset *requestIdentifiers, int responseCount,
-  /* out */
-  T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
-  DcmDataset **responseIdentifiers)
+    /* in */
+    void *callbackData,
+    OFBool cancelled, T_DIMSE_C_MoveRQ *request,
+    DcmDataset *requestIdentifiers, int responseCount,
+    /* out */
+    T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
+    DcmDataset **responseIdentifiers)
 {
-  DcmQueryRetrieveMoveContext *context = OFstatic_cast(DcmQueryRetrieveMoveContext *, callbackData);
-  context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
+    DcmQueryRetrieveMoveContext *context = OFstatic_cast(DcmQueryRetrieveMoveContext *, callbackData);
+    context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
 }
 
 
 static void storeCallback(
-  /* in */
-  void *callbackData,
-  T_DIMSE_StoreProgress *progress,    /* progress state */
-  T_DIMSE_C_StoreRQ *req,             /* original store request */
-  char *imageFileName,                /* being received into */
-  DcmDataset **imageDataSet,          /* being received into */
-  /* out */
-  T_DIMSE_C_StoreRSP *rsp,            /* final store response */
-  DcmDataset **stDetail)
+    /* in */
+    void *callbackData,
+    T_DIMSE_StoreProgress *progress,    /* progress state */
+    T_DIMSE_C_StoreRQ *req,             /* original store request */
+    char *imageFileName,                /* being received into */
+    DcmDataset **imageDataSet,          /* being received into */
+    /* out */
+    T_DIMSE_C_StoreRSP *rsp,            /* final store response */
+    DcmDataset **stDetail)
 {
-  DcmQueryRetrieveStoreContext *context = OFstatic_cast(DcmQueryRetrieveStoreContext *, callbackData);
-  context->callbackHandler(progress, req, imageFileName, imageDataSet, rsp, stDetail);
+    DcmQueryRetrieveStoreContext *context = OFstatic_cast(DcmQueryRetrieveStoreContext *, callbackData);
+    context->callbackHandler(progress, req, imageFileName, imageDataSet, rsp, stDetail);
 }
 
 
@@ -97,17 +97,17 @@ static void storeCallback(
 
 
 DcmQueryRetrieveSCP::DcmQueryRetrieveSCP(
-  const DcmQueryRetrieveConfig& config,
-  const DcmQueryRetrieveOptions& options,
-  const DcmQueryRetrieveDatabaseHandleFactory& factory,
-  const DcmAssociationConfiguration& associationConfiguration)
-: config_(&config)
-, processtable_()
-, dbCheckFindIdentifier_(OFFalse)
-, dbCheckMoveIdentifier_(OFFalse)
-, factory_(factory)
-, options_(options)
-, associationConfiguration_(associationConfiguration)
+    const DcmQueryRetrieveConfig& config,
+    const DcmQueryRetrieveOptions& options,
+    const DcmQueryRetrieveDatabaseHandleFactory& factory,
+    const DcmAssociationConfiguration& associationConfiguration)
+    : config_(&config)
+    , processtable_()
+    , dbCheckFindIdentifier_(OFFalse)
+    , dbCheckMoveIdentifier_(OFFalse)
+    , factory_(factory)
+    , options_(options)
+    , associationConfiguration_(associationConfiguration)
 {
 }
 
@@ -127,20 +127,20 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
     {
         /* Create a database handle for this association */
         DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle(
-              assoc->params->DULparams.callingAPTitle,
-          assoc->params->DULparams.calledAPTitle, cond);
+            assoc->params->DULparams.callingAPTitle,
+            assoc->params->DULparams.calledAPTitle, cond);
 
         if (cond.bad())
         {
-          DCMQRDB_ERROR("dispatch: cannot create DB Handle");
-          return cond;
+            DCMQRDB_ERROR("dispatch: cannot create DB Handle");
+            return cond;
         }
 
         if (dbHandle == NULL)
         {
-          // this should not happen, but we check it anyway
-          DCMQRDB_ERROR("dispatch: cannot create DB Handle");
-          return EC_IllegalCall;
+            // this should not happen, but we check it anyway
+            DCMQRDB_ERROR("dispatch: cannot create DB Handle");
+            return EC_IllegalCall;
         }
 
         dbHandle->setIdentifierChecking(dbCheckFindIdentifier_, dbCheckMoveIdentifier_);
@@ -149,7 +149,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
         // this while loop is executed exactly once unless the "keepDBHandleDuringAssociation_"
         // flag is set, in which case the DB handle remains open until something goes wrong
         // or the remote peer closes the association
-        while (cond.good() && (firstLoop || options_.keepDBHandleDuringAssociation_) )
+        while (cond.good() && (firstLoop || options_.keepDBHandleDuringAssociation_))
         {
             firstLoop = OFFalse;
             cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, NULL);
@@ -182,11 +182,11 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                     /* we cannot handle this kind of message */
                     cond = DIMSE_BADCOMMANDTYPE;
                     DCMQRDB_ERROR("Cannot handle command: 0x" << STD_NAMESPACE hex <<
-                            (unsigned)msg.CommandField);
+                        (unsigned)msg.CommandField);
                     /* the condition will be returned, the caller will abort the association. */
                 }
             }
-            else if ((cond == DUL_PEERREQUESTEDRELEASE)||(cond == DUL_PEERABORTEDASSOCIATION))
+            else if ((cond == DUL_PEERREQUESTEDRELEASE) || (cond == DUL_PEERABORTEDASSOCIATION))
             {
                 // association gone
             }
@@ -224,9 +224,11 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
         DCMQRDB_INFO("Association Release");
         cond = ASC_acknowledgeRelease(assoc);
         ASC_dropSCPAssociation(assoc);
-    } else if (cond == DUL_PEERABORTEDASSOCIATION) {
+    }
+    else if (cond == DUL_PEERABORTEDASSOCIATION) {
         DCMQRDB_INFO("Association Aborted");
-    } else {
+    }
+    else {
         DCMQRDB_ERROR("DIMSE Failure (aborting association): " << DimseCondition::dump(temp_str, cond));
         /* some kind of error so abort the association */
         cond = ASC_abortAssociation(assoc);
@@ -246,7 +248,7 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
 
 
 OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_EchoRQ * req,
-        T_ASC_PresentationContextID presId)
+    T_ASC_PresentationContextID presId)
 {
     OFCondition cond = EC_Normal;
 
@@ -264,8 +266,8 @@ OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_Ec
 
 
 OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_FindRQ * request,
-        T_ASC_PresentationContextID presID,
-        DcmQueryRetrieveDatabaseHandle& dbHandle)
+    T_ASC_PresentationContextID presID,
+    DcmQueryRetrieveDatabaseHandle& dbHandle)
 
 {
     OFCondition cond = EC_Normal;
@@ -289,7 +291,7 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
 
 
 OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_GetRQ * request,
-        T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
+    T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
 {
     OFCondition cond = EC_Normal;
     DcmQueryRetrieveGetContext context(dbHandle, options_, STATUS_Pending, assoc, request->MessageID, request->Priority, presID);
@@ -312,7 +314,7 @@ OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_Get
 
 
 OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_MoveRQ * request,
-        T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
+    T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
 {
     OFCondition cond = EC_Normal;
     DcmQueryRetrieveMoveContext context(dbHandle, options_, associationConfiguration_, config_, STATUS_Pending, assoc, request->MessageID, request->Priority);
@@ -335,13 +337,13 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
 
 
 OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request,
-             T_ASC_PresentationContextID presId,
-             DcmQueryRetrieveDatabaseHandle& dbHandle,
-             OFBool correctUIDPadding)
+    T_ASC_PresentationContextID presId,
+    DcmQueryRetrieveDatabaseHandle& dbHandle,
+    OFBool correctUIDPadding)
 {
     OFCondition cond = EC_Normal;
     OFCondition dbcond = EC_Normal;
-    char imageFileName[MAXPATHLEN+1];
+    char imageFileName[MAXPATHLEN + 1];
     DcmFileFormat dcmff;
 
     DcmQueryRetrieveStoreContext context(dbHandle, options_, STATUS_Success, &dcmff, correctUIDPadding);
@@ -354,9 +356,11 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
         context.setStatus(STATUS_STORE_Refused_SOPClassNotSupported);
         /* must still receive data */
         strcpy(imageFileName, NULL_DEVICE_NAME);
-    } else if (options_.ignoreStoreData_) {
+    }
+    else if (options_.ignoreStoreData_) {
         strcpy(imageFileName, NULL_DEVICE_NAME);
-    } else {
+    }
+    else {
         dbcond = dbHandle.makeNewStoreFileName(
             request->AffectedSOPClassUID,
             request->AffectedSOPInstanceUID,
@@ -388,7 +392,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
         context.setStatus(STATUS_STORE_Refused_OutOfResources);
     }
     else
-      dcmtk_flock(lockfd, LOCK_EX);
+        dcmtk_flock(lockfd, LOCK_EX);
 #endif
 
     context.setFileName(imageFileName);
@@ -396,8 +400,8 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
     // store SourceApplicationEntityTitle in metaheader
     if (assoc && assoc->params)
     {
-      const char *aet = assoc->params->DULparams.callingAPTitle;
-      if (aet) dcmff.getMetaInfo()->putAndInsertString(DCM_SourceApplicationEntityTitle, aet);
+        const char *aet = assoc->params->DULparams.callingAPTitle;
+        if (aet) dcmff.getMetaInfo()->putAndInsertString(DCM_SourceApplicationEntityTitle, aet);
     }
 
     DcmDataset *dset = dcmff.getDataset();
@@ -406,12 +410,13 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 
     if (options_.bitPreserving_) { /* the bypass option can be set on the command line */
         cond = DIMSE_storeProvider(assoc, presId, request, imageFileName, (int)options_.useMetaheader_,
-                                   NULL, storeCallback,
-                                   (void*)&context, options_.blockMode_, options_.dimse_timeout_);
-    } else {
+            NULL, storeCallback,
+            (void*)&context, options_.blockMode_, options_.dimse_timeout_);
+    }
+    else {
         cond = DIMSE_storeProvider(assoc, presId, request, (char *)NULL, (int)options_.useMetaheader_,
-                                   &dset, storeCallback,
-                                   (void*)&context, options_.blockMode_, options_.dimse_timeout_);
+            &dset, storeCallback,
+            (void*)&context, options_.blockMode_, options_.dimse_timeout_);
     }
 
     if (cond.bad()) {
@@ -419,21 +424,21 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
     }
     if (!options_.ignoreStoreData_ && (cond.bad() || (context.getStatus() != STATUS_Success)))
     {
-      /* remove file */
-      if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) // don't try to delete /dev/null
-      {
-        DCMQRDB_INFO("Store SCP: Deleting Image File: %s" << imageFileName);
-        OFStandard::deleteFile(imageFileName);
-      }
-      dbHandle.pruneInvalidRecords();
+        /* remove file */
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) // don't try to delete /dev/null
+        {
+            DCMQRDB_INFO("Store SCP: Deleting Image File: %s" << imageFileName);
+            OFStandard::deleteFile(imageFileName);
+        }
+        dbHandle.pruneInvalidRecords();
     }
 
 #ifdef LOCK_IMAGE_FILES
     /* unlock image file */
     if (lockfd >= 0)
     {
-      dcmtk_flock(lockfd, LOCK_UN);
-      close(lockfd);
+        dcmtk_flock(lockfd, LOCK_UN);
+        close(lockfd);
     }
 #endif
 
@@ -450,8 +455,8 @@ void DcmQueryRetrieveSCP::refuseAnyStorageContexts(T_ASC_Association * assoc)
 
     for (i = 0; i < numberOfDcmAllStorageSOPClassUIDs; i++) {
         do {
-          pid = ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]);
-          if (pid != 0) ASC_refusePresentationContext(assoc->params, pid, ASC_P_USERREJECTION);
+            pid = ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]);
+            if (pid != 0) ASC_refusePresentationContext(assoc->params, pid, ASC_P_USERREJECTION);
         } while (pid != 0); // repeat as long as we find presentation contexts for this SOP class - there might be multiple ones.
     }
 }
@@ -466,59 +471,59 @@ OFCondition DcmQueryRetrieveSCP::refuseAssociation(T_ASC_Association ** assoc, C
     const char *reason_string;
     switch (reason)
     {
-      case CTN_TooManyAssociations:
-          reason_string = "TooManyAssociations";
-          break;
-      case CTN_CannotFork:
-          reason_string = "CannotFork";
-          break;
-      case CTN_BadAppContext:
-          reason_string = "BadAppContext";
-          break;
-      case CTN_BadAEPeer:
-          reason_string = "BadAEPeer";
-          break;
-      case CTN_BadAEService:
-          reason_string = "BadAEService";
-          break;
-      case CTN_NoReason:
-          reason_string = "NoReason";
+    case CTN_TooManyAssociations:
+        reason_string = "TooManyAssociations";
         break;
-      default:
-          reason_string = "???";
-          break;
+    case CTN_CannotFork:
+        reason_string = "CannotFork";
+        break;
+    case CTN_BadAppContext:
+        reason_string = "BadAppContext";
+        break;
+    case CTN_BadAEPeer:
+        reason_string = "BadAEPeer";
+        break;
+    case CTN_BadAEService:
+        reason_string = "BadAEService";
+        break;
+    case CTN_NoReason:
+        reason_string = "NoReason";
+        break;
+    default:
+        reason_string = "???";
+        break;
     }
     DCMQRDB_INFO("Refusing Association (" << reason_string << ")");
 
     switch (reason)
     {
-      case CTN_TooManyAssociations:
+    case CTN_TooManyAssociations:
         rej.result = ASC_RESULT_REJECTEDTRANSIENT;
         rej.source = ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED;
         rej.reason = ASC_REASON_SP_PRES_LOCALLIMITEXCEEDED;
         break;
-      case CTN_CannotFork:
+    case CTN_CannotFork:
         rej.result = ASC_RESULT_REJECTEDPERMANENT;
         rej.source = ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED;
         rej.reason = ASC_REASON_SP_PRES_TEMPORARYCONGESTION;
         break;
-      case CTN_BadAppContext:
+    case CTN_BadAppContext:
         rej.result = ASC_RESULT_REJECTEDTRANSIENT;
         rej.source = ASC_SOURCE_SERVICEUSER;
         rej.reason = ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED;
         break;
-      case CTN_BadAEPeer:
+    case CTN_BadAEPeer:
         rej.result = ASC_RESULT_REJECTEDPERMANENT;
         rej.source = ASC_SOURCE_SERVICEUSER;
         rej.reason = ASC_REASON_SU_CALLINGAETITLENOTRECOGNIZED;
         break;
-      case CTN_BadAEService:
+    case CTN_BadAEService:
         rej.result = ASC_RESULT_REJECTEDPERMANENT;
         rej.source = ASC_SOURCE_SERVICEUSER;
         rej.reason = ASC_REASON_SU_CALLEDAETITLENOTRECOGNIZED;
         break;
-      case CTN_NoReason:
-      default:
+    case CTN_NoReason:
+    default:
         rej.result = ASC_RESULT_REJECTEDPERMANENT;
         rej.source = ASC_SOURCE_SERVICEUSER;
         rej.reason = ASC_REASON_SU_NOREASON;
@@ -529,18 +534,18 @@ OFCondition DcmQueryRetrieveSCP::refuseAssociation(T_ASC_Association ** assoc, C
 
     if (cond.bad())
     {
-      DCMQRDB_ERROR("Association Reject Failed: " << DimseCondition::dump(temp_str, cond));
+        DCMQRDB_ERROR("Association Reject Failed: " << DimseCondition::dump(temp_str, cond));
     }
 
     cond = ASC_dropAssociation(*assoc);
     if (cond.bad())
     {
-      DCMQRDB_ERROR("Cannot Drop Association: " << DimseCondition::dump(temp_str, cond));
+        DCMQRDB_ERROR("Cannot Drop Association: " << DimseCondition::dump(temp_str, cond));
     }
     cond = ASC_destroyAssociation(assoc);
     if (cond.bad())
     {
-      DCMQRDB_ERROR("Cannot Destroy Association: " << DimseCondition::dump(temp_str, cond));
+        DCMQRDB_ERROR("Cannot Destroy Association: " << DimseCondition::dump(temp_str, cond));
     }
 
     return cond;
@@ -555,11 +560,11 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     OFString temp_str;
     struct { const char *moveSyntax, *findSyntax; } queryRetrievePairs[] =
     {
-      { UID_MOVEPatientRootQueryRetrieveInformationModel,
+        { UID_MOVEPatientRootQueryRetrieveInformationModel,
         UID_FINDPatientRootQueryRetrieveInformationModel },
-      { UID_MOVEStudyRootQueryRetrieveInformationModel,
+        { UID_MOVEStudyRootQueryRetrieveInformationModel,
         UID_FINDStudyRootQueryRetrieveInformationModel },
-      { UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel,
+        { UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel,
         UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel }
     };
 
@@ -571,27 +576,27 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
 
     switch (options_.networkTransferSyntax_)
     {
-      case EXS_LittleEndianImplicit:
+    case EXS_LittleEndianImplicit:
         /* we only support Little Endian Implicit */
-        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 1;
         break;
-      case EXS_LittleEndianExplicit:
+    case EXS_LittleEndianExplicit:
         /* we prefer Little Endian Explicit */
         transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 3;
         break;
-      case EXS_BigEndianExplicit:
+    case EXS_BigEndianExplicit:
         /* we prefer Big Endian Explicit */
         transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 3;
         break;
 #ifndef DISABLE_COMPRESSION_EXTENSION
-      case EXS_JPEGProcess14SV1:
+    case EXS_JPEGProcess14SV1:
         /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
         transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -599,7 +604,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_JPEGProcess1:
+    case EXS_JPEGProcess1:
         /* we prefer JPEGBaseline (default lossy for 8 bit images) */
         transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -607,7 +612,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_JPEGProcess2_4:
+    case EXS_JPEGProcess2_4:
         /* we prefer JPEGExtended (default lossy for 12 bit images) */
         transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -615,7 +620,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_JPEG2000LosslessOnly:
+    case EXS_JPEG2000LosslessOnly:
         /* we prefer JPEG 2000 lossless */
         transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -623,7 +628,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_JPEG2000:
+    case EXS_JPEG2000:
         /* we prefer JPEG 2000 lossy or lossless */
         transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -631,7 +636,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_JPEGLSLossless:
+    case EXS_JPEGLSLossless:
         /* we prefer JPEG-LS Lossless */
         transferSyntaxes[0] = UID_JPEGLSLosslessTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -639,7 +644,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_JPEGLSLossy:
+    case EXS_JPEGLSLossy:
         /* we prefer JPEG-LS Lossy */
         transferSyntaxes[0] = UID_JPEGLSLossyTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -647,7 +652,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_MPEG2MainProfileAtMainLevel:
+    case EXS_MPEG2MainProfileAtMainLevel:
         /* we prefer MPEG2 MP@ML */
         transferSyntaxes[0] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -655,7 +660,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_MPEG2MainProfileAtHighLevel:
+    case EXS_MPEG2MainProfileAtHighLevel:
         /* we prefer MPEG2 MP@HL */
         transferSyntaxes[0] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -663,7 +668,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_MPEG4HighProfileLevel4_1:
+    case EXS_MPEG4HighProfileLevel4_1:
         /* we prefer MPEG4 HP/L4.1 */
         transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -671,7 +676,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_MPEG4BDcompatibleHighProfileLevel4_1:
+    case EXS_MPEG4BDcompatibleHighProfileLevel4_1:
         /* we prefer MPEG4 BD HP/L4.1 */
         transferSyntaxes[0] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -679,7 +684,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_MPEG4HighProfileLevel4_2_For2DVideo:
+    case EXS_MPEG4HighProfileLevel4_2_For2DVideo:
         /* we prefer MPEG4 HP/L4.2 for 2D Videos */
         transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -687,7 +692,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_MPEG4HighProfileLevel4_2_For3DVideo:
+    case EXS_MPEG4HighProfileLevel4_2_For3DVideo:
         /* we prefer MPEG4 HP/L4.2 for 3D Videos */
         transferSyntaxes[0] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -695,7 +700,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_MPEG4StereoHighProfileLevel4_2:
+    case EXS_MPEG4StereoHighProfileLevel4_2:
         /* we prefer MPEG4 Stereo HP/L4.2 */
         transferSyntaxes[0] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -703,7 +708,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_HEVCMainProfileLevel5_1:
+    case EXS_HEVCMainProfileLevel5_1:
         /* we prefer HEVC/H.265 Main Profile/L5.1 */
         transferSyntaxes[0] = UID_HEVCMainProfileLevel5_1TransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -711,7 +716,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_HEVCMain10ProfileLevel5_1:
+    case EXS_HEVCMain10ProfileLevel5_1:
         /* we prefer HEVC/H.265 Main 10 Profile/L5.1 */
         transferSyntaxes[0] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -719,7 +724,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
-      case EXS_RLELossless:
+    case EXS_RLELossless:
         /* we prefer RLE Lossless */
         transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -728,7 +733,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         numTransferSyntaxes = 4;
         break;
 #ifdef WITH_ZLIB
-      case EXS_DeflatedLittleEndianExplicit:
+    case EXS_DeflatedLittleEndianExplicit:
         /* we prefer deflated transmission */
         transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
@@ -738,18 +743,19 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         break;
 #endif
 #endif
-      default:
+    default:
         /* We prefer explicit transfer syntaxes.
          * If we are running on a Little Endian machine we prefer
          * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
          */
         if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
         {
-          transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        } else {
-          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+        }
+        else {
+            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         }
         transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 3;
@@ -780,114 +786,117 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     {
         if (0 == strcmp(nonStorageSyntaxes[i], UID_FINDPatientRootQueryRetrieveInformationModel))
         {
-          if (options_.supportPatientRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_MOVEPatientRootQueryRetrieveInformationModel))
         {
-          if (options_.supportPatientRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_GETPatientRootQueryRetrieveInformationModel))
         {
-          if (options_.supportPatientRoot_ && (! options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientRoot_ && (!options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel))
         {
-          if (options_.supportPatientStudyOnly_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientStudyOnly_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel))
         {
-          if (options_.supportPatientStudyOnly_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientStudyOnly_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel))
         {
-          if (options_.supportPatientStudyOnly_ && (! options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientStudyOnly_ && (!options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_FINDStudyRootQueryRetrieveInformationModel))
         {
-          if (options_.supportStudyRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportStudyRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_MOVEStudyRootQueryRetrieveInformationModel))
         {
-          if (options_.supportStudyRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportStudyRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_GETStudyRootQueryRetrieveInformationModel))
         {
-          if (options_.supportStudyRoot_ && (! options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportStudyRoot_ && (!options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_PrivateShutdownSOPClass))
         {
-          if (options_.allowShutdown_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
-        } else {
+            if (options_.allowShutdown_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+        }
+        else {
             selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
     }
 
     if (options_.incomingProfile.empty())
     {
-      /*  accept any of the storage syntaxes */
-      if (options_.disableGetSupport_)
-      {
-        /* accept storage syntaxes with default role only */
-        cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-          assoc->params,
-          dcmAllStorageSOPClassUIDs, numberOfDcmAllStorageSOPClassUIDs,
-          (const char**)transferSyntaxes, numTransferSyntaxes);
-        if (cond.bad()) {
-          DCMQRDB_ERROR("Cannot accept presentation contexts: " << DimseCondition::dump(temp_str, cond));
-        }
-      } else {
-        /* accept storage syntaxes with proposed role */
-        T_ASC_PresentationContext pc;
-        T_ASC_SC_ROLE role;
-        int npc = ASC_countPresentationContexts(assoc->params);
-        for (i = 0; i < npc; i++)
+        /*  accept any of the storage syntaxes */
+        if (options_.disableGetSupport_)
         {
-          ASC_getPresentationContext(assoc->params, i, &pc);
-          if (dcmIsaStorageSOPClassUID(pc.abstractSyntax))
-          {
-            /*
-            ** We are prepared to accept whatever role he proposes.
-            ** Normally we can be the SCP of the Storage Service Class.
-            ** When processing the C-GET operation we can be the SCU of the Storage Service Class.
-            */
-            role = pc.proposedRole;
-
-            /*
-            ** Accept in the order "least wanted" to "most wanted" transfer
-            ** syntax.  Accepting a transfer syntax will override previously
-            ** accepted transfer syntaxes.
-            */
-            for (int k = numTransferSyntaxes - 1; k >= 0; k--)
-            {
-              for (int j = 0; j < (int)pc.transferSyntaxCount; j++)
-              {
-                /* if the transfer syntax was proposed then we can accept it
-                 * appears in our supported list of transfer syntaxes
-                 */
-                if (strcmp(pc.proposedTransferSyntaxes[j], transferSyntaxes[k]) == 0)
-                {
-                  cond = ASC_acceptPresentationContext(
-                      assoc->params, pc.presentationContextID, transferSyntaxes[k], role);
-                  if (cond.bad()) return cond;
-                }
-              }
+            /* accept storage syntaxes with default role only */
+            cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
+                assoc->params,
+                dcmAllStorageSOPClassUIDs, numberOfDcmAllStorageSOPClassUIDs,
+                (const char**)transferSyntaxes, numTransferSyntaxes);
+            if (cond.bad()) {
+                DCMQRDB_ERROR("Cannot accept presentation contexts: " << DimseCondition::dump(temp_str, cond));
             }
-          }
-        } /* for */
-      } /* else */
+        }
+        else {
+            /* accept storage syntaxes with proposed role */
+            T_ASC_PresentationContext pc;
+            T_ASC_SC_ROLE role;
+            int npc = ASC_countPresentationContexts(assoc->params);
+            for (i = 0; i < npc; i++)
+            {
+                ASC_getPresentationContext(assoc->params, i, &pc);
+                if (dcmIsaStorageSOPClassUID(pc.abstractSyntax))
+                {
+                    /*
+                    ** We are prepared to accept whatever role he proposes.
+                    ** Normally we can be the SCP of the Storage Service Class.
+                    ** When processing the C-GET operation we can be the SCU of the Storage Service Class.
+                    */
+                    role = pc.proposedRole;
+
+                    /*
+                    ** Accept in the order "least wanted" to "most wanted" transfer
+                    ** syntax.  Accepting a transfer syntax will override previously
+                    ** accepted transfer syntaxes.
+                    */
+                    for (int k = numTransferSyntaxes - 1; k >= 0; k--)
+                    {
+                        for (int j = 0; j < (int)pc.transferSyntaxCount; j++)
+                        {
+                            /* if the transfer syntax was proposed then we can accept it
+                             * appears in our supported list of transfer syntaxes
+                             */
+                            if (strcmp(pc.proposedTransferSyntaxes[j], transferSyntaxes[k]) == 0)
+                            {
+                                cond = ASC_acceptPresentationContext(
+                                    assoc->params, pc.presentationContextID, transferSyntaxes[k], role);
+                                if (cond.bad()) return cond;
+                            }
+                        }
+                    }
+                }
+            } /* for */
+        } /* else */
     }
     else
     {
-      cond = associationConfiguration_.evaluateAssociationParameters(options_.incomingProfile.c_str(), *assoc);
-      if (cond.bad()) return cond;
+        cond = associationConfiguration_.evaluateAssociationParameters(options_.incomingProfile.c_str(), *assoc);
+        if (cond.bad()) return cond;
     }
 
     /*  accept any of the non-storage syntaxes */
     cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-    assoc->params,
-    (const char**)selectedNonStorageSyntaxes, numberOfSelectedNonStorageSyntaxes,
-    (const char**)transferSyntaxes, numTransferSyntaxes);
-    if (cond.bad()) {
+        assoc->params,
+        (const char**)selectedNonStorageSyntaxes, numberOfSelectedNonStorageSyntaxes,
+        (const char**)transferSyntaxes, numTransferSyntaxes);
+    if (cond.bad())
+    {
         DCMQRDB_ERROR("Cannot accept presentation contexts: " << DimseCondition::dump(temp_str, cond));
     }
 
@@ -896,9 +905,9 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
      */
     if (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PrivateShutdownSOPClass))
     {
-      DCMQRDB_INFO("Shutting down server ... (negotiated private \"shut down\" SOP class)");
-      refuseAssociation(&assoc, CTN_NoReason);
-      return ASC_SHUTDOWNAPPLICATION;
+        DCMQRDB_INFO("Shutting down server ... (negotiated private \"shut down\" SOP class)");
+        refuseAssociation(&assoc, CTN_NoReason);
+        return ASC_SHUTDOWNAPPLICATION;
     }
 
     /*
@@ -907,7 +916,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
      */
     if (!config_->writableStorageArea(calledAETitle))
     {
-      refuseAnyStorageContexts(assoc);
+        refuseAnyStorageContexts(assoc);
     }
 
     /*
@@ -915,21 +924,24 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
      * accepting a context for MOVE if a context for FIND is also present.
      */
 
-    for (i = 0; i < (int)DIM_OF(queryRetrievePairs); i++) {
-        movepid = ASC_findAcceptedPresentationContextID(assoc,
-        queryRetrievePairs[i].moveSyntax);
-        if (movepid != 0) {
-          findpid = ASC_findAcceptedPresentationContextID(assoc,
-              queryRetrievePairs[i].findSyntax);
-          if (findpid == 0) {
-            if (options_.requireFindForMove_) {
-              /* refuse the move */
-              ASC_refusePresentationContext(assoc->params,
-                  movepid, ASC_P_USERREJECTION);
-            } else {
-              DCMQRDB_ERROR("Move Presentation Context but no Find (accepting for now)");
+    for (i = 0; i < (int)DIM_OF(queryRetrievePairs); i++)
+    {
+        movepid = ASC_findAcceptedPresentationContextID(assoc, queryRetrievePairs[i].moveSyntax);
+        if (movepid != 0)
+        {
+            findpid = ASC_findAcceptedPresentationContextID(assoc, queryRetrievePairs[i].findSyntax);
+            if (findpid == 0)
+            {
+                if (options_.requireFindForMove_)
+                {
+                    /* refuse the move */
+                    ASC_refusePresentationContext(assoc->params, movepid, ASC_P_USERREJECTION);
+                }
+                else
+                {
+                    DCMQRDB_ERROR("Move Presentation Context but no Find (accepting for now)");
+                }
             }
-          }
         }
     }
 
@@ -944,10 +956,10 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     {
         if (config_->writableStorageArea(calledAETitle))
         {
-          if (processtable_.haveProcessWithWriteAccess(calledAETitle))
-          {
-            refuseAnyStorageContexts(assoc);
-          }
+            if (processtable_.haveProcessWithWriteAccess(calledAETitle))
+            {
+                refuseAnyStorageContexts(assoc);
+            }
         }
     }
 
@@ -967,15 +979,20 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     int timeout;
     OFBool go_cleanup = OFFalse;
 
-    if (options_.singleProcess_) timeout = 1000;
+    if (options_.singleProcess_)
+    {
+        timeout = 1000;
+    }
     else
     {
-      if (processtable_.countChildProcesses() > 0)
-      {
-        timeout = 1;
-      } else {
-        timeout = 1000;
-      }
+        if (processtable_.countChildProcesses() > 0)
+        {
+            timeout = 1;
+        }
+        else
+        {
+            timeout = 1000;
+        }
     }
 
     if (ASC_associationWaiting(theNet, timeout))
@@ -983,12 +1000,16 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         cond = ASC_receiveAssociation(theNet, &assoc, (int)options_.maxPDU_);
         if (cond.bad())
         {
-          DCMQRDB_INFO("Failed to receive association: " << DimseCondition::dump(temp_str, cond));
-          go_cleanup = OFTrue;
+            DCMQRDB_INFO("Failed to receive association: " << DimseCondition::dump(temp_str, cond));
+            go_cleanup = OFTrue;
         }
-    } else return EC_Normal;
+    }
+    else
+    {
+        return EC_Normal;
+    }
 
-    if (! go_cleanup)
+    if (!go_cleanup)
     {
         DCMQRDB_INFO("Association Received (" << assoc->params->DULparams.callingPresentationAddress
             << ":" << assoc->params->DULparams.callingAPTitle << " -> "
@@ -1004,7 +1025,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         }
     }
 
-    if (! go_cleanup)
+    if (!go_cleanup)
     {
         /* Application Context Name */
         cond = ASC_getApplicationContextName(assoc->params, buf);
@@ -1017,7 +1038,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         }
     }
 
-    if (! go_cleanup)
+    if (!go_cleanup)
     {
         /* Implementation Class UID */
         if (options_.rejectWhenNoImplementationClassUID_ &&
@@ -1030,23 +1051,31 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         }
     }
 
-    if (! go_cleanup)
+    if (!go_cleanup)
     {
         /* Does peer AE have access to required service ?? */
-        if (! config_->peerInAETitle(assoc->params->DULparams.calledAPTitle,
-            assoc->params->DULparams.callingAPTitle,
-            assoc->params->DULparams.callingPresentationAddress))
+        OFBool AllowAnyPeer = OFTrue;
+        if (AllowAnyPeer)
         {
-            DCMQRDB_DEBUG("Peer "
-                << assoc->params->DULparams.callingPresentationAddress << ":"
-                << assoc->params->DULparams.callingAPTitle << " is not not permitted to access "
-                << assoc->params->DULparams.calledAPTitle << " (see configuration file)");
-            cond = refuseAssociation(&assoc, CTN_BadAEService);
-            go_cleanup = OFTrue;
+            //允许所有节点访问
+        }
+        else
+        {
+            if (!config_->peerInAETitle(assoc->params->DULparams.calledAPTitle,
+                assoc->params->DULparams.callingAPTitle,
+                assoc->params->DULparams.callingPresentationAddress))
+            {
+                DCMQRDB_DEBUG("Peer "
+                    << assoc->params->DULparams.callingPresentationAddress << ":"
+                    << assoc->params->DULparams.callingAPTitle << " is not not permitted to access "
+                    << assoc->params->DULparams.calledAPTitle << " (see configuration file)");
+                cond = refuseAssociation(&assoc, CTN_BadAEService);
+                go_cleanup = OFTrue;
+            }
         }
     }
 
-    if (! go_cleanup)
+    if (!go_cleanup)
     {
         // too many concurrent associations ??
         if (processtable_.countChildProcesses() >= OFstatic_cast(size_t, options_.maxAssociations_))
@@ -1056,13 +1085,13 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         }
     }
 
-    if (! go_cleanup)
+    if (!go_cleanup)
     {
         cond = negotiateAssociation(assoc);
         if (cond.bad()) go_cleanup = OFTrue;
     }
 
-    if (! go_cleanup)
+    if (!go_cleanup)
     {
         cond = ASC_acknowledgeAssociation(assoc);
         if (cond.bad())
@@ -1072,7 +1101,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         }
     }
 
-    if (! go_cleanup)
+    if (!go_cleanup)
     {
         DCMQRDB_INFO("Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")");
         if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
@@ -1092,7 +1121,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             if (pid < 0)
             {
                 DCMQRDB_ERROR("Cannot create association sub-process: "
-                   << OFStandard::getLastSystemErrorCode().message());
+                    << OFStandard::getLastSystemErrorCode().message());
                 cond = refuseAssociation(&assoc, CTN_CannotFork);
                 go_cleanup = OFTrue;
             }
@@ -1107,8 +1136,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 cond = handleAssociation(assoc, options_.correctUIDPadding_);
                 /* the child process is done so exit */
                 exit(0);
-            }
         }
+    }
 #endif
     }
 
@@ -1136,14 +1165,14 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 
 void DcmQueryRetrieveSCP::cleanChildren()
 {
-  processtable_.cleanChildren();
+    processtable_.cleanChildren();
 }
 
 
 void DcmQueryRetrieveSCP::setDatabaseFlags(
-  OFBool dbCheckFindIdentifier,
-  OFBool dbCheckMoveIdentifier)
+    OFBool dbCheckFindIdentifier,
+    OFBool dbCheckMoveIdentifier)
 {
-  dbCheckFindIdentifier_ = dbCheckFindIdentifier;
-  dbCheckMoveIdentifier_ = dbCheckMoveIdentifier;
+    dbCheckFindIdentifier_ = dbCheckFindIdentifier;
+    dbCheckMoveIdentifier_ = dbCheckMoveIdentifier;
 }
