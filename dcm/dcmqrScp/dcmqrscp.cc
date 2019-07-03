@@ -84,7 +84,18 @@ END_EXTERN_C
 #define OFFIS_CONSOLE_APPLICATION "dcmqrscp"
 #endif
 
-static OFLogger dcmqrscpLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
+//-------add add 201806
+#include "dcmtk/oflog/fileap.h"
+//#include "dcmtk/oflog/oflog.h"
+#ifdef HAVE_WINDOWS_H
+#include <direct.h>      /* for _mkdir() */
+#endif
+
+
+//--------------------
+
+static OFLogger dcmqrscpLogger = OFLog::getLogger("dcmtk.dcmqr.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -112,8 +123,147 @@ static void mangleAssociationProfileKey(OFString& key)
     }
 }
 
+
+//验证目录是否存在。
+bool DirectoryExists(const OFString Dir)
+{
+    if (Dir == "")
+        return false;
+    int Code = GetFileAttributes(Dir.c_str());
+    return (Code != -1) && ((FILE_ATTRIBUTE_DIRECTORY & Code) != 0);
+}
+//在全路径文件名中提取文件路径。
+OFString ExtractFileDir(const OFString FileName)
+{
+    OFString tempstr;
+    int pos = FileName.find_last_of('/');
+    if (pos == -1)
+    {
+        return "";
+    }
+    tempstr = FileName.substr(0, pos);
+    return tempstr;
+    OFString str = OFStandard::getDirNameFromPath(tempstr, FileName);
+    return OFStandard::getDirNameFromPath(tempstr, FileName);
+}
+//创建一个新目录
+bool ForceDirectories(const OFString Dir)
+{
+    OFString path = ExtractFileDir(Dir);
+    if (!OFStandard::dirExists(path))
+    {
+        int len = path.size();
+        if (len > 1)
+        {
+            char  temp = path[path.size() - 1];
+            if (path[path.size() - 1] != ':')
+                ForceDirectories(path);
+        }
+    }
+    if (DirectoryExists(Dir) != true)
+    {
+        //if (::CreateDirectory(Dir.c_str(), NULL) == 0)
+#ifdef HAVE_WINDOWS_H
+        if (_mkdir(Dir.c_str()) == -1)
+#else
+        if (mkdir(Dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
+#endif
+        {
+            OFString msg;
+            msg = "CreateDirectory() failed with error %s,(%s)" + GetLastError() + Dir;
+            OFLOG_ERROR(dcmqrscpLogger, msg);
+            return false;
+        }
+    }
+    return true;
+}
+
+OFBool CreatDir(OFString dir)
+{
+    return ForceDirectories(dir);
+    if (!OFStandard::dirExists(dir))
+    {
+#ifdef HAVE_WINDOWS_H
+        if (_mkdir(dir.c_str()) == -1)
+#else
+        if (mkdir(dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
+#endif
+        {
+            OFLOG_ERROR(dcmqrscpLogger, "mkdir :" + dir + "  .error!");
+            return OFFalse;
+        }
+        else
+        {
+            return OFTrue;
+        }
+    }
+    return OFTrue;
+}
+OFString GetCurrWorkingDir()
+{
+    OFString strPath;
+#ifdef HAVE_WINDOWS_H
+    TCHAR szFull[_MAX_PATH];
+    //TCHAR szDrive[_MAX_DRIVE];
+    //TCHAR szDir[_MAX_DIR];
+    ::GetModuleFileName(NULL, szFull, sizeof(szFull) / sizeof(TCHAR));
+    strPath = OFString(szFull);
+#else
+    //to do add!
+#endif
+    return strPath;
+}
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_FORK
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)", rcsid);
+#else
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)\nThis version of dcmqrscp supports only single process mode.", rcsid);
+#endif
+ //##################---------------------------------------------------------------------------------
+    const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
+    OFString temps, path = argv[0];
+    int pos = 0;
+#ifdef HAVE_WINDOWS_H
+    pos = path.find_last_of('\\');
+#else
+    //to do add!
+#endif
+    if (pos < 1)
+    {
+#ifdef HAVE_WINDOWS_H
+        OFString message = " start app by commline:";
+        app.printMessage(message.c_str());
+        path = GetCurrWorkingDir();
+        app.printMessage("GetCurrWorkingDir filePath:");
+        app.printMessage(path.c_str());
+#else
+        //to do add!
+#endif
+    }
+    OFString currentAppPath = OFStandard::getDirNameFromPath(temps, path);
+    OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
+    app.printMessage("log_dir:");
+    app.printMessage(log_dir.c_str());
+    if (!OFStandard::dirExists(log_dir))
+    {
+        CreatDir(log_dir);
+    }
+
+    OFString logfilename = log_dir + "/DcmStoreSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
+
+    OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
+    dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(logfilename, STD_NAMESPACE ios::app));
+    dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getRoot();
+
+    logfile->setLayout(OFmove(layout));
+    log.removeAllAppenders();
+    log.addAppender(logfile);
+
+    OFLOG_INFO(dcmqrscpLogger, "---------argv[]:" + temps + " ----------------------");
+
+    OFLOG_INFO(dcmqrscpLogger, "-----$$------DcmNet dcmstoreqrscp start run!---------$$------------");
+ //###################------------------------------------------------------------------
     OFCondition cond = EC_Normal;
     OFCmdUnsignedInt overridePort = 0;
     OFCmdUnsignedInt overrideMaxPDU = 0;
@@ -124,11 +274,11 @@ int main(int argc, char *argv[])
 
     char tempstr[20];
     OFString temp_str;
-#ifdef HAVE_FORK
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)", rcsid);
-#else
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)\nThis version of dcmqrscp supports only single process mode.", rcsid);
-#endif
+//#ifdef HAVE_FORK
+//    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)", rcsid);
+//#else
+//    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)\nThis version of dcmqrscp supports only single process mode.", rcsid);
+//#endif
 
     OFCommandLine cmd;
 
@@ -359,29 +509,41 @@ int main(int argc, char *argv[])
         }
 
         /* command line parameters and options */
-        if (cmd.getParamCount() > 0) app.checkParam(cmd.getParamAndCheckMinMax(1, overridePort, 1, 65535));
+        if (cmd.getParamCount() > 0) 
+            app.checkParam(cmd.getParamAndCheckMinMax(1, overridePort, 1, 65535));
 
         OFLog::configureFromCommandLine(cmd, app);
 
-        if (cmd.findOption("--config")) app.checkValue(cmd.getValue(opt_configFileName));
+        if (cmd.findOption("--config"))
+            app.checkValue(cmd.getValue(opt_configFileName));
 #ifdef HAVE_FORK
         cmd.beginOptionBlock();
-        if (cmd.findOption("--single-process")) options.singleProcess_ = OFTrue;
-        if (cmd.findOption("--fork")) options.singleProcess_ = OFFalse;
+        if (cmd.findOption("--single-process"))
+            options.singleProcess_ = OFTrue;
+        if (cmd.findOption("--fork"))
+            options.singleProcess_ = OFFalse;
         cmd.endOptionBlock();
 #endif
 
-        if (cmd.findOption("--require-find")) options.requireFindForMove_ = OFTrue;
-        if (cmd.findOption("--no-parallel-store")) options.refuseMultipleStorageAssociations_ = OFTrue;
-        if (cmd.findOption("--disable-get")) options.disableGetSupport_ = OFTrue;
-        if (cmd.findOption("--allow-shutdown")) options.allowShutdown_ = OFTrue;
+        if (cmd.findOption("--require-find")) 
+            options.requireFindForMove_ = OFTrue;
+        if (cmd.findOption("--no-parallel-store")) 
+            options.refuseMultipleStorageAssociations_ = OFTrue;
+        if (cmd.findOption("--disable-get")) 
+            options.disableGetSupport_ = OFTrue;
+        if (cmd.findOption("--allow-shutdown")) 
+            options.allowShutdown_ = OFTrue;
         cmd.beginOptionBlock();
-        if (cmd.findOption("--check-find")) opt_checkFindIdentifier = OFTrue;
-        if (cmd.findOption("--no-check-find")) opt_checkFindIdentifier = OFFalse;
+        if (cmd.findOption("--check-find")) 
+            opt_checkFindIdentifier = OFTrue;
+        if (cmd.findOption("--no-check-find")) 
+            opt_checkFindIdentifier = OFFalse;
         cmd.endOptionBlock();
         cmd.beginOptionBlock();
-        if (cmd.findOption("--check-move")) opt_checkMoveIdentifier = OFTrue;
-        if (cmd.findOption("--no-check-move")) opt_checkMoveIdentifier = OFFalse;
+        if (cmd.findOption("--check-move")) 
+            opt_checkMoveIdentifier = OFTrue;
+        if (cmd.findOption("--no-check-move"))
+            opt_checkMoveIdentifier = OFFalse;
         cmd.endOptionBlock();
         cmd.beginOptionBlock();
         if (cmd.findOption("--move-unrestricted"))
@@ -390,15 +552,21 @@ int main(int argc, char *argv[])
             options.restrictMoveToSameHost_ = OFFalse;
             options.restrictMoveToSameVendor_ = OFFalse;
         }
-        if (cmd.findOption("--move-aetitle")) options.restrictMoveToSameAE_ = OFTrue;
-        if (cmd.findOption("--move-host")) options.restrictMoveToSameHost_ = OFTrue;
-        if (cmd.findOption("--move-vendor")) options.restrictMoveToSameVendor_ = OFTrue;
+        if (cmd.findOption("--move-aetitle"))
+            options.restrictMoveToSameAE_ = OFTrue;
+        if (cmd.findOption("--move-host"))
+            options.restrictMoveToSameHost_ = OFTrue;
+        if (cmd.findOption("--move-vendor"))
+            options.restrictMoveToSameVendor_ = OFTrue;
         cmd.endOptionBlock();
 
-        if (cmd.findOption("--no-patient-root")) options.supportPatientRoot_ = OFFalse;
-        if (cmd.findOption("--no-study-root")) options.supportStudyRoot_ = OFFalse;
+        if (cmd.findOption("--no-patient-root"))
+            options.supportPatientRoot_ = OFFalse;
+        if (cmd.findOption("--no-study-root")) 
+            options.supportStudyRoot_ = OFFalse;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
-        if (cmd.findOption("--no-patient-study")) options.supportPatientStudyOnly_ = OFFalse;
+        if (cmd.findOption("--no-patient-study"))
+            options.supportPatientStudyOnly_ = OFFalse;
 #endif
         if (!options.supportPatientRoot_ && !options.supportStudyRoot_ && !options.supportPatientStudyOnly_)
         {
@@ -406,57 +574,100 @@ int main(int argc, char *argv[])
         }
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--prefer-uncompr")) options.networkTransferSyntax_ = EXS_Unknown;
-        if (cmd.findOption("--prefer-little")) options.networkTransferSyntax_ = EXS_LittleEndianExplicit;
-        if (cmd.findOption("--prefer-big")) options.networkTransferSyntax_ = EXS_BigEndianExplicit;
+        if (cmd.findOption("--prefer-uncompr"))
+            options.networkTransferSyntax_ = EXS_Unknown;
+        if (cmd.findOption("--prefer-little"))
+            options.networkTransferSyntax_ = EXS_LittleEndianExplicit;
+        if (cmd.findOption("--prefer-big"))
+            options.networkTransferSyntax_ = EXS_BigEndianExplicit;
 #ifndef DISABLE_COMPRESSION_EXTENSION
-        if (cmd.findOption("--prefer-lossless")) options.networkTransferSyntax_ = EXS_JPEGProcess14SV1;
-        if (cmd.findOption("--prefer-jpeg8")) options.networkTransferSyntax_ = EXS_JPEGProcess1;
-        if (cmd.findOption("--prefer-jpeg12")) options.networkTransferSyntax_ = EXS_JPEGProcess2_4;
-        if (cmd.findOption("--prefer-j2k-lossless")) options.networkTransferSyntax_ = EXS_JPEG2000LosslessOnly;
-        if (cmd.findOption("--prefer-j2k-lossy")) options.networkTransferSyntax_ = EXS_JPEG2000;
-        if (cmd.findOption("--prefer-jls-lossless")) options.networkTransferSyntax_ = EXS_JPEGLSLossless;
-        if (cmd.findOption("--prefer-jls-lossy")) options.networkTransferSyntax_ = EXS_JPEGLSLossy;
-        if (cmd.findOption("--prefer-mpeg2")) options.networkTransferSyntax_ = EXS_MPEG2MainProfileAtMainLevel;
-        if (cmd.findOption("--prefer-mpeg2-high")) options.networkTransferSyntax_ = EXS_MPEG2MainProfileAtHighLevel;
-        if (cmd.findOption("--prefer-mpeg4")) options.networkTransferSyntax_ = EXS_MPEG4HighProfileLevel4_1;
-        if (cmd.findOption("--prefer-mpeg4-bd")) options.networkTransferSyntax_ = EXS_MPEG4BDcompatibleHighProfileLevel4_1;
-        if (cmd.findOption("--prefer-mpeg4-2-2d")) options.networkTransferSyntax_ = EXS_MPEG4HighProfileLevel4_2_For2DVideo;
-        if (cmd.findOption("--prefer-mpeg4-2-3d")) options.networkTransferSyntax_ = EXS_MPEG4HighProfileLevel4_2_For3DVideo;
-        if (cmd.findOption("--prefer-mpeg4-2-st")) options.networkTransferSyntax_ = EXS_MPEG4StereoHighProfileLevel4_2;
-        if (cmd.findOption("--prefer-hevc")) options.networkTransferSyntax_ = EXS_HEVCMainProfileLevel5_1;
-        if (cmd.findOption("--prefer-hevc10")) options.networkTransferSyntax_ = EXS_HEVCMain10ProfileLevel5_1;
-        if (cmd.findOption("--prefer-rle")) options.networkTransferSyntax_ = EXS_RLELossless;
+        if (cmd.findOption("--prefer-lossless"))
+            options.networkTransferSyntax_ = EXS_JPEGProcess14SV1;
+        if (cmd.findOption("--prefer-jpeg8"))
+            options.networkTransferSyntax_ = EXS_JPEGProcess1;
+        if (cmd.findOption("--prefer-jpeg12"))
+            options.networkTransferSyntax_ = EXS_JPEGProcess2_4;
+        if (cmd.findOption("--prefer-j2k-lossless"))
+            options.networkTransferSyntax_ = EXS_JPEG2000LosslessOnly;
+        if (cmd.findOption("--prefer-j2k-lossy"))
+            options.networkTransferSyntax_ = EXS_JPEG2000;
+        if (cmd.findOption("--prefer-jls-lossless"))
+            options.networkTransferSyntax_ = EXS_JPEGLSLossless;
+        if (cmd.findOption("--prefer-jls-lossy"))
+            options.networkTransferSyntax_ = EXS_JPEGLSLossy;
+        if (cmd.findOption("--prefer-mpeg2"))
+            options.networkTransferSyntax_ = EXS_MPEG2MainProfileAtMainLevel;
+        if (cmd.findOption("--prefer-mpeg2-high"))
+            options.networkTransferSyntax_ = EXS_MPEG2MainProfileAtHighLevel;
+        if (cmd.findOption("--prefer-mpeg4"))
+            options.networkTransferSyntax_ = EXS_MPEG4HighProfileLevel4_1;
+        if (cmd.findOption("--prefer-mpeg4-bd"))
+            options.networkTransferSyntax_ = EXS_MPEG4BDcompatibleHighProfileLevel4_1;
+        if (cmd.findOption("--prefer-mpeg4-2-2d"))
+            options.networkTransferSyntax_ = EXS_MPEG4HighProfileLevel4_2_For2DVideo;
+        if (cmd.findOption("--prefer-mpeg4-2-3d"))
+            options.networkTransferSyntax_ = EXS_MPEG4HighProfileLevel4_2_For3DVideo;
+        if (cmd.findOption("--prefer-mpeg4-2-st"))
+            options.networkTransferSyntax_ = EXS_MPEG4StereoHighProfileLevel4_2;
+        if (cmd.findOption("--prefer-hevc"))
+            options.networkTransferSyntax_ = EXS_HEVCMainProfileLevel5_1;
+        if (cmd.findOption("--prefer-hevc10"))
+            options.networkTransferSyntax_ = EXS_HEVCMain10ProfileLevel5_1;
+        if (cmd.findOption("--prefer-rle"))
+            options.networkTransferSyntax_ = EXS_RLELossless;
 #ifdef WITH_ZLIB
-        if (cmd.findOption("--prefer-deflated")) options.networkTransferSyntax_ = EXS_DeflatedLittleEndianExplicit;
+        if (cmd.findOption("--prefer-deflated"))
+            options.networkTransferSyntax_ = EXS_DeflatedLittleEndianExplicit;
 #endif
-        if (cmd.findOption("--implicit")) options.networkTransferSyntax_ = EXS_LittleEndianImplicit;
+        if (cmd.findOption("--implicit"))
+            options.networkTransferSyntax_ = EXS_LittleEndianImplicit;
 #endif
         cmd.endOptionBlock();
 
 #ifndef DISABLE_COMPRESSION_EXTENSION
         cmd.beginOptionBlock();
-        if (cmd.findOption("--propose-uncompr")) options.networkTransferSyntaxOut_ = EXS_Unknown;
-        if (cmd.findOption("--propose-little")) options.networkTransferSyntaxOut_ = EXS_LittleEndianExplicit;
-        if (cmd.findOption("--propose-big")) options.networkTransferSyntaxOut_ = EXS_BigEndianExplicit;
-        if (cmd.findOption("--propose-implicit")) options.networkTransferSyntaxOut_ = EXS_LittleEndianImplicit;
-        if (cmd.findOption("--propose-lossless")) options.networkTransferSyntaxOut_ = EXS_JPEGProcess14SV1;
-        if (cmd.findOption("--propose-jpeg8")) options.networkTransferSyntaxOut_ = EXS_JPEGProcess1;
-        if (cmd.findOption("--propose-jpeg12")) options.networkTransferSyntaxOut_ = EXS_JPEGProcess2_4;
-        if (cmd.findOption("--propose-j2k-lossless")) options.networkTransferSyntaxOut_ = EXS_JPEG2000LosslessOnly;
-        if (cmd.findOption("--propose-j2k-lossy")) options.networkTransferSyntaxOut_ = EXS_JPEG2000;
-        if (cmd.findOption("--propose-jls-lossless")) options.networkTransferSyntaxOut_ = EXS_JPEGLSLossless;
-        if (cmd.findOption("--propose-jls-lossy")) options.networkTransferSyntaxOut_ = EXS_JPEGLSLossy;
-        if (cmd.findOption("--propose-mpeg2")) options.networkTransferSyntaxOut_ = EXS_MPEG2MainProfileAtMainLevel;
-        if (cmd.findOption("--propose-mpeg2-high")) options.networkTransferSyntaxOut_ = EXS_MPEG2MainProfileAtHighLevel;
-        if (cmd.findOption("--propose-mpeg4")) options.networkTransferSyntaxOut_ = EXS_MPEG4HighProfileLevel4_1;
-        if (cmd.findOption("--propose-mpeg4-bd")) options.networkTransferSyntaxOut_ = EXS_MPEG4BDcompatibleHighProfileLevel4_1;
-        if (cmd.findOption("--propose-mpeg4-2-2d")) options.networkTransferSyntaxOut_ = EXS_MPEG4HighProfileLevel4_2_For2DVideo;
-        if (cmd.findOption("--propose-mpeg4-2-3d")) options.networkTransferSyntaxOut_ = EXS_MPEG4HighProfileLevel4_2_For3DVideo;
-        if (cmd.findOption("--propose-mpeg4-2-st")) options.networkTransferSyntaxOut_ = EXS_MPEG4StereoHighProfileLevel4_2;
-        if (cmd.findOption("--propose-hevc")) options.networkTransferSyntaxOut_ = EXS_HEVCMainProfileLevel5_1;
-        if (cmd.findOption("--propose-hevc10")) options.networkTransferSyntaxOut_ = EXS_HEVCMain10ProfileLevel5_1;
-        if (cmd.findOption("--propose-rle")) options.networkTransferSyntaxOut_ = EXS_RLELossless;
+        if (cmd.findOption("--propose-uncompr"))
+            options.networkTransferSyntaxOut_ = EXS_Unknown;
+        if (cmd.findOption("--propose-little"))
+            options.networkTransferSyntaxOut_ = EXS_LittleEndianExplicit;
+        if (cmd.findOption("--propose-big"))
+            options.networkTransferSyntaxOut_ = EXS_BigEndianExplicit;
+        if (cmd.findOption("--propose-implicit"))
+            options.networkTransferSyntaxOut_ = EXS_LittleEndianImplicit;
+        if (cmd.findOption("--propose-lossless")) 
+            options.networkTransferSyntaxOut_ = EXS_JPEGProcess14SV1;
+        if (cmd.findOption("--propose-jpeg8"))
+            options.networkTransferSyntaxOut_ = EXS_JPEGProcess1;
+        if (cmd.findOption("--propose-jpeg12"))
+            options.networkTransferSyntaxOut_ = EXS_JPEGProcess2_4;
+        if (cmd.findOption("--propose-j2k-lossless"))
+            options.networkTransferSyntaxOut_ = EXS_JPEG2000LosslessOnly;
+        if (cmd.findOption("--propose-j2k-lossy"))
+            options.networkTransferSyntaxOut_ = EXS_JPEG2000;
+        if (cmd.findOption("--propose-jls-lossless"))
+            options.networkTransferSyntaxOut_ = EXS_JPEGLSLossless;
+        if (cmd.findOption("--propose-jls-lossy"))
+            options.networkTransferSyntaxOut_ = EXS_JPEGLSLossy;
+        if (cmd.findOption("--propose-mpeg2"))
+            options.networkTransferSyntaxOut_ = EXS_MPEG2MainProfileAtMainLevel;
+        if (cmd.findOption("--propose-mpeg2-high"))
+            options.networkTransferSyntaxOut_ = EXS_MPEG2MainProfileAtHighLevel;
+        if (cmd.findOption("--propose-mpeg4"))
+            options.networkTransferSyntaxOut_ = EXS_MPEG4HighProfileLevel4_1;
+        if (cmd.findOption("--propose-mpeg4-bd"))
+            options.networkTransferSyntaxOut_ = EXS_MPEG4BDcompatibleHighProfileLevel4_1;
+        if (cmd.findOption("--propose-mpeg4-2-2d"))
+            options.networkTransferSyntaxOut_ = EXS_MPEG4HighProfileLevel4_2_For2DVideo;
+        if (cmd.findOption("--propose-mpeg4-2-3d"))
+            options.networkTransferSyntaxOut_ = EXS_MPEG4HighProfileLevel4_2_For3DVideo;
+        if (cmd.findOption("--propose-mpeg4-2-st"))
+            options.networkTransferSyntaxOut_ = EXS_MPEG4StereoHighProfileLevel4_2;
+        if (cmd.findOption("--propose-hevc"))
+            options.networkTransferSyntaxOut_ = EXS_HEVCMainProfileLevel5_1;
+        if (cmd.findOption("--propose-hevc10"))
+            options.networkTransferSyntaxOut_ = EXS_HEVCMain10ProfileLevel5_1;
+        if (cmd.findOption("--propose-rle"))
+            options.networkTransferSyntaxOut_ = EXS_RLELossless;
 #ifdef WITH_ZLIB
         if (cmd.findOption("--propose-deflated")) options.networkTransferSyntaxOut_ = EXS_DeflatedLittleEndianExplicit;
 #endif
@@ -465,8 +676,10 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_TCPWRAPPER
         cmd.beginOptionBlock();
-        if (cmd.findOption("--access-full")) dcmTCPWrapperDaemonName.set(NULL);
-        if (cmd.findOption("--access-control")) dcmTCPWrapperDaemonName.set(OFFIS_CONSOLE_APPLICATION);
+        if (cmd.findOption("--access-full"))
+            dcmTCPWrapperDaemonName.set(NULL);
+        if (cmd.findOption("--access-control"))
+            dcmTCPWrapperDaemonName.set(OFFIS_CONSOLE_APPLICATION);
         cmd.endOptionBlock();
 #endif
 
@@ -492,12 +705,18 @@ int main(int argc, char *argv[])
             options.blockMode_ = DIMSE_NONBLOCKING;
         }
 
-        if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(overrideMaxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
-        if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
-        if (cmd.findOption("--refuse")) options.refuse_ = OFTrue;
-        if (cmd.findOption("--reject")) options.rejectWhenNoImplementationClassUID_ = OFTrue;
-        if (cmd.findOption("--ignore")) options.ignoreStoreData_ = OFTrue;
-        if (cmd.findOption("--uid-padding")) options.correctUIDPadding_ = OFTrue;
+        if (cmd.findOption("--max-pdu"))
+            app.checkValue(cmd.getValueAndCheckMinMax(overrideMaxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+        if (cmd.findOption("--disable-host-lookup"))
+            dcmDisableGethostbyaddr.set(OFTrue);
+        if (cmd.findOption("--refuse"))
+            options.refuse_ = OFTrue;
+        if (cmd.findOption("--reject"))
+            options.rejectWhenNoImplementationClassUID_ = OFTrue;
+        if (cmd.findOption("--ignore"))
+            options.ignoreStoreData_ = OFTrue;
+        if (cmd.findOption("--uid-padding"))
+            options.correctUIDPadding_ = OFTrue;
 
         if (cmd.findOption("--assoc-config-file"))
         {
@@ -589,17 +808,22 @@ int main(int argc, char *argv[])
         }
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--normal")) options.bitPreserving_ = OFFalse;
-        if (cmd.findOption("--bit-preserving")) options.bitPreserving_ = OFTrue;
+        if (cmd.findOption("--normal"))
+            options.bitPreserving_ = OFFalse;
+        if (cmd.findOption("--bit-preserving"))
+            options.bitPreserving_ = OFTrue;
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--write-file")) options.useMetaheader_ = OFTrue;
-        if (cmd.findOption("--write-dataset")) options.useMetaheader_ = OFFalse;
+        if (cmd.findOption("--write-file"))
+            options.useMetaheader_ = OFTrue;
+        if (cmd.findOption("--write-dataset"))
+            options.useMetaheader_ = OFFalse;
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--write-xfer-same")) options.writeTransferSyntax_ = EXS_Unknown;
+        if (cmd.findOption("--write-xfer-same"))
+            options.writeTransferSyntax_ = EXS_Unknown;
         if (cmd.findOption("--write-xfer-little"))
         {
             app.checkConflict("--write-xfer-little", "--bit-preserving", options.bitPreserving_);
@@ -704,8 +928,10 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--enable-new-vr")) dcmEnableGenerationOfNewVRs();
-        if (cmd.findOption("--disable-new-vr")) dcmDisableGenerationOfNewVRs();
+        if (cmd.findOption("--enable-new-vr"))
+            dcmEnableGenerationOfNewVRs();
+        if (cmd.findOption("--disable-new-vr"))
+            dcmDisableGenerationOfNewVRs();
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
@@ -791,7 +1017,7 @@ int main(int argc, char *argv[])
 
     opt_port = config.getNetworkTCPPort();
     if (opt_port == 0)
-        opt_port = 104; /* not set, use default */
+        opt_port = 1400; /* not set, use default */
     if (overridePort > 0)
         opt_port = overridePort;
 
@@ -821,10 +1047,14 @@ int main(int argc, char *argv[])
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
-    if (cmd.findOption("--convert-to-utf8")) characterSetOptions.characterSet = "ISO_IR 192";
-    if (cmd.findOption("--convert-to-latin1")) characterSetOptions.characterSet = "ISO_IR 100";
-    if (cmd.findOption("--convert-to-ascii")) characterSetOptions.characterSet = "";
-    if (cmd.findOption("--convert-to-charset")) app.checkValue(cmd.getValue(characterSetOptions.characterSet));
+    if (cmd.findOption("--convert-to-utf8"))
+        characterSetOptions.characterSet = "ISO_IR 192";
+    if (cmd.findOption("--convert-to-latin1"))
+        characterSetOptions.characterSet = "ISO_IR 100";
+    if (cmd.findOption("--convert-to-ascii"))
+        characterSetOptions.characterSet = "";
+    if (cmd.findOption("--convert-to-charset"))
+        app.checkValue(cmd.getValue(characterSetOptions.characterSet));
     cmd.endOptionBlock();
 
     if (cmd.findOption("--transliterate")) {
@@ -915,7 +1145,8 @@ int main(int argc, char *argv[])
     while (cond.good())
     {
         cond = scp.waitForAssociation(options.net_);
-        if (!options.singleProcess_) scp.cleanChildren();  /* clean up any child processes */
+        if (!options.singleProcess_)
+            scp.cleanChildren();  /* clean up any child processes */
     }
 
     cond = ASC_dropNetwork(&options.net_);
