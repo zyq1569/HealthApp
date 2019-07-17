@@ -126,24 +126,29 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
     while (cond.good())
     {
         /* Create a database handle for this association */
-        DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle(
-            assoc->params->DULparams.callingAPTitle,
-            assoc->params->DULparams.calledAPTitle, cond);
+        //---修改为使用数据库读取方式
+//------------------------------------------------------
+        //DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle(
+        //    assoc->params->DULparams.callingAPTitle,
+        //    assoc->params->DULparams.calledAPTitle, cond);
 
-        if (cond.bad())
-        {
-            DCMQRDB_ERROR("dispatch: cannot create DB Handle");
-            return cond;
-        }
 
-        if (dbHandle == NULL)
-        {
-            // this should not happen, but we check it anyway
-            DCMQRDB_ERROR("dispatch: cannot create DB Handle");
-            return EC_IllegalCall;
-        }
+        //if (cond.bad())
+        //{
+        //    DCMQRDB_ERROR("dispatch: cannot create DB Handle");
+        //    return cond;
+        //}
 
-        dbHandle->setIdentifierChecking(dbCheckFindIdentifier_, dbCheckMoveIdentifier_);
+        //if (dbHandle == NULL)
+        //{
+        //    // this should not happen, but we check it anyway
+        //    DCMQRDB_ERROR("dispatch: cannot create DB Handle");
+        //    return EC_IllegalCall;
+        //}
+
+        //dbHandle->setIdentifierChecking(dbCheckFindIdentifier_, dbCheckMoveIdentifier_);
+        DcmQueryRetrieveDatabaseHandle *dbHandle = NULL;
+//-------------------------------------------------------------------------------------------
         firstLoop = OFTrue;
 
         // this while loop is executed exactly once unless the "keepDBHandleDuringAssociation_"
@@ -197,7 +202,12 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
         }
 
         // release DB handle
-        delete dbHandle;
+        if (dbHandle != NULL)
+        {
+            delete dbHandle;
+            dbHandle = NULL;
+        }
+
     }
 
     // Association done
@@ -220,26 +230,31 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     cond = dispatch(assoc, correctUIDPadding);
 
     /* clean up on association termination */
-    if (cond == DUL_PEERREQUESTEDRELEASE) {
+    if (cond == DUL_PEERREQUESTEDRELEASE)
+    {
         DCMQRDB_INFO("Association Release");
         cond = ASC_acknowledgeRelease(assoc);
         ASC_dropSCPAssociation(assoc);
     }
-    else if (cond == DUL_PEERABORTEDASSOCIATION) {
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
+    {
         DCMQRDB_INFO("Association Aborted");
     }
-    else {
+    else
+    {
         DCMQRDB_ERROR("DIMSE Failure (aborting association): " << DimseCondition::dump(temp_str, cond));
         /* some kind of error so abort the association */
         cond = ASC_abortAssociation(assoc);
     }
 
     cond = ASC_dropAssociation(assoc);
-    if (cond.bad()) {
+    if (cond.bad())
+    {
         DCMQRDB_ERROR("Cannot Drop Association: " << DimseCondition::dump(temp_str, cond));
     }
     cond = ASC_destroyAssociation(&assoc);
-    if (cond.bad()) {
+    if (cond.bad())
+    {
         DCMQRDB_ERROR("Cannot Destroy Association: " << DimseCondition::dump(temp_str, cond));
     }
 
@@ -248,7 +263,7 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
 
 
 OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_EchoRQ * req,
-    T_ASC_PresentationContextID presId)
+                                 T_ASC_PresentationContextID presId)
 {
     OFCondition cond = EC_Normal;
 
@@ -266,8 +281,8 @@ OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_Ec
 
 
 OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_FindRQ * request,
-    T_ASC_PresentationContextID presID,
-    DcmQueryRetrieveDatabaseHandle& dbHandle)
+                                T_ASC_PresentationContextID presID,
+                                DcmQueryRetrieveDatabaseHandle& dbHandle)
 
 {
     OFCondition cond = EC_Normal;
@@ -282,8 +297,9 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
     DCMQRDB_INFO("Received Find SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_findProvider(assoc, presID, request,
-        findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
-    if (cond.bad()) {
+                                findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+    if (cond.bad())
+    {
         DCMQRDB_ERROR("Find SCP Failed: " << DimseCondition::dump(temp_str, cond));
     }
     return cond;
@@ -305,8 +321,9 @@ OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_Get
     DCMQRDB_INFO("Received Get SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_getProvider(assoc, presID, request,
-        getCallback, &context, options_.blockMode_, options_.dimse_timeout_);
-    if (cond.bad()) {
+                             getCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+    if (cond.bad())
+    {
         DCMQRDB_ERROR("Get SCP Failed: " << DimseCondition::dump(temp_str, cond));
     }
     return cond;
@@ -328,8 +345,9 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
     DCMQRDB_INFO("Received Move SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_moveProvider(assoc, presID, request,
-        moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
-    if (cond.bad()) {
+                             moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+    if (cond.bad())
+    {
         DCMQRDB_ERROR("Move SCP Failed: " << DimseCondition::dump(temp_str, cond));
     }
     return cond;
@@ -351,21 +369,25 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
     OFString temp_str;
     DCMQRDB_INFO("Received Store SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
-    if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID)) {
+    if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID))
+    {
         /* callback will send back sop class not supported status */
         context.setStatus(STATUS_STORE_Refused_SOPClassNotSupported);
         /* must still receive data */
         strcpy(imageFileName, NULL_DEVICE_NAME);
     }
-    else if (options_.ignoreStoreData_) {
+    else if (options_.ignoreStoreData_)
+    {
         strcpy(imageFileName, NULL_DEVICE_NAME);
     }
-    else {
+    else
+    {
         dbcond = dbHandle.makeNewStoreFileName(
             request->AffectedSOPClassUID,
             request->AffectedSOPInstanceUID,
             imageFileName);
-        if (dbcond.bad()) {
+        if (dbcond.bad())
+        {
             DCMQRDB_ERROR("storeSCP: Database: makeNewStoreFileName Failed");
             /* must still receive data */
             strcpy(imageFileName, NULL_DEVICE_NAME);
@@ -401,25 +423,29 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
     if (assoc && assoc->params)
     {
         const char *aet = assoc->params->DULparams.callingAPTitle;
-        if (aet) dcmff.getMetaInfo()->putAndInsertString(DCM_SourceApplicationEntityTitle, aet);
+        if (aet)
+            dcmff.getMetaInfo()->putAndInsertString(DCM_SourceApplicationEntityTitle, aet);
     }
 
     DcmDataset *dset = dcmff.getDataset();
 
     /* we must still retrieve the data set even if some error has occurred */
 
-    if (options_.bitPreserving_) { /* the bypass option can be set on the command line */
+    if (options_.bitPreserving_)
+    { /* the bypass option can be set on the command line */
         cond = DIMSE_storeProvider(assoc, presId, request, imageFileName, (int)options_.useMetaheader_,
             NULL, storeCallback,
             (void*)&context, options_.blockMode_, options_.dimse_timeout_);
     }
-    else {
+    else
+    {
         cond = DIMSE_storeProvider(assoc, presId, request, (char *)NULL, (int)options_.useMetaheader_,
             &dset, storeCallback,
             (void*)&context, options_.blockMode_, options_.dimse_timeout_);
     }
 
-    if (cond.bad()) {
+    if (cond.bad())
+    {
         DCMQRDB_ERROR("Store SCP Failed: " << DimseCondition::dump(temp_str, cond));
     }
     if (!options_.ignoreStoreData_ && (cond.bad() || (context.getStatus() != STATUS_Success)))
@@ -1088,7 +1114,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     if (!go_cleanup)
     {
         cond = negotiateAssociation(assoc);
-        if (cond.bad()) go_cleanup = OFTrue;
+        if (cond.bad())
+            go_cleanup = OFTrue;
     }
 
     if (!go_cleanup)
@@ -1158,7 +1185,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         }
     }
 
-    if (oldcond == ASC_SHUTDOWNAPPLICATION) cond = oldcond; /* abort flag is reported to top-level wait loop */
+    if (oldcond == ASC_SHUTDOWNAPPLICATION)
+        cond = oldcond; /* abort flag is reported to top-level wait loop */
     return cond;
 }
 

@@ -464,18 +464,22 @@ int DcmQueryRetrieveConfig::readHostTable(FILE *cnffp, int *lineno)
     DcmQueryRetrieveConfigHostEntry *helpentry;
 
     // read certain lines from configuration file
-    while (fgets(rcline, sizeof(rcline), cnffp)) {
+    while (fgets(rcline, sizeof(rcline), cnffp))
+    {
         (*lineno)++;
         if (rcline[0] == '#' || rcline[0] == 10 || rcline[0] == 13)
             continue;        /* comment or blank line */
 
         sscanf(rcline, "%s %s", mnemonic, value);
-        if (!strcmp("HostTable", mnemonic)) {
-            if (!strcmp("END", value)) {
+        if (!strcmp("HostTable", mnemonic))
+        {
+            if (!strcmp("END", value))
+            {
                 end = 1;
                 break;
             }
-            else {
+            else
+            {
                 panic("Illegal HostTable status \"%s\" in configuration file, line %d", value, *lineno);
                 error = 1;
                 break;
@@ -486,7 +490,8 @@ int DcmQueryRetrieveConfig::readHostTable(FILE *cnffp, int *lineno)
         CNF_HETable.noOfHostEntries++;
         if ((helpentry = (DcmQueryRetrieveConfigHostEntry *)malloc(CNF_HETable.noOfHostEntries * sizeof(DcmQueryRetrieveConfigHostEntry))) == NULL)
             panic("Memory allocation 1 (%d)", CNF_HETable.noOfHostEntries);
-        if (CNF_HETable.noOfHostEntries - 1) {
+        if (CNF_HETable.noOfHostEntries - 1)
+        {
             memcpy((char*)helpentry, (char*)CNF_HETable.HostEntries, (CNF_HETable.noOfHostEntries - 1) *sizeof(DcmQueryRetrieveConfigHostEntry));
             free(CNF_HETable.HostEntries);
         }
@@ -499,7 +504,8 @@ int DcmQueryRetrieveConfig::readHostTable(FILE *cnffp, int *lineno)
             error = 1;
     }
 
-    if (!end) {
+    if (!end)
+    {
         error = 1;
         panic("No \"HostTable END\" in configuration file, line %d", *lineno);
     }
@@ -519,18 +525,22 @@ int DcmQueryRetrieveConfig::readVendorTable(FILE *cnffp, int *lineno)
     DcmQueryRetrieveConfigHostEntry *helpentry;
 
     // read certain lines from configuration file
-    while (fgets(rcline, sizeof(rcline), cnffp)) {
+    while (fgets(rcline, sizeof(rcline), cnffp))
+    {
         (*lineno)++;
         if (rcline[0] == '#' || rcline[0] == 10 || rcline[0] == 13)
             continue;        /* comment or blank line */
 
         sscanf(rcline, "%s %s", mnemonic, value);
-        if (!strcmp("VendorTable", mnemonic)) {
-            if (!strcmp("END", value)) {
+        if (!strcmp("VendorTable", mnemonic))
+        {
+            if (!strcmp("END", value))
+            {
                 end = 1;
                 break;
             }
-            else {
+            else
+            {
                 panic("Illegal VendorTable status \"%s\" in configuration file, line %d", value, *lineno);
                 error = 1;
                 break;
@@ -554,7 +564,8 @@ int DcmQueryRetrieveConfig::readVendorTable(FILE *cnffp, int *lineno)
             error = 1;
     }
 
-    if (!end) {
+    if (!end)
+    {
         error = 1;
         panic("No \"VendorTable END\" in configuration file, line %d", *lineno);
     }
@@ -574,18 +585,22 @@ int DcmQueryRetrieveConfig::readAETable(FILE *cnffp, int *lineno)
     DcmQueryRetrieveConfigAEEntry *helpentry;
 
     // read certain lines from configuration file
-    while (fgets(rcline, sizeof(rcline), cnffp)) {
+    while (fgets(rcline, sizeof(rcline), cnffp))
+    {
         (*lineno)++;
         if (rcline[0] == '#' || rcline[0] == 10 || rcline[0] == 13)
             continue;        /* comment or blank line */
 
         sscanf(rcline, "%s %s", mnemonic, value);
-        if (!strcmp("AETable", mnemonic)) {
-            if (!strcmp("END", value)) {
+        if (!strcmp("AETable", mnemonic))
+        {
+            if (!strcmp("END", value))
+            {
                 end = 1;
                 break;
             }
-            else {
+            else
+            {
                 panic("Illegal AETable status \"%s\" in configuration file, line %d", value, *lineno);
                 error = 1;
                 break;
@@ -616,7 +631,8 @@ int DcmQueryRetrieveConfig::readAETable(FILE *cnffp, int *lineno)
         }
     }
 
-    if (!end) {
+    if (!end)
+    {
         error = 1;
         panic("No \"AETable END\" in configuration file, line %d", *lineno);
     }
@@ -641,7 +657,8 @@ DcmQueryRetrieveConfigQuota *DcmQueryRetrieveConfig::parseQuota(char **valuehand
         helpquota->maxStudies = studies;
         helpquota->maxBytesPerStudy = quota(helpval);
     }
-    else {
+    else
+    {
         helpquota->maxStudies = 0;
         helpquota->maxBytesPerStudy = 0;
     }
@@ -657,7 +674,8 @@ DcmQueryRetrieveConfigPeer *DcmQueryRetrieveConfig::parsePeers(char **valuehandl
     char *valueptr = *valuehandle;
 
     helpvalue = parsevalues(valuehandle);
-    if (!strcmp("ANY", helpvalue)) {     /* keyword ANY used */
+    if (!strcmp("ANY", helpvalue))
+    {     /* keyword ANY used */
         free(helpvalue);
         *peers = -1;
         return((DcmQueryRetrieveConfigPeer *)0);
@@ -677,22 +695,28 @@ DcmQueryRetrieveConfigPeer *DcmQueryRetrieveConfig::readPeerList(char **valuehan
     DcmQueryRetrieveConfigPeer *helppeer,
         *peerlist = NULL;
 
-    while ((helpvalue = parsevalues(valuehandle)) != NULL) {
+    while ((helpvalue = parsevalues(valuehandle)) != NULL)
+    {
         found = 0;
-        if (strchr(helpvalue, ',') == NULL) {   /* symbolic name */
-            if (!CNF_HETable.noOfHostEntries) {
+        if (strchr(helpvalue, ',') == NULL)
+        {   /* symbolic name */
+            if (!CNF_HETable.noOfHostEntries) 
+            {
                 panic("No symbolic names defined");
                 *peers = 0;
                 free(helpvalue);
                 return((DcmQueryRetrieveConfigPeer *)0);
             }
-            for (i = 0; i < CNF_HETable.noOfHostEntries; i++) {
-                if (!strcmp(CNF_HETable.HostEntries[i].SymbolicName, helpvalue)) {
+            for (i = 0; i < CNF_HETable.noOfHostEntries; i++)
+            {
+                if (!strcmp(CNF_HETable.HostEntries[i].SymbolicName, helpvalue))
+                {
                     found = 1;
                     break;
                 }
             }
-            if (!found) {
+            if (!found)
+            {
                 panic("Symbolic name \"%s\" not defined", helpvalue);
                 *peers = 0;
                 free(helpvalue);
@@ -737,16 +761,20 @@ char *DcmQueryRetrieveConfig::skipmnemonic(char *rcline)
 {
     char *help = rcline;
 
-    while (*help != '\0') {                       /* leading spaces */
+    while (*help != '\0')
+    {                       /* leading spaces */
         if (isgap(*help)) help++;
         else break;
     }
-    while (*help != '\0') {
+    while (*help != '\0')
+    {
         if (!isspace(OFstatic_cast(unsigned char, *help))) help++;    /* Mnemonic */
         else break;
     }
-    while (*help != '\0') {
-        if (isgap(*help)) help++;     /* Gap */
+    while (*help != '\0')
+    {
+        if (isgap(*help))
+            help++;     /* Gap */
         else break;
     }
     return(help);
@@ -775,23 +803,25 @@ int DcmQueryRetrieveConfig::isquote(char quote)
 
 char *DcmQueryRetrieveConfig::parsevalues(char **valuehandle)
 {
-    int i,
-        inquotes = 0,
-        count = 0;
+    int i, inquotes = 0,  count = 0;
     char *value = NULL;
     const char *help,
         *valueptr = *valuehandle;
 
-    if (isquote(*valueptr)) {
+    if (isquote(*valueptr))
+    {
         inquotes = 1;
         valueptr++;
     }
 
     help = valueptr;
 
-    while (*help != '\0') {
-        if (inquotes) {
-            if (isquote(*help)) {
+    while (*help != '\0')
+    {
+        if (inquotes)
+        {
+            if (isquote(*help))
+            {
                 if ((value = (char*)malloc(count * sizeof(char) + 1)) == NULL)
                     panic("Memory allocation 7 (%d)", count);
                 for (i = 0; i < count; i++)
@@ -799,8 +829,10 @@ char *DcmQueryRetrieveConfig::parsevalues(char **valuehandle)
                 value[count] = '\0';
                 count++;
                 help++;
-                while (*help != '\0') {
-                    if (isgap(*help)) {
+                while (*help != '\0')
+                {
+                    if (isgap(*help))
+                    {
                         count++;
                         help++;
                     }
@@ -810,20 +842,24 @@ char *DcmQueryRetrieveConfig::parsevalues(char **valuehandle)
                 *valuehandle += (count + 1);
                 break;
             }
-            else {
+            else
+            {
                 count++;
                 help++;
             }
         }
         else {
-            if (isgap(*help)) {
+            if (isgap(*help))
+            {
                 if ((value = (char*)malloc(count * sizeof(char) + 1)) == NULL)
                     panic("Memory allocation 8 (%d)", count);
                 for (i = 0; i < count; i++)
                     value[i] = valueptr[i];
                 value[count] = '\0';
-                while (*help != '\0') {
-                    if (isgap(*help)) {
+                while (*help != '\0')
+                {
+                    if (isgap(*help))
+                    {
                         count++;
                         help++;
                     }
@@ -851,11 +887,16 @@ long DcmQueryRetrieveConfig::quota(const char *value)
     char last = *(value + strlen(value) - 1),  /* last character */
         mult = *(value + strlen(value) - 2);       /* multiplier */
 
-    if (last == 'b' || last == 'B') {
-        if (mult == 'k' || mult == 'K') factor = 1024;
-        else if (mult == 'm' || mult == 'M') factor = 1024 * 1024;
-        else if (mult == 'g' || mult == 'G') factor = 1024 * 1024 * 1024;
-        else factor = 1;
+    if (last == 'b' || last == 'B')
+    {
+        if (mult == 'k' || mult == 'K')
+            factor = 1024;
+        else if (mult == 'm' || mult == 'M')
+            factor = 1024 * 1024;
+        else if (mult == 'g' || mult == 'G')
+            factor = 1024 * 1024 * 1024;
+        else
+            factor = 1;
     }
     else return(-1L);
 
@@ -950,7 +991,8 @@ const char *DcmQueryRetrieveConfig::getStorageArea(const char *AETitle) const
 {
     int  i;
 
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
         if (!strcmp(AETitle, CNF_Config.AEEntries[i].ApplicationTitle))
             return(CNF_Config.AEEntries[i].StorageArea);
     }
@@ -962,7 +1004,8 @@ const char *DcmQueryRetrieveConfig::getAccess(const char *AETitle) const
 {
     int  i;
 
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
         if (!strcmp(AETitle, CNF_Config.AEEntries[i].ApplicationTitle))
             return(CNF_Config.AEEntries[i].Access);
     }
@@ -974,9 +1017,12 @@ int DcmQueryRetrieveConfig::getMaxStudies(const char *AETitle) const
 {
     int  i;
 
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
         if (!strcmp(AETitle, CNF_Config.AEEntries[i].ApplicationTitle))
+        {
             return(CNF_Config.AEEntries[i].StorageQuota->maxStudies);
+        }
     }
     return(0);       /* AETitle not found */
 }
@@ -985,9 +1031,12 @@ long DcmQueryRetrieveConfig::getMaxBytesPerStudy(const char *AETitle) const
 {
     int  i;
 
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
         if (!strcmp(AETitle, CNF_Config.AEEntries[i].ApplicationTitle))
+        {
             return(CNF_Config.AEEntries[i].StorageQuota->maxBytesPerStudy);
+        }
     }
     return(0);       /* AETitle not found */
 }
@@ -996,12 +1045,14 @@ long DcmQueryRetrieveConfig::getMaxBytesPerStudy(const char *AETitle) const
 int DcmQueryRetrieveConfig::peerInAETitle(const char *calledAETitle, const char *callingAETitle, const char *HostName) const
 {
     int  i, j;
-
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
-        if (!strcmp(calledAETitle, CNF_Config.AEEntries[i].ApplicationTitle)) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
+        if (!strcmp(calledAETitle, CNF_Config.AEEntries[i].ApplicationTitle))
+        {
             if (CNF_Config.AEEntries[i].noOfPeers == -1) /* ANY Peer allowed */
                 return(1);
-            for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++) {
+            for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++)
+            {
                 if (!strcmp(callingAETitle, CNF_Config.AEEntries[i].Peers[j].ApplicationTitle) &&
 #ifdef HAVE_PROTOTYPE_STRCASECMP
                     /* DNS is not case-sensitive */
@@ -1023,12 +1074,14 @@ int DcmQueryRetrieveConfig::peerInAETitle(const char *calledAETitle, const char 
 
 int DcmQueryRetrieveConfig::peerForAETitle(const char *AETitle, const char **HostName, int *PortNumber) const
 {
-    int  i,
-        j;
+    int  i,  j;
 
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
-        for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++) {
-            if (!strcmp(AETitle, CNF_Config.AEEntries[i].Peers[j].ApplicationTitle)) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
+        for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++)
+        {
+            if (!strcmp(AETitle, CNF_Config.AEEntries[i].Peers[j].ApplicationTitle))
+            {
                 *HostName = CNF_Config.AEEntries[i].Peers[j].HostName;
                 *PortNumber = CNF_Config.AEEntries[i].Peers[j].PortNumber;
                 return(1);        /* Peer found in AETable */
@@ -1036,9 +1089,12 @@ int DcmQueryRetrieveConfig::peerForAETitle(const char *AETitle, const char **Hos
         }
     }
 
-    for (i = 0; i < CNF_HETable.noOfHostEntries; i++) {
-        for (j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++) {
-            if (!strcmp(AETitle, CNF_HETable.HostEntries[i].Peers[j].ApplicationTitle)) {
+    for (i = 0; i < CNF_HETable.noOfHostEntries; i++)
+    {
+        for (j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++)
+        {
+            if (!strcmp(AETitle, CNF_HETable.HostEntries[i].Peers[j].ApplicationTitle))
+            {
                 *HostName = CNF_HETable.HostEntries[i].Peers[j].HostName;
                 *PortNumber = CNF_HETable.HostEntries[i].Peers[j].PortNumber;
                 return(2);        /* Peer found in HostTable */
@@ -1052,17 +1108,20 @@ int DcmQueryRetrieveConfig::peerForAETitle(const char *AETitle, const char **Hos
 
 int DcmQueryRetrieveConfig::checkForSameVendor(const char *AETitle1, const char *AETitle2) const
 {
-    int  i,
-        j,
-        k,
-        found = 0;
+    int  i, j, k, found = 0;
 
-    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++) {
-        for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++) {
-            if (!strcmp(AETitle1, CNF_VendorTable.HostEntries[i].Peers[j].ApplicationTitle)) {
-                for (k = 0; k < CNF_VendorTable.HostEntries[i].noOfPeers; k++) {
+    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++)
+    {
+        for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++)
+        {
+            if (!strcmp(AETitle1, CNF_VendorTable.HostEntries[i].Peers[j].ApplicationTitle))
+            {
+                for (k = 0; k < CNF_VendorTable.HostEntries[i].noOfPeers; k++)
+                {
                     if (!strcmp(AETitle2, CNF_VendorTable.HostEntries[i].Peers[k].ApplicationTitle))
+                    {
                         found = 1;
+                    }
                 }
             }
         }
@@ -1074,25 +1133,32 @@ int DcmQueryRetrieveConfig::checkForSameVendor(const char *AETitle1, const char 
 
 int DcmQueryRetrieveConfig::HostNamesForVendor(const char *Vendor, const char ***HostNameArray) const
 {
-    int  i, j,
-        found = 0;
+    int  i, j, found = 0;
 
-    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++) {
-        if (!strcmp(CNF_VendorTable.HostEntries[i].SymbolicName, Vendor)) {
+    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++)
+    {
+        if (!strcmp(CNF_VendorTable.HostEntries[i].SymbolicName, Vendor))
+        {
             found = 1;
             break;
         }
     }
 
     if (!found)
+    {
         return(0);
+    }
 
-    if ((*HostNameArray = (const char**)malloc(CNF_VendorTable.HostEntries[i].noOfPeers * sizeof(const char *))) == NULL) {
+
+    if ((*HostNameArray = (const char**)malloc(CNF_VendorTable.HostEntries[i].noOfPeers * sizeof(const char *))) == NULL)
+    {
         panic("Memory allocation A (%d)", CNF_VendorTable.HostEntries[i].noOfPeers);
         return(0);
     }
     for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++)
+    {
         (*HostNameArray)[j] = CNF_VendorTable.HostEntries[i].Peers[j].HostName;
+    }
 
     return(CNF_VendorTable.HostEntries[i].noOfPeers);
 }
