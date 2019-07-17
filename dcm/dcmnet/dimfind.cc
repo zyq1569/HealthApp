@@ -100,8 +100,7 @@
 */
 
 
-OFCondition
-DIMSE_findUser(
+OFCondition DIMSE_findUser(
         T_ASC_Association *assoc,
         T_ASC_PresentationContextID presID,
         T_DIMSE_C_FindRQ *request, DcmDataset *requestIdentifiers,
@@ -147,7 +146,10 @@ DIMSE_findUser(
     DIC_US status = STATUS_Pending;
 
     /* if there is no search mask, nothing can be searched for */
-    if (requestIdentifiers == NULL) return DIMSE_NULLKEY;
+    if (requestIdentifiers == NULL)
+    {
+        return DIMSE_NULLKEY;
+    }
 
     /* initialize the variables which represent DIMSE C-FIND-RQ and DIMSE C-FIND-RSP messages */
     bzero((char*)&req, sizeof(req));
@@ -165,7 +167,10 @@ DIMSE_findUser(
     OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req,
                                           NULL, requestIdentifiers,
                                           NULL, NULL);
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        return cond;
+    }
 
     /* try to receive (one or more) C-STORE-RSP messages, continue loop as long */
     /* as no error occured and not all result information has been received. */
@@ -173,7 +178,8 @@ DIMSE_findUser(
     {
 	/* initialize the response to collect */
         bzero((char*)&rsp, sizeof(rsp));
-        if (rspIds != NULL) {
+        if (rspIds != NULL)
+        {
             delete rspIds;
             rspIds = NULL;
         }
@@ -181,7 +187,10 @@ DIMSE_findUser(
         /* try to receive a C-FIND-RSP over the network. */
         cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID,
                 &rsp, statusDetail);
-        if (cond.bad()) return cond;
+        if (cond.bad())
+        {
+            return cond;
+        }
 
         /* if everything was successful so far, the rsp variable contains the command */
         /* which was received; if we did not encounter a C-FIND-RSP, something is wrong */
@@ -210,14 +219,16 @@ DIMSE_findUser(
         responseCount++;
 
         /* depending on the status which was returned in the current C-FIND-RSP, we need to do something */
-        switch (status) {
+        switch (status)
+        {
         case STATUS_Pending:
         case STATUS_FIND_Pending_WarningUnsupportedOptionalKeys:
             /* in these cases we received a C-FIND-RSP which indicates that a result data set was */
             /* found and will be sent over the network. We need to receive this result data set. */
 
             /* forget about status detail information if there is some */
-            if (*statusDetail != NULL) {
+            if (*statusDetail != NULL)
+            {
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "findUser: Pending with statusDetail, ignoring detail");
                 delete *statusDetail;
                 *statusDetail = NULL;
@@ -225,7 +236,8 @@ DIMSE_findUser(
 
             /* if the response message's data set type field reveals that there is */
             /* no data set attached to the current C-FIND-RSP, something is fishy */
-            if (response->DataSetType == DIMSE_DATASET_NULL) {
+            if (response->DataSetType == DIMSE_DATASET_NULL)
+            {
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "findUser: Status Pending, but DataSetType==NULL");
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "  Assuming response identifiers are present");
             }
@@ -233,12 +245,14 @@ DIMSE_findUser(
             /* receive the result data set on the network connection */
             cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
                 &presID, &rspIds, NULL, NULL);
-            if (cond != EC_Normal) {
+            if (cond != EC_Normal)
+            {
                 return cond;
             }
 
             /* execute callback */
-            if (callback) {
+            if (callback)
+            {
                 callback(callbackData, request, responseCount,
                     response, rspIds);
             }
@@ -249,7 +263,8 @@ DIMSE_findUser(
 
             /* in case the response message's data set type field reveals that there */
             /* is a data set attached to the current C-FIND-RSP, something is fishy */
-            if (response->DataSetType != DIMSE_DATASET_NULL) {
+            if (response->DataSetType != DIMSE_DATASET_NULL)
+            {
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "findUser: Status Success, but DataSetType!=NULL");
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "Assuming no response identifiers are present");
             }
@@ -258,7 +273,8 @@ DIMSE_findUser(
             /* in all other cases, simply dump warnings if there is no data set */
             /* following the C-FIND-RSP message, do nothing else (but go ahead  */
             /* and try to receive the next C-FIND-RSP) */
-            if (response->DataSetType != DIMSE_DATASET_NULL) {
+            if (response->DataSetType != DIMSE_DATASET_NULL)
+            {
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "findUser: Status " << DU_cfindStatusString(status)
                         << ", but DataSetType!=NULL");
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "Assuming no response identifiers are present");
@@ -271,8 +287,7 @@ DIMSE_findUser(
     return cond;
 }
 
-OFCondition
-DIMSE_sendFindResponse(T_ASC_Association * assoc,
+OFCondition  DIMSE_sendFindResponse(T_ASC_Association * assoc,
         T_ASC_PresentationContextID presID,
         const T_DIMSE_C_FindRQ *request,
         T_DIMSE_C_FindRSP *response, DcmDataset *rspIds,
@@ -307,9 +322,12 @@ DIMSE_sendFindResponse(T_ASC_Association * assoc,
 
     /* specify if the response message will contain a search result or if it will not contain one, */
     /* thus indicating that there are no more results that match the search mask */
-    if (rspIds != NULL) {
+    if (rspIds != NULL)
+    {
         dtype = DIMSE_DATASET_PRESENT;
-    } else {
+    } 
+    else
+    {
         dtype = DIMSE_DATASET_NULL;
     }
     rsp.msg.CFindRSP.DataSetType = (T_DIMSE_DataSetType)dtype;
@@ -323,8 +341,7 @@ DIMSE_sendFindResponse(T_ASC_Association * assoc,
 }
 
 
-OFCondition
-DIMSE_findProvider(
+OFCondition  DIMSE_findProvider(
         T_ASC_Association *assoc,
         T_ASC_PresentationContextID presIdCmd,
         T_DIMSE_C_FindRQ *request,
@@ -394,7 +411,8 @@ DIMSE_findProvider(
                     /* if a C-CANCEL-RQ was received, we need to set status and an indicator variable */
                     rsp.DimseStatus = STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
                     cancelled = OFTrue;
-                } else if (cond == DIMSE_NODATAAVAILABLE)
+                }
+                else if (cond == DIMSE_NODATAAVAILABLE)
                 {
                     /* timeout */
                 }
@@ -409,19 +427,24 @@ DIMSE_findProvider(
                 {
                     /* execute callback function (note that this function always determines the next record */
                     /* which matches the search mask. This record will be available here through rspIds) */
-                    if (callback) {
+                    if (callback)
+                    {
                         callback(callbackData, cancelled, request, reqIds,
                             responseCount, &rsp, &rspIds, &statusDetail);
-                    } else {
+                    }
+                    else
+                    {
                         return makeDcmnetCondition(DIMSEC_NULLKEY, OF_error, "DIMSE_findProvider: no callback function");
                     }
 
                     /* if we encountered a C-CANCEL-RQ earlier, set a variable and possibly delete the search mask */
-                    if (cancelled) {
+                    if (cancelled)
+                    {
                         /* make sure */
                         rsp.DimseStatus =
                             STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
-                        if (rspIds != NULL) {
+                        if (rspIds != NULL)
+                        {
                             delete reqIds;
                             reqIds = NULL;
                         }
@@ -432,13 +455,15 @@ DIMSE_findProvider(
                         &rsp, rspIds, statusDetail);
 
                     /* if there are search results, delete them */
-                    if (rspIds != NULL) {
+                    if (rspIds != NULL)
+                    {
                         delete rspIds;
                         rspIds = NULL;
                     }
 
                     /* if there is status detail information, delete it */
-                    if (statusDetail != NULL) {
+                    if (statusDetail != NULL)
+                    {
                         delete statusDetail;
                         statusDetail = NULL;
                     }

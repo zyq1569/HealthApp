@@ -1150,7 +1150,8 @@ int main(int argc, char *argv[])
     }
 
     cond = ASC_dropNetwork(&options.net_);
-    if (cond.bad()) {
+    if (cond.bad())
+    {
         OFLOG_FATAL(dcmqrscpLogger, "cannot drop network: " << DimseCondition::dump(temp_str, cond));
         return 10;
     }
