@@ -177,6 +177,12 @@ struct DCMTK_DCMQRDB_EXPORT DB_ElementList
     /// pointer to next in list
     struct DB_ElementList *next ;
 
+    /// pointer to first in list
+    struct DB_ElementList *first;
+
+    /// pointer to last in list
+    struct DB_ElementList *last;
+
     /// UTF-8 cache
     OFoptional<OFString> utf8Value ;
 
