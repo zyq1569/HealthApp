@@ -78,24 +78,29 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
     OFCondition dbcond = EC_Normal;
     DcmQueryRetrieveDatabaseStatus dbStatus(priorStatus);
 
-    if (responseCount == 1) {
+    if (responseCount == 1)
+    {
         /* start the database search */
         DCMQRDB_INFO("Move SCP Request Identifiers:" << OFendl << DcmObject::PrintHelper(*requestIdentifiers));
         dbcond = dbHandle.startMoveRequest(
         request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
-        if (dbcond.bad()) {
+        if (dbcond.bad())
+        {
             DCMQRDB_ERROR("moveSCP: Database: startMoveRequest Failed ("
                 << DU_cmoveStatusString(dbStatus.status()) << "):");
         }
 
-        if (dbStatus.status() == STATUS_Pending) {
+        if (dbStatus.status() == STATUS_Pending)
+        {
             /* If we are going to be performing sub-operations, build
              * a new association to the move destination.
              */
             cond = buildSubAssociation(request);
-            if (cond == QR_EC_InvalidPeer) {
+            if (cond == QR_EC_InvalidPeer)
+            {
                 dbStatus.setStatus(STATUS_MOVE_Failed_MoveDestinationUnknown);
-            } else if (cond.bad()) {
+            } else if (cond.bad())
+            {
                 /* failed to build association, must fail move */
                 failAllSubOperations(&dbStatus);
             }
@@ -103,15 +108,18 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
     }
 
     /* only cancel if we have pending status */
-    if (cancelled && dbStatus.status() == STATUS_Pending) {
+    if (cancelled && dbStatus.status() == STATUS_Pending)
+    {
         dbHandle.cancelMoveRequest(&dbStatus);
     }
 
-    if (dbStatus.status() == STATUS_Pending) {
+    if (dbStatus.status() == STATUS_Pending)
+    {
         moveNextImage(&dbStatus);
     }
 
-    if (dbStatus.status() != STATUS_Pending) {
+    if (dbStatus.status() != STATUS_Pending)
+    {
         /*
          * Tear down sub-association (if it exists).
          */
@@ -121,7 +129,8 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
          * Need to adjust the final status if any sub-operations failed or
          * had warnings
          */
-        if (nFailed > 0 || nWarning > 0) {
+        if (nFailed > 0 || nWarning > 0)
+        {
             dbStatus.setStatus(STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures);
         }
         /*
@@ -129,13 +138,15 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
          * cf. DICOM part 4, C.4.2.3.1
          * we choose to generate a "Refused - Out of Resources - Unable to perform suboperations" status.
          */
-        if ((nFailed > 0) && ((nCompleted + nWarning) == 0)) {
+        if ((nFailed > 0) && ((nCompleted + nWarning) == 0))
+        {
             dbStatus.setStatus(STATUS_MOVE_Refused_OutOfResourcesSubOperations);
         }
     }
 
     if (dbStatus.status() != STATUS_Success &&
-        dbStatus.status() != STATUS_Pending) {
+        dbStatus.status() != STATUS_Pending) 
+    {
         /*
          * May only include response identifiers if not Success
          * and not Pending
@@ -155,10 +166,12 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
     DCMQRDB_INFO("Move SCP Response " << responseCount << " [status: "
             << DU_cmoveStatusString(dbStatus.status()) << "]");
     DCMQRDB_DEBUG(DIMSE_dumpMessage(str, *response, DIMSE_OUTGOING));
-    if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL)) {
+    if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL))
+    {
         DCMQRDB_DEBUG("Move SCP Response Identifiers:" << OFendl << DcmObject::PrintHelper(**responseIdentifiers));
     }
-    if (*stDetail) {
+    if (*stDetail)
+    {
         DCMQRDB_DEBUG("  Status detail:" << OFendl << DcmObject::PrintHelper(**stDetail));
     }
 }

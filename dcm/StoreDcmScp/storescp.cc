@@ -1318,12 +1318,14 @@ int main(int argc, char *argv[])
     if (opt_forkedChild)
     {
         // we are a child process in multi-process mode
-        if (DUL_readSocketHandleAsForkedChild().bad()) return 1;
+        if (DUL_readSocketHandleAsForkedChild().bad())
+            return 1;
     }
     else
     {
         // parent process
-        if (opt_forkMode) DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+        if (opt_forkMode)
+            DUL_requestForkOnTransportConnectionReceipt(argc, argv);
     }
 #endif
 

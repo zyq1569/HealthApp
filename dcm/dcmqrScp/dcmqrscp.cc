@@ -87,7 +87,6 @@ END_EXTERN_C
 
 //-------add add 201806
 #include "dcmtk/oflog/fileap.h"
-//#include "dcmtk/oflog/oflog.h"
 #ifdef HAVE_WINDOWS_H
 #include <direct.h>      /* for _mkdir() */
 #endif
@@ -704,6 +703,11 @@ int main(int argc, char *argv[])
             options.dimse_timeout_ = OFstatic_cast(int, opt_timeout);
             options.blockMode_ = DIMSE_NONBLOCKING;
         }
+        //else
+        //{
+        //    options.dimse_timeout_ = 30;
+        //    options.blockMode_ = DIMSE_NONBLOCKING;
+        //}
 
         if (cmd.findOption("--max-pdu"))
             app.checkValue(cmd.getValueAndCheckMinMax(overrideMaxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
