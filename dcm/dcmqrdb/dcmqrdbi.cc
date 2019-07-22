@@ -118,14 +118,15 @@ static char *DB_strdup(const char* str)
 */
 
 static void DB_UIDAddFound(
-    DB_Private_Handle       *phandle,
-    IdxRecord               *idxRec
-    )
+                            DB_Private_Handle       *phandle,
+                            IdxRecord               *idxRec
+                            )
 {
     DB_UidList *plist;
 
     plist = (DB_UidList *)malloc(sizeof(DB_UidList));
-    if (plist == NULL) {
+    if (plist == NULL)
+    {
         DCMQRDB_ERROR("DB_UIDAddFound: out of memory");
         return;
     }
@@ -1615,9 +1616,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse(
-    DcmDataset      **findResponseIdentifiers,
-    DcmQueryRetrieveDatabaseStatus  *status,
-    const DcmQueryRetrieveCharacterSetOptions& characterSetOptions)
+                            DcmDataset      **findResponseIdentifiers,
+                            DcmQueryRetrieveDatabaseStatus  *status,
+                            const DcmQueryRetrieveCharacterSetOptions& characterSetOptions)
 {
     DB_ElementList      *plist = NULL;
     int                 MatchFound = OFFalse;
@@ -1805,11 +1806,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse(
     switch (handle_->rootLevel)
     {
     case PATIENT_ROOT:
-        qLevel = PATIENT_LEVEL;        break;
+        qLevel = PATIENT_LEVEL;
+        break;
     case STUDY_ROOT:
-        qLevel = STUDY_LEVEL;          break;
+        qLevel = STUDY_LEVEL;
+        break;
     case PATIENT_STUDY:
-        qLevel = PATIENT_LEVEL;        break;
+        qLevel = PATIENT_LEVEL;
+        break;
     }
 
     /***** Free the last response...
@@ -1827,10 +1831,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse(
     CharsetConsideringMatcher dbmatch(*handle_);
     while (1)
     {
-
         /*** Exit loop if read error (or end of file)
         **/
-
         if (DB_IdxGetNext(&(handle_->idxCounter), &idxRec) != EC_Normal)
             break;
 
