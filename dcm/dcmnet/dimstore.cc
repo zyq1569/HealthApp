@@ -221,20 +221,25 @@ DIMSE_storeUser(
     }
 
     /* send C-STORE-RQ message and instance data using file data or data set */
-    if (imageFileName != NULL) {
+    if (imageFileName != NULL)
+    {
         cond = DIMSE_sendMessageUsingFileData(assoc, presId, &req,
 	    NULL, imageFileName, privCallback, &callbackCtx);
-    } else {
+    }
+    else
+    {
         cond = DIMSE_sendMessageUsingMemoryData(assoc, presId, &req,
 	    NULL, imageDataSet, privCallback, &callbackCtx);
     }
 
-    if (cond != EC_Normal) {
+    if (cond != EC_Normal)
+    {
 	return cond;
     }
 
     /* execute final callback */
-    if (callback) {
+    if (callback)
+    {
         progress.state = DIMSE_StoreEnd;
 	progress.callbackCount++;
 	/* execute final callback */
@@ -242,7 +247,8 @@ DIMSE_storeUser(
     }
 
     /* check if a C-CANCEL-RQ message was encountered earlier */
-    if (checkForCancelParams != NULL) {
+    if (checkForCancelParams != NULL)
+    {
         checkForCancelParams->cancelEncountered = OFFalse;
     }
 
@@ -255,7 +261,8 @@ DIMSE_storeUser(
         /* try to receive a C-STORE-RSP over the network. */
         cond = DIMSE_receiveCommand(assoc, blockMode, timeout,
             &thisPresId, &rsp, statusDetail);
-        if (cond != EC_Normal) return cond;
+        if (cond != EC_Normal)
+            return cond;
 
         /* if everything was successful so far, the rsp variable contains the command which */
         /* was received check if we encountered a C-CANCEL-RQ; if so, set some variables */

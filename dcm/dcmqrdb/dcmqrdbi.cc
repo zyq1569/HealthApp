@@ -2332,7 +2332,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     ****    status is success
     ***/
 
-    if (handle_->NumberRemainOperations <= 0) {
+    if (handle_->NumberRemainOperations <= 0)
+    {
         status->setStatus(STATUS_Success);
 
         DB_unlock();
@@ -2343,7 +2344,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     /**** Goto the next matching image number of Index File
     ***/
 
-    if (DB_IdxRead(handle_->moveCounterList->idxCounter, &idxRec) != EC_Normal) {
+    if (DB_IdxRead(handle_->moveCounterList->idxCounter, &idxRec) != EC_Normal)
+    {
 #ifdef DEBUG
         DCMQRDB_DEBUG("DB_nextMoveResponse : STATUS_MOVE_Failed_UnableToProcess");
 #endif
