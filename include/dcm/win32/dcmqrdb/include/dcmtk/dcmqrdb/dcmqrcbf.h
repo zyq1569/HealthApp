@@ -25,7 +25,9 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmqrdb/qrdefine.h"
-
+//
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"
+//
 class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveOptions;
 class DcmQueryRetrieveCharacterSetOptions;
@@ -33,6 +35,7 @@ class DcmQueryRetrieveCharacterSetOptions;
 /** this class maintains the context information that is passed to the
  *  callback function called by DIMSE_findProvider.
  */
+
 class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveFindContext
 {
 public:
@@ -59,7 +62,10 @@ public:
      */
     void setOurAETitle(const char *ae)
     {
-      if (ae) ourAETitle = ae; else ourAETitle.clear();
+      if (ae)
+          ourAETitle = ae;
+      else
+          ourAETitle.clear();
     }
 
     /** callback handler called by the DIMSE_storeProvider callback function.
@@ -78,6 +84,12 @@ public:
         DcmDataset **responseIdentifiers,
         DcmDataset **stDetail);
 
+    //find all record;
+    OFCondition startFindRequestFromSql(
+        const char      *SOPClassUID,
+        DcmDataset      *findRequestIdentifiers,
+        DcmQueryRetrieveDatabaseStatus  *status);
+
 private:
 
     /// reference to database handle
@@ -94,6 +106,9 @@ private:
 
     /// Specific Character Set related options
     const DcmQueryRetrieveCharacterSetOptions& characterSetOptions;
+
+    /// array of matching datasets
+    OFList<DcmDataset> m_matchingDatasets;
 
 };
 
