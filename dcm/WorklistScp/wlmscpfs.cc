@@ -71,6 +71,7 @@ OFString GetCurrWorkingDir()
 #endif
     return strPath;
 }
+// release 1024 --fork
 // debug 1024 -d -s
 int main( int argc, char *argv[] )
 {

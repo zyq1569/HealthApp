@@ -578,6 +578,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDatas
     numOfMatchingRecords = 0;
 
     OFList<DcmDataset > list_data;
+    //set matchingRecords
     GetWorklistData(list_data, searchMask);//bitter 20130501
     OFListIterator(DcmDataset ) if_iter = list_data.begin();
     OFListIterator(DcmDataset ) if_last = list_data.end();
@@ -608,7 +609,9 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDatas
                 {
                     DcmDataset **tmp = new DcmDataset*[numOfMatchingRecords + 1];
                     for (unsigned long j = 0; j < numOfMatchingRecords; j++)
+                    {
                         tmp[j] = matchingRecords[j];
+                    }
                     tmp[numOfMatchingRecords] = new DcmDataset(dataset);
                     delete[] matchingRecords;
                     matchingRecords = tmp;
