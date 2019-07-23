@@ -28,7 +28,7 @@
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
-#include "dcmtk/dcmqrdb/dcmqrdbi.h"
+
 #include "dcmtk/dcmqrdb/dcmqridx.h"
 
 
@@ -337,28 +337,37 @@ static OFCondition DB_FreeElementList(DB_ElementList *lst)
     delete lst;
     return (cond);
 }
-
-void DB_IdxSetRecord(IdxRecord *idx)
+static OFString longToString(unsigned long i)
+{
+    char numbuf[10240];
+    sprintf(numbuf, "%d", i);
+    return numbuf;
+}
+void DB_IdxSetRecord(IdxRecord *idx, int index = 0)
 {
     /////////////////////////
     strcpy(idx->PatientBirthDate, "20190719");
     strcpy(idx->PatientSex, "F");
-    strcpy(idx->PatientName, "ceshi_name1");
+    OFString str(longToString(index));
+    OFString name = "ceshi_name" + str;
+    strcpy(idx->PatientName, name.c_str());
     strcpy(idx->PatientID, "201907200001");
     strcpy(idx->PatientBirthTime, "154200");
 
     strcpy(idx->OtherPatientIDs, "201907200001");
     strcpy(idx->OtherPatientNames, "ceshi_name1");
-    strcpy(idx->PatientName, "ceshi_name1");
     strcpy(idx->StudyDate, "20190718-20190719");
     strcpy(idx->StudyTime, "154200");
 
     strcpy(idx->StudyID, "20190718");
-    strcpy(idx->StudyDescription, "this is a test study! ");
-    strcpy(idx->StudyInstanceUID, "1.2.276.0.179081.1208");
+    OFString SD = "this is a test study " + str + "! ";
+    strcpy(idx->StudyDescription, SD.c_str());
+    OFString uid = "1.2.276.0.179081.1208.3." + str;
+    strcpy(idx->StudyInstanceUID, uid.c_str());
     strcpy(idx->PatientAge, "1");
     strcpy(idx->SeriesNumber, "1");
-    strcpy(idx->SeriesInstanceUID, "1.2.276.0.179081.1208.1");
+    uid = "1.2.276.0.179081.1208.3.1." + str;
+    strcpy(idx->SeriesInstanceUID, uid.c_str());
     strcpy(idx->ImageNumber, "1");
     strcpy(idx->SpecificCharacterSet, "ISO_IR 100");
     ///////////////////////
@@ -496,13 +505,14 @@ static void DB_IdxInitRecord(IdxRecord *idx, int linksOnly)
         strcpy(idx->StudyTime, "154200");
 
         strcpy(idx->StudyID, "20190720");
-        strcpy(idx->StudyDescription, "this is a test study! ");
+        strcpy(idx->StudyDescription, "this is a test study one! ");
         strcpy(idx->StudyInstanceUID, "1.2.276.0.179081.1207");
         strcpy(idx->PatientAge, "1");
         strcpy(idx->SeriesNumber, "1");
         strcpy(idx->SeriesInstanceUID, "1.2.276.0.179081.1207.1");
         strcpy(idx->ImageNumber, "1");
         strcpy(idx->SpecificCharacterSet, "ISO_IR 100");
+        strcpy(idx->Modality, "CT");
         ///////////////////////
     }
     idx->param[RECORDIDX_PatientBirthDate].PValueField = (char *)idx->PatientBirthDate;
@@ -679,13 +689,22 @@ static void DB_UIDAddFound(
     /*phandle->*/uidList = plist;
 }
 
-OFCondition startFindRequestFromSql(DB_ElementList* &findRequestList,
-    DB_ElementList* &findResponseList,
-    DB_LEVEL &queryLevel,
+
+OFCondition nextFindResponse(DB_ElementList* &findResponseList,
+    //output data
+    DcmDataset      *findResponseIdentifiers,
+    DB_LEVEL queryLevel,
+    DcmQueryRetrieveDatabaseStatus  *status,
+    const DcmQueryRetrieveCharacterSetOptions& characterSetOptions);
+OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     const char      *SOPClassUID,
     DcmDataset      *findRequestIdentifiers,
     DcmQueryRetrieveDatabaseStatus  *status)
 {
+    DB_ElementList *findRequestList = NULL;
+    DB_ElementList *findResponseList = NULL;
+    DB_LEVEL queryLevel;
+
     DB_SmallDcmElmt     elem;
     DB_ElementList      *plist = NULL;
     DB_ElementList      *last = NULL;
@@ -883,34 +902,38 @@ OFCondition startFindRequestFromSql(DB_ElementList* &findRequestList,
         status->setStatus(STATUS_FIND_Failed_UnableToProcess);
         return (cond);
     }
-    if (MatchFound)
+    OFList<IdxRecord> idxRec_list;
+    // get all record datasets from mysql;
+
+    DB_IdxInitRecord(&idxRec, 0);
+    for (int i = 0; i < 10; i++)
     {
-        DB_IdxInitRecord(&idxRec, 0);
-        static int a = 0;
-        if (a%2 == 0)
+        if (i > 0)
         {
-            a++;
-            DB_IdxSetRecord(&idxRec);
+            DB_IdxSetRecord(&idxRec, i + 1);
         }
-        //DB_UIDAddFound(uidList, &idxRec, queryLevel);
+        findResponseList = NULL;
         makeResponseList(findResponseList, findRequestList, &idxRec);
-        //DB_IdxSetRecord(&idxRec);
-        //makeResponseList(findResponseList->last->next, findRequestList, &idxRec);
+        DcmDataset      findResponseIdentifiers;
+        nextFindResponse(findResponseList, &findResponseIdentifiers, queryLevel, status, characterSetOptions);
+        m_matchingDatasets.push_back(findResponseIdentifiers);
+    }
+
+
 
 #ifdef DEBUG
-        DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_Pending");
+    DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_Pending");
 #endif
-        status->setStatus(STATUS_Pending);
-        return (EC_Normal);
-    }
-    else
-    {
-        return (EC_Normal);
-    }
+    status->setStatus(STATUS_Pending);
+
+
+    return (EC_Normal);
+
 }
 
 OFCondition nextFindResponse(DB_ElementList* &findResponseList,
-    DcmDataset      **findResponseIdentifiers,
+    //output data
+    DcmDataset      *findResponseIdentifiers,
     DB_LEVEL queryLevel,
     DcmQueryRetrieveDatabaseStatus  *status,
     const DcmQueryRetrieveCharacterSetOptions& characterSetOptions)
@@ -925,161 +948,72 @@ OFCondition nextFindResponse(DB_ElementList* &findResponseList,
     /***** Create the response (findResponseIdentifiers) using
     ***** the last find done and saved in handle findResponseList
     ****/
-
-    *findResponseIdentifiers = new DcmDataset;
-    if (*findResponseIdentifiers != NULL)
+    for (plist = findResponseList; plist != NULL; plist = plist->next)
     {
-        for (plist = /*handle_->*/findResponseList; plist != NULL; plist = plist->next)
+        DcmTag t(plist->elem.XTag);
+        DcmElement *dce = DcmItem::newDicomElement(t);
+        if (dce == NULL)
         {
-            DcmTag t(plist->elem.XTag);
-            DcmElement *dce = DcmItem::newDicomElement(t);
-            if (dce == NULL)
-            {
-                status->setStatus(STATUS_FIND_Refused_OutOfResources);
-                return QR_EC_IndexDatabaseError;
-            }
-            if (plist->elem.PValueField != NULL &&
-                strlen(plist->elem.PValueField) > 0)
-            {
-                OFCondition ec = dce->putString(plist->elem.PValueField);
-                if (ec != EC_Normal)
-                {
-                    DCMQRDB_WARN("dbfind: DB_nextFindResponse: cannot put()");
-                    status->setStatus(STATUS_FIND_Failed_UnableToProcess);
-                    return QR_EC_IndexDatabaseError;
-                }
-            }
-            OFCondition ec = (*findResponseIdentifiers)->insert(dce, OFTrue /*replaceOld*/);
+            status->setStatus(STATUS_FIND_Refused_OutOfResources);
+            return QR_EC_IndexDatabaseError;
+        }
+
+        if (plist->elem.PValueField != NULL &&
+            strlen(plist->elem.PValueField) > 0)
+        {
+            OFCondition ec = dce->putString(plist->elem.PValueField);
+            /* if (dce->getTag() == DCM_PatientName)
+             {
+             dce->putString("ceshiname_2");
+             }
+             if (dce->getTag() == DCM_SOPInstanceUID)
+             {
+             dce->putString("1.2.276.0.179081.1209");
+             }
+             if (dce->getTag() == DCM_SeriesInstanceUID)
+             {
+             dce->putString("1.2.276.0.179081.1209.1");
+             }*/
             if (ec != EC_Normal)
             {
-                DCMQRDB_WARN("dbfind: DB_nextFindResponse: cannot insert()");
+                DCMQRDB_WARN("dbfind: DB_nextFindResponse: cannot put()");
                 status->setStatus(STATUS_FIND_Failed_UnableToProcess);
                 return QR_EC_IndexDatabaseError;
             }
         }
+        OFCondition ec = (findResponseIdentifiers)->insert(dce, OFTrue /*replaceOld*/);
 
-        /*** Append the Query level
-        **/
-
-        switch (/*handle_->*/queryLevel)
+        if (ec != EC_Normal)
         {
-        case PATIENT_LEVEL:
-            queryLevelString = PATIENT_LEVEL_STRING;
-            break;
-        case STUDY_LEVEL:
-            queryLevelString = STUDY_LEVEL_STRING;
-            break;
-        case SERIE_LEVEL:
-            queryLevelString = SERIE_LEVEL_STRING;
-            break;
-        case IMAGE_LEVEL:
-            queryLevelString = IMAGE_LEVEL_STRING;
-            break;
+            DCMQRDB_WARN("dbfind: DB_nextFindResponse: cannot insert()");
+            status->setStatus(STATUS_FIND_Failed_UnableToProcess);
+            return QR_EC_IndexDatabaseError;
         }
-        DU_putStringDOElement(*findResponseIdentifiers, DCM_QueryRetrieveLevel, queryLevelString);
-
-#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
-        OFString specificCharacterSet;
-        if ((*findResponseIdentifiers)->findAndGetOFStringArray(DCM_SpecificCharacterSet, specificCharacterSet).bad())
-            specificCharacterSet.clear();
-
-        const OFString* destinationCharacterSet = NULL;
-        const OFString* fallbackCharacterSet = NULL;
-
-        if (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Override)
-        {
-            destinationCharacterSet = &characterSetOptions.characterSet;
-            if (
-                (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Fallback) &&
-                characterSetOptions.characterSet != handle_->findRequestCharacterSet
-                )
-            {
-                fallbackCharacterSet = &handle_->findRequestCharacterSet;
-            }
-        }
-        else
-        {
-            destinationCharacterSet = &handle_->findRequestCharacterSet;
-            if (
-                (characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Fallback) &&
-                characterSetOptions.characterSet != handle_->findRequestCharacterSet
-                )
-            {
-                fallbackCharacterSet = &characterSetOptions.characterSet;
-            }
-        }
-
-        if (isConversionNecessary(specificCharacterSet, *destinationCharacterSet))
-        {
-            OFCondition status = (*findResponseIdentifiers)->convertCharacterSet(
-                specificCharacterSet,
-                *destinationCharacterSet,
-                characterSetOptions.conversionFlags,
-                OFTrue);
-            if (status.bad())
-            {
-                DCMQRDB_WARN("Converting response from character set \""
-                    << characterSetName(specificCharacterSet)
-                    << "\" to character set \""
-                    << characterSetName(*destinationCharacterSet)
-                    << "\" failed, (error message: " << status.text() << ')');
-                if (fallbackCharacterSet && isConversionNecessary(specificCharacterSet, *fallbackCharacterSet))
-                {
-                    DCMQRDB_INFO("Trying to convert response from character set \""
-                        << characterSetName(specificCharacterSet)
-                        << "\" to fall-back character set \""
-                        << characterSetName(*fallbackCharacterSet) << "\" instead");
-                    status = (*findResponseIdentifiers)->convertCharacterSet(
-                        specificCharacterSet,
-                        *fallbackCharacterSet,
-                        characterSetOptions.conversionFlags,
-                        OFTrue);
-                    if (status.bad())
-                    {
-                        DCMQRDB_WARN("Converting response from character set \""
-                            << characterSetName(specificCharacterSet)
-                            << "\" to character set \""
-                            << characterSetName(*fallbackCharacterSet)
-                            << "\" failed, (error message: " << status.text() << ')');
-                    }
-                    else
-                    {
-                        DCMQRDB_INFO("Successfully converted response from character set \""
-                            << characterSetName(specificCharacterSet)
-                            << "\" to character set \""
-                            << characterSetName(*fallbackCharacterSet) << "\"");
-                    }
-                }
-                else if (fallbackCharacterSet)
-                {
-                    DCMQRDB_INFO("Conversion to fall-back character set \""
-                        << characterSetName(*fallbackCharacterSet)
-                        << "\" is not necessary, since the original character set is compatible");
-                }
-            }
-            else
-            {
-                DCMQRDB_INFO("Successfully converted response from character set \""
-                    << characterSetName(specificCharacterSet)
-                    << "\" to character set \""
-                    << characterSetName(*destinationCharacterSet)
-                    << "\"");
-            }
-        }
-#endif
+    }
+    /*** Append the Query level
+    **/
+    switch (/*handle_->*/queryLevel)
+    {
+    case PATIENT_LEVEL:
+        queryLevelString = PATIENT_LEVEL_STRING;
+        break;
+    case STUDY_LEVEL:
+        queryLevelString = STUDY_LEVEL_STRING;
+        break;
+    case SERIE_LEVEL:
+        queryLevelString = SERIE_LEVEL_STRING;
+        break;
+    case IMAGE_LEVEL:
+        queryLevelString = IMAGE_LEVEL_STRING;
+        break;
+    }
+    DU_putStringDOElement(findResponseIdentifiers, DCM_QueryRetrieveLevel, queryLevelString);
 
 #ifdef DEBUG
-        DCMQRDB_DEBUG("DB: findResponseIdentifiers:" << OFendl
-            << DcmObject::PrintHelper(**findResponseIdentifiers));
+    // DCMQRDB_DEBUG("DB: findResponseIdentifiers:" << OFendl
+    //    << DcmObject::PrintHelper(findResponseIdentifiers));
 #endif
-    }
-    else
-    {
-        //DB_unlock();
-        return (QR_EC_IndexDatabaseError);
-    }
-
-    switch (/*handle_->*/rootLevel)
+    switch (rootLevel)
     {
     case PATIENT_ROOT:
         qLevel = PATIENT_LEVEL;
@@ -1091,8 +1025,6 @@ OFCondition nextFindResponse(DB_ElementList* &findResponseList,
         qLevel = PATIENT_LEVEL;
         break;
     }
-    MatchFound = OFFalse;
-    cond = EC_Normal;
 
 #ifdef DEBUG
     DCMQRDB_DEBUG("DB_nextFindResponse () : STATUS_Pending");
@@ -1127,20 +1059,22 @@ void DcmQueryRetrieveFindContext::callbackHandler(
     DcmDataset **stDetail)
 {
     ////////////////////
-    DB_ElementList *findRequestList = NULL;
-    DB_ElementList *findResponseList = NULL;
-    DB_LEVEL queryLevel;
+
     ////////////////////
     OFCondition dbcond = EC_Normal;
     DcmQueryRetrieveDatabaseStatus dbStatus(priorStatus);
-
+    *responseIdentifiers = NULL;
     if (responseCount == 1)
     {
+        m_matchingDatasets.clear();
         /* start the database search */
         DCMQRDB_INFO("Find SCP Request Identifiers:" << OFendl << DcmObject::PrintHelper(*requestIdentifiers));
-        //dbcond = dbHandle.startFindRequest(
-        //    request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
-        dbcond = startFindRequestFromSql(findRequestList, findResponseList, queryLevel, request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
+        //if (false) // original
+        //{
+        //    dbcond = dbHandle.startFindRequest(
+        //        request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
+        //}
+        dbcond = startFindRequestFromSql(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad())
         {
             DCMQRDB_ERROR("findSCP: Database: startFindRequest Failed ("
@@ -1162,37 +1096,62 @@ void DcmQueryRetrieveFindContext::callbackHandler(
         }
         else
         {
-            nextFindResponse(findResponseList, responseIdentifiers, queryLevel, &dbStatus, characterSetOptions);
+            //nextFindResponse(findResponseList, responseIdentifiers, queryLevel, &dbStatus, characterSetOptions);
+            int size = m_matchingDatasets.size();
+            if (!m_matchingDatasets.empty())
+            {
+                DcmDataset item = m_matchingDatasets.back();
+                /////
+                //OFString PatientName;
+                //if (item.findAndGetOFString(DCM_PatientName, PatientName).bad())
+                //{
+                //    PatientName.clear();
+                //}
+                /////
+                *responseIdentifiers = new DcmDataset(item);
+                m_matchingDatasets.pop_back();
+
+            }
+            if (size > 0)
+            {
+                dbStatus.setStatus(STATUS_Pending);
+            }
+            else
+            {
+                dbStatus.setStatus(STATUS_Success);
+            }
+            dbcond = EC_Normal;
         }
         if (dbcond.bad())
         {
             DCMQRDB_ERROR("findSCP: Database: nextFindResponse Failed ("
                 << DU_cfindStatusString(dbStatus.status()) << "):");
         }
-    }
 
-    if (*responseIdentifiers != NULL)
-    {
-        if (!DU_putStringDOElement(*responseIdentifiers, DCM_RetrieveAETitle, ourAETitle.c_str()))
+
+        if (*responseIdentifiers != NULL)
         {
-            DCMQRDB_ERROR("DO: adding Retrieve AE Title");
+            if (!DU_putStringDOElement(*responseIdentifiers, DCM_RetrieveAETitle, ourAETitle.c_str()))
+            {
+                DCMQRDB_ERROR("DO: adding Retrieve AE Title");
+            }
         }
-    }
 
-    /* set response status */
-    response->DimseStatus = dbStatus.status();
-    *stDetail = dbStatus.extractStatusDetail();
+        /* set response status */
+        response->DimseStatus = dbStatus.status();
+        *stDetail = dbStatus.extractStatusDetail();
 
-    OFString str;
-    DCMQRDB_INFO("Find SCP Response " << responseCount << " [status: "
-        << DU_cfindStatusString(dbStatus.status()) << "]");
-    DCMQRDB_DEBUG(DIMSE_dumpMessage(str, *response, DIMSE_OUTGOING));
-    if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL))
-    {
-        DCMQRDB_DEBUG("Find SCP Response Identifiers:" << OFendl << DcmObject::PrintHelper(**responseIdentifiers));
-    }
-    if (*stDetail)
-    {
-        DCMQRDB_DEBUG("  Status detail:" << OFendl << DcmObject::PrintHelper(**stDetail));
+        OFString str;
+        DCMQRDB_INFO("Find SCP Response " << responseCount << " [status: "
+            << DU_cfindStatusString(dbStatus.status()) << "]");
+        DCMQRDB_DEBUG(DIMSE_dumpMessage(str, *response, DIMSE_OUTGOING));
+        if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL))
+        {
+            DCMQRDB_DEBUG("Find SCP Response Identifiers:" << OFendl << DcmObject::PrintHelper(**responseIdentifiers));
+        }
+        if (*stDetail)
+        {
+            DCMQRDB_DEBUG("  Status detail:" << OFendl << DcmObject::PrintHelper(**stDetail));
+        }
     }
 }

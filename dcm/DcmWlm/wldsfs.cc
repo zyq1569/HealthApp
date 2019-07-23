@@ -282,7 +282,8 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
   while ( !matchingDatasets.empty() )
   {
     DcmDataset *dset = matchingDatasets.front();
-    delete dset; dset = NULL;
+    delete dset;
+    dset = NULL;
     matchingDatasets.pop_front();
   }
 
@@ -314,6 +315,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
   DCMWLM_INFO("Determining matching records from worklist files");
 
   // Determine records from worklist files which match the search mask
+  //matchingRecords
   unsigned long numOfMatchingRecords = fileSystemInteractionManager.DetermineMatchingRecords( identifiers );
 
   // dump some information if required
