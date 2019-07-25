@@ -333,7 +333,8 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
                 handle = FindFirstFileA(OFStandard::combineDirAndFilename(tmpString, dirName, pattern, OFTrue /*allowEmptyDirName*/).getCharPointer(), &data);
                 if (handle != INVALID_HANDLE_VALUE)
                 {
-                    do {
+                    do
+                    {
                         /* avoid leading "." */
                         if (strcmp(dirName.getCharPointer(), ".") == 0)
                             pathName.set(data.cFileName);
@@ -342,7 +343,8 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
                         /* ignore directories and the like */
                         if (OFStandard::fileExists(OFStandard::combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
                             fileList.push_back(pathName);
-                    } while (FindNextFileA(handle, &data));
+                    }
+                    while (FindNextFileA(handle, &data));
                     FindClose(handle);
                 }
             }
@@ -350,7 +352,8 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
             handle = FindFirstFileA(OFStandard::combineDirAndFilename(tmpString, dirName, "*.*", OFTrue /*allowEmptyDirName*/).getCharPointer(), &data);
             if (handle != INVALID_HANDLE_VALUE)
             {
-                do {
+                do
+                {
                     /* filter out current and parent directory */
                     if ((strcmp(data.cFileName, ".") != 0) && (strcmp(data.cFileName, "..") != 0))
                     {
@@ -371,7 +374,8 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
                             fileList.push_back(pathName);
                         }
                     }
-                } while (FindNextFileA(handle, &data));
+                }
+                while (FindNextFileA(handle, &data));
                 FindClose(handle);
             }
         }
@@ -402,7 +406,9 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
                     /* recursively search sub directories */
                     if (recurse)
                         searchDirectoryRecursively(pathName, fileList, pattern, dirPrefix, recurse);
-                } else {
+                }
+                else
+                {
 #ifdef HAVE_FNMATCH_H
                     /* check whether filename matches pattern */
                     if ((pattern.isEmpty()) || (fnmatch(pattern.getCharPointer(), entry->d_name, FNM_PATHNAME) == 0))
@@ -1005,7 +1011,8 @@ int FindAndSendImage(int argc, char *argv[])
 #ifdef WITH_OPENSSL
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--disable-tls")) opt_secureConnection = OFFalse;
+        if (cmd.findOption("--disable-tls"))
+            opt_secureConnection = OFFalse;
         if (cmd.findOption("--enable-tls"))
         {
             opt_secureConnection = OFTrue;
@@ -1038,8 +1045,10 @@ int FindAndSendImage(int argc, char *argv[])
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--pem-keys")) opt_keyFileFormat = SSL_FILETYPE_PEM;
-        if (cmd.findOption("--der-keys")) opt_keyFileFormat = SSL_FILETYPE_ASN1;
+        if (cmd.findOption("--pem-keys"))
+            opt_keyFileFormat = SSL_FILETYPE_PEM;
+        if (cmd.findOption("--der-keys"))
+            opt_keyFileFormat = SSL_FILETYPE_ASN1;
         cmd.endOptionBlock();
 
         if (cmd.findOption("--dhparam"))
@@ -1233,7 +1242,9 @@ int FindAndSendImage(int argc, char *argv[])
                         exit(1);
                     }
                     else
+                    {
                         OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
+                    }
                 }
                 else if (!dcmIsaStorageSOPClassUID(sopClassUID, ESSC_All))
                 {
@@ -1248,7 +1259,9 @@ int FindAndSendImage(int argc, char *argv[])
                         exit(1);
                     }
                     else
+                    {
                         OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
+                    }
                 }
                 else
                 {
@@ -1269,7 +1282,9 @@ int FindAndSendImage(int argc, char *argv[])
                 exit(1);
             }
             else
+            {
                 OFLOG_WARN(storescuLogger, errormsg << ", ignoring file");
+            }
         }
         ++if_iter;
     }
@@ -1343,7 +1358,8 @@ int FindAndSendImage(int argc, char *argv[])
 
         if (opt_doAuthenticate)
         {
-            if (opt_passwd) tLayer->setPrivateKeyPasswd(opt_passwd);
+            if (opt_passwd)
+                tLayer->setPrivateKeyPasswd(opt_passwd);
 
             if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
             {
@@ -1599,7 +1615,9 @@ int FindAndSendImage(int argc, char *argv[])
                 OFLOG_WARN(storescuLogger, "cannot write random seed file '" << opt_writeSeedFile << "', ignoring");
         }
         else
+        {
             OFLOG_WARN(storescuLogger, "cannot write random seed, ignoring");
+        }
     }
     delete tLayer;
 #endif
@@ -1768,7 +1786,8 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
     combinedSyntaxes.push_back(preferredTransferSyntax);
     while (s_cur != s_end)
     {
-        if (!isaListMember(combinedSyntaxes, *s_cur)) combinedSyntaxes.push_back(*s_cur);
+        if (!isaListMember(combinedSyntaxes, *s_cur))
+            combinedSyntaxes.push_back(*s_cur);
         ++s_cur;
     }
 
@@ -1914,13 +1933,20 @@ replaceSOPInstanceInformation(DcmDataset *dataset)
     static OFString patientID;
     static OFString patientName;
 
-    if (seriesInstanceUID.empty()) seriesInstanceUID=makeUID(SITE_SERIES_UID_ROOT, OFstatic_cast(int, seriesCounter));
-    if (seriesNumber.empty()) seriesNumber = intToString(OFstatic_cast(int, seriesCounter));
-    if (studyInstanceUID.empty()) studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, OFstatic_cast(int, studyCounter));
-    if (studyID.empty()) studyID = studyIDPrefix + intToString(OFstatic_cast(int, secondsSince1970())) + intToString(OFstatic_cast(int, studyCounter));
-    if (accessionNumber.empty()) accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, studyCounter));
-    if (patientID.empty()) patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
-    if (patientName.empty()) patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
+    if (seriesInstanceUID.empty())
+        seriesInstanceUID=makeUID(SITE_SERIES_UID_ROOT, OFstatic_cast(int, seriesCounter));
+    if (seriesNumber.empty())
+        seriesNumber = intToString(OFstatic_cast(int, seriesCounter));
+    if (studyInstanceUID.empty())
+        studyInstanceUID = makeUID(SITE_STUDY_UID_ROOT, OFstatic_cast(int, studyCounter));
+    if (studyID.empty())
+        studyID = studyIDPrefix + intToString(OFstatic_cast(int, secondsSince1970())) + intToString(OFstatic_cast(int, studyCounter));
+    if (accessionNumber.empty())
+        accessionNumber = accessionNumberPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, studyCounter));
+    if (patientID.empty())
+        patientID = patientIDPrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
+    if (patientName.empty())
+        patientName = patientNamePrefix + intToString(secondsSince1970()) + intToString(OFstatic_cast(int, patientCounter));
 
     if (imageCounter >= opt_inventSeriesCount)
     {
@@ -2066,21 +2092,30 @@ static OFCondition storeSCU(T_ASC_Association *assoc, const char *fname)
     * or deflated explicit VR) and we prefer deflated explicit VR, then try
     * to find a presentation context for deflated explicit VR first.
     */
-    if (filexfer.isNotEncapsulated() &&
-        opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit)
+    if (filexfer.isNotEncapsulated() && opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit)
     {
         filexfer = EXS_DeflatedLittleEndianExplicit;
     }
 
     if (filexfer.getXfer() != EXS_Unknown)
+    {
         presID = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
+    }
     else
+    {
         presID = ASC_findAcceptedPresentationContextID(assoc, sopClass);
+    }
     if (presID == 0)
     {
         const char *modalityName = dcmSOPClassUIDToModality(sopClass);
-        if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
-        if (!modalityName) modalityName = "unknown SOP class";
+        if (!modalityName)
+        {
+            modalityName = dcmFindNameOfUID(sopClass);
+        }
+        if (!modalityName)
+        {
+            modalityName = "unknown SOP class";
+        }
         OFLOG_ERROR(storescuLogger, "No presentation context for: (" << modalityName << ") " << sopClass);
         return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
