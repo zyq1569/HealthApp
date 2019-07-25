@@ -267,7 +267,8 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
 #else
     lockfd = open(fname, O_RDONLY, 0666);
 #endif
-    if (lockfd < 0) {
+    if (lockfd < 0)
+    {
         /* due to quota system the file could have been deleted */
         DCMQRDB_ERROR("Move SCP: storeSCU: [file: " << fname << "]: "
             << OFStandard::getLastSystemErrorCode().message());
@@ -281,8 +282,7 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     msgId = subAssoc->nextMsgID++;
 
     /* which presentation context should be used */
-    presId = ASC_findAcceptedPresentationContextID(subAssoc,
-        sopClass);
+    presId = ASC_findAcceptedPresentationContextID(subAssoc, sopClass);
     if (presId == 0)
     {
         nFailed++;
@@ -319,7 +319,8 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     {
         DCMQRDB_INFO("Move SCP: Received Store SCU RSP [Status="
             << DU_cstoreStatusString(rsp.DimseStatus) << "]");
-        if (rsp.DimseStatus == STATUS_Success) {
+        if (rsp.DimseStatus == STATUS_Success)
+        {
             /* everything ok */
             nCompleted++;
         }
@@ -443,25 +444,30 @@ OFCondition DcmQueryRetrieveMoveContext::closeSubAssociation()
 {
     OFCondition cond = EC_Normal;
 
-    if (subAssoc != NULL) {
+    if (subAssoc != NULL)
+    {
         /* release association */
         OFString temp_str;
         DCMQRDB_INFO("Releasing Sub-Association");
         cond = ASC_releaseAssociation(subAssoc);
-        if (cond.bad()) {
+        if (cond.bad())
+        {
             DCMQRDB_ERROR("moveSCP: Sub-Association Release Failed: " << DimseCondition::dump(temp_str, cond));
         }
         cond = ASC_dropAssociation(subAssoc);
-        if (cond.bad()) {
+        if (cond.bad())
+        {
             DCMQRDB_ERROR("moveSCP: Sub-Association Drop Failed: " << DimseCondition::dump(temp_str, cond));
         }
         cond = ASC_destroyAssociation(&subAssoc);
-        if (cond.bad()) {
+        if (cond.bad())
+        {
             DCMQRDB_ERROR("moveSCP: Sub-Association Destroy Failed: " << DimseCondition::dump(temp_str, cond));
         }
     }
 
-    if (assocStarted) {
+    if (assocStarted)
+    {
         assocStarted = OFFalse;
     }
 
@@ -482,7 +488,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
     bzero(subImgSOPInstance, sizeof(subImgSOPInstance));
 
     //
-     //
+    //
     OFString ImgFileName;
     OFString strImgSOPClass, strImgSOPInstance;
     /* get DB response */
@@ -503,7 +509,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
                 dbStatus->setStatus(STATUS_Success);
                 return;
             }
-            
+
             if (data.getDataset()->findAndGetOFString(DCM_SOPClassUID, strImgSOPClass).bad())
             {
                 strImgSOPClass.clear();
@@ -511,7 +517,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
             if (data.getDataset()->findAndGetOFString(DCM_SOPInstanceUID, strImgSOPInstance).bad())
             {
                 strImgSOPInstance.clear();
-               
+
             }
             strcmp(subImgFileName, (char *)filename.c_str());
             ImgFileName = filename;
@@ -527,7 +533,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
     if (dbcond.bad())
     {
         DCMQRDB_ERROR("moveSCP: Database: nextMoveResponse Failed ("
-                         << DU_cmoveStatusString(dbStatus->status()) << "):");
+            << DU_cmoveStatusString(dbStatus->status()) << "):");
     }
 
     if (dbStatus->status() == STATUS_Pending)
@@ -658,20 +664,22 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 
 #ifdef DISABLE_COMPRESSION_EXTENSION
     /* gLocalByteOrder is defined in dcxfer.h */
-    if (gLocalByteOrder == EBO_LittleEndian) {
+    if (gLocalByteOrder == EBO_LittleEndian)
+    {
         /* we are on a little endian machine */
         transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 3;
     }
-    else {
+    else
+    {
         /* we are on a big endian machine */
         transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 3;
-    }
+}
 #else
     switch (options_.networkTransferSyntaxOut_)
     {
@@ -818,12 +826,13 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
          * If we are running on a Little Endian machine we prefer
          * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
          */
-        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+        if (gLocalByteOrder != EBO_BigEndian/*EBO_LittleEndian*/)  /* defined in dcxfer.h */
         {
             transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
             transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
         }
-        else {
+        else
+        {
             transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
             transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         }
@@ -833,11 +842,12 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
     }
 #endif
 
-    for (i = 0; i < numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
+    for (i = 0; i < numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++)
+    {
         cond = ASC_addPresentationContext(
             params, pid, dcmLongSCUStorageSOPClassUIDs[i],
             transferSyntaxes, numTransferSyntaxes);
         pid += 2;   /* only odd presentation context id's */
     }
     return cond;
-    }
+}

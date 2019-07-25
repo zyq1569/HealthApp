@@ -27,6 +27,9 @@
 #include "dcmtk/dcmnet/dcasccfg.h"
 #include "dcmtk/dcmqrdb/qrdefine.h"
 
+//
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"
+//
 class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveOptions;
 class DcmQueryRetrieveConfig;
@@ -106,6 +109,11 @@ public:
       if (ae) ourAETitle = ae; else ourAETitle.clear();
     }
 
+
+    OFCondition startMoveRequest(
+        const char      *SOPClassUID,
+        DcmDataset      *moveRequestIdentifiers,
+        DcmQueryRetrieveDatabaseStatus  *status);
 private:
 
     /// private undefined copy constructor
@@ -182,6 +190,9 @@ private:
 
     /// number of completed sub-operations that causes warnings
     DIC_US nWarning;
+
+    /// array of matching datasets
+    OFList<OFString> m_matchingFiles;
 
 };
 

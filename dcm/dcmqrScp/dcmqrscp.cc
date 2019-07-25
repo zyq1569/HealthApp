@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
 #else
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)\nThis version of dcmqrscp supports only single process mode.", rcsid);
 #endif
- //##################---------------------------------------------------------------------------------
+    //##################---------------------------------------------------------------------------------
     const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
     OFString temps, path = argv[0];
     int pos = 0;
@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
     OFLOG_INFO(dcmqrscpLogger, "---------argv[]:" + temps + " ----------------------");
 
     OFLOG_INFO(dcmqrscpLogger, "-----$$------DcmNet dcmstoreqrscp start run!---------$$------------");
- //###################------------------------------------------------------------------
+    //###################------------------------------------------------------------------
     OFCondition cond = EC_Normal;
     OFCmdUnsignedInt overridePort = 0;
     OFCmdUnsignedInt overrideMaxPDU = 0;
@@ -273,11 +273,11 @@ int main(int argc, char *argv[])
 
     char tempstr[20];
     OFString temp_str;
-//#ifdef HAVE_FORK
-//    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)", rcsid);
-//#else
-//    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)\nThis version of dcmqrscp supports only single process mode.", rcsid);
-//#endif
+    //#ifdef HAVE_FORK
+    //    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)", rcsid);
+    //#else
+    //    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)\nThis version of dcmqrscp supports only single process mode.", rcsid);
+    //#endif
 
     OFCommandLine cmd;
 
@@ -298,7 +298,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--config", "-c", 1, "[f]ilename: string",
             opt5.c_str());
     }
-    else {
+    else
+    {
         OFString opt5 = "[f]ilename: string (default: ";
         opt5 += opt_configFileName;
         opt5 += ")";
@@ -308,7 +309,7 @@ int main(int argc, char *argv[])
 #ifdef HAVE_FORK
     cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--single-process",           "-s",      "single process mode");
-    cmd.addOption("--fork",                                "fork child process for each assoc. (default)");
+    cmd.addOption("--fork", "fork child process for each assoc. (default)");
 #endif
 
     cmd.addGroup("database options:");
@@ -361,7 +362,7 @@ int main(int argc, char *argv[])
     cmd.addOption("--prefer-hevc10", "+x5", "prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS");
     cmd.addOption("--prefer-rle", "+xr", "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
-    cmd.addOption("--prefer-deflated",        "+xd",     "prefer deflated expl. VR little endian TS");
+    cmd.addOption("--prefer-deflated", "+xd", "prefer deflated expl. VR little endian TS");
 #endif
 #endif
     cmd.addOption("--implicit", "+xi", "accept implicit VR little endian TS only");
@@ -390,14 +391,14 @@ int main(int argc, char *argv[])
     cmd.addOption("--propose-hevc10", "-x5", "propose HEVC/H.265 Main 10 Profile / Level 5.1 TS");
     cmd.addOption("--propose-rle", "-xr", "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
-    cmd.addOption("--propose-deflated",       "-xd",     "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
+    cmd.addOption("--propose-deflated", "-xd", "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
 #endif
 #endif
 
 #ifdef WITH_TCPWRAPPER
     cmd.addSubGroup("network host access control (tcp wrapper):");
     cmd.addOption("--access-full",            "-ac",     "accept connections from any host (default)");
-    cmd.addOption("--access-control",         "+ac",     "enforce host access control rules");
+    cmd.addOption("--access-control", "+ac", "enforce host access control rules");
 #endif
 
     cmd.addSubGroup("other network options:");
@@ -436,7 +437,7 @@ int main(int argc, char *argv[])
     cmd.addOption("--convert-to-charset",     "+C",   1, "[c]harset: string",
         "convert affected element values to the char.\nset specified by the DICOM defined term c");
     cmd.addOption("--transliterate",          "-Ct",     "try to approximate characters that cannot be\nrepresented through similar looking characters");
-    cmd.addOption("--discard-illegal",        "-Cd",     "discard characters that cannot be represented\nin destination character set");
+    cmd.addOption("--discard-illegal", "-Cd", "discard characters that cannot be represented\nin destination character set");
 #endif
 
     cmd.addGroup("output options:");
@@ -452,7 +453,7 @@ int main(int argc, char *argv[])
     cmd.addOption("--write-xfer-big", "+tb", "write with explicit VR big endian TS");
     cmd.addOption("--write-xfer-implicit", "+ti", "write with implicit VR little endian TS");
 #ifdef WITH_ZLIB
-    cmd.addOption("--write-xfer-deflated",    "+td",     "write with deflated expl. VR little endian TS");
+    cmd.addOption("--write-xfer-deflated", "+td", "write with deflated expl. VR little endian TS");
 #endif
     cmd.addSubGroup("post-1993 value representations:");
     cmd.addOption("--enable-new-vr", "+u", "enable support for new VRs (UN/UT) (default)");
@@ -508,7 +509,7 @@ int main(int argc, char *argv[])
         }
 
         /* command line parameters and options */
-        if (cmd.getParamCount() > 0) 
+        if (cmd.getParamCount() > 0)
             app.checkParam(cmd.getParamAndCheckMinMax(1, overridePort, 1, 65535));
 
         OFLog::configureFromCommandLine(cmd, app);
@@ -524,22 +525,22 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 #endif
 
-        if (cmd.findOption("--require-find")) 
+        if (cmd.findOption("--require-find"))
             options.requireFindForMove_ = OFTrue;
-        if (cmd.findOption("--no-parallel-store")) 
+        if (cmd.findOption("--no-parallel-store"))
             options.refuseMultipleStorageAssociations_ = OFTrue;
-        if (cmd.findOption("--disable-get")) 
+        if (cmd.findOption("--disable-get"))
             options.disableGetSupport_ = OFTrue;
-        if (cmd.findOption("--allow-shutdown")) 
+        if (cmd.findOption("--allow-shutdown"))
             options.allowShutdown_ = OFTrue;
         cmd.beginOptionBlock();
-        if (cmd.findOption("--check-find")) 
+        if (cmd.findOption("--check-find"))
             opt_checkFindIdentifier = OFTrue;
-        if (cmd.findOption("--no-check-find")) 
+        if (cmd.findOption("--no-check-find"))
             opt_checkFindIdentifier = OFFalse;
         cmd.endOptionBlock();
         cmd.beginOptionBlock();
-        if (cmd.findOption("--check-move")) 
+        if (cmd.findOption("--check-move"))
             opt_checkMoveIdentifier = OFTrue;
         if (cmd.findOption("--no-check-move"))
             opt_checkMoveIdentifier = OFFalse;
@@ -561,7 +562,7 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--no-patient-root"))
             options.supportPatientRoot_ = OFFalse;
-        if (cmd.findOption("--no-study-root")) 
+        if (cmd.findOption("--no-study-root"))
             options.supportStudyRoot_ = OFFalse;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
         if (cmd.findOption("--no-patient-study"))
@@ -633,7 +634,7 @@ int main(int argc, char *argv[])
             options.networkTransferSyntaxOut_ = EXS_BigEndianExplicit;
         if (cmd.findOption("--propose-implicit"))
             options.networkTransferSyntaxOut_ = EXS_LittleEndianImplicit;
-        if (cmd.findOption("--propose-lossless")) 
+        if (cmd.findOption("--propose-lossless"))
             options.networkTransferSyntaxOut_ = EXS_JPEGProcess14SV1;
         if (cmd.findOption("--propose-jpeg8"))
             options.networkTransferSyntaxOut_ = EXS_JPEGProcess1;
@@ -668,7 +669,8 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--propose-rle"))
             options.networkTransferSyntaxOut_ = EXS_RLELossless;
 #ifdef WITH_ZLIB
-        if (cmd.findOption("--propose-deflated")) options.networkTransferSyntaxOut_ = EXS_DeflatedLittleEndianExplicit;
+        if (cmd.findOption("--propose-deflated"))
+            options.networkTransferSyntaxOut_ = EXS_DeflatedLittleEndianExplicit;
 #endif
         cmd.endOptionBlock();
 #endif
@@ -997,7 +999,7 @@ int main(int argc, char *argv[])
 #endif
             app.checkValue(cmd.getValueAndCheckMinMax(compressionLevel, 0, 9));
             dcmZlibCompressionLevel.set(OFstatic_cast(int, compressionLevel));
-        }
+    }
 #endif
     }
 
@@ -1005,7 +1007,8 @@ int main(int argc, char *argv[])
     OFLOG_DEBUG(dcmqrscpLogger, rcsid << OFendl);
 
     /* read config file */
-    if (access(opt_configFileName, R_OK) < 0) {
+    if (access(opt_configFileName, R_OK) < 0)
+    {
         OFLOG_FATAL(dcmqrscpLogger, "cannot access " << opt_configFileName << ": "
             << OFStandard::getLastSystemErrorCode().message());
         //return 10;
@@ -1013,7 +1016,8 @@ int main(int argc, char *argv[])
 
     DcmQueryRetrieveConfig config;
 
-    if (!config.init(opt_configFileName)) {
+    if (!config.init(opt_configFileName))
+    {
         OFLOG_FATAL(dcmqrscpLogger, "bad config file: " << opt_configFileName);
         //return 10;
     }
@@ -1042,10 +1046,12 @@ int main(int argc, char *argv[])
     if (!(characterSetOptions.flags & DcmQueryRetrieveCharacterSetOptions::Configured))
         characterSetOptions.flags = DcmQueryRetrieveCharacterSetOptions::Configured | DcmQueryRetrieveCharacterSetOptions::Fallback;
     cmd.beginOptionBlock();
-    if (cmd.findOption("--use-request-charset")) {
+    if (cmd.findOption("--use-request-charset"))
+    {
         characterSetOptions.flags &= ~DcmQueryRetrieveCharacterSetOptions::Override;
     }
-    if (cmd.findOption("--override-charset")) {
+    if (cmd.findOption("--override-charset"))
+    {
         characterSetOptions.flags |= DcmQueryRetrieveCharacterSetOptions::Override;
     }
     cmd.endOptionBlock();
@@ -1061,16 +1067,19 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(characterSetOptions.characterSet));
     cmd.endOptionBlock();
 
-    if (cmd.findOption("--transliterate")) {
+    if (cmd.findOption("--transliterate"))
+    {
         characterSetOptions.conversionFlags |= DCMTypes::CF_transliterate;
-    }
-    if (cmd.findOption("--discard-illegal")) {
+}
+    if (cmd.findOption("--discard-illegal"))
+    {
         characterSetOptions.conversionFlags |= DCMTypes::CF_discardIllegal;
     }
 #endif // DCMTK_ENABLE_CHARSET_CONVERSION
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
         OFLOG_WARN(dcmqrscpLogger, "no data dictionary loaded, check environment variable: "
             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
@@ -1078,8 +1087,10 @@ int main(int argc, char *argv[])
 #ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
     /* if port is privileged we must be as well */
-    if (opt_port < 1024) {
-        if (geteuid() != 0) {
+    if (opt_port < 1024)
+    {
+        if (geteuid() != 0)
+        {
             OFLOG_FATAL(dcmqrscpLogger, "cannot listen on port " << opt_port << ", insufficient privileges");
             return 10;
         }
@@ -1088,7 +1099,8 @@ int main(int argc, char *argv[])
 #endif
 
     cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
-    if (cond.bad()) {
+    if (cond.bad())
+    {
         OFLOG_FATAL(dcmqrscpLogger, "cannot initialize network: " << DimseCondition::dump(temp_str, cond));
         return 10;
     }
@@ -1163,4 +1175,4 @@ int main(int argc, char *argv[])
     OFStandard::shutdownNetwork();
 
     return 0;
-}
+        }
