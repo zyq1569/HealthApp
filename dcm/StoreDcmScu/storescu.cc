@@ -1819,7 +1819,6 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
     s_end = sops.end();
     while (s_cur != s_end && cond.good())
     {
-
         if (pid > 255)
         {
             OFLOG_ERROR(storescuLogger, "Too many presentation contexts");

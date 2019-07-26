@@ -574,6 +574,7 @@ int main(int argc, char *argv[])
         }
 
         cmd.beginOptionBlock();
+        options.networkTransferSyntax_ = EXS_LittleEndianImplicit;
         if (cmd.findOption("--prefer-uncompr"))
             options.networkTransferSyntax_ = EXS_Unknown;
         if (cmd.findOption("--prefer-little"))
@@ -626,6 +627,7 @@ int main(int argc, char *argv[])
 
 #ifndef DISABLE_COMPRESSION_EXTENSION
         cmd.beginOptionBlock();
+        options.networkTransferSyntaxOut_ = EXS_JPEGProcess14SV1;
         if (cmd.findOption("--propose-uncompr"))
             options.networkTransferSyntaxOut_ = EXS_Unknown;
         if (cmd.findOption("--propose-little"))

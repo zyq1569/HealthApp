@@ -1488,15 +1488,15 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 #ifdef PRIVATE_STORESCP_VARIABLES
     PRIVATE_STORESCP_VARIABLES
 #endif
-
         const char* knownAbstractSyntaxes[] =
     {
         UID_VerificationSOPClass
     };
 
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
-        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,NULL,  // 21
-        NULL
+    const char* transferSyntaxes[] =
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 21
+    NULL
     };                                                      // +1
     int numTransferSyntaxes = 0;
 
@@ -1929,7 +1929,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
             OFLOG_INFO(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
         else
             OFLOG_DEBUG(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
-    }
+}
 
 #ifdef BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX
     /* active the dcmPeerRequiresExactUIDCopy workaround code
@@ -2598,9 +2598,9 @@ DcmDataset **statusDetail)
                 OFStandard::deleteFile(fileName);
             }
             //测试dcm数据store,空间不够，直接删除.
-//#ifdef TEST_STORE
+            //#ifdef TEST_STORE
             //OFStandard::deleteFile(fileName);
-//#endif
+            //#endif
             // check the image to make sure it is consistent, i.e. that its sopClass and sopInstance correspond
             // to those mentioned in the request. If not, set the status in the response message variable.
             if (rsp->DimseStatus == STATUS_Success)

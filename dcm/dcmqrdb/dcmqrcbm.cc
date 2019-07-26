@@ -659,7 +659,11 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
     int i;
     int pid = 1;
 
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+    //const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 21
+        NULL
+    };
     int numTransferSyntaxes = 0;
 
 #ifdef DISABLE_COMPRESSION_EXTENSION
@@ -826,18 +830,53 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
          * If we are running on a Little Endian machine we prefer
          * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
          */
-        if (gLocalByteOrder != EBO_BigEndian/*EBO_LittleEndian*/)  /* defined in dcxfer.h */
-        {
-            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        }
-        else
-        {
-            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        }
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
+        //transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+        //transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        //transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;
+        //transferSyntaxes[3] = UID_JPEGProcess1TransferSyntax;
+        //transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
+        //transferSyntaxes[5] = UID_JPEGLSLossyTransferSyntax;
+        //transferSyntaxes[6] = UID_JPEGLSLosslessTransferSyntax;
+        //transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
+        //transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        //transferSyntaxes[9] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
+        //transferSyntaxes[10] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
+        //transferSyntaxes[11] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+        //transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+        //transferSyntaxes[13] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+        //transferSyntaxes[14] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
+        //transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
+        //transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
+        //transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        ////if (gLocalByteOrder == EBO_LittleEndian)
+        ////{
+        //transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
+        //transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
+        ////}
+        ///* else {
+        //transferSyntaxes[18] = UID_BigEndianExplicitTransferSyntax;
+        //transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
+        //}*/
+        //transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
+        //numTransferSyntaxes = 21;
+        ///
+        ///-----
+        //if (gLocalByteOrder != EBO_BigEndian/*EBO_LittleEndian*/)  /* defined in dcxfer.h */
+        //{
+        //    transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+        //    transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+        //}
+        //else
+        //{
+        //    transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+        //    transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        //}
+        //transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+        //numTransferSyntaxes = 3;
+        //---------------------
+        //1.2.840.10008.1.2 = Implicit VR Little Endian : Default Transfer Syntax for DICOM
+        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 1;
         break;
     }
 #endif
