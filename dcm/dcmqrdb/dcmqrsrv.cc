@@ -127,7 +127,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
     {
         /* Create a database handle for this association */
         //---修改为使用数据库读取方式
-//------------------------------------------------------
+        //------------------------------------------------------
         //DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle(
         //    assoc->params->DULparams.callingAPTitle,
         //    assoc->params->DULparams.calledAPTitle, cond);
@@ -148,7 +148,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 
         //dbHandle->setIdentifierChecking(dbCheckFindIdentifier_, dbCheckMoveIdentifier_);
         DcmQueryRetrieveDatabaseHandle *dbHandle = NULL;
-//-------------------------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------------
         firstLoop = OFTrue;
 
         // this while loop is executed exactly once unless the "keepDBHandleDuringAssociation_"
@@ -263,7 +263,7 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
 
 
 OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_EchoRQ * req,
-                                 T_ASC_PresentationContextID presId)
+    T_ASC_PresentationContextID presId)
 {
     OFCondition cond = EC_Normal;
 
@@ -281,8 +281,8 @@ OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_Ec
 
 
 OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_FindRQ * request,
-                                T_ASC_PresentationContextID presID,
-                                DcmQueryRetrieveDatabaseHandle& dbHandle)
+    T_ASC_PresentationContextID presID,
+    DcmQueryRetrieveDatabaseHandle& dbHandle)
 
 {
     OFCondition cond = EC_Normal;
@@ -297,7 +297,7 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
     DCMQRDB_INFO("Received Find SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_findProvider(assoc, presID, request,
-                                findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+        findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad())
     {
         DCMQRDB_ERROR("Find SCP Failed: " << DimseCondition::dump(temp_str, cond));
@@ -321,7 +321,7 @@ OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_Get
     DCMQRDB_INFO("Received Get SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_getProvider(assoc, presID, request,
-                             getCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+        getCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad())
     {
         DCMQRDB_ERROR("Get SCP Failed: " << DimseCondition::dump(temp_str, cond));
@@ -345,7 +345,7 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
     DCMQRDB_INFO("Received Move SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_moveProvider(assoc, presID, request,
-                             moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+        moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad())
     {
         DCMQRDB_ERROR("Move SCP Failed: " << DimseCondition::dump(temp_str, cond));
@@ -584,7 +584,11 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     int i;
     T_ASC_PresentationContextID movepid, findpid;
     OFString temp_str;
-    struct { const char *moveSyntax, *findSyntax; } queryRetrievePairs[] =
+    struct
+    {
+        const char *moveSyntax, *findSyntax;
+    }
+    queryRetrievePairs[] =
     {
         { UID_MOVEPatientRootQueryRetrieveInformationModel,
         UID_FINDPatientRootQueryRetrieveInformationModel },
@@ -599,7 +603,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
 
     //const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
     //
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
+    const char* transferSyntaxes[] = 
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 21
         NULL
     };
@@ -784,35 +789,35 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         /* we accept all supported transfer syntaxes
         * (similar to "AnyTransferSyntax" in "storescp.cfg")
         */
-        transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
-        transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
-        transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;
-        transferSyntaxes[3] = UID_JPEGProcess1TransferSyntax;
-        transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
-        transferSyntaxes[5] = UID_JPEGLSLossyTransferSyntax;
-        transferSyntaxes[6] = UID_JPEGLSLosslessTransferSyntax;
-        transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
-        transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-        transferSyntaxes[9] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
-        transferSyntaxes[10] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
-        transferSyntaxes[11] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
-        transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
-        transferSyntaxes[13] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
-        transferSyntaxes[14] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
-        transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
-        transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
-        transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-        if (gLocalByteOrder == EBO_LittleEndian)
-        {
-            transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
-            transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
-        }
-        else {
-            transferSyntaxes[18] = UID_BigEndianExplicitTransferSyntax;
-            transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
-        }
-        transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 21;
+        //transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+        //transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        //transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;
+        //transferSyntaxes[3] = UID_JPEGProcess1TransferSyntax;
+        //transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
+        //transferSyntaxes[5] = UID_JPEGLSLossyTransferSyntax;
+        //transferSyntaxes[6] = UID_JPEGLSLosslessTransferSyntax;
+        //transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
+        //transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        //transferSyntaxes[9] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
+        //transferSyntaxes[10] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
+        //transferSyntaxes[11] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+        //transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+        //transferSyntaxes[13] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+        //transferSyntaxes[14] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
+        //transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
+        //transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
+        //transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        ////if (gLocalByteOrder == EBO_LittleEndian)
+        ////{
+        //transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
+        //transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
+        ////}
+        ///* else {
+        //     transferSyntaxes[18] = UID_BigEndianExplicitTransferSyntax;
+        //     transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
+        //     }*/
+        //transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
+        //numTransferSyntaxes = 21;
         ///
 
         //if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
@@ -826,6 +831,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         //}
         //transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         //numTransferSyntaxes = 3;
+        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 1;
         break;
     }
 
@@ -853,43 +860,53 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     {
         if (0 == strcmp(nonStorageSyntaxes[i], UID_FINDPatientRootQueryRetrieveInformationModel))
         {
-            if (options_.supportPatientRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientRoot_)
+                selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_MOVEPatientRootQueryRetrieveInformationModel))
         {
-            if (options_.supportPatientRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientRoot_)
+                selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_GETPatientRootQueryRetrieveInformationModel))
         {
-            if (options_.supportPatientRoot_ && (!options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientRoot_ && (!options_.disableGetSupport_))
+                selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel))
         {
-            if (options_.supportPatientStudyOnly_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientStudyOnly_)
+                selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel))
         {
-            if (options_.supportPatientStudyOnly_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientStudyOnly_)
+                selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel))
         {
-            if (options_.supportPatientStudyOnly_ && (!options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportPatientStudyOnly_ && (!options_.disableGetSupport_))
+                selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_FINDStudyRootQueryRetrieveInformationModel))
         {
-            if (options_.supportStudyRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportStudyRoot_)
+                selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_MOVEStudyRootQueryRetrieveInformationModel))
         {
-            if (options_.supportStudyRoot_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportStudyRoot_)
+                selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_GETStudyRootQueryRetrieveInformationModel))
         {
-            if (options_.supportStudyRoot_ && (!options_.disableGetSupport_)) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.supportStudyRoot_ && (!options_.disableGetSupport_))
+                selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else if (0 == strcmp(nonStorageSyntaxes[i], UID_PrivateShutdownSOPClass))
         {
-            if (options_.allowShutdown_) selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
+            if (options_.allowShutdown_)
+                selectedNonStorageSyntaxes[numberOfSelectedNonStorageSyntaxes++] = nonStorageSyntaxes[i];
         }
         else
         {
@@ -912,7 +929,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
                 DCMQRDB_ERROR("Cannot accept presentation contexts: " << DimseCondition::dump(temp_str, cond));
             }
         }
-        else {
+        else
+        {
             /* accept storage syntaxes with proposed role */
             T_ASC_PresentationContext pc;
             T_ASC_SC_ROLE role;
@@ -920,7 +938,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
             for (i = 0; i < npc; i++)
             {
                 ASC_getPresentationContext(assoc->params, i, &pc);
-                if (dcmIsaStorageSOPClassUID(pc.abstractSyntax))
+                if (dcmIsaStorageSOPClassUID(pc.abstractSyntax, ESSC_All))
                 {
                     /*
                     ** We are prepared to accept whatever role he proposes.
@@ -945,7 +963,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
                             {
                                 cond = ASC_acceptPresentationContext(
                                     assoc->params, pc.presentationContextID, transferSyntaxes[k], role);
-                                if (cond.bad()) return cond;
+                                if (cond.bad())
+                                    return cond;
                             }
                         }
                     }
@@ -956,7 +975,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     else
     {
         cond = associationConfiguration_.evaluateAssociationParameters(options_.incomingProfile.c_str(), *assoc);
-        if (cond.bad()) return cond;
+        if (cond.bad())
+            return cond;
     }
 
     /*  accept any of the non-storage syntaxes */
@@ -1206,8 +1226,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 cond = handleAssociation(assoc, options_.correctUIDPadding_);
                 /* the child process is done so exit */
                 exit(0);
+            }
         }
-    }
 #endif
     }
 

@@ -1350,8 +1350,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID)
 ** Returns defaultValue of the UID is not known.
 */
 
-const char*
-dcmFindNameOfUID(const char* uid, const char* defaultValue)
+const char* dcmFindNameOfUID(const char* uid, const char* defaultValue)
 {
     if (uid == NULL) return defaultValue;
     for (int i = 0; i < uidNameMap_size; i++) {
@@ -1369,8 +1368,7 @@ dcmFindNameOfUID(const char* uid, const char* defaultValue)
 // Returns NULL of the name is not known.
 //
 
-const char*
-dcmFindUIDFromName(const char* name)
+const char*  dcmFindUIDFromName(const char* name)
 {
     if (name == NULL) return NULL;
     for(int i = 0; i < uidNameMap_size; i++)
@@ -1388,30 +1386,38 @@ dcmFindUIDFromName(const char* name)
 ** Performs a table lookup in the dcmAllStorageSOPClassUIDs,
 ** dcmNonPatientStorageSOPClassUIDs and/or dcmImageSOPClassUIDs table.
 */
-OFBool
-dcmIsaStorageSOPClassUID(const char* uid, const E_StorageSOPClassType type)
+OFBool  dcmIsaStorageSOPClassUID(const char* uid, const E_StorageSOPClassType type)
 {
     if (uid == NULL) return OFFalse;
     /* check for patient object */
-    if (type & ESSC_Patient) {
-      for (int i = 0; i < numberOfDcmAllStorageSOPClassUIDs; i++) {
-        if (dcmAllStorageSOPClassUIDs[i] != NULL && strcmp(uid, dcmAllStorageSOPClassUIDs[i]) == 0) {
+    if (type & ESSC_Patient)
+    {
+      for (int i = 0; i < numberOfDcmAllStorageSOPClassUIDs; i++)
+      {
+        if (dcmAllStorageSOPClassUIDs[i] != NULL && strcmp(uid, dcmAllStorageSOPClassUIDs[i]) == 0)
+        {
           return OFTrue;
         }
       }
     }
     /* check for non-patient object */
-    if (type & ESSC_NonPatient) {
-      for (int i = 0; dcmNonPatientStorageSOPClassUIDs[i] != NULL; i++) {
-        if (strcmp(uid, dcmNonPatientStorageSOPClassUIDs[i]) == 0) {
+    if (type & ESSC_NonPatient)
+    {
+      for (int i = 0; dcmNonPatientStorageSOPClassUIDs[i] != NULL; i++)
+      {
+        if (strcmp(uid, dcmNonPatientStorageSOPClassUIDs[i]) == 0)
+        {
           return OFTrue;
         }
       }
     }
     /* check for image object */
-    if (type & ESSC_Image) {
-      for (int i = 0; i < numberOfDcmImageSOPClassUIDs; i++) {
-        if (dcmImageSOPClassUIDs[i] != NULL && strcmp(uid, dcmImageSOPClassUIDs[i]) == 0) {
+    if (type & ESSC_Image)
+    {
+      for (int i = 0; i < numberOfDcmImageSOPClassUIDs; i++)
+      {
+        if (dcmImageSOPClassUIDs[i] != NULL && strcmp(uid, dcmImageSOPClassUIDs[i]) == 0)
+        {
           return OFTrue;
         }
       }
@@ -1424,8 +1430,7 @@ dcmIsaStorageSOPClassUID(const char* uid, const E_StorageSOPClassType type)
 ** dcmIsImageStorageSOPClassUID(const char* uid)
 ** Returns true if the uid is one of the Image Storage SOP Classes.
 */
-OFBool
-dcmIsImageStorageSOPClassUID(const char* uid)
+OFBool dcmIsImageStorageSOPClassUID(const char* uid)
 {
     return dcmIsaStorageSOPClassUID(uid, ESSC_Image);
 }
