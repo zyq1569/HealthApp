@@ -202,11 +202,61 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
         DCMWLM_WARN("dfPath:in case the path is not existent "); //add zyq20190507
         //return(OFFalse);
     }
-
     // if we get to here, the path is existent and we need to return OFTrue
     return(OFTrue);
 }
+//将时间格式字符转换为数字格式时间
+OFString DateTimeFormate(OFString datetime, OFString &date, OFString &time)
+{
+    OFString str(datetime);
+    if (str.length() < 1)
+    {
+        str.clear();
+        return str;
+    }
+    int pos = str.find('-');
+    while (pos > 0)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find('-');
+    }
+    pos = str.find(' ');
+    while (pos > 0)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find(' ');
+    }
+    pos = str.find(':');
+    while (pos > 0)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find(':');
+    }
+    date = str.substr(0, 8);
+    if ((str.length() - 8) > 5)
+    {
+        time = str.substr(8, str.length() - 8);
+        //if (time.length() > 10)
+        //{
+        //    time = time.substr(0, 10);
+        //}
+    }
+    else
+    {
+        time.clear();
+    }
 
+    return str;
+}
 // ----------------------------------------------------------------------------
 /******************************************************************************************
 参数
