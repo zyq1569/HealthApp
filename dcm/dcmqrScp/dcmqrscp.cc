@@ -212,6 +212,46 @@ OFString GetCurrWorkingDir()
 #endif
     return strPath;
 }
+
+//OFString ToDateTimeFormate(OFString datetime, OFString &date, OFString &time)
+//{
+//    OFString str(datetime);
+//    if (str.length()< 1)
+//    {
+//        str.clear();
+//        return str;
+//    }
+//    int pos = str.find('-');
+//    while (pos>0)
+//    {
+//        int len = str.length();
+//        OFString temp = str.substr(0, pos);
+//        temp = temp + str.substr(pos+1, len - pos);
+//        str = temp;
+//        pos = str.find('-');
+//    }
+//    pos = str.find(' ');
+//    while (pos>0)
+//    {
+//        int len = str.length();
+//        OFString temp = str.substr(0, pos);
+//        temp = temp + str.substr(pos + 1, len - pos);
+//        str = temp;
+//        pos = str.find(' ');
+//    }
+//    pos = str.find(':');
+//    while (pos>0)
+//    {
+//        int len = str.length();
+//        OFString temp = str.substr(0, pos);
+//        temp = temp + str.substr(pos + 1, len - pos);
+//        str = temp;
+//        pos = str.find(':');
+//    }
+//    date = str.substr(0, 8);
+//    time = str.substr(9, str.length() - 8);
+//    return str;
+//}
 int main(int argc, char *argv[])
 {
 #ifdef HAVE_FORK
