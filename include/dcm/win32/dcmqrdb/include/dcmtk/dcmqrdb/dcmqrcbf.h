@@ -90,6 +90,9 @@ public:
         DcmDataset      *findRequestIdentifiers,
         DcmQueryRetrieveDatabaseStatus  *status);
 
+    //set config;
+    void SetDcmQueryRetrieveConfig(const DcmQueryRetrieveConfig* config);
+
 private:
 
     /// reference to database handle
@@ -109,6 +112,9 @@ private:
 
     /// array of matching datasets
     OFList<DcmDataset> m_matchingDatasets;
+
+    //
+    const DcmQueryRetrieveConfig *m_config;
 
 };
 

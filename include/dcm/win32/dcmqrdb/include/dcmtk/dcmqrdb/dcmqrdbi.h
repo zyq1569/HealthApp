@@ -442,6 +442,11 @@ public:
     const char *calledAETitle,
     OFCondition& result) const;
 
+  virtual const DcmQueryRetrieveConfig * GetConfig()
+  {
+      return config_;
+  }
+
 private:
 
   /// pointer to system configuration
