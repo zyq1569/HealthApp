@@ -409,21 +409,24 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
             free(c);
             store_dir_index = 1;
             char index[3];
-            store_index_name =  itoa(store_dir_index,index,10);
+            store_index_name = itoa(store_dir_index, index, 10);
             store_index_name = "store_dir_" + store_index_name;
 
         }
-        else if ((store_dir_size>0) && (store_dir_index <= store_dir_size) && (!strcmp(store_index_name.c_str(), mnemonic)))
+        else if ((store_dir_size > 0) && (store_dir_index <= store_dir_size) && (!strcmp(store_index_name.c_str(), mnemonic)))
         {
             OFString dir;
             c = parsevalues(&valueptr);
             dir = c;
             free(c);
             m_storedir.push_back(dir);
-            store_dir_index ++;
-            char index[3];
-            store_index_name = itoa(store_dir_index, index, 10);
-            store_index_name = "store_dir_" + store_index_name;
+            if (store_dir_index < store_dir_size)
+            {
+                store_dir_index++;
+                char index[3];
+                store_index_name = itoa(store_dir_index, index, 10);
+                store_index_name = "store_dir_" + store_index_name;
+            }
         }
         //store_dir_size
         //get m_storedir
@@ -776,7 +779,7 @@ DcmQueryRetrieveConfigPeer *DcmQueryRetrieveConfig::readPeerList(char **valuehan
         found = 0;
         if (strchr(helpvalue, ',') == NULL)
         {   /* symbolic name */
-            if (!CNF_HETable.noOfHostEntries) 
+            if (!CNF_HETable.noOfHostEntries)
             {
                 panic("No symbolic names defined");
                 *peers = 0;
@@ -879,7 +882,7 @@ int DcmQueryRetrieveConfig::isquote(char quote)
 
 char *DcmQueryRetrieveConfig::parsevalues(char **valuehandle)
 {
-    int i, inquotes = 0,  count = 0;
+    int i, inquotes = 0, count = 0;
     char *value = NULL;
     const char *help,
         *valueptr = *valuehandle;
@@ -1141,16 +1144,16 @@ int DcmQueryRetrieveConfig::peerInAETitle(const char *calledAETitle, const char 
                        !strcmp(HostName, CNF_Config.AEEntries[i].Peers[j].HostName))
 #endif
                        return(1);       /* Peer found */
-            }
         }
     }
+}
     return(0);           /* Peer not found */
 }
 
 
 int DcmQueryRetrieveConfig::peerForAETitle(const char *AETitle, const char **HostName, int *PortNumber) const
 {
-    int  i,  j;
+    int  i, j;
 
     for (i = 0; i < CNF_Config.noOfAEEntries; i++)
     {

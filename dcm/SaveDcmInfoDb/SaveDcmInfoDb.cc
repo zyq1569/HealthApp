@@ -796,7 +796,7 @@ OFBool SaveDcmInfo2Db(OFString filename)
                 sprintf(uuid, "%llu", CreateGUID());
                 OFString StudyIdentity = uuid;
                 OFString strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,\
-                                  StudyDateTime,StudyModality,InstitutionName,StudyManufacturer£¬StudyState) value(";
+                                  StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState) value(";
                 strsql += StudyIdentity;
                 strsql += ",'";
                 strsql += StudyInfo.StudyID;
