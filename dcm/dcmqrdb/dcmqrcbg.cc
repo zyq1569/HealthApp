@@ -75,12 +75,14 @@ void DcmQueryRetrieveGetContext::callbackHandler(
     OFCondition dbcond = EC_Normal;
     DcmQueryRetrieveDatabaseStatus dbStatus(priorStatus);
 
-    if (responseCount == 1) {
+    if (responseCount == 1)
+    {
         /* start the database search */
         DCMQRDB_INFO("Get SCP Request Identifiers:" << OFendl << DcmObject::PrintHelper(*requestIdentifiers));
         dbcond = dbHandle.startMoveRequest(
             request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
-        if (dbcond.bad()) {
+        if (dbcond.bad())
+        {
             OFString temp_str;
             DCMQRDB_ERROR("getSCP: Database: startMoveRequest Failed ("
                 << DU_cmoveStatusString(dbStatus.status()) << "): "
@@ -89,21 +91,25 @@ void DcmQueryRetrieveGetContext::callbackHandler(
     }
 
     /* only cancel if we have pending status */
-    if (cancelled && dbStatus.status() == STATUS_Pending) {
+    if (cancelled && dbStatus.status() == STATUS_Pending)
+    {
         dbHandle.cancelMoveRequest(&dbStatus);
     }
 
-    if (dbStatus.status() == STATUS_Pending) {
+    if (dbStatus.status() == STATUS_Pending)
+    {
         getNextImage(&dbStatus);
     }
 
-    if (dbStatus.status() != STATUS_Pending) {
+    if (dbStatus.status() != STATUS_Pending)
+    {
 
         /*
          * Need to adjust the final status if any sub-operations failed or
          * had warnings
          */
-        if (nFailed > 0 || nWarning > 0) {
+        if (nFailed > 0 || nWarning > 0)
+        {
             dbStatus.setStatus(STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures);
         }
         /*
@@ -111,7 +117,8 @@ void DcmQueryRetrieveGetContext::callbackHandler(
          * cf. DICOM part 4, C.4.3.3.1
          * we choose to generate a "Refused - Out of Resources - Unable to perform suboperations" status.
          */
-        if ((nFailed > 0) && ((nCompleted + nWarning) == 0)) {
+        if ((nFailed > 0) && ((nCompleted + nWarning) == 0))
+        {
             dbStatus.setStatus(STATUS_GET_Refused_OutOfResourcesSubOperations);
         }
     }
@@ -120,7 +127,8 @@ void DcmQueryRetrieveGetContext::callbackHandler(
             << DU_cmoveStatusString(dbStatus.status()) << "]");
 
     if (dbStatus.status() != STATUS_Success &&
-        dbStatus.status() != STATUS_Pending) {
+        dbStatus.status() != STATUS_Pending)
+    {
         /*
          * May only include response identifiers if not Success
          * and not Pending
@@ -142,16 +150,21 @@ void DcmQueryRetrieveGetContext::addFailedUIDInstance(const char *sopInstance)
 {
     size_t len;
 
-    if (failedUIDs == NULL) {
-        if ((failedUIDs = (char*)malloc(DIC_UI_LEN+1)) == NULL) {
+    if (failedUIDs == NULL)
+    {
+        if ((failedUIDs = (char*)malloc(DIC_UI_LEN+1)) == NULL)
+        {
             DCMQRDB_ERROR("malloc failure: addFailedUIDInstance");
             return;
         }
         strcpy(failedUIDs, sopInstance);
-    } else {
+    }
+    else
+    {
         len = strlen(failedUIDs);
         if ((failedUIDs = (char*)realloc(failedUIDs,
-            (len+strlen(sopInstance)+2))) == NULL) {
+            (len+strlen(sopInstance)+2))) == NULL)
+        {
             DCMQRDB_ERROR("realloc failure: addFailedUIDInstance");
             return;
         }
@@ -193,13 +206,16 @@ OFCondition DcmQueryRetrieveGetContext::performGetSubOp(DIC_UI sopClass, DIC_UI 
     /* which presentation context should be used */
     presId = ASC_findAcceptedPresentationContextID(origAssoc,
         sopClass);
-    if (presId == 0) {
+    if (presId == 0)
+    {
         nFailed++;
         addFailedUIDInstance(sopInstance);
         DCMQRDB_ERROR("Get SCP: storeSCU: [file: " << fname << "] No presentation context for: ("
             << dcmSOPClassUIDToModality(sopClass, "OT") << ") " << sopClass);
         return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
-    } else {
+    }
+    else
+    {
         /* make sure that we can send images in this presentation context */
         T_ASC_PresentationContext pc;
         ASC_findAcceptedPresentationContext(origAssoc->params, presId, &pc);

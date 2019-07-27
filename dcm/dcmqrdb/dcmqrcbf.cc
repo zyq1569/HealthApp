@@ -827,7 +827,7 @@ OFString ToDateTimeFormate(OFString datetime, OFString &date, OFString &time)
         pos = str.find(':');
     }
     date = str.substr(0, 8);
-    if ((str.length()-8) > 5)
+    if ((str.length() - 8) > 5)
     {
         time = str.substr(8, str.length() - 8);
         //if (time.length() > 10)
@@ -1040,9 +1040,14 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     // get all record datasets from mysql;
     //！！！！！！！！2.彈姥方象垂響函方象！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
     static HMariaDb *pMariaDb = NULL;
+    OFString strIP, strUser, strPwd, strDadaName;
     if (pMariaDb == NULL)
     {
-        OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
+        //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
+        strIP = m_config->getSqlServer();
+        strUser = m_config->getSqlusername();
+        strPwd = m_config->getSqlpass();
+        strDadaName = m_config->getSqldbname();
 #ifdef _UNICODE
         pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
             W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
@@ -1060,7 +1065,6 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     {
         sql = sql + "and s.StudyModality = '" + Modality + "'";
     }
-
     pMariaDb->query(sql.c_str());
     ResultSet * rs = pMariaDb->QueryResult();
     if (rs == NULL)
@@ -1137,7 +1141,7 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
         status->setStatus(STATUS_Pending);
         return (EC_Normal);
     }
-    }
+}
 
 
 
@@ -1263,4 +1267,8 @@ void DcmQueryRetrieveFindContext::callbackHandler(
             DCMQRDB_DEBUG("  Status detail:" << OFendl << DcmObject::PrintHelper(**stDetail));
         }
     }
+}
+void DcmQueryRetrieveFindContext::SetDcmQueryRetrieveConfig(const DcmQueryRetrieveConfig* config)
+{
+    m_config = config;
 }

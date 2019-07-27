@@ -337,7 +337,9 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
         value[512],       /* parameter value */
         *valueptr;        /* pointer to value list */
     char *c;
-
+    int store_dir_size = -1;
+    int store_dir_index = 0;
+    OFString store_index_name;
     // read all lines from configuration file
     while (fgets(rcline, sizeof(rcline), cnffp)) {
         lineno++;
@@ -349,40 +351,101 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
 
         valueptr = skipmnemonic(rcline);
 
-        if (!strcmp("ApplicationTitle", mnemonic)) {
+        if (!strcmp("ApplicationTitle", mnemonic))
+        {
             // ignore this entry which was used (really?) in previous versions
         }
-        else if (!strcmp("ApplicationContext", mnemonic)) {
+        else if (!strcmp("ApplicationContext", mnemonic))
+        {
             // ignore this entry which was used (really?) in previous versions
         }
-        else if (!strcmp("ImplementationClass", mnemonic)) {
+        else if (!strcmp("ImplementationClass", mnemonic))
+        {
             // ignore this entry which was used (really?) in previous versions
         }
-        else if (!strcmp("ImplementationVersion", mnemonic)) {
+        else if (!strcmp("ImplementationVersion", mnemonic))
+        {
             // ignore this entry which was used (really?) in previous versions
         }
-        else if (!strcmp("NetworkType", mnemonic)) {
+        else if (!strcmp("NetworkType", mnemonic))
+        {
             // ignore this entry which was used (really?) in previous versions
         }
-        else if (!strcmp("UserName", mnemonic)) {
+        else if (!strcmp("UserName", mnemonic))
+        {
             c = parsevalues(&valueptr);
             UserName_ = c;
             free(c);
         }
-        else if (!strcmp("GroupName", mnemonic)) {
+        //////////////////////////////////////////
+        else if (!strcmp("sqlserver", mnemonic))
+        {
+            c = parsevalues(&valueptr);
+            m_sqlserver = c;
+            free(c);
+        }
+        else if (!strcmp("sqldbname", mnemonic))
+        {
+            c = parsevalues(&valueptr);
+            m_sqldbname = c;
+            free(c);
+        }
+        else if (!strcmp("sqlusername", mnemonic))
+        {
+            c = parsevalues(&valueptr);
+            m_sqlusername = c;
+            free(c);
+        }
+        else if (!strcmp("sqlpass", mnemonic))
+        {
+            c = parsevalues(&valueptr);
+            m_sqlpass = c;
+            free(c);
+        }
+        else if (!strcmp("store_dir_size", mnemonic))
+        {
+            c = parsevalues(&valueptr);
+            store_dir_size = atoi(c);
+            free(c);
+            store_dir_index = 1;
+            char index[3];
+            store_index_name =  itoa(store_dir_index,index,10);
+            store_index_name = "store_dir_" + store_index_name;
+
+        }
+        else if ((store_dir_size>0) && (store_dir_index <= store_dir_size) && (!strcmp(store_index_name.c_str(), mnemonic)))
+        {
+            OFString dir;
+            c = parsevalues(&valueptr);
+            dir = c;
+            free(c);
+            m_storedir.push_back(dir);
+            store_dir_index ++;
+            char index[3];
+            store_index_name = itoa(store_dir_index, index, 10);
+            store_index_name = "store_dir_" + store_index_name;
+        }
+        //store_dir_size
+        //get m_storedir
+        /////////////////////////////////////////
+        else if (!strcmp("GroupName", mnemonic))
+        {
             c = parsevalues(&valueptr);
             GroupName_ = c;
             free(c);
         }
-        else if (!strcmp("NetworkTCPPort", mnemonic)) {
+        else if (!strcmp("NetworkTCPPort", mnemonic))
+        {
             sscanf(valueptr, "%d", &networkTCPPort_);
         }
-        else if (!strcmp("MaxPDUSize", mnemonic)) {
+        else if (!strcmp("MaxPDUSize", mnemonic))
+        {
             unsigned long ul = 0;
             sscanf(valueptr, "%lu", &ul);
             maxPDUSize_ = OFstatic_cast(Uint32, ul);
         }
-        else if (!strcmp("MaxAssociations", mnemonic)) {
+        else if (!strcmp("MaxAssociations", mnemonic))
+        {
             sscanf(valueptr, "%d", &maxAssociations_);
         }
         else if (!strcmp("Display", mnemonic))
@@ -397,52 +460,65 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
         {
             // already handled by parseOptions(), nothing else to do
         }
-        else if (!strcmp("HostTable", mnemonic)) {
+        else if (!strcmp("HostTable", mnemonic))
+        {
             sscanf(valueptr, "%s", value);
-            if (!strcmp("BEGIN", value)) {
+            if (!strcmp("BEGIN", value))
+            {
                 if (!readHostTable(cnffp, &lineno))
                     error = 1;
             }
-            else if (!strcmp("END", value)) {
+            else if (!strcmp("END", value))
+            {
                 panic("No \"HostTable BEGIN\" before END in configuration file, line %d", lineno);
                 error = 1;
             }
-            else {
+            else
+            {
                 panic("Unknown HostTable status \"%s\" in configuration file, line %d", value, lineno);
                 error = 1;
             }
         }
-        else if (!strcmp("VendorTable", mnemonic)) {
+        else if (!strcmp("VendorTable", mnemonic))
+        {
             sscanf(valueptr, "%s", value);
-            if (!strcmp("BEGIN", value)) {
+            if (!strcmp("BEGIN", value))
+            {
                 if (!readVendorTable(cnffp, &lineno))
                     error = 1;
             }
-            else if (!strcmp("END", value)) {
+            else if (!strcmp("END", value))
+            {
                 panic("No \"VendorTable BEGIN\" before END in configuration file, line %d", lineno);
                 error = 1;
             }
-            else {
+            else
+            {
                 panic("Unknown VendorTable status \"%s\" in configuration file, line %d", value, lineno);
                 error = 1;
             }
         }
-        else if (!strcmp("AETable", mnemonic)) {
+        else if (!strcmp("AETable", mnemonic))
+        {
             sscanf(valueptr, "%s", value);
-            if (!strcmp("BEGIN", value)) {
+            if (!strcmp("BEGIN", value))
+            {
                 if (!readAETable(cnffp, &lineno))
                     error = 1;
             }
-            else if (!strcmp("END", value)) {
+            else if (!strcmp("END", value))
+            {
                 panic("No \"AETable BEGIN\" before END in configuration file, line %d", lineno);
                 error = 1;
             }
-            else {
+            else
+            {
                 panic("Unknown AETable status \"%s\" in configuration file, line %d", value, lineno);
                 error = 1;
             }
         }
-        else {
+        else
+        {
             panic("Unknown mnemonic \"%s\" in configuration file, line %d", mnemonic, lineno);
             error = 1;
         }
@@ -1197,4 +1273,22 @@ const DcmQueryRetrieveCharacterSetOptions& DcmQueryRetrieveConfig::getCharacterS
 DcmQueryRetrieveCharacterSetOptions& DcmQueryRetrieveConfig::getCharacterSetOptions()
 {
     return characterSetOptions_;
+}
+
+const char *DcmQueryRetrieveConfig::getSqlServer() const
+{
+    return m_sqlserver.c_str();
+}
+const char *DcmQueryRetrieveConfig::getSqldbname() const
+{
+    return m_sqldbname.c_str();
+}
+const char *DcmQueryRetrieveConfig::getSqlusername() const
+{
+    return m_sqlusername.c_str();
+}
+const char *DcmQueryRetrieveConfig::getSqlpass() const
+{
+    return m_sqlpass.c_str();
+
 }
