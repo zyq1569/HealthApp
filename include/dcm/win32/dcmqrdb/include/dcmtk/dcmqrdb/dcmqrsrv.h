@@ -91,6 +91,8 @@ public:
    */
   void cleanChildren();
 
+  const DcmQueryRetrieveConfig *GetDcmQueryRetrieveConfig();
+
 private:
 
   /// private undefined copy constructor

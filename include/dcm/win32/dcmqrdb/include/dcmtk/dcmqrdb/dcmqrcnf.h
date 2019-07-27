@@ -398,6 +398,17 @@ public:
    */
   DcmQueryRetrieveCharacterSetOptions& getCharacterSetOptions();
 
+  //--------------
+  const char *getSqlServer() const;
+  const char *getSqldbname() const;
+  const char *getSqlusername() const;
+  const char *getSqlpass() const;
+  const OFList<OFString> *getStoreDir() const
+  {
+      return &m_storedir;
+  }
+  //-----------------
+
 private:
 
   friend class DcmQueryRetrieveCharacterSetOptions;
@@ -520,6 +531,10 @@ private:
   int networkTCPPort_;
   Uint32 maxPDUSize_;
   int maxAssociations_;
+  //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+  OFList<OFString> m_storedir;
+  OFString m_sqlserver, m_sqldbname, m_sqlusername, m_sqlpass;//add 20190727
+  //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
   DcmQueryRetrieveCharacterSetOptions characterSetOptions_;
   DcmQueryRetrieveConfigConfiguration CNF_Config;   /* configuration file contents */
   DcmQueryRetrieveConfigHostTable CNF_HETable;      /* HostEntries Table */

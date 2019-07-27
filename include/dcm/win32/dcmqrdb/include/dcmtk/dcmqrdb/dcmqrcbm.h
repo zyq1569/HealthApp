@@ -114,6 +114,9 @@ public:
         const char      *SOPClassUID,
         DcmDataset      *moveRequestIdentifiers,
         DcmQueryRetrieveDatabaseStatus  *status);
+
+    //set config;
+    void SetDcmQueryRetrieveConfig(const DcmQueryRetrieveConfig* config);
 private:
 
     /// private undefined copy constructor
@@ -194,6 +197,8 @@ private:
     /// array of matching datasets
     OFList<OFString> m_matchingFiles;
 
+    //
+    const DcmQueryRetrieveConfig *m_config;
 };
 
 #endif
