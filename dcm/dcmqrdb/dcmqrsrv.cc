@@ -287,7 +287,7 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
 {
     OFCondition cond = EC_Normal;
     DcmQueryRetrieveFindContext context(dbHandle, options_, STATUS_Pending, config_->getCharacterSetOptions());
-
+    context.SetDcmQueryRetrieveConfig(GetDcmQueryRetrieveConfig());
     DIC_AE aeTitle;
     aeTitle[0] = '\0';
     ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
@@ -335,7 +335,7 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
 {
     OFCondition cond = EC_Normal;
     DcmQueryRetrieveMoveContext context(dbHandle, options_, associationConfiguration_, config_, STATUS_Pending, assoc, request->MessageID, request->Priority);
-
+    context.SetDcmQueryRetrieveConfig(GetDcmQueryRetrieveConfig());
     DIC_AE aeTitle;
     aeTitle[0] = '\0';
     ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
@@ -1266,4 +1266,9 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 {
     dbCheckFindIdentifier_ = dbCheckFindIdentifier;
     dbCheckMoveIdentifier_ = dbCheckMoveIdentifier;
+}
+
+const DcmQueryRetrieveConfig * DcmQueryRetrieveSCP::GetDcmQueryRetrieveConfig()
+{
+    return config_;
 }

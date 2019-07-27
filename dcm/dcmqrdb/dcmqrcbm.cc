@@ -87,6 +87,9 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     {
         SeriesInstanceUID.clear();
     }
+    OFString storedir;
+
+    //m_config->getstr
     //
     OFString str = "E:\\Tool\\TestDcm\\Shen YuXiu\\1.2.392.200036.9116.2.6.1.48.1214245415.1267415086.116091.dcm";
     m_matchingFiles.push_back(str);
@@ -562,16 +565,19 @@ void DcmQueryRetrieveMoveContext::failAllSubOperations(DcmQueryRetrieveDatabaseS
     bzero(subImgSOPClass, sizeof(subImgSOPClass));
     bzero(subImgSOPInstance, sizeof(subImgSOPInstance));
 
-    while (dbStatus->status() == STATUS_Pending) {
+    while (dbStatus->status() == STATUS_Pending)
+    {
         /* get DB response */
         dbcond = dbHandle.nextMoveResponse(
             subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
-        if (dbcond.bad()) {
+        if (dbcond.bad())
+        {
             DCMQRDB_ERROR("moveSCP: Database: nextMoveResponse Failed ("
                 << DU_cmoveStatusString(dbStatus->status()) << "):");
         }
 
-        if (dbStatus->status() == STATUS_Pending) {
+        if (dbStatus->status() == STATUS_Pending)
+        {
             nFailed++;
             addFailedUIDInstance(subImgSOPInstance);
         }
@@ -586,7 +592,8 @@ void DcmQueryRetrieveMoveContext::buildFailedInstanceList(DcmDataset ** rspIds)
     if (failedUIDs != NULL) {
         *rspIds = new DcmDataset();
         ok = DU_putStringDOElement(*rspIds, DCM_FailedSOPInstanceUIDList, failedUIDs);
-        if (!ok) {
+        if (!ok)
+        {
             DCMQRDB_ERROR("moveSCP: failed to build DCM_FailedSOPInstanceUIDList");
         }
         free(failedUIDs);
@@ -889,4 +896,9 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
         pid += 2;   /* only odd presentation context id's */
     }
     return cond;
+}
+
+void DcmQueryRetrieveMoveContext::SetDcmQueryRetrieveConfig(const DcmQueryRetrieveConfig* config)
+{
+    m_config = config;
 }
