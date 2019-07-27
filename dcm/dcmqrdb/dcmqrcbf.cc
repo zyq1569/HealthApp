@@ -36,12 +36,7 @@
 /*******************
 *    Is the specified tag supported
 */
-static OFString longToString(unsigned long i)
-{
-    char numbuf[10240];
-    sprintf(numbuf, "%d", i);
-    return numbuf;
-}
+
 static const DB_FindAttr TbFindAttr[] =
 {
     DB_FindAttr(DCM_PatientBirthDate, PATIENT_LEVEL, OPTIONAL_KEY),
@@ -663,7 +658,7 @@ static char *DB_strdup(const char* str)
 }
 
 
-static void DB_UIDAddFound(DB_UidList *uidList, IdxRecord               *idxRec, DB_LEVEL queryLevel)
+static void DB_UIDAddFound(DB_UidList *uidList, IdxRecord  *idxRec, DB_LEVEL queryLevel)
 {
     DB_UidList *plist = NULL;
     plist = (DB_UidList *)malloc(sizeof(DB_UidList));

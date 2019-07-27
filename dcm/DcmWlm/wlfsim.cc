@@ -370,20 +370,20 @@ void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
     }
     int count;//数据库查询的记录条数
     OFString sql = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,\
-                  s.StudyID, s.StudyUID, s.StudyDateTime, s.ProcedureStepStartDate, \
-                  s.StudyModality, s.AETitle from h_patient p, h_study s where p.PatientIdentity=s.PatientIdentity ";
+                                     s.StudyID, s.StudyUID, s.StudyDateTime, s.ProcedureStepStartDate, \
+                                                       s.StudyModality, s.AETitle from h_patient p, h_study s where p.PatientIdentity=s.PatientIdentity ";
     if (!Modality.empty())
     {
         sql = sql + "and s.StudyModality = '" + Modality + "'";
     }
-//    if (!StartDate.empty())
-//    {
-//        if (StartDate.replace(0,1,'-'))
-//        {
-////StartDate.replace
-//        }
-//        sql = sql + "and StudyDateTime = '" + StartDate + "'";
-//    }
+    //    if (!StartDate.empty())
+    //    {
+    //        if (StartDate.replace(0,1,'-'))
+    //        {
+    ////StartDate.replace
+    //        }
+    //        sql = sql + "and StudyDateTime = '" + StartDate + "'";
+    //    }
     pMariaDb->query(sql.c_str());
     ResultSet * rs = pMariaDb->QueryResult();
     if (rs == NULL)
@@ -409,10 +409,10 @@ void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
             //DCMWLM_INFO(sdata.c_str());
             ////////////////////////////
             std::string patienName, StudyInstanceUID, PatientID, StudyID, PatientBirthDate, PatientSex, StudyModality, StepStartDate;
-            
+
             //DcmDataset *dataset = new DcmDataset();
             DcmDataset dataset;
-            
+
             //dataset->putAndInsertString(DCM_PatientName, "Doe^John");
             //dataset->putAndInsertString(DCM_AccessionNumber, "A00001");
             //dataset->putAndInsertString(DCM_PatientID, "A000001");
@@ -473,7 +473,7 @@ void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
             dataset.putAndInsertString(DCM_RequestedProcedureDescription, "EXAM78");
             //dataset->putAndInsertString(DCM_PatientSex, "W");
 
-            
+
             DcmItem *ditem = NULL;
             if (dataset.findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence, ditem).good())
             {
@@ -573,10 +573,7 @@ void SetWorklistData(DcmDataset *dataset, DcmDataset *searchMask)
 #endif
     }
 
-
-
     //name pID date modality  ae
-
     dataset->putAndInsertString(DCM_PatientName, "Doe^John");
     dataset->putAndInsertString(DCM_AccessionNumber, "A00001");
     dataset->putAndInsertString(DCM_PatientID, "A000001");
@@ -612,7 +609,7 @@ void SetWorklistData(DcmDataset *dataset, DcmDataset *searchMask)
     }
     dataset->putAndInsertString(DCM_RequestedProcedureID, "RP34734H328");
     dataset->putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
-        }
+}
 // ----------------------------------------------------------------------------
 unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDataset *searchMask)
 // Date         : July 11, 2002
@@ -630,8 +627,8 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDatas
     OFList<DcmDataset > list_data;
     //set matchingRecords
     GetWorklistData(list_data, searchMask);//bitter 20130501
-    OFListIterator(DcmDataset ) if_iter = list_data.begin();
-    OFListIterator(DcmDataset ) if_last = list_data.end();
+    OFListIterator(DcmDataset) if_iter = list_data.begin();
+    OFListIterator(DcmDataset) if_last = list_data.end();
     while (if_iter != if_last)
     {
         DcmDataset dataset(*if_iter);
@@ -923,12 +920,12 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles(OFVector<OFString> 
 
                 // add string to the set of strings
                 worklistFiles.push_back(subname);
+            }
         }
-    }
 
         // close directory
         closedir(dirp);
-}
+    }
 #endif
 
     // in case we are running in verbose mode, dump all worklist file information
@@ -949,7 +946,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles(OFVector<OFString> 
         }
         DCMWLM_INFO("=============================");
     }
-    }
+}
 
 // ----------------------------------------------------------------------------
 
@@ -1313,7 +1310,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask(DcmItem *datase
             DcmElement* candidate = OFnullptr;
             if (dataset->findAndGetElement(key.first, candidate, OFFalse).bad() || !candidate || !query->matches(*candidate, key.second))
                 return OFFalse;
-    }
+        }
     }
 
 #ifdef HAVE_CXX11
