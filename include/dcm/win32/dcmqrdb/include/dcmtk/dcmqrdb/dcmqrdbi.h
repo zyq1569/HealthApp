@@ -54,6 +54,15 @@ class DcmQueryRetrieveConfig;
 #define LOCK_IMAGE_FILES
 #endif
 
+
+
+static OFString longToString(unsigned long i)
+{
+    char numbuf[10240];
+    sprintf(numbuf, "%d", i);
+    return numbuf;
+}
+
 /** enumeration describing the levels of the DICOM Q/R information model
  */
 enum DB_LEVEL
