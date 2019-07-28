@@ -31,6 +31,8 @@
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"
 
+#include "Units.h"
+
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* needed on Solaris for O_RDONLY */
@@ -67,111 +69,6 @@ T_DIMSE_C_StoreRQ * /*req*/)
 }
 
 /////////_____________________________________________________________
-struct OFHashValue
-{
-    INT16 first;
-    INT16 second;
-    OFHashValue()
-    {
-        first = second = 0;
-    }
-};
-//!根据字符计算两个Hash数值
-OFHashValue CreateHashValue(const char * buffer, unsigned int length)
-{
-    //2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 
-    //101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 
-    //181 191 193 197 199
-    static const int M1 = 71;
-    static const int M2 = 79;
-
-    static const int D1 = 197;
-    static const int D2 = 199;
-    int value = 0;
-    OFHashValue hashvalue;
-    for (unsigned int i = 0; i < length; i++)
-    {
-        value = value * M1 + buffer[i];
-    }
-    value %= D1;
-    if (value < 0)
-    {
-        value = value + D1;
-    }
-    hashvalue.first = value;
-
-    value = 0;
-    for (unsigned int i = 0; i < length; i++)
-    {
-        value = value * M2 + buffer[i];
-    }
-    value %= D2;
-    if (value < 0)
-    {
-        value = value + D2;
-    }
-    hashvalue.second = value;
-    return hashvalue;
-}
-OFString AdjustDir(const OFString dir)
-{
-#ifdef HAVE_WINDOWS_H
-    OFString path = dir;
-    if (path == "")
-        return "";
-    if (path[path.length() - 1] != '\\')
-        path += "\\";
-    return path;
-#else
-    //to do add!
-
-#endif
-}
-//-----------------------------------------------------------------------------------
-//查找Dir目录下的扩展名为FileExt的内容，包含所有子级目录，如果FileExt为空表示查找所有文件
-void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 50)
-{
-    if (datas.size() >= Count)
-    {
-        return;
-    }
-#ifdef HAVE_WINDOWS_H
-    OFString dir = AdjustDir(Dir);
-    if (dir == "")
-        return;
-    OFString pach = dir + "*.*";
-    WIN32_FIND_DATA sr;
-    HANDLE h;
-    if ((h = FindFirstFile(pach.c_str(), &sr)) != INVALID_HANDLE_VALUE)
-    {
-        do
-        {
-            OFString name = sr.cFileName;
-            if ((sr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-            {
-                if (name != "." && name != "..")
-                {
-                    SearchDirFile(dir + name, FileExt, datas);
-                }
-            }
-            else
-            {
-                OFString temp;
-                if (FileExt == "")
-                    datas.push_back(dir + name);
-                else if (Not == false && OFStandard::toUpper(temp, FileExt) == OFStandard::toUpper(temp, name))
-                    datas.push_back(dir + name);
-                else if (Not == true && OFStandard::toUpper(temp, FileExt) != OFStandard::toUpper(temp, name))
-                    datas.push_back(dir + name);
-            }
-        } while (FindNextFile(h, &sr) != 0);
-        FindClose(h);
-    }
-#else
-    //to do add!
-
-#endif
-}
 //______________________________________________________________________________________
 OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     const char      *SOPClassUID,
@@ -196,8 +93,6 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
         SeriesInstanceUID.clear();
     }
 
-    //m_config->getstr
-    //
     OFHashValue path = CreateHashValue(StudyInstanceUID.c_str(), StudyInstanceUID.length());
     OFString hash_dir = longToString(path.first) + "/" + longToString(path.second);
     OFString temp_dir = "/Images/" + hash_dir + "/" + StudyInstanceUID;
@@ -217,7 +112,6 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
         if_iter++;
     }
 
-    //OFList<OFString> list_file_dcm;
     if (find && !find_dir.empty())
     {
         SearchDirFile(find_dir, "dcm", m_matchingFiles);
@@ -620,8 +514,6 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
     bzero(subImgSOPClass, sizeof(subImgSOPClass));
     bzero(subImgSOPInstance, sizeof(subImgSOPInstance));
 
-    //
-    //
     OFString ImgFileName;
     OFString strImgSOPClass, strImgSOPInstance;
     /* get DB response */
