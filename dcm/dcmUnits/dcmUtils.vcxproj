@@ -23,7 +23,7 @@
     <ClCompile Include="Units.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>dcmUtils</ProjectName>
+    <ProjectName>dcmUnits</ProjectName>
     <ProjectGuid>{F14C792D-901F-4D0D-8ECE-AC49BF915412}</ProjectGuid>
     <RootNamespace>dcmwlm</RootNamespace>
     <Keyword>Win32Proj</Keyword>
