@@ -257,17 +257,21 @@ void DcmQueryRetrieveMoveContext::addFailedUIDInstance(const char *sopInstance)
 {
     size_t len;
 
-    if (failedUIDs == NULL) {
-        if ((failedUIDs = (char*)malloc(DIC_UI_LEN + 1)) == NULL) {
+    if (failedUIDs == NULL)
+    {
+        if ((failedUIDs = (char*)malloc(DIC_UI_LEN + 1)) == NULL)
+        {
             DCMQRDB_ERROR("malloc failure: addFailedUIDInstance");
             return;
         }
         strcpy(failedUIDs, sopInstance);
     }
-    else {
+    else
+    {
         len = strlen(failedUIDs);
         if ((failedUIDs = (char*)realloc(failedUIDs,
-            (len + strlen(sopInstance) + 2))) == NULL) {
+            (len + strlen(sopInstance) + 2))) == NULL)
+        {
             DCMQRDB_ERROR("realloc failure: addFailedUIDInstance");
             return;
         }
@@ -611,7 +615,8 @@ void DcmQueryRetrieveMoveContext::buildFailedInstanceList(DcmDataset ** rspIds)
 {
     OFBool ok;
 
-    if (failedUIDs != NULL) {
+    if (failedUIDs != NULL)
+    {
         *rspIds = new DcmDataset();
         ok = DU_putStringDOElement(*rspIds, DCM_FailedSOPInstanceUIDList, failedUIDs);
         if (!ok)

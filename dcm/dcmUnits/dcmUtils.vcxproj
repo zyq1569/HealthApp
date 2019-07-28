@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\include\dcm\win32\dcmUnits\DcmConfig.cpp" />
     <ClCompile Include="HMariaDb.cpp" />
     <ClCompile Include="Units.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\dcm\win32\dcmUnits\DcmConfig.h" />
     <ClInclude Include="..\..\include\dcm\win32\dcmUnits\Units.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
