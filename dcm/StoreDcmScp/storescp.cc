@@ -66,9 +66,9 @@ END_EXTERN_C
 #include "dcmtk/oflog/fileap.h"
 
 #include "Units.h"
+#include "DcmConfig.h"
 //--------------------
 
-#include "dcmtk/dcmqrdb/dcmqrcnf.h"
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlstrans.h"
@@ -272,14 +272,15 @@ int main(int argc, char *argv[])
     OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
     OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
     opt_outputFilePath = currentAppPath + "/DCM_SAVE";
-    //DcmQueryRetrieveConfig config;
-    //OFString configdir = currentAppPath + "/config/dcmqrscp.cfg";;
-    //if (!config.init(configdir.c_str()))
-    //{
-    //    opt_outputFilePath = config.getStoreDir()->front();
+    DcmConfigFile config;
+    OFString configdir = currentAppPath + "/config/dcmqrscp.cfg";;
+    if (config.init(configdir.c_str()))
+    {
+        opt_outputFilePath = config.getStoreDir()->front();
     //    //OFLOG_INFO(dcmqrscpLogger, "bad config file: " << opt_configFileName);
-    //    //return 10;
-    //}
+    //    //return 10
+        int stop = 0;
+    }
     app.printMessage("log_dir:");
     app.printMessage(log_dir.c_str());
     if (!OFStandard::dirExists(log_dir))
