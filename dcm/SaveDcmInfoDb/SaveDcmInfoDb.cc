@@ -631,6 +631,20 @@ UINT64 CreateGUID()
     return *((UINT64*)uid);
 }
 
+OFString FormatePatienName(OFString name)
+{
+    OFString str(name);
+    int pos = name.find('^');
+    while (pos > -1)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find('^');
+    }
+    return str;
+}
 
 OFBool SaveDcmInfo2Db(OFString filename)
 {
@@ -680,7 +694,8 @@ OFBool SaveDcmInfo2Db(OFString filename)
             else if (str.find(PatientName) == 0)
             {
                 int sublen = PatientName.length();
-                StudyInfo.StudyPatientName = str.substr(sublen, str.length() - sublen - 1);
+                OFString temp = str.substr(sublen, str.length() - sublen - 1);
+                StudyInfo.StudyPatientName = FormatePatienName(temp);
             }
             if (str.find(PatientSex) == 0)
             {
@@ -728,7 +743,7 @@ OFBool SaveDcmInfo2Db(OFString filename)
         //OFCondition l_error = EC_Normal;
         try
         {
-            if (StudyInfo.StudyInstanceUID.length()< 1)
+            if (StudyInfo.StudyInstanceUID.length() < 1)
             {
                 OFLOG_ERROR(SaveDcmInfoDbLogger, "NO StudyInstanceUID filename:" + filename);
                 return OFFalse;
@@ -757,7 +772,7 @@ OFBool SaveDcmInfo2Db(OFString filename)
                 sprintf(uuid, "%llu", CreateGUID());
                 PatientIdentity = uuid;
                 querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
-                                                   PatientSex,PatientBirthday) value(";
+                                                                              PatientSex,PatientBirthday) value(";
                 querysql += PatientIdentity;
                 querysql += ",'";
                 querysql += StudyInfo.StudyPatientId;
@@ -796,7 +811,7 @@ OFBool SaveDcmInfo2Db(OFString filename)
                 sprintf(uuid, "%llu", CreateGUID());
                 OFString StudyIdentity = uuid;
                 OFString strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,\
-                                  StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState) value(";
+                                                                    StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState) value(";
                 strsql += StudyIdentity;
                 strsql += ",'";
                 strsql += StudyInfo.StudyID;
@@ -889,7 +904,7 @@ int main(int argc, char *argv[])
         list_file_ini.clear();
         SearchDirFile(ini_dir, "ini", list_file_ini);
         Sleep(2);
-        if (list_file_ini.size()>0)
+        if (list_file_ini.size() > 0)
         {
             OFListIterator(OFString) iter = list_file_ini.begin();
             OFListIterator(OFString) enditer = list_file_ini.end();
@@ -899,7 +914,7 @@ int main(int argc, char *argv[])
                 {
                     OFString filename;
                     OFStandard::getFilenameFromPath(filename, *iter);
-                    if (OFStandard::copyFile(*iter, ini_error_dir + "/" + filename),OFTrue)
+                    if (OFStandard::copyFile(*iter, ini_error_dir + "/" + filename), OFTrue)
                     {
                         OFStandard::deleteFile(*iter);
                     }

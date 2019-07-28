@@ -52,6 +52,9 @@ static const DB_FindAttr TbFindAttr[] =
     DB_FindAttr(DCM_StudyDate, STUDY_LEVEL, REQUIRED_KEY),
     DB_FindAttr(DCM_StudyTime, STUDY_LEVEL, REQUIRED_KEY),
     DB_FindAttr(DCM_StudyID, STUDY_LEVEL, REQUIRED_KEY),
+
+    DB_FindAttr(DCM_InstitutionName, STUDY_LEVEL, REQUIRED_KEY),
+
     DB_FindAttr(DCM_AccessionNumber, STUDY_LEVEL, REQUIRED_KEY),
     DB_FindAttr(DCM_ReferringPhysicianName, STUDY_LEVEL, OPTIONAL_KEY),
     DB_FindAttr(DCM_StudyDescription, STUDY_LEVEL, OPTIONAL_KEY),
@@ -66,7 +69,7 @@ static const DB_FindAttr TbFindAttr[] =
     DB_FindAttr(DCM_AdditionalPatientHistory, STUDY_LEVEL, OPTIONAL_KEY),
     DB_FindAttr(DCM_SeriesNumber, SERIE_LEVEL, REQUIRED_KEY),
     DB_FindAttr(DCM_SeriesInstanceUID, SERIE_LEVEL, UNIQUE_KEY),
-    DB_FindAttr(DCM_Modality, SERIE_LEVEL, OPTIONAL_KEY),
+    DB_FindAttr(DCM_ModalitiesInStudy/*DCM_Modality*/, SERIE_LEVEL, OPTIONAL_KEY),
     DB_FindAttr(DCM_InstanceNumber, IMAGE_LEVEL, REQUIRED_KEY),
     DB_FindAttr(DCM_SOPInstanceUID, IMAGE_LEVEL, UNIQUE_KEY)
 };
@@ -86,7 +89,6 @@ static int DB_TagSupported(DcmTagKey tag)
             return (OFTrue);
         }
     }
-
     return (OFFalse);
 }
 
@@ -156,7 +158,6 @@ static OFCondition DB_GetTagKeyAttr(DcmTagKey tag, DB_KEY_TYPE *keyAttr)
     else
         return (QR_EC_IndexDatabaseError);
 }
-
 
 OFCondition DB_lock(OFBool exclusive)
 {
@@ -256,9 +257,11 @@ static void InitRecord(IdxRecord *idx)
     idx->StudyID[0] = '\0';
     idx->param[RECORDIDX_StudyDescription].XTag = DCM_StudyDescription;
     idx->param[RECORDIDX_StudyDescription].ValueLength = LO_MAX_LENGTH;
+
     idx->StudyDescription[0] = '\0';
     idx->param[RECORDIDX_NameOfPhysiciansReadingStudy].XTag = DCM_NameOfPhysiciansReadingStudy;
     idx->param[RECORDIDX_NameOfPhysiciansReadingStudy].ValueLength = PN_MAX_LENGTH;
+
     idx->NameOfPhysiciansReadingStudy[0] = '\0';
     idx->param[RECORDIDX_AccessionNumber].XTag = DCM_AccessionNumber;
     idx->param[RECORDIDX_AccessionNumber].ValueLength = CS_MAX_LENGTH;
@@ -299,7 +302,7 @@ static void InitRecord(IdxRecord *idx)
     idx->param[RECORDIDX_SeriesInstanceUID].XTag = DCM_SeriesInstanceUID;
     idx->param[RECORDIDX_SeriesInstanceUID].ValueLength = UI_MAX_LENGTH;
     idx->SeriesInstanceUID[0] = '\0';
-    idx->param[RECORDIDX_Modality].XTag = DCM_Modality;
+    idx->param[RECORDIDX_Modality].XTag = DCM_ModalitiesInStudy/*DCM_Modality*/;
     idx->param[RECORDIDX_Modality].ValueLength = CS_MAX_LENGTH;
     idx->ImageNumber[0] = '\0';
     idx->param[RECORDIDX_ImageNumber].XTag = DCM_InstanceNumber;
@@ -334,7 +337,11 @@ static void InitRecord(IdxRecord *idx)
     idx->IssuerOfPatientID[0] = '\0';
     idx->param[RECORDIDX_SpecificCharacterSet].XTag = DCM_SpecificCharacterSet;
     idx->param[RECORDIDX_SpecificCharacterSet].ValueLength = CS_MAX_LENGTH * 8;
-    idx->SpecificCharacterSet[0] = '\0';
+    //*******
+    idx->InstitutionName[0] = '\0';
+    idx->param[RECORDIDX_InstitutionName].XTag = DCM_NameOfPhysiciansReadingStudy;
+    idx->param[RECORDIDX_InstitutionName].ValueLength = PN_MAX_LENGTH;
+
 }
 static void FinishRecord(IdxRecord *idx)
 {
@@ -376,6 +383,7 @@ static void FinishRecord(IdxRecord *idx)
     idx->param[RECORDIDX_PresentationLabel].PValueField = (char *)idx->PresentationLabel;
     idx->param[RECORDIDX_IssuerOfPatientID].PValueField = (char *)idx->IssuerOfPatientID;
     idx->param[RECORDIDX_SpecificCharacterSet].PValueField = (char *)idx->SpecificCharacterSet;
+    idx->param[RECORDIDX_InstitutionName].PValueField = (char *)idx->InstitutionName;
 }
 static void DB_IdxInitRecord(IdxRecord *idx, int linksOnly)
 {
@@ -416,9 +424,18 @@ static void DB_IdxInitRecord(IdxRecord *idx, int linksOnly)
         idx->StudyID[0] = '\0';
         idx->param[RECORDIDX_StudyDescription].XTag = DCM_StudyDescription;
         idx->param[RECORDIDX_StudyDescription].ValueLength = LO_MAX_LENGTH;
+
         idx->StudyDescription[0] = '\0';
         idx->param[RECORDIDX_NameOfPhysiciansReadingStudy].XTag = DCM_NameOfPhysiciansReadingStudy;
         idx->param[RECORDIDX_NameOfPhysiciansReadingStudy].ValueLength = PN_MAX_LENGTH;
+
+        //idx->InstanceDescription[0] = '\0';
+        //idx->param[RECORDIDX_InstanceDescription].XTag = //DCM_InstitutionName;
+        //idx->param[RECORDIDX_InstanceDescription].ValueLength = DESCRIPTION_MAX_LENGTH;
+        idx->InstitutionName[0] = '\0';
+        idx->param[RECORDIDX_InstitutionName].XTag = DCM_InstitutionName;
+        idx->param[RECORDIDX_InstitutionName].ValueLength = LO_MAX_LENGTH;
+
         idx->NameOfPhysiciansReadingStudy[0] = '\0';
         idx->param[RECORDIDX_AccessionNumber].XTag = DCM_AccessionNumber;
         idx->param[RECORDIDX_AccessionNumber].ValueLength = CS_MAX_LENGTH;
@@ -497,26 +514,26 @@ static void DB_IdxInitRecord(IdxRecord *idx, int linksOnly)
         idx->SpecificCharacterSet[0] = '\0';
 
         /////////////////////////
-        strcpy(idx->PatientBirthDate, "20190720");
-        strcpy(idx->PatientSex, "F");
-        strcpy(idx->PatientName, "Shen YuXiu");
-        strcpy(idx->PatientID, "46595");
-        strcpy(idx->PatientBirthTime, "154200");
+        //strcpy(idx->PatientBirthDate, "20190720");
+        //strcpy(idx->PatientSex, "F");
+        //strcpy(idx->PatientName, "Shen YuXiu");
+        //strcpy(idx->PatientID, "46595");
+        //strcpy(idx->PatientBirthTime, "154200");
 
-        strcpy(idx->OtherPatientIDs, "201907200001");
-        strcpy(idx->OtherPatientNames, "ceshi_name");
-        strcpy(idx->StudyDate, "20100301");
-        strcpy(idx->StudyTime, "154200");
+        //strcpy(idx->OtherPatientIDs, "201907200001");
+        //strcpy(idx->OtherPatientNames, "ceshi_name");
+        //strcpy(idx->StudyDate, "20100301");
+        //strcpy(idx->StudyTime, "154200");
 
-        strcpy(idx->StudyID, "20190720");
-        strcpy(idx->StudyDescription, "this is a test study one! ");
-        strcpy(idx->StudyInstanceUID, "1.2.392.200036.9116.2.6.1.48.1214245415.1267414711.906286");
-        strcpy(idx->PatientAge, "1");
-        strcpy(idx->SeriesNumber, "1");
-        strcpy(idx->SeriesInstanceUID, "1.2.276.0.179081.1207.1");
-        strcpy(idx->ImageNumber, "1");
-        strcpy(idx->SpecificCharacterSet, "ISO_IR 100");
-        strcpy(idx->Modality, "CT");
+        //strcpy(idx->StudyID, "20190720");
+        //strcpy(idx->StudyDescription, "this is a test study one! ");
+        //strcpy(idx->StudyInstanceUID, "1.2.392.200036.9116.2.6.1.48.1214245415.1267414711.906286");
+        //strcpy(idx->PatientAge, "1");
+        //strcpy(idx->SeriesNumber, "1");
+        //strcpy(idx->SeriesInstanceUID, "1.2.276.0.179081.1207.1");
+        //strcpy(idx->ImageNumber, "1");
+        //strcpy(idx->SpecificCharacterSet, "ISO_IR 100");
+        //strcpy(idx->Modality, "CT");
         ///////////////////////
     }
     idx->param[RECORDIDX_PatientBirthDate].PValueField = (char *)idx->PatientBirthDate;
@@ -557,6 +574,8 @@ static void DB_IdxInitRecord(IdxRecord *idx, int linksOnly)
     idx->param[RECORDIDX_PresentationLabel].PValueField = (char *)idx->PresentationLabel;
     idx->param[RECORDIDX_IssuerOfPatientID].PValueField = (char *)idx->IssuerOfPatientID;
     idx->param[RECORDIDX_SpecificCharacterSet].PValueField = (char *)idx->SpecificCharacterSet;
+    idx->param[RECORDIDX_InstitutionName].PValueField = (char *)idx->InstitutionName;
+
 }
 /********************
 **      Start find in Database
@@ -837,6 +856,43 @@ OFString ToDateTimeFormate(OFString datetime, OFString &date, OFString &time)
 
     return str;
 }
+
+OFString ToSearchDateTimeFormate(OFString datetime, OFString &StartDateTime, OFString &EndDateTime)
+{
+    OFString str(datetime);
+    if (str.length() < 1)
+    {
+        str.clear();
+        return str;
+    }
+    int pos = str.find('-');
+    if (pos < 1)
+    {
+        StartDateTime = str;
+        EndDateTime.clear();
+        return str;
+    }
+    int len = str.length();
+    OFString temp = str.substr(0, pos);
+    StartDateTime = temp;
+    temp = str.substr(pos + 1, len - pos);
+    EndDateTime = temp;
+    return (StartDateTime + EndDateTime);
+}
+OFString ToSearchName(OFString OrName)
+{
+    OFString str(OrName);
+    int pos = OrName.find('*');
+    while (pos > -1)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find('*');
+    }
+    return str;
+}
 OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     const char   *SOPClassUID, DcmDataset      *findRequestIdentifiers,
     DcmQueryRetrieveDatabaseStatus  *status)
@@ -883,12 +939,24 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     OFString PatientName;
     if (findRequestIdentifiers->findAndGetOFString(DCM_PatientName, PatientName).bad())
     {
-        PatientName.clear();
+        PatientName.clear();//*ceshi*
     }
-    OFString StudyDateStart, StudyDateEnd, Modality;
-    if (findRequestIdentifiers->findAndGetOFString(DCM_StudyDate, StudyDateStart).bad())
+    else
     {
-        StudyDateStart.clear();
+        PatientName = ToSearchName(PatientName);
+    }
+    OFString DateTime, StudyDateStart, StudyDateEnd, Modality;
+    if (findRequestIdentifiers->findAndGetOFString(DCM_StudyDate, DateTime).bad())
+    {
+        DateTime.clear();
+    }
+    else
+    {
+        DateTime = ToSearchDateTimeFormate(DateTime, StudyDateStart, StudyDateEnd);
+    }
+    if (findRequestIdentifiers->findAndGetOFString(DCM_ModalitiesInStudy, Modality).bad())
+    {
+        Modality.clear();
     }
     if (findRequestIdentifiers->findAndGetOFStringArray(DCM_SpecificCharacterSet, findRequestCharacterSet).bad())
     {
@@ -1058,8 +1126,21 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     sql += "s.StudyModality, s.AETitle from h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity ";
     if (!Modality.empty())
     {
-        sql = sql + "and s.StudyModality = '" + Modality + "'";
+        sql = sql + " and s.StudyModality = '" + Modality + "'";
     }
+    if (StudyDateStart.length() > 3)
+    {
+        sql = sql + " and s.StudyDateTime >= " + StudyDateStart;
+    }
+    if (StudyDateEnd.length() > 3)
+    {
+        sql = sql + " and s.StudyDateTime <= " + StudyDateEnd;
+    }
+    if (PatientName.length() > 1)
+    {
+        sql = sql + " and p.PatientName = '" + PatientName + "'";
+    }
+    sql = sql + ";";
     pMariaDb->query(sql.c_str());
     ResultSet * rs = pMariaDb->QueryResult();
     if (rs == NULL)
@@ -1077,7 +1158,12 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
             IdxRecord dbRecod;
             InitRecord(&dbRecod);
             std::string patienName, StudyDateTime, StudyInstanceUID, PatientID, StudyID, PatientBirthDate, StudyDescription;
+            std::string StudyModality; //
             //DcmDataset dataset;
+            if (rs->getValue(row_index, "StudyModality", StudyModality))
+            {
+                strcpy(dbRecod.Modality, StudyModality.c_str());
+            }
             if (rs->getValue(row_index, "StudyUID", StudyInstanceUID))
             {
                 strcpy(dbRecod.StudyInstanceUID, StudyInstanceUID.c_str());
@@ -1094,22 +1180,15 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
             {
                 strcpy(dbRecod.StudyID, StudyID.c_str());
             }
-            else
-            {
-            }
             if (rs->getValue(row_index, "PatientBirthday", PatientBirthDate))
             {
                 strcpy(dbRecod.PatientBirthDate, PatientBirthDate.c_str());
             }
-            else
-            {
-            }//PatientSex
+            //PatientSex
             if (rs->getValue(row_index, "InstitutionName", StudyDescription))
             {
                 strcpy(dbRecod.StudyDescription, StudyDescription.c_str());
-            }
-            else
-            {
+                strcpy(dbRecod.InstitutionName, StudyDescription.c_str());
             }
             if (rs->getValue(row_index, "StudyDateTime", StudyDateTime))
             {
@@ -1119,9 +1198,7 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
                 strcpy(dbRecod.StudyDate, date.c_str());
                 strcpy(dbRecod.StudyTime, time.c_str());
             }
-            else
-            {
-            }
+
             FinishRecord(&dbRecod);
             findResponseList = NULL;
             makeResponseList(findResponseList, findRequestList, &dbRecod);
@@ -1137,8 +1214,6 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
         return (EC_Normal);
     }
 }
-
-
 
 OFCondition cancelFindRequest(DcmQueryRetrieveDatabaseStatus *status)
 {
