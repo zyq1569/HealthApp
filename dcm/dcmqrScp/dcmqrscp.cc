@@ -91,7 +91,7 @@ END_EXTERN_C
 #include <direct.h>      /* for _mkdir() */
 #endif
 
-
+#include "Units.h"
 //--------------------
 
 static OFLogger dcmqrscpLogger = OFLog::getLogger("dcmtk.dcmqr.apps." OFFIS_CONSOLE_APPLICATION);
@@ -120,97 +120,6 @@ static void mangleAssociationProfileKey(OFString& key)
         }
         else key.erase(ui, 1);
     }
-}
-
-
-//验证目录是否存在。
-bool DirectoryExists(const OFString Dir)
-{
-    if (Dir == "")
-        return false;
-    int Code = GetFileAttributes(Dir.c_str());
-    return (Code != -1) && ((FILE_ATTRIBUTE_DIRECTORY & Code) != 0);
-}
-//在全路径文件名中提取文件路径。
-OFString ExtractFileDir(const OFString FileName)
-{
-    OFString tempstr;
-    int pos = FileName.find_last_of('/');
-    if (pos == -1)
-    {
-        return "";
-    }
-    tempstr = FileName.substr(0, pos);
-    return tempstr;
-    OFString str = OFStandard::getDirNameFromPath(tempstr, FileName);
-    return OFStandard::getDirNameFromPath(tempstr, FileName);
-}
-//创建一个新目录
-bool ForceDirectories(const OFString Dir)
-{
-    OFString path = ExtractFileDir(Dir);
-    if (!OFStandard::dirExists(path))
-    {
-        int len = path.size();
-        if (len > 1)
-        {
-            char  temp = path[path.size() - 1];
-            if (path[path.size() - 1] != ':')
-                ForceDirectories(path);
-        }
-    }
-    if (DirectoryExists(Dir) != true)
-    {
-        //if (::CreateDirectory(Dir.c_str(), NULL) == 0)
-#ifdef HAVE_WINDOWS_H
-        if (_mkdir(Dir.c_str()) == -1)
-#else
-        if (mkdir(Dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
-#endif
-        {
-            OFString msg;
-            msg = "CreateDirectory() failed with error %s,(%s)" + GetLastError() + Dir;
-            OFLOG_ERROR(dcmqrscpLogger, msg);
-            return false;
-        }
-    }
-    return true;
-}
-
-OFBool CreatDir(OFString dir)
-{
-    return ForceDirectories(dir);
-    if (!OFStandard::dirExists(dir))
-    {
-#ifdef HAVE_WINDOWS_H
-        if (_mkdir(dir.c_str()) == -1)
-#else
-        if (mkdir(dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
-#endif
-        {
-            OFLOG_ERROR(dcmqrscpLogger, "mkdir :" + dir + "  .error!");
-            return OFFalse;
-        }
-        else
-        {
-            return OFTrue;
-        }
-    }
-    return OFTrue;
-}
-OFString GetCurrWorkingDir()
-{
-    OFString strPath;
-#ifdef HAVE_WINDOWS_H
-    TCHAR szFull[_MAX_PATH];
-    //TCHAR szDrive[_MAX_DRIVE];
-    //TCHAR szDir[_MAX_DIR];
-    ::GetModuleFileName(NULL, szFull, sizeof(szFull) / sizeof(TCHAR));
-    strPath = OFString(szFull);
-#else
-    //to do add!
-#endif
-    return strPath;
 }
 
 //OFString ToDateTimeFormate(OFString datetime, OFString &date, OFString &time)

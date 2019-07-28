@@ -17,15 +17,7 @@
 #include "dcmtk/oflog/fileap.h"
 #include "Units.h"
 
-struct OFHashValue
-{
-    INT16 first;
-    INT16 second;
-    OFHashValue()
-    {
-        first = second = 0;
-    }
-};
+
 //!根据字符计算两个Hash数值
 OFHashValue CreateHashValue(const char * buffer, unsigned int length)
 {
@@ -63,6 +55,7 @@ OFHashValue CreateHashValue(const char * buffer, unsigned int length)
     hashvalue.second = value;
     return hashvalue;
 }
+
 unsigned long studyuid_hash(const char *str)
 {
     unsigned long hash = 32767;
@@ -75,7 +68,7 @@ unsigned long studyuid_hash(const char *str)
     return hash;
 }
 
-static OFString longToString(unsigned long i)
+OFString longToString(unsigned long i)
 {
     char numbuf[10240];
     sprintf(numbuf, "%d", i);
@@ -90,6 +83,7 @@ bool DirectoryExists(const OFString Dir)
     int Code = GetFileAttributes(Dir.c_str());
     return (Code != -1) && ((FILE_ATTRIBUTE_DIRECTORY & Code) != 0);
 }
+
 //在全路径文件名中提取文件路径。
 OFString ExtractFileDir(const OFString FileName)
 {
@@ -104,6 +98,7 @@ OFString ExtractFileDir(const OFString FileName)
     OFString str = OFStandard::getDirNameFromPath(tempstr, FileName);
     return OFStandard::getDirNameFromPath(tempstr, FileName);
 }
+
 //创建一个新目录
 bool ForceDirectories(const OFString Dir)
 {
@@ -157,6 +152,7 @@ OFBool CreatDir(OFString dir)
     }
     return OFTrue;
 }
+
 OFString GetCurrWorkingDir()
 {
     OFString strPath;
@@ -170,4 +166,142 @@ OFString GetCurrWorkingDir()
     //to do add!
 #endif
     return strPath;
+}
+
+//!根据字符计算两个Hash数值
+OFString AdjustDir(const OFString dir)
+{
+#ifdef HAVE_WINDOWS_H
+    OFString path = dir;
+    if (path == "")
+        return "";
+    if (path[path.length() - 1] != '\\')
+        path += "\\";
+    return path;
+#else
+    //to do add!
+
+#endif
+}
+//-----------------------------------------------------------------------------------
+//查找Dir目录下的扩展名为FileExt的内容，包含所有子级目录，如果FileExt为空表示查找所有文件
+void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> &datas, const bool Not, const int Count)
+{
+    if (datas.size() >= Count)
+    {
+        return;
+    }
+#ifdef HAVE_WINDOWS_H
+    OFString dir = AdjustDir(Dir);
+    if (dir == "")
+        return;
+    OFString pach = dir + "*.*";
+    WIN32_FIND_DATA sr;
+    HANDLE h;
+    if ((h = FindFirstFile(pach.c_str(), &sr)) != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            OFString name = sr.cFileName;
+            if ((sr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+            {
+                if (name != "." && name != "..")
+                {
+                    SearchDirFile(dir + name, FileExt, datas);
+                }
+            }
+            else
+            {
+                OFString temp;
+                if (FileExt == "")
+                    datas.push_back(dir + name);
+                else if (Not == false && OFStandard::toUpper(temp, FileExt) == OFStandard::toUpper(temp, name))
+                    datas.push_back(dir + name);
+                else if (Not == true && OFStandard::toUpper(temp, FileExt) != OFStandard::toUpper(temp, name))
+                    datas.push_back(dir + name);
+            }
+        }
+        while (FindNextFile(h, &sr) != 0);
+        FindClose(h);
+    }
+#else
+    //to do add!
+
+#endif
+}
+
+OFString ToDateTimeFormate(OFString datetime, OFString &date, OFString &time)
+{
+    OFString str(datetime);
+    if (str.length() < 1)
+    {
+        str.clear();
+        return str;
+    }
+    int pos = str.find('-');
+    while (pos > 0)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find('-');
+    }
+    pos = str.find(' ');
+    while (pos > 0)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find(' ');
+    }
+    pos = str.find(':');
+    while (pos > 0)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find(':');
+    }
+    date = str.substr(0, 8);
+    if ((str.length() - 8) > 5)
+    {
+        time = str.substr(8, str.length() - 8);
+        //if (time.length() > 10)
+        //{
+        //    time = time.substr(0, 10);
+        //}
+    }
+    else
+    {
+        time.clear();
+    }
+
+    return str;
+}
+
+OFString ToSearchDateTimeFormate(OFString datetime, OFString &StartDateTime, OFString &EndDateTime)
+{
+    OFString str(datetime);
+    if (str.length() < 1)
+    {
+        str.clear();
+        return str;
+    }
+    int pos = str.find('-');
+    if (pos < 1)
+    {
+        StartDateTime = str;
+        EndDateTime.clear();
+        return str;
+    }
+    int len = str.length();
+    OFString temp = str.substr(0, pos);
+    StartDateTime = temp;
+    temp = str.substr(pos + 1, len - pos);
+    EndDateTime = temp;
+
+    return (StartDateTime + EndDateTime);
 }

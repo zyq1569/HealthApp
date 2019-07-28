@@ -33,6 +33,8 @@
 
 //add mysql driver  后期需要将数据库的处理独立模块
 #include "HMariaDb.h"
+
+#include "Units.h"
 /*******************
 *    Is the specified tag supported
 */
@@ -805,80 +807,7 @@ OFCondition nextFindResponse(DB_ElementList* &findResponseList,
 //time = LDateTime(NULL);
 //return time;
 ////
-OFString ToDateTimeFormate(OFString datetime, OFString &date, OFString &time)
-{
-    OFString str(datetime);
-    if (str.length() < 1)
-    {
-        str.clear();
-        return str;
-    }
-    int pos = str.find('-');
-    while (pos > 0)
-    {
-        int len = str.length();
-        OFString temp = str.substr(0, pos);
-        temp = temp + str.substr(pos + 1, len - pos);
-        str = temp;
-        pos = str.find('-');
-    }
-    pos = str.find(' ');
-    while (pos > 0)
-    {
-        int len = str.length();
-        OFString temp = str.substr(0, pos);
-        temp = temp + str.substr(pos + 1, len - pos);
-        str = temp;
-        pos = str.find(' ');
-    }
-    pos = str.find(':');
-    while (pos > 0)
-    {
-        int len = str.length();
-        OFString temp = str.substr(0, pos);
-        temp = temp + str.substr(pos + 1, len - pos);
-        str = temp;
-        pos = str.find(':');
-    }
-    date = str.substr(0, 8);
-    if ((str.length() - 8) > 5)
-    {
-        time = str.substr(8, str.length() - 8);
-        //if (time.length() > 10)
-        //{
-        //    time = time.substr(0, 10);
-        //}
-    }
-    else
-    {
-        time.clear();
-    }
 
-    return str;
-}
-
-OFString ToSearchDateTimeFormate(OFString datetime, OFString &StartDateTime, OFString &EndDateTime)
-{
-    OFString str(datetime);
-    if (str.length() < 1)
-    {
-        str.clear();
-        return str;
-    }
-    int pos = str.find('-');
-    if (pos < 1)
-    {
-        StartDateTime = str;
-        EndDateTime.clear();
-        return str;
-    }
-    int len = str.length();
-    OFString temp = str.substr(0, pos);
-    StartDateTime = temp;
-    temp = str.substr(pos + 1, len - pos);
-    EndDateTime = temp;
-    return (StartDateTime + EndDateTime);
-}
 OFString ToSearchName(OFString OrName)
 {
     OFString str(OrName);
@@ -1121,7 +1050,7 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
 
 #endif
     }
-    int count;//数据库查询的记录条数
+    //int count;//数据库查询的记录条数
     OFString sql = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,";
     sql += "s.StudyID, s.StudyUID, s.StudyDateTime,s.InstitutionName,";
     sql += "s.StudyModality, s.AETitle from h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity ";
