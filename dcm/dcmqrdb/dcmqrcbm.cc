@@ -178,12 +178,11 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     DcmDataset      *moveRequestIdentifiers,
     DcmQueryRetrieveDatabaseStatus  *status)
 {
-    //
-    OFString PatientName;
-    if (moveRequestIdentifiers->findAndGetOFString(DCM_PatientName, PatientName).bad())
-    {
-        PatientName.clear();
-    }
+    //OFString PatientName;
+    //if (moveRequestIdentifiers->findAndGetOFString(DCM_PatientName, PatientName).bad())
+    //{
+    //    PatientName.clear();
+    //}
     OFString StudyInstanceUID;
     if (moveRequestIdentifiers->findAndGetOFString(DCM_StudyInstanceUID, StudyInstanceUID).bad())
     {
@@ -196,7 +195,6 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     {
         SeriesInstanceUID.clear();
     }
-    OFString storedir;
 
     //m_config->getstr
     //
@@ -229,13 +227,6 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
         status->setStatus(STATUS_Success);
         return EC_Normal;
     }
-    //OFList<OFString> *dir_list =  m_config->getStoreDir();
-    //OFString str = "E:\\Tool\\TestDcm\\Shen YuXiu\\1.2.392.200036.9116.2.6.1.48.1214245415.1267415086.116091.dcm";
-    //m_matchingFiles.push_back(str);
-    //str = "E:\\Tool\\TestDcm\\Shen YuXiu\\1.2.392.200036.9116.2.6.1.48.1214245415.1267415086.69722.dcm";
-    //m_matchingFiles.push_back(str);
-    //str = "E:\\Tool\\TestDcm\\Shen YuXiu\\1.2.392.200036.9116.2.6.1.48.1214245415.1267415085.761836.dcm";
-    //m_matchingFiles.push_back(str);
 
     if (m_matchingFiles.size() > 0)
     {

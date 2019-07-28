@@ -893,6 +893,7 @@ OFString ToSearchName(OFString OrName)
     }
     return str;
 }
+
 OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     const char   *SOPClassUID, DcmDataset      *findRequestIdentifiers,
     DcmQueryRetrieveDatabaseStatus  *status)
@@ -1198,7 +1199,6 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
                 strcpy(dbRecod.StudyDate, date.c_str());
                 strcpy(dbRecod.StudyTime, time.c_str());
             }
-
             FinishRecord(&dbRecod);
             findResponseList = NULL;
             makeResponseList(findResponseList, findRequestList, &dbRecod);
