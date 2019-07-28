@@ -65,6 +65,9 @@ END_EXTERN_C
 //-------add add 201806
 #include "dcmtk/oflog/fileap.h"
 //--------------------
+
+#include "dcmtk/dcmqrdb/dcmqrcnf.h"
+
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlstrans.h"
 #include "dcmtk/dcmtls/tlslayer.h"
@@ -236,6 +239,7 @@ extern "C" void sigChildHandler(int)
 OFBool Accept_NotMatchSOPClass = OFTrue;
 #define TEST_STORE  //line:2599 考虑存储空间有限，直接删除store 服务收到的dcm文件
 //--------------------------
+
 struct OFHashValue
 {
     INT16 first;
@@ -419,6 +423,14 @@ int main(int argc, char *argv[])
     OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
     OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
     opt_outputFilePath = currentAppPath + "/DCM_SAVE";
+    //DcmQueryRetrieveConfig config;
+    //OFString configdir = currentAppPath + "/config/dcmqrscp.cfg";;
+    //if (!config.init(configdir.c_str()))
+    //{
+    //    opt_outputFilePath = config.getStoreDir()->front();
+    //    //OFLOG_INFO(dcmqrscpLogger, "bad config file: " << opt_configFileName);
+    //    //return 10;
+    //}
     app.printMessage("log_dir:");
     app.printMessage(log_dir.c_str());
     if (!OFStandard::dirExists(log_dir))

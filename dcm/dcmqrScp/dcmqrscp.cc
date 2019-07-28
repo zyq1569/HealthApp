@@ -289,7 +289,7 @@ int main(int argc, char *argv[])
         CreatDir(log_dir);
     }
 
-    OFString logfilename = log_dir + "/DcmStoreSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
+    OFString logfilename = log_dir + "/DcmQueryRetrieveSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
 
     OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
     dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(logfilename, STD_NAMESPACE ios::app));
@@ -1041,7 +1041,7 @@ int main(int argc, char *argv[])
 #endif
             app.checkValue(cmd.getValueAndCheckMinMax(compressionLevel, 0, 9));
             dcmZlibCompressionLevel.set(OFstatic_cast(int, compressionLevel));
-    }
+        }
 #endif
     }
 
@@ -1112,7 +1112,7 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--transliterate"))
     {
         characterSetOptions.conversionFlags |= DCMTypes::CF_transliterate;
-}
+    }
     if (cmd.findOption("--discard-illegal"))
     {
         characterSetOptions.conversionFlags |= DCMTypes::CF_discardIllegal;
@@ -1217,4 +1217,4 @@ int main(int argc, char *argv[])
     OFStandard::shutdownNetwork();
 
     return 0;
-        }
+}
