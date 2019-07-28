@@ -112,11 +112,25 @@ enum DB_QUERY_CLASS
 
 struct DCMTK_DCMQRDB_EXPORT DB_SerializedTagKey
 {
-    inline DB_SerializedTagKey() {}
-    inline DB_SerializedTagKey(const DcmTagKey& rhs) { *this = rhs; }
-    inline DB_SerializedTagKey& operator=(const DcmTagKey& tk) { key[0] = tk.getGroup(); key[1] = tk.getElement(); return *this; }
-    inline operator DcmTagKey() const { return DcmTagKey( key[0], key[1] ); }
-    inline bool operator==(const DB_SerializedTagKey& rhs) const { return key[0] == rhs.key[0] && key[1] == rhs.key[1]; }
+    inline DB_SerializedTagKey()
+    {
+    }
+    inline DB_SerializedTagKey(const DcmTagKey& rhs)
+    {
+        *this = rhs;
+    }
+    inline DB_SerializedTagKey& operator=(const DcmTagKey& tk)
+    {
+        key[0] = tk.getGroup(); key[1] = tk.getElement(); return *this;
+    }
+    inline operator DcmTagKey() const
+    {
+        return DcmTagKey(key[0], key[1]);
+    }
+    inline bool operator==(const DB_SerializedTagKey& rhs) const
+    {
+        return key[0] == rhs.key[0] && key[1] == rhs.key[1];
+    }
     Uint16 key[2];
 };
 
@@ -124,14 +138,23 @@ struct DCMTK_DCMQRDB_EXPORT DB_SerializedTagKey
 
 struct DCMTK_DCMQRDB_EXPORT DB_SerializedCharPtr
 {
-    inline DB_SerializedCharPtr(char* p) { ptr.p = p; }
-    inline DB_SerializedCharPtr& operator=(char* p) { ptr.p = p; return *this; }
-    inline operator char*() const { return ptr.p; }
+    inline DB_SerializedCharPtr(char* p)
+    {
+        ptr.p = p;
+    }
+    inline DB_SerializedCharPtr& operator=(char* p)
+    {
+        ptr.p = p; return *this;
+    }
+    inline operator char*() const
+    {
+        return ptr.p;
+    }
     union
     {
         char* p;
         Uint64 placeholder;
-    } ptr ;
+    } ptr;
 };
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
@@ -146,13 +169,13 @@ public:
     DB_SmallDcmElmt();
 
     /// pointer to the value field
-    DB_SerializedCharPtr PValueField ;
+    DB_SerializedCharPtr PValueField;
 
     /// value length in bytes
-    Uint32 ValueLength ;
+    Uint32 ValueLength;
 
     /// attribute tag
-    DB_SerializedTagKey XTag ;
+    DB_SerializedTagKey XTag;
 
 private:
     /// private undefined copy constructor
@@ -169,13 +192,13 @@ private:
 struct DCMTK_DCMQRDB_EXPORT DB_ElementList
 {
     /// default constructor
-    DB_ElementList(): elem(), next(NULL), utf8Value() {}
+    DB_ElementList() : elem(), next(NULL), utf8Value() {}
 
     /// current list element
-    DB_SmallDcmElmt elem ;
+    DB_SmallDcmElmt elem;
 
     /// pointer to next in list
-    struct DB_ElementList *next ;
+    struct DB_ElementList *next;
 
     /// pointer to first in list
     struct DB_ElementList *first;
@@ -184,7 +207,7 @@ struct DCMTK_DCMQRDB_EXPORT DB_ElementList
     struct DB_ElementList *last;
 
     /// UTF-8 cache
-    OFoptional<OFString> utf8Value ;
+    OFoptional<OFString> utf8Value;
 
 private:
     /// private undefined copy constructor
@@ -197,70 +220,72 @@ private:
 
 struct DCMTK_DCMQRDB_EXPORT DB_UidList
 {
-    char *patient ;
-    char *study ;
-    char *serie ;
-    char *image ;
-    struct DB_UidList *next ;
+    char *patient;
+    char *study;
+    char *serie;
+    char *image;
+    struct DB_UidList *next;
 };
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
 struct DCMTK_DCMQRDB_EXPORT DB_CounterList
 {
-    int idxCounter ;
-    struct DB_CounterList *next ;
+    int idxCounter;
+    struct DB_CounterList *next;
 };
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
 struct DCMTK_DCMQRDB_EXPORT DB_FindAttr
 {
-    DcmTagKey tag ;
-    DB_LEVEL level ;
-    DB_KEY_TYPE keyAttr ;
+    DcmTagKey tag;
+    DB_LEVEL level;
+    DB_KEY_TYPE keyAttr;
 
     /* to passify some C++ compilers */
     DB_FindAttr(const DcmTagKey& t, DB_LEVEL l, DB_KEY_TYPE kt)
-        : tag(t), level(l), keyAttr(kt) { }
+        : tag(t), level(l), keyAttr(kt)
+    {
+    }
 };
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
 struct DCMTK_DCMQRDB_EXPORT DB_Private_Handle
 {
-    int pidx ;
-    OFString findRequestCharacterSet ;
-    DcmSpecificCharacterSet findRequestConverter ;
-    DB_ElementList *findRequestList ;
-    DB_ElementList *findResponseList ;
-    DB_LEVEL queryLevel ;
-    char indexFilename[DBC_MAXSTRING+1] ;
-    char storageArea[DBC_MAXSTRING+1] ;
-    long maxBytesPerStudy ;
-    long maxStudiesAllowed ;
-    int idxCounter ;
-    DB_CounterList *moveCounterList ;
-    int NumberRemainOperations ;
-    DB_QUERY_CLASS rootLevel ;
-    DB_UidList *uidList ;
+    int pidx;
+    OFString findRequestCharacterSet;
+    DcmSpecificCharacterSet findRequestConverter;
+    DB_ElementList *findRequestList;
+    DB_ElementList *findResponseList;
+    DB_LEVEL queryLevel;
+    char indexFilename[DBC_MAXSTRING + 1];
+    char storageArea[DBC_MAXSTRING + 1];
+    long maxBytesPerStudy;
+    long maxStudiesAllowed;
+    int idxCounter;
+    DB_CounterList *moveCounterList;
+    int NumberRemainOperations;
+    DB_QUERY_CLASS rootLevel;
+    DB_UidList *uidList;
 
     DB_Private_Handle()
-    : pidx(0)
-    , findRequestCharacterSet()
-    , findRequestConverter()
-    , findRequestList(NULL)
-    , findResponseList(NULL)
-    , queryLevel(STUDY_LEVEL)
-//  , indexFilename()
-//  , storageArea()
-    , maxBytesPerStudy(0)
-    , maxStudiesAllowed(0)
-    , idxCounter(0)
-    , moveCounterList(NULL)
-    , NumberRemainOperations(0)
-    , rootLevel(STUDY_ROOT)
-    , uidList(NULL)
+        : pidx(0)
+        , findRequestCharacterSet()
+        , findRequestConverter()
+        , findRequestList(NULL)
+        , findResponseList(NULL)
+        , queryLevel(STUDY_LEVEL)
+        //  , indexFilename()
+        //  , storageArea()
+        , maxBytesPerStudy(0)
+        , maxStudiesAllowed(0)
+        , idxCounter(0)
+        , moveCounterList(NULL)
+        , NumberRemainOperations(0)
+        , rootLevel(STUDY_ROOT)
+        , uidList(NULL)
     {
     }
 };
@@ -274,25 +299,25 @@ struct DCMTK_DCMQRDB_EXPORT DB_Private_Handle
 struct DCMTK_DCMQRDB_EXPORT StudyDescRecord
 {
     /// Study Instance UID of the study described by this record
-    char StudyInstanceUID [UI_MAX_LENGTH+1] ;
+    char StudyInstanceUID[UI_MAX_LENGTH + 1];
 
     /// combined size (in bytes) of all images of this study in the database
-    Uint32 StudySize ;
+    Uint32 StudySize;
 
     /// timestamp for last update of this study. Format: output of time(2) converted to double.
-    double LastRecordedDate ;
+    double LastRecordedDate;
 
     /// number of images of this study in the database
-    Uint32 NumberofRegistratedImages ;
+    Uint32 NumberofRegistratedImages;
 };
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
 struct DCMTK_DCMQRDB_EXPORT ImagesofStudyArray
 {
-    Uint32 idxCounter ;
-    double RecordedDate ;
-    Uint32 ImageSize ;
+    Uint32 idxCounter;
+    double RecordedDate;
+    Uint32 ImageSize;
 };
 
 
@@ -344,8 +369,10 @@ struct DCMTK_DCMQRDB_EXPORT ImagesofStudyArray
 #define RECORDIDX_PresentationLabel              35
 #define RECORDIDX_IssuerOfPatientID              36
 #define RECORDIDX_SpecificCharacterSet           37
+#define RECORDIDX_InstitutionName                38
 
-#define NBPARAMETERS                             38
+
+#define NBPARAMETERS                             39
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
@@ -358,64 +385,66 @@ struct DCMTK_DCMQRDB_EXPORT IdxRecord
     /// default constructor
     IdxRecord();
 
-    char    filename                        [DBC_MAXSTRING+1] ;
-    char    SOPClassUID                     [UI_MAX_LENGTH+1] ;
-    double  RecordedDate ;
-    Uint32  ImageSize ;
+    char    filename[DBC_MAXSTRING + 1];
+    char    SOPClassUID[UI_MAX_LENGTH + 1];
+    double  RecordedDate;
+    Uint32  ImageSize;
 
-    DB_SmallDcmElmt param                   [NBPARAMETERS] ;
+    DB_SmallDcmElmt param[NBPARAMETERS];
 
-    char    PatientBirthDate                [DA_MAX_LENGTH+1] ;
-    char    PatientSex                      [CS_MAX_LENGTH+1] ;
-    char    PatientName                     [PN_MAX_LENGTH+1] ;
-    char    PatientID                       [LO_MAX_LENGTH+1] ;
-    char    PatientBirthTime                [TM_MAX_LENGTH+1] ;
-    char    OtherPatientIDs                 [LO_MAX_LENGTH+1] ;
-    char    OtherPatientNames               [PN_MAX_LENGTH+1] ;
-    char    EthnicGroup                     [SH_MAX_LENGTH+1] ;
+    char    PatientBirthDate[DA_MAX_LENGTH + 1];
+    char    PatientSex[CS_MAX_LENGTH + 1];
+    char    PatientName[PN_MAX_LENGTH + 1];
+    char    PatientID[LO_MAX_LENGTH + 1];
+    char    PatientBirthTime[TM_MAX_LENGTH + 1];
+    char    OtherPatientIDs[LO_MAX_LENGTH + 1];
+    char    OtherPatientNames[PN_MAX_LENGTH + 1];
+    char    EthnicGroup[SH_MAX_LENGTH + 1];
 
-    char    StudyDate                       [DA_MAX_LENGTH+1] ;
-    char    StudyTime                       [TM_MAX_LENGTH+1] ;
-    char    StudyID                         [CS_MAX_LENGTH+1] ;
-    char    StudyDescription                [LO_MAX_LENGTH+1] ;
-    char    NameOfPhysiciansReadingStudy    [PN_MAX_LENGTH+1] ;
+    char    StudyDate[DA_MAX_LENGTH + 1];
+    char    StudyTime[TM_MAX_LENGTH + 1];
+    char    StudyID[CS_MAX_LENGTH + 1];
+    char    StudyDescription[LO_MAX_LENGTH + 1];
+    char    NameOfPhysiciansReadingStudy[PN_MAX_LENGTH + 1];
 
-    char    AccessionNumber                 [CS_MAX_LENGTH+1] ;
-    char    ReferringPhysicianName          [PN_MAX_LENGTH+1] ;
-    char    ProcedureDescription            [LO_MAX_LENGTH+1] ;
-    char    AttendingPhysiciansName         [PN_MAX_LENGTH+1] ;
-    char    StudyInstanceUID                [UI_MAX_LENGTH+1] ;
-    char    OtherStudyNumbers               [IS_MAX_LENGTH+1] ;
-    char    AdmittingDiagnosesDescription   [LO_MAX_LENGTH+1] ;
-    char    PatientAge                      [AS_MAX_LENGTH+1] ;
-    char    PatientSize                     [DS_MAX_LENGTH+1] ;
-    char    PatientWeight                   [DS_MAX_LENGTH+1] ;
-    char    Occupation                      [SH_MAX_LENGTH+1] ;
+    char    AccessionNumber[CS_MAX_LENGTH + 1];
+    char    ReferringPhysicianName[PN_MAX_LENGTH + 1];
+    char    ProcedureDescription[LO_MAX_LENGTH + 1];
+    char    AttendingPhysiciansName[PN_MAX_LENGTH + 1];
+    char    StudyInstanceUID[UI_MAX_LENGTH + 1];
+    char    OtherStudyNumbers[IS_MAX_LENGTH + 1];
+    char    AdmittingDiagnosesDescription[LO_MAX_LENGTH + 1];
+    char    PatientAge[AS_MAX_LENGTH + 1];
+    char    PatientSize[DS_MAX_LENGTH + 1];
+    char    PatientWeight[DS_MAX_LENGTH + 1];
+    char    Occupation[SH_MAX_LENGTH + 1];
 
-    char    SeriesNumber                    [IS_MAX_LENGTH+1] ;
-    char    SeriesInstanceUID               [UI_MAX_LENGTH+1] ;
-    char    Modality                        [CS_MAX_LENGTH+1] ;
+    char    SeriesNumber[IS_MAX_LENGTH + 1];
+    char    SeriesInstanceUID[UI_MAX_LENGTH + 1];
+    char    Modality[CS_MAX_LENGTH + 1];
 
-    char    ImageNumber                     [IS_MAX_LENGTH+1] ;
-    char    SOPInstanceUID                  [UI_MAX_LENGTH+1] ;
+    char    ImageNumber[IS_MAX_LENGTH + 1];
+    char    SOPInstanceUID[UI_MAX_LENGTH + 1];
 
-    char    SeriesDate                      [DA_MAX_LENGTH+1] ;
-    char    SeriesTime                      [TM_MAX_LENGTH+1] ;
-    char    SeriesDescription               [LO_MAX_LENGTH+1] ;
-    char    ProtocolName                    [LO_MAX_LENGTH+1] ;
-    char    OperatorsName                   [PN_MAX_LENGTH+1] ;
-    char    PerformingPhysicianName         [PN_MAX_LENGTH+1] ;
-    char    PresentationLabel               [CS_LABEL_MAX_LENGTH+1] ;
-    char    IssuerOfPatientID               [LO_MAX_LENGTH+1] ;
+    char    SeriesDate[DA_MAX_LENGTH + 1];
+    char    SeriesTime[TM_MAX_LENGTH + 1];
+    char    SeriesDescription[LO_MAX_LENGTH + 1];
+    char    ProtocolName[LO_MAX_LENGTH + 1];
+    char    OperatorsName[PN_MAX_LENGTH + 1];
+    char    PerformingPhysicianName[PN_MAX_LENGTH + 1];
+    char    PresentationLabel[CS_LABEL_MAX_LENGTH + 1];
+    char    IssuerOfPatientID[LO_MAX_LENGTH + 1];
 
     char    hstat;
 
     // Not related to any particular DICOM attribute !
-    char    InstanceDescription             [DESCRIPTION_MAX_LENGTH+1] ;
+    char    InstanceDescription[DESCRIPTION_MAX_LENGTH + 1];
 
     // Specific Character Set, support for VM ~ 8 (depending on the
     // actual length of the used DTs)
-    char    SpecificCharacterSet            [CS_MAX_LENGTH*8+1] ;
+    char    SpecificCharacterSet[CS_MAX_LENGTH * 8 + 1];
+
+    char    InstitutionName[DESCRIPTION_MAX_LENGTH + 1];
 
 private:
     /* undefined */ IdxRecord(const IdxRecord& copy);
