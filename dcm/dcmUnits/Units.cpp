@@ -3,7 +3,6 @@
 //#include "dcmtk/oflog/fileap.h"
 #include "dcmtk/oflog/oflog.h"
 //--------------------
-#include "mysql.h" 
 #include <iostream>
 #include <string>
 #include <vector>
@@ -14,7 +13,9 @@
 #ifdef HAVE_WINDOWS_H
 #include <direct.h>      /* for _mkdir() */
 #endif
+
 #include "dcmtk/oflog/fileap.h"
+#include "Units.h"
 
 struct OFHashValue
 {
