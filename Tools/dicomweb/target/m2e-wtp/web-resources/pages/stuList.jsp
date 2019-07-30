@@ -57,7 +57,7 @@
 			<td><%=stu.getPatientSex()%></td>
 			<td><%=stu.getPatientBirthday()%></td>
 			<td><%=stu.getStudyModality()%></td>
-			<td><%=stu.getInstitutionName()%></td>
+			<td><%=stu.getStudyDescription()%></td>
 			<td><a
 				href="stuDetail.jsp?StudyIdentity=<%=stu.getStudyIdentity()%>&PatientID=<%=stu.getPatientID()%>">查看&nbsp;&nbsp;</a>
 				<a

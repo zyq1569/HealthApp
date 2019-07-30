@@ -70,7 +70,7 @@ type="text/javascript">
 			</tr>
 			<tr>
 				<td>检查内容：</td>
-				<td><textarea name="InstitutionName" cols="40" rows="6"><%=stu.getInstitutionName()%></textarea></td>
+				<td><textarea name="InstitutionName" cols="40" rows="6"><%=stu.getStudyDescription()%></textarea></td>
 			</tr>
 			<tr>
 			<td>
