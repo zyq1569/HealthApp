@@ -43,9 +43,10 @@ public class addStudy extends HttpServlet {
 		String PatientBirthday = request.getParameter("PatientBirthday");// Integer.parseInt(
 		String PatientID = request.getParameter("PatientID");
 		String PatientTelNumber = request.getParameter("PatientTelNumber");
-		String StudyDataTime = request.getParameter("StudyDataTime");
+		
+		String ScheduledDateTime = request.getParameter("ScheduledDateTime");
 		String StudyModality = request.getParameter("StudyModality");
-		String InstitutionName = request.getParameter("InstitutionName");
+		String StudyDescription = request.getParameter("StudyDescription");
 		String StudyIdentity = request.getParameter("StudyIdentity");// Integer.parseInt
 
 
@@ -57,8 +58,8 @@ public class addStudy extends HttpServlet {
 		stu.setPatientTelNumber(PatientTelNumber);
 		stu.setPatientID(PatientID);
 		stu.setStudyModality(StudyModality );
-		stu.setInstitutionName(InstitutionName);
-		stu.setStudyDateTime(StudyDataTime); 
+		stu.setStudyDescription(StudyDescription);
+		stu.setScheduledDateTime(ScheduledDateTime); 
 		stu.setStudyIdentity(StudyIdentity);
 
 		StudyService studyService = new StudyServiceimp();

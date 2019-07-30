@@ -45,7 +45,7 @@
 			</tr>
 			<tr>
 				<td>检查日期：</td>
-				<td><input type="text" name="StudyDataTime"></td>
+				<td><input type="text" name="ScheduledDateTime"></td>
 			</tr>
 						<tr>
 				<td>身份證ID：</td>
@@ -65,7 +65,7 @@
 			</tr>
 			<tr>
 				<td>检查内容：</td>
-				<td><textarea name="InstitutionName" cols="40" rows="6"></textarea></td>
+				<td><textarea name="StudyDescription" cols="40" rows="6"></textarea></td>
 			</tr>
 			<tr>
 				<td colspan="2" style="text-align: center"><input type="submit"
