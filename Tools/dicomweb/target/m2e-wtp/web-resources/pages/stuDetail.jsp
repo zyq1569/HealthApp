@@ -50,11 +50,11 @@
 		</tr>
 		<tr>
 			<td>检查时间：</td>
-			<td>${study.getStudyDateTime()}</td>
+			<td>${study.getScheduledDateTime()}</td>
 		</tr>		
 		<tr>
 			<td>检查内容：</td>
-			<td>${study.getInstitutionName() }</td>
+			<td>${study.getStudyDescription() }</td>
 		</tr>
 
 	</table>
