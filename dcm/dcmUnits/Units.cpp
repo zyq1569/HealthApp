@@ -229,7 +229,65 @@ void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> 
 
 #endif
 }
+OFString ToDateFormate(OFString date)
+{
+    OFString str(date);
+    if (str.length() < 1)
+    {
+        str.clear();
+        return str;
+    }
+    int pos = str.find('-');
+    while (pos > -1)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find('-');
+    }
+    return str;
+}
 
+
+OFString DbDateTimeToDateTimeFormate(OFString datetime, OFString &date, OFString &time)
+{
+    OFString str(datetime);
+    if (str.length() < 1)
+    {
+        str.clear();
+        return str;
+    }
+    int pos = str.find('-');
+    while (pos > -1)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find('-');
+    }
+    pos = str.find(' ');
+    while (pos > 0)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find(' ');
+    }
+
+    date = str.substr(0, 8);
+    if ((str.length() - 8) > 5)
+    {
+        time = str.substr(8, str.length() - 8);
+    }
+    else
+    {
+        time.clear();
+    }
+    return str;
+}
 OFString ToDateTimeFormate(OFString datetime, OFString &date, OFString &time)
 {
     OFString str(datetime);
@@ -239,7 +297,7 @@ OFString ToDateTimeFormate(OFString datetime, OFString &date, OFString &time)
         return str;
     }
     int pos = str.find('-');
-    while (pos > 0)
+    while (pos > -1)
     {
         int len = str.length();
         OFString temp = str.substr(0, pos);
