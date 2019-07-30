@@ -16,12 +16,13 @@ public class Study
 	private String PatientBirthday;
 	private String PatientTelNumber;
 	
-	private String StudyIdentity;
+	private String StudyOrderIdentity;
 	private String StudyID;
 	private String StudyUID;
-	private String StudyDateTime;
-	private String InstitutionName;
+	private String ScheduledDateTime;
+	private String StudyDescription;
 	private String StudyModality;
+	private String AETitle;
 	static String UID = "1.2.826.0.1.3680043.9.7604.";
 	
 	public String creatPatientIdentity()	{
@@ -47,22 +48,22 @@ public class Study
 		long l = System.currentTimeMillis();
 		//new日期对象
 		Date date = new Date(l);
-		uid = dateFormat.format(date) + Long.toUnsignedString(System.currentTimeMillis());
+		uid = dateFormat.format(date) + Long.toUnsignedString(System.currentTimeMillis()).substring(0, 6);
 		return  UID + uid;
 	}
 	
 	public String getStudyIdentity() {
-		return StudyIdentity;
+		return StudyOrderIdentity;
 	}
-	public void setStudyIdentity(String StudyIdentity) {
-		this.StudyIdentity = StudyIdentity;
+	public void setStudyIdentity(String StudyOrderIdentity) {
+		this.StudyOrderIdentity = StudyOrderIdentity;
 	}
 	
-	public String getStudyDateTime() {
-		return StudyDateTime;
+	public String getScheduledDateTime() {
+		return ScheduledDateTime;
 	}
-	public void setStudyDateTime(String StudyDateTime) {
-		this.StudyDateTime = StudyDateTime;
+	public void setScheduledDateTime(String ScheduledDateTime) {
+		this.ScheduledDateTime = ScheduledDateTime;
 	}
 	
 	public String getStudyUID() {
@@ -72,11 +73,11 @@ public class Study
 		this.StudyUID = StudyUID;
 	}
 	//
-	public String getInstitutionName() {
-		return InstitutionName;
+	public String getStudyDescription() {
+		return StudyDescription;
 	}
-	public void setInstitutionName(String InstitutionName) {
-		this.InstitutionName = InstitutionName;
+	public void setStudyDescription(String StudyDescription) {
+		this.StudyDescription = StudyDescription;
 	}
 	
 	public String getStudyModality() {
@@ -86,6 +87,12 @@ public class Study
 		this.StudyModality = StudyModality;
 	}
 	
+	public String getAETitle() {
+		return AETitle;
+	}
+	public void setAETitle(String AETitle) {
+		this.AETitle = AETitle;
+	}
 	//
 	public String getStudyID() {
 		return StudyID;

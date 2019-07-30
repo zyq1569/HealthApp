@@ -19,7 +19,7 @@ public class StudyDaoimp extends BaseDao implements StudyDao {
 		 * + "from h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity";
 		 */
 		String sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber,s.StudyID "
-				+ ",s.StudyIdentity,s.StudyDateTime,s.InstitutionName, s.StudyModality from h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity";
+				+ ",s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDescription, s.StudyModality from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity";
 		Object[] params = {};
 		ResultSet rs = this.executeQuerySQL(sql, params);
 		try {
@@ -33,14 +33,15 @@ public class StudyDaoimp extends BaseDao implements StudyDao {
 				stu.setPatientTelNumber(rs.getString("p.PatientTelNumber"));
 				
 				
-				stu.setStudyIdentity(rs.getString("s.StudyIdentity"));
+				stu.setStudyIdentity(rs.getString("s.StudyOrderIdentity"));
 				stu.setStudyID(rs.getString("s.StudyID"));
-				stu.setStudyDateTime(rs.getString("s.StudyDateTime"));
-				stu.setInstitutionName(rs.getString("s.InstitutionName"));
+				stu.setScheduledDateTime(rs.getString("s.ScheduledDateTime"));
+				stu.setStudyDescription(rs.getString("s.StudyDescription"));
 				stu.setStudyModality(rs.getString("s.StudyModality"));
 				list.add(stu);
 			}
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return list;
@@ -70,14 +71,14 @@ public class StudyDaoimp extends BaseDao implements StudyDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		sql = "select * from h_study where `StudyIdentity`=?";
+		sql = "select * from h_order where `StudyOrderIdentity`=?";
 		Object[] Identity = { StudyIdentity/* stu.getStudyIdentity() */ };
 		rs = this.executeQuerySQL(sql, Identity);
 		try {
 			while (rs.next()) {
 				stu.setStudyID(rs.getString("StudyID"));
-				stu.setStudyDateTime(rs.getString("StudyDateTime"));
-				stu.setInstitutionName(rs.getString("InstitutionName"));
+				stu.setScheduledDateTime(rs.getString("ScheduledDateTime"));
+				stu.setStudyDescription(rs.getString("StudyDescription"));
 				stu.setStudyModality(rs.getString("StudyModality"));
 				stu.setStudyIdentity(StudyIdentity);
 			}
@@ -133,15 +134,15 @@ public class StudyDaoimp extends BaseDao implements StudyDao {
 		study.setStudyUID(SUID);
 		String ID = study.creatStudyID();
 		study.setStudyID(ID);
-		String sql = "insert into h_study(`StudyIdentity`,`StudyID`, `StudyUID`,`PatientIdentity`,`StudyDateTime`, `InstitutionName`,`StudyModality`)"
+		String sql = "insert into h_order(`StudyOrderIdentity`,`StudyID`, `StudyUID`,`PatientIdentity`,`ScheduledDateTime`, `StudyDescription`,`StudyModality`)"
 				+ " value (?,?,?,?,?,?,?)";
 		Object[] params = { study.creatStudyIdentity(), study.getStudyID(), study.getStudyUID(), PatientIdentity,
-				study.getStudyDateTime(), study.getInstitutionName(), study.getStudyModality() };
+				study.getScheduledDateTime(), study.getStudyDescription(), study.getStudyModality() };
 		int studyrow = this.executeUpdateSQL(sql, params);
 		if (studyrow > 0) {
-			System.out.println("增加检查成功");
+			System.out.println("增加预约检查成功");
 		} else {
-			System.out.println("增加检查失败");
+			System.out.println("增加预约检查失败");
 		}
 
 		return row;
@@ -154,9 +155,9 @@ public class StudyDaoimp extends BaseDao implements StudyDao {
 		Object[] params = { study.getPatientID() };
 		row = this.executeUpdateSQL(sql, params);
 		if (row > 0) {
-			System.out.println("删除患者成功");
+			System.out.println("删除预约检查成功");
 		} else {
-			System.out.println("删除患者失败");
+			System.out.println("删除预约检查失败");
 		}
 		return row;
 	}
