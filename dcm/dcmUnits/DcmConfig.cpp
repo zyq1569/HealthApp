@@ -267,9 +267,9 @@ int DcmConfigFile::countCtnTitles() const
 
 void DcmConfigFile::initConfigStruct()
 {
-    UserName_ = "";
-    GroupName_ = "";
-    networkTCPPort_ = 104;
+    m_username = "";
+    m_GroupName = "";
+    m_QueryRetrievePort = 104;
     maxPDUSize_ = 16384;
     maxAssociations_ = 16;
     CNF_Config.noOfAEEntries = 0;
@@ -319,7 +319,8 @@ int DcmConfigFile::readConfigLines(FILE *cnffp)
     int store_dir_index = 0;
     OFString store_index_name;
     // read all lines from configuration file
-    while (fgets(rcline, sizeof(rcline), cnffp)) {
+    while (fgets(rcline, sizeof(rcline), cnffp))
+    {
         lineno++;
         if (rcline[0] == '#' || rcline[0] == 10 || rcline[0] == 13)
             continue;        /* comment or blank line */
@@ -352,7 +353,7 @@ int DcmConfigFile::readConfigLines(FILE *cnffp)
         else if (!strcmp("UserName", mnemonic))
         {
             c = parsevalues(&valueptr);
-            UserName_ = c;
+            m_username = c;
             free(c);
         }
         //////////////////////////////////////////
@@ -412,12 +413,28 @@ int DcmConfigFile::readConfigLines(FILE *cnffp)
         else if (!strcmp("GroupName", mnemonic))
         {
             c = parsevalues(&valueptr);
-            GroupName_ = c;
+            m_GroupName = c;
             free(c);
         }
         else if (!strcmp("NetworkTCPPort", mnemonic))
         {
-            sscanf(valueptr, "%d", &networkTCPPort_);
+            sscanf(valueptr, "%d", &m_QueryRetrievePort);
+        }
+        else if (!strcmp("QueryRetrievePort", mnemonic))
+        {
+            sscanf(valueptr, "%d", &m_QueryRetrievePort);
+        }//
+        else if (!strcmp("StoreScpPort", mnemonic))
+        {
+            sscanf(valueptr, "%d", &m_StoreScpPort);
+        }
+        else if (!strcmp("WorklistScpPort", mnemonic))
+        {
+            sscanf(valueptr, "%d", &m_WorklistScpPort);
+        }//m_WorklistSingleProcess
+        else if (!strcmp("WorklistSingleProcess", mnemonic))
+        {
+            sscanf(valueptr, "%d", &m_WorklistSingleProcess);
         }
         else if (!strcmp("MaxPDUSize", mnemonic))
         {
@@ -745,9 +762,7 @@ DcmConfigFilePeer *DcmConfigFile::parsePeers(char **valuehandle, int *peers)
 
 DcmConfigFilePeer *DcmConfigFile::readPeerList(char **valuehandle, int *peers)
 {
-    int  i,
-        found,
-        noOfPeers = 0;
+    int  i, found,noOfPeers = 0;
     char *helpvalue;
     DcmConfigFilePeer *helppeer,
         *peerlist = NULL;
@@ -783,7 +798,8 @@ DcmConfigFilePeer *DcmConfigFile::readPeerList(char **valuehandle, int *peers)
             noOfPeers += CNF_HETable.HostEntries[i].noOfPeers;
             if ((helppeer = (DcmConfigFilePeer *)malloc(noOfPeers * sizeof(DcmConfigFilePeer))) == NULL)
                 panic("Memory allocation 5 (%d)", noOfPeers);
-            if (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers) {
+            if (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers) 
+            {
                 memcpy((char*)helppeer, (char*)peerlist, (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers) * sizeof(DcmConfigFilePeer));
                 free(peerlist);
             }
@@ -791,11 +807,13 @@ DcmConfigFilePeer *DcmConfigFile::readPeerList(char **valuehandle, int *peers)
             memcpy((char*)(peerlist + (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers)), (char*)CNF_HETable.HostEntries[i].Peers, CNF_HETable.HostEntries[i].noOfPeers * sizeof(DcmConfigFilePeer));
         }
 
-        else {            /* peer */
+        else
+        {            /* peer */
             noOfPeers++;
             if ((helppeer = (DcmConfigFilePeer *)malloc(noOfPeers * sizeof(DcmConfigFilePeer))) == NULL)
                 panic("Memory allocation 6 (%d)", noOfPeers);
-            if (noOfPeers - 1) {
+            if (noOfPeers - 1)
+            {
                 memcpy((char*)helppeer, (char*)peerlist, (noOfPeers - 1) *sizeof(DcmConfigFilePeer));
                 free(peerlist);
             }
@@ -862,8 +880,7 @@ char *DcmConfigFile::parsevalues(char **valuehandle)
 {
     int i, inquotes = 0, count = 0;
     char *value = NULL;
-    const char *help,
-        *valueptr = *valuehandle;
+    const char *help,*valueptr = *valuehandle;
 
     if (isquote(*valueptr))
     {
@@ -894,7 +911,9 @@ char *DcmConfigFile::parsevalues(char **valuehandle)
                         help++;
                     }
                     else
+                    {
                         break;
+                    }
                 }
                 *valuehandle += (count + 1);
                 break;
@@ -905,13 +924,18 @@ char *DcmConfigFile::parsevalues(char **valuehandle)
                 help++;
             }
         }
-        else {
+        else
+        {
             if (isgap(*help))
             {
                 if ((value = (char*)malloc(count * sizeof(char) + 1)) == NULL)
+                {
                     panic("Memory allocation 8 (%d)", count);
+                }
                 for (i = 0; i < count; i++)
+                {
                     value[i] = valueptr[i];
+                }
                 value[count] = '\0';
                 while (*help != '\0')
                 {
@@ -921,12 +945,15 @@ char *DcmConfigFile::parsevalues(char **valuehandle)
                         help++;
                     }
                     else
+                    {
                         break;
+                    }
                 }
                 *valuehandle += count;
                 break;
             }
-            else {
+            else
+            {
                 count++;
                 help++;
             }
@@ -990,33 +1017,42 @@ void DcmConfigFile::printConfig()
     int i, j;
 
     DCMQRDB_INFO("\nHostTable: " << CNF_HETable.noOfHostEntries);
-    for (i = 0; i < CNF_HETable.noOfHostEntries; i++) {
+    for (i = 0; i < CNF_HETable.noOfHostEntries; i++)
+    {
         DCMQRDB_INFO(CNF_HETable.HostEntries[i].SymbolicName << " " << CNF_HETable.HostEntries[i].noOfPeers);
-        for (j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++) {
+        for (j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++)
+        {
             DCMQRDB_INFO(CNF_HETable.HostEntries[i].Peers[j].ApplicationTitle << " " <<
                 CNF_HETable.HostEntries[i].Peers[j].HostName << " " << CNF_HETable.HostEntries[i].Peers[j].PortNumber);
         }
     }
     DCMQRDB_INFO("\nVendorTable: " << CNF_VendorTable.noOfHostEntries);
-    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++) {
+    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++)
+    {
         DCMQRDB_INFO(CNF_VendorTable.HostEntries[i].SymbolicName << " " << CNF_VendorTable.HostEntries[i].noOfPeers);
-        for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++) {
+        for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++)
+        {
             DCMQRDB_INFO(CNF_VendorTable.HostEntries[i].Peers[j].ApplicationTitle << " " <<
                 CNF_VendorTable.HostEntries[i].Peers[j].HostName << " " << CNF_VendorTable.HostEntries[i].Peers[j].PortNumber);
         }
     }
-    DCMQRDB_INFO("\nGlobal Parameters:\n" << networkTCPPort_ << "\n" << OFstatic_cast(unsigned long, maxPDUSize_)
+    DCMQRDB_INFO("\nGlobal Parameters:\n" << m_QueryRetrievePort << "\n" << OFstatic_cast(unsigned long, maxPDUSize_)
         << "\n" << maxAssociations_);
     DCMQRDB_INFO("\nAEEntries: " << CNF_Config.noOfAEEntries);
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
         DCMQRDB_INFO(CNF_Config.AEEntries[i].ApplicationTitle << "\n" << CNF_Config.AEEntries[i].StorageArea
             << "\n" << CNF_Config.AEEntries[i].Access << "\n" << CNF_Config.AEEntries[i].StorageQuota->maxStudies
             << ", " << CNF_Config.AEEntries[i].StorageQuota->maxBytesPerStudy);
         if (CNF_Config.AEEntries[i].noOfPeers == -1)
+        {
             DCMQRDB_INFO("Peers: ANY");
-        else {
+        }
+        else
+        {
             DCMQRDB_INFO("Peers: " << CNF_Config.AEEntries[i].noOfPeers);
-            for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++) {
+            for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++)
+            {
                 DCMQRDB_INFO(CNF_Config.AEEntries[i].Peers[j].ApplicationTitle << " " <<
                     CNF_Config.AEEntries[i].Peers[j].HostName << " " << CNF_Config.AEEntries[i].Peers[j].PortNumber);
             }
@@ -1028,10 +1064,27 @@ void DcmConfigFile::printConfig()
 
 int DcmConfigFile::getNetworkTCPPort() const
 {
-    return(networkTCPPort_);
+    return(m_QueryRetrievePort);
 }
 
+int DcmConfigFile::getQueryRetrievePort() const
+{
+    return(m_QueryRetrievePort);
+}
 
+int DcmConfigFile::getWorklistScpPort() const
+{
+    return(m_WorklistScpPort);
+}
+int DcmConfigFile::getStoreScpPort() const
+{
+    return(m_StoreScpPort);
+}
+
+int DcmConfigFile::getWorklistSingleProcess() const
+{
+    return(m_WorklistSingleProcess);
+}
 OFCmdUnsignedInt DcmConfigFile::getMaxPDUSize() const
 {
     return(maxPDUSize_);
@@ -1051,7 +1104,9 @@ const char *DcmConfigFile::getStorageArea(const char *AETitle) const
     for (i = 0; i < CNF_Config.noOfAEEntries; i++)
     {
         if (!strcmp(AETitle, CNF_Config.AEEntries[i].ApplicationTitle))
+        {
             return(CNF_Config.AEEntries[i].StorageArea);
+        }
     }
     return(NULL);        /* AETitle not found */
 }
@@ -1064,7 +1119,9 @@ const char *DcmConfigFile::getAccess(const char *AETitle) const
     for (i = 0; i < CNF_Config.noOfAEEntries; i++)
     {
         if (!strcmp(AETitle, CNF_Config.AEEntries[i].ApplicationTitle))
+        {
             return(CNF_Config.AEEntries[i].Access);
+        }
     }
     return(NULL);        /* AETitle not found */
 }
@@ -1238,12 +1295,12 @@ OFBool DcmConfigFile::writableStorageArea(const char *aeTitle) const
 
 const char *DcmConfigFile::getUserName() const
 {
-    return UserName_.c_str();
+    return m_username.c_str();
 }
 
 const char *DcmConfigFile::getGroupName() const
 {
-    return GroupName_.c_str();
+    return m_GroupName.c_str();
 }
 
 const DcmQueryRetrieveCharacterSetOptions& DcmConfigFile::getCharacterSetOptions() const

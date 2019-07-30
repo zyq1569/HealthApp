@@ -160,7 +160,8 @@ static int DB_UIDAlreadyFound(
 {
     DB_UidList *plist;
 
-    for (plist = phandle->uidList; plist; plist = plist->next) {
+    for (plist = phandle->uidList; plist; plist = plist->next)
+    {
         if (((int)phandle->queryLevel >= PATIENT_LEVEL)
             && (strcmp(plist->patient, (char *)idxRec->PatientID) != 0)
             )
@@ -524,8 +525,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxGetNext(int *idx, IdxReco
 
     (*idx)++;
     DB_lseek(handle_->pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + OFstatic_cast(long, *idx) * SIZEOF_IDXRECORD), SEEK_SET);
-    while (read(handle_->pidx, (char *)idxRec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) {
-        if (idxRec->filename[0] != '\0') {
+    while (read(handle_->pidx, (char *)idxRec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD)
+    {
+        if (idxRec->filename[0] != '\0')
+        {
             DB_IdxInitRecord(idxRec, 1);
 
             return EC_Normal;
@@ -585,13 +588,16 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_lock(OFBool exclusive)
 {
     int lockmode;
 
-    if (exclusive) {
+    if (exclusive)
+    {
         lockmode = LOCK_EX;     /* exclusive lock */
     }
-    else {
+    else
+    {
         lockmode = LOCK_SH;     /* shared lock */
     }
-    if (dcmtk_flock(handle_->pidx, lockmode) < 0) {
+    if (dcmtk_flock(handle_->pidx, lockmode) < 0)
+    {
         dcmtk_plockerr("DB_lock");
         return QR_EC_IndexDatabaseError;
     }
@@ -600,7 +606,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_lock(OFBool exclusive)
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_unlock()
 {
-    if (dcmtk_flock(handle_->pidx, LOCK_UN) < 0) {
+    if (dcmtk_flock(handle_->pidx, LOCK_UN) < 0)
+    {
         dcmtk_plockerr("DB_unlock");
         return QR_EC_IndexDatabaseError;
     }
@@ -613,7 +620,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_unlock()
 
 static OFCondition DB_FreeUidList(DB_UidList *lst)
 {
-    while (lst != NULL) {
+    while (lst != NULL)
+    {
         if (lst->patient)
             free(lst->patient);
         if (lst->study)
@@ -639,7 +647,8 @@ static OFCondition DB_FreeElementList(DB_ElementList *lst)
     if (lst == NULL) return EC_Normal;
 
     OFCondition cond = DB_FreeElementList(lst->next);
-    if (lst->elem.PValueField != NULL) {
+    if (lst->elem.PValueField != NULL)
+    {
         free((char *)lst->elem.PValueField);
     }
     delete lst;
@@ -736,14 +745,17 @@ static void DB_DuplicateElement(DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
 
     if (src->ValueLength == 0)
         dst->PValueField = NULL;
-    else {
+    else
+    {
         dst->PValueField = (char *)malloc((int)src->ValueLength + 1);
         bzero(dst->PValueField, (size_t)(src->ValueLength + 1));
-        if (dst->PValueField != NULL) {
+        if (dst->PValueField != NULL)
+        {
             memcpy(dst->PValueField, src->PValueField,
                 (size_t)src->ValueLength);
         }
-        else {
+        else
+        {
             DCMQRDB_ERROR("DB_DuplicateElement: out of memory");
         }
     }
@@ -817,20 +829,23 @@ public:
         candidateCharacterSet.assign(idxRec.param[RECORDIDX_SpecificCharacterSet].PValueField,
             idxRec.param[RECORDIDX_SpecificCharacterSet].ValueLength);
         // test if conversion is potentially necessary since the character sets differ
-        if (findRequestCharacterSet != candidateCharacterSet) {
+        if (findRequestCharacterSet != candidateCharacterSet)
+        {
             // determine if the candidate is compatible to UTF-8 or must be converted
             isCandidateConversionNecessary = isConversionToUTF8Necessary(candidateCharacterSet);
             // if it must be converted, clear the converter if it was previously initialized,
             // but for a different character set
             if (isCandidateConversionNecessary && candidateConverter &&
-                candidateConverter.getSourceCharacterSet() != candidateCharacterSet) {
+                candidateConverter.getSourceCharacterSet() != candidateCharacterSet)
+            {
                 candidateConverter.clear();
             }
             // even if the character sets differ, they may both be compatible to UTF-8,
             // in which case conversion is still not necessary
             isConversionNecessary = isCandidateConversionNecessary || isFindRequestConversionNecessary;
         }
-        else {
+        else
+        {
             // conversion is not necessary
             isConversionNecessary = OFFalse;
         }
@@ -992,7 +1007,8 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList(
     /*** For each element in Request identifier
     **/
 
-    for (pRequestList = phandle->findRequestList; pRequestList; pRequestList = pRequestList->next) {
+    for (pRequestList = phandle->findRequestList; pRequestList; pRequestList = pRequestList->next)
+    {
 
         /*** Find Corresponding Tag in index record
         **/
@@ -1011,17 +1027,20 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList(
         **/
 
         plist = new DB_ElementList;
-        if (plist == NULL) {
+        if (plist == NULL)
+        {
             DCMQRDB_ERROR("makeResponseList: out of memory");
             return;
         }
 
         DB_DuplicateElement(&idxRec->param[i], &plist->elem);
 
-        if (phandle->findResponseList == NULL) {
+        if (phandle->findResponseList == NULL)
+        {
             phandle->findResponseList = last = plist;
         }
-        else {
+        else
+        {
             last->next = plist;
             last = plist;
         }
@@ -1031,19 +1050,23 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList(
     /** Specific Character Set stuff
     **/
 
-    if (idxRec->param[RECORDIDX_SpecificCharacterSet].ValueLength) {
+    if (idxRec->param[RECORDIDX_SpecificCharacterSet].ValueLength)
+    {
         plist = new DB_ElementList;
-        if (plist == NULL) {
+        if (plist == NULL)
+        {
             DCMQRDB_ERROR("makeResponseList: out of memory");
             return;
         }
 
         DB_DuplicateElement(&idxRec->param[RECORDIDX_SpecificCharacterSet], &plist->elem);
 
-        if (phandle->findResponseList == NULL) {
+        if (phandle->findResponseList == NULL)
+        {
             phandle->findResponseList = last = plist;
         }
-        else {
+        else
+        {
             last->next = plist;
             last = plist;
         }
@@ -1211,7 +1234,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare(
     /**** If current level is above the QueryLevel
     ***/
 
-    if (level < phandle->queryLevel) {
+    if (level < phandle->queryLevel)
+    {
 
         /** Get UID Tag for current level
          */
@@ -1228,7 +1252,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare(
         /** Element not found
          */
 
-        if (plist == NULL) {
+        if (plist == NULL)
+        {
             *match = OFFalse;
             DCMQRDB_WARN("hierarchicalCompare : No UID Key found at level " << (int)level);
             return QR_EC_IndexDatabaseError;
@@ -1245,7 +1270,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare(
         ** If Match fails, return OFFalse
         */
 
-        if (!dbmatch(plist, &idxRec->param[i])) {
+        if (!dbmatch(plist, &idxRec->param[i]))
+        {
             *match = OFFalse;
             return EC_Normal;
         }
@@ -1260,12 +1286,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare(
     /**** If current level is the QueryLevel
     ***/
 
-    else if (level == phandle->queryLevel) {
+    else if (level == phandle->queryLevel)
+    {
 
         /*** For each element in Identifier list
         **/
 
-        for (plist = phandle->findRequestList; plist; plist = plist->next) {
+        for (plist = phandle->findRequestList; plist; plist = plist->next)
+        {
 
             /** Get the Tag level of this element
              */
@@ -1300,7 +1328,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare(
             */
 
 
-            if (!dbmatch(plist, &idxRec->param[i])) {
+            if (!dbmatch(plist, &idxRec->param[i]))
+            {
                 *match = OFFalse;
                 return EC_Normal;
             }

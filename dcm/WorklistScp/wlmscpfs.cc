@@ -34,7 +34,9 @@
 #endif
 //-------add add 201806
 #include "dcmtk/oflog/fileap.h"
-
+//#include "Units.h"
+#include "DcmConfig.h"
+#include "Units.h"
 
 //--------------------
 #define OFFIS_CONSOLE_APPLICATION "wlmscpfs"
@@ -98,11 +100,13 @@ int main(int argc, char *argv[])
         //to do add!
 #endif
     }
-    OFString log_dir = OFStandard::getDirNameFromPath(tempstr, path) + "/log";
+    OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
+    OFString log_dir = currentAppPath + "/log";
     if (!OFStandard::dirExists(log_dir))
     {
         CreatDir_(log_dir);
     }
+
     OFString logfilename = log_dir + "/WorklistSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
 
     OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
@@ -119,15 +123,54 @@ int main(int argc, char *argv[])
         tempstr += argv[i];
         tempstr += " ";
     }
+    //DCM_dcmwlmLogger.setLogLevel(3000);
     OFLOG_INFO(DCM_dcmwlmLogger, "---------argv[]:" + tempstr + " ----------------------");
 
+    static DcmConfigFile config;
+    OFString configdir = currentAppPath + "/config/DcmServerConfig.cfg";;
+    OFString TCPport;
+    if (config.init(configdir.c_str()))
+    {
+        TCPport = longToString(config.getWorklistScpPort());
+        OFLOG_INFO(DCM_dcmwlmLogger, configdir + "---Load OK!------WorklistScpPort:" + TCPport);
+        OFLOG_INFO(DCM_dcmwlmLogger, "---------DcmConfigFile info:--------------");
+        OFLOG_INFO(DCM_dcmwlmLogger, "   WorklistScpPort:" + TCPport);
+        OFString mysqlserver = config.getSqlServer();
+        OFLOG_INFO(DCM_dcmwlmLogger, "   mysql:" + mysqlserver);
+        OFString mysqldbname = config.getSqldbname();
+        OFLOG_INFO(DCM_dcmwlmLogger, "   mysql dbname:" + mysqldbname);
+    }
     OFLOG_INFO(DCM_dcmwlmLogger, "-----$$------DcmNet storescp start run!---------$$------------");
     //-----------------------------------------------------------------------------------------------------
     // Initialize object which provides a connection to the data source
     WlmDataSourceFileSystem *dataSource = new WlmDataSourceFileSystem();
-
+    dataSource->SetDcmConfig(&config);
+    char parm[3][128];
+    memset(parm[0], 0, 128);
+    memset(parm[1], 0, 128);
+    memset(parm[2], 0, 128);
+    OFString strtemp = argv[0];
+    memcpy(parm[0], strtemp.c_str(), strtemp.length());
+    memcpy(parm[1], TCPport.c_str(), TCPport.length());
+    strtemp = "--fork";
+    memcpy(parm[2], strtemp.c_str(), strtemp.length());
     // Initialize and provide service. After having terminated free memory.
-    WlmConsoleEngineFileSystem *consoleEngine = new WlmConsoleEngineFileSystem(argc, argv, OFFIS_CONSOLE_APPLICATION, dataSource);
+    WlmConsoleEngineFileSystem *consoleEngine;
+    if (argc< 2)
+    {
+        int count = 3;
+        char *new_argv[3];// = new char*[count];
+        for (int i = 0; i < count; i++)
+        {
+            new_argv[i] = parm[i];
+        }
+        consoleEngine = new WlmConsoleEngineFileSystem(count, new_argv, OFFIS_CONSOLE_APPLICATION, dataSource);
+    }
+    else
+    {
+        consoleEngine = new WlmConsoleEngineFileSystem(argc, argv, OFFIS_CONSOLE_APPLICATION, dataSource);
+    }
+    //int lev = DCM_dcmwlmLogger.getLogLevel();
     int result = consoleEngine->StartProvidingService();
 
     // Free memory

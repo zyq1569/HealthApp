@@ -207,7 +207,8 @@ OFCondition WlmActivityManager::StartProvidingService()
 
   // Initialize network, i.e. create an instance of T_ASC_Network*.
   cond = ASC_initializeNetwork( NET_ACCEPTOR, OFstatic_cast(int, opt_port), opt_acse_timeout, &net );
-  if( cond.bad() ) return( WLM_EC_InitializationOfNetworkConnectionFailed );
+  if( cond.bad() )
+      return( WLM_EC_InitializationOfNetworkConnectionFailed );
 
   /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
   cond = OFStandard::dropPrivileges();

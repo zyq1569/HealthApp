@@ -184,9 +184,9 @@ class DCMTK_DCMQRDB_EXPORT DcmConfigFile
 public:
 
     DcmConfigFile()
-        : UserName_()
-        , GroupName_()
-        , networkTCPPort_(0)
+        : m_username()
+        , m_GroupName()
+        , m_QueryRetrievePort(0)
         , maxPDUSize_(0)
         , maxAssociations_(0)
         , CNF_Config()
@@ -259,6 +259,11 @@ public:
     *  Return : Network TCP Port
     */
     int getNetworkTCPPort() const;
+    int getQueryRetrievePort() const;
+    int getWorklistScpPort() const;
+    int getStoreScpPort() const;
+
+    int getWorklistSingleProcess()const;
 
     /*
     *  get Max PDU Size
@@ -510,15 +515,18 @@ private:
     static char *parsevalues(char **valuehandle);
 
     /* Configuration Parameters */
-    OFString UserName_;
-    OFString GroupName_;
-    int networkTCPPort_;
+    OFString m_username;
+    OFString m_GroupName;
+    int m_QueryRetrievePort;
     Uint32 maxPDUSize_;
     int maxAssociations_;
     //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
     OFList<OFString> m_storedir;
     OFString m_sqlserver, m_sqldbname, m_sqlusername, m_sqlpass;//add 20190727
     //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+    int m_StoreScpPort;
+    int m_WorklistScpPort;
+    int m_WorklistSingleProcess;
     DcmQueryRetrieveCharacterSetOptions characterSetOptions_;
     DcmConfigFileConfiguration CNF_Config;   /* configuration file contents */
     DcmConfigFileHostTable CNF_HETable;      /* HostEntries Table */

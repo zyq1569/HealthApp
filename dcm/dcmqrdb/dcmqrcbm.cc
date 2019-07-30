@@ -34,9 +34,11 @@
 #include "Units.h"
 
 BEGIN_EXTERN_C
+
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* needed on Solaris for O_RDONLY */
 #endif
+
 END_EXTERN_C
 
 

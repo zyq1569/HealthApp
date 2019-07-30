@@ -60,6 +60,7 @@ END_EXTERN_C
 
 //add mysql driver  后期需要将数据库的处理独立模块
 #include"HMariaDb.h"
+#include "Units.h"
 //#include "dcmtk/ofstd/ofdatime.h"
 //#include <objbase.h>
 //////////////
@@ -278,7 +279,7 @@ findscu 127.0.0.1 104 wlistqry.wl - aec OFFIS
 findscu 127.0.0.1 104 wlistqry.wl -aec OFFIS
 ************************************************************************************************/
 //void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
-void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
+void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask, DcmConfigFile *configfile)
 {
     listDataset.clear();
     //DcmDataset *dataset = NULL;
@@ -358,7 +359,16 @@ void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
     static HMariaDb *pMariaDb = NULL;
     if (pMariaDb == NULL)
     {
+        //OFString strIP, strUser, strPwd, strDadaName;
         OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
+        if (configfile != NULL)
+        {
+            strIP = configfile->getSqlServer();
+            strUser = configfile->getSqlusername();
+            strPwd = configfile->getSqlpass();
+            strDadaName = configfile->getSqldbname();
+        }
+
 #ifdef _UNICODE
         pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
             W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
@@ -368,22 +378,56 @@ void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
 
 #endif
     }
-    int count;//数据库查询的记录条数
-    OFString sql = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,\
-                                     s.StudyID, s.StudyUID, s.StudyDateTime, s.ProcedureStepStartDate, \
-                                                       s.StudyModality, s.AETitle from h_patient p, h_study s where p.PatientIdentity=s.PatientIdentity ";
+    //int count;//数据库查询的记录条数
+    OFString sql = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,";
+    sql = sql + " s.StudyID, s.StudyUID, s.OrderDateTime, s.ScheduledDateTime, ";
+    sql = sql + " s.StudyModality, s.AETitle, s.StudyDescription ,s.StudyCode from h_patient p, h_order s where p.PatientIdentity=s.PatientIdentity ";
     if (!Modality.empty())
     {
-        sql = sql + "and s.StudyModality = '" + Modality + "'";
+        sql = sql + " and s.StudyModality = '" + Modality + "'";
     }
-    //    if (!StartDate.empty())
-    //    {
-    //        if (StartDate.replace(0,1,'-'))
-    //        {
-    ////StartDate.replace
-    //        }
-    //        sql = sql + "and StudyDateTime = '" + StartDate + "'";
-    //    }
+    int pos = StartDate.find('-');
+    if (pos > 7)
+    {
+        OFString s = StartDate.substr(0, pos);
+        OFString e = StartDate.substr(pos + 1, StartDate.length() - pos);
+        if (EndDate.empty() && e!=s)
+        {
+            EndDate = e;
+        }
+        StartDate = s;
+    }
+    if (!StartDate.empty())
+    {
+        StartDate = ToDateFormate(StartDate);
+        if (!StartTime.empty())
+        {
+            StartDate += StartTime;
+        }
+        sql = sql + " and s.ScheduledDateTime>= " + StartDate;
+    }
+    if (!EndDate.empty())
+    {
+        EndDate = ToDateFormate(EndDate);
+        if (!EndTime.empty())
+        {
+            EndDate += EndTime;
+        }
+        sql = sql + " and s.ScheduledDateTime<=" + EndDate;
+    }
+    if (!PatientName.empty())
+    {
+        sql = sql + " and p.PatientName = '" + PatientName+"'";
+    }//PatientID Studyid
+    if (!PatientID.empty())
+    {
+        sql = sql + " and p.PatientID = '" + PatientID + "'";
+    }
+    if (!Studyid.empty())
+    {
+        sql = sql + " and s.StudyID = '" + Studyid + "'";
+    }
+    sql = sql + " ;";
     pMariaDb->query(sql.c_str());
     ResultSet * rs = pMariaDb->QueryResult();
     if (rs == NULL)
@@ -408,7 +452,8 @@ void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
             //sdata += "\r\n";
             //DCMWLM_INFO(sdata.c_str());
             ////////////////////////////
-            std::string patienName, StudyInstanceUID, PatientID, StudyID, PatientBirthDate, PatientSex, StudyModality, StepStartDate;
+            std::string patienName, StudyInstanceUID, PatientID, StudyID, StudyCode;
+            std::string PatientBirthDate, PatientSex, StudyModality, StepStartDate, StudyDescription;
 
             //DcmDataset *dataset = new DcmDataset();
             DcmDataset dataset;
@@ -467,13 +512,11 @@ void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
             }
             else
             {
-                //dataset->putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
+                dataset.putAndInsertString(DCM_PatientSex, "O");
             }
-            dataset.putAndInsertString(DCM_RequestingPhysician, "NEIER");
-            dataset.putAndInsertString(DCM_RequestedProcedureDescription, "EXAM78");
+            //dataset.putAndInsertString(DCM_RequestingPhysician, "NEIER");
+            //dataset.putAndInsertString(DCM_RequestedProcedureDescription, "EXAM78");
             //dataset->putAndInsertString(DCM_PatientSex, "W");
-
-
             DcmItem *ditem = NULL;
             if (dataset.findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence, ditem).good())
             {
@@ -485,10 +528,12 @@ void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
                 {
                     ditem->putAndInsertString(DCM_Modality, Modality.c_str());
                 }
-                if (rs->getValue(row_index, "StudyDateTime", StepStartDate))
+                if (rs->getValue(row_index, "ScheduledDateTime", StepStartDate))
                 {
-                    ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate, StepStartDate.c_str());
-                    ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime, "00:00:00");
+                    OFString str, date, time;
+                    str = DbDateTimeToDateTimeFormate(StepStartDate.c_str(), date, time);
+                    ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate, date.c_str());
+                    ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime, time.c_str());
                 }
                 else
                 {
@@ -504,114 +549,36 @@ void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask)
                     //    dateTime.getTime().getMilliSecond());
                     ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate, "20190208");
                     ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime, "21:44:00");
+                }//
+                if (rs->getValue(row_index, "StudyCode", StudyCode))
+                {
+                    ditem->putAndInsertString(DCM_ScheduledProcedureStepID, StudyCode.c_str());
                 }
-                ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription, "EXAM56");
-                ditem->putAndInsertString(DCM_ScheduledProcedureStepID, "SPD575841");
-                //ditem->putAndInsertString(DCM_ScheduledStationName, "STN345");
-                //ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation, "B55P56");
+                else
+                {
+                    ditem->putAndInsertString(DCM_ScheduledProcedureStepID, "unknow");
+                }
+                if (rs->getValue(row_index, "StudyDescription", StudyDescription))
+                {
+                    ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription, StudyDescription.c_str());
+                }
+                else
+                {
+                    ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription, "unknow");
+                    //ditem->putAndInsertString(DCM_ScheduledStationName, "STN345");
+                    //ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation, "B55P56");
+                }
             }
-            dataset.putAndInsertString(DCM_RequestedProcedureID, "RP34734H328");
-            dataset.putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
+            //dataset.putAndInsertString(DCM_RequestedProcedureID, "RP34734H328");
+            //dataset.putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
             ///////////////////////////
             listDataset.push_back(dataset);
             row_index++;
         }
     }
 }
-void SetWorklistData(DcmDataset *dataset, DcmDataset *searchMask)
-{
-    //DcmDataset *dataset = NULL;
-    //1.读取设备查询条件信息
-    OFString PatientName, PatientID, StartDate, StartTime, Modality, AETitle;
-    if (searchMask->findAndGetOFString(DCM_PatientName, PatientName).bad())
-    {
-        DCMWLM_INFO("searchMask no DCM_PatientName");
-    }
-    if (searchMask->findAndGetOFString(DCM_PatientID, PatientID).bad())
-    {
-        DCMWLM_INFO("searchMask no DCM_PatientID");
-    }
-    if (searchMask->findAndGetOFString(DCM_PatientID, PatientID).bad())
-    {
-        DCMWLM_INFO("searchMask no DCM_PatientID");
-    }
-    DcmElement *ScheduledProcedureStepSequence;// = searchMask->getElement(DCM_ScheduledProcedureStepSequence);
-    if (!searchMask->findAndGetElement(DCM_ScheduledProcedureStepSequence, ScheduledProcedureStepSequence).bad() || ((DcmSequenceOfItems*)ScheduledProcedureStepSequence)->card() != 1)
-    {
-        DcmItem *scheduledProcedureStepSequenceItem = ((DcmSequenceOfItems*)ScheduledProcedureStepSequence)->getItem(0);
-        if (scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_Modality, Modality).bad())
-        {
-            DCMWLM_WARN("searchMask no DCM_Modality");
-        }
-        //AETitle
-        if (scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_ScheduledStationAETitle, Modality).bad())
-        {
-            DCMWLM_INFO("searchMask no DCM_ScheduledStationAETitle");
-        }
-        //DCM_ScheduledProcedureStepStartDate
-        if (scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_ScheduledProcedureStepStartDate, StartDate).bad())
-        {
-            DCMWLM_INFO("searchMask no DCM_ScheduledProcedureStepStartDate");
-        }
-        if (scheduledProcedureStepSequenceItem->findAndGetOFString(DCM_ScheduledProcedureStepStartTime, StartTime).bad())
-        {
-            DCMWLM_INFO("searchMask no DCM_ScheduledProcedureStepStartDate");
-        }
-    }
-    //2.准备数据库读取数据
-    static HMariaDb *pMariaDb = NULL;
-    if (pMariaDb == NULL)
-    {
-        OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
-#ifdef _UNICODE
-        pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
-            W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
-#else
-        pMariaDb = new HMariaDb(strIP.c_str(), strUser.c_str(), \
-            strPwd.c_str(), strDadaName.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 
-#endif
-    }
-
-    //name pID date modality  ae
-    dataset->putAndInsertString(DCM_PatientName, "Doe^John");
-    dataset->putAndInsertString(DCM_AccessionNumber, "A00001");
-    dataset->putAndInsertString(DCM_PatientID, "A000001");
-    dataset->putAndInsertString(DCM_PatientBirthDate, "19991001");
-    dataset->putAndInsertString(DCM_PatientBirthTime, "20:22:20");
-    dataset->putAndInsertString(DCM_MedicalAlerts, "ABZESS");
-    dataset->putAndInsertString(DCM_Allergies, "BARIUMSULFAT");
-    dataset->putAndInsertString(DCM_StudyInstanceUID, "1.2.276.0.179081.1207");
-    dataset->putAndInsertString(DCM_RequestingPhysician, "NEIER");
-    dataset->putAndInsertString(DCM_RequestedProcedureDescription, "EXAM78");
-    dataset->putAndInsertString(DCM_PatientSex, "W");
-    //const char *time = NULL;
-    dataset->putAndInsertString(DCM_ScheduledProcedureStepStartDate, "20131208");
-    DcmItem *ditem = NULL;
-    if (dataset->findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence, ditem).good())
-    {
-        if (Modality.empty())
-        {
-            ditem->putAndInsertString(DCM_Modality, "CT");
-        }
-        else
-        {
-            ditem->putAndInsertString(DCM_Modality, Modality.c_str());
-        }
-
-        ditem->putAndInsertString(DCM_ScheduledStationAETitle, "20141012");
-        ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate, "20131208");
-        ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime, "21:44:00");
-        ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription, "EXAM56");
-        ditem->putAndInsertString(DCM_ScheduledProcedureStepID, "SPD575841");
-        ditem->putAndInsertString(DCM_ScheduledStationName, "STN345");
-        ditem->putAndInsertString(DCM_ScheduledProcedureStepLocation, "B55P56");
-    }
-    dataset->putAndInsertString(DCM_RequestedProcedureID, "RP34734H328");
-    dataset->putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
-}
-// ----------------------------------------------------------------------------
-unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDataset *searchMask)
+unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDataset *searchMask, DcmConfigFile *configfile)
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function determines the records from the worklist files which match
@@ -626,7 +593,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDatas
 
     OFList<DcmDataset > list_data;
     //set matchingRecords
-    GetWorklistData(list_data, searchMask);//bitter 20130501
+    GetWorklistData(list_data, searchMask, configfile);//bitter 20130501
     OFListIterator(DcmDataset) if_iter = list_data.begin();
     OFListIterator(DcmDataset) if_last = list_data.end();
     while (if_iter != if_last)
@@ -1264,9 +1231,9 @@ OFBool WlmFileSystemInteractionManager::isUniversalMatchingSequences(DcmSequence
             if (pQueryItem->findAndGetElement(sequenceKey.first, query, OFFalse).good() && query && query->ident() == EVR_SQ && !isUniversalMatchingSequences(OFstatic_cast(DcmSequenceOfItems&, *query), sequenceKey.second, normalize, enableWildcardMatching))
                 return OFFalse;
         }
-        }
+    }
     return OFTrue;
-        }
+}
 
 OFBool WlmFileSystemInteractionManager::MatchSequences(DcmSequenceOfItems& candidate,
     DcmSequenceOfItems& query,
@@ -1368,4 +1335,14 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask(DcmItem *datase
         }
     }
     return OFTrue;
-    }
+}
+
+void WlmFileSystemInteractionManager::SetDcmConfig(DcmConfigFile *config)
+{
+    m_config = config;
+}
+
+DcmConfigFile* WlmFileSystemInteractionManager::GetDcmConfig()
+{
+    return m_config;
+}

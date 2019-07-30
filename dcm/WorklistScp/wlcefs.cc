@@ -47,6 +47,8 @@
 #include <zlib.h>        /* for zlibVersion() */
 #endif
 
+
+#include "Units.h"
 // ----------------------------------------------------------------------------
 
 #define SHORTCOL 4
@@ -77,12 +79,13 @@ opt_enableRejectionOfIncompleteWlFiles(OFTrue), opt_blockMode(DIMSE_BLOCKING),
 opt_dimse_timeout(0), opt_acse_timeout(30), app(NULL), cmd(NULL), command_argc(argc),
 command_argv(argv), dataSource(dataSourcev)
 {
+    //WlmDataSourceFileSystem* WlmDataSourceFile = (WlmDataSourceFileSystem*)dataSourcev;
+    //DcmConfigFile config = WlmDataSourceFile->GetDcmConfig();
     // Initialize application identification string.
     sprintf(rcsid, "$dcmtk: %s v%s %s $", applicationName, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE);
 
     // Initialize starting values for variables pertaining to program options.
     opt_dfPath = ".";
-
     // default: spawn new process for each incoming connection (fork()-OS or WIN32)
 #if defined(HAVE_FORK) || defined(_WIN32)
     opt_singleProcess = OFFalse;
@@ -186,149 +189,174 @@ command_argv(argv), dataSource(dataSourcev)
     cmd->addOption("--max-pdu", "-pdu", 1, opt4.c_str(), opt3.c_str());
     cmd->addOption("--disable-host-lookup", "-dhl", "disable hostname lookup");
 
-    // Evaluate command line.
+
     prepareCmdLineArgs(argc, argv, applicationName);
-    if (app->parseCommandLine(*cmd, argc, argv))
+    //opt_port = config.getWorklistScpPort();
+    //char parm[3][128];
+    //parm[0] = argv[0];
+    //parm[1] = (char*)longToString(opt_port).c_str();
+    //parm[2] = "-s";
+    //if (argc < 2) // load config
+    //{
+    //    opt_port = config.getWorklistScpPort();
+    //    //int WorklistSingleProcess = config.getWorklistSingleProcess();
+    //    //if (WorklistSingleProcess>0)
+    //    //{
+    //    //    opt_singleProcess = OFFalse;
+    //    //    //opt_forkedChild = OFFalse;
+    //    //}
+    //    //else
+    //    //{
+    //    //    opt_singleProcess = OFTrue;
+    //    //    //opt_forkedChild = OFFalse;
+    //    //}
+    //    //argc = 3;
+    //    //argv = parm;
+    //}
+    //else  //parm  from  commandline
     {
-        /* check exclusive options first */
-        if (cmd->hasExclusiveOption())
+        if (app->parseCommandLine(*cmd, argc, argv))
         {
-            if (cmd->findOption("--version"))
+            /* check exclusive options first */
+            if (cmd->hasExclusiveOption())
             {
-                app->printHeader(OFTrue /*print host identifier*/);
-                ofConsole.lockCout() << OFendl << "External libraries used:";
+                if (cmd->findOption("--version"))
+                {
+                    app->printHeader(OFTrue /*print host identifier*/);
+                    ofConsole.lockCout() << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
-                ofConsole.getCout() << " none" << OFendl;
+                    ofConsole.getCout() << " none" << OFendl;
 #else
-                ofConsole.getCout() << OFendl;
+                    ofConsole.getCout() << OFendl;
 #endif
 #ifdef WITH_ZLIB
-                ofConsole.getCout() << "- ZLIB, Version " << zlibVersion() << OFendl;
+                    ofConsole.getCout() << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_TCPWRAPPER
-                ofConsole.getCout() << "- LIBWRAP" << OFendl;
+                    ofConsole.getCout() << "- LIBWRAP" << OFendl;
 #endif
-                ofConsole.unlockCout();
-                exit(0);
+                    ofConsole.unlockCout();
+                    exit(0);
+                }
             }
-        }
-        /* command line parameters and options */
-        app->checkParam(cmd->getParamAndCheckMinMax(1, opt_port, 1, 65535));
+            /* command line parameters and options  OFCommandLine::PVS_Normal*/
+            app->checkParam(cmd->getParamAndCheckMinMax(1, opt_port, 1, 65535));
 
-        OFLog::configureFromCommandLine(*cmd, *app);
+            OFLog::configureFromCommandLine(*cmd, *app);
 
 #if defined(HAVE_FORK) || defined(_WIN32)
-        cmd->beginOptionBlock();
-        if (cmd->findOption("--single-process"))
-            opt_singleProcess = OFTrue;
-        if (cmd->findOption("--fork"))
-            opt_singleProcess = OFFalse;
-        cmd->endOptionBlock();
+            cmd->beginOptionBlock();
+            if (cmd->findOption("--single-process"))
+                opt_singleProcess = OFTrue;
+            if (cmd->findOption("--fork"))
+                opt_singleProcess = OFFalse;
+            cmd->endOptionBlock();
 #ifdef _WIN32
-        if (cmd->findOption("--forked-child"))
-            opt_forkedChild = OFTrue;
+            if (cmd->findOption("--forked-child"))
+                opt_forkedChild = OFTrue;
 #endif
 #endif
 
-        if (cmd->findOption("--data-files-path"))
-            app->checkValue(cmd->getValue(opt_dfPath));
+            if (cmd->findOption("--data-files-path"))
+                app->checkValue(cmd->getValue(opt_dfPath));
 
-        cmd->beginOptionBlock();
-        if (cmd->findOption("--enable-file-reject"))
-            opt_enableRejectionOfIncompleteWlFiles = OFTrue;
-        if (cmd->findOption("--disable-file-reject"))
-            opt_enableRejectionOfIncompleteWlFiles = OFFalse;
-        cmd->endOptionBlock();
+            cmd->beginOptionBlock();
+            if (cmd->findOption("--enable-file-reject"))
+                opt_enableRejectionOfIncompleteWlFiles = OFTrue;
+            if (cmd->findOption("--disable-file-reject"))
+                opt_enableRejectionOfIncompleteWlFiles = OFFalse;
+            cmd->endOptionBlock();
 
-        cmd->beginOptionBlock();
-        if (cmd->findOption("--return-no-char-set"))
-            opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
-        if (cmd->findOption("--return-iso-ir-100"))
-            opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
-        if (cmd->findOption("--keep-char-set"))
-            opt_returnedCharacterSet = RETURN_CHARACTER_SET_FROM_FILE;
-        cmd->endOptionBlock();
+            cmd->beginOptionBlock();
+            if (cmd->findOption("--return-no-char-set"))
+                opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
+            if (cmd->findOption("--return-iso-ir-100"))
+                opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
+            if (cmd->findOption("--keep-char-set"))
+                opt_returnedCharacterSet = RETURN_CHARACTER_SET_FROM_FILE;
+            cmd->endOptionBlock();
 
-        if (cmd->findOption("--no-sq-expansion"))
-            opt_noSequenceExpansion = OFTrue;
+            if (cmd->findOption("--no-sq-expansion"))
+                opt_noSequenceExpansion = OFTrue;
 
-        cmd->beginOptionBlock();
-        if (cmd->findOption("--prefer-uncompr"))
-            opt_networkTransferSyntax = EXS_Unknown;
-        if (cmd->findOption("--prefer-little"))
-            opt_networkTransferSyntax = EXS_LittleEndianExplicit;
-        if (cmd->findOption("--prefer-big"))
-            opt_networkTransferSyntax = EXS_BigEndianExplicit;
-        if (cmd->findOption("--implicit"))
-            opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+            cmd->beginOptionBlock();
+            if (cmd->findOption("--prefer-uncompr"))
+                opt_networkTransferSyntax = EXS_Unknown;
+            if (cmd->findOption("--prefer-little"))
+                opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+            if (cmd->findOption("--prefer-big"))
+                opt_networkTransferSyntax = EXS_BigEndianExplicit;
+            if (cmd->findOption("--implicit"))
+                opt_networkTransferSyntax = EXS_LittleEndianImplicit;
 #ifdef WITH_ZLIB
-        if (cmd->findOption("--prefer-deflated"))
-            opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+            if (cmd->findOption("--prefer-deflated"))
+                opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
-        cmd->endOptionBlock();
+            cmd->endOptionBlock();
 
 #ifdef WITH_TCPWRAPPER
-        cmd->beginOptionBlock();
-        if (cmd->findOption("--access-full"))
-            dcmTCPWrapperDaemonName.set(NULL);
-        if (cmd->findOption("--access-control"))
-            dcmTCPWrapperDaemonName.set(applicationName);
-        cmd->endOptionBlock();
+            cmd->beginOptionBlock();
+            if (cmd->findOption("--access-full"))
+                dcmTCPWrapperDaemonName.set(NULL);
+            if (cmd->findOption("--access-control"))
+                dcmTCPWrapperDaemonName.set(applicationName);
+            cmd->endOptionBlock();
 #endif
 
-        cmd->beginOptionBlock();
-        if (cmd->findOption("--enable-new-vr"))
-            dcmEnableGenerationOfNewVRs();
-        if (cmd->findOption("--disable-new-vr"))
-            dcmDisableGenerationOfNewVRs();
-        cmd->endOptionBlock();
+            cmd->beginOptionBlock();
+            if (cmd->findOption("--enable-new-vr"))
+                dcmEnableGenerationOfNewVRs();
+            if (cmd->findOption("--disable-new-vr"))
+                dcmDisableGenerationOfNewVRs();
+            cmd->endOptionBlock();
 
 #ifdef WITH_ZLIB
-        if (cmd->findOption("--compression-level"))
-        {
-            OFCmdUnsignedInt opt_compressionLevel = 0;
-            app->checkDependence("--compression-level", "--prefer-deflated",
-                (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit));
-            app->checkValue(cmd->getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
-            dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
-        }
+            if (cmd->findOption("--compression-level"))
+            {
+                OFCmdUnsignedInt opt_compressionLevel = 0;
+                app->checkDependence("--compression-level", "--prefer-deflated",
+                    (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit));
+                app->checkValue(cmd->getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
+                dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
+            }
 #endif
 
-        if (cmd->findOption("--acse-timeout"))
-        {
-            OFCmdSignedInt opt_timeout = 0;
-            app->checkValue(cmd->getValueAndCheckMin(opt_timeout, 1));
-            opt_acse_timeout = OFstatic_cast(int, opt_timeout);
-        }
+            if (cmd->findOption("--acse-timeout"))
+            {
+                OFCmdSignedInt opt_timeout = 0;
+                app->checkValue(cmd->getValueAndCheckMin(opt_timeout, 1));
+                opt_acse_timeout = OFstatic_cast(int, opt_timeout);
+            }
 
-        if (cmd->findOption("--dimse-timeout"))
-        {
-            OFCmdSignedInt opt_timeout = 0;
-            app->checkValue(cmd->getValueAndCheckMin(opt_timeout, 1));
-            opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
-            opt_blockMode = DIMSE_NONBLOCKING;
-        }
+            if (cmd->findOption("--dimse-timeout"))
+            {
+                OFCmdSignedInt opt_timeout = 0;
+                app->checkValue(cmd->getValueAndCheckMin(opt_timeout, 1));
+                opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
+                opt_blockMode = DIMSE_NONBLOCKING;
+            }
 
-        if (cmd->findOption("--max-associations"))
-        {
-            OFCmdSignedInt maxAssoc = 1;
-            app->checkValue(cmd->getValueAndCheckMin(maxAssoc, 1));
-            opt_maxAssociations = OFstatic_cast(int, maxAssoc);
+            if (cmd->findOption("--max-associations"))
+            {
+                OFCmdSignedInt maxAssoc = 1;
+                app->checkValue(cmd->getValueAndCheckMin(maxAssoc, 1));
+                opt_maxAssociations = OFstatic_cast(int, maxAssoc);
+            }
+            if (cmd->findOption("--refuse"))
+                opt_refuseAssociation = OFTrue;
+            if (cmd->findOption("--reject"))
+                opt_rejectWithoutImplementationUID = OFTrue;
+            if (cmd->findOption("--no-fail"))
+                opt_failInvalidQuery = OFFalse;
+            if (cmd->findOption("--sleep-after"))
+                app->checkValue(cmd->getValueAndCheckMin(opt_sleepAfterFind, 0));
+            if (cmd->findOption("--sleep-during"))
+                app->checkValue(cmd->getValueAndCheckMin(opt_sleepDuringFind, 0));
+            if (cmd->findOption("--max-pdu"))
+                app->checkValue(cmd->getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+            if (cmd->findOption("--disable-host-lookup"))
+                dcmDisableGethostbyaddr.set(OFTrue);
         }
-        if (cmd->findOption("--refuse"))
-            opt_refuseAssociation = OFTrue;
-        if (cmd->findOption("--reject"))
-            opt_rejectWithoutImplementationUID = OFTrue;
-        if (cmd->findOption("--no-fail"))
-            opt_failInvalidQuery = OFFalse;
-        if (cmd->findOption("--sleep-after"))
-            app->checkValue(cmd->getValueAndCheckMin(opt_sleepAfterFind, 0));
-        if (cmd->findOption("--sleep-during"))
-            app->checkValue(cmd->getValueAndCheckMin(opt_sleepDuringFind, 0));
-        if (cmd->findOption("--max-pdu"))
-            app->checkValue(cmd->getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
-        if (cmd->findOption("--disable-host-lookup"))
-            dcmDisableGethostbyaddr.set(OFTrue);
     }
 
     // dump application information
@@ -383,7 +411,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
         // return error
         return(1);
     }
-
+    //dataSource->ge
     // start providing the basic worklist management service
     WlmActivityManager *activityManager = new WlmActivityManager(
         dataSource, opt_port,

@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/dcmwlm/wldefine.h"
 
+#include "../../../../dcmUnits/DcmConfig.h"
 template <class T> class OFOrderedSet;
 struct WlmSuperiorSequenceInfoType;
 class DcmDataset;
@@ -221,7 +222,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *  @param searchMask - [in] The search mask.
        *  @return Number of matching records.
        */
-    unsigned long DetermineMatchingRecords( DcmDataset *searchMask );
+    unsigned long DetermineMatchingRecords(DcmDataset *searchMask, DcmConfigFile *configfile=NULL);
 
       /** For the matching record that is identified through idx, this function returns the number
        *  of items that are contained in the sequence element that is referred to by sequenceTag.
@@ -256,6 +257,14 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *  It shall be called when the matching records are no longer needed.
        */
     void ClearMatchingRecords();
+
+    void SetDcmConfig(DcmConfigFile *config);
+
+    DcmConfigFile* GetDcmConfig();
+
+    void GetWorklistData(OFList<DcmDataset > &listDataset, DcmDataset *searchMask, DcmConfigFile *configfile );;
+    public:
+        DcmConfigFile *m_config; //DcmConfigFile包含特殊的静态 函数，只能存储指针；
 };
 
 #endif

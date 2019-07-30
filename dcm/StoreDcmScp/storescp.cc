@@ -273,13 +273,11 @@ int main(int argc, char *argv[])
     OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
     opt_outputFilePath = currentAppPath + "/DCM_SAVE";
     DcmConfigFile config;
-    OFString configdir = currentAppPath + "/config/dcmqrscp.cfg";;
+    OFString configdir = currentAppPath + "/config/DcmServerConfig.cfg";;
     if (config.init(configdir.c_str()))
     {
         opt_outputFilePath = config.getStoreDir()->front();
-    //    //OFLOG_INFO(dcmqrscpLogger, "bad config file: " << opt_configFileName);
-    //    //return 10
-        int stop = 0;
+        opt_port = config.getStoreScpPort();
     }
     app.printMessage("log_dir:");
     app.printMessage(log_dir.c_str());

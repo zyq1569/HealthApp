@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\dcm\win32\dcmUnits\DcmConfig.h" />
+    <ClInclude Include="..\..\include\dcm\win32\dcmUnits\HMariaDb.h" />
     <ClInclude Include="..\..\include\dcm\win32\dcmUnits\Units.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

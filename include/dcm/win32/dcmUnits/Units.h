@@ -38,6 +38,10 @@ DCMTK_OFSTD_EXPORT OFString ToSearchDateTimeFormate(OFString datetime, OFString 
 
 DCMTK_OFSTD_EXPORT OFString ToDateTimeFormate(OFString datetime, OFString &date, OFString &time);
 
+DCMTK_OFSTD_EXPORT OFString ToDateFormate(OFString date);
+
+DCMTK_OFSTD_EXPORT OFString DbDateTimeToDateTimeFormate(OFString datetime, OFString &date, OFString &time);
+
 DCMTK_OFSTD_EXPORT void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 200);
 
 
