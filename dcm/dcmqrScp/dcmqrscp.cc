@@ -191,6 +191,9 @@ int main(int argc, char *argv[])
     }
     OFString currentAppPath = OFStandard::getDirNameFromPath(temps, path);
     OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
+    //opt_configFileName
+    OFString confilepath = currentAppPath + "//config//dcmqrscp.cfg";
+    opt_configFileName = confilepath.c_str();
     app.printMessage("log_dir:");
     app.printMessage(log_dir.c_str());
     if (!OFStandard::dirExists(log_dir))
@@ -972,11 +975,29 @@ int main(int argc, char *argv[])
         OFLOG_FATAL(dcmqrscpLogger, "bad config file: " << opt_configFileName);
         //return 10;
     }
+    else
+    {
+        OFString filepath = opt_configFileName;
+        OFLOG_INFO(dcmqrscpLogger, "----opt_configFileName:" + filepath);
+    }
     options.maxAssociations_ = config.getMaxAssociations();
 
     opt_port = config.getNetworkTCPPort();
+   
     if (opt_port == 0)
+    {
         opt_port = 1400; /* not set, use default */
+        OFString msg = "----default QR NetworkTCPPort:" + longToString(opt_port);
+        app.printMessage(msg.c_str());
+        OFLOG_INFO(dcmqrscpLogger,msg);
+    }
+    else
+    {
+        OFString msg = "----QR NetworkTCPPort:" + longToString(opt_port);
+        app.printMessage(msg.c_str());
+        OFLOG_INFO(dcmqrscpLogger, msg);
+    }
+
     if (overridePort > 0)
         opt_port = overridePort;
 
