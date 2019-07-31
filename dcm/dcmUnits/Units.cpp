@@ -12,11 +12,12 @@
 //***************$$$$$$$$$*************************
 #ifdef HAVE_WINDOWS_H
 #include <direct.h>      /* for _mkdir() */
+#include <objbase.h>   //CoCreateGuid()
 #endif
 
 #include "dcmtk/oflog/fileap.h"
 #include "Units.h"
-
+#include "dcmtk/ofstd/ofdatime.h"
 
 //!根据字符计算两个Hash数值
 OFHashValue CreateHashValue(const char * buffer, unsigned int length)
@@ -362,4 +363,111 @@ OFString ToSearchDateTimeFormate(OFString datetime, OFString &StartDateTime, OFS
     EndDateTime = temp;
 
     return (StartDateTime + EndDateTime);
+}
+
+void SearchDirectory(const OFString Dir, OFList<OFString> &datas)
+{
+    OFString dir;
+#ifdef HAVE_WINDOWS_H
+    dir = AdjustDir(Dir);
+    if (dir == "")
+        return;
+    OFString pach = dir + "*.*";
+    WIN32_FIND_DATA sr;
+    HANDLE h;
+    if ((h = FindFirstFile(pach.c_str(), &sr)) != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            OFString name = sr.cFileName;
+            if ((sr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+            {
+                if (name != "." && name != "..")
+                {
+                    SearchDirectory(dir + name, datas);
+                    datas.push_back(dir + name);
+                }
+            }
+        } while (FindNextFile(h, &sr) != 0);
+        FindClose(h);
+    }
+#else
+    //to do add!
+#endif
+}
+
+UINT64 CreateGUID()
+{
+    UINT32 uid[2];
+    // get the current time (needed for subdirectory name)
+    OFDateTime dateTime;
+    dateTime.setCurrentDateTime();
+
+    // create a name for the new subdirectory.
+    char timestamp[32];
+    sprintf(timestamp, "%04u%02u%02u%02u%02u%02u%03u",
+        dateTime.getDate().getYear(), dateTime.getDate().getMonth(),
+        dateTime.getDate().getDay(), dateTime.getTime().getHour(),
+        dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(),
+        dateTime.getTime().getMilliSecond());
+    //2019 0424 0951 14 708
+    //2005 0000 0000 00 000
+    UINT64 delt_y = (dateTime.getDate().getYear() - 2015) * 365;
+    UINT64 delt_M = dateTime.getDate().getMonth() * 30;
+    UINT64 delt_d = dateTime.getDate().getDay() * 24 * 60 * 60 * 1000;
+    UINT64 delt_h = dateTime.getTime().getHour() * 60 * 60 * 1000;
+    UINT64 delt_m = dateTime.getTime().getMinute() * 60 * 1000;
+    UINT64 delt_s = dateTime.getTime().getIntSecond() * 1000;
+    UINT64 delt_ma = delt_y + delt_M;
+    UINT64 delt_mi = delt_d + delt_h + delt_m + delt_s + dateTime.getTime().getMilliSecond();
+    uid[1] = delt_ma << 11;
+    uid[1] += delt_mi;
+#ifdef HAVE_WINDOWS_H
+    GUID guid;
+    HRESULT result = NULL;
+    do{
+        result = CoCreateGuid(&guid);
+        uid[0] = guid.Data1;
+    } while (result != S_OK);
+
+    return *((UINT64*)uid);
+#else
+    //to do add!apt-get install uuid-dev  #include <uuid/uuid.h>
+    uuid_generate(reinterpret_cast<unsigned char *>(&guid));
+    uid[0] = guid.Data1;
+#endif
+    return *((UINT64*)uid);
+}
+
+OFString GetCurrentDir()
+{
+    static OFString CurrentDir = "";
+    if (CurrentDir != "")
+    {
+        return CurrentDir;
+    }
+    OFString tempstr, path;
+#if HAVE_WINDOWS_H
+    char szFullPath[MAX_PATH];
+    ZeroMemory(szFullPath, MAX_PATH);
+    ::GetModuleFileName(NULL, szFullPath, MAX_PATH);
+    path = szFullPath;
+#endif
+    CurrentDir = OFStandard::getDirNameFromPath(tempstr, path);
+    return CurrentDir;
+}
+
+OFString FormatePatienName(OFString name)
+{
+    OFString str(name);
+    int pos = name.find('^');
+    while (pos > -1)
+    {
+        int len = str.length();
+        OFString temp = str.substr(0, pos);
+        temp = temp + str.substr(pos + 1, len - pos);
+        str = temp;
+        pos = str.find('^');
+    }
+    return str;
 }
