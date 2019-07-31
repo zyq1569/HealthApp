@@ -44,7 +44,13 @@ DCMTK_OFSTD_EXPORT OFString DbDateTimeToDateTimeFormate(OFString datetime, OFStr
 
 DCMTK_OFSTD_EXPORT void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 200);
 
+DCMTK_OFSTD_EXPORT void SearchDirectory(const OFString Dir, OFList<OFString> &datas);
 
+DCMTK_OFSTD_EXPORT UINT64 CreateGUID();
+
+DCMTK_OFSTD_EXPORT OFString GetCurrentDir();
+
+DCMTK_OFSTD_EXPORT OFString FormatePatienName(OFString name);
 //___________________________________________________________________________________________________________________________________
 //struct OFHashValue
 //{
