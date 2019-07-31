@@ -38,14 +38,14 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcostrmz.h"  /* for dcmZlibCompressionLevel */
 //-------add add 201806
 #include "dcmtk/oflog/fileap.h"
-#ifdef HAVE_WINDOWS_H
-#include <direct.h>      /* for _mkdir() */
-#endif
+//#ifdef HAVE_WINDOWS_H
+//#include <direct.h>      /* for _mkdir() */
+//#endif
 //--------------------
 //add mysql driver  后期需要将数据库的处理独立模块
 #include"HMariaDb.h"
-#include "dcmtk/ofstd/ofdatime.h"
-#include <objbase.h>
+//#include "dcmtk/ofstd/ofdatime.h"
+//#include <objbase.h>
 //////////////
 
 #ifdef ON_THE_FLY_COMPRESSION
@@ -308,7 +308,8 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
             handle = FindFirstFileA(OFStandard::combineDirAndFilename(tmpString, dirName, "*.*", OFTrue /*allowEmptyDirName*/).getCharPointer(), &data);
             if (handle != INVALID_HANDLE_VALUE)
             {
-                do {
+                do
+                {
                     /* filter out current and parent directory */
                     if ((strcmp(data.cFileName, ".") != 0) && (strcmp(data.cFileName, "..") != 0))
                     {
