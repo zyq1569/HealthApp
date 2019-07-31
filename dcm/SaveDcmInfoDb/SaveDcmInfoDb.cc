@@ -67,6 +67,10 @@ END_EXTERN_C
 #include <zlib.h>          /* for zlibVersion() */
 #endif
 
+
+#include "Units.h"
+
+
 #if defined (HAVE_WINDOWS_H) || defined(HAVE_FNMATCH_H)
 #define PATTERN_MATCHING_AVAILABLE
 #endif
@@ -168,44 +172,44 @@ static OFCondition  checkUserIdentityResponse(T_ASC_Parameters *params);
 #define LONGCOL 19
 
 //-------------------------------------------------------------------------------------
-OFBool CreatDir(OFString dir)
-{
-    if (!OFStandard::dirExists(dir))
-    {
-#if HAVE_WINDOWS_H
-        if (_mkdir(dir.c_str()) == -1)
-#else
-        if( mkdir( dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
-#endif
-        {
-            OFLOG_ERROR(SaveDcmInfoDbLogger, "mkdir :" + dir + "  .error!");
-            return OFFalse;
-        }
-        else
-        {
-            return OFTrue;
-        }
-    }
-    return OFTrue;
-}
+//OFBool CreatDir(OFString dir)
+//{
+//    if (!OFStandard::dirExists(dir))
+//    {
+//#if HAVE_WINDOWS_H
+//        if (_mkdir(dir.c_str()) == -1)
+//#else
+//        if( mkdir( dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
+//#endif
+//        {
+//            OFLOG_ERROR(SaveDcmInfoDbLogger, "mkdir :" + dir + "  .error!");
+//            return OFFalse;
+//        }
+//        else
+//        {
+//            return OFTrue;
+//        }
+//    }
+//    return OFTrue;
+//}
 
-OFString GetCurrentDir()
-{
-    static OFString CurrentDir = "";
-    if (CurrentDir != "")
-    {
-        return CurrentDir;
-    }
-    OFString tempstr, path;
-#if HAVE_WINDOWS_H
-    char szFullPath[MAX_PATH];
-    ZeroMemory(szFullPath, MAX_PATH);
-    ::GetModuleFileName(NULL, szFullPath, MAX_PATH);
-    path = szFullPath;
-#endif
-    CurrentDir = OFStandard::getDirNameFromPath(tempstr, path);
-    return CurrentDir;
-}
+//OFString GetCurrentDir()
+//{
+//    static OFString CurrentDir = "";
+//    if (CurrentDir != "")
+//    {
+//        return CurrentDir;
+//    }
+//    OFString tempstr, path;
+//#if HAVE_WINDOWS_H
+//    char szFullPath[MAX_PATH];
+//    ZeroMemory(szFullPath, MAX_PATH);
+//    ::GetModuleFileName(NULL, szFullPath, MAX_PATH);
+//    path = szFullPath;
+//#endif
+//    CurrentDir = OFStandard::getDirNameFromPath(tempstr, path);
+//    return CurrentDir;
+//}
 
 uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
     OFList<OFFilename> &fileList,
@@ -474,113 +478,113 @@ OFBool thread_end = OFFalse;
 long long int dicom_total_count = 0;
 long long int dicom_send_count = 0;
 
-OFString GetCurrWorkingDir()
-{
-    OFString strPath;
-#ifdef HAVE_WINDOWS_H
-    TCHAR szFull[_MAX_PATH];
-    //TCHAR szDrive[_MAX_DRIVE];
-    //TCHAR szDir[_MAX_DIR];
-    ::GetModuleFileName(NULL, szFull, sizeof(szFull) / sizeof(TCHAR));
-    strPath = OFString(szFull);
-#else
-    //to do add!
-#endif
-    return strPath;
-}
+//OFString GetCurrWorkingDir()
+//{
+//    OFString strPath;
+//#ifdef HAVE_WINDOWS_H
+//    TCHAR szFull[_MAX_PATH];
+//    //TCHAR szDrive[_MAX_DRIVE];
+//    //TCHAR szDir[_MAX_DIR];
+//    ::GetModuleFileName(NULL, szFull, sizeof(szFull) / sizeof(TCHAR));
+//    strPath = OFString(szFull);
+//#else
+//    //to do add!
+//#endif
+//    return strPath;
+//}
 
-OFString AdjustDir(const OFString dir)
-{
-#ifdef HAVE_WINDOWS_H
-    OFString path = dir;
-    if (path == "")
-        return "";
-    if (path[path.length() - 1] != '\\')
-        path += "\\";
-    return path;
-#else
-    //to do add!
-
-#endif
-}
+//OFString AdjustDir(const OFString dir)
+//{
+//#ifdef HAVE_WINDOWS_H
+//    OFString path = dir;
+//    if (path == "")
+//        return "";
+//    if (path[path.length() - 1] != '\\')
+//        path += "\\";
+//    return path;
+//#else
+//    //to do add!
+//
+//#endif
+//}
 //-----------------------------------------------------------------------------------
 //查找所有子级目录
-void SearchDirectory(const OFString Dir, OFList<OFString> &datas)
-{
-    OFString dir;
-#ifdef HAVE_WINDOWS_H
-    dir = AdjustDir(Dir);
-    if (dir == "")
-        return;
-    OFString pach = dir + "*.*";
-    WIN32_FIND_DATA sr;
-    HANDLE h;
-    if ((h = FindFirstFile(pach.c_str(), &sr)) != INVALID_HANDLE_VALUE)
-    {
-        do
-        {
-            OFString name = sr.cFileName;
-            if ((sr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-            {
-                if (name != "." && name != "..")
-                {
-                    SearchDirectory(dir + name, datas);
-                    datas.push_back(dir + name);
-                }
-            }
-        } while (FindNextFile(h, &sr) != 0);
-        FindClose(h);
-    }
-#else
-    //to do add!
-#endif
-}
+//void SearchDirectory(const OFString Dir, OFList<OFString> &datas)
+//{
+//    OFString dir;
+//#ifdef HAVE_WINDOWS_H
+//    dir = AdjustDir(Dir);
+//    if (dir == "")
+//        return;
+//    OFString pach = dir + "*.*";
+//    WIN32_FIND_DATA sr;
+//    HANDLE h;
+//    if ((h = FindFirstFile(pach.c_str(), &sr)) != INVALID_HANDLE_VALUE)
+//    {
+//        do
+//        {
+//            OFString name = sr.cFileName;
+//            if ((sr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+//            {
+//                if (name != "." && name != "..")
+//                {
+//                    SearchDirectory(dir + name, datas);
+//                    datas.push_back(dir + name);
+//                }
+//            }
+//        } while (FindNextFile(h, &sr) != 0);
+//        FindClose(h);
+//    }
+//#else
+//    //to do add!
+//#endif
+//}
 
 //-----------------------------------------------------------------------------------
 //查找Dir目录下的扩展名为FileExt的内容，包含所有子级目录，如果FileExt为空表示查找所有文件
-void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 50)
-{
-    if (datas.size() >= Count)
-    {
-        return;
-    }
-#ifdef HAVE_WINDOWS_H
-    OFString dir = AdjustDir(Dir);
-    if (dir == "")
-        return;
-    OFString pach = dir + "*.*";
-    WIN32_FIND_DATA sr;
-    HANDLE h;
-    if ((h = FindFirstFile(pach.c_str(), &sr)) != INVALID_HANDLE_VALUE)
-    {
-        do
-        {
-            OFString name = sr.cFileName;
-            if ((sr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-            {
-                if (name != "." && name != "..")
-                {
-                    SearchDirFile(dir + name, FileExt, datas);
-                }
-            }
-            else
-            {
-                OFString temp;
-                if (FileExt == "")
-                    datas.push_back(dir + name);
-                else if (Not == false && OFStandard::toUpper(temp, FileExt) == OFStandard::toUpper(temp, name))
-                    datas.push_back(dir + name);
-                else if (Not == true && OFStandard::toUpper(temp, FileExt) != OFStandard::toUpper(temp, name))
-                    datas.push_back(dir + name);
-            }
-        } while (FindNextFile(h, &sr) != 0);
-        FindClose(h);
-    }
-#else
-    //to do add!
-
-#endif
-}
+//void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 50)
+//{
+//    if (datas.size() >= Count)
+//    {
+//        return;
+//    }
+//#ifdef HAVE_WINDOWS_H
+//    OFString dir = AdjustDir(Dir);
+//    if (dir == "")
+//        return;
+//    OFString pach = dir + "*.*";
+//    WIN32_FIND_DATA sr;
+//    HANDLE h;
+//    if ((h = FindFirstFile(pach.c_str(), &sr)) != INVALID_HANDLE_VALUE)
+//    {
+//        do
+//        {
+//            OFString name = sr.cFileName;
+//            if ((sr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+//            {
+//                if (name != "." && name != "..")
+//                {
+//                    SearchDirFile(dir + name, FileExt, datas);
+//                }
+//            }
+//            else
+//            {
+//                OFString temp;
+//                if (FileExt == "")
+//                    datas.push_back(dir + name);
+//                else if (Not == false && OFStandard::toUpper(temp, FileExt) == OFStandard::toUpper(temp, name))
+//                    datas.push_back(dir + name);
+//                else if (Not == true && OFStandard::toUpper(temp, FileExt) != OFStandard::toUpper(temp, name))
+//                    datas.push_back(dir + name);
+//            }
+//        } while (FindNextFile(h, &sr) != 0);
+//        FindClose(h);
+//    }
+//#else
+//    //to do add!
+//
+//#endif
+//}
 
 struct  HStudyInfo
 {
@@ -588,63 +592,63 @@ struct  HStudyInfo
     OFString StudyAge, PatientBirth, StudyState, StudyDateTime, StudyModality, StudyManufacturer, StudyInstitutionName;
 };
 
-UINT64 CreateGUID()
-{
-    UINT32 uid[2];
-    // get the current time (needed for subdirectory name)
-    OFDateTime dateTime;
-    dateTime.setCurrentDateTime();
+//UINT64 CreateGUID()
+//{
+//    UINT32 uid[2];
+//    // get the current time (needed for subdirectory name)
+//    OFDateTime dateTime;
+//    dateTime.setCurrentDateTime();
+//
+//    // create a name for the new subdirectory.
+//    char timestamp[32];
+//    sprintf(timestamp, "%04u%02u%02u%02u%02u%02u%03u",
+//        dateTime.getDate().getYear(), dateTime.getDate().getMonth(),
+//        dateTime.getDate().getDay(), dateTime.getTime().getHour(),
+//        dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(),
+//        dateTime.getTime().getMilliSecond());
+//    //2019 0424 0951 14 708
+//    //2005 0000 0000 00 000
+//    UINT64 delt_y = (dateTime.getDate().getYear() - 2015) * 365;
+//    UINT64 delt_M = dateTime.getDate().getMonth() * 30;
+//    UINT64 delt_d = dateTime.getDate().getDay() * 24 * 60 * 60 * 1000;
+//    UINT64 delt_h = dateTime.getTime().getHour() * 60 * 60 * 1000;
+//    UINT64 delt_m = dateTime.getTime().getMinute() * 60 * 1000;
+//    UINT64 delt_s = dateTime.getTime().getIntSecond() * 1000;
+//    UINT64 delt_ma = delt_y + delt_M;
+//    UINT64 delt_mi = delt_d + delt_h + delt_m + delt_s + dateTime.getTime().getMilliSecond();
+//    uid[1] = delt_ma << 11;
+//    uid[1] += delt_mi;
+//#ifdef HAVE_WINDOWS_H
+//    GUID guid;
+//    HRESULT result = NULL;
+//    do{
+//        result = CoCreateGuid(&guid);
+//        uid[0] = guid.Data1;
+//    } while (result != S_OK);
+//
+//    return *((UINT64*)uid);
+//#else
+//    //to do add!apt-get install uuid-dev  #include <uuid/uuid.h>
+//    uuid_generate(reinterpret_cast<unsigned char *>(&guid));
+//    uid[0] = guid.Data1;
+//#endif
+//    return *((UINT64*)uid);
+//}
 
-    // create a name for the new subdirectory.
-    char timestamp[32];
-    sprintf(timestamp, "%04u%02u%02u%02u%02u%02u%03u",
-        dateTime.getDate().getYear(), dateTime.getDate().getMonth(),
-        dateTime.getDate().getDay(), dateTime.getTime().getHour(),
-        dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(),
-        dateTime.getTime().getMilliSecond());
-    //2019 0424 0951 14 708
-    //2005 0000 0000 00 000
-    UINT64 delt_y = (dateTime.getDate().getYear() - 2015) * 365;
-    UINT64 delt_M = dateTime.getDate().getMonth() * 30;
-    UINT64 delt_d = dateTime.getDate().getDay() * 24 * 60 * 60 * 1000;
-    UINT64 delt_h = dateTime.getTime().getHour() * 60 * 60 * 1000;
-    UINT64 delt_m = dateTime.getTime().getMinute() * 60 * 1000;
-    UINT64 delt_s = dateTime.getTime().getIntSecond() * 1000;
-    UINT64 delt_ma = delt_y + delt_M;
-    UINT64 delt_mi = delt_d + delt_h + delt_m + delt_s + dateTime.getTime().getMilliSecond();
-    uid[1] = delt_ma << 11;
-    uid[1] += delt_mi;
-#ifdef HAVE_WINDOWS_H
-    GUID guid;
-    HRESULT result = NULL;
-    do{
-        result = CoCreateGuid(&guid);
-        uid[0] = guid.Data1;
-    } while (result != S_OK);
-
-    return *((UINT64*)uid);
-#else
-    //to do add!apt-get install uuid-dev  #include <uuid/uuid.h>
-    uuid_generate(reinterpret_cast<unsigned char *>(&guid));
-    uid[0] = guid.Data1;
-#endif
-    return *((UINT64*)uid);
-}
-
-OFString FormatePatienName(OFString name)
-{
-    OFString str(name);
-    int pos = name.find('^');
-    while (pos > -1)
-    {
-        int len = str.length();
-        OFString temp = str.substr(0, pos);
-        temp = temp + str.substr(pos + 1, len - pos);
-        str = temp;
-        pos = str.find('^');
-    }
-    return str;
-}
+//OFString FormatePatienName(OFString name)
+//{
+//    OFString str(name);
+//    int pos = name.find('^');
+//    while (pos > -1)
+//    {
+//        int len = str.length();
+//        OFString temp = str.substr(0, pos);
+//        temp = temp + str.substr(pos + 1, len - pos);
+//        str = temp;
+//        pos = str.find('^');
+//    }
+//    return str;
+//}
 
 OFBool SaveDcmInfo2Db(OFString filename)
 {
