@@ -279,6 +279,7 @@ int main(int argc, char *argv[])
         opt_outputFilePath = config.getStoreDir()->front();
         opt_port = config.getStoreScpPort();
     }
+    opt_outputDirectory = opt_outputFilePath;
     app.printMessage("log_dir:");
     app.printMessage(log_dir.c_str());
     if (!OFStandard::dirExists(log_dir))
@@ -302,8 +303,8 @@ int main(int argc, char *argv[])
         tempstr += argv[i];
         tempstr += " ";
     }
+    OFLOG_INFO(storescpLogger, "opt_outputDirectory opt_outputFilePath:" + opt_outputFilePath + " ----------------------");
     OFLOG_INFO(storescpLogger, "---------argv[]:" + tempstr + " ----------------------");
-
     OFLOG_INFO(storescpLogger, "-----$$------DcmNet storescp start run!---------$$------------");
     //-----------------------------------------------------------------------------------------------------
     T_ASC_Network *net;

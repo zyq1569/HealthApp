@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
     OFString currentAppPath = OFStandard::getDirNameFromPath(temps, path);
     OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
     //opt_configFileName
-    OFString confilepath = currentAppPath + "//config//dcmqrscp.cfg";
+    OFString confilepath = currentAppPath + "//config//DcmServerConfig.cfg";
     opt_configFileName = confilepath.c_str();
     app.printMessage("log_dir:");
     app.printMessage(log_dir.c_str());
