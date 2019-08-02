@@ -63,25 +63,32 @@ OFBool DcmQueryRetrieveCharacterSetOptions::parseOptions(const char* mnemonic, c
     flags = Configured;
     conversionFlags = 0;
     for (char* c = DcmConfigFile::parsevalues(&valueptr); c;
-        c = DcmConfigFile::parsevalues(&valueptr)) {
+        c = DcmConfigFile::parsevalues(&valueptr))
+    {
         // ensure free is called when this scope is left
         RAIIFree cleanup(c);
-        if (!strcmp(c, "override")) {
+        if (!strcmp(c, "override"))
+        {
             flags |= Override;
         }
-        else if (!strcmp(c, "fallback")) {
+        else if (!strcmp(c, "fallback"))
+        {
             flags |= Fallback;
         }
-        else if (!strcmp(c, "abort")) {
+        else if (!strcmp(c, "abort"))
+        {
             conversionFlags |= OFCharacterEncoding::AbortTranscodingOnIllegalSequence;
         }
-        else if (!strcmp(c, "discard")) {
+        else if (!strcmp(c, "discard"))
+        {
             conversionFlags |= OFCharacterEncoding::DiscardIllegalSequences;
         }
-        else if (!strcmp(c, "transliterate")) {
+        else if (!strcmp(c, "transliterate"))
+        {
             conversionFlags |= OFCharacterEncoding::TransliterateIllegalSequences;
         }
-        else {
+        else
+        {
             characterSet = c;
         }
     }
@@ -102,22 +109,26 @@ DcmConfigFile::~DcmConfigFile()
     OFMap<const void *, OFBool>::const_iterator it;
     int i;
 
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
         freeConfigAEEntry(pointersToFree, &CNF_Config.AEEntries[i]);
     }
     free(CNF_Config.AEEntries);
 
-    for (i = 0; i < CNF_HETable.noOfHostEntries; i++) {
+    for (i = 0; i < CNF_HETable.noOfHostEntries; i++)
+    {
         freeConfigHostEntry(pointersToFree, &CNF_HETable.HostEntries[i]);
     }
     free(CNF_HETable.HostEntries);
 
-    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++) {
+    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++)
+    {
         freeConfigHostEntry(pointersToFree, &CNF_VendorTable.HostEntries[i]);
     }
     free(CNF_VendorTable.HostEntries);
 
-    for (it = pointersToFree.begin(); it != pointersToFree.end(); ++it) {
+    for (it = pointersToFree.begin(); it != pointersToFree.end(); ++it)
+    {
         free(OFconst_cast(void *, it->first));
     }
 }
@@ -136,25 +147,33 @@ int DcmConfigFile::aeTitlesForPeer(const char *hostName, const char *** aeTitleL
     maxAlloc = chunkSize;
 
     /* collect up titles for peer, search in host table */
-    for (i = 0; i < CNF_HETable.noOfHostEntries; i++) {
-        for (j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++) {
+    for (i = 0; i < CNF_HETable.noOfHostEntries; i++)
+    {
+        for (j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++)
+        {
             hname = CNF_HETable.HostEntries[i].Peers[j].HostName;
             aetitle = CNF_HETable.HostEntries[i].Peers[j].ApplicationTitle;
 #ifdef HAVE_PROTOTYPE_STRCASECMP
-            if (strcasecmp(hname, hostName) == 0) {  /* DNS is not case-sensitive */
+            if (strcasecmp(hname, hostName) == 0)
+            {  /* DNS is not case-sensitive */
 #elif defined(HAVE_PROTOTYPE__STRICMP)
-            if (_stricmp(hname, hostName) == 0) {
+            if (_stricmp(hname, hostName) == 0)
+            {
 #else
-            if (strcmp(hname, hostName) == 0) {  /* fallback if case insensitive compare is unavailable */
+            if (strcmp(hname, hostName) == 0)
+            {  /* fallback if case insensitive compare is unavailable */
 #endif
                 /* found an entry for peer host */
                 /* make sure its not already in list */
                 found = 0;
-                for (k = 0; !found && k < n; k++) {
+                for (k = 0; !found && k < n; k++)
+                {
                     found = (strcmp((*aeTitleList)[k], aetitle) == 0);
                 }
-                if (!found) {
-                    if (n >= maxAlloc) {
+                if (!found)
+                {
+                    if (n >= maxAlloc)
+                    {
                         *aeTitleList = (const char**)realloc(*aeTitleList,
                             (maxAlloc + chunkSize)*sizeof(const char*));
                         maxAlloc += chunkSize;
@@ -164,29 +183,37 @@ int DcmConfigFile::aeTitlesForPeer(const char *hostName, const char *** aeTitleL
                     n++;
                 }
             }
-            }
-            }
+        }
+    }
     /* collect up titles for peer, search in AE table */
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
-        for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
+        for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++)
+        {
             hname = CNF_Config.AEEntries[i].Peers[j].HostName;
             aetitle = CNF_Config.AEEntries[i].Peers[j].ApplicationTitle;
 
 #ifdef HAVE_PROTOTYPE_STRCASECMP
-            if (strcasecmp(hname, hostName) == 0) {  /* DNS is not case-sensitive */
+            if (strcasecmp(hname, hostName) == 0)
+            {  /* DNS is not case-sensitive */
 #elif defined(HAVE_PROTOTYPE__STRICMP)
-            if (_stricmp(hname, hostName) == 0) {
+            if (_stricmp(hname, hostName) == 0)
+            {
 #else
-            if (strcmp(hname, hostName) == 0) {  /* fallback if case insensitive compare is unavailable */
+            if (strcmp(hname, hostName) == 0)
+            {  /* fallback if case insensitive compare is unavailable */
 #endif
                 /* found an entry for peer host */
                 /* make sure its not already in list */
                 found = 0;
-                for (k = 0; !found && k < n; k++) {
+                for (k = 0; !found && k < n; k++)
+                {
                     found = (strcmp((*aeTitleList)[k], aetitle) == 0);
                 }
-                if (!found) {
-                    if (n >= maxAlloc) {
+                if (!found)
+                {
+                    if (n >= maxAlloc)
+                    {
                         *aeTitleList = (const char**)realloc(*aeTitleList,
                             (maxAlloc + chunkSize)*sizeof(const char*));
                         maxAlloc += chunkSize;
@@ -196,15 +223,16 @@ int DcmConfigFile::aeTitlesForPeer(const char *hostName, const char *** aeTitleL
                     n++;
                 }
             }
-            }
-            }
+        }
+    }
 
-    if (n == 0) {
+    if (n == 0)
+    {
         free(*aeTitleList);
         *aeTitleList = NULL;
     }
     return n;
-        }
+}
 
 
 int DcmConfigFile::ctnTitles(const char *** ctnTitleList) const
@@ -215,7 +243,8 @@ int DcmConfigFile::ctnTitles(const char *** ctnTitleList) const
     n = CNF_Config.noOfAEEntries;
     *ctnTitleList = (const char**)malloc(n * sizeof(const char*));
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i++)
+    {
         (*ctnTitleList)[i] = CNF_Config.AEEntries[i].ApplicationTitle;
     }
     return n;
@@ -228,11 +257,14 @@ int DcmConfigFile::aeTitlesForSymbolicName(const char *symbolicName, const char 
     int j = 0;
     int n = 0;
 
-    for (i = 0; i < CNF_HETable.noOfHostEntries; i++) {
-        if (strcmp(symbolicName, CNF_HETable.HostEntries[i].SymbolicName) == 0) {
+    for (i = 0; i < CNF_HETable.noOfHostEntries; i++)
+    {
+        if (strcmp(symbolicName, CNF_HETable.HostEntries[i].SymbolicName) == 0)
+        {
             n = CNF_HETable.HostEntries[i].noOfPeers;
             *aeTitleList = (const char**)malloc(n * sizeof(const char*));
-            for (j = 0; j < n; j++) {
+            for (j = 0; j < n; j++)
+            {
                 (*aeTitleList)[j] =
                     CNF_HETable.HostEntries[i].Peers[j].ApplicationTitle;
             }
@@ -248,10 +280,13 @@ const char *DcmConfigFile::vendorForPeerAETitle(const char *peerAETitle) const
     int i = 0;
     int j = 0;
 
-    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++) {
-        for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++) {
+    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++)
+    {
+        for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++)
+        {
             if (strcmp(peerAETitle,
-                CNF_VendorTable.HostEntries[i].Peers[j].ApplicationTitle) == 0) {
+                CNF_VendorTable.HostEntries[i].Peers[j].ApplicationTitle) == 0)
+            {
                 return CNF_VendorTable.HostEntries[i].SymbolicName;
             }
         }
@@ -515,11 +550,11 @@ int DcmConfigFile::readConfigLines(FILE *cnffp)
                 error = 1;
             }
         }
-        else
-        {
-            panic("Unknown mnemonic \"%s\" in configuration file, line %d", mnemonic, lineno);
-            error = 1;
-        }
+        //else
+        //{
+        //    panic("Unknown mnemonic \"%s\" in configuration file, line %d", mnemonic, lineno);
+        //    error = 1;
+        //}
     }
 
     return(error ? 0 : 1);
@@ -762,7 +797,7 @@ DcmConfigFilePeer *DcmConfigFile::parsePeers(char **valuehandle, int *peers)
 
 DcmConfigFilePeer *DcmConfigFile::readPeerList(char **valuehandle, int *peers)
 {
-    int  i, found,noOfPeers = 0;
+    int  i, found, noOfPeers = 0;
     char *helpvalue;
     DcmConfigFilePeer *helppeer,
         *peerlist = NULL;
@@ -798,7 +833,7 @@ DcmConfigFilePeer *DcmConfigFile::readPeerList(char **valuehandle, int *peers)
             noOfPeers += CNF_HETable.HostEntries[i].noOfPeers;
             if ((helppeer = (DcmConfigFilePeer *)malloc(noOfPeers * sizeof(DcmConfigFilePeer))) == NULL)
                 panic("Memory allocation 5 (%d)", noOfPeers);
-            if (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers) 
+            if (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers)
             {
                 memcpy((char*)helppeer, (char*)peerlist, (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers) * sizeof(DcmConfigFilePeer));
                 free(peerlist);
@@ -880,7 +915,7 @@ char *DcmConfigFile::parsevalues(char **valuehandle)
 {
     int i, inquotes = 0, count = 0;
     char *value = NULL;
-    const char *help,*valueptr = *valuehandle;
+    const char *help, *valueptr = *valuehandle;
 
     if (isquote(*valueptr))
     {
@@ -994,14 +1029,16 @@ int DcmConfigFile::init(const char *ConfigurationFile)
     int  error = 0;        /* error flag */
     FILE *cnffp;         /* configuration file pointer */
 
-    if ((cnffp = fopen(ConfigurationFile, "r")) == NULL) {
+    if ((cnffp = fopen(ConfigurationFile, "r")) == NULL)
+    {
         panic("Unable to open configuration file \"%s\"", ConfigurationFile);
         return(0);
     }
 
     initConfigStruct();
 
-    if (!readConfigLines(cnffp)) {
+    if (!readConfigLines(cnffp))
+    {
         panic("Reading configuration file \"%s\" with errors", ConfigurationFile);
         error = 1;
     }
@@ -1179,8 +1216,8 @@ int DcmConfigFile::peerInAETitle(const char *calledAETitle, const char *callingA
                     !strcmp(HostName, CNF_Config.AEEntries[i].Peers[j].HostName))
 #endif
                     return(1);       /* Peer found */
-            }
         }
+}
     }
     return(0);           /* Peer not found */
 }

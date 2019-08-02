@@ -158,25 +158,33 @@ int DcmQueryRetrieveConfig::aeTitlesForPeer(const char *hostName, const char ***
     maxAlloc = chunkSize;
 
     /* collect up titles for peer, search in host table */
-    for (i = 0; i < CNF_HETable.noOfHostEntries; i++) {
-        for (j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++) {
+    for (i = 0; i < CNF_HETable.noOfHostEntries; i++)
+    {
+        for (j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++)
+        {
             hname = CNF_HETable.HostEntries[i].Peers[j].HostName;
             aetitle = CNF_HETable.HostEntries[i].Peers[j].ApplicationTitle;
 #ifdef HAVE_PROTOTYPE_STRCASECMP
-            if (strcasecmp(hname, hostName) == 0) {  /* DNS is not case-sensitive */
+            if (strcasecmp(hname, hostName) == 0)
+            {  /* DNS is not case-sensitive */
 #elif defined(HAVE_PROTOTYPE__STRICMP)
-            if (_stricmp(hname, hostName) == 0) {
+            if (_stricmp(hname, hostName) == 0)
+            {
 #else
-            if (strcmp(hname, hostName) == 0) {  /* fallback if case insensitive compare is unavailable */
+            if (strcmp(hname, hostName) == 0)
+            {  /* fallback if case insensitive compare is unavailable */
 #endif
                 /* found an entry for peer host */
                 /* make sure its not already in list */
                 found = 0;
-                for (k = 0; !found && k < n; k++) {
+                for (k = 0; !found && k < n; k++)
+                {
                     found = (strcmp((*aeTitleList)[k], aetitle) == 0);
                 }
-                if (!found) {
-                    if (n >= maxAlloc) {
+                if (!found)
+                {
+                    if (n >= maxAlloc)
+                    {
                         *aeTitleList = (const char**)realloc(*aeTitleList,
                             (maxAlloc + chunkSize)*sizeof(const char*));
                         maxAlloc += chunkSize;
@@ -189,26 +197,34 @@ int DcmQueryRetrieveConfig::aeTitlesForPeer(const char *hostName, const char ***
         }
     }
     /* collect up titles for peer, search in AE table */
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
-        for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
+        for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++)
+        {
             hname = CNF_Config.AEEntries[i].Peers[j].HostName;
             aetitle = CNF_Config.AEEntries[i].Peers[j].ApplicationTitle;
 
 #ifdef HAVE_PROTOTYPE_STRCASECMP
-            if (strcasecmp(hname, hostName) == 0) {  /* DNS is not case-sensitive */
+            if (strcasecmp(hname, hostName) == 0)
+            {  /* DNS is not case-sensitive */
 #elif defined(HAVE_PROTOTYPE__STRICMP)
-            if (_stricmp(hname, hostName) == 0) {
+            if (_stricmp(hname, hostName) == 0)
+            {
 #else
-            if (strcmp(hname, hostName) == 0) {  /* fallback if case insensitive compare is unavailable */
+            if (strcmp(hname, hostName) == 0)
+            {  /* fallback if case insensitive compare is unavailable */
 #endif
                 /* found an entry for peer host */
                 /* make sure its not already in list */
                 found = 0;
-                for (k = 0; !found && k < n; k++) {
+                for (k = 0; !found && k < n; k++)
+                {
                     found = (strcmp((*aeTitleList)[k], aetitle) == 0);
                 }
-                if (!found) {
-                    if (n >= maxAlloc) {
+                if (!found)
+                {
+                    if (n >= maxAlloc)
+                    {
                         *aeTitleList = (const char**)realloc(*aeTitleList,
                             (maxAlloc + chunkSize)*sizeof(const char*));
                         maxAlloc += chunkSize;
@@ -221,7 +237,8 @@ int DcmQueryRetrieveConfig::aeTitlesForPeer(const char *hostName, const char ***
         }
     }
 
-    if (n == 0) {
+    if (n == 0)
+    {
         free(*aeTitleList);
         *aeTitleList = NULL;
     }
@@ -237,7 +254,8 @@ int DcmQueryRetrieveConfig::ctnTitles(const char *** ctnTitleList) const
     n = CNF_Config.noOfAEEntries;
     *ctnTitleList = (const char**)malloc(n * sizeof(const char*));
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < n; i++)
+    {
         (*ctnTitleList)[i] = CNF_Config.AEEntries[i].ApplicationTitle;
     }
     return n;
@@ -250,11 +268,14 @@ int DcmQueryRetrieveConfig::aeTitlesForSymbolicName(const char *symbolicName, co
     int j = 0;
     int n = 0;
 
-    for (i = 0; i < CNF_HETable.noOfHostEntries; i++) {
-        if (strcmp(symbolicName, CNF_HETable.HostEntries[i].SymbolicName) == 0) {
+    for (i = 0; i < CNF_HETable.noOfHostEntries; i++)
+    {
+        if (strcmp(symbolicName, CNF_HETable.HostEntries[i].SymbolicName) == 0)
+        {
             n = CNF_HETable.HostEntries[i].noOfPeers;
             *aeTitleList = (const char**)malloc(n * sizeof(const char*));
-            for (j = 0; j < n; j++) {
+            for (j = 0; j < n; j++)
+            {
                 (*aeTitleList)[j] =
                     CNF_HETable.HostEntries[i].Peers[j].ApplicationTitle;
             }
@@ -270,10 +291,13 @@ const char *DcmQueryRetrieveConfig::vendorForPeerAETitle(const char *peerAETitle
     int i = 0;
     int j = 0;
 
-    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++) {
-        for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++) {
+    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++)
+    {
+        for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++)
+        {
             if (strcmp(peerAETitle,
-                CNF_VendorTable.HostEntries[i].Peers[j].ApplicationTitle) == 0) {
+                CNF_VendorTable.HostEntries[i].Peers[j].ApplicationTitle) == 0)
+            {
                 return CNF_VendorTable.HostEntries[i].SymbolicName;
             }
         }
@@ -341,7 +365,8 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
     int store_dir_index = 0;
     OFString store_index_name;
     // read all lines from configuration file
-    while (fgets(rcline, sizeof(rcline), cnffp)) {
+    while (fgets(rcline, sizeof(rcline), cnffp))
+    {
         lineno++;
         if (rcline[0] == '#' || rcline[0] == 10 || rcline[0] == 13)
             continue;        /* comment or blank line */
@@ -437,7 +462,7 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
             GroupName_ = c;
             free(c);
         }
-        else if (!strcmp("NetworkTCPPort", mnemonic))
+        else if (!strcmp("NetworkTCPPort", mnemonic) || !strcmp("QueryRetrievePort", mnemonic))
         {
             sscanf(valueptr, "%d", &networkTCPPort_);
         }
@@ -520,11 +545,11 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
                 error = 1;
             }
         }
-        else
-        {
-            panic("Unknown mnemonic \"%s\" in configuration file, line %d", mnemonic, lineno);
-            error = 1;
-        }
+        //else
+        //{
+        //    panic("Unknown mnemonic \"%s\" in configuration file, line %d", mnemonic, lineno);
+        //    error = 1;
+        //}
     }
 
     return(error ? 0 : 1);
@@ -630,7 +655,8 @@ int DcmQueryRetrieveConfig::readVendorTable(FILE *cnffp, int *lineno)
         CNF_VendorTable.noOfHostEntries++;
         if ((helpentry = (DcmQueryRetrieveConfigHostEntry *)malloc(CNF_VendorTable.noOfHostEntries * sizeof(DcmQueryRetrieveConfigHostEntry))) == NULL)
             panic("Memory allocation 2 (%d)", CNF_VendorTable.noOfHostEntries);
-        if (CNF_VendorTable.noOfHostEntries - 1) {
+        if (CNF_VendorTable.noOfHostEntries - 1)
+        {
             memcpy((char*)helpentry, (char*)CNF_VendorTable.HostEntries, (CNF_VendorTable.noOfHostEntries - 1) *sizeof(DcmQueryRetrieveConfigHostEntry));
             free(CNF_VendorTable.HostEntries);
         }
@@ -690,7 +716,8 @@ int DcmQueryRetrieveConfig::readAETable(FILE *cnffp, int *lineno)
         noOfAEEntries++;
         if ((helpentry = (DcmQueryRetrieveConfigAEEntry *)malloc(noOfAEEntries * sizeof(DcmQueryRetrieveConfigAEEntry))) == NULL)
             panic("Memory allocation 3 (%d)", noOfAEEntries);
-        if (noOfAEEntries - 1) {
+        if (noOfAEEntries - 1)
+        {
             memcpy((char*)helpentry, (char*)CNF_Config.AEEntries, (noOfAEEntries - 1) *sizeof(DcmQueryRetrieveConfigAEEntry));
             free(CNF_Config.AEEntries);
         }
@@ -767,9 +794,7 @@ DcmQueryRetrieveConfigPeer *DcmQueryRetrieveConfig::parsePeers(char **valuehandl
 
 DcmQueryRetrieveConfigPeer *DcmQueryRetrieveConfig::readPeerList(char **valuehandle, int *peers)
 {
-    int  i,
-        found,
-        noOfPeers = 0;
+    int  i, found, noOfPeers = 0;
     char *helpvalue;
     DcmQueryRetrieveConfigPeer *helppeer,
         *peerlist = NULL;
@@ -805,19 +830,21 @@ DcmQueryRetrieveConfigPeer *DcmQueryRetrieveConfig::readPeerList(char **valuehan
             noOfPeers += CNF_HETable.HostEntries[i].noOfPeers;
             if ((helppeer = (DcmQueryRetrieveConfigPeer *)malloc(noOfPeers * sizeof(DcmQueryRetrieveConfigPeer))) == NULL)
                 panic("Memory allocation 5 (%d)", noOfPeers);
-            if (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers) {
+            if (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers)
+            {
                 memcpy((char*)helppeer, (char*)peerlist, (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers) * sizeof(DcmQueryRetrieveConfigPeer));
                 free(peerlist);
             }
             peerlist = helppeer;
             memcpy((char*)(peerlist + (noOfPeers - CNF_HETable.HostEntries[i].noOfPeers)), (char*)CNF_HETable.HostEntries[i].Peers, CNF_HETable.HostEntries[i].noOfPeers * sizeof(DcmQueryRetrieveConfigPeer));
         }
-
-        else {            /* peer */
+        else
+        {            /* peer */
             noOfPeers++;
             if ((helppeer = (DcmQueryRetrieveConfigPeer *)malloc(noOfPeers * sizeof(DcmQueryRetrieveConfigPeer))) == NULL)
                 panic("Memory allocation 6 (%d)", noOfPeers);
-            if (noOfPeers - 1) {
+            if (noOfPeers - 1)
+            {
                 memcpy((char*)helppeer, (char*)peerlist, (noOfPeers - 1) *sizeof(DcmQueryRetrieveConfigPeer));
                 free(peerlist);
             }
@@ -842,19 +869,24 @@ char *DcmQueryRetrieveConfig::skipmnemonic(char *rcline)
 
     while (*help != '\0')
     {                       /* leading spaces */
-        if (isgap(*help)) help++;
-        else break;
+        if (isgap(*help))
+            help++;
+        else
+            break;
     }
     while (*help != '\0')
     {
-        if (!isspace(OFstatic_cast(unsigned char, *help))) help++;    /* Mnemonic */
-        else break;
+        if (!isspace(OFstatic_cast(unsigned char, *help)))
+            help++;    /* Mnemonic */
+        else
+            break;
     }
     while (*help != '\0')
     {
         if (isgap(*help))
             help++;     /* Gap */
-        else break;
+        else
+            break;
     }
     return(help);
 }
@@ -927,7 +959,8 @@ char *DcmQueryRetrieveConfig::parsevalues(char **valuehandle)
                 help++;
             }
         }
-        else {
+        else
+        {
             if (isgap(*help))
             {
                 if ((value = (char*)malloc(count * sizeof(char) + 1)) == NULL)
@@ -943,12 +976,15 @@ char *DcmQueryRetrieveConfig::parsevalues(char **valuehandle)
                         help++;
                     }
                     else
+                    {
                         break;
+                    }
                 }
                 *valuehandle += count;
                 break;
             }
-            else {
+            else
+            {
                 count++;
                 help++;
             }
@@ -977,8 +1013,10 @@ long DcmQueryRetrieveConfig::quota(const char *value)
         else
             factor = 1;
     }
-    else return(-1L);
-
+    else
+    {
+        return(-1L);
+    }
     number = atoi(value);
     return(number * factor);
 }
@@ -989,14 +1027,16 @@ int DcmQueryRetrieveConfig::init(const char *ConfigurationFile)
     int  error = 0;        /* error flag */
     FILE *cnffp;         /* configuration file pointer */
 
-    if ((cnffp = fopen(ConfigurationFile, "r")) == NULL) {
+    if ((cnffp = fopen(ConfigurationFile, "r")) == NULL)
+    {
         panic("Unable to open configuration file \"%s\"", ConfigurationFile);
         return(0);
     }
 
     initConfigStruct();
 
-    if (!readConfigLines(cnffp)) {
+    if (!readConfigLines(cnffp))
+    {
         panic("Reading configuration file \"%s\" with errors", ConfigurationFile);
         error = 1;
     }
@@ -1012,17 +1052,21 @@ void DcmQueryRetrieveConfig::printConfig()
     int i, j;
 
     DCMQRDB_INFO("\nHostTable: " << CNF_HETable.noOfHostEntries);
-    for (i = 0; i < CNF_HETable.noOfHostEntries; i++) {
+    for (i = 0; i < CNF_HETable.noOfHostEntries; i++)
+    {
         DCMQRDB_INFO(CNF_HETable.HostEntries[i].SymbolicName << " " << CNF_HETable.HostEntries[i].noOfPeers);
-        for (j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++) {
+        for (j = 0; j < CNF_HETable.HostEntries[i].noOfPeers; j++)
+        {
             DCMQRDB_INFO(CNF_HETable.HostEntries[i].Peers[j].ApplicationTitle << " " <<
                 CNF_HETable.HostEntries[i].Peers[j].HostName << " " << CNF_HETable.HostEntries[i].Peers[j].PortNumber);
         }
     }
     DCMQRDB_INFO("\nVendorTable: " << CNF_VendorTable.noOfHostEntries);
-    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++) {
+    for (i = 0; i < CNF_VendorTable.noOfHostEntries; i++)
+    {
         DCMQRDB_INFO(CNF_VendorTable.HostEntries[i].SymbolicName << " " << CNF_VendorTable.HostEntries[i].noOfPeers);
-        for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++) {
+        for (j = 0; j < CNF_VendorTable.HostEntries[i].noOfPeers; j++)
+        {
             DCMQRDB_INFO(CNF_VendorTable.HostEntries[i].Peers[j].ApplicationTitle << " " <<
                 CNF_VendorTable.HostEntries[i].Peers[j].HostName << " " << CNF_VendorTable.HostEntries[i].Peers[j].PortNumber);
         }
@@ -1030,15 +1074,20 @@ void DcmQueryRetrieveConfig::printConfig()
     DCMQRDB_INFO("\nGlobal Parameters:\n" << networkTCPPort_ << "\n" << OFstatic_cast(unsigned long, maxPDUSize_)
         << "\n" << maxAssociations_);
     DCMQRDB_INFO("\nAEEntries: " << CNF_Config.noOfAEEntries);
-    for (i = 0; i < CNF_Config.noOfAEEntries; i++) {
+    for (i = 0; i < CNF_Config.noOfAEEntries; i++)
+    {
         DCMQRDB_INFO(CNF_Config.AEEntries[i].ApplicationTitle << "\n" << CNF_Config.AEEntries[i].StorageArea
             << "\n" << CNF_Config.AEEntries[i].Access << "\n" << CNF_Config.AEEntries[i].StorageQuota->maxStudies
             << ", " << CNF_Config.AEEntries[i].StorageQuota->maxBytesPerStudy);
         if (CNF_Config.AEEntries[i].noOfPeers == -1)
+        {
             DCMQRDB_INFO("Peers: ANY");
-        else {
+        }
+        else
+        {
             DCMQRDB_INFO("Peers: " << CNF_Config.AEEntries[i].noOfPeers);
-            for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++) {
+            for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++)
+            {
                 DCMQRDB_INFO(CNF_Config.AEEntries[i].Peers[j].ApplicationTitle << " " <<
                     CNF_Config.AEEntries[i].Peers[j].HostName << " " << CNF_Config.AEEntries[i].Peers[j].PortNumber);
             }
@@ -1129,7 +1178,9 @@ int DcmQueryRetrieveConfig::peerInAETitle(const char *calledAETitle, const char 
         if (!strcmp(calledAETitle, CNF_Config.AEEntries[i].ApplicationTitle))
         {
             if (CNF_Config.AEEntries[i].noOfPeers == -1) /* ANY Peer allowed */
+            {
                 return(1);
+            }
             for (j = 0; j < CNF_Config.AEEntries[i].noOfPeers; j++)
             {
                 if (!strcmp(callingAETitle, CNF_Config.AEEntries[i].Peers[j].ApplicationTitle) &&
@@ -1144,9 +1195,9 @@ int DcmQueryRetrieveConfig::peerInAETitle(const char *calledAETitle, const char 
                        !strcmp(HostName, CNF_Config.AEEntries[i].Peers[j].HostName))
 #endif
                        return(1);       /* Peer found */
+            }
         }
     }
-}
     return(0);           /* Peer not found */
 }
 

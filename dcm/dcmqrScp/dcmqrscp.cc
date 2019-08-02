@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
     OFString currentAppPath = OFStandard::getDirNameFromPath(temps, path);
     OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
     //opt_configFileName
-    OFString confilepath = currentAppPath + "//config//DcmServerConfig.cfg";
+    OFString confilepath = currentAppPath + "/config/DcmServerConfig.cfg";
     opt_configFileName = confilepath.c_str();
     app.printMessage("log_dir:");
     app.printMessage(log_dir.c_str());
@@ -247,16 +247,14 @@ int main(int argc, char *argv[])
         OFString opt5 = "use specific configuration file\n(default: ";
         opt5 += opt_configFileName;
         opt5 += ")";
-        cmd.addOption("--config", "-c", 1, "[f]ilename: string",
-            opt5.c_str());
+        cmd.addOption("--config", "-c", 1, "[f]ilename: string", opt5.c_str());
     }
     else
     {
         OFString opt5 = "[f]ilename: string (default: ";
         opt5 += opt_configFileName;
         opt5 += ")";
-        cmd.addOption("--config", "-c", 1, opt5.c_str(),
-            "use specific configuration file");
+        cmd.addOption("--config", "-c", 1, opt5.c_str(), "use specific configuration file");
     }
 #ifdef HAVE_FORK
     cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
@@ -926,7 +924,8 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--padding-off")) options.paddingType_ = EPD_withoutPadding;
+        if (cmd.findOption("--padding-off"))
+            options.paddingType_ = EPD_withoutPadding;
         if (cmd.findOption("--padding-create"))
         {
             app.checkConflict("--padding-create", "--write-dataset", !options.useMetaheader_);
