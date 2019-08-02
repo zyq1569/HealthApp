@@ -1,4 +1,5 @@
 ﻿#/////////////////////////////////////////////////////////////////////////////////////
+#mysql  table：
 CREATE TABLE `h_modality` (
 	`ModalityIdentity` INT(11) NOT NULL,
 	`ModalityAET` CHAR(50) NULL DEFAULT NULL,
