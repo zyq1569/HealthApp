@@ -2190,6 +2190,15 @@ char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmD
                 {
                     OFLOG_ERROR(storescpLogger, "element DCM_InstitutionName " << currentStudyInstitutionName << " absent or empty in data set");
                 }
+                ///modify dicom
+                OFString temp = "CT_TEST";
+                (*imageDataSet)->putAndInsertString(DCM_InstitutionName, temp.c_str());
+                temp = "1.2.826.0.1.3680043.9.7606";
+                //temp = temp+currentStudyInstanceUID.substr(25, currentStudyInstanceUID.length() - 25);
+                (*imageDataSet)->putAndInsertString(DCM_StudyInstanceUID, temp.c_str());
+                temp = "People_Name";
+                (*imageDataSet)->putAndInsertString(DCM_PatientName, temp.c_str());
+                
                 // if --sort-on-patientname is active, we need to extract the
                 // patient's name (format: last_name^first_name)
                 OFString currentPatientName;

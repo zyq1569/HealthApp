@@ -132,12 +132,14 @@ static void DB_DuplicateElement(DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
 static OFCondition DB_GetTagLevel(DcmTagKey tag, DB_LEVEL *level)
 {
     int i;
-
     for (i = 0; i < NbFindAttr; i++)
+    {
         if (TbFindAttr[i].tag == tag)
             break;
+    }
 
-    if (i < NbFindAttr) {
+    if (i < NbFindAttr)
+    {
         *level = TbFindAttr[i].level;
         return (EC_Normal);
     }
@@ -150,15 +152,21 @@ static OFCondition DB_GetTagKeyAttr(DcmTagKey tag, DB_KEY_TYPE *keyAttr)
     int i;
 
     for (i = 0; i < NbFindAttr; i++)
+    {
         if (TbFindAttr[i].tag == tag)
             break;
+    }
 
-    if (i < NbFindAttr) {
+
+    if (i < NbFindAttr)
+    {
         *keyAttr = TbFindAttr[i].keyAttr;
         return (EC_Normal);
     }
     else
+    {
         return (QR_EC_IndexDatabaseError);
+    }
 }
 
 OFCondition DB_lock(OFBool exclusive)
@@ -166,13 +174,16 @@ OFCondition DB_lock(OFBool exclusive)
     static int pidx;//???
     int lockmode;
 
-    if (exclusive) {
+    if (exclusive)
+    {
         lockmode = LOCK_EX;     /* exclusive lock */
     }
-    else {
+    else
+    {
         lockmode = LOCK_SH;     /* shared lock */
     }
-    if (dcmtk_flock(pidx, lockmode) < 0) {
+    if (dcmtk_flock(pidx, lockmode) < 0)
+    {
         dcmtk_plockerr("DB_lock");
         return QR_EC_IndexDatabaseError;
     }
@@ -514,29 +525,6 @@ static void DB_IdxInitRecord(IdxRecord *idx, int linksOnly)
         idx->param[RECORDIDX_SpecificCharacterSet].XTag = DCM_SpecificCharacterSet;
         idx->param[RECORDIDX_SpecificCharacterSet].ValueLength = CS_MAX_LENGTH * 8;
         idx->SpecificCharacterSet[0] = '\0';
-
-        /////////////////////////
-        //strcpy(idx->PatientBirthDate, "20190720");
-        //strcpy(idx->PatientSex, "F");
-        //strcpy(idx->PatientName, "Shen YuXiu");
-        //strcpy(idx->PatientID, "46595");
-        //strcpy(idx->PatientBirthTime, "154200");
-
-        //strcpy(idx->OtherPatientIDs, "201907200001");
-        //strcpy(idx->OtherPatientNames, "ceshi_name");
-        //strcpy(idx->StudyDate, "20100301");
-        //strcpy(idx->StudyTime, "154200");
-
-        //strcpy(idx->StudyID, "20190720");
-        //strcpy(idx->StudyDescription, "this is a test study one! ");
-        //strcpy(idx->StudyInstanceUID, "1.2.392.200036.9116.2.6.1.48.1214245415.1267414711.906286");
-        //strcpy(idx->PatientAge, "1");
-        //strcpy(idx->SeriesNumber, "1");
-        //strcpy(idx->SeriesInstanceUID, "1.2.276.0.179081.1207.1");
-        //strcpy(idx->ImageNumber, "1");
-        //strcpy(idx->SpecificCharacterSet, "ISO_IR 100");
-        //strcpy(idx->Modality, "CT");
-        ///////////////////////
     }
     idx->param[RECORDIDX_PatientBirthDate].PValueField = (char *)idx->PatientBirthDate;
     idx->param[RECORDIDX_PatientSex].PValueField = (char *)idx->PatientSex;
@@ -796,17 +784,6 @@ OFCondition nextFindResponse(DB_ElementList* &findResponseList,
     return (EC_Normal);
 }
 
-////
-//if (s.Length() != 8)
-//return LDateTime(NULL);
-//int year = s.SubString(1, 4).ToInt();
-//int month = s.SubString(5, 2).ToInt();
-//int day = s.SubString(7, 2).ToInt();
-//LDateTime time = LDateTime(year, month, day, 0, 0, 0);
-//if (time.GetStatus() != LDateTime::valid)
-//time = LDateTime(NULL);
-//return time;
-////
 
 OFString ToSearchName(OFString OrName)
 {

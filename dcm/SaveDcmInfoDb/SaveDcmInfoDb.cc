@@ -362,7 +362,9 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
                     /* recursively search sub directories */
                     if (recurse)
                         searchDirectoryRecursively(pathName, fileList, pattern, dirPrefix, recurse);
-                } else {
+                }
+                else
+                {
 #ifdef HAVE_FNMATCH_H
                     /* check whether filename matches pattern */
                     if ((pattern.isEmpty()) || (fnmatch(pattern.getCharPointer(), entry->d_name, FNM_PATHNAME) == 0))
