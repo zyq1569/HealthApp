@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StoreDcmScp", "dcm\StoreDcmScp\StoreDcmScp.vcxproj", "{7F191F2F-D9C3-3F53-9D37-69DAC8749E55}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestMariaDbApp", "DB\TestMariaDbApp\TestMariaDbApp.vcxproj", "{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StoreDcmSCP", "dcm\StoreDcmScp\StoreDcmScp.vcxproj", "{7F191F2F-D9C3-3F53-9D37-69DAC8749E55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StoreDcmSCU", "dcm\StoreDcmScu\StoreDcmScu.vcxproj", "{8474911D-D74B-4D92-BBA4-B49F06B818FF}"
 EndProject
@@ -31,7 +29,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcmqrdb", "dcm\dcmqrdb\dcmq
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcmqrScp", "dcm\dcmqrScp\dcmqrScp.vcxproj", "{7AAA4734-C26B-468B-BCE7-AF1E458413A2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcmUtils", "dcm\dcmUnits\dcmUtils.vcxproj", "{F14C792D-901F-4D0D-8ECE-AC49BF915412}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcmUnits", "dcm\dcmUnits\dcmUtils.vcxproj", "{F14C792D-901F-4D0D-8ECE-AC49BF915412}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,28 +67,6 @@ Global
 		{7F191F2F-D9C3-3F53-9D37-69DAC8749E55}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
 		{7F191F2F-D9C3-3F53-9D37-69DAC8749E55}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
 		{7F191F2F-D9C3-3F53-9D37-69DAC8749E55}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Debug|Win32.Build.0 = Debug|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Debug|x64.ActiveCfg = Debug|x64
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Debug|x64.Build.0 = Debug|x64
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.MinSizeRel|Mixed Platforms.ActiveCfg = Release|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.MinSizeRel|Mixed Platforms.Build.0 = Release|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.MinSizeRel|Win32.ActiveCfg = Release|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.MinSizeRel|x64.ActiveCfg = Release|x64
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.MinSizeRel|x64.Build.0 = Release|x64
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Release|Win32.ActiveCfg = Release|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Release|Win32.Build.0 = Release|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Release|x64.ActiveCfg = Release|x64
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Release|x64.Build.0 = Release|x64
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.RelWithDebInfo|Mixed Platforms.ActiveCfg = Release|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.RelWithDebInfo|Mixed Platforms.Build.0 = Release|Win32
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.RelWithDebInfo|Win32.ActiveCfg = Release|x64
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.RelWithDebInfo|x64.ActiveCfg = Release|x64
-		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.RelWithDebInfo|x64.Build.0 = Release|x64
 		{8474911D-D74B-4D92-BBA4-B49F06B818FF}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{8474911D-D74B-4D92-BBA4-B49F06B818FF}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{8474911D-D74B-4D92-BBA4-B49F06B818FF}.Debug|Win32.ActiveCfg = Debug|Win32
