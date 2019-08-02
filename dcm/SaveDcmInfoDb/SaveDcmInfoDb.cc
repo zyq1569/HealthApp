@@ -46,6 +46,7 @@ END_EXTERN_C
 #include"HMariaDb.h"
 //#include "dcmtk/ofstd/ofdatime.h"
 //#include <objbase.h>
+#include"DcmConfig.h"
 //////////////
 
 #ifdef ON_THE_FLY_COMPRESSION
@@ -651,7 +652,7 @@ struct  HStudyInfo
 //    return str;
 //}
 
-OFBool SaveDcmInfo2Db(OFString filename)
+OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
 {
     //UINT64 uuid = CreateGUID();
     HStudyInfo StudyInfo;
@@ -757,6 +758,13 @@ OFBool SaveDcmInfo2Db(OFString filename)
             if (pMariaDb == NULL)
             {
                 OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
+                if (configfile != NULL)
+                {
+                    strIP = configfile->getSqlServer();
+                    strUser = configfile->getSqlusername();
+                    strPwd = configfile->getSqlpass();
+                    strDadaName = configfile->getSqldbname();
+                }
 #ifdef _UNICODE
                 pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
                     W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
@@ -777,7 +785,7 @@ OFBool SaveDcmInfo2Db(OFString filename)
                 sprintf(uuid, "%llu", CreateGUID());
                 PatientIdentity = uuid;
                 querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
-                                                                              PatientSex,PatientBirthday) value(";
+                                                                                                                                                                                          PatientSex,PatientBirthday) value(";
                 querysql += PatientIdentity;
                 querysql += ",'";
                 querysql += StudyInfo.StudyPatientId;
@@ -815,8 +823,8 @@ OFBool SaveDcmInfo2Db(OFString filename)
                 char uuid[64];
                 sprintf(uuid, "%llu", CreateGUID());
                 OFString StudyIdentity = uuid;
-                OFString strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,\
-                                                                    StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState) value(";
+                OFString strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,";
+                strsql += " StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState) value(";
                 strsql += StudyIdentity;
                 strsql += ",'";
                 strsql += StudyInfo.StudyID;
@@ -825,6 +833,10 @@ OFBool SaveDcmInfo2Db(OFString filename)
                 strsql += "',";
                 strsql += PatientIdentity;
                 strsql += ",'";
+                if (StudyInfo.StudyDateTime.empty())
+                {
+                    StudyInfo.StudyDateTime = "1970-01-01 00:00:01.000000";
+                }
                 strsql += StudyInfo.StudyDateTime;
                 strsql += "','";
                 strsql += StudyInfo.StudyModality;
@@ -837,6 +849,13 @@ OFBool SaveDcmInfo2Db(OFString filename)
             }
             OFStandard::deleteFile(filename);
             OFLOG_INFO(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
+
+            //-------------------------------------------------------------------------------
+            //更新预约表检查状态
+            querysql = "update H_order set StudyState = 3 where StudyUID = '" + StudyInfo.StudyInstanceUID + "';";
+            pMariaDb->execute(querysql.c_str());
+            OFLOG_INFO(SaveDcmInfoDbLogger, "update table H_order:" + StudyInfo.StudyInstanceUID);
+            //-------------------------------------------------------------------------------
         }
         catch (...)
         {
@@ -844,7 +863,6 @@ OFBool SaveDcmInfo2Db(OFString filename)
             OFLOG_ERROR(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
             return OFFalse;
         }
-        //  
     }
     return OFTrue;
 }
@@ -897,8 +915,20 @@ int main(int argc, char *argv[])
     }
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------argv[]:" + tempstr + " ----------------------");
 
-    OFString ini_filename, ini_dir = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
-    OFString ini_error_dir = currentAppPath + "/DCM_SAVE/Task/error";
+    OFString ini_dir, ini_error_dir;
+    static DcmConfigFile dcmconfig;
+    if (dcmconfig.init((currentAppPath+"/config/DcmServerConfig.cfg").c_str()))
+    {
+        OFString dir = dcmconfig.getStoreDir()->front();
+        ini_dir = dir + "/Task/1";
+        ini_error_dir = dir + "/Task/error";
+    }
+    else
+    {
+        ini_dir = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
+        ini_error_dir = currentAppPath + "/DCM_SAVE/Task/error";
+    }
+
     if (!OFStandard::dirExists(ini_error_dir))
     {
         OFStandard::createDirectory(ini_error_dir, currentAppPath + "/DCM_SAVE/Task/");//CreatDir(log_dir);
@@ -915,7 +945,7 @@ int main(int argc, char *argv[])
             OFListIterator(OFString) enditer = list_file_ini.end();
             while (iter != enditer)
             {
-                if (!SaveDcmInfo2Db(*iter))
+                if (!SaveDcmInfo2Db(*iter, &dcmconfig))
                 {
                     OFString filename;
                     OFStandard::getFilenameFromPath(filename, *iter);

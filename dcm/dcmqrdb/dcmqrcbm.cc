@@ -41,6 +41,7 @@ BEGIN_EXTERN_C
 
 END_EXTERN_C
 
+static OFLogger dcmqrscpLogger = OFLog::getLogger("dcmtk.dcmqr.apps.");
 
 static void moveSubOpProgressCallback(void * /* callbackData */,
 T_DIMSE_StoreProgress *progress,
@@ -98,6 +99,8 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     OFHashValue path = CreateHashValue(StudyInstanceUID.c_str(), StudyInstanceUID.length());
     OFString hash_dir = longToString(path.first) + "/" + longToString(path.second);
     OFString temp_dir = "/Images/" + hash_dir + "/" + StudyInstanceUID;
+    OFLOG_INFO(dcmqrscpLogger, "---------hash_dir:" + hash_dir + " ----------------------");
+    OFLOG_INFO(dcmqrscpLogger, "---------study_dir:" + hash_dir + " ----------------------");
     OFListIterator(OFString) if_iter = m_config->getStoreDir()->begin();
     OFListIterator(OFString) if_last = m_config->getStoreDir()->end();
     OFBool find = OFFalse;

@@ -263,19 +263,11 @@ OFString DateTimeFormate(OFString datetime, OFString &date, OFString &time)
 参数
 - s - dfr - dfp  D : \DCMTK\dcmtk - 3.6.0\dcmwlm\data\wlistdb  104
 - s 是单独进程模式或者线程模式
-unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDataset *searchMask)
-//相关类似资料
-http://bbs.hc3i.cn/thread-111610-1-1.html
-在D : \DCMTK\dcmtk - 3.6.0\dcmwlm\libsrc\wlfsim.cc 文件里面增加了参考修改dcm文件的代码
-void SetWorklistData(DcmDataset *dataset)
+unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords(DcmDataset *searchMask
 
 scp 选择 wlmscpfs 工程 debug设置 成 - s - dfr - dfp  D : \DCMTK\dcmtk - 3.6.0\dcmwlm\data\wlistdb  104
 代码在dcmtk - 3.6.0\dcmwlm\libsrc\wlfsim.cc
-scu 使用先把wlistqry.wl 拷贝到 D : \DCMTK\dcmtkXP\bin\Debug下面 再在D : \DCMTK\dcmtkXP\bin
-findscu 127.0.0.1 104 wlistqry.wl - aec OFFIS
-************************************************************************************************ /
-//可以创建一个dcm文件，然后根据查询的条件,搜索数据库,再修改dcm文件，返回值
-// -s -dfr -dfp  D:\DCMTK\dcmtk-3.6.0\dcmwlm\data\wlistdb  104
+
 findscu 127.0.0.1 104 wlistqry.wl -aec OFFIS
 ************************************************************************************************/
 //void GetWorklistData(OFList<DcmDataset *> &listDataset, DcmDataset *searchMask)
@@ -381,7 +373,7 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
     //int count;//数据库查询的记录条数
     OFString sql = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,";
     sql = sql + " s.StudyID, s.StudyUID, s.OrderDateTime, s.ScheduledDateTime, ";
-    sql = sql + " s.StudyModality, s.AETitle, s.StudyDescription ,s.StudyCode from h_patient p, h_order s where p.PatientIdentity=s.PatientIdentity ";
+    sql = sql + " s.StudyModality, s.AETitle, s.StudyDescription ,s.StudyCode from h_patient p, h_order s where  StudyState = 1 and p.PatientIdentity=s.PatientIdentity ";
     if (!Modality.empty())
     {
         sql = sql + " and s.StudyModality = '" + Modality + "'";
