@@ -1,5 +1,5 @@
 # HealthApp  ：
-# Copyright：
+# Copyright：DCMTK【https://github.com/DCMTK/dcmtk/blob/master/COPYRIGHT】
 ————————————————————————————————————————————————————————————————————————————————————————
 1. maridb lookup。
 2.dcmstore  by dcmtk。
