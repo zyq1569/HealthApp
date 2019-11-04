@@ -1503,8 +1503,7 @@ OFCondition ASC_setIdentAC(
 }
 
 
-static OFString
-ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
+static OFString  ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
 /*
  * Write presentation context structure in textual form to stdout.
  * (debugging aid)
@@ -1514,7 +1513,8 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
     OFOStringStream outstream;
 
     outstream << "  Context ID:        " << (int)p->presentationContextID << " ";
-    switch (p->resultReason) {
+    switch (p->resultReason)
+    {
     case ASC_P_ACCEPTANCE:
         outstream << "(Accepted)" << OFendl;
         break;
@@ -1538,40 +1538,50 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
     }
 
     const char* l_as = dcmFindNameOfUID(p->abstractSyntax);
-    if (l_as) {
+    if (l_as)
+    {
         outstream << "    Abstract Syntax: =" << l_as << OFendl;
     }
-    else {
+    else
+    {
         outstream << "    Abstract Syntax: " << p->abstractSyntax << OFendl;
     }
 
     outstream << "    Proposed SCP/SCU Role: "
         << ASC_role2String(p->proposedRole) << OFendl;
 
-    if (p->resultReason != ASC_P_NOTYETNEGOTIATED) {
+    if (p->resultReason != ASC_P_NOTYETNEGOTIATED)
+    {
         outstream << "    Accepted SCP/SCU Role: "
             << ASC_role2String(p->acceptedRole) << OFendl;
     }
 
-    if (p->resultReason == ASC_P_ACCEPTANCE) {
+    if (p->resultReason == ASC_P_ACCEPTANCE)
+    {
         const char* ts = dcmFindNameOfUID(p->acceptedTransferSyntax);
-        if (ts) {
+        if (ts)
+        {
             outstream << "    Accepted Transfer Syntax: =" << ts << OFendl;
         }
-        else {
+        else
+        {
             outstream << "    Accepted Transfer Syntax: "
                 << p->acceptedTransferSyntax << OFendl;
         }
     }
 
-    if (p->resultReason == ASC_P_NOTYETNEGOTIATED) {
+    if (p->resultReason == ASC_P_NOTYETNEGOTIATED)
+    {
         outstream << "    Proposed Transfer Syntax(es):" << OFendl;
-        for (i = 0; i < (int)p->transferSyntaxCount; i++) {
+        for (i = 0; i < (int)p->transferSyntaxCount; i++)
+        {
             const char* ts = dcmFindNameOfUID(p->proposedTransferSyntaxes[i]);
-            if (ts) {
+            if (ts)
+            {
                 outstream << "      =" << ts << OFendl;
             }
-            else {
+            else
+            {
                 outstream << "      " << p->proposedTransferSyntaxes[i] << OFendl;
             }
         }
@@ -1583,8 +1593,7 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
 }
 
 
-OFString&
-ASC_dumpParameters(OFString& str, T_ASC_Parameters * params, ASC_associateType dir)
+OFString& ASC_dumpParameters(OFString& str, T_ASC_Parameters * params, ASC_associateType dir)
 /*
  * Write parameters in textual form to stdout (debugging aid)
  */

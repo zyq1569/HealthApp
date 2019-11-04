@@ -458,7 +458,8 @@ E_TransferSyntax *xferSyntax)
 
     /* if everything was ok so far determine the transfer syntax */
     /* which is specified in the accepted presentation context */
-    if (cond.good()) cond = getTransferSyntax(assoc, presID, xferSyntax);
+    if (cond.good())
+        cond = getTransferSyntax(assoc, presID, xferSyntax);
 
     /* otherwise return ok */
     return cond;
@@ -879,18 +880,21 @@ DcmDataset **commandSet)
     if (commandSet) *commandSet = NULL;
 
     /* check if the data dictionary is available. If not return an error */
-    if (!isDataDictPresent()) return DIMSE_NODATADICT;
+    if (!isDataDictPresent())
+        return DIMSE_NODATADICT;
 
     /* validate DIMSE command information, i.e. check if the information which is */
     /* contained in msg meets certain conditions. For example, if msg represents a */
     /* C-ECHO-RQ, then there is not supposed to be a corresponding data set. If the */
     /* specified conditions are not met, return an error. */
-    if (EC_Normal != (cond = validateMessage(assoc, msg))) return cond;
+    if (EC_Normal != (cond = validateMessage(assoc, msg)))
+        return cond;
 
     /* check if the presentation context id refers to a valid presentation context and determine the */
     /* transfer syntax which is specified for this presentation context. Additionally, check if the specified */
     /* transfer syntax is supported at all. If any of the checks returns an error, return this error. */
-    if (EC_Normal != (cond = checkPresentationContextForMessage(assoc, msg, presID, &xferSyntax))) return cond;
+    if (EC_Normal != (cond = checkPresentationContextForMessage(assoc, msg, presID, &xferSyntax)))
+        return cond;
 
     /* create a DcmDataset object ("command object") based on the information in the DIMSE command */
     /* variable (remember that all DICOM commands are - in the end - particular data sets). The */
@@ -903,7 +907,8 @@ DcmDataset **commandSet)
     {
         /* move the status detail to the command */
         DcmElement* e;
-        while ((e = statusDetail->remove((unsigned long)0)) != NULL) cmdObj->insert(e, OFTrue);
+        while ((e = statusDetail->remove((unsigned long)0)) != NULL)
+            cmdObj->insert(e, OFTrue);
     }
 
     /* if the command object has been created successfully and the data set is present */
@@ -925,7 +930,8 @@ DcmDataset **commandSet)
                     << dataFileName << "): " << OFStandard::getLastSystemErrorCode().message());
                 cond = DIMSE_SENDFAILED;
             }
-            else {
+            else
+            {
                 dataObject = dcmff.getDataset();
                 fromFile = 1;
             }
@@ -936,12 +942,12 @@ DcmDataset **commandSet)
         if (dataObject)
         {
             // 2019 07 25 add test  
-            //DcmXfer writeXferSyntax(xferSyntax);
-            //DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
-            //if (!dataObject->canWriteXfer(xferSyntax))
-            //{
-            //    xferSyntax = dataObject->getOriginalXfer();
-            //}
+            DcmXfer writeXferSyntax(xferSyntax);
+            DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
+            if (!dataObject->canWriteXfer(xferSyntax))
+            {
+                xferSyntax = dataObject->getOriginalXfer();
+            }
             //------------------
             // add test
             if (dataObject->isEmpty())
