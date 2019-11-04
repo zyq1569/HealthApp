@@ -1,6 +1,5 @@
 Cornerstone Demo
 ================
-
 Demonstration application that shows how to use the various cornerstone components together to build a complete application.
 
 Currently displays a list of studies and displayes them upon selection with series thumbnails and various tools
