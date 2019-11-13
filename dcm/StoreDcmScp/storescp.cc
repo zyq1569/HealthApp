@@ -247,6 +247,10 @@ OFBool Accept_NotMatchSOPClass = OFTrue;
 //1040 -od \\192.168.0.11\common\Test_dcmtk_rec\SCP
 int main(int argc, char *argv[])
 {
+    //test 123 140
+    //OFString uid = "1.3.51.0.7.633918642.633920010109.6339100821";
+    //OFHashValue h = CreateHashValue(uid.c_str(), uid.length());
+    //
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
     //--------------------增加日志文件的方式----------------------------------------------------------------
     const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html

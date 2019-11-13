@@ -1,7 +1,7 @@
 {
-    "name": "cornerstoneDemo",
+    "name": "demodicomview",
     "version": "0.1.0",
-    "description": "Cornerstone Demo",
+    "description": "DicomView Demo",
     "keywords": [
         "DICOM",
         "WADO",

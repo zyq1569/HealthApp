@@ -26,50 +26,8 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 
 /**
- * A simple handler that serves incoming HTTP requests to send their respective
- * HTTP responses.  It also implements {@code 'If-Modified-Since'} header to
- * take advantage of browser cache, as described in
- * <a href="http://tools.ietf.org/html/rfc2616#section-14.25">RFC 2616</a>.
- *
- * <h3>How Browser Caching Works</h3>
- *
- * Web browser caching works with HTTP headers as illustrated by the following
- * sample:
- * <ol>
- * <li>Request #1 returns the content of {@code /file1.txt}.</li>
- * <li>Contents of {@code /file1.txt} is cached by the browser.</li>
- * <li>Request #2 for {@code /file1.txt} does not return the contents of the
- *     file again. Rather, a 304 Not Modified is returned. This tells the
- *     browser to use the contents stored in its cache.</li>
- * <li>The server knows the file has not been modified because the
- *     {@code If-Modified-Since} date is the same as the file's last
- *     modified date.</li>
- * </ol>
- *
- * <pre>
- * Request #1 Headers
- * ===================
- * GET /file1.txt HTTP/1.1
- *
- * Response #1 Headers
- * ===================
- * HTTP/1.1 200 OK
- * Date:               Tue, 01 Mar 2011 22:44:26 GMT
- * Last-Modified:      Wed, 30 Jun 2010 21:36:48 GMT
- * Expires:            Tue, 01 Mar 2012 22:44:26 GMT
- * Cache-Control:      private, max-age=31536000
- *
- * Request #2 Headers
- * ===================
- * GET /file1.txt HTTP/1.1
- * If-Modified-Since:  Wed, 30 Jun 2010 21:36:48 GMT
- *
- * Response #2 Headers
- * ===================
- * HTTP/1.1 304 Not Modified
- * Date:               Tue, 01 Mar 2011 22:44:28 GMT
- *
- * </pre>
+ * A  file handler that serves incoming HTTP requests to send their respective
+ * HTTP responses.
  */
 public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -78,6 +36,57 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public static final int HTTP_CACHE_SECONDS = 60;
     public static final String HTTP_PATH = "E:\\Tool";
     private FullHttpRequest request;
+
+    public  class OFHashValue{
+        public int first = 0;
+        public int second = 0;
+        public OFHashValue(){
+            this.first = this.second = 0;
+        }
+        //add :hashvalue
+        public boolean CreateHashValue(final byte buffer[], final long length) {
+            //素数2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
+            //101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179
+            //181 191 193 197 199
+            final int M1 = 71;
+            final int M2 = 79;
+
+            final int D1 = 197;
+            final int D2 = 199;
+            int value = 0;
+            for (int i = 0; i < length; i++)
+            {
+                value = value * M1 + (buffer[i]& 0xFF);
+            }
+            value %= D1;
+            if (value < 0)
+            {
+                value = value + D1;
+            }
+            this.first = value;
+
+            value = 0;
+            for (int i = 0; i < length; i++)
+            {
+                value = value * M2 + (buffer[i]& 0xFF);
+            }
+            value %= D2;
+            if (value < 0)
+            {
+                value = value + D2;
+            }
+            this.second = value;
+            return true;
+        }
+        public String GetHashValuePath(final byte buffer[], final long length) {
+            String hashpath="";
+            if (CreateHashValue(buffer,length))
+            {
+                hashpath = String.valueOf(this.first)+"//"+String.valueOf(this.second);
+            }
+            return  hashpath;
+        }
+    }
 
     //add 20191113
     public static Map<String, Object> getParameter(String url) {
@@ -101,6 +110,25 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         return map;
     }
     //
+    public String getDicomPath(String studyuid, String seriesuid, String sopinstanceuid ){
+        OFHashValue h = new OFHashValue();
+//        String uid = "1.3.51.0.7.633918642.633920010109.6339100821";
+//        int FirstFolder = -1;
+//        int SecondFolder = -1;
+//        if (h.CreateHashValue(studyuid.getBytes(),studyuid.length())){
+//            FirstFolder = h.first;
+//            SecondFolder = h.second;
+//        }
+        String filePath="";
+        String hashPath = h.GetHashValuePath(studyuid.getBytes(),studyuid.length());
+        if (!hashPath.equals("")){
+            filePath = "//"+ hashPath+"//"+studyuid+"//"+seriesuid+"//"+sopinstanceuid;
+            if (sopinstanceuid.indexOf(".dcm") < 1){
+                filePath += ".dcm";
+            }
+        }
+        return  filePath;
+    }
     @Override
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         this.request = request;
@@ -124,7 +152,9 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             boolean bseuid = false;
             boolean bsouid = false;
             Map<String,Object> map = getParameter(uri);
-            String studyuid,seruid,sopinstanceuid;
+            String studyuid = "";
+            String seruid = "";
+            String sopinstanceuid = "";
             for(String key : map.keySet()){
                 String value = (String) map.get(key);
                 if (key.equals("studyuid")){
@@ -143,11 +173,9 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 System.out.println(key+":"+value);
             }
             if (bstuid && bseuid && bsouid){
-                path = HTTP_PATH + "\\\\lury\\mgstudy\\1.2.840.113619.2.66.2158408118.2683010109110300.85.dcm";
+                //根据请求参数查找请求的dicom
+                path = HTTP_PATH + "\\\\" +getDicomPath(studyuid,seruid,sopinstanceuid);
                 bSetFilename = true;
-//                request.setUri("/lury/mgstudy/1.2.840.113619.2.66.2158408118.2683010109110300.85.dcm");
-//                String newuri = request.uri();
-//                System.out.println(newuri);
             }
             if (path == null) {
                 this.sendError(ctx, FORBIDDEN);
@@ -189,7 +217,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             long fileLastModifiedSeconds = file.lastModified() / 1000;
             if (ifModifiedSinceDateSeconds == fileLastModifiedSeconds) {
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, NOT_MODIFIED, Unpooled.EMPTY_BUFFER);
-               if (bSetFilename){
+               if (bSetFilename){ //根据web协议请求的dicom文件设置文件名
                    String filename = file.getName();
                    response.headers().set(HttpHeaderNames.CONTENT_DISPOSITION,"attachment;filename="+ URLEncoder.encode(filename, "UTF-8"));
                }
@@ -212,7 +240,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         setContentTypeHeader(response, file);
         setDateAndCacheHeaders(response, file);
 
-        response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN,"*");//允许同个域客户端访问
+        response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN,"*");//@@@@@@@@@测试使用允许同个域客户端访问
         if (!keepAlive) {
             response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         } else if (request.protocolVersion().equals(HTTP_1_0)) {
@@ -288,7 +316,9 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
         // Simplistic dumb security check.
         // You will have to do something serious in the production environment.
-        //http://localhost:8080/Wado/studyuid=1213&seriesuid=2.2122.2&objectUID=222.2.22.2.dcm
+        //http://127.0.0.1:8080/WADO?studyuid=1.3.51.0.7.633918642.633920010109.6339100821&
+        //seriesuid=1.3.51.5145.15142.20010109.1105627&
+        //sopinstanceuid=1.3.51.5145.5142.20010109.1105627.1.0.1
         if (uri.contains(File.separator + '.') ||
             uri.contains('.' + File.separator) ||
             uri.charAt(0) == '.' || uri.charAt(uri.length() - 1) == '.' ||
