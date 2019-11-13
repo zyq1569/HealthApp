@@ -1,4 +1,4 @@
-Cornerstone Demo
+Cornerstone Demo :(visual Studio code:1.39.2---debug)
 ================
 Demonstration application that shows how to use the various cornerstone components together to build a complete application.
 

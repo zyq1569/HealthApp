@@ -15,9 +15,6 @@ import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.FileInputStream;
-import java.util.Properties;
-
 //
 //
 //	public static void main(String[] args) {
@@ -34,25 +31,6 @@ public class HealthApplication {
 
 	public static void main(String[] args) throws Exception {
 		ServerConfig config =  new ServerConfig();
-//		String PROPERTIES_NAME = System.getProperty("user.dir")+"/src/main/resources/application.properties";
-//		FileInputStream in = null;
-//		String config_port = "";
-//		try {
-//			Properties properties = new Properties();
-//			in = new FileInputStream(PROPERTIES_NAME);
-//			properties.load(in);
-//			config_port = properties.getProperty("netty.dicom.port");
-//			System.out.println("读取配置信息成功！config_port:" + config_port);
-//		} finally {
-//			if (in != null) {
-//				try {
-//					in.close();
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-		// Configure SSL.
 		final SslContext sslCtx;
 		if (SSL) {
 			SelfSignedCertificate ssc = new SelfSignedCertificate();
@@ -73,9 +51,7 @@ public class HealthApplication {
 
 			Channel ch = b.bind(config.GetPort()/*PORT*/).sync().channel();
 //			Channel ch = b.bind(PORT).sync().channel();
-
-			System.err.println("Open your web browser and navigate to " +
-					(SSL ? "https" : "http") + "://127.0.0.1:" + config.StrPort() + '/');
+			System.err.println("Open your web browser and navigate to "+(SSL ? "https" : "http") + "://127.0.0.1:" + config.StrPort() + '/');
 
 			ch.closeFuture().sync();
 		} finally {

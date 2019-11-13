@@ -1,4 +1,7 @@
 // Load JSON study information for each study
+//http: //127.0.0.1:8080/WADO?studyuid=1.3.51.0.7.633918642.633920010109.6339100821&
+//seriesuid=1.3.51.5145.15142.20010109.1105627&
+//sopinstanceuid=1.3.51.5145.5142.20010109.1105627.1.0.1.dcm
 function loadStudy(studyViewer, viewportModel, studyId) {
 
     // Get the JSON data for the selected studyId
@@ -66,12 +69,14 @@ function loadStudy(studyViewer, viewportModel, studyId) {
 
             // Populate imageIds array with the imageIds from each series
             // For series with frame information, get the image url's by requesting each frame
+            //var server_url = "wadouri:http://s3.amazonaws.com/lury/";
+            var server_url = "wadouri:http://192.168.1.102:8080/lury/";
             if (series.numberOfFrames !== undefined) {
                 var numberOfFrames = series.numberOfFrames;
                 for (var i = 0; i < numberOfFrames; i++) {
                     var imageId = series.instanceList[0].imageId + "?frame=" + i;
                     if (imageId.substr(0, 4) !== 'http') {
-                        imageId = "wadouri:https://s3.amazonaws.com/lury/" + imageId;
+                        imageId = server_url + imageId;
                     }
                     stack.imageIds.push(imageId);
                     console.log(imageId);
@@ -82,7 +87,7 @@ function loadStudy(studyViewer, viewportModel, studyId) {
                     var imageId = image.imageId;
 
                     if (image.imageId.substr(0, 4) !== 'http') {
-                        imageId = "wadouri:https://s3.amazonaws.com/lury/" + image.imageId;
+                        imageId = server_url + image.imageId;
                     }
                     stack.imageIds.push(imageId);
                     //console.log(imageId);
