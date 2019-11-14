@@ -11,7 +11,7 @@ loadTemplate("templates/studyViewer.html", function(element) {
 });
 
 // Get study list from JSON manifest
-$.getJSON('studyList.json', function(data) {
+$.getJSON('webstudyList.json', function(data) {
     data.studyList.forEach(function(study) {
 
         // Create one table row for each study in the manifest
