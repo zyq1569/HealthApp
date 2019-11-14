@@ -131,6 +131,7 @@ enum E_SortStudyMode
 
 OFBool             opt_showPresentationContexts = OFFalse;
 OFBool             opt_uniqueFilenames = OFFalse;
+OFBool             opt_noAddModalityFilename = OFTrue;
 OFString           opt_fileNameExtension;
 OFBool             opt_timeNames = OFFalse;
 int                timeNameCounter = -1;   // "serial number" to differentiate between files with same timestamp
@@ -2285,9 +2286,9 @@ char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmD
                         }
                         //add 通过hash值方法，将接收的dcm文件存储-----------------------------------------------
                         OFHashValue path = CreateHashValue(currentStudyInstanceUID.c_str(), currentStudyInstanceUID.length());
-                        unsigned long hash_vaule = studyuid_hash(currentStudyInstanceUID.c_str()) % 100;
-                        OFString hash_dir = longToString(hash_vaule);
-                        hash_dir = longToString(path.first) + "/" + longToString(path.second);
+                        //unsigned long hash_vaule = studyuid_hash(currentStudyInstanceUID.c_str()) % 100;
+                        //OFString hash_dir = longToString(hash_vaule);
+                        OFString hash_dir = longToString(path.first) + "/" + longToString(path.second);
                         OFString tem_dir = "Images/" + hash_dir + "/" + currentStudyInstanceUID + "/" + currentSeriesInstanceUID;
                         static OFString save_dir = OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName);
                         static OFString task_dir = save_dir + "/Task";
@@ -2447,7 +2448,7 @@ char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmD
             if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
 
             // store file either with meta header or as pure dataset
-            fileName = fileName + ".dcm";
+            fileName = fileName + ".dcm";//add 
             OFLOG_INFO(storescpLogger, "storing DICOM file: " << fileName);
             if (OFStandard::fileExists(fileName))
             {
@@ -2598,9 +2599,16 @@ static OFCondition storeSCP(
         }
         else
         {
-            // don't create new UID, use the study instance UID as found in object
-            sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
+            if (opt_noAddModalityFilename)
+            {
+                sprintf(imageFileName, "%s%c%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
+            }
+            else
+            {
+                // don't create new UID, use the study instance UID as found in object
+                sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
                 req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
+            }
         }
     }
 

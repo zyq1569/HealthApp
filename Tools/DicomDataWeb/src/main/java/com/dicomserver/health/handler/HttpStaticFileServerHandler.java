@@ -82,7 +82,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             String hashpath="";
             if (CreateHashValue(buffer,length))
             {
-                hashpath = String.valueOf(this.first)+"//"+String.valueOf(this.second);
+                hashpath = String.valueOf(this.first)+"/"+String.valueOf(this.second);
             }
             return  hashpath;
         }
@@ -112,17 +112,10 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     //
     public String getDicomPath(String studyuid, String seriesuid, String sopinstanceuid ){
         OFHashValue h = new OFHashValue();
-//        String uid = "1.3.51.0.7.633918642.633920010109.6339100821";
-//        int FirstFolder = -1;
-//        int SecondFolder = -1;
-//        if (h.CreateHashValue(studyuid.getBytes(),studyuid.length())){
-//            FirstFolder = h.first;
-//            SecondFolder = h.second;
-//        }
         String filePath="";
         String hashPath = h.GetHashValuePath(studyuid.getBytes(),studyuid.length());
         if (!hashPath.equals("")){
-            filePath = "//"+ hashPath+"//"+studyuid+"//"+seriesuid+"//"+sopinstanceuid;
+            filePath = hashPath+"/"+studyuid+"/"+seriesuid+"/"+sopinstanceuid;
             if (sopinstanceuid.indexOf(".dcm") < 1){
                 filePath += ".dcm";
             }
@@ -160,21 +153,20 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 if (key.equals("studyuid")){
                     studyuid = value;
                     bstuid = true;
-                    //System.out.println(studyuid);
                 }else if (key.equals("seriesuid")){
                     seruid = value;
                     bseuid = true;
-                    //System.out.println(seruid);
                 }else if(key.equals("sopinstanceuid")){
                     sopinstanceuid = value;
                     bsouid = true;
-                   //System.out.println(sopinstanceuid);
                 }
                 System.out.println(key+":"+value);
             }
             if (bstuid && bseuid && bsouid){
                 //根据请求参数查找请求的dicom
-                path = HTTP_PATH + "\\\\" +getDicomPath(studyuid,seruid,sopinstanceuid);
+                ServerConfig config =  new ServerConfig();
+                String filePath = config.GetFilePath();
+                path = filePath  + File.separator + getDicomPath(studyuid,seruid,sopinstanceuid);
                 bSetFilename = true;
             }
             if (path == null) {
@@ -187,6 +179,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
         if (file.isHidden() || !file.exists()) {
             this.sendError(ctx, NOT_FOUND);
+            System.out.println("not found:"+path);
             return;
         }
 
@@ -299,6 +292,9 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
     private static final Pattern INSECURE_URI = Pattern.compile(".*[<>&\"].*");
 
+    // test : //http://127.0.0.1:8080/WADO?studyuid=1.3.51.0.7.633918642.633920010109.6339100821&
+    // seriesuid=1.3.51.5145.15142.20010109.1105627&
+    // sopinstanceuid=1.3.51.5145.5142.20010109.1105627.1.0.1
     private static String sanitizeUri(String uri) {
         // Decode the path.
         try {
@@ -316,9 +312,6 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
         // Simplistic dumb security check.
         // You will have to do something serious in the production environment.
-        //http://127.0.0.1:8080/WADO?studyuid=1.3.51.0.7.633918642.633920010109.6339100821&
-        //seriesuid=1.3.51.5145.15142.20010109.1105627&
-        //sopinstanceuid=1.3.51.5145.5142.20010109.1105627.1.0.1
         if (uri.contains(File.separator + '.') ||
             uri.contains('.' + File.separator) ||
             uri.charAt(0) == '.' || uri.charAt(uri.length() - 1) == '.' ||
@@ -329,8 +322,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         // Convert to absolute path.
         ServerConfig config =  new ServerConfig();
         String filePath = config.GetFilePath();
-        return HTTP_PATH + File.separator + uri;
-//        return SystemPropertyUtil.get("user.dir") + File.separator + uri;//"E:\\Tool"
+        return filePath + File.separator + uri;
+//        return SystemPropertyUtil.get("user.dir") + File.separator + uri;
     }
 
     private static final Pattern ALLOWED_FILE_NAME = Pattern.compile("[^-\\._]?[^<>&\\\"]*");
@@ -399,8 +392,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
      * @param ctx
      *            Context
      */
-    private void sendNotModified(ChannelHandlerContext ctx, FullHttpResponse responses) {
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, NOT_MODIFIED, Unpooled.EMPTY_BUFFER);
+    private void sendNotModified(ChannelHandlerContext ctx, FullHttpResponse response) {
+        //FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, NOT_MODIFIED, Unpooled.EMPTY_BUFFER);
         setDateHeader(response);
 
         this.sendAndCleanupConnection(ctx, response);
