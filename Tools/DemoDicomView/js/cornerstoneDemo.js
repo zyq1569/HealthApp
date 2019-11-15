@@ -10,8 +10,9 @@ loadTemplate("templates/studyViewer.html", function(element) {
     studyViewerTemplate = element;
 });
 
+var server_json_url = "http://127.0.0.1:8080/";
 // Get study list from JSON manifest
-$.getJSON('webstudyList.json', function(data) {
+$.getJSON(server_json_url + 'studyList.json', function(data) {
     data.studyList.forEach(function(study) {
 
         // Create one table row for each study in the manifest
