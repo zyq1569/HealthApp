@@ -68,6 +68,8 @@ END_EXTERN_C
 #include "Units.h"
 #include "DcmConfig.h"
 //--------------------
+//add json
+#include "cJSON.h"
 
 
 #ifdef WITH_OPENSSL
@@ -243,11 +245,63 @@ OFBool Accept_NotMatchSOPClass = OFTrue;
 #define TEST_STORE  //line:2599 考虑存储空间有限，直接删除store 服务收到的dcm文件
 //--------------------------
 
+//test json
+void TestJson()
+{
+    //---------------------------------------------
+    //检查信息保存
+    StudyInfo studyinfo;
+    studyinfo.patientName = "MISTER^CT";
+    studyinfo.patientId = "2178309";
+    studyinfo.studyDate = "20010105";
+    studyinfo.studyUID = "1.2.840.113619.2.30.1.1762295590.1623.978668949.886";
+    studyinfo.studyDescription = "CHEST";
+    studyinfo.modality = "CT";
+    studyinfo.studyId = "ctstudy";
+
+    //循环序列信息保存
+    SeriesInfo seriesinfo;
+    seriesinfo.seriesUID = "1.2.840.113619.2.30.1.1762295590.1623.978668949.887";
+    seriesinfo.seriesDescription = "HELICAL CHEST";
+    seriesinfo.seriesNumber = 2;
+    for (int i = 0; i < 109; i++)
+    {
+        //循环图像信息保存
+        ImageInfo imageinfo;
+        imageinfo.imageSOPInstanceUID = "1.2.840.113619.2.30.1.1762295590.1623.978668950." + longToString(109 + i);
+        imageinfo.instanceNumber = i;
+        seriesinfo.imagesInfoList.push_back(imageinfo);
+    }
+    studyinfo.seriesInfoList.push_back(seriesinfo);
+
+    seriesinfo.imagesInfoList.clear();
+    seriesinfo.seriesDescription = "SCOUT PA";
+    seriesinfo.seriesNumber = 1;
+    ImageInfo imageinfo;
+    imageinfo.imageSOPInstanceUID = "1.2.840.113619.2.30.1.1762295590.1623.978668949.888";
+    imageinfo.instanceNumber = 1;
+    seriesinfo.imagesInfoList.push_back(imageinfo);
+    studyinfo.seriesInfoList.push_back(seriesinfo);
+
+    seriesinfo.imagesInfoList.clear();
+    seriesinfo.seriesDescription = "SCOUT LAT";
+    seriesinfo.seriesNumber = 1;
+    imageinfo.imageSOPInstanceUID = "1.2.840.113619.2.30.1.1762295590.1623.978668949.889";
+    imageinfo.instanceNumber = 1;
+    seriesinfo.imagesInfoList.push_back(imageinfo);
+    studyinfo.seriesInfoList.push_back(seriesinfo);
+    //---------------------------------------------
+
+    SaveStudy2JsonFile(studyinfo,"d:\\test.json");
+    const char *c = cJSON_Version();
+
+}
 
 //--single-process 默认为fork 模式，该设置为单进程
 //1040 -od \\192.168.0.11\common\Test_dcmtk_rec\SCP
 int main(int argc, char *argv[])
 {
+    //TestJson();
     //test 123 140
     //OFString uid = "1.3.51.0.7.633918642.633920010109.6339100821";
     //OFHashValue h = CreateHashValue(uid.c_str(), uid.length());
@@ -2035,7 +2089,172 @@ struct StoreCallbackData
     DcmFileFormat* dcmff;
     T_ASC_Association* assoc;
 };
+OFBool GetValueOfData(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, DcmTagKey &key, OFString &value, OFBool judge=OFFalse)
+{
+    if ((*imageDataSet)->findAndGetOFString(key, value).bad() || value.empty())
+    {
+        OFLOG_ERROR(storescpLogger, "element StudyInstanceUID " << key << " absent or empty in data set");
+        if (judge)
+        {
+            rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
+            return OFFalse;
+        }
+    }
+    return OFTrue;
+}
+//OFBool Get
+OFBool GetStudyInfoFie(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, DicomFileInfo &studyinfo)
+{
+    OFBool flag = OFFalse;
+    DcmTagKey key[18];
+    int keysize = 18;
+    key[0] = DCM_StudyInstanceUID;    key[1] = DCM_SeriesInstanceUID;    key[2] = DCM_SOPInstanceUID;
+    key[3] = DCM_StudyDescription;    key[4] = DCM_SeriesDescription;    key[5] = DCM_SeriesNumber;
+    key[6] = DCM_StudyID;             key[7] = DCM_PatientName;          key[8] = DCM_PatientID;
+    key[9] = DCM_PatientSex;          key[10] = DCM_PatientAge;          key[11] = DCM_PatientBirthDate;
+    key[12] = DCM_PatientBirthTime;   key[13] = DCM_StudyDate;           key[14] = DCM_StudyTime;
+    key[15] = DCM_Modality;           key[16] = DCM_Manufacturer;        key[17] = DCM_InstitutionName;
 
+    if (!GetValueOfData(imageDataSet, rsp, key[0], studyinfo.studyUID, OFTrue))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[1], studyinfo.seriesUID, OFTrue))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[2], studyinfo.imageSOPInstanceUID, OFTrue))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[3], studyinfo.studyDescription))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[4], studyinfo.seriesDescription))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[5], studyinfo.seriesNumber, OFTrue))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[6], studyinfo.studyId))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[7], studyinfo.patientName))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[8], studyinfo.patientId))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[9], studyinfo.patientSex))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[10], studyinfo.patientAge))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[11], studyinfo.patientBirthDate))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[12], studyinfo.patientBirthTime))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[13], studyinfo.studyDate))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[14], studyinfo.studyTime))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[15], studyinfo.modality))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[16], studyinfo.manufacturer))
+    {
+        return flag;
+    }
+    if (!GetValueOfData(imageDataSet, rsp, key[17], studyinfo.institutionName))
+    {
+        return flag;
+    }
+    return OFTrue;
+}
+
+void SaveDcmIni(DicomFileInfo image, OFString filename)
+{
+    //write ini file 写入每次收到检查uid时，产生一个ini文件
+    OFFile inifile;
+    //OFString ini_filename = ini_dir + "/" + currentStudyInstanceUID + ".ini";
+    OFString ini_filename = filename;// ini_dir + "/" + StringGUID() + ".ini";
+    if (!OFStandard::fileExists(ini_filename))
+    {
+        inifile.fopen(ini_filename, "w");
+
+        inifile.fputs("[STUDY]");
+        inifile.fputs("\n");
+        OFString str = "studyuid=" + image.studyUID;
+        inifile.fputs(str.c_str());
+        inifile.fputs("\n");
+        str = "patientid=" + image.patientId;
+        str += "\n";
+        //inifile.fputs(str.c_str());
+        str += "patientname=" + image.patientName;
+        str += "\n";
+        //inifile.fputs(str.c_str());
+        str += "patientsex=" + image.patientSex;
+        str += "\n";
+        //inifile.fputs(str.c_str());
+        str += "studyid=" + image.studyUID;
+        str += "\n";
+        //inifile.fputs(str.c_str());
+        str += "patientage=" + image.patientAge;
+        str += "\n";
+        //inifile.fputs(str.c_str());
+        str += "patientbirth=" + image.patientBirthDate+image.patientBirthTime;
+        str += "\n";
+        //currentStudyTime
+        str += "studydatetime=" + image.studyDate+image.studyTime;
+        str += "\n";
+
+        str += "modality=" + image.modality;
+        str += "\n";
+        str += "manufacturer=" + image.manufacturer;
+        str += "\n";
+        str += "institutionname=" + image.institutionName;
+        str += "\n";
+        str += "studydescription=" + image.studyDescription;
+        str += "\n";
+        inifile.fputs(str.c_str());
+
+        inifile.fputs("[SERIES]");
+        inifile.fputs("\n");
+        str = "seriesuid=" + image.seriesUID;
+        inifile.fputs(str.c_str());
+        inifile.fputs("\n");
+        str = "seriesdescription=" + image.seriesDescription;
+        str += "\n";
+        str += "seriesnumber=" + image.seriesNumber;
+        str += "\n";
+        inifile.fputs(str.c_str());
+
+        inifile.fputs("[IMAGE]");
+        inifile.fputs("\n");
+        str = "sopinstanceuid=" + image.imageSOPInstanceUID;
+        inifile.fputs(str.c_str());
+        inifile.fclose();
+    }
+    //end write ini file
+}
 
 static void storeSCPCallback(void *callbackData,T_DIMSE_StoreProgress *progress,T_DIMSE_C_StoreRQ *req,
 char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmDataset **statusDetail)
@@ -2128,80 +2347,11 @@ char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmD
             // determine the actual name of the output file
             if (opt_sortStudyMode != ESM_None)
             {
-                // determine the study instance UID in the (current) DICOM object that has just been received
-                OFString currentStudyInstanceUID, currentSeriesInstanceUID;//增加序列uid变量currentSeriesInstanceUID，记录序列值用于hash路径
-
-                if ((*imageDataSet)->findAndGetOFString(DCM_StudyInstanceUID, currentStudyInstanceUID).bad() || currentStudyInstanceUID.empty())
+                DicomFileInfo dcminfo;
+                if (!GetStudyInfoFie(imageDataSet, rsp, dcminfo))
                 {
-                    OFLOG_ERROR(storescpLogger, "element StudyInstanceUID " << DCM_StudyInstanceUID << " absent or empty in data set");
-                    rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
                     return;
                 }
-                if ((*imageDataSet)->findAndGetOFString(DCM_SeriesInstanceUID, currentSeriesInstanceUID).bad() || currentSeriesInstanceUID.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element SeriesInstanceUID " << DCM_SeriesInstanceUID << " absent or empty in data set");
-                    rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
-                    return;
-                }
-                OFString currentStudyPatientName, currentStudyPatientId, currentStudySex, currentStudyID;
-                if ((*imageDataSet)->findAndGetOFString(DCM_StudyID, currentStudyID).bad() || currentStudyID.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element currentStudyID " << currentStudyID << " absent or empty in data set");
-                }
-                if ((*imageDataSet)->findAndGetOFString(DCM_PatientName, currentStudyPatientName).bad() || currentStudyPatientName.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_PatientName " << currentStudyPatientName << " absent or empty in data set");
-                }
-                if ((*imageDataSet)->findAndGetOFString(DCM_PatientID, currentStudyPatientId).bad() || currentStudyPatientId.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_PatientID " << currentStudyPatientId << " absent or empty in data set");
-                }
-                if ((*imageDataSet)->findAndGetOFString(DCM_PatientSex, currentStudySex).bad() || currentStudySex.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_PatientSex " << currentStudySex << " absent or empty in data set");
-                }
-                OFString currentStudyAge, currentPatientBirthDate, currentPatientBirthTime, currentStudyDate, currentStudyTime;
-                //DCM_PatientAge DCM_PatientBirthDate DCM_PatientBirthTime
-                if ((*imageDataSet)->findAndGetOFString(DCM_PatientAge, currentStudyAge).bad() || currentStudyAge.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_PatientAge " << currentStudyAge << " absent or empty in data set");
-                }
-                if ((*imageDataSet)->findAndGetOFString(DCM_PatientBirthDate, currentPatientBirthDate).bad() || currentPatientBirthDate.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_PatientBirthDate " << currentStudyPatientName << " absent or empty in data set");
-                }
-                if ((*imageDataSet)->findAndGetOFString(DCM_PatientBirthTime, currentPatientBirthTime).bad() || currentPatientBirthTime.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_PatientBirthTime " << currentPatientBirthTime << " absent or empty in data set");
-                }
-                if ((*imageDataSet)->findAndGetOFString(DCM_StudyDate, currentStudyDate).bad() || currentStudyDate.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_StudyDate " << currentStudyDate << " absent or empty in data set");
-                }
-                if ((*imageDataSet)->findAndGetOFString(DCM_StudyTime, currentStudyTime).bad() || currentStudyTime.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_StudyTime " << currentStudyTime << " absent or empty in data set");
-                }
-                OFString currentStudyModality, currentStudyManufacturer, currentStudyInstitutionName;
-                if ((*imageDataSet)->findAndGetOFString(DCM_Modality, currentStudyModality).bad() || currentStudyModality.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_Modality " << currentStudyModality << " absent or empty in data set");
-                }
-                if ((*imageDataSet)->findAndGetOFString(DCM_Manufacturer, currentStudyManufacturer).bad() || currentStudyManufacturer.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_Manufacturer " << currentStudyManufacturer << " absent or empty in data set");
-                }
-                if ((*imageDataSet)->findAndGetOFString(DCM_InstitutionName, currentStudyInstitutionName).bad() || currentStudyInstitutionName.empty())
-                {
-                    OFLOG_ERROR(storescpLogger, "element DCM_InstitutionName " << currentStudyInstitutionName << " absent or empty in data set");
-                }
-                ///modify dicom
-                //OFString temp = "CT_TEST";
-                //(*imageDataSet)->putAndInsertString(DCM_InstitutionName, temp.c_str());
-                //temp = "1.2.826.0.1.3680043.9.7606";
-                ////temp = temp+currentStudyInstanceUID.substr(25, currentStudyInstanceUID.length() - 25);
-                //(*imageDataSet)->putAndInsertString(DCM_StudyInstanceUID, temp.c_str());
-                //temp = "People_Name";
                 //(*imageDataSet)->putAndInsertString(DCM_PatientName, temp.c_str());
                 // if --sort-on-patientname is active, we need to extract the
                 // patient's name (format: last_name^first_name)
@@ -2239,7 +2389,7 @@ char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmD
                 // if this is the first DICOM object that was received or if the study instance UID in the
                 // current DICOM object does not equal the last object's study instance UID we need to create
                 // a new subdirectory in which the current DICOM object will be stored
-                if (lastStudyInstanceUID.empty() || (lastStudyInstanceUID != currentStudyInstanceUID))
+                //if (lastStudyInstanceUID.empty() || (lastStudyInstanceUID != currentStudyInstanceUID))
                 {
                     // if lastStudyInstanceUID is non-empty, we have just completed receiving all objects for one
                     // study. In such a case, we need to set a certain indicator variable (lastStudySubdirectoryPathAndName),
@@ -2253,7 +2403,7 @@ char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmD
                     }
 
                     // create the new lastStudyInstanceUID value according to the value in the current DICOM object
-                    lastStudyInstanceUID = currentStudyInstanceUID;
+                    //lastStudyInstanceUID = currentStudyInstanceUID;
 
                     // get the current time (needed for subdirectory name)
                     OFDateTime dateTime;
@@ -2285,15 +2435,15 @@ char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmD
                             subdirectoryName += '_';
                         }
                         //add 通过hash值方法，将接收的dcm文件存储-----------------------------------------------
-                        OFHashValue path = CreateHashValue(currentStudyInstanceUID.c_str(), currentStudyInstanceUID.length());
+                        OFHashValue path = CreateHashValue(dcminfo.studyUID.c_str(), dcminfo.studyUID.length());
                         //unsigned long hash_vaule = studyuid_hash(currentStudyInstanceUID.c_str()) % 100;
                         //OFString hash_dir = longToString(hash_vaule);
                         OFString hash_dir = longToString(path.first) + "/" + longToString(path.second);
-                        OFString tem_dir = "Images/" + hash_dir + "/" + currentStudyInstanceUID + "/" + currentSeriesInstanceUID;
+                        OFString tem_dir = "Images/" + hash_dir + "/" + dcminfo.studyUID + "/" + dcminfo.studyUID;
                         static OFString save_dir = OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName);
                         static OFString task_dir = save_dir + "/Task";
                         static OFString ini_dir = task_dir + "/1";
-                        OFString tem_study_dir = save_dir + "/Images/" + hash_dir + "/" + currentStudyInstanceUID;
+                        OFString tem_study_dir = save_dir + "/Images/" + hash_dir + "/" + dcminfo.studyUID;
                         if (!OFStandard::dirExists(task_dir))
                         {
                             OFLOG_WARN(storescpLogger, "mkdir:" + task_dir);
@@ -2314,51 +2464,8 @@ char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmD
                             }
                         }
 
-                        //write ini file 写入每次收到检查uid时，产生一个ini文件
-                        OFFile inifile;
-                        OFString ini_filename = ini_dir + "/" + currentStudyInstanceUID + ".ini";
-                        if (!OFStandard::fileExists(ini_filename))
-                        {
-                            inifile.fopen(ini_filename, "w");
-
-                            inifile.fputs("[study]");
-                            inifile.fputs("\n");
-                            OFString str = "studyuid=" + currentStudyInstanceUID;
-                            inifile.fputs(str.c_str());
-                            inifile.fputs("\n");
-                            //OFString currentStudyPatientName, currentStudyPatientId, currentStudySex, currentStudyID;
-                            //OFString currentStudyAge, currentPatientBirthDate, currentPatientBirthTime;
-                            str = "PatientId=" + currentStudyPatientId;
-                            str += "\n";
-                            //inifile.fputs(str.c_str());
-                            str += "PatientName=" + currentStudyPatientName;
-                            str += "\n";
-                            //inifile.fputs(str.c_str());
-                            str += "PatientSex=" + currentStudySex;
-                            str += "\n";
-                            //inifile.fputs(str.c_str());
-                            str += "StudyID=" + currentStudyID;
-                            str += "\n";
-                            //inifile.fputs(str.c_str());
-                            str += "PatientAge=" + currentStudyAge;
-                            str += "\n";
-                            //inifile.fputs(str.c_str());
-                            str += "PatientBirth=" + currentPatientBirthDate + currentPatientBirthTime;
-                            str += "\n";
-                            //currentStudyTime
-                            str += "StudyDateTime=" + currentStudyDate + currentStudyTime;
-                            str += "\n";
-                            //currentStudyModality, currentStudyManufacturer, currentStudyInstitutionName;
-                            str += "Modality=" + currentStudyModality;
-                            str += "\n";
-                            str += "Manufacturer=" + currentStudyManufacturer;
-                            str += "\n";
-                            str += "InstitutionName=" + currentStudyInstitutionName;
-                            str += "\n";
-                            inifile.fputs(str.c_str());
-                            inifile.fclose();
-                        }
-                        //end write ini file
+                        OFString ini_filename =  ini_dir + "/" + StringGUID() + ".ini";
+                        SaveDcmIni(dcminfo, ini_filename);
                         OFString image_dir = save_dir + "/Images";
                         if (!OFStandard::dirExists(image_dir))
                         {

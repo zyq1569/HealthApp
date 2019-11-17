@@ -11,6 +11,7 @@ loadTemplate("templates/studyViewer.html", function(element) {
 });
 
 var server_json_url = "http://127.0.0.1:8080/";
+var server_wado_url = "wadouri:http://127.0.0.1:8080/WADO?studyuid=";
 // Get study list from JSON manifest
 $.getJSON(server_json_url + 'studyList.json', function(data) {
     data.studyList.forEach(function(study) {
@@ -57,7 +58,7 @@ $.getJSON(server_json_url + 'studyList.json', function(data) {
             });
 
             // Now load the study.json
-            loadStudy(studyViewerCopy, viewportTemplate, study.studyId + ".json");
+            loadStudy(studyViewerCopy, viewportTemplate, server_json_url + "webstudies/" + study.studyId + ".json", server_wado_url);
         });
     });
 }).fail(function() {

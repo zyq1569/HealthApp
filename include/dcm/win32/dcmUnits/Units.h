@@ -12,6 +12,67 @@ DCMTK_OFSTD_EXPORT struct OFHashValue
     }
 };
 
+
+/*
+OFListIterator(OFFilename) iter = filenameList.begin();
+OFListIterator(OFFilename) last = filenameList.end();
+while (iter != last)
+{
+inputFiles.push_back(OFSTRING_GUARD((*iter).getCharPointer()));
+++iter;
+}
+*/
+DCMTK_OFSTD_EXPORT struct DicomFileInfo
+{
+    OFString patientName;
+    OFString patientSex;
+    OFString patientAge;
+    OFString patientBirthDate;
+    OFString patientBirthTime;
+    OFString patientId;
+
+    OFString modality;
+    OFString manufacturer;
+    OFString institutionName;
+
+    OFString studyId;
+    OFString studyUID;
+    OFString studyDescription;
+    OFString studyDate;
+    OFString studyTime;
+
+    OFString seriesUID;
+    OFString seriesDescription;
+    OFString seriesNumber;
+
+    OFString imageSOPInstanceUID;
+};
+DCMTK_OFSTD_EXPORT struct ImageInfo
+{
+    //(0008,0018) UI 1.2.840.113619.2.55.3.604688119.699.1256270047.398.2   # 1, 52 SOP Instance UID
+    OFString imageSOPInstanceUID;
+    // (0020, 0013) IS 2                                                 # 1, 2 Instance Number;
+    int instanceNumber;
+};
+DCMTK_OFSTD_EXPORT struct SeriesInfo
+{
+    OFList<ImageInfo> imagesInfoList;
+    OFString seriesUID;
+    OFString seriesDescription;
+    //Series Number
+    int seriesNumber;
+};
+DCMTK_OFSTD_EXPORT struct StudyInfo
+{
+    OFString patientName;
+    OFString patientId;
+    OFString modality;
+    OFString studyId;
+    OFString studyUID;
+    OFString studyDate;
+    OFString studyDescription;
+    OFList<SeriesInfo> seriesInfoList;
+};
 //!根据字符计算两个Hash数值
 DCMTK_OFSTD_EXPORT OFHashValue CreateHashValue(const char * buffer, unsigned int length);
 
@@ -47,10 +108,16 @@ DCMTK_OFSTD_EXPORT void SearchDirFile(const OFString Dir, const OFString FileExt
 DCMTK_OFSTD_EXPORT void SearchDirectory(const OFString Dir, OFList<OFString> &datas);
 
 DCMTK_OFSTD_EXPORT UINT64 CreateGUID();
+DCMTK_OFSTD_EXPORT OFString StringGUID();
 
 DCMTK_OFSTD_EXPORT OFString GetCurrentDir();
 
 DCMTK_OFSTD_EXPORT OFString FormatePatienName(OFString name);
+
+DCMTK_OFSTD_EXPORT OFString GetFromFile(OFString filename);
+
+DCMTK_OFSTD_EXPORT OFBool SaveStudy2JsonFile(StudyInfo study, OFString filename);
+DCMTK_OFSTD_EXPORT OFBool SaveString2File(OFString str, OFString filename);
 //___________________________________________________________________________________________________________________________________
 //struct OFHashValue
 //{
