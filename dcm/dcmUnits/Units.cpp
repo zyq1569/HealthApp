@@ -16,6 +16,7 @@
 #endif
 
 #include "dcmtk/oflog/fileap.h"
+#include "cJSON.h"
 #include "Units.h"
 #include "dcmtk/ofstd/ofdatime.h"
 
@@ -221,8 +222,7 @@ void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> 
                 else if (Not == true && OFStandard::toUpper(temp, FileExt) != OFStandard::toUpper(temp, name))
                     datas.push_back(dir + name);
             }
-        }
-        while (FindNextFile(h, &sr) != 0);
+        } while (FindNextFile(h, &sr) != 0);
         FindClose(h);
     }
 #else
@@ -395,7 +395,13 @@ void SearchDirectory(const OFString Dir, OFList<OFString> &datas)
     //to do add!
 #endif
 }
-
+OFString StringGUID()
+{
+    char uuid[64];
+    sprintf(uuid, "%llu", CreateGUID());
+    OFString s = uuid;
+    return s;
+}
 UINT64 CreateGUID()
 {
     UINT32 uid[2];
@@ -470,4 +476,83 @@ OFString FormatePatienName(OFString name)
         pos = str.find('^');
     }
     return str;
+}
+OFString GetFromFile(OFString filename)
+{
+    OFString value;
+    if (OFStandard::fileExists(filename)){
+        using namespace std;
+        char buffer[256];
+        fstream out;
+        out.open(filename.c_str(), ios::in);
+        //cout<<"com.txt"<<" 的内容如下:"<<endl;
+        while (!out.eof())
+        {
+            out.getline(buffer, 256, '\n');//getline(char *,int,char) 表示该行字符达到256个或遇到换行就结束
+            value += OFString(buffer);
+        }
+        out.close();
+    }
+    return value;
+}
+
+OFBool SaveStudy2JsonFile(StudyInfo studyinfo, OFString filename)
+{
+    cJSON *study = cJSON_CreateObject();
+    //studyinfo
+    cJSON_AddStringToObject(study, "patientName", studyinfo.patientName.c_str());
+    cJSON_AddStringToObject(study, "patientId", studyinfo.patientId.c_str());
+    cJSON_AddStringToObject(study, "studyDate", studyinfo.studyDate.c_str());
+    cJSON_AddStringToObject(study, "modality", studyinfo.modality.c_str());
+    cJSON_AddStringToObject(study, "studyDescription", studyinfo.studyDescription.c_str());
+    cJSON_AddNumberToObject(study, "numImages", studyinfo.seriesInfoList.size());
+    cJSON_AddStringToObject(study, "studyId", studyinfo.studyId.c_str());
+    cJSON_AddStringToObject(study, "studyuid", studyinfo.studyUID.c_str());
+    //seriesinfo
+
+    cJSON *seriesListItem = cJSON_CreateArray();
+    const char *seriesList = "seriesList";
+    cJSON_AddItemToObject(study, seriesList, seriesListItem);
+    OFListIterator(SeriesInfo) iter = studyinfo.seriesInfoList.begin();
+    OFListIterator(SeriesInfo) last = studyinfo.seriesInfoList.end();
+    while (iter != last)
+    {
+        cJSON *series = cJSON_CreateObject();
+        cJSON_AddItemToObject(seriesListItem, seriesList, series);
+        cJSON_AddStringToObject(series, "seriesUid", (*iter).seriesUID.c_str());
+        cJSON_AddStringToObject(series, "seriesDescription", (*iter).seriesDescription.c_str());
+        cJSON_AddStringToObject(series, "seriesNumber", longToString((*iter).seriesNumber).c_str());
+
+        OFListIterator(ImageInfo) ibegin = (*iter).imagesInfoList.begin();
+        OFListIterator(ImageInfo) lend = (*iter).imagesInfoList.end();
+        cJSON *images = cJSON_CreateArray();
+        cJSON_AddItemToObject(series, "instanceList", images);
+        while (ibegin != lend)
+        {
+            cJSON *imageid = cJSON_CreateObject();
+            cJSON_AddStringToObject(imageid, "imageId", (*ibegin).imageSOPInstanceUID.c_str());
+            cJSON_AddItemToObject(images, "instanceList", imageid);
+            ibegin++;
+        }
+        ++iter;
+    }
+    char *p = cJSON_Print(study);
+    SaveString2File(p, filename);
+    free(p);
+    cJSON_Delete(study);
+
+    return OFTrue;
+}
+OFBool SaveString2File(OFString str, OFString filename)
+{
+    if (str.length() > 0)
+    {
+        using namespace std;
+        ofstream savedcmfile;
+        char *pfilename = (char *)filename.c_str();
+        savedcmfile.open(filename.c_str(), ios::out | ios::app); //ios::trunc表示在打开文件前将文件清空,由于是写入,文件不存在则创建
+        savedcmfile << str.c_str();
+        savedcmfile.close();//关闭文件
+    }
+    return OFTrue;
 }

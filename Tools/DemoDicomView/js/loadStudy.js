@@ -2,12 +2,15 @@
 //http: //127.0.0.1:8080/WADO?studyuid=1.3.51.0.7.633918642.633920010109.6339100821&
 //seriesuid=1.3.51.5145.15142.20010109.1105627&
 //sopinstanceuid=1.3.51.5145.5142.20010109.1105627.1.0.1.dcm
-function loadStudy(studyViewer, viewportModel, studyId) {
+// var server_json_url = "http://127.0.0.1:8080/";
+// var server_wado_url = "wadouri:http://127.0.0.1:8080/WADO?studyuid=";
+function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url) {
     //var server_url = "wadouri:http://s3.amazonaws.com/lury/";
-    var server_json_url = "http://127.0.0.1:8080/webstudies/";
-    var server_url = "wadouri:http://127.0.0.1:8080/WADO?studyuid=";
+    //var server_json_url = "http://127.0.0.1:8080/webstudies/";
+    var server_url = server_wado_url; // "wadouri:http://127.0.0.1:8080/WADO?studyuid=";
     // Get the JSON data for the selected studyId server_json_url+
-    $.getJSON(server_json_url + studyId, function(data) {
+    // $.getJSON( "webstudies/" + studyId, function(data) {
+    $.getJSON(server_json_url, function(data) {
 
         var imageViewer = new ImageViewer(studyViewer, viewportModel);
         imageViewer.setLayout('2x2'); // default layout
@@ -79,7 +82,7 @@ function loadStudy(studyViewer, viewportModel, studyId) {
                 for (var i = 0; i < numberOfFrames; i++) {
                     var imageId = series.instanceList[0].imageId + "?frame=" + i;
                     if (imageId.substr(0, 4) !== 'http') {
-                        imageId = server_url + imageId;
+                        imageId = server_wado_url + imageId;
                     }
                     stack.imageIds.push(imageId);
                     console.log(imageId);
@@ -90,7 +93,7 @@ function loadStudy(studyViewer, viewportModel, studyId) {
                     var imageId = image.imageId;
 
                     if (image.imageId.substr(0, 4) !== 'http') {
-                        imageId = server_url + data.studyuid + "&seriesuid=" + series.seriesUid + "&sopinstanceuid=" + image.imageId;
+                        imageId = server_wado_url + data.studyuid + "&seriesuid=" + series.seriesUid + "&sopinstanceuid=" + image.imageId;
                     }
                     stack.imageIds.push(imageId);
                     //console.log(imageId);
