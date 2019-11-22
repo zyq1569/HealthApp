@@ -2106,14 +2106,15 @@ OFBool GetValueOfData(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, DcmTag
 OFBool GetStudyInfoFie(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, DicomFileInfo &studyinfo)
 {
     OFBool flag = OFFalse;
-    DcmTagKey key[18];
-    int keysize = 18;
+    DcmTagKey key[19];
+    int keysize = 19;
     key[0] = DCM_StudyInstanceUID;    key[1] = DCM_SeriesInstanceUID;    key[2] = DCM_SOPInstanceUID;
     key[3] = DCM_StudyDescription;    key[4] = DCM_SeriesDescription;    key[5] = DCM_SeriesNumber;
     key[6] = DCM_StudyID;             key[7] = DCM_PatientName;          key[8] = DCM_PatientID;
     key[9] = DCM_PatientSex;          key[10] = DCM_PatientAge;          key[11] = DCM_PatientBirthDate;
     key[12] = DCM_PatientBirthTime;   key[13] = DCM_StudyDate;           key[14] = DCM_StudyTime;
     key[15] = DCM_Modality;           key[16] = DCM_Manufacturer;        key[17] = DCM_InstitutionName;
+    key[18] = DCM_InstanceNumber;
 
     if (!GetValueOfData(imageDataSet, rsp, key[0], studyinfo.studyUID, OFTrue))
     {
@@ -2187,6 +2188,10 @@ OFBool GetStudyInfoFie(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, Dicom
     {
         return flag;
     }
+    if (!GetValueOfData(imageDataSet, rsp, key[18], studyinfo.instanceNumber))
+    {
+        return flag;
+    }
     return OFTrue;
 }
 
@@ -2214,7 +2219,7 @@ void SaveDcmIni(DicomFileInfo image, OFString filename)
         str += "patientsex=" + image.patientSex;
         str += "\n";
         //inifile.fputs(str.c_str());
-        str += "studyid=" + image.studyUID;
+        str += "studyid=" + image.studyId;
         str += "\n";
         //inifile.fputs(str.c_str());
         str += "patientage=" + image.patientAge;
@@ -2249,7 +2254,8 @@ void SaveDcmIni(DicomFileInfo image, OFString filename)
 
         inifile.fputs("[IMAGE]");
         inifile.fputs("\n");
-        str = "sopinstanceuid=" + image.imageSOPInstanceUID;
+        str = "sopinstanceuid=" + image.imageSOPInstanceUID+"\n";
+        str += "instanceNumber=" + image.instanceNumber+"\n";
         inifile.fputs(str.c_str());
         inifile.fclose();
     }

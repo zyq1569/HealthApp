@@ -20,6 +20,13 @@
 #include "Units.h"
 #include "dcmtk/ofstd/ofdatime.h"
 
+OFString GetStudyHashDir(OFString studyuid)
+{
+    OFString dir;
+    OFHashValue vl = CreateHashValue(studyuid.c_str(), studyuid.length());
+    dir = "\\" + longToString(vl.first) + "\\" + longToString(vl.second);
+    return dir;
+}
 //!根据字符计算两个Hash数值
 OFHashValue CreateHashValue(const char * buffer, unsigned int length)
 {

@@ -46,6 +46,7 @@ DCMTK_OFSTD_EXPORT struct DicomFileInfo
     OFString seriesNumber;
 
     OFString imageSOPInstanceUID;
+    OFString instanceNumber;
 };
 DCMTK_OFSTD_EXPORT struct ImageInfo
 {
@@ -75,7 +76,7 @@ DCMTK_OFSTD_EXPORT struct StudyInfo
 };
 //!根据字符计算两个Hash数值
 DCMTK_OFSTD_EXPORT OFHashValue CreateHashValue(const char * buffer, unsigned int length);
-
+DCMTK_OFSTD_EXPORT OFString GetStudyHashDir(OFString studyuid);
 DCMTK_OFSTD_EXPORT unsigned long studyuid_hash(const char *str);
 
 DCMTK_OFSTD_EXPORT OFString longToString(unsigned long i);
