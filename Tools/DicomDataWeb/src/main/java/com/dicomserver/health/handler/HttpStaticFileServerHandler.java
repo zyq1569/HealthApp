@@ -12,6 +12,7 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedFile;
 import io.netty.util.CharsetUtil;
+import io.netty.util.internal.SystemPropertyUtil;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -36,7 +37,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
     public static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
     public static final int HTTP_CACHE_SECONDS = 60;
-    public static final String HTTP_PATH = "E:\\Tool";
+    public static final String HTTP_PATH = SystemPropertyUtil.get("user.dir") ;
     private FullHttpRequest request;
 
     public  class OFHashValue{
