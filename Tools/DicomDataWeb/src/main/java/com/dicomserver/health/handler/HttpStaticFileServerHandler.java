@@ -1,5 +1,9 @@
 package com.dicomserver.health.handler;
 
+
+//reference :netty demo
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.dicomserver.health.config.ServerConfig;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -8,21 +12,19 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedFile;
 import io.netty.util.CharsetUtil;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
+
+import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
+
 import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-
 
 
 /**
@@ -85,6 +87,133 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 hashpath = String.valueOf(this.first)+"/"+String.valueOf(this.second);
             }
             return  hashpath;
+        }
+    }
+    public static boolean GetJsonData(String pathname) {
+        JSONObject json = new JSONObject();
+        //String pathname = "D:\\code\\C++\\HealthApp\\bin\\win32\\DCM_SAVE\\Images\\83\\14\\1.3.6.1.4.1.25403.52237031786.3872.20100510032220.1\\1.3.6.1.4.1.25403.52237031786.3872.20100510032220.1"; // 绝对路径或相对路径都可以，写入文件时演示相对路径,读取以上路径的input.txt文件
+        String inifilename = pathname +".ini" ;
+        String jsonfilename = pathname +".json";
+        final String studyuid = "studyuid=";final String patientid = "patientid="; final String patientname = "patientname=";
+        final String patientsex = "patientsex=";final String studyid = "studyid="; final String studydatetime = "studydatetime=";
+        final String modality = "modality=";final String studyDescription = "studyDescription="; final String numImages = "numImages=";
+        //// 建立一个对象，它把文件内容转成计算机能读懂的语言
+        try (FileReader reader = new FileReader(inifilename);
+             BufferedReader br = new BufferedReader(reader) ) {
+            String line = br.readLine();
+            while (line != null) {
+                if (line.indexOf("[STUDY]") == 0){
+                    line = br.readLine();
+                    int pos = 0;
+                    if ((pos = line.indexOf(studyuid))==0){
+                        if (line.length()>studyuid.length()){
+                            json.put(studyuid, line.substring(studyuid.length(),line.length()));
+                        }else {
+                            json.put(studyuid, "");
+                        }
+                    }
+                    if ((pos = line.indexOf(patientid))==0){
+                        if (line.length()>patientid.length()){
+                            json.put(patientid, line.substring(patientid.length(),line.length()));
+                        }else {
+                            json.put(patientid, "");
+                        }
+                    }
+                    if ((pos = line.indexOf(patientsex))==0){
+                        if (line.length()>patientsex.length()){
+                            json.put(patientsex, line.substring(patientsex.length(),line.length()));
+                        }else {
+                            json.put(patientsex, "");
+                        }
+                    }
+                    if ((pos = line.indexOf(studyid))==0){
+                        if (line.length()>studyid.length()){
+                            json.put(studyid, line.substring(studyid.length(),line.length()));
+                        }else {
+                            json.put(studyid, "");
+                        }
+                    }
+                    if ((pos = line.indexOf(studydatetime))==0){
+                        if (line.length()>studydatetime.length()){
+                            json.put(studydatetime, line.substring(studydatetime.length(),line.length()));
+                        }else {
+                            json.put("studydate", "");
+                        }
+                    }
+                    if ((pos = line.indexOf(modality))==0){
+                        if (line.length()>modality.length()){
+                            json.put(modality, line.substring(modality.length(),line.length()));
+                        }else {
+                            json.put(modality, "");
+                        }
+                    }
+                    if ((pos = line.indexOf(modality))==0){
+                        if (line.length()>modality.length()){
+                            json.put(modality, line.substring(modality.length(),line.length()));
+                        }else {
+                            json.put(modality, "");
+                        }
+                    }
+                    if ((pos = line.indexOf("studydescription"))==0){
+                        if (line.length()>studyDescription.length()){
+                            json.put(studyDescription, line.substring(studyDescription.length(),line.length()));
+                        }else {
+                            json.put(studyDescription, "");
+                        }
+                    }
+                    line = br.readLine();
+                    while (line != null){
+                        if (line.indexOf("[SERIES]")==0){
+                            JSONArray serieslist = new JSONArray();
+                            json.put("serieslist",serieslist);
+                            line = br.readLine();
+                            pos = line.indexOf("|");
+                            int seriesnumber = Integer.parseInt(line.substring(0,pos));
+                            JSONObject list = new JSONObject();
+                            String substr = line.substring(pos+1,line.length());
+                            list.put("seriesDescription",substr);
+                            pos = substr.indexOf("|");
+                            list.put("seriesUid",substr.substring(pos,substr.length()));
+                            list.put("seriesNumber",seriesnumber);
+                            line = br.readLine();
+                            if (line.indexOf("[image]")==0){
+                                line = br.readLine();
+                                while (line != null){
+                                    pos = line.indexOf("|");
+                                    int imagenumber = Integer.parseInt(line.substring(0,pos));
+                                    list.put("imageId",line.substring(pos,line.length()));
+                                    line = br.readLine();
+                                    if (line.indexOf("[SERIES]")==0){
+                                        break;
+                                    }
+                                    serieslist.add(list);
+                                }
+                            }
+                        }
+                    }
+
+                }
+                // 一次读入一行数据
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  true;
+    }
+    public static void writeFile() {
+        try {
+            File writeName = new File("output.txt"); // 相对路径，如果没有则要建立一个新的output.txt文件
+            writeName.createNewFile(); // 创建新文件,有同名的文件的话直接覆盖
+            try (FileWriter writer = new FileWriter(writeName);
+                 BufferedWriter out = new BufferedWriter(writer)
+            ) {
+                out.write("我会写入文件啦1\r\n"); // \r\n即为换行
+                out.write("我会写入文件啦2\r\n"); // \r\n即为换行
+                out.flush(); // 把缓存区内容压入文件
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
