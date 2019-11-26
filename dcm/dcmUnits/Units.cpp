@@ -505,48 +505,47 @@ OFString GetFromFile(OFString filename)
 
 OFBool SaveStudy2JsonFile(StudyInfo studyinfo, OFString filename)
 {
-    cJSON *study = cJSON_CreateObject();
-    //studyinfo
-    cJSON_AddStringToObject(study, "patientName", studyinfo.patientName.c_str());
-    cJSON_AddStringToObject(study, "patientId", studyinfo.patientId.c_str());
-    cJSON_AddStringToObject(study, "studyDate", studyinfo.studyDate.c_str());
-    cJSON_AddStringToObject(study, "modality", studyinfo.modality.c_str());
-    cJSON_AddStringToObject(study, "studyDescription", studyinfo.studyDescription.c_str());
-    cJSON_AddNumberToObject(study, "numImages", studyinfo.seriesInfoList.size());
-    cJSON_AddStringToObject(study, "studyId", studyinfo.studyId.c_str());
-    cJSON_AddStringToObject(study, "studyuid", studyinfo.studyUID.c_str());
-    //seriesinfo
+    //cJSON *study = cJSON_CreateObject();
+    ////studyinfo
+    //cJSON_AddStringToObject(study, "patientName", studyinfo.patientName.c_str());
+    //cJSON_AddStringToObject(study, "patientId", studyinfo.patientId.c_str());
+    //cJSON_AddStringToObject(study, "studyDate", studyinfo.studyDate.c_str());
+    //cJSON_AddStringToObject(study, "modality", studyinfo.modality.c_str());
+    //cJSON_AddStringToObject(study, "studyDescription", studyinfo.studyDescription.c_str());
+    //cJSON_AddNumberToObject(study, "numImages", studyinfo.seriesInfoList.size());
+    //cJSON_AddStringToObject(study, "studyId", studyinfo.studyId.c_str());
+    //cJSON_AddStringToObject(study, "studyuid", studyinfo.studyUID.c_str());
+    ////seriesinfo
 
-    cJSON *seriesListItem = cJSON_CreateArray();
-    const char *seriesList = "seriesList";
-    cJSON_AddItemToObject(study, seriesList, seriesListItem);
-    OFListIterator(SeriesInfo) iter = studyinfo.seriesInfoList.begin();
-    OFListIterator(SeriesInfo) last = studyinfo.seriesInfoList.end();
-    while (iter != last)
-    {
-        cJSON *series = cJSON_CreateObject();
-        cJSON_AddItemToObject(seriesListItem, seriesList, series);
-        cJSON_AddStringToObject(series, "seriesUid", (*iter).seriesUID.c_str());
-        cJSON_AddStringToObject(series, "seriesDescription", (*iter).seriesDescription.c_str());
-        cJSON_AddStringToObject(series, "seriesNumber", longToString((*iter).seriesNumber).c_str());
+    //cJSON *seriesListItem = cJSON_CreateArray();
+    //const char *seriesList = "seriesList";
+    //cJSON_AddItemToObject(study, seriesList, seriesListItem);
+    //OFListIterator(SeriesInfo) iter = studyinfo.seriesInfoList.begin();
+    //OFListIterator(SeriesInfo) last = studyinfo.seriesInfoList.end();
+    //while (iter != last)
+    //{
+    //    cJSON *series = cJSON_CreateObject();
+    //    cJSON_AddItemToObject(seriesListItem, seriesList, series);
+    //    cJSON_AddStringToObject(series, "seriesUid", (*iter).seriesUID.c_str());
+    //    cJSON_AddStringToObject(series, "seriesDescription", (*iter).seriesDescription.c_str());
+    //    cJSON_AddStringToObject(series, "seriesNumber", longToString((*iter).seriesNumber).c_str());
 
-        OFListIterator(ImageInfo) ibegin = (*iter).imagesInfoList.begin();
-        OFListIterator(ImageInfo) lend = (*iter).imagesInfoList.end();
-        cJSON *images = cJSON_CreateArray();
-        cJSON_AddItemToObject(series, "instanceList", images);
-        while (ibegin != lend)
-        {
-            cJSON *imageid = cJSON_CreateObject();
-            cJSON_AddStringToObject(imageid, "imageId", (*ibegin).imageSOPInstanceUID.c_str());
-            cJSON_AddItemToObject(images, "instanceList", imageid);
-            ibegin++;
-        }
-        ++iter;
-    }
-    char *p = cJSON_Print(study);
-    SaveString2File(p, filename);
-    free(p);
-    cJSON_Delete(study);
+    //    OFListIterator(ImageInfo) ibegin = (*iter).imagesInfoList.begin();
+    //    OFListIterator(ImageInfo) lend = (*iter).imagesInfoList.end();
+    //    cJSON *images = cJSON_CreateArray();
+    //    cJSON_AddItemToObject(series, "instanceList", images);
+    //    while (ibegin != lend)
+    //    {
+    //        cJSON *imageid = cJSON_CreateObject();
+    //        cJSON_AddStringToObject(imageid, "imageId", (*ibegin).imageSOPInstanceUID.c_str());
+    //        cJSON_AddItemToObject(images, "instanceList", imageid);
+    //        ibegin++;
+    //    }
+    //    ++iter;
+    //}
+    //char *p = cJSON_Print(study);
+    //SaveString2File(p, filename);
+    //cJSON_Delete(study);
 
     return OFTrue;
 }
@@ -554,12 +553,16 @@ OFBool SaveString2File(OFString str, OFString filename)
 {
     if (str.length() > 0)
     {
-        using namespace std;
-        ofstream savedcmfile;
-        char *pfilename = (char *)filename.c_str();
-        savedcmfile.open(filename.c_str(), ios::out | ios::app); //ios::trunc表示在打开文件前将文件清空,由于是写入,文件不存在则创建
-        savedcmfile << str.c_str();
-        savedcmfile.close();//关闭文件
+        //using namespace std;
+        //ofstream savedcmfile;
+        //char *pfilename = (char *)filename.c_str();
+        //savedcmfile.open(filename.c_str(), ios::out | ios::app); //ios::trunc表示在打开文件前将文件清空,由于是写入,文件不存在则创建
+        //savedcmfile << str.c_str();
+        //savedcmfile.close();//关闭文件
+        OFFile inifile;
+        inifile.fopen(filename, "w");
+        inifile.fputs(str.c_str());
+        inifile.fclose();
     }
     return OFTrue;
 }

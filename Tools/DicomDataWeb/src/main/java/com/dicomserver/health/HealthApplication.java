@@ -1,6 +1,5 @@
 package com.dicomserver.health;
 
-
 //reference :netty demo
 import com.dicomserver.health.config.ServerConfig;
 import com.dicomserver.health.handler.HttpStaticFileServerInitializer;
@@ -16,7 +15,6 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 //
 //
 //	public static void main(String[] args) {
@@ -28,8 +26,6 @@ public class HealthApplication {
 
 	static final boolean SSL = System.getProperty("ssl") != null;
 	static final int PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
-
-
 
 	public static void main(String[] args) throws Exception {
 		ServerConfig config =  new ServerConfig();
