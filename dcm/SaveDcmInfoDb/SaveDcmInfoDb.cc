@@ -48,6 +48,7 @@ END_EXTERN_C
 //#include <objbase.h>
 #include"DcmConfig.h"
 //////////////
+#include"cJSON.h"
 
 #ifdef ON_THE_FLY_COMPRESSION
 #include "dcmtk/dcmjpeg/djdecode.h"  /* for JPEG decoders */
@@ -71,6 +72,7 @@ END_EXTERN_C
 
 #include "Units.h"
 
+#include "CJsonObject.hpp"
 
 #if defined (HAVE_WINDOWS_H) || defined(HAVE_FNMATCH_H)
 #define PATTERN_MATCHING_AVAILABLE
@@ -494,6 +496,230 @@ struct  HStudyInfo
     OFString Seriesuid, studydescription, Seriesdescription, Seriesnumber, Sopinstanceuid, instanceNumber;
 };
 
+OFBool CjsonSaveFile(HStudyInfo dcminfo, OFString filename)
+{
+    OFString strjson;
+    if (OFStandard::fileExists(filename))
+    {
+        OFFile jsonfile;
+        jsonfile.fopen(filename, "r+");
+        const int maxline = 256;
+        char line[maxline];
+        OFList<OFString> StudyInfo;
+        while (jsonfile.fgets(line, maxline) != NULL)
+        {
+            strjson += line;
+        }
+        jsonfile.fclose();
+        CJSON::CJsonObject Json(strjson.c_str());
+        int numImages=0;
+        if (Json.Get("numImages", numImages))
+        {
+            numImages++;
+        }
+        Json.Replace("numImages", numImages);
+        int size = Json["seriesList"].GetArraySize();
+        for (int i = 0; i < size; i++)
+        {
+            std::string strValue;
+            if (Json["seriesList"][i].Get("seriesUid", strValue))
+            {
+                OFString suid = strValue.c_str();
+                if (suid == dcminfo.Seriesuid)
+                {
+                    int asize = Json["seriesList"][i]["instanceList"].GetArraySize();
+                    for (int j = 0;  j < asize;  j++)
+                    {
+                        if (Json["seriesList"][i]["instanceList"][j].Get("imageId", strValue))
+                        {
+                            OFString imageid = strValue.c_str();
+                            if (imageid == dcminfo.Sopinstanceuid)
+                            {
+                                return OFTrue;
+                            }
+                        }
+                    }
+                    CJSON::CJsonObject Images;
+                    Images.Add("imageId", dcminfo.Sopinstanceuid.c_str());
+                    Json["seriesList"][i]["instanceList"].Add(Images);
+                    strjson = Json.ToJsonString().c_str();
+                    SaveString2File(strjson, filename);
+                    return OFTrue;
+                }
+            }
+        }
+        CJSON::CJsonObject Series;
+        Series.Add("seriesUid", dcminfo.Seriesuid.c_str());
+        Series.Add("seriesDescription", dcminfo.Seriesdescription.c_str());
+        Series.Add("seriesNumber", dcminfo.Seriesnumber.c_str());
+
+        Series.AddEmptySubArray("instanceList");
+        CJSON::CJsonObject Images;
+        Images.Add("imageId", dcminfo.Sopinstanceuid.c_str());
+        Series["instanceList"].Add(Images);
+        Json["seriesList"].Add(Series);
+
+        strjson = Json.ToJsonString().c_str();
+        SaveString2File(strjson, filename);
+        return OFTrue;
+    }
+    else
+    {
+        CJSON::CJsonObject Json;
+        int numImages = 1;
+        Json.Add("patientName", dcminfo.StudyPatientName.c_str());
+        Json.Add("patientId",dcminfo.StudyPatientId.c_str());
+        Json.Add("modality",dcminfo.StudyModality.c_str());
+        Json.Add("studyDescription",dcminfo.studydescription.c_str());
+        Json.Add("numImages",numImages);
+        Json.Add("studyId",dcminfo.StudyID.c_str());
+        Json.Add("studyuid",dcminfo.StudyInstanceUID.c_str());
+
+        Json.AddEmptySubArray("seriesList");
+        CJSON::CJsonObject Series;
+        Series.Add("seriesUid", dcminfo.Seriesuid.c_str());
+        Series.Add("seriesDescription", dcminfo.Seriesdescription.c_str());
+        Series.Add("seriesNumber", dcminfo.Seriesnumber.c_str());
+
+        Series.AddEmptySubArray("instanceList");
+        CJSON::CJsonObject Images;
+        Images.Add("imageId", dcminfo.Sopinstanceuid.c_str());
+        Series["instanceList"].Add(Images);
+        Json["seriesList"].Add(Series);
+
+        strjson = Json.ToJsonString().c_str();
+        SaveString2File(strjson, filename);
+        return OFTrue;
+    }
+
+    return OFTrue;
+}
+OFBool SaveDcmInfoJsonFile(HStudyInfo dcminfo, OFString filename)
+{
+    return CjsonSaveFile(dcminfo,filename);
+    //////////////////////////////////////
+    //if (OFStandard::fileExists(filename))
+    //{
+    //    OFFile jsonfile;
+    //    jsonfile.fopen(filename, "r+");
+    //    const int maxline = 256;
+    //    char line[maxline];
+    //    OFList<OFString> StudyInfo;
+    //    OFString strjson;
+    //    while (jsonfile.fgets(line, maxline) != NULL)
+    //    {
+    //        strjson += line;
+    //    }
+    //    jsonfile.fclose();
+    //    cJSON *study = cJSON_Parse(strjson.c_str());
+    //    cJSON *item = cJSON_GetObjectItem(study, "numImages");
+    //    if (item != NULL)
+    //    {
+    //        int n = item->valueint+1;
+    //        cJSON *newitem = cJSON_AddNumberToObject(study, "numImages", n);//update
+    //        cJSON_ReplaceItemInObject(study, "numImages", newitem);
+    //    }
+
+    //    //cJSON *jsonitem = cJSON_GetObjectItem(study, "seriesList");
+    //    if (study != NULL)
+    //    {
+    //        cJSON *jsonitem = cJSON_GetObjectItem(study, "seriesList");
+    //        int size = cJSON_GetArraySize(jsonitem);
+    //        OFBool bfindser = OFFalse;
+    //        for (int i = 0; i < size; i++)
+    //        {
+    //            cJSON *serlist = cJSON_GetArrayItem(jsonitem, i);
+    //            if (serlist != NULL)
+    //            {
+    //                cJSON *seritem = cJSON_GetObjectItem(serlist, "seriesUid");
+    //                const OFString servalue = cJSON_GetStringValue(seritem);
+    //                if (servalue == dcminfo.Seriesuid)
+    //                {
+    //                    bfindser = OFTrue;
+    //                    OFBool bfindimage = OFFalse;
+    //                    cJSON *imageitem = cJSON_GetObjectItem(serlist, "instanceList");
+    //                    int imagesize = cJSON_GetArraySize(imageitem);
+    //                    for (int j = 0; j < imagesize; j++)
+    //                    {
+    //                        cJSON *images = cJSON_GetArrayItem(imageitem, j);//cJSON_GetObjectItem(imageitem, "imageid");
+    //                        cJSON *image = cJSON_GetObjectItem(images, "imageId");
+    //                        const OFString imagevalue = cJSON_GetStringValue(image);
+    //                        if (imagevalue == dcminfo.Sopinstanceuid)
+    //                        {
+    //                            bfindimage = OFTrue;
+    //                            return OFTrue;
+    //                        }
+    //                    }
+    //                    cJSON *image = cJSON_CreateObject();
+    //                    cJSON_AddStringToObject(imageitem, "imageId", dcminfo.Sopinstanceuid.c_str());
+    //                    char *p = cJSON_Print(study->child);
+
+    //                    SaveString2File(p, filename);
+    //                    cJSON_Delete(image);
+    //                    return OFTrue;
+    //                    //add image info
+    //                }
+    //            }
+    //        }
+    //        //add series image info
+    //        if (!bfindser)
+    //        {
+    //            cJSON *series = cJSON_CreateObject();
+    //            const char *seriesList = "seriesList";
+    //            cJSON_AddItemToObject(jsonitem, seriesList, series);
+    //            cJSON_AddStringToObject(series, "seriesUid", dcminfo.Seriesuid.c_str());
+    //            cJSON_AddStringToObject(series, "seriesDescription", dcminfo.Seriesdescription.c_str());
+    //            cJSON_AddStringToObject(series, "seriesNumber", dcminfo.Seriesnumber.c_str());
+
+    //            cJSON *image = cJSON_CreateObject();
+    //            cJSON_AddStringToObject(image, "imageId", dcminfo.Sopinstanceuid.c_str());
+    //            cJSON_AddItemToObject(series, "instanceList", image);
+    //            char *p = cJSON_Print(study);
+    //            SaveString2File(p, filename);
+    //            cJSON_Delete(series);
+    //            return OFTrue;
+    //        }
+    //    }
+    //}
+    //else
+    //{
+    //    cJSON *study = cJSON_CreateObject();
+
+    //    //studyinfo
+    //    cJSON_AddStringToObject(study, "patientName", dcminfo.StudyPatientName.c_str());
+    //    cJSON_AddStringToObject(study, "patientId", dcminfo.StudyPatientId.c_str());
+    //    cJSON_AddStringToObject(study, "studyDate", dcminfo.StudyDateTime.c_str());
+    //    cJSON_AddStringToObject(study, "modality", dcminfo.StudyModality.c_str());
+    //    cJSON_AddStringToObject(study, "studyDescription", dcminfo.studydescription.c_str());
+    //    cJSON_AddNumberToObject(study, "numImages", 1);
+    //    cJSON_AddStringToObject(study, "studyId", dcminfo.StudyID.c_str());
+    //    cJSON_AddStringToObject(study, "studyuid", dcminfo.StudyInstanceUID.c_str());
+
+    //    //seriesinfo
+    //    cJSON *seriesListItem = cJSON_CreateArray();
+    //    const char *seriesList = "seriesList";
+    //    cJSON_AddItemToObject(study, seriesList, seriesListItem);
+    //    cJSON *series = cJSON_CreateObject();
+    //    cJSON_AddItemToObject(seriesListItem, seriesList, series);
+    //    cJSON_AddStringToObject(series, "seriesUid", dcminfo.Seriesuid.c_str());
+    //    cJSON_AddStringToObject(series, "seriesDescription", dcminfo.Seriesdescription.c_str());
+    //    cJSON_AddStringToObject(series, "seriesNumber", dcminfo.Seriesnumber.c_str());
+
+    //    cJSON *images = cJSON_CreateArray();
+    //    cJSON_AddItemToObject(series, "instanceList", images);
+    //    //imageid
+    //    cJSON *imageid = cJSON_CreateObject();
+    //    cJSON_AddStringToObject(imageid, "imageId", dcminfo.Sopinstanceuid.c_str());
+    //    cJSON_AddItemToObject(images, "instanceList", imageid);
+
+    //    char *p = cJSON_Print(study);
+    //    SaveString2File(p, filename);
+    //    cJSON_Delete(study);
+    //    //cJSON_free(study);
+    //    return OFTrue;
+    //}
+    return OFTrue;
+}
 OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
 {
     OFFile inifile;
@@ -587,8 +813,6 @@ OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
         str += "manufacturer=" + dcminfo.StudyManufacturer + "\n";
 
         str += "institutionname=" + dcminfo.StudyInstitutionName + "\n";
-        str += "studydescription=" + dcminfo.Seriesdescription + "\n";
-        str += "manufacturer=" + dcminfo.StudyManufacturer + "\n";
         str += "studydescription=" + dcminfo.studydescription + "\n";
         inifile.fputs(str.c_str());
 
@@ -600,7 +824,6 @@ OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
         inifile.fputs(str.c_str());
         inifile.fclose();
     }
-
     return OFTrue;
 }
 OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
@@ -741,7 +964,9 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 OFLOG_ERROR(SaveDcmInfoDbLogger, "NO StudyInstanceUID filename:" + filename);
                 return OFFalse;
             }
-            OFString studyinifile = g_ImageDir + GetStudyHashDir(StudyInfo.StudyInstanceUID) + "\\" + StudyInfo.StudyInstanceUID + "\\" + StudyInfo.StudyInstanceUID + ".ini";
+            OFString pathname = g_ImageDir + GetStudyHashDir(StudyInfo.StudyInstanceUID) + "\\" + StudyInfo.StudyInstanceUID + "\\" + StudyInfo.StudyInstanceUID;
+            OFString studyinifile = pathname + ".ini";
+            OFString studyjsonfile = pathname + ".json";
             if (!OFStandard::fileExists(studyinifile))
             {
                 if (g_pMariaDb == NULL)
@@ -846,7 +1071,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 OFLOG_INFO(SaveDcmInfoDbLogger, "update table H_order:" + StudyInfo.StudyInstanceUID);
                 //-------------------------------------------------------------------------------
             }
-            if (SaveDcmInfoFile(StudyInfo, studyinifile))
+            if (SaveDcmInfoFile(StudyInfo, studyinifile) && CjsonSaveFile(StudyInfo, studyjsonfile))
             {
                 OFStandard::deleteFile(filename);
             }

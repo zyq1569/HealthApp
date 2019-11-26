@@ -92,54 +92,89 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     }
     public static boolean GetJsonData(String pathname) {
         JSONObject json = new JSONObject();
-        //String pathname = "D:\\code\\C++\\HealthApp\\bin\\win32\\DCM_SAVE\\Images\\83\\14\\1.3.6.1.4.1.25403.52237031786.3872.20100510032220.1\\1.3.6.1.4.1.25403.52237031786.3872.20100510032220.1"; // 绝对路径或相对路径都可以，写入文件时演示相对路径,读取以上路径的input.txt文件
-        String inifilename = pathname +".ini" ;
+         String inifilename = pathname +".ini" ;
+        File fileini =new File(inifilename);
+        if (!fileini.exists())
+            return false;
         String jsonfilename = pathname +".json";
-        final String studyuid = "studyuid=";final String patientid = "patientid="; final String patientname = "patientname=";
-        final String patientsex = "patientsex=";final String studyid = "studyid="; final String studydatetime = "studydatetime=";
+        File file =new File(jsonfilename);
+        if (file.exists())
+            return true;
+        final String studyuid = "studyuid=";final String patientid = "patientid="; final String patientname = "patientname=";final String patientage = "patientage=";
+        final String patientsex = "patientsex=";final String studyid = "studyid="; final String studydatetime = "studydatetime=";final String patientbirthdata = "patientbirthdata=";
         final String modality = "modality=";final String studyDescription = "studyDescription="; final String numImages = "numImages=";
+        final String manufacturer = "manufacturer=";final String institutionname = "institutionname=";
         //// 建立一个对象，它把文件内容转成计算机能读懂的语言
         try (FileReader reader = new FileReader(inifilename);
              BufferedReader br = new BufferedReader(reader) ) {
             String line = br.readLine();
-            while (line != null) {
+            if (line != null) {
                 if (line.indexOf("[STUDY]") == 0){
                     line = br.readLine();
                     int pos = 0;
                     if ((pos = line.indexOf(studyuid))==0){
                         if (line.length()>studyuid.length()){
-                            json.put(studyuid, line.substring(studyuid.length(),line.length()));
+                            json.put("studyuid", line.substring(studyuid.length(),line.length()));
                         }else {
-                            json.put(studyuid, "");
+                            json.put("studyuid", "");
                         }
+                        line = br.readLine();
                     }
                     if ((pos = line.indexOf(patientid))==0){
                         if (line.length()>patientid.length()){
-                            json.put(patientid, line.substring(patientid.length(),line.length()));
+                            json.put("patientid", line.substring(patientid.length(),line.length()));
                         }else {
-                            json.put(patientid, "");
+                            json.put("patientid", "");
                         }
+                        line = br.readLine();
+                    }
+                    if ((pos = line.indexOf(patientname))==0){
+                        if (line.length()>patientname.length()){
+                            json.put("patientname", line.substring(patientname.length(),line.length()));
+                        }else {
+                            json.put("patientname", "");
+                        }
+                        line = br.readLine();
                     }
                     if ((pos = line.indexOf(patientsex))==0){
                         if (line.length()>patientsex.length()){
-                            json.put(patientsex, line.substring(patientsex.length(),line.length()));
+                            json.put("patientsex", line.substring(patientsex.length(),line.length()));
                         }else {
-                            json.put(patientsex, "");
+                            json.put("patientsex", "");
                         }
+                        line = br.readLine();
                     }
                     if ((pos = line.indexOf(studyid))==0){
                         if (line.length()>studyid.length()){
-                            json.put(studyid, line.substring(studyid.length(),line.length()));
+                            json.put("studyid", line.substring(studyid.length(),line.length()));
                         }else {
-                            json.put(studyid, "");
+                            json.put("studyid", "");
                         }
+                        line = br.readLine();
+                    }
+                    if ((pos = line.indexOf(patientage))==0){
+                        if (line.length()>patientage.length()){
+                            json.put("patientage", line.substring(patientage.length(),line.length()));
+                        }else {
+                            json.put("patientage", "");
+                        }
+                        line = br.readLine();
+                    }
+                    if ((pos = line.indexOf(patientbirthdata))==0){
+                        if (line.length()>patientbirthdata.length()){
+                            json.put("patientbirthdata", line.substring(patientbirthdata.length(),line.length()));
+                        }else {
+                            json.put("patientbirthdata", "");
+                        }
+                        line = br.readLine();
                     }
                     if ((pos = line.indexOf(studydatetime))==0){
                         if (line.length()>studydatetime.length()){
-                            json.put(studydatetime, line.substring(studydatetime.length(),line.length()));
+                            json.put("studydate", line.substring(studydatetime.length(),line.length()));
                         }else {
                             json.put("studydate", "");
                         }
+                        line = br.readLine();
                     }
                     if ((pos = line.indexOf(modality))==0){
                         if (line.length()>modality.length()){
@@ -147,13 +182,23 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                         }else {
                             json.put(modality, "");
                         }
+                        line = br.readLine();
                     }
-                    if ((pos = line.indexOf(modality))==0){
-                        if (line.length()>modality.length()){
-                            json.put(modality, line.substring(modality.length(),line.length()));
+                    if ((pos = line.indexOf(manufacturer))==0){
+                        if (line.length()>manufacturer.length()){
+                            json.put(manufacturer, line.substring(manufacturer.length(),line.length()));
                         }else {
-                            json.put(modality, "");
+                            json.put(manufacturer, "");
                         }
+                        line = br.readLine();
+                    }
+                    if ((pos = line.indexOf(institutionname))==0){
+                        if (line.length()>institutionname.length()){
+                            json.put(institutionname, line.substring(institutionname.length(),line.length()));
+                        }else {
+                            json.put(institutionname, "");
+                        }
+                        line = br.readLine();
                     }
                     if ((pos = line.indexOf("studydescription"))==0){
                         if (line.length()>studyDescription.length()){
@@ -161,62 +206,68 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                         }else {
                             json.put(studyDescription, "");
                         }
+                        line = br.readLine();
                     }
-                    line = br.readLine();
+                    JSONArray serieslist = new JSONArray();
+                    json.put("serieslist",serieslist);
                     while (line != null){
                         if (line.indexOf("[SERIES]")==0){
-                            JSONArray serieslist = new JSONArray();
-                            json.put("serieslist",serieslist);
+                            JSONObject list = new JSONObject();
+                            serieslist.add(list);
                             line = br.readLine();
                             pos = line.indexOf("|");
                             int seriesnumber = Integer.parseInt(line.substring(0,pos));
-                            JSONObject list = new JSONObject();
                             String substr = line.substring(pos+1,line.length());
-                            list.put("seriesDescription",substr);
                             pos = substr.indexOf("|");
-                            list.put("seriesUid",substr.substring(pos,substr.length()));
+                            list.put("seriesDescription",substr.substring(0,pos));
+                            pos = substr.indexOf("|");
+                            list.put("seriesUid",substr.substring(pos+1,substr.length()));
                             list.put("seriesNumber",seriesnumber);
                             line = br.readLine();
+                            JSONArray instanceList = new JSONArray();
+                            list.put("instanceList",instanceList);
                             if (line.indexOf("[image]")==0){
                                 line = br.readLine();
                                 while (line != null){
                                     pos = line.indexOf("|");
+                                    JSONObject image = new JSONObject();
+                                    instanceList.add(image);
                                     int imagenumber = Integer.parseInt(line.substring(0,pos));
-                                    list.put("imageId",line.substring(pos,line.length()));
+                                    image.put("imageId",line.substring(pos+1,line.length()));
                                     line = br.readLine();
+                                    if (line == null)
+                                        break;
                                     if (line.indexOf("[SERIES]")==0){
                                         break;
                                     }
-                                    serieslist.add(list);
                                 }
                             }
                         }
                     }
-
                 }
                 // 一次读入一行数据
-                System.out.println(line);
+                //System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String str =  json.toJSONString();
+        System.out.println(str);
+        try {
+            File writeName = new File(jsonfilename);
+            writeName.createNewFile(); // 创建新文件,有同名的文件的话直接覆盖
+            try (FileWriter writer = new FileWriter(writeName);
+                 BufferedWriter out = new BufferedWriter(writer)
+            ) {
+                out.write(str);
+                out.flush(); // 把缓存区内容压入文件
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return  true;
     }
-    public static void writeFile() {
-        try {
-            File writeName = new File("output.txt"); // 相对路径，如果没有则要建立一个新的output.txt文件
-            writeName.createNewFile(); // 创建新文件,有同名的文件的话直接覆盖
-            try (FileWriter writer = new FileWriter(writeName);
-                 BufferedWriter out = new BufferedWriter(writer)
-            ) {
-                out.write("我会写入文件啦1\r\n"); // \r\n即为换行
-                out.write("我会写入文件啦2\r\n"); // \r\n即为换行
-                out.flush(); // 把缓存区内容压入文件
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     //add 20191113
     public static Map<String, Object> getParameter(String url) {
@@ -238,6 +289,15 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
         System.out.println(map);
         return map;
+    }
+    public String getJsonPath(String studyuid ){
+        OFHashValue h = new OFHashValue();
+        String filePath="";
+        String hashPath = h.GetHashValuePath(studyuid.getBytes(),studyuid.length());
+        if (!hashPath.equals("")){
+            filePath = hashPath+"/"+studyuid+"/"+studyuid;
+        }
+        return  filePath;
     }
     //
     public String getDicomPath(String studyuid, String seriesuid, String sopinstanceuid ){
@@ -299,12 +359,19 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 path = filePath  + File.separator + getDicomPath(studyuid,seruid,sopinstanceuid);
                 bSetFilename = true;
             }
+            else if (bstuid){
+                ServerConfig config =  new ServerConfig();
+                String filePath = config.GetFilePath();
+                path = filePath  + File.separator + getJsonPath(studyuid);
+                //GetJsonData(path);
+                path = path+".json";
+                bSetFilename = true;
+            }
             if (path == null) {
                 this.sendError(ctx, FORBIDDEN);
                 return;
             }
         }
-
         File file = new File(path);
 
         if (file.isHidden() || !file.exists()) {
@@ -427,6 +494,9 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     // sopinstanceuid=1.3.51.5145.5142.20010109.1105627.1.0.1
     private static String sanitizeUri(String uri) {
         // Decode the path.
+        if (uri.indexOf("WADO?studyuid=")>-1){
+            return  null;
+        }
         try {
             uri = URLDecoder.decode(uri, "UTF-8");
         } catch (UnsupportedEncodingException e) {

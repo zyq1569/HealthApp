@@ -58,7 +58,7 @@ $.getJSON(server_json_url + 'studyList.json', function(data) {
             });
 
             // Now load the study.json
-            loadStudy(studyViewerCopy, viewportTemplate, server_json_url + "webstudies/" + study.studyId + ".json", server_wado_url);
+            loadStudy(studyViewerCopy, viewportTemplate, server_json_url + "WADO?studyuid=" + study.studyuid + "&type=json", server_wado_url);
         });
     });
 }).fail(function() {

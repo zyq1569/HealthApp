@@ -293,7 +293,7 @@ void TestJson()
     //---------------------------------------------
 
     SaveStudy2JsonFile(studyinfo,"d:\\test.json");
-    const char *c = cJSON_Version();
+    //const char *c = cJSON_Version();
 
 }
 
@@ -2445,7 +2445,7 @@ char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmD
                         //unsigned long hash_vaule = studyuid_hash(currentStudyInstanceUID.c_str()) % 100;
                         //OFString hash_dir = longToString(hash_vaule);
                         OFString hash_dir = longToString(path.first) + "/" + longToString(path.second);
-                        OFString tem_dir = "Images/" + hash_dir + "/" + dcminfo.studyUID + "/" + dcminfo.studyUID;
+                        OFString tem_dir = "Images/" + hash_dir + "/" + dcminfo.studyUID + "/" + dcminfo.seriesUID;
                         static OFString save_dir = OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName);
                         static OFString task_dir = save_dir + "/Task";
                         static OFString ini_dir = task_dir + "/1";
