@@ -1,8 +1,10 @@
 package com.dicomserver.health;
 
 //reference :netty demo
+
 import com.dicomserver.health.config.ServerConfig;
 import com.dicomserver.health.handler.HttpStaticFileServerInitializer;
+import com.google.gson.Gson;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -28,6 +30,16 @@ public class HealthApplication {
 	static final int PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
 
 	public static void main(String[] args) throws Exception {
+//		Gson dataset = new Gson();
+//		dataset.toJson("genre_id", 1);
+//		dataset.put("genre_parent_id", null);
+//		dataset.put("genre_title", "International");
+//		dataset.put("genre_handle", "International");
+//		dataset.put("genre_color", "#CC3300");
+//		System.out.println(dataset.toJSONString());
+//		// if you want to escape characters
+//		System.out.println(JSONValue.escape(dataset.toJSONString()));
+		//////////////
 		ServerConfig config =  new ServerConfig();
 		final SslContext sslCtx;
 		if (SSL) {

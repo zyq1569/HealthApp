@@ -2,8 +2,6 @@ package com.dicomserver.health.handler;
 
 
 //reference :netty demo
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.dicomserver.health.config.ServerConfig;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -91,180 +89,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
     }
     public static boolean GetJsonData(String pathname) {
-        JSONObject json = new JSONObject();
-         String inifilename = pathname +".ini" ;
-        File fileini =new File(inifilename);
-        if (!fileini.exists())
-            return false;
-        String jsonfilename = pathname +".json";
-        File file =new File(jsonfilename);
-        if (file.exists())
-            return true;
-        final String studyuid = "studyuid=";final String patientid = "patientid="; final String patientname = "patientname=";final String patientage = "patientage=";
-        final String patientsex = "patientsex=";final String studyid = "studyid="; final String studydatetime = "studydatetime=";final String patientbirthdata = "patientbirthdata=";
-        final String modality = "modality=";final String studyDescription = "studyDescription="; final String numImages = "numImages=";
-        final String manufacturer = "manufacturer=";final String institutionname = "institutionname=";
-        //// 建立一个对象，它把文件内容转成计算机能读懂的语言
-        try (FileReader reader = new FileReader(inifilename);
-             BufferedReader br = new BufferedReader(reader) ) {
-            String line = br.readLine();
-            if (line != null) {
-                if (line.indexOf("[STUDY]") == 0){
-                    line = br.readLine();
-                    int pos = 0;
-                    if ((pos = line.indexOf(studyuid))==0){
-                        if (line.length()>studyuid.length()){
-                            json.put("studyuid", line.substring(studyuid.length(),line.length()));
-                        }else {
-                            json.put("studyuid", "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf(patientid))==0){
-                        if (line.length()>patientid.length()){
-                            json.put("patientid", line.substring(patientid.length(),line.length()));
-                        }else {
-                            json.put("patientid", "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf(patientname))==0){
-                        if (line.length()>patientname.length()){
-                            json.put("patientname", line.substring(patientname.length(),line.length()));
-                        }else {
-                            json.put("patientname", "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf(patientsex))==0){
-                        if (line.length()>patientsex.length()){
-                            json.put("patientsex", line.substring(patientsex.length(),line.length()));
-                        }else {
-                            json.put("patientsex", "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf(studyid))==0){
-                        if (line.length()>studyid.length()){
-                            json.put("studyid", line.substring(studyid.length(),line.length()));
-                        }else {
-                            json.put("studyid", "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf(patientage))==0){
-                        if (line.length()>patientage.length()){
-                            json.put("patientage", line.substring(patientage.length(),line.length()));
-                        }else {
-                            json.put("patientage", "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf(patientbirthdata))==0){
-                        if (line.length()>patientbirthdata.length()){
-                            json.put("patientbirthdata", line.substring(patientbirthdata.length(),line.length()));
-                        }else {
-                            json.put("patientbirthdata", "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf(studydatetime))==0){
-                        if (line.length()>studydatetime.length()){
-                            json.put("studydate", line.substring(studydatetime.length(),line.length()));
-                        }else {
-                            json.put("studydate", "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf(modality))==0){
-                        if (line.length()>modality.length()){
-                            json.put(modality, line.substring(modality.length(),line.length()));
-                        }else {
-                            json.put(modality, "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf(manufacturer))==0){
-                        if (line.length()>manufacturer.length()){
-                            json.put(manufacturer, line.substring(manufacturer.length(),line.length()));
-                        }else {
-                            json.put(manufacturer, "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf(institutionname))==0){
-                        if (line.length()>institutionname.length()){
-                            json.put(institutionname, line.substring(institutionname.length(),line.length()));
-                        }else {
-                            json.put(institutionname, "");
-                        }
-                        line = br.readLine();
-                    }
-                    if ((pos = line.indexOf("studydescription"))==0){
-                        if (line.length()>studyDescription.length()){
-                            json.put(studyDescription, line.substring(studyDescription.length(),line.length()));
-                        }else {
-                            json.put(studyDescription, "");
-                        }
-                        line = br.readLine();
-                    }
-                    JSONArray serieslist = new JSONArray();
-                    json.put("serieslist",serieslist);
-                    while (line != null){
-                        if (line.indexOf("[SERIES]")==0){
-                            JSONObject list = new JSONObject();
-                            serieslist.add(list);
-                            line = br.readLine();
-                            pos = line.indexOf("|");
-                            int seriesnumber = Integer.parseInt(line.substring(0,pos));
-                            String substr = line.substring(pos+1,line.length());
-                            pos = substr.indexOf("|");
-                            list.put("seriesDescription",substr.substring(0,pos));
-                            pos = substr.indexOf("|");
-                            list.put("seriesUid",substr.substring(pos+1,substr.length()));
-                            list.put("seriesNumber",seriesnumber);
-                            line = br.readLine();
-                            JSONArray instanceList = new JSONArray();
-                            list.put("instanceList",instanceList);
-                            if (line.indexOf("[image]")==0){
-                                line = br.readLine();
-                                while (line != null){
-                                    pos = line.indexOf("|");
-                                    JSONObject image = new JSONObject();
-                                    instanceList.add(image);
-                                    int imagenumber = Integer.parseInt(line.substring(0,pos));
-                                    image.put("imageId",line.substring(pos+1,line.length()));
-                                    line = br.readLine();
-                                    if (line == null)
-                                        break;
-                                    if (line.indexOf("[SERIES]")==0){
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                // 一次读入一行数据
-                //System.out.println(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String str =  json.toJSONString();
-        System.out.println(str);
-        try {
-            File writeName = new File(jsonfilename);
-            writeName.createNewFile(); // 创建新文件,有同名的文件的话直接覆盖
-            try (FileWriter writer = new FileWriter(writeName);
-                 BufferedWriter out = new BufferedWriter(writer)
-            ) {
-                out.write(str);
-                out.flush(); // 把缓存区内容压入文件
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        JSONObject json = new JSONObject();
         return  true;
     }
 
@@ -328,8 +153,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
         final boolean keepAlive = HttpUtil.isKeepAlive(request);
         final String uri = request.uri();
-//        final String path = sanitizeUri(uri);
-        String path = sanitizeUri(uri);
+        String path = sanitizeUri(uri);//        final String path = sanitizeUri(uri);
         if (path == null) {
             boolean bstuid = false;
             boolean bseuid = false;
@@ -393,7 +217,6 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             sendError(ctx, FORBIDDEN);
             return;
         }
-
 
         // Cache Validation
         String ifModifiedSince = request.headers().get(HttpHeaderNames.IF_MODIFIED_SINCE);
