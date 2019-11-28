@@ -13,6 +13,7 @@ public final class ServerConfig {
     public String config_port = "";
 
     public static String file_path = "D:\\";
+    public static String image_path = "D:\\";
     public static int server_port = 0;
 
     public  void Init(){
@@ -25,7 +26,8 @@ public final class ServerConfig {
             config_port = properties.getProperty("netty.dicom.port");
             server_port = Integer.parseInt(config_port);
             System.out.println("读取配置信息成功！config_port:" + config_port);
-            file_path = properties.getProperty("netty.dicom.filePath");
+            file_path =   properties.getProperty("netty.dicom.filePath");
+            image_path =  properties.getProperty("netty.dicom.imagePath");
             System.out.println("读取配置信息成功！file_path:" + file_path);
         } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -56,6 +58,10 @@ public final class ServerConfig {
     public String GetFilePath(){
         Init();
         return file_path;
+    }
+    public String GetImagePath(){
+        Init();
+        return image_path;
     }
     public static boolean GetSSL(){
         return SSL;
