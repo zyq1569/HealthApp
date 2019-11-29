@@ -957,6 +957,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
         }
         //save to db
         //OFCondition l_error = EC_Normal;
+        OFString strsql, querysql;
         try
         {
             if (StudyInfo.StudyInstanceUID.length() < 1)
@@ -988,7 +989,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
 
 #endif
                 }
-                OFString querysql = "select * from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
+                querysql = "select * from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
                 g_pMariaDb->query(querysql.c_str());
                 ResultSet * rs = g_pMariaDb->QueryResult();
                 OFString PatientIdentity;
@@ -1037,8 +1038,8 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                     char uuid[64];
                     sprintf(uuid, "%llu", CreateGUID());
                     OFString StudyIdentity = uuid;
-                    OFString strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,";
-                    strsql += " StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState) value(";
+                    strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,";
+                    strsql += " StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDcmPatientName,StudyDescription) value(";
                     strsql += StudyIdentity;
                     strsql += ",'";
                     strsql += StudyInfo.StudyID;
@@ -1058,7 +1059,11 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                     strsql += StudyInfo.StudyInstitutionName;
                     strsql += "','";
                     strsql += StudyInfo.StudyManufacturer;
-                    strsql += "','dcm');";
+                    strsql += "','dcm','";
+                    strsql += StudyInfo.StudyPatientName;
+                    strsql += "','";//StudyDescription
+                    strsql += StudyInfo.studydescription;
+                    strsql += "');";
                     g_pMariaDb->execute(strsql.c_str());
                 }
                 //OFStandard::deleteFile(filename);
@@ -1080,6 +1085,8 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
         {
             //OFLOG_ERR(storescuLogger, "---------argv[]:" + tempstr + " ----------------------");
             OFLOG_ERROR(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
+            OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql querysql:" + querysql);
+            OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql strsql:" + strsql);
             return OFFalse;
         }
     }

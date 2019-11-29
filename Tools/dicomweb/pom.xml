@@ -31,7 +31,7 @@
 	<build>
 		<finalName>dicomweb</finalName>
 		<plugins>
-			<!-- 指定jdk版本 -->
+			 <!-- 指定jdk版本 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -43,7 +43,6 @@
 					<target>11</target>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>

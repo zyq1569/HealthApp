@@ -3,6 +3,13 @@ package com.dicomserver.health.handler;
 
 //reference :netty demo
 import com.dicomserver.health.config.ServerConfig;
+import com.dicomserver.health.dao.StudyDataDao;
+import com.dicomserver.health.dao.impl.StudyDataDaoimpl;
+import com.dicomserver.health.entity.StudyData;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -37,6 +44,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public static final int HTTP_CACHE_SECONDS = 60;
     public static final String HTTP_PATH = SystemPropertyUtil.get("user.dir") ;
     private FullHttpRequest request;
+    private static final ServerConfig serverconfig =  new ServerConfig();
 
     public  class OFHashValue{
         public int first = 0;
@@ -137,6 +145,31 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
         return  filePath;
     }
+    public String getStudysImageData() {
+        String strvalue;
+        StudyDataDao studydata = new StudyDataDaoimpl();
+        List<StudyData> list = studydata.getAllStudyImageData();
+        int size = list.size();
+        JsonObject respjson = new JsonObject();
+        JsonArray rarray = new JsonArray();
+        for (StudyData stu : list){
+            JsonObject robject = new JsonObject();
+            robject.addProperty("patientName",stu.getPatientName());
+            robject.addProperty("patientId", stu.getPatientID());
+            robject.addProperty("studyDate", stu.getStudyID());
+            robject.addProperty("modality", stu.getStudyModality());
+            robject.addProperty("studyDescription",stu.getStudyDescription());
+            robject.addProperty("numImages", 1);
+            robject.addProperty("studyId", stu.getStudyID());
+            robject.addProperty("studyuid", stu.getStudyUID());
+            rarray.add(robject);
+        }
+        respjson.add("studyList",rarray);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //System.out.println( gson.toJson(respjson));
+        strvalue = gson.toJson(respjson);
+        return strvalue;
+    }
     @Override
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         this.request = request;
@@ -178,14 +211,12 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             }
             if (bstuid && bseuid && bsouid){
                 //根据请求参数查找请求的dicom
-                ServerConfig config =  new ServerConfig();
-                String filePath = config.GetFilePath();
+                String filePath = serverconfig.getString("filePath");
                 path = filePath  + File.separator + getDicomPath(studyuid,seruid,sopinstanceuid);
                 bSetFilename = true;
             }
             else if (bstuid){
-                ServerConfig config =  new ServerConfig();
-                String filePath = config.GetFilePath();
+                String filePath = serverconfig.getString("filePath");
                 path = filePath  + File.separator + getJsonPath(studyuid);
                 //GetJsonData(path);
                 path = path+".json";
@@ -195,6 +226,18 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 this.sendError(ctx, FORBIDDEN);
                 return;
             }
+        }
+        if (path.indexOf("studyList.json") > -1)  {
+            //--------------------------
+            String buf =  getStudysImageData();
+            System.out.print(buf);
+            ByteBuf buffer = ctx.alloc().buffer(buf.length());
+            buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
+            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
+            ctx.write(response);
+            return;
+            //-------------------------
         }
         File file = new File(path);
 
@@ -343,8 +386,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
 
         // Convert to absolute path.
-        ServerConfig config =  new ServerConfig();
-        String filePath = config.GetFilePath();
+        String filePath = serverconfig.getString("filePath");;
         return filePath + File.separator + uri;
 //        return SystemPropertyUtil.get("user.dir") + File.separator + uri;
     }

@@ -3,8 +3,11 @@ package com.dicomserver.health;
 //reference :netty demo
 
 import com.dicomserver.health.config.ServerConfig;
+import com.dicomserver.health.dao.StudyDataDao;
+import com.dicomserver.health.dao.impl.StudyDataDaoimpl;
+import com.dicomserver.health.entity.StudyData;
 import com.dicomserver.health.handler.HttpStaticFileServerInitializer;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -16,7 +19,14 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import net.minidev.json.JSONValue;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import javax.validation.constraints.Null;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
+
 //
 //
 //	public static void main(String[] args) {
@@ -28,18 +38,9 @@ public class HealthApplication {
 
 	static final boolean SSL = System.getProperty("ssl") != null;
 	static final int PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
-
+    private static final ServerConfig serverconfig =  new ServerConfig();
 	public static void main(String[] args) throws Exception {
-//		Gson dataset = new Gson();
-//		dataset.toJson("genre_id", 1);
-//		dataset.put("genre_parent_id", null);
-//		dataset.put("genre_title", "International");
-//		dataset.put("genre_handle", "International");
-//		dataset.put("genre_color", "#CC3300");
-//		System.out.println(dataset.toJSONString());
-//		// if you want to escape characters
-//		System.out.println(JSONValue.escape(dataset.toJSONString()));
-		//////////////
+		//////////////--------------------------
 		ServerConfig config =  new ServerConfig();
 		final SslContext sslCtx;
 		if (SSL) {
@@ -58,11 +59,9 @@ public class HealthApplication {
 					.channel(NioServerSocketChannel.class)
 					.handler(new LoggingHandler(LogLevel.INFO))
 					.childHandler(new HttpStaticFileServerInitializer(sslCtx));
-
-			Channel ch = b.bind(config.GetPort()/*PORT*/).sync().channel();
+			Channel ch = b.bind(Integer.parseInt(serverconfig.getString("port")/*PORT*/)).sync().channel();
 //			Channel ch = b.bind(PORT).sync().channel();
-			System.err.println("Open your web browser and navigate to "+(SSL ? "https" : "http") + "://127.0.0.1:" + config.StrPort() + '/');
-
+			System.err.println("Open your web browser and navigate to "+(SSL ? "https" : "http") + "://127.0.0.1:" +serverconfig.getString("port") + '/');
 			ch.closeFuture().sync();
 		} finally {
 			bossGroup.shutdownGracefully();
@@ -70,3 +69,17 @@ public class HealthApplication {
 		}
 	}
 }
+
+//        FileOutputStream fop = null;
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        File file;
+//        file = new File("D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images/studyList.json");
+//        fop = new FileOutputStream(file);
+
+// if file doesnt exists, then create it
+//        if (!file.exists()) {
+//            file.createNewFile();
+//        }
+//        fop.write(gson.toJson(listjson).getBytes());
+//        fop.flush();
+//        fop.close();
