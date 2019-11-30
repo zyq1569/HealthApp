@@ -156,7 +156,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             JsonObject robject = new JsonObject();
             robject.addProperty("patientName",stu.getPatientName());
             robject.addProperty("patientId", stu.getPatientID());
-            robject.addProperty("studyDate", stu.getStudyID());
+            robject.addProperty("studyDate", stu.getStudyDateTime());
             robject.addProperty("modality", stu.getStudyModality());
             robject.addProperty("studyDescription",stu.getStudyDescription());
             robject.addProperty("numImages", 1);
@@ -227,15 +227,18 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 return;
             }
         }
-        if (path.indexOf("studyList.json") > -1)  {
+        if (path.contains("studyList.json"))  {
             //--------------------------
             String buf =  getStudysImageData();
             System.out.print(buf);
             ByteBuf buffer = ctx.alloc().buffer(buf.length());
             buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
             FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN,"*");//@@@@@@@@@测试使用允许同个域客户端访问
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
-            ctx.write(response);
+            //ctx.write(response);
+            //ctx.writeAndFlush(response);
+            this.sendAndCleanupConnection(ctx, response);
             return;
             //-------------------------
         }
