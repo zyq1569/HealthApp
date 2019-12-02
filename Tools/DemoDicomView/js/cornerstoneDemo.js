@@ -42,7 +42,6 @@ $.getJSON(server_json_url + 'studyList.json', function(data) {
             /*var viewportCopy = viewportTemplate.clone();
             studyViewerCopy.find('.imageViewer').append(viewportCopy);*/
 
-
             studyViewerCopy.attr("id", 'x' + study.patientId);
             // Make the viewer visible
             studyViewerCopy.removeClass('hidden');

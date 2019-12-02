@@ -2,6 +2,7 @@ package com.dicomserver.health.handler;
 
 
 //reference :netty demo
+
 import com.dicomserver.health.config.ServerConfig;
 import com.dicomserver.health.dao.StudyDataDao;
 import com.dicomserver.health.dao.impl.StudyDataDaoimpl;
@@ -16,6 +17,7 @@ import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedFile;
+import io.netty.handler.stream.ChunkedNioFile;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.SystemPropertyUtil;
 
@@ -42,16 +44,18 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
     public static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
     public static final int HTTP_CACHE_SECONDS = 60;
-    public static final String HTTP_PATH = SystemPropertyUtil.get("user.dir") ;
+    public static final String HTTP_PATH = SystemPropertyUtil.get("user.dir");
     private FullHttpRequest request;
-    private static final ServerConfig serverconfig =  new ServerConfig();
+    private static final ServerConfig serverconfig = new ServerConfig();
 
-    public  class OFHashValue{
+    public class OFHashValue {
         public int first = 0;
         public int second = 0;
-        public OFHashValue(){
+
+        public OFHashValue() {
             this.first = this.second = 0;
         }
+
         //add :hashvalue
         public boolean CreateHashValue(final byte buffer[], final long length) {
             //素数2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
@@ -63,44 +67,35 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             final int D1 = 197;
             final int D2 = 199;
             int value = 0;
-            for (int i = 0; i < length; i++)
-            {
-                value = value * M1 + (buffer[i]& 0xFF);
+            for (int i = 0; i < length; i++) {
+                value = value * M1 + (buffer[i] & 0xFF);
             }
             value %= D1;
-            if (value < 0)
-            {
+            if (value < 0) {
                 value = value + D1;
             }
             this.first = value;
 
             value = 0;
-            for (int i = 0; i < length; i++)
-            {
-                value = value * M2 + (buffer[i]& 0xFF);
+            for (int i = 0; i < length; i++) {
+                value = value * M2 + (buffer[i] & 0xFF);
             }
             value %= D2;
-            if (value < 0)
-            {
+            if (value < 0) {
                 value = value + D2;
             }
             this.second = value;
             return true;
         }
+
         public String GetHashValuePath(final byte buffer[], final long length) {
-            String hashpath="";
-            if (CreateHashValue(buffer,length))
-            {
-                hashpath = String.valueOf(this.first)+"/"+String.valueOf(this.second);
+            String hashpath = "";
+            if (CreateHashValue(buffer, length)) {
+                hashpath = String.valueOf(this.first) + "/" + String.valueOf(this.second);
             }
-            return  hashpath;
+            return hashpath;
         }
     }
-    public static boolean GetJsonData(String pathname) {
-//        JSONObject json = new JSONObject();
-        return  true;
-    }
-
 
     //add 20191113
     public static Map<String, Object> getParameter(String url) {
@@ -123,28 +118,31 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         System.out.println(map);
         return map;
     }
-    public String getJsonPath(String studyuid ){
+
+    public String getJsonPath(String studyuid) {
         OFHashValue h = new OFHashValue();
-        String filePath="";
-        String hashPath = h.GetHashValuePath(studyuid.getBytes(),studyuid.length());
-        if (!hashPath.equals("")){
-            filePath = hashPath+"/"+studyuid+"/"+studyuid;
+        String filePath = "";
+        String hashPath = h.GetHashValuePath(studyuid.getBytes(), studyuid.length());
+        if (!hashPath.equals("")) {
+            filePath = hashPath + "/" + studyuid + "/" + studyuid;
         }
-        return  filePath;
+        return filePath;
     }
+
     //
-    public String getDicomPath(String studyuid, String seriesuid, String sopinstanceuid ){
+    public String getDicomPath(String studyuid, String seriesuid, String sopinstanceuid) {
         OFHashValue h = new OFHashValue();
-        String filePath="";
-        String hashPath = h.GetHashValuePath(studyuid.getBytes(),studyuid.length());
-        if (!hashPath.equals("")){
-            filePath = hashPath+"/"+studyuid+"/"+seriesuid+"/"+sopinstanceuid;
-            if (sopinstanceuid.indexOf(".dcm") < 1){
+        String filePath = "";
+        String hashPath = h.GetHashValuePath(studyuid.getBytes(), studyuid.length());
+        if (!hashPath.equals("")) {
+            filePath = hashPath + "/" + studyuid + "/" + seriesuid + "/" + sopinstanceuid;
+            if (sopinstanceuid.indexOf(".dcm") < 1) {
                 filePath += ".dcm";
             }
         }
-        return  filePath;
+        return filePath;
     }
+
     public String getStudysImageData() {
         String strvalue;
         StudyDataDao studydata = new StudyDataDaoimpl();
@@ -152,24 +150,79 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         int size = list.size();
         JsonObject respjson = new JsonObject();
         JsonArray rarray = new JsonArray();
-        for (StudyData stu : list){
+        for (StudyData stu : list) {
             JsonObject robject = new JsonObject();
-            robject.addProperty("patientName",stu.getPatientName());
+            robject.addProperty("patientName", stu.getPatientName());
             robject.addProperty("patientId", stu.getPatientID());
             robject.addProperty("studyDate", stu.getStudyDateTime());
             robject.addProperty("modality", stu.getStudyModality());
-            robject.addProperty("studyDescription",stu.getStudyDescription());
+            robject.addProperty("studyDescription", stu.getStudyDescription());
             robject.addProperty("numImages", 1);
             robject.addProperty("studyId", stu.getStudyID());
             robject.addProperty("studyuid", stu.getStudyUID());
             rarray.add(robject);
         }
-        respjson.add("studyList",rarray);
+        respjson.add("studyList", rarray);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         //System.out.println( gson.toJson(respjson));
         strvalue = gson.toJson(respjson);
         return strvalue;
     }
+
+    public String readToString(String fileName) {
+        String encoding = "UTF-8";
+        File file = new File(fileName);
+        Long filelength = file.length();
+        byte[] filecontent = new byte[filelength.intValue()];
+        try {
+            FileInputStream in = new FileInputStream(file);
+            in.read(filecontent);
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            return new String(filecontent, encoding);
+        } catch (UnsupportedEncodingException e) {
+            System.err.println("The OS does not support " + encoding);
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public void returnWeb(ChannelHandlerContext ctx, FullHttpRequest request, String path, boolean keepAlive) throws Exception {
+        StringBuilder buf = new StringBuilder();
+        System.out.println(path);
+        if (path.contains(".woff")){
+            int pos = path.indexOf("?v=4.3.0");
+            path = path.substring(0,pos);
+            //path.replace("?v=4.3.0","");
+            System.out.println("new path:"+path);
+        }
+        buf.append(readToString(path));
+        ByteBuf buffer = ctx.alloc().buffer(buf.length());
+        buffer.writeCharSequence(buf.toString(), CharsetUtil.UTF_8);
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
+        //response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
+
+        if (path.endsWith(".html")){
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
+        }else if(path.endsWith(".js")){
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/x-javascript");
+        }else if(path.endsWith(".css")){
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/css; charset=UTF-8");
+        }
+        else if(path.endsWith(".woff")){
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/woff");
+        }
+        else if(path.endsWith(".woff2")){
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/woff2");
+        }
+
+        this.sendAndCleanupConnection(ctx, response);
+    }
+
     @Override
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         this.request = request;
@@ -191,35 +244,34 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             boolean bstuid = false;
             boolean bseuid = false;
             boolean bsouid = false;
-            Map<String,Object> map = getParameter(uri);
+            Map<String, Object> map = getParameter(uri);
             String studyuid = "";
             String seruid = "";
             String sopinstanceuid = "";
-            for(String key : map.keySet()){
+            for (String key : map.keySet()) {
                 String value = (String) map.get(key);
-                if (key.equals("studyuid")){
+                if (key.equals("studyuid")) {
                     studyuid = value;
                     bstuid = true;
-                }else if (key.equals("seriesuid")){
+                } else if (key.equals("seriesuid")) {
                     seruid = value;
                     bseuid = true;
-                }else if(key.equals("sopinstanceuid")){
+                } else if (key.equals("sopinstanceuid")) {
                     sopinstanceuid = value;
                     bsouid = true;
                 }
-                System.out.println(key+":"+value);
+                System.out.println(key + ":" + value);
             }
-            if (bstuid && bseuid && bsouid){
+            if (bstuid && bseuid && bsouid) {
                 //根据请求参数查找请求的dicom
                 String filePath = serverconfig.getString("filePath");
-                path = filePath  + File.separator + getDicomPath(studyuid,seruid,sopinstanceuid);
+                path = filePath + File.separator + getDicomPath(studyuid, seruid, sopinstanceuid);
                 bSetFilename = true;
-            }
-            else if (bstuid){
+            } else if (bstuid) {
                 String filePath = serverconfig.getString("filePath");
-                path = filePath  + File.separator + getJsonPath(studyuid);
+                path = filePath + File.separator + getJsonPath(studyuid);
                 //GetJsonData(path);
-                path = path+".json";
+                path = path + ".json";
                 bSetFilename = true;
             }
             if (path == null) {
@@ -227,26 +279,42 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 return;
             }
         }
-        if (path.contains("studyList.json"))  {
+
+        //return all study data info
+        if (path.contains("studyList.json")) {
             //--------------------------
-            String buf =  getStudysImageData();
-            System.out.print(buf);
+            String buf = getStudysImageData();
+            //System.out.print(buf);
             ByteBuf buffer = ctx.alloc().buffer(buf.length());
             buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
             FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
-            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN,"*");//@@@@@@@@@测试使用允许同个域客户端访问
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
-            //ctx.write(response);
             //ctx.writeAndFlush(response);
             this.sendAndCleanupConnection(ctx, response);
             return;
             //-------------------------
         }
-        File file = new File(path);
+        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        if (uri.contains(".html") || uri.contains(".js") || uri.contains(".css")) {
+        //if (uri.contains(".html") || uri.contains(".js") || uri.contains(".css") ||  uri.contains(".woff") ||  uri.contains(".ttf")||  uri.contains(".otf")||  uri.contains(".eot")) {
+            String htmlname = serverconfig.getString("webdir") + File.separator + uri;
+            path = htmlname;
+            returnWeb(ctx, request, path,keepAlive);
+            return;
+        }
+        if (path.contains(".woff") ||  uri.contains(".ttf")||  uri.contains(".otf")||  uri.contains(".eot")){
+            String htmlname = serverconfig.getString("webdir") + File.separator + uri;
+            path = htmlname;
+            int pos = path.indexOf("?v=4.3.0");
+            path = path.substring(0,pos);
+        }
+        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+        File file = new File(path);
         if (file.isHidden() || !file.exists()) {
             this.sendError(ctx, NOT_FOUND);
-            System.out.println("not found:"+path);
+            System.out.println("not found:" + path);
             return;
         }
 
@@ -276,10 +344,10 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             long fileLastModifiedSeconds = file.lastModified() / 1000;
             if (ifModifiedSinceDateSeconds == fileLastModifiedSeconds) {
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, NOT_MODIFIED, Unpooled.EMPTY_BUFFER);
-               if (bSetFilename){ //根据web协议请求的dicom文件设置文件名
-                   String filename = file.getName();
-                   response.headers().set(HttpHeaderNames.CONTENT_DISPOSITION,"attachment;filename="+ URLEncoder.encode(filename, "UTF-8"));
-               }
+                if (bSetFilename) { //根据web协议请求的dicom文件设置文件名
+                    String filename = file.getName();
+                    response.headers().set(HttpHeaderNames.CONTENT_DISPOSITION, "attachment;filename=" + URLEncoder.encode(filename, "UTF-8"));
+                }
                 this.sendNotModified(ctx, response);
                 return;
             }
@@ -299,7 +367,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         setContentTypeHeader(response, file);
         setDateAndCacheHeaders(response, file);
 
-        response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN,"*");//@@@@@@@@@测试使用允许同个域客户端访问
+        response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
         if (!keepAlive) {
             response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         } else if (request.protocolVersion().equals(HTTP_1_0)) {
@@ -313,8 +381,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         ChannelFuture sendFileFuture;
         ChannelFuture lastContentFuture;
         if (ctx.pipeline().get(SslHandler.class) == null) {
-            sendFileFuture =
-                    ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
+            sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
             // Write the end marker.
             lastContentFuture = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
         } else {
@@ -348,6 +415,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
     }
 
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
@@ -363,8 +431,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     // sopinstanceuid=1.3.51.5145.5142.20010109.1105627.1.0.1
     private static String sanitizeUri(String uri) {
         // Decode the path.
-        if (uri.indexOf("WADO?studyuid=")>-1){
-            return  null;
+        if (uri.indexOf("WADO?studyuid=") > -1) {
+            return null;
         }
         try {
             uri = URLDecoder.decode(uri, "UTF-8");
@@ -382,14 +450,15 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         // Simplistic dumb security check.
         // You will have to do something serious in the production environment.
         if (uri.contains(File.separator + '.') ||
-            uri.contains('.' + File.separator) ||
-            uri.charAt(0) == '.' || uri.charAt(uri.length() - 1) == '.' ||
-            INSECURE_URI.matcher(uri).matches()) {
+                uri.contains('.' + File.separator) ||
+                uri.charAt(0) == '.' || uri.charAt(uri.length() - 1) == '.' ||
+                INSECURE_URI.matcher(uri).matches()) {
             return null;
         }
 
         // Convert to absolute path.
-        String filePath = serverconfig.getString("filePath");;
+        String filePath = serverconfig.getString("filePath");
+        ;
         return filePath + File.separator + uri;
 //        return SystemPropertyUtil.get("user.dir") + File.separator + uri;
     }
@@ -398,20 +467,20 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
     private void sendListing(ChannelHandlerContext ctx, File dir, String dirPath) {
         StringBuilder buf = new StringBuilder()
-            .append("<!DOCTYPE html>\r\n")
-            .append("<html><head><meta charset='utf-8' /><title>")
-            .append("Listing of: ")
-            .append(dirPath)
-            .append("</title></head><body>\r\n")
+                .append("<!DOCTYPE html>\r\n")
+                .append("<html><head><meta charset='utf-8' /><title>")
+                .append("Listing of: ")
+                .append(dirPath)
+                .append("</title></head><body>\r\n")
 
-            .append("<h3>Listing of: ")
-            .append(dirPath)
-            .append("</h3>\r\n")
+                .append("<h3>Listing of: ")
+                .append(dirPath)
+                .append("</h3>\r\n")
 
-            .append("<ul>")
-            .append("<li><a href=\"../\">..</a></li>\r\n");
+                .append("<ul>")
+                .append("<li><a href=\"../\">..</a></li>\r\n");
 
-        for (File f: dir.listFiles()) {
+        for (File f : dir.listFiles()) {
             if (f.isHidden() || !f.canRead()) {
                 continue;
             }
@@ -422,10 +491,10 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             }
 
             buf.append("<li><a href=\"")
-               .append(name)
-               .append("\">")
-               .append(name)
-               .append("</a></li>\r\n");
+                    .append(name)
+                    .append("\">")
+                    .append(name)
+                    .append("</a></li>\r\n");
         }
 
         buf.append("</ul></body></html>\r\n");
@@ -457,8 +526,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     /**
      * When file timestamp is the same as what the browser is sending up, send a "304 Not Modified"
      *
-     * @param ctx
-     *            Context
+     * @param ctx Context
      */
     private void sendNotModified(ChannelHandlerContext ctx, FullHttpResponse response) {
         //FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, NOT_MODIFIED, Unpooled.EMPTY_BUFFER);
@@ -494,8 +562,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     /**
      * Sets the Date header for the HTTP response
      *
-     * @param response
-     *            HTTP response
+     * @param response HTTP response
      */
     private static void setDateHeader(FullHttpResponse response) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
@@ -508,10 +575,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     /**
      * Sets the Date and Cache headers for the HTTP Response
      *
-     * @param response
-     *            HTTP response
-     * @param fileToCache
-     *            file to extract content type
+     * @param response    HTTP response
+     * @param fileToCache file to extract content type
      */
     private static void setDateAndCacheHeaders(HttpResponse response, File fileToCache) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
@@ -532,14 +597,12 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     /**
      * Sets the content type header for the HTTP Response
      *
-     * @param response
-     *            HTTP response
-     * @param file
-     *            file to extract content type
+     * @param response HTTP response
+     * @param file     file to extract content type
      */
     private static void setContentTypeHeader(HttpResponse response, File file) {
 //        MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();//http://tool.oschina.net/commons
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE,"application/octet-stream");// ""mimeTypesMap.getContentType(file.getPath())"");
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream");// ""mimeTypesMap.getContentType(file.getPath())"");
     }
 }
 
