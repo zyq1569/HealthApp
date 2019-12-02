@@ -204,7 +204,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         ByteBuf buffer = ctx.alloc().buffer(buf.length());
         buffer.writeCharSequence(buf.toString(), CharsetUtil.UTF_8);
         FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
-        //response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
+        response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
 
         if (path.endsWith(".html")){
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
@@ -303,11 +303,15 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             returnWeb(ctx, request, path,keepAlive);
             return;
         }
-        if (path.contains(".woff") ||  uri.contains(".ttf")||  uri.contains(".otf")||  uri.contains(".eot")){
+        if (path.contains(".woff") ||  uri.contains(".ttf")||  uri.contains(".otf")||  uri.contains(".eot")||  uri.contains(".map")){
+            System.out.println("----------------original:"+path);
             String htmlname = serverconfig.getString("webdir") + File.separator + uri;
             path = htmlname;
             int pos = path.indexOf("?v=4.3.0");
-            path = path.substring(0,pos);
+            if (pos > -1){
+                path = path.substring(0,pos);
+            }
+            System.out.println("----------------:"+path);
         }
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
