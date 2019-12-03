@@ -1,0 +1,27 @@
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+
+namespace Ui {
+class HMainWindow;
+}
+class QProcess;
+class HMainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit HMainWindow(QWidget *parent = nullptr);
+    ~HMainWindow();
+private slots:
+    void on_runStoreSCP_clicked();
+
+protected:
+    QProcess *h_qProcess;
+    bool h_bstorescp;
+private:
+    Ui::HMainWindow *ui;
+};
+
+#endif // MAINWINDOW_H
