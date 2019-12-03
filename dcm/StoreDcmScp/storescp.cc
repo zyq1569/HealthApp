@@ -245,67 +245,247 @@ OFBool Accept_NotMatchSOPClass = OFTrue;
 #define TEST_STORE  //line:2599 考虑存储空间有限，直接删除store 服务收到的dcm文件
 //--------------------------
 
-//test json
-void TestJson()
-{
-    //---------------------------------------------
-    //检查信息保存
-    StudyInfo studyinfo;
-    studyinfo.patientName = "MISTER^CT";
-    studyinfo.patientId = "2178309";
-    studyinfo.studyDate = "20010105";
-    studyinfo.studyUID = "1.2.840.113619.2.30.1.1762295590.1623.978668949.886";
-    studyinfo.studyDescription = "CHEST";
-    studyinfo.modality = "CT";
-    studyinfo.studyId = "ctstudy";
-
-    //循环序列信息保存
-    SeriesInfo seriesinfo;
-    seriesinfo.seriesUID = "1.2.840.113619.2.30.1.1762295590.1623.978668949.887";
-    seriesinfo.seriesDescription = "HELICAL CHEST";
-    seriesinfo.seriesNumber = 2;
-    for (int i = 0; i < 109; i++)
-    {
-        //循环图像信息保存
-        ImageInfo imageinfo;
-        imageinfo.imageSOPInstanceUID = "1.2.840.113619.2.30.1.1762295590.1623.978668950." + longToString(109 + i);
-        imageinfo.instanceNumber = i;
-        seriesinfo.imagesInfoList.push_back(imageinfo);
-    }
-    studyinfo.seriesInfoList.push_back(seriesinfo);
-
-    seriesinfo.imagesInfoList.clear();
-    seriesinfo.seriesDescription = "SCOUT PA";
-    seriesinfo.seriesNumber = 1;
-    ImageInfo imageinfo;
-    imageinfo.imageSOPInstanceUID = "1.2.840.113619.2.30.1.1762295590.1623.978668949.888";
-    imageinfo.instanceNumber = 1;
-    seriesinfo.imagesInfoList.push_back(imageinfo);
-    studyinfo.seriesInfoList.push_back(seriesinfo);
-
-    seriesinfo.imagesInfoList.clear();
-    seriesinfo.seriesDescription = "SCOUT LAT";
-    seriesinfo.seriesNumber = 1;
-    imageinfo.imageSOPInstanceUID = "1.2.840.113619.2.30.1.1762295590.1623.978668949.889";
-    imageinfo.instanceNumber = 1;
-    seriesinfo.imagesInfoList.push_back(imageinfo);
-    studyinfo.seriesInfoList.push_back(seriesinfo);
-    //---------------------------------------------
-
-    SaveStudy2JsonFile(studyinfo,"d:\\test.json");
-    //const char *c = cJSON_Version();
-
-}
-
 //--single-process 默认为fork 模式，该设置为单进程
 //1040 -od \\192.168.0.11\common\Test_dcmtk_rec\SCP
+int AppRun(int argc, char *argv[])
+{
+    OFString strArg;
+    int size = argc;
+    for (int i = 0; i < size; i++)
+    {
+        strArg += argv[i];
+    }
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
+    //--------------------增加日志文件的方式----------------------------------------------------------------
+    const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
+    OFString tempstr, path = argv[0];
+    int pos = 0;
+#ifdef HAVE_WINDOWS_H
+    pos = path.find_last_of('\\');
+#else
+    //to do add!
+#endif
+    if (pos < 1)
+    {
+#ifdef HAVE_WINDOWS_H
+        OFString message = " start app by commline:";
+        app.printMessage(message.c_str());
+        path = GetCurrWorkingDir();
+        app.printMessage("GetCurrWorkingDir filePath:");
+        app.printMessage(path.c_str());
+#else
+        //to do add!
+#endif
+    }
+    OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
+    OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
+    opt_outputFilePath = currentAppPath + "/DCM_SAVE";
+    DcmConfigFile config;
+    OFString configdir = currentAppPath + "/config/DcmServerConfig.cfg";;
+    if (config.init(configdir.c_str()))
+    {
+        opt_outputFilePath = config.getStoreDir()->front();
+        opt_port = config.getStoreScpPort();
+    }
+    opt_outputDirectory = opt_outputFilePath;
+    app.printMessage("log_dir:");
+    app.printMessage(log_dir.c_str());
+    if (!OFStandard::dirExists(log_dir))
+    {
+        CreatDir(log_dir);
+    }
+
+    OFString logfilename = log_dir + "/DcmStoreSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
+
+    OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
+    dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(logfilename, STD_NAMESPACE ios::app));
+    dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getRoot();
+
+    logfile->setLayout(OFmove(layout));
+    log.removeAllAppenders();
+    log.addAppender(logfile);
+
+    if (argc > 2)
+    {
+        opt_port = atoi(argv[1]);
+        opt_outputFilePath = argv[2];
+    }
+    OFLOG_INFO(storescpLogger, "---------argv[]:" + strArg + " ----------------------");
+    OFLOG_INFO(storescpLogger, "---------opt_port:" + longToString(opt_port) + " ----------------------");
+    OFLOG_INFO(storescpLogger, "opt_outputDirectory opt_outputFilePath:" + opt_outputFilePath + " ----------------------");
+    OFLOG_INFO(storescpLogger, "-----$$------DcmNet storescp start run!---------$$------------");
+    //-----------------------------------------------------------------------------------------------------
+    T_ASC_Network *net;
+    DcmAssociationConfiguration asccfg;
+    OFStandard::initializeNetwork();
+    OFString temp_str;
+    OFOStringStream optStream;
+    opt_forkMode = OFFalse;
+    /* evaluate command line */
+#if defined(HAVE_FORK) || defined(_WIN32)
+    if (strArg.find("single - process") > -1)
+    {
+        opt_forkMode = OFFalse;
+    }
+    else if (strArg.find("-fork") > -1)
+    {
+        opt_forkMode = OFFalse;
+    }
+#ifdef _WIN32
+    if (strArg.find("-forked-child") > -1)
+    {
+        opt_forkedChild = OFTrue;
+    }
+#endif
+#endif
+
+#ifdef WITH_ZLIB
+    if (cmd.findOption("--prefer-deflated"))
+        opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+#endif
+
+    if (strArg.find("-accept-all") > -1)
+    {
+        opt_acceptAllXfers = OFTrue;
+        opt_networkTransferSyntax = EXS_Unknown;
+    }
+
+    // always set the timeout values since the global default might be different
+    dcmSocketSendTimeout.set(OFstatic_cast(Sint32, opt_socket_timeout));
+    dcmSocketReceiveTimeout.set(OFstatic_cast(Sint32, opt_socket_timeout));
+
+    if (!OFStandard::dirExists(opt_outputFilePath))
+    {
+        CreatDir(opt_outputFilePath);
+    }
+    opt_outputDirectory = opt_outputFilePath;
+
+    /* print resource identifier */
+    OFLOG_DEBUG(storescpLogger, rcsid << OFendl);
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFLOG_WARN(storescpLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
+
+    /* if the output directory does not equal "." (default directory) */
+    if (opt_outputDirectory != ".")
+    {
+        /* if there is a path separator at the end of the path, get rid of it */
+        OFStandard::normalizeDirName(opt_outputDirectory, opt_outputDirectory);
+
+        /* check if the specified directory exists and if it is a directory.
+        * If the output directory is invalid, dump an error message and terminate execution.
+        */
+        if (!OFStandard::dirExists(opt_outputDirectory))
+        {
+            OFLOG_FATAL(storescpLogger, "specified output directory does not exist");
+            return 1;
+        }
+    }
+
+    /* check if the output directory is writeable */
+    if (!opt_ignore && !OFStandard::isWriteable(opt_outputDirectory))
+    {
+        OFLOG_FATAL(storescpLogger, "specified output directory is not writeable");
+        return 1;
+    }
+
+#ifdef HAVE_FORK
+    if (opt_forkMode)
+        DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+#elif defined(_WIN32)
+    if (opt_forkedChild)
+    {
+        // we are a child process in multi-process mode
+        if (DUL_readSocketHandleAsForkedChild().bad())
+            return 1;
+    }
+    else
+    {
+        // parent process
+
+        if (opt_forkMode)
+        {
+            argc = 2;
+            argv[1] = "--forked-child";
+            OFLOG_INFO(storescpLogger, "---------opt_forkMode: ----------------------");
+            DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+        }
+    }
+#endif
+
+    /* initialize network, i.e. create an instance of T_ASC_Network*. */
+    OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, opt_port), opt_acse_timeout, &net);
+    if (cond.bad())
+    {
+        OFLOG_ERROR(storescpLogger, "cannot create network: " << DimseCondition::dump(temp_str, cond));
+        return 1;
+    }
+
+    /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
+    if (OFStandard::dropPrivileges().bad())
+    {
+        OFLOG_FATAL(storescpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
+        return 1;
+    }
+
+#ifdef HAVE_WAITPID
+    // register signal handler
+    signal(SIGCHLD, sigChildHandler);
+#endif
+
+    while (cond.good())
+    {
+        /* receive an association and acknowledge or reject it. If the association was */
+        /* acknowledged, offer corresponding services and invoke one or more if required. */
+        cond = acceptAssociation(net, asccfg);
+
+        /* remove zombie child processes */
+        cleanChildren(-1, OFFalse);
+#ifdef WITH_OPENSSL
+        /* since storescp is usually terminated with SIGTERM or the like,
+        * we write back an updated random seed after every association handled.
+        */
+        if (tLayer && opt_writeSeedFile)
+        {
+            if (tLayer->canWriteRandomSeed())
+            {
+                if (!tLayer->writeRandomSeed(opt_writeSeedFile))
+                    OFLOG_WARN(storescpLogger, "cannot write random seed file '" << opt_writeSeedFile << "', ignoring");
+            }
+            else
+            {
+                OFLOG_WARN(storescpLogger, "cannot write random seed, ignoring");
+            }
+        }
+#endif
+        // if running in inetd mode, we always terminate after one association
+        if (opt_inetd_mode) break;
+
+        // if running in multi-process mode, always terminate child after one association
+        if (DUL_processIsForkedChild()) break;
+    }
+
+    /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
+    /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
+    cond = ASC_dropNetwork(&net);
+    if (cond.bad())
+    {
+        OFLOG_ERROR(storescpLogger, DimseCondition::dump(temp_str, cond));
+        return 1;
+    }
+    OFStandard::shutdownNetwork();
+
+#ifdef WITH_OPENSSL
+    delete tLayer;
+#endif
+    return 0;
+}
 int main(int argc, char *argv[])
 {
-    //TestJson();
-    //test 123 140
-    //OFString uid = "1.3.51.0.7.633918642.633920010109.6339100821";
-    //OFHashValue h = CreateHashValue(uid.c_str(), uid.length());
-    //
+    return AppRun(argc, argv);
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
     //--------------------增加日志文件的方式----------------------------------------------------------------
     const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
@@ -1849,7 +2029,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
             OFLOG_INFO(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
         else
             OFLOG_DEBUG(storescpLogger, ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
-}
+    }
 
 #ifdef BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX
     /* active the dcmPeerRequiresExactUIDCopy workaround code
@@ -2089,7 +2269,7 @@ struct StoreCallbackData
     DcmFileFormat* dcmff;
     T_ASC_Association* assoc;
 };
-OFBool GetValueOfData(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, DcmTagKey &key, OFString &value, OFBool judge=OFFalse)
+OFBool GetValueOfData(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, DcmTagKey &key, OFString &value, OFBool judge = OFFalse)
 {
     if ((*imageDataSet)->findAndGetOFString(key, value).bad() || value.empty())
     {
@@ -2225,10 +2405,10 @@ void SaveDcmIni(DicomFileInfo image, OFString filename)
         str += "patientage=" + image.patientAge;
         str += "\n";
         //inifile.fputs(str.c_str());
-        str += "patientbirth=" + image.patientBirthDate+image.patientBirthTime;
+        str += "patientbirth=" + image.patientBirthDate + image.patientBirthTime;
         str += "\n";
         //currentStudyTime
-        str += "studydatetime=" + image.studyDate+image.studyTime;
+        str += "studydatetime=" + image.studyDate + image.studyTime;
         str += "\n";
 
         str += "modality=" + image.modality;
@@ -2254,34 +2434,34 @@ void SaveDcmIni(DicomFileInfo image, OFString filename)
 
         inifile.fputs("[IMAGE]");
         inifile.fputs("\n");
-        str = "sopinstanceuid=" + image.imageSOPInstanceUID+"\n";
-        str += "instanceNumber=" + image.instanceNumber+"\n";
+        str = "sopinstanceuid=" + image.imageSOPInstanceUID + "\n";
+        str += "instanceNumber=" + image.instanceNumber + "\n";
         inifile.fputs(str.c_str());
         inifile.fclose();
     }
     //end write ini file
 }
 
-static void storeSCPCallback(void *callbackData,T_DIMSE_StoreProgress *progress,T_DIMSE_C_StoreRQ *req,
-char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmDataset **statusDetail)
-/*
- * This function.is used to indicate progress when storescp receives instance data over the
- * network. On the final call to this function (identified by progress->state == DIMSE_StoreEnd)
- * this function will store the data set which was received over the network to a file.
- * Earlier calls to this function will simply cause some information to be dumped to stdout.
- *
- * Parameters:
- *   callbackData  - [in] data for this callback function
- *   progress      - [in] The state of progress. (identifies if this is the initial or final call
- *                   to this function, or a call in between these two calls.
- *   req           - [in] The original store request message.
- *   imageFileName - [in] The path to and name of the file the information shall be written to.
- *   imageDataSet  - [in] The data set which shall be stored in the image file
- *   rsp           - [inout] the C-STORE-RSP message (will be sent after the call to this function)
- *   statusDetail  - [inout] This variable can be used to capture detailed information with regard to
- *                   the status information which is captured in the status element (0000,0900). Note
- *                   that this function does specify any such information, the pointer will be set to NULL.
- */
+static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress, T_DIMSE_C_StoreRQ *req,
+    char * /*imageFileName*/, DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, DcmDataset **statusDetail)
+    /*
+     * This function.is used to indicate progress when storescp receives instance data over the
+     * network. On the final call to this function (identified by progress->state == DIMSE_StoreEnd)
+     * this function will store the data set which was received over the network to a file.
+     * Earlier calls to this function will simply cause some information to be dumped to stdout.
+     *
+     * Parameters:
+     *   callbackData  - [in] data for this callback function
+     *   progress      - [in] The state of progress. (identifies if this is the initial or final call
+     *                   to this function, or a call in between these two calls.
+     *   req           - [in] The original store request message.
+     *   imageFileName - [in] The path to and name of the file the information shall be written to.
+     *   imageDataSet  - [in] The data set which shall be stored in the image file
+     *   rsp           - [inout] the C-STORE-RSP message (will be sent after the call to this function)
+     *   statusDetail  - [inout] This variable can be used to capture detailed information with regard to
+     *                   the status information which is captured in the status element (0000,0900). Note
+     *                   that this function does specify any such information, the pointer will be set to NULL.
+     */
 {
     DIC_UI sopClass;
     DIC_UI sopInstance;
@@ -2470,7 +2650,7 @@ char * /*imageFileName*/, DcmDataset **imageDataSet,T_DIMSE_C_StoreRSP *rsp,DcmD
                             }
                         }
 
-                        OFString ini_filename =  ini_dir + "/" + StringGUID() + ".ini";
+                        OFString ini_filename = ini_dir + "/" + StringGUID() + ".ini";
                         SaveDcmIni(dcminfo, ini_filename);
                         OFString image_dir = save_dir + "/Images";
                         if (!OFStandard::dirExists(image_dir))
@@ -2720,7 +2900,7 @@ static OFCondition storeSCP(
             {
                 // don't create new UID, use the study instance UID as found in object
                 sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
-                req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
+                    req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
             }
         }
     }
