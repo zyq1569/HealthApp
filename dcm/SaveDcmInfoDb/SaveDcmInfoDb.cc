@@ -1114,7 +1114,19 @@ int main(int argc, char *argv[])
         //to do add!
 #endif
     }
-    OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
+    OFString currentAppPath;
+    if (argc > 1)
+    {
+        OFString dir = argv[1];
+        if (OFStandard::dirExists(dir))
+        {
+            currentAppPath = dir;
+        }
+        else
+        {
+            currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
+        }
+    }
     OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
     app.printMessage("log_dir:");
     app.printMessage(log_dir.c_str());
@@ -1140,7 +1152,7 @@ int main(int argc, char *argv[])
         tempstr += " ";
     }
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------argv[]:" + tempstr + " ----------------------");
-
+    OFLOG_INFO(SaveDcmInfoDbLogger, "---------currentAppPath:" + currentAppPath + " ----------------------");
     OFString ini_dir, ini_error_dir;
     static DcmConfigFile dcmconfig;
     if (dcmconfig.init((currentAppPath + "/config/DcmServerConfig.cfg").c_str()))
