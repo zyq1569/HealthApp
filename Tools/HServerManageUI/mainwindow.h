@@ -15,7 +15,11 @@ public:
     explicit HMainWindow(QWidget *parent = nullptr);
     ~HMainWindow();
 private slots:
-    void on_runStoreSCP_clicked();
+    void on_StoreSCP_clicked();
+
+    void on_WLMSCP_clicked();
+
+    void on_QRSCP_clicked();
 
 protected:
     QProcess *h_qProcess;
