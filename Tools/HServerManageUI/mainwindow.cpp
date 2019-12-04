@@ -9,7 +9,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
     ui->setupUi(this);
     ExeDir = QDir::currentPath();
     ExeDir = ExeDir.remove("/debug");
-    ExeDir = ExeDir.remove("/UI");
+    ExeDir = ExeDir.remove("/ServerUI");
     ExeDir = ExeDir+"/win32/";
     StoreScpName = "StoreDcmSCP.exe";
     QuerRScpName = "dcmqrScp.exe";
