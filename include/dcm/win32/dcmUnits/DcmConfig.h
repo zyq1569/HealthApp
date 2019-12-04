@@ -193,6 +193,8 @@ public:
         , CNF_HETable()
         , CNF_VendorTable()
     {
+        m_StoreScpPort = 1667;
+        m_WorklistScpPort = 1666;
     }
 
     ~DcmConfigFile();
