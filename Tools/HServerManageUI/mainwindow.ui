@@ -14,7 +14,7 @@
    <string>ServerUI</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="label_UI">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -35,33 +35,74 @@
      <string>Dicom</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="label_store">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>121</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>DicomStoreSCP port:</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="textEdit">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>37</y>
-      <width>70</width>
+      <x>0</x>
+      <y>76</y>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
+    <property name="text">
+     <string>DicomStoreSCP    port:</string>
+    </property>
    </widget>
-   <widget class="QPushButton" name="runStoreSCP">
+   <widget class="QPushButton" name="StoreSCP">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>216</x>
+      <y>69</y>
+      <width>75</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run store scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>启动</string>
+    </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="port_store">
+    <property name="geometry">
+     <rect>
+      <x>136</x>
+      <y>75</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>1667</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_wlm">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>38</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>WorklistSCP      port:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="WLMSCP">
+    <property name="geometry">
+     <rect>
+      <x>216</x>
       <y>30</y>
       <width>75</width>
       <height>31</height>
@@ -71,13 +112,80 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run store scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
-     <string>run</string>
+     <string>启动</string>
     </property>
     <property name="default">
      <bool>true</bool>
     </property>
     <property name="flat">
      <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="port_wlm">
+    <property name="geometry">
+     <rect>
+      <x>136</x>
+      <y>36</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>1666</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_qrscp">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>121</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>QueryRetrieveSCP port:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="QRSCP">
+    <property name="geometry">
+     <rect>
+      <x>216</x>
+      <y>114</y>
+      <width>75</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run store scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>启动</string>
+    </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="port_qr">
+    <property name="geometry">
+     <rect>
+      <x>136</x>
+      <y>120</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>1668</string>
     </property>
    </widget>
   </widget>
