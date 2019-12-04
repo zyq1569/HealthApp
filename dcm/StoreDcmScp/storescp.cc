@@ -296,7 +296,6 @@ int AppRun(int argc, char *argv[])
     }
 
     OFString logfilename = log_dir + "/DcmStoreSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
-
     OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
     dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(logfilename, STD_NAMESPACE ios::app));
     dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getRoot();

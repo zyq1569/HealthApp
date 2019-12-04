@@ -1028,7 +1028,10 @@ int DcmConfigFile::init(const char *ConfigurationFile)
 {
     int  error = 0;        /* error flag */
     FILE *cnffp;         /* configuration file pointer */
-
+    if (!OFStandard::fileExists(ConfigurationFile))
+    {
+        return 0;
+    }
     if ((cnffp = fopen(ConfigurationFile, "r")) == NULL)
     {
         panic("Unable to open configuration file \"%s\"", ConfigurationFile);
