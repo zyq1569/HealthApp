@@ -7,20 +7,19 @@ HMainWindow::HMainWindow(QWidget *parent) :
     ui(new Ui::HMainWindow)
 {
     ui->setupUi(this);
-    h_bstorescp = false;
-    h_qProcess = NULL;
     ExeDir = QDir::currentPath();
-    StoreScpName = "/bin/win32/StoreDcmSCP.exe";
-    QuerRScpName = "/bin/win32/dcmqrScp.exe";
-    WLMScpName = "/bin/win32/WorklistScp.exe";
+    ExeDir = ExeDir.remove("/debug");
+    ExeDir = ExeDir.remove("/UI");
+    ExeDir = ExeDir+"/win32/";
+    StoreScpName = "StoreDcmSCP.exe";
+    QuerRScpName = "dcmqrScp.exe";
+    WLMScpName = "WorklistScp.exe";
 }
 
 HMainWindow::~HMainWindow()
 {
     delete ui;
-
 }
-
 void HMainWindow::on_StoreSCP_clicked()
 {
     QString program = "D:\\code\\C++\\HealthApp\\bin\\win32\\StoreDcmSCP.exe";
