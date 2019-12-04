@@ -29,6 +29,7 @@ private slots:
 protected:
     QProcess *h_qProcess;
     bool h_bstorescp;
+
 private:
     Ui::HMainWindow *ui;
 };
