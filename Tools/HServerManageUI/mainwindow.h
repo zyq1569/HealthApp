@@ -14,6 +14,11 @@ class HMainWindow : public QMainWindow
 public:
     explicit HMainWindow(QWidget *parent = nullptr);
     ~HMainWindow();
+public:
+    QString ExeDir;
+    QString StoreScpName;
+    QString QuerRScpName;
+    QString WLMScpName;
 private slots:
     void on_StoreSCP_clicked();
 
