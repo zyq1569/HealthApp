@@ -249,11 +249,17 @@ OFBool Accept_NotMatchSOPClass = OFTrue;
 //1040 -od \\192.168.0.11\common\Test_dcmtk_rec\SCP
 int AppRun(int argc, char *argv[])
 {
-    OFString strArg;
+    OFString strArg,tmp;
     int size = argc;
     for (int i = 0; i < size; i++)
     {
-        strArg += argv[i];
+        tmp = argv[i];
+        strArg += tmp + "|";
+    }
+    int index = strArg.find("forked-child");
+    if (index > -1)
+    {
+        opt_forkedChild = OFTrue;
     }
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
     //--------------------增加日志文件的方式----------------------------------------------------------------
@@ -277,25 +283,64 @@ int AppRun(int argc, char *argv[])
         //to do add!
 #endif
     }
-    OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
-    OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
-    opt_outputFilePath = currentAppPath + "/DCM_SAVE";
-    DcmConfigFile config;
-    OFString configdir = currentAppPath + "/config/DcmServerConfig.cfg";;
-    if (config.init(configdir.c_str()))
+    OFString currentAppPath, Log_Dir;
+    if (argc > 2)
     {
-        opt_outputFilePath = config.getStoreDir()->front();
-        opt_port = config.getStoreScpPort();
+        int i = argc - 3;
+        opt_port = atoi(argv[i]);
+        opt_outputFilePath = argv[i+1];
+        int pos = opt_outputFilePath.find_last_of("/");
+        if (pos > -1)
+        {
+            Log_Dir = opt_outputFilePath.substr(0, pos) + "/log";
+        }
+        else
+        {
+            int pos = opt_outputFilePath.find_last_of("\\");
+            if (pos > -1)
+            {
+                Log_Dir = opt_outputFilePath.substr(0, pos) + "/log";
+            }
+        }
     }
-    opt_outputDirectory = opt_outputFilePath;
-    app.printMessage("log_dir:");
-    app.printMessage(log_dir.c_str());
-    if (!OFStandard::dirExists(log_dir))
+    else
     {
-        CreatDir(log_dir);
+        currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
+        Log_Dir = currentAppPath + "/log";
+        DcmConfigFile config;
+        OFString configdir = currentAppPath + "/config/DcmServerConfig.cfg";;
+        if (config.init(configdir.c_str()))
+        {
+            opt_outputFilePath = config.getStoreDir()->front();
+            opt_port = config.getStoreScpPort();
+            int pos = opt_outputFilePath.find_last_of("/");
+            if (pos > -1)
+            {
+                Log_Dir = opt_outputFilePath.substr(0, pos) + "/log";
+            }
+            else
+            {
+                int pos = opt_outputFilePath.find_last_of("\\");
+                if (pos > -1)
+                {
+                    Log_Dir = opt_outputFilePath.substr(0, pos) + "/log";
+                }
+            }
+        }
+        else
+        {
+            opt_port = 1024;
+            opt_outputFilePath = currentAppPath + "/DCM_SAVE";
+        }
+    }
+    app.printMessage("log_dir:");
+    app.printMessage(Log_Dir.c_str());
+    if (!OFStandard::dirExists(Log_Dir))
+    {
+        CreatDir(Log_Dir);
     }
 
-    OFString logfilename = log_dir + "/DcmStoreSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
+    OFString logfilename = Log_Dir + "/DcmStoreSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
     OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
     dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(logfilename, STD_NAMESPACE ios::app));
     dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getRoot();
@@ -304,11 +349,7 @@ int AppRun(int argc, char *argv[])
     log.removeAllAppenders();
     log.addAppender(logfile);
 
-    if (argc > 2)
-    {
-        opt_port = atoi(argv[1]);
-        opt_outputFilePath = argv[2];
-    }
+
     OFLOG_INFO(storescpLogger, "---------argv[]:" + strArg + " ----------------------");
     OFLOG_INFO(storescpLogger, "---------opt_port:" + longToString(opt_port) + " ----------------------");
     OFLOG_INFO(storescpLogger, "opt_outputDirectory opt_outputFilePath:" + opt_outputFilePath + " ----------------------");
@@ -319,7 +360,6 @@ int AppRun(int argc, char *argv[])
     OFStandard::initializeNetwork();
     OFString temp_str;
     OFOStringStream optStream;
-    opt_forkMode = OFFalse;
     /* evaluate command line */
 #if defined(HAVE_FORK) || defined(_WIN32)
     if (strArg.find("single - process") > -1)
@@ -343,11 +383,8 @@ int AppRun(int argc, char *argv[])
         opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
 
-    if (strArg.find("-accept-all") > -1)
-    {
-        opt_acceptAllXfers = OFTrue;
-        opt_networkTransferSyntax = EXS_Unknown;
-    }
+    opt_acceptAllXfers = OFTrue;
+    opt_networkTransferSyntax = EXS_Unknown;
 
     // always set the timeout values since the global default might be different
     dcmSocketSendTimeout.set(OFstatic_cast(Sint32, opt_socket_timeout));
@@ -404,11 +441,8 @@ int AppRun(int argc, char *argv[])
     else
     {
         // parent process
-
         if (opt_forkMode)
         {
-            argc = 2;
-            argv[1] = "--forked-child";
             OFLOG_INFO(storescpLogger, "---------opt_forkMode: ----------------------");
             DUL_requestForkOnTransportConnectionReceipt(argc, argv);
         }
@@ -482,12 +516,25 @@ int AppRun(int argc, char *argv[])
 #endif
     return 0;
 }
+
+//debug --single - process
 int main(int argc, char *argv[])
 {
-    return AppRun(argc, argv);
+    if (argc > 3)
+    {
+        OFString s = argv[argc-1];
+        s = OFStandard::toUpper(s);
+        int pos = s.find("APPSTART");
+        if (pos > -1)
+        {
+            return AppRun(argc, argv);
+        }
+    }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
     //--------------------增加日志文件的方式----------------------------------------------------------------
-    const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
+    //https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
+    const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";
     OFString tempstr, path = argv[0];
     int pos = 0;
 #ifdef HAVE_WINDOWS_H
@@ -745,6 +792,16 @@ int main(int argc, char *argv[])
         {
             app.printMessage("no cmd Param! use deauflt");
             //app.printUsage();
+        }
+        else
+        {
+            tempstr = "";
+            for (int i = 0; i < argc; i++)
+            {
+                tempstr += argv[i];
+                tempstr += " ";
+            }
+            OFLOG_INFO(storescpLogger, "--child ~argv[]:" + tempstr + " ----------------------");
         }
 
         /* check exclusive options first */

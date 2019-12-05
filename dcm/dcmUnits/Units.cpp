@@ -24,7 +24,7 @@ OFString GetStudyHashDir(OFString studyuid)
 {
     OFString dir;
     OFHashValue vl = CreateHashValue(studyuid.c_str(), studyuid.length());
-    dir = "\\" + longToString(vl.first) + "\\" + longToString(vl.second);
+    dir = "/" + longToString(vl.first) + "/" + longToString(vl.second);
     return dir;
 }
 //!根据字符计算两个Hash数值
@@ -184,7 +184,7 @@ OFString AdjustDir(const OFString dir)
     OFString path = dir;
     if (path == "")
         return "";
-    if (path[path.length() - 1] != '\\')
+    if (path[path.length() - 1] != '\\'&& path[path.length() - 1] != '/')
         path += "\\";
     return path;
 #else

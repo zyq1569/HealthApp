@@ -965,7 +965,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 OFLOG_ERROR(SaveDcmInfoDbLogger, "NO StudyInstanceUID filename:" + filename);
                 return OFFalse;
             }
-            OFString pathname = g_ImageDir + GetStudyHashDir(StudyInfo.StudyInstanceUID) + "\\" + StudyInfo.StudyInstanceUID + "\\" + StudyInfo.StudyInstanceUID;
+            OFString pathname = g_ImageDir + GetStudyHashDir(StudyInfo.StudyInstanceUID) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
             OFString studyinifile = pathname + ".ini";
             OFString studyjsonfile = pathname + ".json";
             if (!OFStandard::fileExists(studyinifile))
@@ -1094,8 +1094,13 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
 }
 int main(int argc, char *argv[])
 {
+    static DcmConfigFile dcmconfig;
+    OFString Task_Dir, Log_Dir,Error_Dir;
+    //OFString ini_dir, ini_error_dir;
+
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM file Info 2 DB", rcsid);
     OFString tempstr, path = argv[0];
+    OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
     int pos = 0;
 #ifdef HAVE_WINDOWS_H
     pos = path.find_last_of('\\');
@@ -1114,24 +1119,71 @@ int main(int argc, char *argv[])
         //to do add!
 #endif
     }
-    OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
+
     if (argc > 1)
     {
         OFString dir = argv[1];
         if (OFStandard::dirExists(dir))
         {
-            currentAppPath = dir;
+            Task_Dir = dir + "/Task/1";
+            Error_Dir = dir + "/Task/error";
+            Log_Dir = dir + "/log";
+            g_ImageDir = dir + "/Images";
+            int pos = dir.find_last_of("/");
+            if (pos > -1)
+            {
+                Log_Dir = dir.substr(0, pos) + "/log";
+            }
+            else
+            {
+                int pos = dir.find_last_of("\\");
+                if (pos > -1)
+                {
+                    Log_Dir = dir.substr(0, pos) + "/log";
+                }
+            }
         }
     }
-    OFString log_dir = currentAppPath + "/log";
-    app.printMessage("log_dir:");
-    app.printMessage(log_dir.c_str());
-    if (!OFStandard::dirExists(log_dir))
+    else
     {
-        CreatDir(log_dir);
+        if (dcmconfig.init((currentAppPath + "/config/DcmServerConfig.cfg").c_str()))
+        {
+            OFString dir = dcmconfig.getStoreDir()->front();
+            Task_Dir = dir + "/Task/1";
+            Error_Dir = dir + "/Task/error";
+            Log_Dir = dir + "/log";
+            g_ImageDir = dir + "/Images";
+            int pos = dir.find_last_of("/");
+            if (pos > -1)
+            {
+                Log_Dir = dir.substr(0, pos) + "/log";
+            }
+            else
+            {
+                int pos = dir.find_last_of("\\");
+                if (pos > -1)
+                {
+                    Log_Dir = dir.substr(0, pos) + "/log";
+                }
+            }
+        }
+        else
+        {
+            Task_Dir = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
+            Error_Dir = currentAppPath + "/DCM_SAVE/Task/error";
+            g_ImageDir = currentAppPath + "/DCM_SAVE/Images";
+            Log_Dir = currentAppPath + "/log";
+        }
     }
 
-    OFString logfilename = log_dir + "/SaveDcmInfoDb.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
+    app.printMessage("Log_Dir:");
+    app.printMessage(Log_Dir.c_str());
+    if (!OFStandard::dirExists(Log_Dir))
+    {
+        CreatDir(Log_Dir);
+    }
+
+    OFString logfilename = Log_Dir + "/SaveDcmInfoDb.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
 
     const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
     OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
@@ -1149,32 +1201,18 @@ int main(int argc, char *argv[])
     }
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------argv[]:" + tempstr + " ----------------------");
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------currentAppPath:" + currentAppPath + " ----------------------");
-    OFString ini_dir, ini_error_dir;
-    static DcmConfigFile dcmconfig;
-    if (dcmconfig.init((currentAppPath + "/config/DcmServerConfig.cfg").c_str()))
-    {
-        OFString dir = dcmconfig.getStoreDir()->front();
-        ini_dir = dir + "/Task/1";
-        ini_error_dir = dir + "/Task/error";
-        g_ImageDir = dir + "/Images";
-    }
-    else
-    {
-        ini_dir = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
-        ini_error_dir = currentAppPath + "/DCM_SAVE/Task/error";
-        g_ImageDir = currentAppPath + "/DCM_SAVE/Images";
-    }
 
-    if (!OFStandard::dirExists(ini_error_dir))
+
+    if (!OFStandard::dirExists(Error_Dir))
     {
-        OFStandard::createDirectory(ini_error_dir, currentAppPath + "/DCM_SAVE/Task/");//CreatDir(log_dir);
+        OFStandard::createDirectory(Error_Dir, currentAppPath + "/DCM_SAVE/Task/");//CreatDir(log_dir);
     }
     OFList<OFString> list_file_ini;
 
     while (true)
     {
         list_file_ini.clear();
-        SearchDirFile(ini_dir, "ini", list_file_ini);
+        SearchDirFile(Task_Dir, "ini", list_file_ini);
         Sleep(2);
         if (list_file_ini.size() > 0)
         {
@@ -1186,7 +1224,7 @@ int main(int argc, char *argv[])
                 {
                     OFString filename;
                     OFStandard::getFilenameFromPath(filename, *iter);
-                    if (OFStandard::copyFile(*iter, ini_error_dir + "/" + filename), OFTrue)
+                    if (OFStandard::copyFile(*iter, Task_Dir + "/" + filename), OFTrue)
                     {
                         OFStandard::deleteFile(*iter);
                     }
@@ -1195,7 +1233,6 @@ int main(int argc, char *argv[])
             }
         }
     }
-
     if (g_pMariaDb != NULL)
     {
         delete g_pMariaDb;

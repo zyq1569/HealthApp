@@ -45,6 +45,7 @@ void HMainWindow::on_StoreSCP_clicked()
     QString port = ui->port_store->text();
     arg.append(port);
     arg.append(ui->Dir_Store->text());
+    arg.append("AppStart");// start sigle string
     if (!m_bstorescp[STORESCPQ] && m_pQProcess[STORESCPQ]==NULL)
     {
         m_pQProcess[STORESCPQ] =  new QProcess(this);
