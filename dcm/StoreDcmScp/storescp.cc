@@ -443,7 +443,6 @@ int AppRun(int argc, char *argv[])
         // parent process
         if (opt_forkMode)
         {
-            OFLOG_INFO(storescpLogger, "---------opt_forkMode: ----------------------");
             DUL_requestForkOnTransportConnectionReceipt(argc, argv);
         }
     }
