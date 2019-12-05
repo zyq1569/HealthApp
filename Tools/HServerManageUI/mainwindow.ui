@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>488</width>
-    <height>383</height>
+    <height>321</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,7 +43,7 @@
    <widget class="QPushButton" name="Dcm2DB">
     <property name="geometry">
      <rect>
-      <x>221</x>
+      <x>260</x>
       <y>163</y>
       <width>75</width>
       <height>31</height>
@@ -67,7 +67,7 @@
      <rect>
       <x>5</x>
       <y>255</y>
-      <width>121</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
@@ -78,7 +78,7 @@
    <widget class="QPushButton" name="StoreSCP">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>259</x>
       <y>74</y>
       <width>75</width>
       <height>31</height>
@@ -113,7 +113,7 @@
    <widget class="QPushButton" name="WLMSCP">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>259</x>
       <y>35</y>
       <width>75</width>
       <height>31</height>
@@ -204,7 +204,7 @@
    <widget class="QPushButton" name="QRSCP">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>259</x>
       <y>119</y>
       <width>75</width>
       <height>31</height>
@@ -236,12 +236,12 @@
      <string>QueryRetrieveSCP port:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="port_qr_2">
+   <widget class="QLineEdit" name="Dir_Store">
     <property name="geometry">
      <rect>
-      <x>135</x>
+      <x>105</x>
       <y>254</y>
-      <width>161</width>
+      <width>371</width>
       <height>21</height>
      </rect>
     </property>
@@ -249,7 +249,7 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string/>
+     <string>D:/code/C++/HealthApp/bin/win32</string>
     </property>
    </widget>
   </widget>

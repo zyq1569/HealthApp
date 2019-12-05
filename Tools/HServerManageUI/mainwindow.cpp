@@ -11,7 +11,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
     for (int i=0; i<QPROCESSSIZE; i++)
     {
         m_pQProcess[i] = NULL;
-         m_bstorescp[i] = false;
+        m_bstorescp[i] = false;
     }
     m_ExeDir = QDir::currentPath();
     m_ImageDir = m_ExeDir;
@@ -44,7 +44,7 @@ void HMainWindow::on_StoreSCP_clicked()
     QStringList arg;
     QString port = ui->port_store->text();
     arg.append(port);
-    arg.append("D:\\code\\C++\\HealthApp\\Tools\\HServerManageUI\\bin");
+    arg.append(ui->Dir_Store->text());
     if (!m_bstorescp[STORESCPQ] && m_pQProcess[STORESCPQ]==NULL)
     {
         m_pQProcess[STORESCPQ] =  new QProcess(this);
@@ -79,14 +79,13 @@ void HMainWindow::on_Dcm2DB_clicked()
 {
     QString program = m_ExeDir + m_Dcm2DBName;
     QStringList arg;
-    QString port = ui->port_store->text();
-//    arg.append("D:\\code\\C++\\HealthApp\\Tools\\HServerManageUI\\bin");
+    arg.append(ui->Dir_Store->text());
     if (!m_bstorescp[DCM2DBQ] && m_pQProcess[DCM2DBQ]==NULL)
     {
         m_pQProcess[DCM2DBQ] =  new QProcess(this);
         m_pQProcess[DCM2DBQ]->start(program,arg);
         m_bstorescp[DCM2DBQ] = true;
-        ui->StoreSCP->setText("运行中!");
+        ui->Dcm2DB->setText("运行中!");
         QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
     }
     else if( m_pQProcess[DCM2DBQ]!=NULL)
@@ -95,7 +94,7 @@ void HMainWindow::on_Dcm2DB_clicked()
         delete m_pQProcess[DCM2DBQ];
         m_pQProcess[DCM2DBQ] = NULL;
         m_bstorescp[DCM2DBQ] = false;
-        ui->StoreSCP->setText("启动");
+        ui->Dcm2DB->setText("启动");
         QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
     }
 }

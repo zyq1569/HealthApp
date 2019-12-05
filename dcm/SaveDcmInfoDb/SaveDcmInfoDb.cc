@@ -1114,7 +1114,7 @@ int main(int argc, char *argv[])
         //to do add!
 #endif
     }
-    OFString currentAppPath;
+    OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
     if (argc > 1)
     {
         OFString dir = argv[1];
@@ -1122,12 +1122,8 @@ int main(int argc, char *argv[])
         {
             currentAppPath = dir;
         }
-        else
-        {
-            currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
-        }
     }
-    OFString log_dir = currentAppPath/*OFStandard::getDirNameFromPath(tempstr, path)*/ + "/log";
+    OFString log_dir = currentAppPath + "/log";
     app.printMessage("log_dir:");
     app.printMessage(log_dir.c_str());
     if (!OFStandard::dirExists(log_dir))
@@ -1160,7 +1156,7 @@ int main(int argc, char *argv[])
         OFString dir = dcmconfig.getStoreDir()->front();
         ini_dir = dir + "/Task/1";
         ini_error_dir = dir + "/Task/error";
-        g_ImageDir = dir;
+        g_ImageDir = dir + "/Images";
     }
     else
     {
