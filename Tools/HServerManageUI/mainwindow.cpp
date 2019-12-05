@@ -79,8 +79,18 @@ void HMainWindow::on_QRSCP_clicked()
 void HMainWindow::on_Dcm2DB_clicked()
 {
     QString program = m_ExeDir + m_Dcm2DBName;
+
+    m_MysqlServer = ui->mysqlServerValue->text();
+    m_MysqlDbName = ui->mysqldbNameValue->text();
+    m_MysqlUserName = ui->mysqlUserNameValue->text();
+    m_MysqlPWD = ui->mysqlPWDValue->text();
+
     QStringList arg;
     arg.append(ui->Dir_Store->text());
+    arg.append(m_MysqlServer);
+    arg.append(m_MysqlDbName);
+    arg.append(m_MysqlUserName);
+    arg.append(m_MysqlPWD);
     if (!m_bstorescp[DCM2DBQ] && m_pQProcess[DCM2DBQ]==NULL)
     {
         m_pQProcess[DCM2DBQ] =  new QProcess(this);

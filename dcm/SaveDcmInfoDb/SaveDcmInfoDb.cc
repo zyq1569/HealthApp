@@ -127,6 +127,10 @@ int opt_acse_timeout = 30;
 OFCmdSignedInt opt_socket_timeout = 60;
 
 static HMariaDb *g_pMariaDb = NULL;
+static OFString g_mySql_IP = "127.0.0.1";
+static OFString g_mySql_username = "root";
+static OFString g_mySql_pwd = "root";
+static OFString g_mySql_dbname = "HIT";
 static OFString g_ImageDir = "";
 
 #ifdef WITH_ZLIB
@@ -972,20 +976,12 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
             {
                 if (g_pMariaDb == NULL)
                 {
-                    OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
-                    //if (configfile != NULL)
-                    //{
-                    //    strIP = configfile->getSqlServer();
-                    //    strUser = configfile->getSqlusername();
-                    //    strPwd = configfile->getSqlpass();
-                    //    strDadaName = configfile->getSqldbname();
-                    //}
 #ifdef _UNICODE
                     g_pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
                         W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 #else
-                    g_pMariaDb = new HMariaDb(strIP.c_str(), strUser.c_str(), \
-                        strPwd.c_str(), strDadaName.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+                    g_pMariaDb = new HMariaDb(g_mySql_IP.c_str(), g_mySql_username.c_str(), \
+                        g_mySql_pwd.c_str(), g_mySql_dbname.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 
 #endif
                 }
@@ -1021,12 +1017,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                     //std::string sdata;
                     while (rs->fetch(row))
                     {
-                        //for (size_t i = 0; i < row.size(); i++)
-                        //{
-                        //sdata += row[i] + " | ";
                         PatientIdentity = row[0].c_str();
-                        // }
-                        //sdata += "\r\n";
                     }
                 }
 
@@ -1143,6 +1134,13 @@ int main(int argc, char *argv[])
                 }
             }
         }
+        if (argc > 5)
+        {
+            g_mySql_IP = argv[2];
+            g_mySql_dbname = argv[3];
+            g_mySql_username = argv[4];
+            g_mySql_pwd = argv[5];
+        }
     }
     else
     {
@@ -1166,6 +1164,11 @@ int main(int argc, char *argv[])
                     Log_Dir = dir.substr(0, pos) + "/log";
                 }
             }
+            //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
+            g_mySql_IP = dcmconfig.getSqlServer();
+            g_mySql_username = dcmconfig.getSqlusername();
+            g_mySql_pwd = dcmconfig.getSqlpass();
+            g_mySql_dbname = dcmconfig.getSqldbname();
         }
         else
         {
@@ -1201,7 +1204,6 @@ int main(int argc, char *argv[])
     }
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------argv[]:" + tempstr + " ----------------------");
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------currentAppPath:" + currentAppPath + " ----------------------");
-
 
     if (!OFStandard::dirExists(Error_Dir))
     {

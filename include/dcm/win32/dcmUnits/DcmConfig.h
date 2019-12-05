@@ -195,6 +195,10 @@ public:
     {
         m_StoreScpPort = 1667;
         m_WorklistScpPort = 1666;
+        m_sqlserver = "127.0.0.1";
+        m_sqldbname = "HIT";
+        m_sqlusername = "root";
+        m_sqlpass = "root";
     }
 
     ~DcmConfigFile();
