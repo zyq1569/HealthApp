@@ -1346,3 +1346,20 @@ const char *DcmQueryRetrieveConfig::getSqlpass() const
     return m_sqlpass.c_str();
 
 }
+
+void DcmQueryRetrieveConfig::setSqlServer(OFString sqlserver)
+{
+    m_sqlserver = sqlserver;
+}
+void DcmQueryRetrieveConfig::setSqldbname(OFString sqlname)
+{
+    m_sqldbname = sqlname;
+}
+void DcmQueryRetrieveConfig::setSqlusername(OFString sqlusername)
+{
+    m_sqlusername = sqlusername;
+}
+void DcmQueryRetrieveConfig::setSqlpass(OFString sqlpass)
+{
+    m_sqlpass = sqlpass;
+}

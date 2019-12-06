@@ -408,7 +408,7 @@ DIMSE_moveProvider(
 
                 if (normal) {
                      if (callback) {
-                         callback(callbackData, cancelled, request, reqIds, responseCount, &rsp, &statusDetail, &rspIds);
+                         callback(callbackData, cancelled, request, reqIds, responseCount, &rsp, &statusDetail, &rspIds,NULL);
                      } else {
                          return makeDcmnetCondition(DIMSEC_NULLKEY, OF_error, "DIMSE_moveProvider: no callback function");
                      }
