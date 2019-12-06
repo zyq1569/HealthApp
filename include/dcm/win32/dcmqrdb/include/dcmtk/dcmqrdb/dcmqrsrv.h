@@ -53,10 +53,83 @@ enum CTN_RefuseReason
 
 /** main class for Query/Retrieve Service Class Provider
  */
+#define DCMFILEDIRMAX 10
+#define DCMQUERYMAX 10
 class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveSCP
 {
+protected:
+    OFString m_DcmFileDir[DCMFILEDIRMAX];
+    int m_DcmDirSize;
+    struct QueryClientInfo
+    {
+        OFString AEtitle,IpAddress;
+        int port;
+        QueryClientInfo()
+        {
+            AEtitle = IpAddress = "";
+            port = 104;
+        }
+    };
+    QueryClientInfo m_QueryClient[DCMQUERYMAX];
+    int m_QuerySize;
 public:
+    OFString GetDcmDir(int index)
+    {
+        if (m_DcmDirSize > index && index >= 0 && index < DCMFILEDIRMAX)
+        {
+            return m_DcmFileDir[index];
+        }
+        else
+        {
+            OFString str = "";
+            return str;
+        }
+    }
+    void SetDcmDir(int index, OFString dir)
+    {
+        if (m_DcmDirSize > index && index >= 0 && index < DCMFILEDIRMAX)
+        {
+            m_DcmFileDir[index] = dir;
+        }
+    }
 
+    int GetDcmDirSize()
+    {
+        return m_DcmDirSize;// ? (m_DcmDirSize < DCMFILEDIRMAX) : DCMFILEDIRMAX;
+    }
+    void SetDcmDirSize(int size)
+    {
+        if (size > 0 && size < DCMFILEDIRMAX)
+        {
+            m_DcmDirSize = size;// ? (m_DcmDirSize < DCMFILEDIRMAX) : DCMFILEDIRMAX;
+        }
+    }
+
+    int GetQueryClientSize()
+    {
+        return m_QuerySize;
+    }
+    QueryClientInfo * GeQueryClient(int index)
+    {
+        if (index < DCMQUERYMAX && index >= 0)
+        {
+            return &m_QueryClient[index];
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+    void SetQueryClient(QueryClientInfo *qc, int index)
+    {
+        if (index < DCMQUERYMAX && index >= 0)
+        {
+            m_QueryClient[index].AEtitle   = qc->AEtitle;
+            m_QueryClient[index].IpAddress = qc->IpAddress;
+            m_QueryClient[index].port      = qc->port;
+        }
+    }
+public:
   /** constructor
    *  @param config SCP configuration facility
    *  @param options SCP configuration options

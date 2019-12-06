@@ -68,10 +68,10 @@ static void moveCallback(
     DcmDataset *requestIdentifiers, int responseCount,
     /* out */
     T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
-    DcmDataset **responseIdentifiers)
+    DcmDataset **responseIdentifiers , OFList<OFString> *imagedir)
 {
     DcmQueryRetrieveMoveContext *context = OFstatic_cast(DcmQueryRetrieveMoveContext *, callbackData);
-    context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
+    context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers,imagedir);
 }
 
 
@@ -1148,25 +1148,25 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     if (!go_cleanup)
     {
         /* Does peer AE have access to required service ?? */
-        OFBool AllowAnyPeer = OFTrue;
-        if (AllowAnyPeer)
+        //OFBool AllowAnyPeer = OFTrue;
+        //if (AllowAnyPeer)
+        //{
+        //    //允许所有节点访问
+        //}
+        //else
+        //{
+        if (!config_->peerInAETitle(assoc->params->DULparams.calledAPTitle,
+            assoc->params->DULparams.callingAPTitle,
+            assoc->params->DULparams.callingPresentationAddress))
         {
-            //允许所有节点访问
+            DCMQRDB_DEBUG("Peer "
+                << assoc->params->DULparams.callingPresentationAddress << ":"
+                << assoc->params->DULparams.callingAPTitle << " is not not permitted to access "
+                << assoc->params->DULparams.calledAPTitle << " (see configuration file)");
+            cond = refuseAssociation(&assoc, CTN_BadAEService);
+            go_cleanup = OFTrue;
         }
-        else
-        {
-            if (!config_->peerInAETitle(assoc->params->DULparams.calledAPTitle,
-                assoc->params->DULparams.callingAPTitle,
-                assoc->params->DULparams.callingPresentationAddress))
-            {
-                DCMQRDB_DEBUG("Peer "
-                    << assoc->params->DULparams.callingPresentationAddress << ":"
-                    << assoc->params->DULparams.callingAPTitle << " is not not permitted to access "
-                    << assoc->params->DULparams.calledAPTitle << " (see configuration file)");
-                cond = refuseAssociation(&assoc, CTN_BadAEService);
-                go_cleanup = OFTrue;
-            }
-        }
+        //}
     }
 
     if (!go_cleanup)

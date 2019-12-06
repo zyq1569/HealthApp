@@ -403,6 +403,11 @@ public:
   const char *getSqldbname() const;
   const char *getSqlusername() const;
   const char *getSqlpass() const;
+
+  void setSqlServer(OFString sqlserver);
+  void setSqldbname(OFString sqlname);
+  void setSqlusername(OFString sqlusername);
+  void setSqlpass(OFString sqlpass);
   const OFList<OFString> *getStoreDir() const
   {
       return &m_storedir;

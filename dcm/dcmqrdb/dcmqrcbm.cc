@@ -76,7 +76,7 @@ T_DIMSE_C_StoreRQ * /*req*/)
 OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     const char      *SOPClassUID,
     DcmDataset      *moveRequestIdentifiers,
-    DcmQueryRetrieveDatabaseStatus  *status)
+    DcmQueryRetrieveDatabaseStatus  *status, OFList<OFString> *imagedir)
 {
     //OFString PatientName;
     //if (moveRequestIdentifiers->findAndGetOFString(DCM_PatientName, PatientName).bad())
@@ -101,10 +101,20 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     OFString temp_dir = "/Images/" + hash_dir + "/" + StudyInstanceUID;
     //OFLOG_INFO(dcmqrscpLogger, "---------hash_dir:" + hash_dir + " ----------------------");
     //OFLOG_INFO(dcmqrscpLogger, "---------study_dir:" + hash_dir + " ----------------------");
-    OFListIterator(OFString) if_iter = m_config->getStoreDir()->begin();
-    OFListIterator(OFString) if_last = m_config->getStoreDir()->end();
-    OFBool find = OFFalse;
     OFString find_dir;
+    OFBool find = OFFalse;
+    OFListIterator(OFString) if_iter;
+    OFListIterator(OFString) if_last;
+    if (imagedir != NULL)
+    {
+        if_iter = imagedir->begin();
+        if_last = imagedir->end();
+    }
+    else
+    {
+        if_iter = m_config->getStoreDir()->begin();
+        if_last = m_config->getStoreDir()->end();
+    }
     while (if_iter != if_last)
     {
         OFString dir = *if_iter;
@@ -144,7 +154,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
     DcmDataset *requestIdentifiers, int responseCount,
     /* out */
     T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
-    DcmDataset **responseIdentifiers)
+    DcmDataset **responseIdentifiers,  OFList<OFString> *imagedir)
 {
     OFCondition cond = EC_Normal;
     OFCondition dbcond = EC_Normal;
@@ -156,14 +166,14 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
         /* start the database search */
         DCMQRDB_INFO("Move SCP Request Identifiers:" << OFendl << DcmObject::PrintHelper(*requestIdentifiers));
 
-        if (false)
-        {
-            dbcond = dbHandle.startMoveRequest(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
-        }
-        else
-        {
-            dbcond = startMoveRequest(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
-        }
+        //if (false)
+        //{
+        //    dbcond = dbHandle.startMoveRequest(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
+        //}
+        //else
+        //{
+        dbcond = startMoveRequest(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
+        //}
 
         if (dbcond.bad())
         {

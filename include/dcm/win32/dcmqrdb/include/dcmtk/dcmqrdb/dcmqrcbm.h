@@ -99,7 +99,7 @@ public:
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
         T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
-        DcmDataset **responseIdentifiers);
+        DcmDataset **responseIdentifiers, OFList<OFString> *imagedir = NULL);
 
     /** set the AEtitle under which this application operates
      *  @param ae AEtitle, is copied into this object.
@@ -113,7 +113,8 @@ public:
     OFCondition startMoveRequest(
         const char      *SOPClassUID,
         DcmDataset      *moveRequestIdentifiers,
-        DcmQueryRetrieveDatabaseStatus  *status);
+        DcmQueryRetrieveDatabaseStatus  *status,
+        OFList<OFString> *imagedir=NULL);
 
     //set config;
     void SetDcmQueryRetrieveConfig(const DcmQueryRetrieveConfig* config);

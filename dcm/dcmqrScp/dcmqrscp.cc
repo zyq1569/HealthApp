@@ -101,10 +101,11 @@ OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define APPLICATIONTITLE "DCMQRSCP"
 
-const char *opt_configFileName = DEFAULT_CONFIGURATION_DIR "dcmqrscp.cfg";
+const char *opt_configFileName = DEFAULT_CONFIGURATION_DIR "DcmServerConfig.cfg";
 OFBool      opt_checkFindIdentifier = OFFalse;
 OFBool      opt_checkMoveIdentifier = OFFalse;
 OFCmdUnsignedInt opt_port = 0;
+OFCmdUnsignedInt g_worklist_port = 1668;
 
 #define SHORTCOL 4
 #define LONGCOL 22
@@ -161,8 +162,175 @@ static void mangleAssociationProfileKey(OFString& key)
 //    time = str.substr(9, str.length() - 8);
 //    return str;
 //}
+// qrscp way:
+//OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
+//OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OFBool correctUIDPadding)
+//OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool correctUIDPadding)
+//DcmQueryRetrieveSCP::moveSCP
+//cond = DIMSE_moveProvider(assoc, presID, request,
+//moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+//DcmQueryRetrieveMoveContext::callbackHandler(
+//    DcmQueryRetrieveMoveContext::startMoveRequest(
+int RunQRSCP(int argc, char *argv[])
+{
+    //##################---------------------------------------------------------------------------------
+    const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
+    OFString temps, path = argv[0];
+    int pos = 0;
+
+    OFString currentAppPath = OFStandard::getDirNameFromPath(temps, path);
+    OFString log_dir = currentAppPath + "/log";
+    //opt_configFileName
+    OFString confilepath = currentAppPath + "/config/DcmServerConfig.cfg";
+    opt_configFileName = confilepath.c_str();
+
+    if (!OFStandard::dirExists(log_dir))
+    {
+        CreatDir(log_dir);
+    }
+
+    OFString logfilename = log_dir + "/DcmQueryRetrieveSCP.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
+
+    OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
+    dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(logfilename, STD_NAMESPACE ios::app));
+    dcmtk::log4cplus::Logger log = dcmtk::log4cplus::Logger::getRoot();
+
+    logfile->setLayout(OFmove(layout));
+    log.removeAllAppenders();
+    log.addAppender(logfile);
+
+    OFLOG_INFO(dcmqrscpLogger, "---------argv[]:" + temps + " ----------------------");
+    OFLOG_INFO(dcmqrscpLogger, "-----$$------DcmNet dcmstoreqrscp start run!---------$$------------");
+    //###################------------------------------------------------------------------
+    OFCondition cond = EC_Normal;
+    OFCmdUnsignedInt overridePort = 0;
+    OFCmdUnsignedInt overrideMaxPDU = 0;
+    DcmQueryRetrieveOptions options;
+    DcmAssociationConfiguration asccfg;
+
+    OFStandard::initializeNetwork();
+    /* evaluate command line */
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+
+#ifdef HAVE_FORK
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--single-process"))
+        options.singleProcess_ = OFTrue;
+    if (cmd.findOption("--fork"))
+        options.singleProcess_ = OFFalse;
+    cmd.endOptionBlock();
+#endif
+
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmqrscpLogger, rcsid << OFendl);
+
+    /* read config file */
+    if (access(opt_configFileName, R_OK) < 0)
+    {
+        OFLOG_FATAL(dcmqrscpLogger, "cannot access " << opt_configFileName << ": "
+            << OFStandard::getLastSystemErrorCode().message());
+        //return 10;
+    }
+
+    DcmQueryRetrieveConfig config;
+    options.maxAssociations_ = 30;
+    opt_port = 1668;
+    if (argc > 3) // 0:exe dir  1: scp port 2:Image Dir 3 :client AE 4:client port
+    {
+        g_worklist_port = atoi(argv[1]);
+        opt_port = g_worklist_port;
+
+    }
+    else
+    {
+        if (!config.init(opt_configFileName))
+        {
+            OFLOG_FATAL(dcmqrscpLogger, "bad config file: " << opt_configFileName);
+            //return 10;
+        }
+        else
+        {
+            OFString filepath = opt_configFileName;
+            OFLOG_INFO(dcmqrscpLogger, "----opt_configFileName:" + filepath);
+            options.maxAssociations_ = config.getMaxAssociations();
+            opt_port = config.getNetworkTCPPort();
+        }
+    }
+
+    if (opt_port == 0)
+    {
+        opt_port = 1668; /* not set, use default */
+        OFString msg = "----default QR NetworkTCPPort:" + longToString(opt_port);
+        OFLOG_INFO(dcmqrscpLogger, msg);
+    }
+    else
+    {
+        OFString msg = "----QR NetworkTCPPort:" + longToString(opt_port);
+        OFLOG_INFO(dcmqrscpLogger, msg);
+    }
+
+    if (overridePort > 0)
+        opt_port = overridePort;
+
+    options.maxPDU_ = config.getMaxPDUSize();
+    if (options.maxPDU_ == 0)
+        options.maxPDU_ = ASC_DEFAULTMAXPDU; /* not set, use default */
+    if (options.maxPDU_ < ASC_MINIMUMPDUSIZE || options.maxPDU_ > ASC_MAXIMUMPDUSIZE)
+    {
+        OFLOG_FATAL(dcmqrscpLogger, "invalid MaxPDUSize in config file");
+        return 10;
+    }
+    if (overrideMaxPDU > 0)
+        options.maxPDU_ = overrideMaxPDU;
+
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFLOG_WARN(dcmqrscpLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
+
+    OFString temp_str;
+    cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
+    if (cond.bad())
+    {
+
+        OFLOG_FATAL(dcmqrscpLogger, "cannot initialize network: " << DimseCondition::dump(temp_str, cond));
+        return 10;
+    }
+
+    /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
+    if (OFStandard::dropPrivileges().bad())
+    {
+        OFLOG_FATAL(dcmqrscpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
+        return 10;
+    }
+    // use linear index database (index.dat)
+    DcmQueryRetrieveIndexDatabaseHandleFactory factory(&config);
+    DcmQueryRetrieveSCP scp(config, options, factory, asccfg);
+    scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
+
+    /* loop waiting for associations */
+    while (cond.good())
+    {
+        cond = scp.waitForAssociation(options.net_);
+        if (!options.singleProcess_)
+            scp.cleanChildren();  /* clean up any child processes */
+    }
+
+    cond = ASC_dropNetwork(&options.net_);
+    if (cond.bad())
+    {
+        OFLOG_FATAL(dcmqrscpLogger, "cannot drop network: " << DimseCondition::dump(temp_str, cond));
+        return 10;
+    }
+
+    OFStandard::shutdownNetwork();
+    return 0;
+}
 int main(int argc, char *argv[])
 {
+    return RunQRSCP(argc, argv);
 #ifdef HAVE_FORK
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)", rcsid);
 #else
@@ -258,7 +426,7 @@ int main(int argc, char *argv[])
     }
 #ifdef HAVE_FORK
     cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
-    cmd.addOption("--single-process",           "-s",      "single process mode");
+    cmd.addOption("--single-process", "-s", "single process mode");
     cmd.addOption("--fork", "fork child process for each assoc. (default)");
 #endif
 
@@ -347,7 +515,7 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_TCPWRAPPER
     cmd.addSubGroup("network host access control (tcp wrapper):");
-    cmd.addOption("--access-full",            "-ac",     "accept connections from any host (default)");
+    cmd.addOption("--access-full", "-ac", "accept connections from any host (default)");
     cmd.addOption("--access-control", "+ac", "enforce host access control rules");
 #endif
 
@@ -376,17 +544,17 @@ int main(int argc, char *argv[])
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
     cmd.addGroup("processing options:");
     cmd.addSubGroup("specific character set:");
-    cmd.addOption("--use-request-charset",    "+Cr",     "try to convert all element values that are\naffected by Specific Character Set (0008,0005)\n"
+    cmd.addOption("--use-request-charset", "+Cr", "try to convert all element values that are\naffected by Specific Character Set (0008,0005)\n"
         "to the one specified in the request data set,\nfall back to the one specified via\n"
         "--convert-to-xxx if that is not possible\n(default, unless overridden by config file)");
-    cmd.addOption("--override-charset",       "-Cr",     "convert affected element values to the\ncharacter set specified via --convert-to-xxx,\n"
+    cmd.addOption("--override-charset", "-Cr", "convert affected element values to the\ncharacter set specified via --convert-to-xxx,\n"
         "ignoring the one specified in the request");
-    cmd.addOption("--convert-to-ascii",       "+A7",     "convert affected element values to 7-bit ASCII\n(default, unless overridden by config file)");
-    cmd.addOption("--convert-to-utf8",        "+U8",     "convert affected element values to UTF-8");
-    cmd.addOption("--convert-to-latin1",      "+L1",     "convert affected element values to ISO 8859-1");
-    cmd.addOption("--convert-to-charset",     "+C",   1, "[c]harset: string",
+    cmd.addOption("--convert-to-ascii", "+A7", "convert affected element values to 7-bit ASCII\n(default, unless overridden by config file)");
+    cmd.addOption("--convert-to-utf8", "+U8", "convert affected element values to UTF-8");
+    cmd.addOption("--convert-to-latin1", "+L1", "convert affected element values to ISO 8859-1");
+    cmd.addOption("--convert-to-charset", "+C", 1, "[c]harset: string",
         "convert affected element values to the char.\nset specified by the DICOM defined term c");
-    cmd.addOption("--transliterate",          "-Ct",     "try to approximate characters that cannot be\nrepresented through similar looking characters");
+    cmd.addOption("--transliterate", "-Ct", "try to approximate characters that cannot be\nrepresented through similar looking characters");
     cmd.addOption("--discard-illegal", "-Cd", "discard characters that cannot be represented\nin destination character set");
 #endif
 
@@ -425,7 +593,7 @@ int main(int argc, char *argv[])
 #else
     cmd.addSubGroup("deflate compression level (only with -xd or --write-xfer-deflated/same):");
 #endif
-    cmd.addOption("--compression-level",      "+cl",  1, "[l]evel: integer (default: 6)",
+    cmd.addOption("--compression-level", "+cl", 1, "[l]evel: integer (default: 6)",
         "0=uncompressed, 1=fastest, 9=best compression");
 #endif
 
@@ -501,7 +669,7 @@ int main(int argc, char *argv[])
             options.restrictMoveToSameAE_ = OFFalse;
             options.restrictMoveToSameHost_ = OFFalse;
             options.restrictMoveToSameVendor_ = OFFalse;
-        }
+    }
         if (cmd.findOption("--move-aetitle"))
             options.restrictMoveToSameAE_ = OFTrue;
         if (cmd.findOption("--move-host"))
@@ -763,7 +931,7 @@ int main(int argc, char *argv[])
                 OFLOG_FATAL(dcmqrscpLogger, "profile '" << unmangledInProfile << "' is not valid for incoming use, duplicate abstract syntaxes found");
                 return 1;
             }
-        }
+            }
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--normal"))
@@ -954,7 +1122,7 @@ int main(int argc, char *argv[])
             dcmZlibCompressionLevel.set(OFstatic_cast(int, compressionLevel));
         }
 #endif
-    }
+        }
 
     /* print resource identifier */
     OFLOG_DEBUG(dcmqrscpLogger, rcsid << OFendl);
@@ -968,27 +1136,33 @@ int main(int argc, char *argv[])
     }
 
     DcmQueryRetrieveConfig config;
-
-    if (!config.init(opt_configFileName))
+    if (argc > 3)
     {
-        OFLOG_FATAL(dcmqrscpLogger, "bad config file: " << opt_configFileName);
-        //return 10;
+        g_worklist_port = atoi(argv[1]);
+        opt_port = g_worklist_port;
     }
     else
     {
-        OFString filepath = opt_configFileName;
-        OFLOG_INFO(dcmqrscpLogger, "----opt_configFileName:" + filepath);
+        if (!config.init(opt_configFileName))
+        {
+            OFLOG_FATAL(dcmqrscpLogger, "bad config file: " << opt_configFileName);
+            //return 10;
     }
-    options.maxAssociations_ = config.getMaxAssociations();
+        else
+        {
+            OFString filepath = opt_configFileName;
+            OFLOG_INFO(dcmqrscpLogger, "----opt_configFileName:" + filepath);
+            options.maxAssociations_ = config.getMaxAssociations();
+            opt_port = config.getNetworkTCPPort();
+        }
+        }
 
-    opt_port = config.getNetworkTCPPort();
-   
     if (opt_port == 0)
     {
-        opt_port = 1400; /* not set, use default */
+        opt_port = 1668; /* not set, use default */
         OFString msg = "----default QR NetworkTCPPort:" + longToString(opt_port);
         app.printMessage(msg.c_str());
-        OFLOG_INFO(dcmqrscpLogger,msg);
+        OFLOG_INFO(dcmqrscpLogger, msg);
     }
     else
     {
@@ -1074,7 +1248,7 @@ int main(int argc, char *argv[])
     {
         OFLOG_FATAL(dcmqrscpLogger, "cannot initialize network: " << DimseCondition::dump(temp_str, cond));
         return 10;
-    }
+        }
 
     /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
     if (OFStandard::dropPrivileges().bad())
@@ -1101,7 +1275,7 @@ int main(int argc, char *argv[])
             OFLOG_FATAL(dcmqrscpLogger, "setgid: Unable to set group id to group " << (unsigned)grp.gr_gid);
             return 10;
         }
-    }
+}
     if (((opt_UserName = config.getUserName()) != NULL) && strlen(opt_UserName) > 0)
     {
         if (!(pwd = OFStandard::getPwNam(opt_UserName)))

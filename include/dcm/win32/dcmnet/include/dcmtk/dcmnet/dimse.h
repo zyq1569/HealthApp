@@ -838,7 +838,8 @@ typedef void (*DIMSE_MoveProviderCallback)(
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
         T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
-        DcmDataset **responseIdentifiers);
+        DcmDataset **responseIdentifiers,
+        OFList<OFString> *imagedir);
 
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_moveProvider(
