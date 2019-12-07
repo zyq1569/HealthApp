@@ -199,6 +199,12 @@ int RunQRSCP(int argc, char *argv[])
     log.removeAllAppenders();
     log.addAppender(logfile);
 
+    temps = "";
+    for (int i = 0; i < argc; i++)
+    {
+        temps += argv[i];
+        temps += " ";
+    }
     OFLOG_INFO(dcmqrscpLogger, "---------argv[]:" + temps + " ----------------------");
     OFLOG_INFO(dcmqrscpLogger, "-----$$------DcmNet dcmstoreqrscp start run!---------$$------------");
     //###################------------------------------------------------------------------
@@ -232,29 +238,31 @@ int RunQRSCP(int argc, char *argv[])
         //return 10;
     }
 
+    int imagedirsize = 1;
+    OFString imagedir;
+    OFString clientAE;
+    int clientPort;
     DcmQueryRetrieveConfig config;
     options.maxAssociations_ = 30;
     opt_port = 1668;
-    if (argc > 3) // 0:exe dir  1: scp port 2:Image Dir 3 :client AE 4:client port
+    if (!config.init(opt_configFileName))
     {
-        g_worklist_port = atoi(argv[1]);
-        opt_port = g_worklist_port;
-
+        OFLOG_FATAL(dcmqrscpLogger, "bad config file: " << opt_configFileName);
     }
     else
     {
-        if (!config.init(opt_configFileName))
-        {
-            OFLOG_FATAL(dcmqrscpLogger, "bad config file: " << opt_configFileName);
-            //return 10;
-        }
-        else
-        {
-            OFString filepath = opt_configFileName;
-            OFLOG_INFO(dcmqrscpLogger, "----opt_configFileName:" + filepath);
-            options.maxAssociations_ = config.getMaxAssociations();
-            opt_port = config.getNetworkTCPPort();
-        }
+        OFString filepath = opt_configFileName;
+        OFLOG_INFO(dcmqrscpLogger, "----opt_configFileName:" + filepath);
+        options.maxAssociations_ = config.getMaxAssociations();
+        opt_port = config.getNetworkTCPPort();
+    }
+    if (argc > 4) // 0:exe dir  1: scp port 2:Image Dir 3 :client AE 4:client port
+    {
+        g_worklist_port = atoi(argv[1]);
+        opt_port = g_worklist_port;
+        imagedir = argv[2];
+        clientAE = argv[3];
+        clientPort = atoi(argv[4]);
     }
 
     if (opt_port == 0)
@@ -294,7 +302,6 @@ int RunQRSCP(int argc, char *argv[])
     cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
     if (cond.bad())
     {
-
         OFLOG_FATAL(dcmqrscpLogger, "cannot initialize network: " << DimseCondition::dump(temp_str, cond));
         return 10;
     }

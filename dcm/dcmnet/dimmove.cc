@@ -370,7 +370,7 @@ DIMSE_moveProvider(
     T_DIMSE_C_MoveRQ *request,
     DIMSE_MoveProviderCallback callback, void *callbackData,
     /* blocking info for data set */
-    T_DIMSE_BlockingMode blockMode, int timeout)
+    T_DIMSE_BlockingMode blockMode, int timeout, OFList<OFString> *imagedir)
 {
     OFCondition cond = EC_Normal;
     T_ASC_PresentationContextID presIdData;
@@ -408,7 +408,7 @@ DIMSE_moveProvider(
 
                 if (normal) {
                      if (callback) {
-                         callback(callbackData, cancelled, request, reqIds, responseCount, &rsp, &statusDetail, &rspIds,NULL);
+                         callback(callbackData, cancelled, request, reqIds, responseCount, &rsp, &statusDetail, &rspIds, imagedir);
                      } else {
                          return makeDcmnetCondition(DIMSEC_NULLKEY, OF_error, "DIMSE_moveProvider: no callback function");
                      }

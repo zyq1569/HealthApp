@@ -109,6 +109,7 @@ DcmQueryRetrieveSCP::DcmQueryRetrieveSCP(
     , options_(options)
     , associationConfiguration_(associationConfiguration)
 {
+    m_DcmDirSize = 0;
 }
 
 
@@ -345,7 +346,7 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
     DCMQRDB_INFO("Received Move SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_moveProvider(assoc, presID, request,
-        moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+        moveCallback, &context, options_.blockMode_, options_.dimse_timeout_, GetDcmDirList());
     if (cond.bad())
     {
         DCMQRDB_ERROR("Move SCP Failed: " << DimseCondition::dump(temp_str, cond));
@@ -1155,17 +1156,17 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         //}
         //else
         //{
-        if (!config_->peerInAETitle(assoc->params->DULparams.calledAPTitle,
-            assoc->params->DULparams.callingAPTitle,
-            assoc->params->DULparams.callingPresentationAddress))
-        {
-            DCMQRDB_DEBUG("Peer "
-                << assoc->params->DULparams.callingPresentationAddress << ":"
-                << assoc->params->DULparams.callingAPTitle << " is not not permitted to access "
-                << assoc->params->DULparams.calledAPTitle << " (see configuration file)");
-            cond = refuseAssociation(&assoc, CTN_BadAEService);
-            go_cleanup = OFTrue;
-        }
+        //if (!config_->peerInAETitle(assoc->params->DULparams.calledAPTitle,
+        //    assoc->params->DULparams.callingAPTitle,
+        //    assoc->params->DULparams.callingPresentationAddress))
+        //{
+        //    DCMQRDB_DEBUG("Peer "
+        //        << assoc->params->DULparams.callingPresentationAddress << ":"
+        //        << assoc->params->DULparams.callingAPTitle << " is not not permitted to access "
+        //        << assoc->params->DULparams.calledAPTitle << " (see configuration file)");
+        //    cond = refuseAssociation(&assoc, CTN_BadAEService);
+        //    go_cleanup = OFTrue;
+        //}
         //}
     }
 

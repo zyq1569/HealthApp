@@ -52,23 +52,23 @@ T_DIMSE_C_StoreRQ * /*req*/)
     // generating this output. If it is set to level "INFO" we generate the
     // output, if it's set to "DEBUG" then we'll assume that there is debug output
     // generated for each PDU elsewhere.
-    OFLogger progressLogger = OFLog::getLogger("dcmtk.dcmqrdb.progress");
-    if (progressLogger.getChainedLogLevel() == OFLogger::INFO_LOG_LEVEL)
-    {
-        switch (progress->state)
-        {
-        case DIMSE_StoreBegin:
-            printf("XMIT: ");
-            break;
-        case DIMSE_StoreEnd:
-            printf("\n");
-            break;
-        default:
-            putchar('.');
-            break;
-        }
-        fflush(stdout);
-    }
+    //OFLogger progressLogger = OFLog::getLogger("dcmtk.dcmqrdb.progress");
+    //if (progressLogger.getChainedLogLevel() == OFLogger::INFO_LOG_LEVEL)
+    //{
+    //    switch (progress->state)
+    //    {
+    //    case DIMSE_StoreBegin:
+    //        printf("XMIT: ");
+    //        break;
+    //    case DIMSE_StoreEnd:
+    //        printf("\n");
+    //        break;
+    //    default:
+    //        putchar('.');
+    //        break;
+    //    }
+    //    fflush(stdout);
+    //}
 }
 
 /////////_____________________________________________________________
