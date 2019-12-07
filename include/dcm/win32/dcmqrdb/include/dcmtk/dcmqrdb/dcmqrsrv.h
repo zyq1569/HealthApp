@@ -85,6 +85,23 @@ public:
             return str;
         }
     }
+    OFList<OFString> * GetDcmDirList()
+    {
+        if (m_DcmDirSize < 1)
+        {
+            return NULL;
+        }
+        static OFList<OFString> DcmList;
+        if (DcmList.size()>0)
+        {
+            return &DcmList;
+        }
+        for (int i = 0; i < m_DcmDirSize; i++)
+        {
+            DcmList.push_back(m_DcmFileDir[i]);
+        }
+        return &DcmList;
+    }
     void SetDcmDir(int index, OFString dir)
     {
         if (m_DcmDirSize > index && index >= 0 && index < DCMFILEDIRMAX)

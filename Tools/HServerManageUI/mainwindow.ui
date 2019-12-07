@@ -177,7 +177,7 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>1668</string>
+     <string>104</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_UI">
@@ -420,7 +420,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>AEtitle</string>
+     <string>ClientPort</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="clientPortValue">

@@ -73,7 +73,38 @@ void HMainWindow::on_WLMSCP_clicked()
 
 void HMainWindow::on_QRSCP_clicked()
 {
+    QString program = m_ExeDir + m_QuerRScpName;
+    m_MysqlServer = ui->mysqlServerValue->text();
+    m_MysqlDbName = ui->mysqldbNameValue->text();
+    m_MysqlUserName = ui->mysqlUserNameValue->text();
+    m_MysqlPWD = ui->mysqlPWDValue->text();
 
+    QStringList arg;
+    arg.append(ui->port_qr->text());
+    arg.append(ui->Dir_Store->text());
+    arg.append(ui->AEtitle->text());
+    arg.append(ui->clientPortValue->text());
+    arg.append(m_MysqlServer);
+    arg.append(m_MysqlDbName);
+    arg.append(m_MysqlUserName);
+    arg.append(m_MysqlPWD);
+    if (!m_bstorescp[QUERSCPQ] && m_pQProcess[QUERSCPQ]==NULL)
+    {
+        m_pQProcess[QUERSCPQ] =  new QProcess(this);
+        m_pQProcess[QUERSCPQ]->start(program,arg);
+        m_bstorescp[QUERSCPQ] = true;
+        ui->QRSCP->setText("运行中!");
+        QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
+    }
+    else if( m_pQProcess[QUERSCPQ]!=NULL)
+    {
+        m_pQProcess[QUERSCPQ]->close();
+        delete m_pQProcess[QUERSCPQ];
+        m_pQProcess[QUERSCPQ] = NULL;
+        m_bstorescp[QUERSCPQ] = false;
+        ui->QRSCP->setText("启动");
+        QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
+    }
 }
 
 void HMainWindow::on_Dcm2DB_clicked()

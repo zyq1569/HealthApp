@@ -849,7 +849,7 @@ DIMSE_moveProvider(
         T_DIMSE_C_MoveRQ *request,
         DIMSE_MoveProviderCallback callback, void *callbackData,
         /* blocking info for data set */
-        T_DIMSE_BlockingMode blockMode, int timeout);
+        T_DIMSE_BlockingMode blockMode, int timeout, OFList<OFString> *imagedir = NULL);
 
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendMoveResponse(T_ASC_Association * assoc,
