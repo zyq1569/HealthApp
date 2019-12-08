@@ -99,7 +99,7 @@ public:
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
         T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
-        DcmDataset **responseIdentifiers, OFList<OFString> *imagedir = NULL);
+        DcmDataset **responseIdentifiers, OFList<OFString> *imagedir = NULL, OFList<QueryClientInfo> *queryclient = NULL);
 
     /** set the AEtitle under which this application operates
      *  @param ae AEtitle, is copied into this object.
@@ -128,7 +128,7 @@ private:
 
     void addFailedUIDInstance(const char *sopInstance);
     OFCondition performMoveSubOp(DIC_UI sopClass, DIC_UI sopInstance, char *fname);
-    OFCondition buildSubAssociation(T_DIMSE_C_MoveRQ *request);
+    OFCondition buildSubAssociation(T_DIMSE_C_MoveRQ *request, OFList<QueryClientInfo> *queryclient = NULL);
     OFCondition closeSubAssociation();
     void moveNextImage(DcmQueryRetrieveDatabaseStatus * dbStatus);
     void failAllSubOperations(DcmQueryRetrieveDatabaseStatus * dbStatus);

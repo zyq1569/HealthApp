@@ -37,6 +37,7 @@ HMainWindow::~HMainWindow()
             m_pQProcess[i] = NULL;
         }
     }
+    //QMessageBox::information(this, tr("All program!"), tr("All exit ok!"));
 }
 void HMainWindow::on_StoreSCP_clicked()
 {
@@ -53,7 +54,7 @@ void HMainWindow::on_StoreSCP_clicked()
         m_bstorescp[STORESCPQ] = true;
         ui->StoreSCP->setText("运行中!");
         m_bstorescp[STORESCPQ] = true;
-        QMessageBox::information(this, tr("DicomStore Start!"), tr("run ok!"));
+        //QMessageBox::information(this, tr("DicomStore Start!"), tr("run ok!"));
     }
     else if( m_pQProcess[STORESCPQ]!=NULL)
     {
@@ -62,7 +63,7 @@ void HMainWindow::on_StoreSCP_clicked()
         m_pQProcess[STORESCPQ] = NULL;
         m_bstorescp[STORESCPQ] = false;
         ui->StoreSCP->setText("启动");
-        QMessageBox::information(this, tr("DicomStore Stop!"), tr("close app ok!"));
+        //QMessageBox::information(this, tr("DicomStore Stop!"), tr("close app ok!"));
     }
 }
 
@@ -84,6 +85,7 @@ void HMainWindow::on_QRSCP_clicked()
     arg.append(ui->Dir_Store->text());
     arg.append(ui->AEtitle->text());
     arg.append(ui->clientPortValue->text());
+    arg.append(ui->IpAddressValue->text());
     arg.append(m_MysqlServer);
     arg.append(m_MysqlDbName);
     arg.append(m_MysqlUserName);
@@ -94,7 +96,7 @@ void HMainWindow::on_QRSCP_clicked()
         m_pQProcess[QUERSCPQ]->start(program,arg);
         m_bstorescp[QUERSCPQ] = true;
         ui->QRSCP->setText("运行中!");
-        QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
+        //QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
     }
     else if( m_pQProcess[QUERSCPQ]!=NULL)
     {
@@ -103,7 +105,7 @@ void HMainWindow::on_QRSCP_clicked()
         m_pQProcess[QUERSCPQ] = NULL;
         m_bstorescp[QUERSCPQ] = false;
         ui->QRSCP->setText("启动");
-        QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
+        //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
     }
 }
 
@@ -128,7 +130,7 @@ void HMainWindow::on_Dcm2DB_clicked()
         m_pQProcess[DCM2DBQ]->start(program,arg);
         m_bstorescp[DCM2DBQ] = true;
         ui->Dcm2DB->setText("运行中!");
-        QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
+        //QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
     }
     else if( m_pQProcess[DCM2DBQ]!=NULL)
     {
@@ -137,6 +139,6 @@ void HMainWindow::on_Dcm2DB_clicked()
         m_pQProcess[DCM2DBQ] = NULL;
         m_bstorescp[DCM2DBQ] = false;
         ui->Dcm2DB->setText("启动");
-        QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
+        //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
     }
 }

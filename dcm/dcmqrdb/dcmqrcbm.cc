@@ -154,7 +154,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
     DcmDataset *requestIdentifiers, int responseCount,
     /* out */
     T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
-    DcmDataset **responseIdentifiers,  OFList<OFString> *imagedir)
+    DcmDataset **responseIdentifiers, OFList<OFString> *imagedir, OFList<QueryClientInfo> *queryclient)
 {
     OFCondition cond = EC_Normal;
     OFCondition dbcond = EC_Normal;
@@ -172,7 +172,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
         //}
         //else
         //{
-        dbcond = startMoveRequest(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
+        dbcond = startMoveRequest(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus,imagedir);
         //}
 
         if (dbcond.bad())
@@ -186,7 +186,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
             /* If we are going to be performing sub-operations, build
              * a new association to the move destination.
              */
-            cond = buildSubAssociation(request);
+            cond = buildSubAssociation(request,queryclient);
             if (cond == QR_EC_InvalidPeer)
             {
                 dbStatus.setStatus(STATUS_MOVE_Failed_MoveDestinationUnknown);
@@ -401,12 +401,12 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     return cond;
 }
 
-OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *request)
+OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *request, OFList<QueryClientInfo> *queryclient)
 {
     OFCondition cond = EC_Normal;
     DIC_NODENAME dstHostName;
     DIC_NODENAME dstHostNamePlusPort;
-    int dstPortNumber;
+    int dstPortNumber = 0;
     T_ASC_Parameters *params;
     OFString temp_str;
 
@@ -424,12 +424,39 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     ourAETitle = aeTitle;
 
     ASC_getPresentationAddresses(origAssoc->params, origHostName, NULL);
+
     //get ae ip  port 2019.07.23
-    if (!mapMoveDestination(origHostName, origAETitle,
-        request->MoveDestination, dstHostName, &dstPortNumber))
+    OFString desAE = origAETitle;
+    OFString desHN, desIP;
+    if (queryclient != NULL)
     {
-        return QR_EC_InvalidPeer;
+        OFListIterator(QueryClientInfo) of_iter = queryclient->begin();
+        OFListIterator(QueryClientInfo) of_last = queryclient->end();
+        while (of_iter != of_last)
+        {
+            if (desAE == of_iter->AEtitle)
+            {
+                desHN =  of_iter->HostName;
+                desIP = of_iter->IpAddress;
+                dstPortNumber = of_iter->port;
+                break;
+            }
+            of_iter++;
+        }
     }
+    if (dstPortNumber > 0)
+    {
+        strcpy(dstHostName, desIP.c_str());
+    }
+    else
+    {
+        if (!mapMoveDestination(origHostName, origAETitle,
+            request->MoveDestination, dstHostName, &dstPortNumber))
+        {
+            return QR_EC_InvalidPeer;
+        }
+    }
+
     if (cond.good())
     {
         cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
@@ -440,6 +467,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     }
     if (cond.good())
     {
+        //dstHostName = "192.168.1.102";
         sprintf(dstHostNamePlusPort, "%s:%d", dstHostName, dstPortNumber);
         ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), dstHostNamePlusPort);
         ASC_setAPTitles(params, ourAETitle.c_str(), dstAETitle, NULL);
@@ -643,8 +671,7 @@ void DcmQueryRetrieveMoveContext::buildFailedInstanceList(DcmDataset ** rspIds)
     }
 }
 
-OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
-    const char *origPeer, const char *origAE,
+OFBool DcmQueryRetrieveMoveContext::mapMoveDestination( const char *origPeer, const char *origAE,
     const char *dstAE, char *dstPeer, int *dstPort)
 {
     /*

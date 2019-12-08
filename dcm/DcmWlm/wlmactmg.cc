@@ -50,7 +50,7 @@
 // FindCallback() needs to be global. Function AddStatusDetail() is used in FindCallback() that's why
 // it is also defined as global.
 
-static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ * /*request*/, DcmDataset *requestIdentifiers, int responseCount, T_DIMSE_C_FindRSP *response, DcmDataset **responseIdentifiers, DcmDataset **statusDetail );
+static void FindCallback(void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ * /*request*/, DcmDataset *requestIdentifiers, int responseCount, MySqlInfo *mysql, T_DIMSE_C_FindRSP *response, DcmDataset **responseIdentifiers, DcmDataset **statusDetail);
 // Task         : This function will try to select another record from a database which matches the
 //                search mask that was passed. In certain circumstances, the selected information
 //                will be dumped to stdout.
@@ -772,7 +772,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
   // (this is done within the callback function FindCallback() that will be passed) and send corresponding
   // C-FIND-RSP messages to the other DICOM application this application is connected with. In the end,
   // also send the C-FIND-RSP message that indicates that there are no more search results.
-  OFCondition cond = DIMSE_findProvider( assoc, presID, request, FindCallback, &context, opt_blockMode, opt_dimse_timeout );
+  OFCondition cond = DIMSE_findProvider(assoc, presID, request, FindCallback, &context, opt_blockMode, opt_dimse_timeout);
   if( cond.bad() )
     DCMWLM_ERROR("Find SCP Failed: " << DimseCondition::dump(temp_str, cond));
 
@@ -1000,7 +1000,9 @@ static OFString AddStatusDetail( DcmDataset **statusDetail, const DcmElement *el
 
 // ----------------------------------------------------------------------------
 
-static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ * /*request*/, DcmDataset *requestIdentifiers, int responseCount, T_DIMSE_C_FindRSP *response, DcmDataset **responseIdentifiers, DcmDataset **statusDetail )
+static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ * /*request*/,
+    DcmDataset *requestIdentifiers, int responseCount, MySqlInfo *mysql,
+    T_DIMSE_C_FindRSP *response, DcmDataset **responseIdentifiers, DcmDataset **statusDetail )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : This function will try to select another record from a database which matches the

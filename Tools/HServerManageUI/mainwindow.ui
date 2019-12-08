@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>436</width>
-    <height>424</height>
+    <height>439</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -177,7 +177,7 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>104</string>
+     <string>1668</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_UI">
@@ -278,7 +278,7 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>127.0.0.1</string>
+     <string>192.168.1.102</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="mysqldbNameValue">
@@ -415,7 +415,7 @@
      <rect>
       <x>176</x>
       <y>360</y>
-      <width>51</width>
+      <width>61</width>
       <height>16</height>
      </rect>
     </property>
@@ -437,6 +437,35 @@
     </property>
     <property name="text">
      <string>104</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="IpAddress">
+    <property name="geometry">
+     <rect>
+      <x>9</x>
+      <y>386</y>
+      <width>61</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>IpAddress</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="IpAddressValue">
+    <property name="geometry">
+     <rect>
+      <x>73</x>
+      <y>383</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>127.0.0.1</string>
     </property>
    </widget>
   </widget>
