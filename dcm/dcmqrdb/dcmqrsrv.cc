@@ -37,13 +37,14 @@ static void findCallback(
     void *callbackData,
     OFBool cancelled, T_DIMSE_C_FindRQ *request,
     DcmDataset *requestIdentifiers, int responseCount,
+    MySqlInfo *mysql,
     /* out */
     T_DIMSE_C_FindRSP *response,
     DcmDataset **responseIdentifiers,
     DcmDataset **stDetail)
 {
     DcmQueryRetrieveFindContext *context = OFstatic_cast(DcmQueryRetrieveFindContext *, callbackData);
-    context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, responseIdentifiers, stDetail);
+    context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, mysql,response, responseIdentifiers, stDetail);
 }
 
 
@@ -66,12 +67,14 @@ static void moveCallback(
     void *callbackData,
     OFBool cancelled, T_DIMSE_C_MoveRQ *request,
     DcmDataset *requestIdentifiers, int responseCount,
+    OFList<OFString> *imagedir,
+    OFList<QueryClientInfo>*querylist,
     /* out */
     T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
-    DcmDataset **responseIdentifiers , OFList<OFString> *imagedir)
+    DcmDataset **responseIdentifiers )
 {
     DcmQueryRetrieveMoveContext *context = OFstatic_cast(DcmQueryRetrieveMoveContext *, callbackData);
-    context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers,imagedir);
+    context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers, imagedir, querylist);
 }
 
 
@@ -298,7 +301,7 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
     DCMQRDB_INFO("Received Find SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_findProvider(assoc, presID, request,
-        findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
+        findCallback, &context, options_.blockMode_, options_.dimse_timeout_,&GetMysql());
     if (cond.bad())
     {
         DCMQRDB_ERROR("Find SCP Failed: " << DimseCondition::dump(temp_str, cond));
@@ -346,7 +349,7 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
     DCMQRDB_INFO("Received Move SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
     cond = DIMSE_moveProvider(assoc, presID, request,
-        moveCallback, &context, options_.blockMode_, options_.dimse_timeout_, GetDcmDirList());
+        moveCallback, &context, options_.blockMode_, options_.dimse_timeout_, GetDcmDirList(), GetQueryClientInfoList());
     if (cond.bad())
     {
         DCMQRDB_ERROR("Move SCP Failed: " << DimseCondition::dump(temp_str, cond));

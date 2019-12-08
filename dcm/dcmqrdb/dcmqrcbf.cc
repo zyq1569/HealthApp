@@ -802,7 +802,7 @@ OFString ToSearchName(OFString OrName)
 
 OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     const char   *SOPClassUID, DcmDataset      *findRequestIdentifiers,
-    DcmQueryRetrieveDatabaseStatus  *status)
+    DcmQueryRetrieveDatabaseStatus  *status, MySqlInfo *mysql)
 {
     DB_ElementList *findRequestList = NULL;
     DB_ElementList *findResponseList = NULL;
@@ -1014,10 +1014,20 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     if (pMariaDb == NULL)
     {
         //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
-        strIP = m_config->getSqlServer();
-        strUser = m_config->getSqlusername();
-        strPwd = m_config->getSqlpass();
-        strDadaName = m_config->getSqldbname();
+        if (mysql != NULL)
+        {
+            strIP = mysql->IpAddress;
+            strUser = mysql->SqlUserName;
+            strPwd = mysql->SqlPWD;
+            strDadaName = mysql->SqlName;
+        }
+        else
+        {
+            strIP = m_config->getSqlServer();
+            strUser = m_config->getSqlusername();
+            strPwd = m_config->getSqlpass();
+            strDadaName = m_config->getSqldbname();
+        }
 #ifdef _UNICODE
         pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
             W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
@@ -1142,6 +1152,7 @@ void DcmQueryRetrieveFindContext::callbackHandler(
     /* in */
     OFBool cancelled, T_DIMSE_C_FindRQ *request,
     DcmDataset *requestIdentifiers, int responseCount,
+    MySqlInfo *mysql,
     /* out */
     T_DIMSE_C_FindRSP *response,
     DcmDataset **responseIdentifiers,
@@ -1163,7 +1174,7 @@ void DcmQueryRetrieveFindContext::callbackHandler(
         //    dbcond = dbHandle.startFindRequest(
         //        request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         //}
-        dbcond = startFindRequestFromSql(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
+        dbcond = startFindRequestFromSql(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus, mysql);
         if (dbcond.bad())
         {
             DCMQRDB_ERROR("findSCP: Database: startFindRequest Failed ("

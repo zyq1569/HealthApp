@@ -60,19 +60,21 @@ class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveSCP
 protected:
     OFString m_DcmFileDir[DCMFILEDIRMAX];
     int m_DcmDirSize;
-    struct QueryClientInfo
-    {
-        OFString AEtitle,IpAddress;
-        int port;
-        QueryClientInfo()
-        {
-            AEtitle = IpAddress = "";
-            port = 104;
-        }
-    };
     QueryClientInfo m_QueryClient[DCMQUERYMAX];
     int m_QuerySize;
+    MySqlInfo m_mysql;
 public:
+    MySqlInfo GetMysql()
+    {
+        return m_mysql;
+    }
+    void SetMysql(MySqlInfo *sql)
+    {
+        m_mysql.IpAddress = sql->IpAddress;
+        m_mysql.SqlName = sql->SqlName;
+        m_mysql.SqlUserName = sql->SqlUserName;
+        m_mysql.SqlPWD = sql->SqlPWD;
+    }
     OFString GetDcmDir(int index)
     {
         if (m_DcmDirSize > index && index >= 0 && index < DCMFILEDIRMAX)
@@ -101,6 +103,23 @@ public:
             DcmList.push_back(m_DcmFileDir[i]);
         }
         return &DcmList;
+    }
+    OFList<QueryClientInfo> * GetQueryClientInfoList()
+    {
+        if (m_QuerySize < 1)
+        {
+            return NULL;
+        }
+        static OFList<QueryClientInfo> QueryClientInfoList;
+        if (QueryClientInfoList.size()>0)
+        {
+            return &QueryClientInfoList;
+        }
+        for (int i = 0; i < m_QuerySize; i++)
+        {
+            QueryClientInfoList.push_back(m_QueryClient[i]);
+        }
+        return &QueryClientInfoList;
     }
     void SetDcmDir(int index, OFString dir)
     {
@@ -144,6 +163,13 @@ public:
             m_QueryClient[index].AEtitle   = qc->AEtitle;
             m_QueryClient[index].IpAddress = qc->IpAddress;
             m_QueryClient[index].port      = qc->port;
+        }
+    }
+    void SetQueryClientSize(int size)
+    {
+        if (size > 0 && size < DCMQUERYMAX)
+        {
+            m_QuerySize = size;
         }
     }
 public:

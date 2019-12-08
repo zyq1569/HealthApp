@@ -314,6 +314,26 @@ struct DCMTK_DCMNET_EXPORT T_DIMSE_C_StoreRSP {
 #define O_STORE_RSP_BLANK_PADDING               0x0008
 } ;
 
+/* Query Client*/
+struct DCMTK_DCMNET_EXPORT QueryClientInfo
+{
+    OFString AEtitle, IpAddress, HostName;
+    int port;
+    QueryClientInfo()
+    {
+        AEtitle = IpAddress = HostName = "";
+        port = 104;
+    }
+};
+/* Mysql info*/
+struct DCMTK_DCMNET_EXPORT MySqlInfo
+{
+    OFString  IpAddress, SqlName,SqlUserName,SqlPWD;
+    MySqlInfo()
+    {
+        IpAddress = SqlName = SqlUserName = SqlPWD = "";
+    }
+};
 /* C-ECHO */
 
 struct DCMTK_DCMNET_EXPORT T_DIMSE_C_EchoRQ {
@@ -778,6 +798,7 @@ typedef void (*DIMSE_FindProviderCallback)(
         void *callbackData,
         OFBool cancelled, T_DIMSE_C_FindRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
+        MySqlInfo *mysql,
         /* out */
         T_DIMSE_C_FindRSP *response,
         DcmDataset **responseIdentifiers,
@@ -791,7 +812,7 @@ DIMSE_findProvider(
         T_DIMSE_C_FindRQ *request,
         DIMSE_FindProviderCallback callback, void *callbackData,
         /* blocking info for data set */
-        T_DIMSE_BlockingMode blockMode, int timeout);
+        T_DIMSE_BlockingMode blockMode, int timeout, MySqlInfo *mysql=NULL);
 
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendFindResponse(T_ASC_Association * assoc,
@@ -836,10 +857,11 @@ typedef void (*DIMSE_MoveProviderCallback)(
         void *callbackData,
         OFBool cancelled, T_DIMSE_C_MoveRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
+        OFList<OFString> *imagedir,
+        OFList<QueryClientInfo> *queryclient,
         /* out */
         T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
-        DcmDataset **responseIdentifiers,
-        OFList<OFString> *imagedir);
+        DcmDataset **responseIdentifiers);
 
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_moveProvider(
@@ -849,7 +871,7 @@ DIMSE_moveProvider(
         T_DIMSE_C_MoveRQ *request,
         DIMSE_MoveProviderCallback callback, void *callbackData,
         /* blocking info for data set */
-        T_DIMSE_BlockingMode blockMode, int timeout, OFList<OFString> *imagedir = NULL);
+        T_DIMSE_BlockingMode blockMode, int timeout, OFList<OFString> *imagedir = NULL, OFList<QueryClientInfo> *queryclient = NULL);
 
 DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_sendMoveResponse(T_ASC_Association * assoc,

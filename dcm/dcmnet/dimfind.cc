@@ -346,7 +346,7 @@ OFCondition  DIMSE_findProvider(
         T_ASC_PresentationContextID presIdCmd,
         T_DIMSE_C_FindRQ *request,
         DIMSE_FindProviderCallback callback, void *callbackData,
-        T_DIMSE_BlockingMode blockMode, int timeout)
+        T_DIMSE_BlockingMode blockMode, int timeout, MySqlInfo *mysql)
     /*
      * This function receives a data set which represents the search mask over the network and
      * stores this data in memory. Then, it tries to select corresponding records which match the
@@ -430,7 +430,7 @@ OFCondition  DIMSE_findProvider(
                     if (callback)
                     {
                         callback(callbackData, cancelled, request, reqIds,
-                            responseCount, &rsp, &rspIds, &statusDetail);
+                            responseCount, mysql, &rsp, &rspIds, &statusDetail);
                     }
                     else
                     {

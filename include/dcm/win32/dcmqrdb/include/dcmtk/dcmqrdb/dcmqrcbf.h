@@ -80,6 +80,7 @@ public:
     void callbackHandler(
         OFBool cancelled, T_DIMSE_C_FindRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
+        MySqlInfo *mysql,
         T_DIMSE_C_FindRSP *response,
         DcmDataset **responseIdentifiers,
         DcmDataset **stDetail);
@@ -88,7 +89,7 @@ public:
     OFCondition startFindRequestFromSql(
         const char      *SOPClassUID,
         DcmDataset      *findRequestIdentifiers,
-        DcmQueryRetrieveDatabaseStatus  *status);
+        DcmQueryRetrieveDatabaseStatus  *status, MySqlInfo *mysql = NULL);
 
     //set config;
     void SetDcmQueryRetrieveConfig(const DcmQueryRetrieveConfig* config);

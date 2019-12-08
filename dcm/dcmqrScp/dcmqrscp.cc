@@ -209,7 +209,7 @@ int RunQRSCP(int argc, char *argv[])
     OFLOG_INFO(dcmqrscpLogger, "-----$$------DcmNet dcmstoreqrscp start run!---------$$------------");
     //###################------------------------------------------------------------------
     OFCondition cond = EC_Normal;
-    OFCmdUnsignedInt overridePort = 0;
+    //OFCmdUnsignedInt overridePort = 0;
     OFCmdUnsignedInt overrideMaxPDU = 0;
     DcmQueryRetrieveOptions options;
     DcmAssociationConfiguration asccfg;
@@ -277,9 +277,6 @@ int RunQRSCP(int argc, char *argv[])
         OFLOG_INFO(dcmqrscpLogger, msg);
     }
 
-    if (overridePort > 0)
-        opt_port = overridePort;
-
     options.maxPDU_ = config.getMaxPDUSize();
     if (options.maxPDU_ == 0)
         options.maxPDU_ = ASC_DEFAULTMAXPDU; /* not set, use default */
@@ -316,6 +313,26 @@ int RunQRSCP(int argc, char *argv[])
     DcmQueryRetrieveIndexDatabaseHandleFactory factory(&config);
     DcmQueryRetrieveSCP scp(config, options, factory, asccfg);
     scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
+    if ( imagedir.length() >0 && argc > 5)
+    {
+        scp.SetDcmDirSize(1);
+        scp.SetDcmDir(0, imagedir);
+        QueryClientInfo qc;
+        qc.AEtitle = argv[3];
+        qc.port = atoi(argv[4]);
+        qc.IpAddress = argv[5];
+        scp.SetQueryClientSize(1);
+        scp.SetQueryClient(&qc,0);
+        if (argc > 9)
+        {
+            MySqlInfo sql;
+            sql.IpAddress = argv[6];
+            sql.SqlName = argv[7];
+            sql.SqlUserName = argv[8];
+            sql.SqlPWD = argv[9];
+            scp.SetMysql(&sql);
+        }
+    }
 
     /* loop waiting for associations */
     while (cond.good())
