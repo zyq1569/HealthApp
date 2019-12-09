@@ -1167,7 +1167,7 @@ int main(int argc, char *argv[])
             //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
             g_mySql_IP = dcmconfig.getSqlServer();
             g_mySql_username = dcmconfig.getSqlusername();
-            g_mySql_pwd = dcmconfig.getSqlpass();
+            g_mySql_pwd = dcmconfig.getSqlpwd();
             g_mySql_dbname = dcmconfig.getSqldbname();
         }
         else

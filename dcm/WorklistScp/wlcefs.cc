@@ -57,7 +57,53 @@
 static OFLogger wlmscpfsLogger = OFLog::getLogger("dcmtk.apps.wlmscpfs");
 
 // ----------------------------------------------------------------------------
+void WlmConsoleEngineFileSystem::WlmConsoleMySqlSystem(int argc, char *argv[], const char *applicationName, WlmDataSource *dataSourcev)
+{
+    sprintf(rcsid, "$dcmtk: %s v%s %s $", applicationName, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE);
+    opt_dfPath = ".";
+    OFString s = argv[1];
+    int pos = s.find("fork");
+    if (pos >0 )
+    {
+        opt_port = atoi(argv[2]);
+    }
+    else
+    {
+        opt_port = atoi(argv[1]);
+    }
+    OFString tempstr = "";
+    for (int i = 0; i < argc; i++)
+    {
+        tempstr += argv[i];
+        tempstr += " ";
+    }
+#if defined(HAVE_FORK) || defined(_WIN32)
+    pos = tempstr.find("single-process");
+    if (pos > 0 )
+        opt_singleProcess = OFTrue;
+    pos = tempstr.find("fork");
+    if (pos > 0)
+        opt_singleProcess = OFFalse;
+#ifdef _WIN32
+    pos = tempstr.find("forked-child");
+    if (pos > 0)
+        opt_forkedChild = OFTrue;
+#endif
+#endif
+    // dump application information
+    if (!opt_forkedChild)
+    {
+        /* print resource identifier */
+        OFLOG_DEBUG(wlmscpfsLogger, rcsid << OFendl);
+    }
+    // set general parameters in data source object
+    dataSource->SetNoSequenceExpansion(opt_noSequenceExpansion);
+    dataSource->SetReturnedCharacterSet(opt_returnedCharacterSet);
 
+    // set specific parameters in data source object
+    dataSource->SetDfPath(opt_dfPath);
+    dataSource->SetEnableRejectionOfIncompleteWlFiles(opt_enableRejectionOfIncompleteWlFiles);
+}
 WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem(int argc, char *argv[], const char *applicationName, WlmDataSource *dataSourcev)
 // Date         : December 17, 2001
 // Author       : Thomas Wilkens
@@ -70,7 +116,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem(int argc, char *argv[], c
 //                dataSourcev     - [in] Pointer to the dataSource object.
 // Return Value : none.
 : opt_returnedCharacterSet(RETURN_NO_CHARACTER_SET),
-opt_dfPath(""), opt_port(0), opt_refuseAssociation(OFFalse),
+opt_dfPath(""), opt_port(1666), opt_refuseAssociation(OFFalse),
 opt_rejectWithoutImplementationUID(OFFalse), opt_sleepAfterFind(0), opt_sleepDuringFind(0),
 opt_maxPDU(ASC_DEFAULTMAXPDU), opt_networkTransferSyntax(EXS_Unknown),
 opt_failInvalidQuery(OFTrue), opt_singleProcess(OFTrue),
@@ -79,6 +125,20 @@ opt_enableRejectionOfIncompleteWlFiles(OFTrue), opt_blockMode(DIMSE_BLOCKING),
 opt_dimse_timeout(0), opt_acse_timeout(30), app(NULL), cmd(NULL), command_argc(argc),
 command_argv(argv), dataSource(dataSourcev)
 {
+    OFString str = "";
+    for (int i = 0; i < argc; i++)
+    {
+        str += argv[i];
+        str += " ";
+    }
+    str = OFStandard::toUpper(str);
+    int pos = str.find("APPSTART");
+    if (pos > 0 )
+    {
+        WlmConsoleMySqlSystem(argc, argv, applicationName, dataSourcev);
+        return;
+    }
+     
     //WlmDataSourceFileSystem* WlmDataSourceFile = (WlmDataSourceFileSystem*)dataSourcev;
     //DcmConfigFile config = WlmDataSourceFile->GetDcmConfig();
     // Initialize application identification string.

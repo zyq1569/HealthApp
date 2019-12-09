@@ -357,7 +357,7 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
         {
             strIP = configfile->getSqlServer();
             strUser = configfile->getSqlusername();
-            strPwd = configfile->getSqlpass();
+            strPwd = configfile->getSqlpwd();
             strDadaName = configfile->getSqldbname();
         }
 

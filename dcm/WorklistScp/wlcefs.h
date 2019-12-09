@@ -105,6 +105,13 @@ class WlmConsoleEngineFileSystem
        */
     WlmConsoleEngineFileSystem( int argc, char *argv[], const char *applicationName, WlmDataSource *dataSourcev );
 
+    /** constructor.
+    *  @param argc            Number of arguments that were passed to main.
+    *  @param argv            Arguments that were passed to main.
+    *  @param applicationName The name of this application.
+    *  @param dataSourcev     Object which provides access to the data source.
+    */
+    void  WlmConsoleMySqlSystem( int argc, char *argv[], const char *applicationName, WlmDataSource *dataSourcev);
       /** destructor
        */
     ~WlmConsoleEngineFileSystem();
