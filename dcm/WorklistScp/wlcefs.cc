@@ -78,6 +78,11 @@ void WlmConsoleEngineFileSystem::WlmConsoleMySqlSystem(int argc, char *argv[], c
         tempstr += " ";
     }
 #if defined(HAVE_FORK) || defined(_WIN32)
+    opt_singleProcess = OFFalse;
+#else
+    opt_singleProcess = OFTrue;
+#endif
+#if defined(HAVE_FORK) || defined(_WIN32)
     pos = tempstr.find("single-process");
     if (pos > 0 )
         opt_singleProcess = OFTrue;
