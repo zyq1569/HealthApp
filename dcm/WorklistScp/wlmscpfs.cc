@@ -82,7 +82,7 @@ OFString GetCurrentWorkingDir()
 int main(int argc, char *argv[])
 {
     //--------------------增加日志文件的方式----------------------------------------------------------------
-    const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
+    const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
     OFString tempstr, path = argv[0];
     int pos = 0;
 #ifdef HAVE_WINDOWS_H
@@ -127,19 +127,28 @@ int main(int argc, char *argv[])
     OFLOG_INFO(DCM_dcmwlmLogger, "---------argv[]:" + tempstr + " ----------------------");
 
     static DcmConfigFile config;
-    OFString configdir = currentAppPath + "/config/DcmServerConfig.cfg";;
+    OFString configdir = currentAppPath + "/config/DcmServerConfig.cfg";
+    config.init(configdir.c_str());
     OFString TCPport;
-    if (config.init(configdir.c_str()))
+    TCPport = argv[1];
+    if (argc == 7)
+    {
+        config.setSqlServer(argv[2]);
+        config.setSqldbname(argv[3]);
+        config.setSqlusername(argv[4]);
+        config.setSqlpwd(argv[5]);
+    }
+    if (TCPport == "")
     {
         TCPport = longToString(config.getWorklistScpPort());
-        OFLOG_INFO(DCM_dcmwlmLogger, configdir + "---Load OK!------WorklistScpPort:" + TCPport);
-        OFLOG_INFO(DCM_dcmwlmLogger, "---------DcmConfigFile info:--------------");
-        OFLOG_INFO(DCM_dcmwlmLogger, "   WorklistScpPort:" + TCPport);
-        OFString mysqlserver = config.getSqlServer();
-        OFLOG_INFO(DCM_dcmwlmLogger, "   mysql:" + mysqlserver);
-        OFString mysqldbname = config.getSqldbname();
-        OFLOG_INFO(DCM_dcmwlmLogger, "   mysql dbname:" + mysqldbname);
     }
+    OFLOG_INFO(DCM_dcmwlmLogger, configdir + "---Load OK!------WorklistScpPort:" + TCPport);
+    OFLOG_INFO(DCM_dcmwlmLogger, "---------DcmConfigFile info:--------------");
+    OFLOG_INFO(DCM_dcmwlmLogger, "   WorklistScpPort:" + TCPport);
+    OFString mysqlserver = config.getSqlServer();
+    OFLOG_INFO(DCM_dcmwlmLogger, "   mysql:" + mysqlserver);
+    OFString mysqldbname = config.getSqldbname();
+    OFLOG_INFO(DCM_dcmwlmLogger, "   mysql dbname:" + mysqldbname);
     OFLOG_INFO(DCM_dcmwlmLogger, "-----$$------DcmNet storescp start run!---------$$------------");
     //-----------------------------------------------------------------------------------------------------
     // Initialize object which provides a connection to the data source
@@ -156,10 +165,10 @@ int main(int argc, char *argv[])
     memcpy(parm[2], strtemp.c_str(), strtemp.length());
     // Initialize and provide service. After having terminated free memory.
     WlmConsoleEngineFileSystem *consoleEngine;
-    if (argc< 2)
+    if (argc == 6)
     {
         int count = 3;
-        char *new_argv[3];// = new char*[count];
+        char *new_argv[3];// = new char*[count]; WlmFileSystemInteractionManager
         for (int i = 0; i < count; i++)
         {
             new_argv[i] = parm[i];

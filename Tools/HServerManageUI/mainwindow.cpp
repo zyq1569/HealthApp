@@ -69,7 +69,34 @@ void HMainWindow::on_StoreSCP_clicked()
 
 void HMainWindow::on_WLMSCP_clicked()
 {
+    QString program = m_ExeDir + m_WLMScpName;
+    m_MysqlServer = ui->mysqlServerValue->text();
+    m_MysqlDbName = ui->mysqldbNameValue->text();
+    m_MysqlUserName = ui->mysqlUserNameValue->text();
+    m_MysqlPWD = ui->mysqlPWDValue->text();
 
+    QStringList arg;
+    arg.append(ui->port_wlm->text());
+    arg.append(m_MysqlServer);
+    arg.append(m_MysqlDbName);
+    arg.append(m_MysqlUserName);
+    arg.append(m_MysqlPWD);
+    arg.append("AppStart");// start sigle string
+    if (!m_bstorescp[WLMSCPQ] && m_pQProcess[WLMSCPQ]==NULL)
+    {
+        m_pQProcess[WLMSCPQ] =  new QProcess(this);
+        m_pQProcess[WLMSCPQ]->start(program,arg);
+        m_bstorescp[WLMSCPQ] = true;
+        ui->WLMSCP->setText("运行中!");
+    }
+    else if( m_pQProcess[WLMSCPQ]!=NULL)
+    {
+        m_pQProcess[WLMSCPQ]->close();
+        delete m_pQProcess[WLMSCPQ];
+        m_pQProcess[WLMSCPQ] = NULL;
+        m_bstorescp[WLMSCPQ] = false;
+        ui->WLMSCP->setText("启动");
+    }
 }
 
 void HMainWindow::on_QRSCP_clicked()

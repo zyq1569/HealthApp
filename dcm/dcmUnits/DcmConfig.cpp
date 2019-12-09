@@ -413,7 +413,7 @@ int DcmConfigFile::readConfigLines(FILE *cnffp)
         else if (!strcmp("sqlpass", mnemonic))
         {
             c = parsevalues(&valueptr);
-            m_sqlpass = c;
+            m_sqlpwd = c;
             free(c);
         }
         else if (!strcmp("store_dir_size", mnemonic))
@@ -1365,8 +1365,28 @@ const char *DcmConfigFile::getSqlusername() const
 {
     return m_sqlusername.c_str();
 }
-const char *DcmConfigFile::getSqlpass() const
+const char *DcmConfigFile::getSqlpwd() const
 {
-    return m_sqlpass.c_str();
+    return m_sqlpwd.c_str();
+}
 
+void setSqlServer()
+{
+
+}
+void DcmConfigFile::setSqlServer(const char *server)
+{
+    m_sqlserver = server;
+}
+void DcmConfigFile::setSqldbname(const char *dbname)
+{
+    m_sqldbname = dbname;
+}
+void DcmConfigFile::setSqlusername(const char *username)
+{
+    m_sqlusername = username;
+}
+void DcmConfigFile::setSqlpwd(const char *pwd)
+{
+    m_sqlpwd = pwd;
 }

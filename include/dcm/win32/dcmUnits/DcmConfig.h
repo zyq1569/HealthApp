@@ -198,7 +198,7 @@ public:
         m_sqlserver = "127.0.0.1";
         m_sqldbname = "HIT";
         m_sqlusername = "root";
-        m_sqlpass = "root";
+        m_sqlpwd = "root";
     }
 
     ~DcmConfigFile();
@@ -397,11 +397,16 @@ public:
     const char *getSqlServer() const;
     const char *getSqldbname() const;
     const char *getSqlusername() const;
-    const char *getSqlpass() const;
+    const char *getSqlpwd() const;
     const OFList<OFString> *getStoreDir() const
     {
         return &m_storedir;
     }
+
+    void setSqlServer(const char *server);
+    void setSqldbname(const char *dbname);
+    void setSqlusername(const char *username);
+    void setSqlpwd(const char *pwd);
     //-----------------
 
 private:
@@ -528,7 +533,7 @@ private:
     int maxAssociations_;
     //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
     OFList<OFString> m_storedir;
-    OFString m_sqlserver, m_sqldbname, m_sqlusername, m_sqlpass;//add 20190727
+    OFString m_sqlserver, m_sqldbname, m_sqlusername, m_sqlpwd;//add 20190727
     //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
     int m_StoreScpPort;
     int m_WorklistScpPort;
