@@ -10,8 +10,11 @@ loadTemplate("templates/studyViewer.html", function(element) {
     studyViewerTemplate = element;
 });
 
-var server_json_url = "http://127.0.0.1:8080/";
-var server_wado_url = "wadouri:http://127.0.0.1:8080/WADO?studyuid=";
+var host = window.location.host;
+var server_json_url = "http://" + host + "/";
+// alert(server_json_url);
+var server_wado_url = "wadouri:http://" + host + "/WADO?studyuid=";
+// alert(server_wado_url);
 // Get study list from JSON manifest
 $.getJSON(server_json_url + 'studyList.json', function(data) {
     data.studyList.forEach(function(study) {

@@ -424,7 +424,7 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
     ResultSet * rs = pMariaDb->QueryResult();
     if (rs == NULL)
     {
-        DCMWLM_INFO("No data info in database");
+        DCMWLM_INFO("No data info in database:"+sql);
         return;
     }
     else
@@ -567,6 +567,7 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
             listDataset.push_back(dataset);
             row_index++;
         }
+        DCMWLM_INFO("sql database:" + sql);
     }
 }
 
