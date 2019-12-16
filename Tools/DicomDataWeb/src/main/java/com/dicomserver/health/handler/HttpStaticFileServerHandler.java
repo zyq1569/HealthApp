@@ -5,7 +5,10 @@ package com.dicomserver.health.handler;
 
 import com.dicomserver.health.config.ServerConfig;
 import com.dicomserver.health.dao.StudyDataDao;
+import com.dicomserver.health.dao.UserService;
 import com.dicomserver.health.dao.impl.StudyDataDaoimpl;
+import com.dicomserver.health.dao.impl.UserServiceimp;
+import com.dicomserver.health.entity.LoginUser;
 import com.dicomserver.health.entity.StudyData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,9 +18,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedFile;
 import io.netty.handler.stream.ChunkedNioFile;
+import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.SystemPropertyUtil;
 
@@ -30,6 +36,7 @@ import java.util.regex.Pattern;
 
 
 import static io.netty.handler.codec.http.HttpMethod.GET;
+import static io.netty.handler.codec.http.HttpMethod.POST;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -191,6 +198,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             return null;
         }
     }
+
     public void returnWeb(ChannelHandlerContext ctx, FullHttpRequest request, String path, boolean keepAlive) throws Exception {
         StringBuilder buf = new StringBuilder();
         System.out.println(path);
@@ -223,98 +231,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         this.sendAndCleanupConnection(ctx, response);
     }
 
-    @Override
-    public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
-        this.request = request;
-        boolean bSetFilename = false;
-        if (!request.decoderResult().isSuccess()) {
-            sendError(ctx, BAD_REQUEST);
-            return;
-        }
-
-        if (!GET.equals(request.method())) {
-            this.sendError(ctx, METHOD_NOT_ALLOWED);
-            return;
-        }
-
-        final boolean keepAlive = HttpUtil.isKeepAlive(request);
-        final String uri = request.uri();
-        String path = sanitizeUri(uri);//        final String path = sanitizeUri(uri);
-        if (path == null) {
-            boolean bstuid = false;
-            boolean bseuid = false;
-            boolean bsouid = false;
-            Map<String, Object> map = getParameter(uri);
-            String studyuid = "";
-            String seruid = "";
-            String sopinstanceuid = "";
-            for (String key : map.keySet()) {
-                String value = (String) map.get(key);
-                if (key.equals("studyuid")) {
-                    studyuid = value;
-                    bstuid = true;
-                } else if (key.equals("seriesuid")) {
-                    seruid = value;
-                    bseuid = true;
-                } else if (key.equals("sopinstanceuid")) {
-                    sopinstanceuid = value;
-                    bsouid = true;
-                }
-                System.out.println(key + ":" + value);
-            }
-            if (bstuid && bseuid && bsouid) {
-                //根据请求参数查找请求的dicom
-                String filePath = serverconfig.getString("filePath");
-                path = filePath + File.separator + getDicomPath(studyuid, seruid, sopinstanceuid);
-                bSetFilename = true;
-            } else if (bstuid) {
-                String filePath = serverconfig.getString("filePath");
-                path = filePath + File.separator + getJsonPath(studyuid);
-                //GetJsonData(path);
-                path = path + ".json";
-                bSetFilename = true;
-            }
-            if (path == null) {
-                this.sendError(ctx, FORBIDDEN);
-                return;
-            }
-        }
-
-        //return all study data info
-        if (path.contains("studyList.json")) {
-            //--------------------------
-            String buf = getStudysImageData();
-            //System.out.print(buf);
-            ByteBuf buffer = ctx.alloc().buffer(buf.length());
-            buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
-            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
-            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
-            //ctx.writeAndFlush(response);
-            this.sendAndCleanupConnection(ctx, response);
-            return;
-            //-------------------------
-        }
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        if (uri.contains(".html") || uri.contains(".js") || uri.contains(".css")) {
-        //if (uri.contains(".html") || uri.contains(".js") || uri.contains(".css") ||  uri.contains(".woff") ||  uri.contains(".ttf")||  uri.contains(".otf")||  uri.contains(".eot")) {
-            String htmlname = serverconfig.getString("webdir") + File.separator + uri;
-            path = htmlname;
-            returnWeb(ctx, request, path,keepAlive);
-            return;
-        }
-        if (path.contains(".woff") ||  uri.contains(".ttf")||  uri.contains(".otf")||  uri.contains(".eot")||  uri.contains(".map")){
-            System.out.println("----------------original:"+path);
-            String htmlname = serverconfig.getString("webdir") + File.separator + uri;
-            path = htmlname;
-            int pos = path.indexOf("?v=4.3.0");
-            if (pos > -1){
-                path = path.substring(0,pos);
-            }
-            System.out.println("----------------:"+path);
-        }
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
+    public void SendFileData(ChannelHandlerContext ctx, FullHttpRequest request, String uri, String path, boolean keepAlive,boolean bSetFilename) throws Exception {
         File file = new File(path);
         if (file.isHidden() || !file.exists()) {
             this.sendError(ctx, NOT_FOUND);
@@ -417,6 +334,176 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             // Close the connection when the whole content is written out.
             lastContentFuture.addListener(ChannelFutureListener.CLOSE);
         }
+    }
+    public void LoginHealth(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
+        String path = uri;
+        System.out.println(path);
+        int login = 0;
+        LoginUser user = new LoginUser();
+        if (path.toLowerCase().contains("checkuser")){
+            Map<String, Object> map = getParameter("?" + request.content().toString(CharsetUtil.UTF_8));
+            String userName = "";
+            String password = "";
+            for (String key : map.keySet()) {
+                String value = (String) map.get(key);
+                if (key.equals("user")) {
+                    userName = value;
+                } else if (key.equals("password")) {
+                    password = value;
+                }
+            }
+            UserService uerService = new UserServiceimp();
+            user.setUsername(userName);
+            user.setPassword(password);
+            if(uerService.findUser(user)){//存在这个用户，可以正常访问信息
+                //request.getSession().setAttribute("user", user);
+                //response.sendRedirect("/dicomweb/pages/stuList.jsp");String COOKIE =
+                 request.headers().set(HttpHeaderNames.COOKIE,user);
+                login = 1;
+                path = "D:/code/C++/HealthApp/Tools/PageWeb/view/index.html";
+            }else{//不存在这个用户，给出提示，转回登录页面了
+                String message = "用户名或密码错误";
+                request.headers().set(HttpHeaderNames.COOKIE, message);
+                login = 2;
+                path = "D:/code/C++/HealthApp/Tools/PageWeb/Login/index.html";;
+            }
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append(readToString(path));
+        ByteBuf buffer = ctx.alloc().buffer(buf.length());
+        buffer.writeCharSequence(buf.toString(), CharsetUtil.UTF_8);
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
+        response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
+
+        if (path.endsWith(".html")){
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
+        }else if(path.endsWith(".js")){
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/x-javascript");
+        }else if(path.endsWith(".css")){
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/css; charset=UTF-8");
+        }
+        else if(path.endsWith(".jpg")){
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/x-jpg");
+        }
+        if (login == 1){
+            response.headers().set(HttpHeaderNames.COOKIE,user);
+        }else  {
+            String message = "用户名或密码错误";
+            response.headers().set(HttpHeaderNames.COOKIE,message);
+        }
+        this.sendAndCleanupConnection(ctx, response);
+    }
+
+    @Override
+    public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
+        //String s = (new ServerCookieDecoder).decode(request.headers().get(HttpHeaderNames.COOKIE));
+        //Set<Cookie> s = ServerCookieDecoder.decode(request.headers().get(HttpHeaderNames.COOKIE));
+        System.out.println("COOKIE:"+ request);
+        request.headers().set(HttpHeaderNames.COOKIE,"user");
+        this.request = request;
+        boolean bSetFilename = false;
+        System.out.println("content:"+ request.content().toString(CharsetUtil.UTF_8));
+        System.out.println("request:"+ request);
+
+        if (!request.decoderResult().isSuccess()) {
+            sendError(ctx, BAD_REQUEST);
+            return;
+        }
+
+        if (!GET.equals(request.method()) && !POST.equals(request.method())) {
+            this.sendError(ctx, METHOD_NOT_ALLOWED);
+            return;
+        }
+
+        final boolean keepAlive = HttpUtil.isKeepAlive(request);
+
+        final String uri = request.uri();
+        System.out.println("uri:"+ uri);
+        String path = sanitizeUri(uri);//        final String path = sanitizeUri(uri);
+        if (uri.toUpperCase().contains("/LOGIN"))
+        {
+            path = serverconfig.getString("webdir") + File.separator +uri;
+            if (path.contains(".jpg")){
+                SendFileData(ctx, request,uri, path, keepAlive,true);
+                return;
+            }
+            LoginHealth(ctx, request, path,keepAlive);
+            return ;
+        }
+        if (path == null) {
+            boolean bstuid = false;
+            boolean bseuid = false;
+            boolean bsouid = false;
+            Map<String, Object> map = getParameter(uri);
+            String studyuid = "";
+            String seruid = "";
+            String sopinstanceuid = "";
+            for (String key : map.keySet()) {
+                String value = (String) map.get(key);
+                if (key.equals("studyuid")) {
+                    studyuid = value;
+                    bstuid = true;
+                } else if (key.equals("seriesuid")) {
+                    seruid = value;
+                    bseuid = true;
+                } else if (key.equals("sopinstanceuid")) {
+                    sopinstanceuid = value;
+                    bsouid = true;
+                }
+                System.out.println(key + ":" + value);
+            }
+            if (bstuid && bseuid && bsouid) {
+                //根据请求参数查找请求的dicom
+                String filePath = serverconfig.getString("filePath");
+                path = filePath + File.separator + getDicomPath(studyuid, seruid, sopinstanceuid);
+                bSetFilename = true;
+            } else if (bstuid) {
+                String filePath = serverconfig.getString("filePath");
+                path = filePath + File.separator + getJsonPath(studyuid);
+                //GetJsonData(path);
+                path = path + ".json";
+                bSetFilename = true;
+            }
+            if (path == null) {
+                this.sendError(ctx, FORBIDDEN);
+                return;
+            }
+        }
+
+        //return all study data info
+        if (path.contains("studyList.json")) {
+            //--------------------------
+            String buf = getStudysImageData();
+            //System.out.print(buf);
+            ByteBuf buffer = ctx.alloc().buffer(buf.length());
+            buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
+            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
+            //ctx.writeAndFlush(response);
+            this.sendAndCleanupConnection(ctx, response);
+            return;
+        }
+        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        if (uri.contains(".html") || uri.contains(".js") || uri.contains(".css")) {
+            String htmlname = serverconfig.getString("webdir") + File.separator + "view"+uri;
+            path = htmlname;
+
+            returnWeb(ctx, request, path,keepAlive);
+            return;
+        }
+        if (path.contains(".woff") ||  uri.contains(".ttf")||  uri.contains(".otf")||  uri.contains(".eot")||  uri.contains(".map")){
+            System.out.println("----------------original:"+path);
+            String htmlname = serverconfig.getString("webdir") + File.separator + "view"+ uri;
+            path = htmlname;
+            int pos = path.indexOf("?v=4.3.0");
+            if (pos > -1){
+                path = path.substring(0,pos);
+            }
+            System.out.println("----------------:"+path);
+        }
+        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        SendFileData(ctx, request, uri, path, keepAlive,bSetFilename);
     }
 
 
@@ -668,7 +755,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 //.java	java/*	.jfif	image/jpeg
 //.jpe	image/jpeg	.jpe	application/x-jpe
 //.jpeg	image/jpeg	.jpg	image/jpeg
-//.jpg	application/x-jpg	.js	application/x-javascript
+//.jpg	application/x-jpg
+// .js	application/x-javascript
 //.jsp	text/html	.la1	audio/x-liquid-file
 //.lar	application/x-laplayer-reg	.latex	application/x-latex
 //.lavs	audio/x-liquid-secure	.lbm	application/x-lbm
