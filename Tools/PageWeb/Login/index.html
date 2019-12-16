@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="css/body.css" />
+
+    <meta charset="UTF-8">
+
+    <title>Health Login Form</title>
+
+    <script src="js/prefixfree.min.js"></script>
+
+</head>
+
+<body>
+
+    <div class="body"></div>
+    <div class="grad"></div>
+    <div class="headleft">
+        <div>Health<span>Login</span></div>
+    </div>
+    <br>
+    <div class="login">
+        <input type="text" placeholder="username" name="user" id="user"><br>
+        <input type="password" placeholder="password" name="password" id="password"><br>
+        <input type="button" value="Login" onclick=check()>
+        <script type="text/javascript">
+            function Login() {
+                //var btn = document.getElementsByTagName("button")[0];
+                console.log("事件1");
+                // alert("hello Login");
+                // 异步对象
+                var host = window.location.host;
+
+                // var xhr = new XMLHttpRequest();
+
+                // // 设置属性
+                // xhr.open('post', host + 'login/checkuser');
+                // //xhr.open('post', 'http://localhost/login/checkuser');
+
+                // // 如果想要使用post提交数据,必须添加此行
+                // xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+                // let msg = document.getElementById("user").value + '&' + document.getElementById("password").value;
+                // // alert(msg);
+                // // 将数据通过send方法传递
+                // xhr.send("?user=" + document.getElementById("user").value + '&password=' + document.getElementById("password").value);
+
+                // // 发送并接受返回值
+                // xhr.onreadystatechange = function() {
+                //     // 这步为判断服务器是否正确响应
+                //     if (xhr.readyState == 4 && xhr.status == 200) {
+                //         //alert(xhr.responseText + "client");
+                //         console.log(xhr.responseText);
+                //     }
+                // };
+                $.ajax({
+                    type: "POST",
+                    url: host + '/login/checkuser', //你的请求程序页面随便啦
+                    async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
+                    data: "?user=" + document.getElementById("user").value + '&password=' + document.getElementById("password").value, //请求需要发送的处理数据
+                    success: function(msg) {
+                        if (msg) { //根据返回值进行跳转
+                            //alert(msg + "client");
+                            window.location = 'http://' + host + '/index.html';
+                        }
+                    }
+                });
+            }
+        </script>
+        <script type="text/javascript">
+            function check() {
+                if (document.getElementById("user").value == "") {
+                    alert("没有输入用户名！");
+                    return false;
+                } else if (document.getElementById("password").value == "") {
+                    alert("没有输入密码！");
+                    return false;
+                } else {
+                    //alert(window.location.port);
+                    Login();
+                    return true;
+                }
+            }
+        </script>
+    </div>
+
+    <script src='lib/jquery.js'></script>
+
+</body>
+
+</html>
