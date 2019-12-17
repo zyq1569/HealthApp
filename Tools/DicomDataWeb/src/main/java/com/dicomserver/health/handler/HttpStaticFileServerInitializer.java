@@ -29,6 +29,6 @@ public class HttpStaticFileServerInitializer extends ChannelInitializer<SocketCh
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(new ChunkedWriteHandler());
         pipeline.addLast(new HttpStaticFileServerHandler());
-        pipeline.addLast(new NettyRestFullHandler());
+        //pipeline.addLast(new NettyRestFullHandler());
     }
 }

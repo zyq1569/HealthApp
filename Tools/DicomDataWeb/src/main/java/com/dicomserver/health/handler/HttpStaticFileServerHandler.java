@@ -198,11 +198,11 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public void returnWeb(ChannelHandlerContext ctx, FullHttpRequest request, String path, boolean keepAlive) throws Exception {
         StringBuilder buf = new StringBuilder();
         System.out.println(path);
-        if (path.contains(".woff")){
+        if (path.contains(".woff")) {
             int pos = path.indexOf("?v=4.3.0");
-            path = path.substring(0,pos);
+            path = path.substring(0, pos);
             //path.replace("?v=4.3.0","");
-            System.out.println("new path:"+path);
+            System.out.println("new path:" + path);
         }
         buf.append(readToString(path));
         ByteBuf buffer = ctx.alloc().buffer(buf.length());
@@ -210,24 +210,22 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
         response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
 
-        if (path.endsWith(".html")){
+        if (path.endsWith(".html")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
-        }else if(path.endsWith(".js")){
+        } else if (path.endsWith(".js")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/x-javascript");
-        }else if(path.endsWith(".css")){
+        } else if (path.endsWith(".css")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/css; charset=UTF-8");
-        }
-        else if(path.endsWith(".woff")){
+        } else if (path.endsWith(".woff")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/woff");
-        }
-        else if(path.endsWith(".woff2")){
+        } else if (path.endsWith(".woff2")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/woff2");
         }
 
         this.sendAndCleanupConnection(ctx, response);
     }
 
-    public void SendFileData(ChannelHandlerContext ctx, FullHttpRequest request, String uri, String path, boolean keepAlive,boolean bSetFilename) throws Exception {
+    public void SendFileData(ChannelHandlerContext ctx, FullHttpRequest request, String uri, String path, boolean keepAlive, boolean bSetFilename) throws Exception {
         File file = new File(path);
         if (file.isHidden() || !file.exists()) {
             this.sendError(ctx, NOT_FOUND);
@@ -331,12 +329,13 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             lastContentFuture.addListener(ChannelFutureListener.CLOSE);
         }
     }
+
     public void LoginHealth(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
         String path = uri;
         System.out.println(path);
         int login = 0;
         LoginUser user = new LoginUser();
-        if (path.toLowerCase().contains("checkuser")){
+        if (path.toLowerCase().contains("checkuser")) {
             Map<String, Object> map = getParameter("?" + request.content().toString(CharsetUtil.UTF_8));
             String userName = "";
             String password = "";
@@ -351,34 +350,43 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             UserService uerService = new UserServiceimp();
             user.setUsername(userName);
             user.setPassword(password);
-            if(uerService.findUser(user)){//存在这个用户，可以正常访问信息
-                 request.headers().set(HttpHeaderNames.SET_COOKIE,user);
+            if (uerService.findUser(user)) {//存在这个用户，可以正常访问信息
+                request.headers().set(HttpHeaderNames.SET_COOKIE, user);
                 login = 1;
-                path = serverconfig.getString("webdir")+"/view/imageview.html";
-            }else{//不存在这个用户，给出提示，转回登录页面了
+                path = serverconfig.getString("webdir") + "/view/imageview.html";
+            } else {//不存在这个用户，给出提示，转回登录页面了
                 String message = "用户名或密码错误";
                 request.headers().set(HttpHeaderNames.SET_COOKIE, message);
                 login = 2;
-                path = serverconfig.getString("webdir")+"/Login/index.html";;
+                path = serverconfig.getString("webdir") + "/Login/index.html";
+                ;
             }
 
-            if (login == 1){
+            if (login == 1) {
+                io.netty.handler.codec.http.cookie.DefaultCookie cookie = new io.netty.handler.codec.http.cookie.DefaultCookie("user", user.getUsername());
+                cookie.setPath("/");
+                cookie.setHttpOnly(true);
+                cookie.setSecure(false);
                 String message = "OK";
-                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK,Unpooled.wrappedBuffer(message.getBytes("UTF-8")));
-                response.headers().add(HttpHeaderNames.SET_COOKIE,user);
+                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(message.getBytes("UTF-8")));
+                response.headers().add(HttpHeaderNames.SET_COOKIE, io.netty.handler.codec.http.cookie.ServerCookieEncoder.LAX.encode(cookie));
                 response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain");
                 this.sendAndCleanupConnection(ctx, response);
-            }else  {
+            } else {
                 String message = "用户名或密码错误!";
+                io.netty.handler.codec.http.cookie.DefaultCookie cookie = new io.netty.handler.codec.http.cookie.DefaultCookie("user", message);
+                cookie.setPath("/");
+                //cookie.setHttpOnly(true);
+                cookie.setSecure(false);
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(message.getBytes("UTF-8")));
-                response.headers().add(HttpHeaderNames.SET_COOKIE,message);
+                response.headers().add(HttpHeaderNames.SET_COOKIE, cookie);
                 response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain");
                 this.sendAndCleanupConnection(ctx, response);
             }
 
-        }else {
+        } else {
             StringBuilder buf = new StringBuilder();
             buf.append(readToString(path));
             ByteBuf buffer = ctx.alloc().buffer(buf.length());
@@ -386,14 +394,13 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
             response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
 
-            if (path.endsWith(".html")){
+            if (path.endsWith(".html")) {
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");//.txt	text/plain
-            }else if(path.endsWith(".js")){
+            } else if (path.endsWith(".js")) {
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/x-javascript");
-            }else if(path.endsWith(".css")){
+            } else if (path.endsWith(".css")) {
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/css; charset=UTF-8");
-            }
-            else if(path.endsWith(".jpg")){
+            } else if (path.endsWith(".jpg")) {
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/x-jpg");
             }
             this.sendAndCleanupConnection(ctx, response);
@@ -401,16 +408,37 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
     }
 
+    public boolean CheckCookieLogin(FullHttpRequest request) {
+        String cookiestr = request.headers().get(HttpHeaderNames.COOKIE);
+        System.out.println("------COOKIE str:" + cookiestr);
+        if (cookiestr != null) {
+            Set<io.netty.handler.codec.http.cookie.Cookie> cookies = ServerCookieDecoder.STRICT.decode(cookiestr);
+            if (!cookies.isEmpty()) {
+                for (io.netty.handler.codec.http.cookie.Cookie cookie : cookies) {
+                    if (cookie != null) {
+//                        System.out.println("---cookie.name()---" + cookie.name());
+//                        System.out.println("---cookie.value()---" + cookie.value());
+//                        System.out.println("---cookie.path()---" + cookie.path());
+                        if (cookie.name().equals("user")) {
+                            // todo login check
+                            if (cookie.value() != "") {
+                                System.out.println("---cookie.value()---" + cookie.value());
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
-        System.out.println("------COOKIE str:"+  request.headers().get(HttpHeaderNames.COOKIE));
-        //String s = (new ServerCookieDecoder).decode(request.headers().get(HttpHeaderNames.COOKIE));
-        //Set<Cookie> s = ServerCookieDecoder.decode(request.headers().get(HttpHeaderNames.COOKIE));
         this.request = request;
         boolean bSetFilename = false;
 //        System.out.println("---content:"+ request.content().toString(CharsetUtil.UTF_8));
-//        System.out.println("---request:"+ request);
-
+        System.out.println("---request:"+ request);
         if (!request.decoderResult().isSuccess()) {
             sendError(ctx, BAD_REQUEST);
             return;
@@ -422,19 +450,17 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
 
         final boolean keepAlive = HttpUtil.isKeepAlive(request);
-
         final String uri = request.uri();
-        System.out.println("channelRead0----uri:"+ uri);
+        System.out.println("channelRead0----uri:" + uri);
         String path = sanitizeUri(uri);//        final String path = sanitizeUri(uri);
-        if (uri.toUpperCase().contains("/LOGIN"))
-        {
-            path = serverconfig.getString("webdir") + File.separator +uri;
-            if (path.contains(".jpg")){
-                SendFileData(ctx, request,uri, path, keepAlive,true);
+        if (uri.toUpperCase().contains("/LOGIN")) {
+            path = serverconfig.getString("webdir") + File.separator + uri;
+            if (path.contains(".jpg")) {
+                SendFileData(ctx, request, uri, path, keepAlive, true);
                 return;
             }
-            LoginHealth(ctx, request, path,keepAlive);
-            return ;
+            LoginHealth(ctx, request, path, keepAlive);
+            return;
         }
         if (path == null) {
             boolean bstuid = false;
@@ -491,41 +517,35 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             return;
         }
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        if (uri.toLowerCase().contains("/view")){
-            String cookiestr = request.headers().get(HttpHeaderNames.COOKIE);
-            System.out.println("------COOKIE str:"+ cookiestr);
-            if (cookiestr != null) {
-                Set<io.netty.handler.codec.http.cookie.Cookie> cookies = ServerCookieDecoder.STRICT.decode(cookiestr);
-                if (!cookies.isEmpty()) {
-                    for (io.netty.handler.codec.http.cookie.Cookie cookie : cookies) {
-                        if (cookie != null) {
-                            System.out.print("---cookie.value()---" + cookie.value());
-                            System.out.print("---cookie.name()---" + cookie.name());
-                            System.out.print("---cookie.path()---" + cookie.path());
-                        }
-                    }
+        if (uri.toLowerCase().contains("/view")) {
+            if (uri.toLowerCase().contains("/imageview.html")) {
+                if (!CheckCookieLogin(request)) {
+                    //String webhost = request.headers().get(HttpHeaderNames.REFERER);
+                    String newuri ="http://"+request.headers().get(HttpHeaderNames.HOST) + "/login/login.html";
+                    sendRedirect(ctx, newuri);
+                    return;
                 }
             }
 
             if (uri.contains(".html") || uri.contains(".js") || uri.contains(".css")) {
-                String htmlname = serverconfig.getString("webdir")  + uri;
+                String htmlname = serverconfig.getString("webdir") + uri;
                 path = htmlname;
-                returnWeb(ctx, request, path,keepAlive);
+                returnWeb(ctx, request, path, keepAlive);
                 return;
             }
-            if (path.contains(".woff") ||  uri.contains(".ttf")||  uri.contains(".otf")||  uri.contains(".eot")||  uri.contains(".map")){
+            if (path.contains(".woff") || uri.contains(".ttf") || uri.contains(".otf") || uri.contains(".eot") || uri.contains(".map")) {
 //                System.out.println("----------------original:"+path);
-                String htmlname = serverconfig.getString("webdir")  + uri;
+                String htmlname = serverconfig.getString("webdir") + uri;
                 path = htmlname;
                 int pos = path.indexOf("?v=4.3.0");
-                if (pos > -1){
-                    path = path.substring(0,pos);
+                if (pos > -1) {
+                    path = path.substring(0, pos);
                 }
 //                System.out.println("----------------:"+path);
             }
         }
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        SendFileData(ctx, request, uri, path, keepAlive,bSetFilename);
+        SendFileData(ctx, request, uri, path, keepAlive, bSetFilename);
     }
 
 
