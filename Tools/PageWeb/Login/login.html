@@ -39,8 +39,8 @@
                     async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
                     data: "user=" + document.getElementById("user").value + '&password=' + document.getElementById("password").value, //请求需要发送的处理数据
                     success: function(mess) {
-                        var cook = document.cookie;
-                        alert("cook:" + cook);
+                        //var cook = document.cookie;
+                        //alert("cook:" + cook);
                         //alert(mess);
                         if (mess == "OK") { //根据返回值进行跳转
                             //alert(result.Login + "client");
