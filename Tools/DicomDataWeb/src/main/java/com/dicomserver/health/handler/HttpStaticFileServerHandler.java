@@ -172,6 +172,36 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         return strvalue;
     }
 
+    public String getPatientStudyData() {
+        String strvalue;
+        StudyDataDao studydata = new StudyDataDaoimpl();
+        List<StudyData> list = studydata.getAllStudyImageData();
+        int size = list.size();
+        JsonObject respjson = new JsonObject();
+        JsonArray rarray = new JsonArray();
+        for (StudyData stu : list) {
+            JsonObject robject = new JsonObject();
+            robject.addProperty("patientId", stu.getPatientID());
+            robject.addProperty("patientName", stu.getPatientName());
+            robject.addProperty("studyDate", stu.getStudyDateTime());
+            robject.addProperty("patientSex",stu.getPatientSex());
+            robject.addProperty("modality", stu.getStudyModality());
+            robject.addProperty("studyId", stu.getStudyID());
+            robject.addProperty("patientBirthday", stu.getPatientBirthday());
+            robject.addProperty("studyDescription", stu.getStudyDescription());
+            robject.addProperty("scheduledDateTime", stu.getScheduledDateTime());
+            rarray.add(robject);
+        }
+        respjson.addProperty("code",0);
+        respjson.addProperty("msg","");
+        respjson.addProperty("count",size);
+        respjson.add("data", rarray);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //System.out.println( gson.toJson(respjson));
+        strvalue = gson.toJson(respjson);
+        return strvalue;
+    }
+
     public String readToString(String fileName) {
         String encoding = "UTF-8";
         File file = new File(fileName);
@@ -354,7 +384,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 request.headers().set(HttpHeaderNames.SET_COOKIE, user);
                 login = 1;
                 path = serverconfig.getString("webdir") + "/view/imageview.html";
-            } else {//不存在这个用户，给出提示，转回登录页面了
+            } else {//不存在这个用户，给出提示
                 String message = "用户名或密码错误";
                 request.headers().set(HttpHeaderNames.SET_COOKIE, message);
                 login = 2;
@@ -408,6 +438,15 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
     }
 
+    public void HealthSystem(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
+        String buf = getPatientStudyData();
+        ByteBuf buffer = ctx.alloc().buffer(buf.length());
+        buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
+        response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
+        this.sendAndCleanupConnection(ctx, response);
+    }
     public boolean CheckCookieLogin(FullHttpRequest request) {
         String cookiestr = request.headers().get(HttpHeaderNames.COOKIE);
         System.out.println("------COOKIE str:" + cookiestr);
@@ -453,6 +492,10 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         final String uri = request.uri();
         System.out.println("channelRead0----uri:" + uri);
         String path = sanitizeUri(uri);//        final String path = sanitizeUri(uri);
+        if (uri.toLowerCase().contains("/healthsystem")) {
+            HealthSystem(ctx, request, path, keepAlive);
+            return;
+        }
         if (uri.toUpperCase().contains("/LOGIN")) {
             path = serverconfig.getString("webdir") + File.separator + uri;
             if (path.contains(".jpg")) {
@@ -504,15 +547,12 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
         //return all study data info
         if (path.contains("studyList.json")) {
-            //--------------------------
             String buf = getStudysImageData();
-            //System.out.print(buf);
             ByteBuf buffer = ctx.alloc().buffer(buf.length());
             buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
             FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
             response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
-            //ctx.writeAndFlush(response);
             this.sendAndCleanupConnection(ctx, response);
             return;
         }
