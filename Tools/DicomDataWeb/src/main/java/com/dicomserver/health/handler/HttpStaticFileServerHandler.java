@@ -15,18 +15,27 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedFile;
+import io.netty.util.ByteProcessor;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.SystemPropertyUtil;
 
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
+import java.nio.channels.GatheringByteChannel;
+import java.nio.channels.ScatteringByteChannel;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -184,7 +193,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             robject.addProperty("patientId", stu.getPatientID());
             robject.addProperty("patientName", stu.getPatientName());
             robject.addProperty("studyDate", stu.getStudyDateTime());
-            robject.addProperty("patientSex",stu.getPatientSex());
+            robject.addProperty("patientSex", stu.getPatientSex());
             robject.addProperty("modality", stu.getStudyModality());
             robject.addProperty("studyId", stu.getStudyID());
             robject.addProperty("patientBirthday", stu.getPatientBirthday());
@@ -192,9 +201,9 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             robject.addProperty("scheduledDateTime", stu.getScheduledDateTime());
             rarray.add(robject);
         }
-        respjson.addProperty("code",0);
-        respjson.addProperty("msg","");
-        respjson.addProperty("count",size);
+        respjson.addProperty("code", 0);
+        respjson.addProperty("msg", "");
+        respjson.addProperty("count", size);
         respjson.add("data", rarray);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         //System.out.println( gson.toJson(respjson));
@@ -224,22 +233,45 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             return null;
         }
     }
-
-    public void returnWeb(ChannelHandlerContext ctx, FullHttpRequest request, String path, boolean keepAlive) throws Exception {
-        StringBuilder buf = new StringBuilder();
-        System.out.println(path);
-        if (path.contains(".woff")) {
-            int pos = path.indexOf("?v=4.3.0");
-            path = path.substring(0, pos);
-            //path.replace("?v=4.3.0","");
-            System.out.println("new path:" + path);
+    public byte[] readToByte(String fileName) {
+        File file = new File(fileName);
+        Long filelength = file.length();
+        byte[] filecontent = new byte[filelength.intValue()];
+        try {
+            FileInputStream in = new FileInputStream(file);
+            in.read(filecontent);
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        buf.append(readToString(path));
-        ByteBuf buffer = ctx.alloc().buffer(buf.length());
-        buffer.writeCharSequence(buf.toString(), CharsetUtil.UTF_8);
+        return filecontent;
+    }
+    public void returnWeb(ChannelHandlerContext ctx, FullHttpRequest request, String path, boolean keepAlive) throws Exception {
+        int pos = path.indexOf("?v=");
+        if (pos > 0){
+            path = path.substring(0, pos);
+            SendFileData(ctx,request,path,path,keepAlive,true);
+            return;
+        }
+        File file = new File(path);
+        Long filelength = file.length();
+        byte[] filecontent = new byte[filelength.intValue()];
+        try {
+            FileInputStream in = new FileInputStream(file);
+            in.read(filecontent);
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ByteBuf buffer = ctx.alloc().buffer(Math.toIntExact(filelength));
+        buffer.writeBytes(filecontent);
         FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
         response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
-
+        ///
         if (path.endsWith(".html")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
         } else if (path.endsWith(".js")) {
@@ -250,8 +282,9 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/woff");
         } else if (path.endsWith(".woff2")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/woff2");
+        }else if (path.endsWith(".jpg")) {
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/x-jpg");
         }
-
         this.sendAndCleanupConnection(ctx, response);
     }
 
@@ -389,7 +422,6 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 request.headers().set(HttpHeaderNames.SET_COOKIE, message);
                 login = 2;
                 path = serverconfig.getString("webdir") + "/Login/index.html";
-                ;
             }
 
             if (login == 1) {
@@ -439,6 +471,11 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     }
 
     public void HealthSystem(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
+        if (!uri.toLowerCase().contains("/stduydata/")) {
+            String path = serverconfig.getString("webdir") + uri;
+            returnWeb(ctx,request,path,keepAlive);
+            return;
+        }
         String buf = getPatientStudyData();
         ByteBuf buffer = ctx.alloc().buffer(buf.length());
         buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
@@ -447,6 +484,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
         this.sendAndCleanupConnection(ctx, response);
     }
+
     public boolean CheckCookieLogin(FullHttpRequest request) {
         String cookiestr = request.headers().get(HttpHeaderNames.COOKIE);
         System.out.println("------COOKIE str:" + cookiestr);
@@ -477,7 +515,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         this.request = request;
         boolean bSetFilename = false;
 //        System.out.println("---content:"+ request.content().toString(CharsetUtil.UTF_8));
-        System.out.println("---request:"+ request);
+        System.out.println("---request:" + request);
         if (!request.decoderResult().isSuccess()) {
             sendError(ctx, BAD_REQUEST);
             return;
@@ -493,7 +531,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         System.out.println("channelRead0----uri:" + uri);
         String path = sanitizeUri(uri);//        final String path = sanitizeUri(uri);
         if (uri.toLowerCase().contains("/healthsystem")) {
-            HealthSystem(ctx, request, path, keepAlive);
+//            System.out.println("---->HealthSystem----uri:" + uri);
+            HealthSystem(ctx, request, uri, keepAlive);
             return;
         }
         if (uri.toUpperCase().contains("/LOGIN")) {
@@ -561,7 +600,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             if (uri.toLowerCase().contains("/imageview.html")) {
                 if (!CheckCookieLogin(request)) {
                     //String webhost = request.headers().get(HttpHeaderNames.REFERER);
-                    String newuri ="http://"+request.headers().get(HttpHeaderNames.HOST) + "/login/login.html";
+                    String newuri = "http://" + request.headers().get(HttpHeaderNames.HOST) + "/login/login.html";
                     sendRedirect(ctx, newuri);
                     return;
                 }
@@ -574,17 +613,20 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 return;
             }
             if (path.contains(".woff") || uri.contains(".ttf") || uri.contains(".otf") || uri.contains(".eot") || uri.contains(".map")) {
-//                System.out.println("----------------original:"+path);
                 String htmlname = serverconfig.getString("webdir") + uri;
                 path = htmlname;
-                int pos = path.indexOf("?v=4.3.0");
+                int pos = path.indexOf("?v=");
                 if (pos > -1) {
                     path = path.substring(0, pos);
                 }
-//                System.out.println("----------------:"+path);
             }
         }
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        if (path.contains("favicon.ico")){
+            this.sendError(ctx, NOT_FOUND);
+            System.out.println("not found:" + path);
+            return;
+        }
         SendFileData(ctx, request, uri, path, keepAlive, bSetFilename);
     }
 
