@@ -249,11 +249,18 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         return filecontent;
     }
     public void returnWeb(ChannelHandlerContext ctx, FullHttpRequest request, String path, boolean keepAlive) throws Exception {
+        // to do :Optimize the code
+        if (!path.contains(".css")){
+            int pos = path.indexOf("?v=");
+            if (pos > 0) {
+                path = path.substring(0, pos);
+                SendFileData(ctx,request,path,path,keepAlive,true);
+                return;
+            }
+        }
         int pos = path.indexOf("?v=");
-        if (pos > 0){
+        if (pos > 0) {
             path = path.substring(0, pos);
-            SendFileData(ctx,request,path,path,keepAlive,true);
-            return;
         }
         File file = new File(path);
         Long filelength = file.length();
@@ -277,7 +284,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         } else if (path.endsWith(".js")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/x-javascript");
         } else if (path.endsWith(".css")) {
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/css; charset=UTF-8");
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/css");//text/css
         } else if (path.endsWith(".woff")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/woff");
         } else if (path.endsWith(".woff2")) {
