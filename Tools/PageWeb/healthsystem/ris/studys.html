@@ -37,18 +37,18 @@
         });
     </script>
 
-    <table class="layui-hide" id="studytable" lay-filter="test"></table>
+    <table class="layui-hide" id="studytable" lay-filter="studytabledatas"></table>
     <div class="layui-inline">
         StduyDateFrom:
     </div>
     <div class="layui-inline">
-        <input type="text" class="layui-input" id="stduystart" placeholder="yyyy-MM-dd">
+        <input type="text" class="layui-input" id="stduystart" placeholder="yyyyMMdd">
     </div>
     <div class="layui-inline">
         StduyDateEnd:
     </div>
     <div class="layui-inline">
-        <input type="text" class="layui-input" id="stduyend" placeholder="yyyy-MM-dd">
+        <input type="text" class="layui-input" id="stduyend" placeholder="yyyyMMdd">
     </div>
 
     <script type="text/html" id="barDemo">
@@ -70,7 +70,7 @@
             <div class="layui-tab-item layui-show">
                 <div class="layui-carousel" id="test1">
                     <div carousel-item>
-                        <div>
+                        <!-- <div>
                             <p class="layui-bg-green demo-carousel">1</p>
                         </div>
                         <div>
@@ -84,7 +84,7 @@
                         </div>
                         <div>
                             <p class="layui-bg-cyan demo-carousel">你可以将鼠标移入导航区域，然后滑动鼠标滚轮即可</p>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -149,10 +149,14 @@
                 height: 650,
                 url: window.location.host + '/healthsystem/ris/stduydata/?start=20190101&end=20191219', //数据接口 http://127.0.0.1:80/
                 //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
-                title: '用户表',
+                title: 'patients',
                 page: true, //开启分页
                 toolbar: 'default', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
                 totalRow: true, //开启合计行
+                loading: true,
+                //skin: 'row' ,
+                limits: [20, 40, 60, 80, 100],
+                limit: 20,
                 cols: [
                     [ //表头
                         {
@@ -173,12 +177,12 @@
                             field: 'studyDate',
                             title: 'studyDate',
                             sort: true,
-                            totalRow: true
+                            totalRow: false
                         }, {
                             field: 'patientSex',
                             title: 'patientSex',
                             width: 100,
-                            sort: true
+                            sort: false
                         }, {
                             field: 'modality',
                             title: 'modality',
@@ -211,13 +215,20 @@
             });
 
             //监听头工具栏事件
-            table.on('toolbar(test)', function(obj) {
+            table.on('toolbar(studytabledatas)', function(obj) {
                 var checkStatus = table.checkStatus(obj.config.id),
                     data = checkStatus.data; //获取选中的数据
                 switch (obj.event) {
                     case 'add':
-                        layer.msg('添加');
-                        break;
+                        {
+                            //layer.msg('--添加---');
+                            layer.open({
+                                area: ['500px', '300px'],
+                                type: 2,
+                                content: ['https://cn.bing.com', 'no']
+                            });
+                            break;
+                        }
                     case 'update':
                         if (data.length === 0) {
                             layer.msg('请选择一行');
@@ -234,16 +245,28 @@
                             layer.msg('删除');
                         }
                         break;
+                    case 'getCheckData':
+                        {
+                            var data = checkStatus.data;
+                            layer.alert(JSON.stringify(data));
+                        }
+                        break;
+                    case 'detail':
+                        {
+                            layer.msg('查看操作');
+                        }
+                        break;
+
                 };
             });
 
-            //监听行工具事件
-            table.on('tool(test)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
-                var data = obj.data //获得当前行数据
-                    ,
+            //监听行工具事件 
+            table.on('tool(studytabledatas)', function(obj) {
+                var data = obj.data, //获得当前行数据
                     layEvent = obj.event; //获得 lay-event 对应的值
                 if (layEvent === 'detail') {
-                    layer.msg('查看操作');
+                    //layer.msg('查看操作');
+                    layer.alert('detail： rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(obj.data));
                 } else if (layEvent === 'del') {
                     layer.confirm('真的删除行么', function(index) {
                         obj.del(); //删除对应行（tr）的DOM结构
@@ -252,7 +275,21 @@
                     });
                 } else if (layEvent === 'edit') {
                     layer.msg('编辑操作');
+                } else if (layEvent === 'getCheckData') {
+                    layer.msg('选中事件');
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
                 }
+            });
+            //监听表格行点击
+            // table.on('row(studytabledatas)', function(obj){
+            //     console.log(obj)
+            //     layer.alert('row rowIndex:'+ obj.tr[0].rowIndex +' 选中数据:'+JSON.stringify(obj.data));
+            //  });
+            //监听表格行双击
+            table.on('rowDouble(studytabledatas)', function(obj) {
+                console.log(obj)
+                layer.alert('rowDouble rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(obj.data));
             });
             //上传
             upload.render({
@@ -263,16 +300,6 @@
                     console.log(res)
                 }
             });
-            // //滑块
-            // var sliderInst = slider.render({
-            //   elem: '#sliderDemo'
-            //   ,input: true //输入框
-            // });
-
-            //底部信息
-            // var footerTpl = lay('#footer')[0].innerHTML;
-            // lay('#footer').html(layui.laytpl(footerTpl).render({}))
-            // .removeClass('layui-hide');
         });
     </script>
 </body>
