@@ -34,108 +34,200 @@
                 elem: '#stduyend', //指定元素
                 calendar: true
             });
+            laydate.render({
+                elem: '#birthdate', //指定元素
+                calendar: true
+            });
+            laydate.render({
+                elem: '#ScheduledDate', //指定元素
+                calendar: true
+            });
         });
     </script>
-
-    <table class="layui-hide" id="studytable" lay-filter="studytabledatas"></table>
-    <div class="layui-inline">
-        StduyDateFrom:
-    </div>
-    <div class="layui-inline">
-        <input type="text" class="layui-input" id="stduystart" placeholder="yyyyMMdd">
-    </div>
-    <div class="layui-inline">
-        StduyDateEnd:
-    </div>
-    <div class="layui-inline">
-        <input type="text" class="layui-input" id="stduyend" placeholder="yyyyMMdd">
-    </div>
-
-    <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    </script>
-
-    <div class="layui-tab layui-tab-brief" lay-filter="demo">
-
+    <div class="layui-tab layui-tab-brief" lay-filter="TabBrief">
         <ul class="layui-tab-title">
-            <li class="layui-this">studys</li>
-            <li>日期</li>
-            <li>分页</li>
-            <li>上传</li>
-            <li>滑块</li>
+            <li class="layui-this">Patients</li>
+            <li>Add/Edit</li>
+            <li>Tool</li>
+            <li>Updown</li>
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
-                <div class="layui-carousel" id="test1">
-                    <div carousel-item>
-                        <!-- <div>
-                            <p class="layui-bg-green demo-carousel">1</p>
+                <!-- patients datas table start -->
+                <table class="layui-hide" id="studytable" lay-filter="studytabledatas"></table>
+                <div class="layui-inline">
+                    StduyDateFrom:
+                </div>
+                <div class="layui-inline">
+                    <input type="text" class="layui-input" id="stduystart" placeholder="yyyyMMdd">
+                </div>
+                <div class="layui-inline">
+                    StduyDateEnd:
+                </div>
+                <div class="layui-inline">
+                    <input type="text" class="layui-input" id="stduyend" placeholder="yyyyMMdd">
+                </div>
+                <!-- end patients datas table  -->
+            </div>
+            <!-- $$$$$$$$$$$$$$$$$$$$$$$$  form  add / edit patients datas start $$$$$$$$$$$$$$$$$$$$$$$$$$-->
+            <div class="layui-tab-item">
+                <form class="layui-form layui-form-pane1" action="" lay-filter="first">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">PatientName:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="PatientName" lay-verify="required|title" lay-reqText="PatientName不能为空" required placeholder="name" autocomplete="off" class="layui-input">
                         </div>
-                        <div>
-                            <p class="layui-bg-red demo-carousel">2</p>
-                        </div>
-                        <div>
-                            <p class="layui-bg-blue demo-carousel">3</p>
-                        </div>
-                        <div>
-                            <p class="layui-bg-orange demo-carousel">如果最左侧的导航的高度超出了你的屏幕</p>
-                        </div>
-                        <div>
-                            <p class="layui-bg-cyan demo-carousel">你可以将鼠标移入导航区域，然后滑动鼠标滚轮即可</p>
+                        <!--<label class="layui-form-label">PatientSex:</label>
+                         <div class="layui-input-block">
+                            <input type="radio" name="sex" value="男" title="男" checked>
+                            <input type="radio" name="sex" value="女" title="女">
+                            <input type="radio" name="sex" value="其他" title="其他" disabled>
                         </div> -->
                     </div>
+                    <div class="layui-form-item" pane>
+                        <label class="layui-form-label">PatientSex:</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="PatientSex" value="男" title="男" checked>
+                            <input type="radio" name="PatientSex" value="女" title="女">
+                            <input type="radio" name="PatientSex" value="其他" title="其他" disabled>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">PatientBirth:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="PatientBirthday" id="birthdate" lay-verify="date" placeholder="yyyyMMdd" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">phone:</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" name="phone" lay-verify="required|number" lay-verType="tips" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">Email:</label>
+                        <div class="layui-input-inline">
+                            <input type="email" name="email" lay-verify="email" lay-verType="alert" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">PatientCarID:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="PatientCarID" lay-verify="required|title" lay-reqText="PatientCarID标题不能为空" required placeholder="CarID" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">PatientAddr:</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="PatientAddr" lay-verify="required|title" lay-reqText="PatientAddr不能为空" required placeholder="PatientAddr" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">Cost:</label>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <input type="text" name="Cost" placeholder="￥" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">StudyContent:</label>
+                            <div class="layui-input-block">
+                                <select name="StudyContent" lay-filter="quiz">
+                                        <option value="">SelectDepartments </option>
+                                        <optgroup label="RIS">
+                                          <option value="10">普放科</option>
+                                          <option value="11">核医学</option>
+                                        </optgroup>
+                                        <optgroup label="US">
+                                          <option value="20">心脏科</option>
+                                          <option value="21">彩超科</option>
+                                        </optgroup>
+                                        <optgroup label="ES">
+                                        <option value="30">肠镜科</option>
+                                        <option value="31">胃镜科</option>
+                                        </optgroup>
+                                      </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">StudyModality:</label>
+                            <div class="layui-input-block">
+                                <select name="StudyModality" lay-verify="required" lay-verType="tips">
+                                    <option value="">Select study modality</option>
+                                    <option value="0">CT</option>
+                                    <option value="1">MR</option>
+                                    <option value="2">DR</option>
+                                    <option value="3">CR</option>
+                                    <option value="4">RF</option>
+                                    <option value="5">DX</option>
+                                    <option value="6">PET</option>
+                                    <option value="6">US</option>
+                                    <option value="7">ES</option>
+                                  </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">ScheduledDate:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="ScheduledDate" id="ScheduledDate" lay-verify="date" placeholder="yyyyMMdd" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">CostType</label>
+                        <div class="layui-input-inline">
+                            <select name="CostType" lay-filter="interest">
+                                  <option value=""></option>
+                                  <option value="0">自费</option>
+                                  <option value="1">公费</option>
+                                  <option value="2">半公费</option>
+                                  <option value="3">其它</option>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">请填写检查描述</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="检查描述" class="layui-textarea" name="StudyDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$ end form $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$----- -->
+            <div class="layui-tab-item ">Tools</div>
+            <div class="layui-tab-item ">
+                upload file to server
+                <div class="layui-inline ">
+                    <input type="text " class="layui-input " id="uploadDemo ">
                 </div>
             </div>
-            <div class="layui-tab-item">
-                <div id="laydateDemo"></div>
-            </div>
-            <div class="layui-tab-item">
-                <div id="pageDemo"></div>
-            </div>
-            <div class="layui-tab-item">
-                <div class="layui-upload-drag" id="uploadDemo">
-                    <i class="layui-icon"></i>
-                    <p>点击上传，或将文件拖拽到此处</p>
-                </div>
-            </div>
-            <div class="layui-tab-item">
-                <div id="sliderDemo" style="margin: 50px 20px;"></div>
-            </div>
         </div>
+        <div class="layui-tab-content "></div>
     </div>
-    <div class="layui-tab-content">
-        <div class="layui-tab-item layui-show">
-        </div>
-        <div class="layui-tab-item">
-            <div id="laydateDemo"></div>
-        </div>
-        <div class="layui-tab-item">
-            <div id="pageDemo"></div>
-        </div>
-        <div class="layui-tab-item">
-            <div class="layui-upload-drag" id="uploadDemo">
-                <i class="layui-icon"></i>
-                <p>点击上传，或将文件拖拽到此处</p>
-            </div>
-        </div>
-        <!-- <div class="layui-tab-item">
-      <div id="sliderDemo" style="margin: 50px 20px;"></div>
-    </div> -->
-    </div>
-    </div>
+
+    <script type="text/html " id="barDemo ">
+        <a class="layui-btn layui-btn-primary layui-btn-xs " lay-event="detail ">查看</a>
+        <a class="layui-btn layui-btn-xs " lay-event="edit ">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs " lay-event="del ">删除</a>
+    </script>
 
     <script>
         layui.use(['laypage', 'table', 'element', 'upload'], function() {
             var laypage = layui.laypage, //分页
                 table = layui.table, //表格
                 element = layui.element, //元素操作
-                upload = layui.upload //上传
+                upload = layui.upload; //上传
             layer.msg('show patients study datas');
 
             //监听Tab切换
-            element.on('tab(studytable)', function(data) {
+            element.on('tab(TabBrief)', function(data) {
                 layer.tips('切换了 ' + data.index + '：' + this.innerHTML, this, {
                     tips: 1
                 });
@@ -245,18 +337,6 @@
                             layer.msg('删除');
                         }
                         break;
-                    case 'getCheckData':
-                        {
-                            var data = checkStatus.data;
-                            layer.alert(JSON.stringify(data));
-                        }
-                        break;
-                    case 'detail':
-                        {
-                            layer.msg('查看操作');
-                        }
-                        break;
-
                 };
             });
 
@@ -275,10 +355,6 @@
                     });
                 } else if (layEvent === 'edit') {
                     layer.msg('编辑操作');
-                } else if (layEvent === 'getCheckData') {
-                    layer.msg('选中事件');
-                    var data = checkStatus.data;
-                    layer.alert(JSON.stringify(data));
                 }
             });
             //监听表格行点击
