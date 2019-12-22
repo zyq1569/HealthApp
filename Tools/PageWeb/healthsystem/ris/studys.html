@@ -42,14 +42,21 @@
                 elem: '#ScheduledDate', //指定元素
                 calendar: true
             });
+            //监听提交
+            form.on('submit(*)', function(data) {
+                console.log(data)
+                alert(JSON.stringify(data.field));
+                return false;
+            });
         });
     </script>
+
     <div class="layui-tab layui-tab-brief" lay-filter="TabBrief">
         <ul class="layui-tab-title">
-            <li class="layui-this">Patients</li>
-            <li>Add/Edit</li>
-            <li>Tool</li>
-            <li>Updown</li>
+            <li class="layui-this" lay-id='layid_patients'>Patients</li>
+            <li lay-id='layid_addedit'>Add/Edit</li>
+            <li lay-id='layid_tool'>Tool</li>
+            <li lay-id='layid_updown'>Updown</li>
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
@@ -77,17 +84,11 @@
                         <div class="layui-input-inline">
                             <input type="text" name="PatientName" lay-verify="required|title" lay-reqText="PatientName不能为空" required placeholder="name" autocomplete="off" class="layui-input">
                         </div>
-                        <!--<label class="layui-form-label">PatientSex:</label>
-                         <div class="layui-input-block">
-                            <input type="radio" name="sex" value="男" title="男" checked>
-                            <input type="radio" name="sex" value="女" title="女">
-                            <input type="radio" name="sex" value="其他" title="其他" disabled>
-                        </div> -->
                     </div>
                     <div class="layui-form-item" pane>
                         <label class="layui-form-label">PatientSex:</label>
                         <div class="layui-input-block">
-                            <input type="radio" name="PatientSex" value="男" title="男" checked>
+                            <input type="radio" name="PatientSex" value="man" title="man" checked>
                             <input type="radio" name="PatientSex" value="女" title="女">
                             <input type="radio" name="PatientSex" value="其他" title="其他" disabled>
                         </div>
@@ -196,6 +197,9 @@
                         <div class="layui-input-block">
                             <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
                             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            <button class="layui-btn" onclick="layui.element.tabChange('TabBrief', 'layid_patients')">
+                            return patients
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -211,13 +215,6 @@
         </div>
         <div class="layui-tab-content "></div>
     </div>
-
-    <script type="text/html " id="barDemo ">
-        <a class="layui-btn layui-btn-primary layui-btn-xs " lay-event="detail ">查看</a>
-        <a class="layui-btn layui-btn-xs " lay-event="edit ">编辑</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs " lay-event="del ">删除</a>
-    </script>
-
     <script>
         layui.use(['laypage', 'table', 'element', 'upload'], function() {
             var laypage = layui.laypage, //分页
@@ -228,9 +225,9 @@
 
             //监听Tab切换
             element.on('tab(TabBrief)', function(data) {
-                layer.tips('切换了 ' + data.index + '：' + this.innerHTML, this, {
-                    tips: 1
-                });
+                // layer.tips('切换了 ' + data.index + '：' + this.innerHTML, this, {
+                //     tips: 1
+                // });
             });
             // var myDate = new Date();
             // var mytime = myDate.toLocaleTimeString();
@@ -298,9 +295,21 @@
                             sort: true,
                             totalRow: true
                         }, {
+                            field: 'studyuid',
+                            title: 'studyuid',
+                            sort: true,
+                            hide: true,
+                            totalRow: true
+                        }, {
+                            field: 'studystate',
+                            title: 'studystate',
+                            sort: true,
+                            hide: true,
+                            totalRow: true
+                        }, {
                             fixed: 'right',
                             align: 'center',
-                            toolbar: '#barDemo'
+                            toolbar: '#table_row_btns'
                         }
                     ]
                 ]
@@ -313,12 +322,7 @@
                 switch (obj.event) {
                     case 'add':
                         {
-                            //layer.msg('--添加---');
-                            layer.open({
-                                area: ['500px', '300px'],
-                                type: 2,
-                                content: ['https://cn.bing.com', 'no']
-                            });
+                            element.tabChange('TabBrief', 'layid_addedit');
                             break;
                         }
                     case 'update':
@@ -354,7 +358,8 @@
                         //向服务端发送删除指令
                     });
                 } else if (layEvent === 'edit') {
-                    layer.msg('编辑操作');
+                    element.tabChange('TabBrief', 'layid_addedit');
+                    //layer.msg('编辑操作');
                 }
             });
             //监听表格行点击
@@ -370,13 +375,20 @@
             //上传
             upload.render({
                 elem: '#uploadDemo',
-                url: '' //上传接口
-                    ,
+                url: '', //上传接口
                 done: function(res) {
                     console.log(res)
                 }
             });
         });
+    </script>
+    <script type="text/html" id="table_row_btns">
+        <a class="layui-btn layui-btn-primary layui-btn-xs " lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs " lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs " lay-event="del ">删除</a>
+        <!-- 这里同样支持 laytpl 语法，如： -->
+        {{# if(d.auth > 2){ }}
+        <a class="layui-btn layui-btn-xs" lay-event="check">审核</a> {{# } }}
     </script>
 </body>
 
