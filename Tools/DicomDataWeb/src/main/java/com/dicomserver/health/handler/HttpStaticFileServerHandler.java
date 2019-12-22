@@ -399,7 +399,66 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             lastContentFuture.addListener(ChannelFutureListener.CLOSE);
         }
     }
+    public void SavePatient(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
+        String path = uri;
+        System.out.println(path);
+        int login = 0;
+        LoginUser user = new LoginUser();
+        String parameter = request.content().toString(CharsetUtil.UTF_8);
+        parameter = parameter.substring(1,parameter.length()-1);
+        parameter = parameter.replaceAll("\"","");
+        parameter = parameter.replaceAll(":","=");
+        parameter = parameter.replaceAll(",","&");
+        Map<String, Object> map = getParameter("?" + parameter);
+        String userName = "";
+        String password = "";
+        // to do save&update patient data
+        for (String key : map.keySet()) {
+            String value = (String) map.get(key);
+            if (key.equals("user")) {
+                userName = value;
+            } else if (key.equals("password")) {
+                password = value;
+            }
+        }
+        UserService uerService = new UserServiceimp();
+        user.setUsername(userName);
+        user.setPassword(password);
+        if (uerService.findUser(user)) {//存在这个用户，可以正常访问信息
+            request.headers().set(HttpHeaderNames.SET_COOKIE, user);
+            login = 1;
+            path = serverconfig.getString("webdir") + "/view/imageview.html";
+        } else {//不存在这个用户，给出提示
+            String message = "用户名或密码错误";
+            request.headers().set(HttpHeaderNames.SET_COOKIE, message);
+            login = 2;
+            path = serverconfig.getString("webdir") + "/Login/index.html";
+        }
 
+        if (login == 1) {
+            io.netty.handler.codec.http.cookie.DefaultCookie cookie = new io.netty.handler.codec.http.cookie.DefaultCookie("user", user.getUsername());
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false);
+            String message = "OK";
+            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(message.getBytes("UTF-8")));
+            response.headers().add(HttpHeaderNames.SET_COOKIE, io.netty.handler.codec.http.cookie.ServerCookieEncoder.LAX.encode(cookie));
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain");
+            this.sendAndCleanupConnection(ctx, response);
+        } else {
+            String message = "用户名或密码错误!";
+            io.netty.handler.codec.http.cookie.DefaultCookie cookie = new io.netty.handler.codec.http.cookie.DefaultCookie("user", message);
+            cookie.setPath("/");
+            //cookie.setHttpOnly(true);
+            cookie.setSecure(false);
+            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(message.getBytes("UTF-8")));
+            response.headers().add(HttpHeaderNames.SET_COOKIE, cookie);
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain");
+            this.sendAndCleanupConnection(ctx, response);
+        }
+    }
     public void LoginHealth(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
         String path = uri;
         System.out.println(path);
@@ -478,6 +537,10 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     }
 
     public void HealthSystem(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
+        if(uri.toLowerCase().contains("/healthsystem/ris/updata")){
+            SavePatient(ctx,request,uri,keepAlive);
+            return;
+        }
         if (!uri.toLowerCase().contains("/stduydata/")) {
             String path = serverconfig.getString("webdir") + uri;
             returnWeb(ctx,request,path,keepAlive);
