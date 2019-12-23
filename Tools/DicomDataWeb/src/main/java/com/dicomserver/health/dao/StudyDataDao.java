@@ -12,4 +12,14 @@ public interface StudyDataDao {
     public int delStudy(StudyData study);
     public int modifyStudy(StudyData study);
     public boolean findStudy(StudyData study);
+
+    //deal patient table
+    public int addPatient(StudyData orderStudy);
+    public int updatePatient(StudyData orderStudy);
+    public int markPatient(StudyData orderStudy);
+
+    //deal order tablel
+    public int addOrderStudy(StudyData orderStudy);
+    public int updateOrderStudy(StudyData orderStudy);
+    public int markOrderStudy(StudyData orderStudy);
 }
