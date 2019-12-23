@@ -132,9 +132,9 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">phone:</label>
+                        <label class="layui-form-label">phoneNumber:</label>
                         <div class="layui-input-inline">
-                            <input type="tel" name="phone" lay-verify="required|number" lay-verType="tips" autocomplete="off" class="layui-input">
+                            <input type="tel" name="PatientTelNumber" lay-verify="required|number" lay-verType="tips" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -159,7 +159,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">Cost:</label>
                             <div class="layui-input-inline" style="width: 100px;">
-                                <input type="text" name="Cost" placeholder="￥" autocomplete="off" class="layui-input">
+                                <input type="text" name="StudyCost" placeholder="￥" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -441,7 +441,7 @@
             //submit patientform
             form.on('submit(patientform)', function(data) {
                 var postdata = JSON.stringify(data.field);
-                layer.alert(postdata);
+
                 var host = window.location.host;
                 $.ajax({
                     type: "POST",
@@ -450,9 +450,9 @@
                     data: postdata, //请求save处理数据
                     success: function(mess) {
                         if (mess == "OK") { //根据返回值进行跳转
-
+                            layer.alert(mess + '--save ok!' + postdata);
                         } else {
-                            layer.alert("save fail:" + postdata);
+                            layer.alert(mess + "--save fail:" + postdata);
                         }
                     }
                 });

@@ -79,7 +79,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 stu.setPatientBirthday(rs.getString("p.PatientBirthday"));
                 stu.setPatientTelNumber(rs.getString("p.PatientTelNumber"));
 
-                stu.setStudyIdentity(rs.getString("s.StudyOrderIdentity"));
+                stu.setStudyOrderIdentity(rs.getString("s.StudyOrderIdentity"));
                 stu.setStudyID(rs.getString("s.StudyID"));
                 stu.setScheduledDateTime(rs.getString("s.ScheduledDateTime"));
                 stu.setStudyDescription(rs.getString("s.StudyDescription"));
@@ -95,7 +95,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
     @Override
     public StudyData getStudyMoreInfo(StudyData study) {
         StudyData stu = new StudyData();
-        String StudyIdentity = study.getStudyIdentity();
+        String StudyIdentity = study.getStudyOrderIdentity();
         String PatientID = study.getPatientID();
         // String sql = "select
         // `PatientName`,`PatientIdentity`,`PatientBirthday`,`PatientSex`,`patientTelNumber`
@@ -125,7 +125,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 stu.setScheduledDateTime(rs.getString("ScheduledDateTime"));
                 stu.setStudyDescription(rs.getString("StudyDescription"));
                 stu.setStudyModality(rs.getString("StudyModality"));
-                stu.setStudyIdentity(StudyIdentity);
+                stu.setStudyOrderIdentity(StudyIdentity);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -139,7 +139,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         boolean find = false;
         String PatientIdentity = "";
         // String s = study.creatStudyUID();
-        if (study.getPatientID() == null || study.getPatientID() == "") {
+        if (study.getPatientID() == null || study.getPatientID().equals("")) {
             study.setPatientID(Long.toUnsignedString(System.currentTimeMillis()));
             if (study.getPatientTelNumber() == null) {
                 study.setPatientTelNumber(Long.toUnsignedString(System.currentTimeMillis()));
@@ -222,7 +222,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
 
         return row;
     }
-
+    @Override
     public boolean findStudy(StudyData study) {
         boolean flag = true;
         int row = 0;
@@ -247,5 +247,137 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         }
         return flag;
 
+    }
+
+
+    //patient table
+    @Override
+    public int addPatient(StudyData orderStudy){
+        int row = 0;
+        boolean find = false;
+        String PatientIdentity = "";
+        if (orderStudy.getPatientID() == null || orderStudy.getPatientID().equals("")) {
+            orderStudy.setPatientID(Long.toUnsignedString(System.currentTimeMillis()));
+        } else {
+            // 查找是否存在指定的ID
+            String findsql = "select  * from h_patient where `PatientID`=?";
+            Object[] findparams = {orderStudy.getPatientID()};
+            ResultSet findrs = this.executeQuerySQL(findsql, findparams);
+            try {
+                while (findrs.next()) {
+                    PatientIdentity = findrs.getString("PatientIdentity");
+                    orderStudy.setPatientIdentity(PatientIdentity);
+                    find = true;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (find){
+            return updatePatient(orderStudy);
+        }else {
+            if (PatientIdentity == "") {
+                PatientIdentity = orderStudy.creatPatientIdentity();
+                orderStudy.setPatientIdentity(PatientIdentity);
+            }
+            String sql = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`,`patientTelNumber`) values(?,?,?,?,?,?)";
+            Object[] params = {PatientIdentity, orderStudy.getPatientName(), orderStudy.getPatientBirthday(),
+                    orderStudy.getPatientSex(), orderStudy.getPatientID(), orderStudy.getPatientTelNumber()};
+            row = this.executeUpdateSQL(sql, params);
+            if (row > 0) {
+                System.out.println("增加患者成功");
+            } else {
+                System.out.println("增加患者失败");
+            }
+            return row;
+        }
+    }
+    @Override
+    public int updatePatient(StudyData orderStudy){
+        int row = 0;
+        String sql = "update  h_patient set `PatientAddr`=?,`PatientName`=?,`PatientBirthday`=?,`PatientSex`=?,`patientTelNumber`=?,'PatientCarID'=?,'PatientType'=? where `PatientID`=?";
+        Object[] params = {orderStudy.getPatientAddr(), orderStudy.getPatientName(), orderStudy.getPatientBirthday(),
+                           orderStudy.getPatientSex(), orderStudy.getPatientTelNumber(), orderStudy.getPatientCarID(),
+                           orderStudy.getPatientType(), orderStudy.getPatientID()};
+        row = this.executeUpdateSQL(sql, params);
+        if (row > 0) {
+            System.out.println("update患者成功");
+        } else {
+            System.out.println("update患者失败");
+        }
+        return row;
+    }
+    @Override
+    public int markPatient(StudyData orderStudy){
+        int row = 0;
+        String sql = "update  h_patient set 'PatientState'=?  where `PatientID`= ? ";
+        Object[] params = {"-1", orderStudy.getPatientID()};
+        row = this.executeUpdateSQL(sql, params);
+        if (row > 0) {
+            System.out.println("mark delete患者成功");
+        } else {
+            System.out.println("mark delete患者失败");
+        }
+        return row;
+    }
+
+    //order table
+    @Override
+    public int addOrderStudy(StudyData orderStudy){
+        int row = 0;
+        String PatientIdentity = orderStudy.getPatientIdentity();
+
+        if (orderStudy.getsStudyUID() == null || orderStudy.getsStudyUID().equals("")){
+            String SUID = orderStudy.creatStudyUID();
+            orderStudy.setStudyUID(SUID);
+        }
+        if (orderStudy.getsStudyID() == null || orderStudy.getsStudyID().equals("")){
+            String ID = orderStudy.creatStudyID();
+            orderStudy.setStudyID(ID);
+        }
+        String StudyOrderIdentity = orderStudy.creatStudyIdentity();
+        orderStudy.setStudyOrderIdentity(StudyOrderIdentity);
+        String sql = "insert into h_order (`StudyOrderIdentity`,`StudyID`, `StudyUID`,`PatientIdentity`,`ScheduledDateTime`, `StudyDescription`,`StudyModality`,`StudyCost`,`StudyCode`) "
+                + " value(?,?,?,?,?,?,?,?,?)";
+        Object[] params = {orderStudy.getStudyOrderIdentity(), orderStudy.getStudyID(), orderStudy.getStudyUID(), PatientIdentity,
+                orderStudy.getScheduledDateTime(), orderStudy.getStudyDescription(), orderStudy.getStudyModality(), orderStudy.getStudyCost(),
+                orderStudy.getStudyCode()};
+        int studyrow = this.executeUpdateSQL(sql, params);
+        if (studyrow > 0) {
+            System.out.println("增加预约检查成功");
+        } else {
+            System.out.println("增加预约检查失败");
+        }
+        return row;
+    }
+    @Override
+    public int updateOrderStudy(StudyData orderStudy){
+        int row = 0;
+        String StudyOrderIdentity = orderStudy.getStudyOrderIdentity();
+        String sql = "update h_order set `ScheduledDateTime`=?, `StudyDescription`=?,`StudyModality`=?,`StudyCost`=?,`StudyCode`=? "
+                + " where StudyOrderIdentity=?";
+        Object[] params = {orderStudy.getScheduledDateTime(), orderStudy.getStudyDescription(), orderStudy.getStudyModality(), orderStudy.getStudyCost(),
+                orderStudy.getStudyCode(),StudyOrderIdentity};
+        int studyrow = this.executeUpdateSQL(sql, params);
+        if (studyrow > 0) {
+            System.out.println("增加预约检查成功");
+        } else {
+            System.out.println("增加预约检查失败");
+        }
+        return row;
+    }
+    @Override
+    public int markOrderStudy(StudyData orderStudy){
+        int row = 0;
+        String StudyOrderIdentity = orderStudy.getStudyOrderIdentity();
+        String sql = "update h_order set `StudyState`=? where StudyOrderIdentity=?";
+        Object[] params = {"-1",StudyOrderIdentity};
+        int studyrow = this.executeUpdateSQL(sql, params);
+        if (studyrow > 0) {
+            System.out.println("增加预约检查成功");
+        } else {
+            System.out.println("增加预约检查失败");
+        }
+        return row;
     }
 }

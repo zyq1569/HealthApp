@@ -4,21 +4,28 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class StudyData {
+    //patient table
     private String PatientIdentity;
-    private String PatientName;
+    private String PatientName;//PatientNameEnglish
     private String PatientID;
     private String PatientSex;
     private String PatientBirthday;
     private String PatientTelNumber;
+    private String PatientAddr, PatientCarID, PatientType;// to do creat history table
 
+    //order table ->patient :PatientIdentity
     private String StudyOrderIdentity;
     private String StudyID;
     private String StudyUID;
     private String ScheduledDateTime;
-    private String StudyDateTime;
+    private String OrderDateTime;
     private String StudyDescription;
     private String StudyModality;
     private String AETitle;
+    private String StudyType, StudyCode,StudyState,StudyCost;
+
+    //study image table ->patient :PatientIdentity
+    private String StudyDateTime,sStudyID,sStudyModality,sStudyUID;
     static String UID = "1.2.826.0.1.3680043.9.7604.";
 
     public String creatPatientIdentity()	{
@@ -48,10 +55,10 @@ public class StudyData {
         return  UID + uid;
     }
 
-    public String getStudyIdentity() {
+    public String getStudyOrderIdentity() {
         return StudyOrderIdentity;
     }
-    public void setStudyIdentity(String StudyOrderIdentity) {
+    public void setStudyOrderIdentity(String StudyOrderIdentity) {
         this.StudyOrderIdentity = StudyOrderIdentity;
     }
 
@@ -62,11 +69,11 @@ public class StudyData {
         this.ScheduledDateTime = ScheduledDateTime;
     }
 
-    public String getStudyDateTime() {
-        return StudyDateTime;
-    }
-    public void setStudyDateTime(String StudyDateTime) {
-        this.StudyDateTime = StudyDateTime;
+    public String getOrderDateTime() {
+    return OrderDateTime;
+}
+    public void setOrderDateTime(String StudyDateTime) {
+        this.OrderDateTime = OrderDateTime;
     }
 
     public String getStudyUID() {
@@ -96,7 +103,35 @@ public class StudyData {
     public void setAETitle(String AETitle) {
         this.AETitle = AETitle;
     }
-    //
+
+    public String getStudyType() {
+        return StudyType;
+    }
+    public void setStudyType(String StudyType) {
+        this.StudyType = StudyType;
+    }
+
+    public String getStudyCode() {
+        return StudyCode;
+    }
+    public void setStudyCode(String StudyCode) {
+        this.StudyCode = StudyCode;
+    }
+
+    public String getStudyState() {
+        return StudyState;
+    }
+    public void setStudyState(String StudyState) {
+        this.StudyState = StudyState;
+    }
+
+    public String getStudyCost() {
+        return StudyCost;
+    }
+    public void setStudyCost(String StudyCost) {
+        this.StudyCost = StudyCost;
+    }
+
     public String getStudyID() {
         return StudyID;
     }
@@ -146,5 +181,53 @@ public class StudyData {
         this.PatientTelNumber = patientTelNumber;
     }
 
+    public String getPatientAddr() {
+        return PatientAddr;
+    }
+    public void setPatientAddr(String PatientAddr) {
+        this.PatientAddr = PatientAddr;
+    }
 
+    public String getPatientCarID() {
+        return PatientCarID;
+    }
+    public void setPatientCarID(String PatientCarID) {
+        this.PatientCarID = PatientCarID;
+    }
+
+    public String getPatientType() {
+        return PatientType;
+    }
+    public void setPatientType(String PatientType) {
+        this.PatientType = PatientType;
+    }
+
+    //----------study table
+    public String getStudyDateTime() {
+        return StudyDateTime;
+    }
+    public void setStudyDateTime(String StudyDateTime) {
+        this.StudyDateTime = StudyDateTime;
+    }
+
+    public String getsStudyID() {
+        return sStudyID;
+    }
+    public void setsStudyID(String sStudyID) {
+        this.sStudyID = sStudyID;
+    }
+
+    public String getsStudyModality() {
+        return sStudyModality;
+    }
+    public void setsStudyModality(String sStudyModality) {
+        this.sStudyModality = sStudyModality;
+    }
+
+    public String getsStudyUID() {
+        return sStudyUID;
+    }
+    public void setsStudyUID(String sStudyUID) {
+        this.sStudyUID = sStudyUID;
+    }
 }
