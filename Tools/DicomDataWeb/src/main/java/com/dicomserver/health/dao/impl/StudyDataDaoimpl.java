@@ -60,13 +60,10 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
     @Override
     public List<StudyData> getAllStudy() {
         List<StudyData> list = new ArrayList<StudyData>();
-        /*
-         * String sql =
-         * "select `PatientIdentity`,`PatientName`,`PatientID`,`PatientBirthday`,`PatientSex`,`patientTelNumber` "
-         * + "from h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity";
-         */
-        String sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber,s.StudyID "
-                + ",s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDescription, s.StudyModality from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity";
+        String sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
+                 "p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType,"+
+                 "s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState, s.ScheduledDateTime" +
+                 " from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0";
         Object[] params = {};
         ResultSet rs = this.executeQuerySQL(sql, params);
         try {
@@ -78,12 +75,21 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 stu.setPatientSex(rs.getString("p.PatientSex"));
                 stu.setPatientBirthday(rs.getString("p.PatientBirthday"));
                 stu.setPatientTelNumber(rs.getString("p.PatientTelNumber"));
+                stu.setPatientAddr(rs.getString("p.PatientAddr"));
+                stu.setPatientEmail(rs.getString("p.PatientEmail"));
+                stu.setPatientCarID(rs.getString("p.PatientCarID"));
 
                 stu.setStudyOrderIdentity(rs.getString("s.StudyOrderIdentity"));
                 stu.setStudyID(rs.getString("s.StudyID"));
                 stu.setScheduledDateTime(rs.getString("s.ScheduledDateTime"));
                 stu.setStudyDescription(rs.getString("s.StudyDescription"));
                 stu.setStudyModality(rs.getString("s.StudyModality"));
+                stu.setStudyDepart(rs.getString("s.StudyDepart"));
+                stu.setStudyCost(rs.getString("s.StudyCost"));
+                stu.setCostType(rs.getString("s.CostType"));
+                stu.setStudyDateTime(rs.getString("s.ScheduledDateTime"));
+                stu.setStudyUID(rs.getString("s.StudyUID"));
+                stu.setStudyState(rs.getString("s.StudyState"));
                 list.add(stu);
             }
         } catch (SQLException e) {
@@ -140,11 +146,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         String PatientIdentity = "";
         // String s = study.creatStudyUID();
         if (study.getPatientID() == null || study.getPatientID().equals("")) {
-            study.setPatientID(Long.toUnsignedString(System.currentTimeMillis()));
-            if (study.getPatientTelNumber() == null) {
-                study.setPatientTelNumber(Long.toUnsignedString(System.currentTimeMillis()));
-            }
-
+            study.setPatientID(study.creatPatientID());
         } else {
             // 查找是否存在指定的ID
             String findsql = "select  * from h_patient where `PatientID`=?";
@@ -249,7 +251,6 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
 
     }
 
-
     //patient table
     @Override
     public int addPatient(StudyData orderStudy){
@@ -276,13 +277,15 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         if (find){
             return updatePatient(orderStudy);
         }else {
-            if (PatientIdentity == "") {
+            if (PatientIdentity.equals("")) {
                 PatientIdentity = orderStudy.creatPatientIdentity();
                 orderStudy.setPatientIdentity(PatientIdentity);
             }
-            String sql = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`,`patientTelNumber`) values(?,?,?,?,?,?)";
+            String sql = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`," +
+                    "`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?)";
             Object[] params = {PatientIdentity, orderStudy.getPatientName(), orderStudy.getPatientBirthday(),
-                    orderStudy.getPatientSex(), orderStudy.getPatientID(), orderStudy.getPatientTelNumber()};
+                                orderStudy.getPatientSex(), orderStudy.getPatientID(), orderStudy.getPatientTelNumber(),
+                                orderStudy.getPatientAddr(), orderStudy.getPatientCarID(),orderStudy.getPatientType(),orderStudy.getPatientEmail()};
             row = this.executeUpdateSQL(sql, params);
             if (row > 0) {
                 System.out.println("增加患者成功");
@@ -295,10 +298,10 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
     @Override
     public int updatePatient(StudyData orderStudy){
         int row = 0;
-        String sql = "update  h_patient set `PatientAddr`=?,`PatientName`=?,`PatientBirthday`=?,`PatientSex`=?,`patientTelNumber`=?,'PatientCarID'=?,'PatientType'=? where `PatientID`=?";
+        String sql = "update  h_patient set `PatientAddr`=?,`PatientName`=?,`PatientBirthday`=?,`PatientSex`=?,`patientTelNumber`=?,`PatientCarID`=?,`PatientType`=? ,`PatientEmail`=? where `PatientID`=?";
         Object[] params = {orderStudy.getPatientAddr(), orderStudy.getPatientName(), orderStudy.getPatientBirthday(),
                            orderStudy.getPatientSex(), orderStudy.getPatientTelNumber(), orderStudy.getPatientCarID(),
-                           orderStudy.getPatientType(), orderStudy.getPatientID()};
+                           orderStudy.getPatientType(),orderStudy.getPatientEmail(), orderStudy.getPatientID()};
         row = this.executeUpdateSQL(sql, params);
         if (row > 0) {
             System.out.println("update患者成功");
@@ -324,7 +327,10 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
     //order table
     @Override
     public int addOrderStudy(StudyData orderStudy){
-        int row = 0;
+        String StudyOrderIdentity = orderStudy.getStudyOrderIdentity();
+        if (!StudyOrderIdentity.equals("")){
+            return updateOrderStudy(orderStudy);
+        }
         String PatientIdentity = orderStudy.getPatientIdentity();
 
         if (orderStudy.getsStudyUID() == null || orderStudy.getsStudyUID().equals("")){
@@ -335,29 +341,29 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             String ID = orderStudy.creatStudyID();
             orderStudy.setStudyID(ID);
         }
-        String StudyOrderIdentity = orderStudy.creatStudyIdentity();
+        StudyOrderIdentity = orderStudy.creatStudyIdentity();
         orderStudy.setStudyOrderIdentity(StudyOrderIdentity);
-        String sql = "insert into h_order (`StudyOrderIdentity`,`StudyID`, `StudyUID`,`PatientIdentity`,`ScheduledDateTime`, `StudyDescription`,`StudyModality`,`StudyCost`,`StudyCode`) "
-                + " value(?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into h_order (`StudyOrderIdentity`,`StudyID`, `StudyUID`,`PatientIdentity`,`ScheduledDateTime`, `StudyDescription`,`StudyModality`, "
+                + " `StudyCost`,`StudyCode`,`StudyDepart`,`CostType`) value(?,?,?,?,?,?,?,?,?,?,?)";
         Object[] params = {orderStudy.getStudyOrderIdentity(), orderStudy.getStudyID(), orderStudy.getStudyUID(), PatientIdentity,
                 orderStudy.getScheduledDateTime(), orderStudy.getStudyDescription(), orderStudy.getStudyModality(), orderStudy.getStudyCost(),
-                orderStudy.getStudyCode()};
+                orderStudy.getStudyCode(),orderStudy.getStudyDepart(),orderStudy.getCostType()};
         int studyrow = this.executeUpdateSQL(sql, params);
         if (studyrow > 0) {
             System.out.println("增加预约检查成功");
         } else {
             System.out.println("增加预约检查失败");
         }
-        return row;
+        return studyrow;
     }
     @Override
     public int updateOrderStudy(StudyData orderStudy){
         int row = 0;
         String StudyOrderIdentity = orderStudy.getStudyOrderIdentity();
         String sql = "update h_order set `ScheduledDateTime`=?, `StudyDescription`=?,`StudyModality`=?,`StudyCost`=?,`StudyCode`=? "
-                + " where StudyOrderIdentity=?";
+                + " ,`StudyDepart`=?,`CostType`=? where StudyOrderIdentity=?";
         Object[] params = {orderStudy.getScheduledDateTime(), orderStudy.getStudyDescription(), orderStudy.getStudyModality(), orderStudy.getStudyCost(),
-                orderStudy.getStudyCode(),StudyOrderIdentity};
+                orderStudy.getStudyCode(),orderStudy.getStudyDepart(),orderStudy.getCostType(),StudyOrderIdentity};
         int studyrow = this.executeUpdateSQL(sql, params);
         if (studyrow > 0) {
             System.out.println("增加预约检查成功");

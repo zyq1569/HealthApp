@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>studysdata</title>
+    <title>patients</title>
     <link rel="stylesheet" href="../layui/css/layui.css" media="all">
     <style>
         body {
@@ -22,7 +22,61 @@
 <body>
     <!-- js src~~ -->
     <script src="../layui/layui.js"></script>
+    <script>
+        function SetFormValue(jsonstring) {
+            var data = JSON.parse(jsonstring);
+            //layer.alert(data);
+            //给表单赋值
+            layui.form.val("formpatient", {
+                "PatientName": data.patientName,
+                "PatientSex": data.patientSex,
+                "PatientBirthday": data.patientBirthday,
+                "PatientTelNumber": data.patientTelNumber,
+                "PatientEmail": data.patientEmail,
+                "PatientCarID": data.patientCarID,
+                "PatientAddr": data.patientAddr,
+                "StudyCost": data.studyCost,
+                "StudyDepart": data.studyDepart,
+                "StudyModality": data.studyModality,
+                "ScheduledDate": data.scheduledDateTime,
+                "CostType": data.costType,
+                "StudyDescription": data.studyDescription,
+                "PatientID": data.patientId,
+                "PatientIdentity": data.patientIdentity,
+                "StudyOrderIdentity": data.studyOrderIdentity
+            });
 
+        };
+
+        function ClearFormValue() {
+            //layer.alert(data);
+            //给表单赋值
+            layui.form.val("formpatient", {
+                "PatientName": "",
+                "PatientSex": "",
+                "PatientBirthday": "",
+                "PatientTelNumber": "",
+                "PatientEmail": "",
+                "PatientCarID": "",
+                "PatientAddr": "",
+                "StudyCost": "",
+                "StudyDepart": "",
+                "StudyModality": "",
+                "ScheduledDate": "",
+                "CostType": "",
+                "StudyDescription": "",
+                "PatientID": "",
+                "PatientIdentity": "",
+                "StudyOrderIdentity": ""
+            });
+
+        };
+
+        function ChangeTab(table, item) {
+            ClearFormValue(); // don't submit data ,to do ....
+            layui.element.tabChange(table, item);
+        }
+    </script>
     <script>
         layui.use('laydate', function() {
             var laydate = layui.laydate; //执行一个laydate实例
@@ -46,12 +100,6 @@
                 format: 'yyyyMMdd',
                 calendar: true
             });
-            //监听提交
-            form.on('submit(*)', function(data) {
-                console.log(data)
-                alert(JSON.stringify(data.field));
-                return false;
-            });
         });
     </script>
 
@@ -59,7 +107,8 @@
         <ul class="layui-tab-title">
             <li class="layui-this" lay-id='layid_patients'>Patients</li>
             <li lay-id='layid_addedit'>Add/Edit</li>
-            <li lay-id='layid_tool'>Tool</li>
+            <li lay-id='layid_tool'>Report</li>
+            <li lay-id='layid_image'>StudyImage</li>
             <li lay-id='layid_updown'>Updown</li>
         </ul>
         <div class="layui-tab-content">
@@ -80,8 +129,8 @@
                 </div>
                 <div class="layui-inline"> PatientType: </div>
                 <div class="layui-inline">
-                    <select name="StudyContent" lay-filter="ptype">
-                            <option value="10">Content </option>
+                    <select name="StudyRoom" lay-filter="ptype">
+                            <option value="10">Depart Room </option>
                             <optgroup label="RIS">
                                 <option value="10">普放科</option>
                                 <option value="11">核医学</option>
@@ -110,19 +159,31 @@
 
             <!-- $$$$$$$$$$$$$$$$$$$$$$$$  form  add / edit patients datas start $$$$$$$$$$$$$$$$$$$$$$$$$$-->
             <div class="layui-tab-item">
-                <form class="layui-form layui-form-pane1" action="" lay-filter="first">
+                <form class="layui-form layui-form-pane1" action="" lay-filter="formpatient">
                     <div class="layui-form-item">
                         <label class="layui-form-label">PatientName:</label>
                         <div class="layui-input-inline">
                             <input type="text" name="PatientName" lay-verify="required|title" lay-reqText="PatientName不能为空" required placeholder="name" autocomplete="off" class="layui-input">
                         </div>
+                        <label class="layui-form-label">PatientID:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="PatientID" placeholder="System Value" class="layui-input" readonly="readonly">
+                        </div>
+                        <label class="layui-form-label">PatientIdentity:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="PatientIdentity" placeholder="System Value" class="layui-input" readonly="readonly">
+                        </div>
+                        <label class="layui-form-label">StudyOrderIdentity:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="StudyOrderIdentity" placeholder="System Value" class="layui-input" readonly="readonly">
+                        </div>
                     </div>
                     <div class="layui-form-item" pane>
                         <label class="layui-form-label">PatientSex:</label>
                         <div class="layui-input-block">
-                            <input type="radio" name="PatientSex" value="man" title="man" checked>
-                            <input type="radio" name="PatientSex" value="女" title="女">
-                            <input type="radio" name="PatientSex" value="其他" title="其他" disabled>
+                            <input type="radio" name="PatientSex" value="M" title="男" checked>
+                            <input type="radio" name="PatientSex" value="F" title="女">
+                            <input type="radio" name="PatientSex" value="O" title="其他" disabled>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -140,7 +201,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">Email:</label>
                         <div class="layui-input-inline">
-                            <input type="email" name="email" lay-verify="email" lay-verType="alert" autocomplete="off" class="layui-input">
+                            <input type="email" name="PatientEmail" lay-verify="email" lay-verType="alert" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -163,9 +224,9 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">StudyContent:</label>
+                            <label class="layui-form-label">StudyRoom:</label>
                             <div class="layui-input-block">
-                                <select name="StudyContent" lay-filter="contents">
+                                <select name="StudyDepart" lay-filter="contents">
                                         <option value="">SelectDepartments </option>
                                         <optgroup label="RIS">
                                           <option value="10">普放科</option>
@@ -229,7 +290,7 @@
                         <div class="layui-input-block">
                             <button class="layui-btn" lay-submit lay-filter="patientform">立即提交</button>
                             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-                            <button class="layui-btn" onclick="layui.element.tabChange('TabBrief', 'layid_patients')">
+                            <button class="layui-btn" onclick="ChangeTab('TabBrief', 'layid_patients')">
                             return patients
                             </button>
                         </div>
@@ -237,7 +298,8 @@
                 </form>
             </div>
             <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$ end form $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$----- -->
-            <div class="layui-tab-item ">Tools</div>
+            <div class="layui-tab-item ">Report to do next...</div>
+            <div class="layui-tab-item ">StudyImage to do next...</div>
             <div class="layui-tab-item ">
                 upload file to server
                 <div class="layui-inline ">
@@ -288,7 +350,7 @@
                             fixed: 'left'
                         }, {
                             field: 'patientId',
-                            title: 'patientId',
+                            title: 'PatientId',
                             width: 100,
                             sort: true,
                             fixed: 'left',
@@ -296,51 +358,106 @@
                         }, {
                             field: 'patientName',
                             width: 120,
-                            title: 'patientName'
+                            title: 'PatientName'
                         }, {
                             field: 'studyDate',
-                            title: 'studyDate',
+                            title: 'StudyDateTime',
                             sort: true,
                             totalRow: false
                         }, {
                             field: 'patientSex',
-                            title: 'patientSex',
+                            title: 'PatientSex',
                             width: 100,
                             sort: false
                         }, {
-                            field: 'modality',
-                            title: 'modality',
+                            field: 'studyModality',
+                            title: 'StudyModality',
                             width: 100
                         }, {
                             field: 'studyId',
-                            title: 'studyId',
+                            title: 'StudyId',
                             width: 120,
                             sort: true,
+                            hide: true,
                             totalRow: true
                         }, {
                             field: 'patientBirthday',
-                            title: 'patientBirthday',
+                            title: 'PatientBirthday',
                             sort: true
                         }, {
                             field: 'studyDescription',
-                            title: 'studyDescription'
+                            title: 'StudyDescription'
                         }, {
                             field: 'scheduledDateTime',
-                            title: 'scheduledDateTime',
+                            title: 'ScheduledDateTime',
                             sort: true,
                             totalRow: true
                         }, {
                             field: 'studyuid',
-                            title: 'studyuid',
+                            title: 'Studyuid',
                             sort: true,
                             hide: true,
-                            totalRow: true
+                            totalRow: false
                         }, {
                             field: 'studystate',
-                            title: 'studystate',
+                            title: 'Studystate',
                             sort: true,
                             hide: true,
-                            totalRow: true
+                            totalRow: false
+                        }, {
+                            field: 'patientIdentity',
+                            title: 'PatientIdentity',
+                            sort: false,
+                            hide: true,
+                            totalRow: false
+                        }, {
+                            field: 'studyOrderIdentity',
+                            title: 'StudyOrderIdentity',
+                            sort: false,
+                            hide: true,
+                            totalRow: false
+                        }, {
+                            field: 'patientAddr',
+                            title: 'PatientAddr',
+                            sort: false,
+                            hide: true,
+                            totalRow: false
+                        }, {
+                            field: 'patientEmail',
+                            title: 'PatientEmail',
+                            sort: false,
+                            hide: true,
+                            totalRow: false
+                        }, {
+                            field: 'patientCarID',
+                            title: 'PatientCarID',
+                            sort: false,
+                            hide: true,
+                            totalRow: false
+                        }, {
+                            field: 'patientTelNumber',
+                            title: 'TelNumber',
+                            sort: false,
+                            hide: true,
+                            totalRow: false
+                        }, {
+                            field: 'studyDepart',
+                            title: 'StudyDepart',
+                            sort: false,
+                            hide: true,
+                            totalRow: false
+                        }, {
+                            field: 'studyCost',
+                            title: 'StudyCost',
+                            sort: false,
+                            hide: true,
+                            totalRow: false
+                        }, {
+                            field: 'costType',
+                            title: 'CostType',
+                            sort: false,
+                            hide: true,
+                            totalRow: false
                         }, {
                             fixed: 'right',
                             align: 'center',
@@ -380,6 +497,7 @@
                 switch (obj.event) {
                     case 'add':
                         {
+                            ClearFormValue();
                             element.tabChange('TabBrief', 'layid_addedit');
                             break;
                         }
@@ -389,15 +507,17 @@
                         } else if (data.length > 1) {
                             layer.msg('只能同时编辑一个');
                         } else {
-                            layer.alert('编辑 [id]：' + checkStatus.data[0].id);
+                            layer.alert('编辑 [id]：' + data.id);
+                            // element.tabChange('TabBrief', 'layid_addedit');
                         }
                         break;
                     case 'delete':
-                        if (data.length === 0) {
-                            layer.msg('请选择一行');
-                        } else {
-                            layer.msg('删除');
-                        }
+                        layer.msg('权限禁止删除！');
+                        // if (data.length === 0) {
+                        //     layer.msg('请选择一行');
+                        // } else {
+                        //     layer.msg('删除');
+                        // }
                         break;
                 };
             });
@@ -410,13 +530,16 @@
                     //layer.msg('查看操作');
                     layer.alert('detail： rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(obj.data));
                 } else if (layEvent === 'del') {
-                    layer.confirm('真的删除行么', function(index) {
-                        obj.del(); //删除对应行（tr）的DOM结构
-                        layer.close(index);
-                        //向服务端发送删除指令
-                    });
+                    layer.msg('权限禁止删除！');
+                    // layer.confirm('真的删除行么', function(index) {
+                    //     // obj.del(); //删除对应行（tr）的DOM结构
+                    //     // layer.close(index);
+                    //     //向服务端发送删除指令
+                    // });
                 } else if (layEvent === 'edit') {
                     element.tabChange('TabBrief', 'layid_addedit');
+                    //layer.alert('rowDouble rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(data));
+                    SetFormValue(JSON.stringify(obj.data));
                     //layer.msg('编辑操作');
                 }
             });
@@ -441,7 +564,6 @@
             //submit patientform
             form.on('submit(patientform)', function(data) {
                 var postdata = JSON.stringify(data.field);
-
                 var host = window.location.host;
                 $.ajax({
                     type: "POST",
@@ -460,6 +582,7 @@
             });
         });
     </script>
+
     <script type="text/html" id="table_row_btns">
         <a class="layui-btn layui-btn-primary layui-btn-xs " lay-event="detail">查看</a>
         <a class="layui-btn layui-btn-xs " lay-event="edit">编辑</a>
