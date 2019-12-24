@@ -119,8 +119,14 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 final String contents = url.substring(url.indexOf('?') + 1);
                 String[] keyValues = contents.split("&");
                 for (int i = 0; i < keyValues.length; i++) {
-                    String key = keyValues[i].substring(0, keyValues[i].indexOf("="));
-                    String value = keyValues[i].substring(keyValues[i].indexOf("=") + 1);
+                    String[] kv = keyValues[i].split("=");
+                    String key = kv[0];
+                    String value="";
+                    for (int j=1;j<kv.length;j++){
+                        value = value + kv[j];
+                    }
+//                    String key = keyValues[i].substring(0, keyValues[i].indexOf("="));
+//                    String value = keyValues[i].substring(keyValues[i].indexOf("=") + 1);
                     map.put(key, value);
                 }
             }
@@ -184,7 +190,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public String getPatientStudyData() {
         String strvalue;
         StudyDataDao studydata = new StudyDataDaoimpl();
-        List<StudyData> list = studydata.getAllStudyImageData();
+        List<StudyData> list = studydata.getAllStudy();
         int size = list.size();
         JsonObject respjson = new JsonObject();
         JsonArray rarray = new JsonArray();
@@ -194,11 +200,23 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             robject.addProperty("patientName", stu.getPatientName());
             robject.addProperty("studyDate", stu.getStudyDateTime());
             robject.addProperty("patientSex", stu.getPatientSex());
-            robject.addProperty("modality", stu.getStudyModality());
+            robject.addProperty("studyModality", stu.getStudyModality());
             robject.addProperty("studyId", stu.getStudyID());
             robject.addProperty("patientBirthday", stu.getPatientBirthday());
             robject.addProperty("studyDescription", stu.getStudyDescription());
             robject.addProperty("scheduledDateTime", stu.getScheduledDateTime());
+            robject.addProperty("studyuid",stu.getStudyUID());
+            robject.addProperty("studystate",stu.getStudyState());
+            robject.addProperty("patientIdentity",stu.getPatientIdentity());
+            robject.addProperty("patientEmail",stu.getPatientEmail());
+            robject.addProperty("patientAddr",stu.getPatientAddr());
+            robject.addProperty("patientCarID",stu.getPatientCarID());
+            robject.addProperty("patientTelNumber",stu.getPatientTelNumber());
+            robject.addProperty("studyDepart",stu.getStudyDepart());
+            robject.addProperty("studyCost",stu.getStudyCost());
+            robject.addProperty("costType",stu.getCostType());
+            robject.addProperty("studyDescription",stu.getStudyDescription());
+            robject.addProperty("studyOrderIdentity",stu.getStudyOrderIdentity());
             rarray.add(robject);
         }
         respjson.addProperty("code", 0);
@@ -399,8 +417,15 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         // to do save&update patient data
         for (String key : map.keySet()) {
             String value = (String) map.get(key);
+
             if (key.equals("PatientName")) {
                 stu.setPatientName(value);
+            }else if (key.equals("PatientEmail")) {
+                stu.setPatientEmail(value);
+            }else if (key.equals("PatientID")) {
+                stu.setPatientID(value);
+            }else if (key.equals("StudyDepart")) {
+                stu.setStudyDepart(value);
             } else if (key.equals("PatientSex")) {
                 stu.setPatientSex(value);
             }else if (key.equals("PatientBirthday")) {
@@ -410,7 +435,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             }else if (key.equals("PatientCarID")) {
                 stu.setPatientCarID(value);
             }else if (key.equals("PatientAddr")) {
-                stu.setPatientAddr(value);//setStudyCost
+                stu.setPatientAddr(value);
             }else if (key.equals("StudyCost")) {
                 stu.setStudyCost(value);
             }else if (key.equals("StudyModality")) {
@@ -421,8 +446,13 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 stu.setStudyCode(value);
             }else if (key.equals("StudyDescription")) {
                 stu.setStudyDescription(value);
+            }else if (key.equals("PatientIdentity")) {
+                stu.setPatientIdentity(value);
+            }else if (key.equals("StudyOrderIdentity")) {
+                stu.setStudyOrderIdentity(value);
             }
         }
+        stu.setPatientType("0");
         StudyDataDao addStudy = new StudyDataDaoimpl();
         if (addStudy.addPatient(stu) > 0){
             if (addStudy.addOrderStudy(stu) > 0){
@@ -524,10 +554,15 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             return;
         }
         if (!uri.toLowerCase().contains("/stduydata/")) {
+            int pos = uri.indexOf(".html?");
+            if (pos > 0 ){
+                uri = uri.substring(0,pos+5);
+            }
             String path = serverconfig.getString("webdir") + uri;
             returnWeb(ctx,request,path,keepAlive);
             return;
         }
+        //get patientstudy data json
         String buf = getPatientStudyData();
         ByteBuf buffer = ctx.alloc().buffer(buf.length());
         buffer.writeCharSequence(buf, CharsetUtil.UTF_8);

@@ -2,6 +2,7 @@ package com.dicomserver.health.entity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class StudyData {
     //patient table
@@ -11,7 +12,7 @@ public class StudyData {
     private String PatientSex;
     private String PatientBirthday;
     private String PatientTelNumber;
-    private String PatientAddr, PatientCarID, PatientType;// to do creat history table
+    private String PatientAddr, PatientCarID, PatientType,PatientEmail;// to do creat history table
 
     //order table ->patient :PatientIdentity
     private String StudyOrderIdentity;
@@ -25,14 +26,20 @@ public class StudyData {
     private String StudyType, StudyCode,StudyState,StudyCost;
 
     //study image table ->patient :PatientIdentity
-    private String StudyDateTime,sStudyID,sStudyModality,sStudyUID;
+    private String StudyDateTime,sStudyID,StudyDepart,sStudyModality,sStudyUID, CostType;
     static String UID = "1.2.826.0.1.3680043.9.7604.";
 
     public String creatPatientIdentity()	{
-        return Long.toUnsignedString(System.currentTimeMillis()) ;
+        Random rand =new Random(System.currentTimeMillis());
+        return Long.toUnsignedString(System.currentTimeMillis() + rand.nextLong()) ;
+    }
+    public String creatPatientID()	{
+        Random rand =new Random(System.currentTimeMillis());
+        return Long.toUnsignedString(System.currentTimeMillis() + rand.nextLong()) ;
     }
     public String creatStudyIdentity()	{
-        return Long.toUnsignedString(System.currentTimeMillis()) ;
+        Random rand =new Random(System.currentTimeMillis());
+        return Long.toUnsignedString(System.currentTimeMillis() + rand.nextLong()) ;
     }
     public String creatStudyID()	{
         String id = "" ;
@@ -97,6 +104,12 @@ public class StudyData {
         this.StudyModality = StudyModality;
     }
 
+    public String getStudyDepart() {
+        return StudyDepart;
+    }
+    public void setStudyDepart(String StudyDepart) {
+        this.StudyDepart = StudyDepart;
+    }
     public String getAETitle() {
         return AETitle;
     }
@@ -130,8 +143,13 @@ public class StudyData {
     }
     public void setStudyCost(String StudyCost) {
         this.StudyCost = StudyCost;
+    } //
+    public String getCostType() {
+        return CostType;
     }
-
+    public void setCostType(String CostTpye) {
+        this.CostType = CostTpye;
+    }
     public String getStudyID() {
         return StudyID;
     }
@@ -186,6 +204,13 @@ public class StudyData {
     }
     public void setPatientAddr(String PatientAddr) {
         this.PatientAddr = PatientAddr;
+    }
+
+    public String getPatientEmail() {
+        return PatientEmail;
+    }
+    public void setPatientEmail(String PatientEmail) {
+        this.PatientEmail = PatientEmail;
     }
 
     public String getPatientCarID() {
