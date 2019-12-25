@@ -2,7 +2,6 @@ package com.dicomserver.health.entity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 public class StudyData {
     //patient table
@@ -30,16 +29,19 @@ public class StudyData {
     static String UID = "1.2.826.0.1.3680043.9.7604.";
 
     public String creatPatientIdentity()	{
-        Random rand =new Random(System.currentTimeMillis());
-        return Long.toUnsignedString(System.currentTimeMillis() + rand.nextLong()) ;
+//        Random rand =new Random(System.currentTimeMillis());
+//        return Long.toUnsignedString(System.currentTimeMillis() + rand.nextLong()) ;
+        return Long.toUnsignedString(System.currentTimeMillis());
     }
     public String creatPatientID()	{
-        Random rand =new Random(System.currentTimeMillis());
-        return Long.toUnsignedString(System.currentTimeMillis() + rand.nextLong()) ;
+//        Random rand =new Random(System.currentTimeMillis());
+//        return Long.toUnsignedString(System.currentTimeMillis() + rand.nextLong()) ;
+        return Long.toUnsignedString(System.currentTimeMillis());
     }
     public String creatStudyIdentity()	{
-        Random rand =new Random(System.currentTimeMillis());
-        return Long.toUnsignedString(System.currentTimeMillis() + rand.nextLong()) ;
+//        Random rand =new Random(System.currentTimeMillis());
+//        return Long.toUnsignedString(System.currentTimeMillis() + rand.nextLong()) ;
+        return Long.toUnsignedString(System.currentTimeMillis());
     }
     public String creatStudyID()	{
         String id = "" ;

@@ -119,14 +119,14 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 final String contents = url.substring(url.indexOf('?') + 1);
                 String[] keyValues = contents.split("&");
                 for (int i = 0; i < keyValues.length; i++) {
-                    String[] kv = keyValues[i].split("=");
-                    String key = kv[0];
-                    String value="";
-                    for (int j=1;j<kv.length;j++){
-                        value = value + kv[j];
-                    }
-//                    String key = keyValues[i].substring(0, keyValues[i].indexOf("="));
-//                    String value = keyValues[i].substring(keyValues[i].indexOf("=") + 1);
+//                    String[] kv = keyValues[i].split("=");
+//                    String key = kv[0];
+//                    String value="";
+//                    for (int j=1;j<kv.length;j++){
+//                        value = value + kv[j];
+//                    }
+                    String key = keyValues[i].substring(0, keyValues[i].indexOf("="));
+                    String value = keyValues[i].substring(keyValues[i].indexOf("=") + 1);
                     map.put(key, value);
                 }
             }
@@ -206,7 +206,17 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             robject.addProperty("studyDescription", stu.getStudyDescription());
             robject.addProperty("scheduledDateTime", stu.getScheduledDateTime());
             robject.addProperty("studyuid",stu.getStudyUID());
-            robject.addProperty("studystate",stu.getStudyState());
+            if (stu.getStudyState().equals("1")){
+                robject.addProperty("studystate","已预约");
+            }else if (stu.getStudyState().equals("2")){
+                robject.addProperty("studystate","检查中");
+            }else if (stu.getStudyState().equals("3")){
+                robject.addProperty("studystate","已检查");
+            }else if (stu.getStudyState().equals("4")){
+                robject.addProperty("studystate","诊断");
+            }else if (stu.getStudyState().equals("5")){
+                robject.addProperty("studystate","已审核");
+            }
             robject.addProperty("patientIdentity",stu.getPatientIdentity());
             robject.addProperty("patientEmail",stu.getPatientEmail());
             robject.addProperty("patientAddr",stu.getPatientAddr());
@@ -406,6 +416,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public void SavePatient(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
         String path = uri;
         System.out.println(path);
+        // to do ... change use json
         String parameter = request.content().toString(CharsetUtil.UTF_8);
         parameter = parameter.substring(1,parameter.length()-1);
         parameter = parameter.replaceAll("\"","");
@@ -417,7 +428,6 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         // to do save&update patient data
         for (String key : map.keySet()) {
             String value = (String) map.get(key);
-
             if (key.equals("PatientName")) {
                 stu.setPatientName(value);
             }else if (key.equals("PatientEmail")) {
@@ -443,7 +453,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             }else if (key.equals("ScheduledDate")) {
                 stu.setScheduledDateTime(value);
             }else if (key.equals("CostType")) {
-                stu.setStudyCode(value);
+                stu.setCostType(value);
             }else if (key.equals("StudyDescription")) {
                 stu.setStudyDescription(value);
             }else if (key.equals("PatientIdentity")) {
