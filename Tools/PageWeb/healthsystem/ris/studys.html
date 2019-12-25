@@ -22,6 +22,55 @@
 <body>
     <!-- js src~~ -->
     <script src="../layui/layui.js"></script>
+
+    <!-- tinymce editer -->
+    <script src='../tinymce/tinymce.min.js'></script>
+    <script>
+        tinymce.init({
+            selector: '#ReportArea',
+            // inline: true,
+            height: 700,
+            // plugins: "fullpage",
+            // menubar: "file",
+            // toolbar: "fullpage",
+            fullpage_default_encoding: "UTF-8",
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount',
+                'autosave'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                ' bold italic backcolor | alignleft aligncenter ' +
+                ' alignright alignjustify | bullist numlist outdent indent |' +
+                ' removeformat | help',
+            menubar: 'edit view insert format tools table tc help',
+            autosave_restore_when_empty: true,
+            autosave_interval: "10s",
+            init_instance_callback: function(editor) {
+                // editor.notificationManager.open({
+                //     text: '这是一条提示信息。',
+                // });
+            }
+        });
+        var tinyID = 'ReportArea';
+        var initContent = 'frist';
+        // 获得内容
+        function getContent() {
+            initContent = tinyMCE.editors[tinyID].getContent();
+            layer.alert(initContent);
+        };
+        // 设置内容
+        function setContent() {
+            tinyMCE.editors[tinyID].setContent(initContent);
+        };
+
+        function saveContent() {
+            // tinyMCE.editors[tinyID].getContent(initContent);
+        };
+    </script>
+    <!-- tinymce editer -->
+
     <script>
         function SetFormValue(jsonstring) {
             var data = JSON.parse(jsonstring);
@@ -298,7 +347,14 @@
                 </form>
             </div>
             <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$ end form $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$----- -->
-            <div class="layui-tab-item ">Report to do next...</div>
+            <div class="layui-tab-item ">
+                <input type="button" class="layui-btn layui-btn-sm" onclick="getContent()" value="获得内容">
+                <input type="button" class="layui-btn layui-btn-sm" onclick="setContent()" value="设置内容">
+                <input type="button" class="layui-btn layui-btn-sm" onclick="saveContent()" value="保存内容">
+                <!-- <form method="post"> -->
+                <textarea id="ReportArea"></textarea>
+                <!-- </form> -->
+            </div>
             <div class="layui-tab-item ">StudyImage to do next...</div>
             <div class="layui-tab-item ">
                 upload file to server
