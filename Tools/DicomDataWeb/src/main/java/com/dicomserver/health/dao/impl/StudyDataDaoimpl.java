@@ -258,7 +258,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         boolean find = false;
         String PatientIdentity = "";
         if (orderStudy.getPatientID() == null || orderStudy.getPatientID().equals("")) {
-            orderStudy.setPatientID(Long.toUnsignedString(System.currentTimeMillis()));
+            orderStudy.setPatientID(orderStudy.creatPatientID());
         } else {
             // 查找是否存在指定的ID
             String findsql = "select  * from h_patient where `PatientID`=?";
@@ -282,7 +282,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 orderStudy.setPatientIdentity(PatientIdentity);
             }
             String sql = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`," +
-                    "`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?)";
+                    "`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?,?)";
             Object[] params = {PatientIdentity, orderStudy.getPatientName(), orderStudy.getPatientBirthday(),
                                 orderStudy.getPatientSex(), orderStudy.getPatientID(), orderStudy.getPatientTelNumber(),
                                 orderStudy.getPatientAddr(), orderStudy.getPatientCarID(),orderStudy.getPatientType(),orderStudy.getPatientEmail()};
@@ -358,19 +358,18 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
     }
     @Override
     public int updateOrderStudy(StudyData orderStudy){
-        int row = 0;
         String StudyOrderIdentity = orderStudy.getStudyOrderIdentity();
         String sql = "update h_order set `ScheduledDateTime`=?, `StudyDescription`=?,`StudyModality`=?,`StudyCost`=?,`StudyCode`=? "
                 + " ,`StudyDepart`=?,`CostType`=? where StudyOrderIdentity=?";
         Object[] params = {orderStudy.getScheduledDateTime(), orderStudy.getStudyDescription(), orderStudy.getStudyModality(), orderStudy.getStudyCost(),
                 orderStudy.getStudyCode(),orderStudy.getStudyDepart(),orderStudy.getCostType(),StudyOrderIdentity};
-        int studyrow = this.executeUpdateSQL(sql, params);
-        if (studyrow > 0) {
-            System.out.println("增加预约检查成功");
+        int updaterow = this.executeUpdateSQL(sql, params);
+        if (updaterow > 0) {
+            System.out.println("更新预约检查成功");
         } else {
-            System.out.println("增加预约检查失败");
+            System.out.println("更新预约检查失败");
         }
-        return row;
+        return updaterow;
     }
     @Override
     public int markOrderStudy(StudyData orderStudy){
