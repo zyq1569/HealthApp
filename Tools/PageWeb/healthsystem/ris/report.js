@@ -1,3 +1,6 @@
+// var script = document.createElement("script");
+// script.type = "text/javascript";
+// script.src =  "prefixfree.min.js";
 tinymce.init({
     selector: '#ReportArea',
     // inline: true,
@@ -38,31 +41,37 @@ function setReportContent() {
 }
 // 设置内容
 function setStudyReportContent(data) {
-    layer.msg('ReportIdentity:' + data.ReportIdentity);
-    tinyMCE.editors[g_tinyID].setContent(data.ReportConten);
+    if (g_currentReportOrderIdentity == data.ReportIdentity) {
+        layer.alert('Same study report!');
+        return;
+    } else {
+        g_currentReportOrderIdentity = data.ReportIdentity;
+        g_currentReportData = data;
+    }
+    layer.msg('ReportIdentity:' + g_currentReportData.ReportIdentity);
+    tinyMCE.editors[g_tinyID].setContent(g_currentReportData.ReportConten);
     g_initContent = data.ReportConten;
 }
 // 清空内容
 function clearReportContent() {
     tinyMCE.editors[g_tinyID].setContent('');
+    g_currentReportOrderIdentity = '';
 }
 
-function saveReportContent(data) {
+function saveReport2ServerContent() {
     // tinyMCE.editors[g_tinyID].getContent(g_initContent);
-    var postdata = JSON.stringify(data.field);
+    var reportdata = g_currentReportData;
+    var postdata = JSON.stringify(reportdata);
+    layer.alert('-----postdata|' + postdata);
     var host = window.location.host;
     $.ajax({
         type: "POST",
-        url: host + '/healthsystem/ris/Report/',
+        url: host + '/healthsystem/ris/report/',
         async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
         data: postdata, //请求save处理数据
         success: function(mess) {
             if (mess == "OK") { //根据返回值进行跳转
-                // layer.alert(mess + '--save ok!' + postdata);
-                tableObj.reload(options); //重载表格
                 layer.msg('--save ok!--' + postdata);
-                ChangeTab('TabBrief', 'layid_addedit');
-                //table.render("studytabledatas");
             } else {
                 layer.alert(mess + "--save fail:" + postdata);
             }

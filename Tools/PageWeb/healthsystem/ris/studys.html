@@ -24,7 +24,6 @@
     <script src="../layui/layui.js"></script>
     <!-- tinymce editer -->
     <script src='../tinymce/tinymce.min.js'></script>
-    <script src='report.js'></script>
     <script src='units.js'></script>
     <!-- ------------------------------------------------- -->
     <div class="layui-tab layui-tab-brief" lay-filter="TabBrief">
@@ -224,7 +223,7 @@
             <div class="layui-tab-item ">
                 <input type="button" class="layui-btn layui-btn-sm" onclick="getReportContent()" value="GetContent">
                 <input type="button" class="layui-btn layui-btn-sm" onclick="setReportContent()" value="SetContent">
-                <input type="button" class="layui-btn layui-btn-sm" onclick="saveReportContent()" value="SaveContent">
+                <input type="button" class="layui-btn layui-btn-sm" onclick="saveReport2ServerContent()" value="SaveContent">
                 <input type="button" class="layui-btn layui-btn-sm" onclick="clearReportContent()" value="ClearContent">
                 <input type="button" class="layui-btn layui-btn-sm" onclick=" ChangeTab('TabBrief', 'layid_patients');" value="Return patient">
                 <!-- <form method="post"> -->
@@ -242,6 +241,8 @@
         <div class="layui-tab-content "></div>
     </div>
     <script src='tabform.js'></script>
+    <script src="../lib/jquery-3.4.1.min.js"></script>
+    <script src='report.js'></script>
     <script type="text/html" id="table_row_btns">
         <a class="layui-btn layui-btn-primary layui-btn-xs " lay-event="detail">查看</a>
         <a class="layui-btn layui-btn-xs " lay-event="edit">编辑</a>
