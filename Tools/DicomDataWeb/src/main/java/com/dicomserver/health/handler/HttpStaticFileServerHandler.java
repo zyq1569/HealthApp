@@ -559,11 +559,27 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     }
 
     public void HealthSystem(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
-        if(uri.toLowerCase().contains("/healthsystem/ris/updata")){
+        String lowerUri = uri.toLowerCase();
+        if(lowerUri.contains("/healthsystem/ris/updata")){
             SavePatient(ctx,request,uri,keepAlive);
             return;
         }
-        if (!uri.toLowerCase().contains("/stduydata/")) {
+        if (lowerUri.contains("/healthsystem/ris/stduydata")) {
+            //get patientstudy data json
+            String buf = getPatientStudyData();
+            ByteBuf buffer = ctx.alloc().buffer(buf.length());
+            buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
+            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
+            this.sendAndCleanupConnection(ctx, response);
+        }
+        if (lowerUri.contains("/healthsystem/ris/report")){
+            System.out.println("---content:"+ request.content().toString(CharsetUtil.UTF_8));
+            sendError(ctx,METHOD_NOT_ALLOWED);
+            return;
+        }
+        if (!lowerUri.contains("/stduydata/")) {
             int pos = uri.indexOf(".html?");
             if (pos > 0 ){
                 uri = uri.substring(0,pos+5);
@@ -572,14 +588,6 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             returnWeb(ctx,request,path,keepAlive);
             return;
         }
-        //get patientstudy data json
-        String buf = getPatientStudyData();
-        ByteBuf buffer = ctx.alloc().buffer(buf.length());
-        buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
-        response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
-        this.sendAndCleanupConnection(ctx, response);
     }
 
     public boolean CheckCookieLogin(FullHttpRequest request) {

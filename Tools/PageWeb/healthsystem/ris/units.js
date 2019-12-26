@@ -3,13 +3,12 @@ var g_initContent = 'frist';
 var g_reportData = {
     ReportIdentity: 0,
     StudyOrderIdentity: 0,
-    ReportModality: '',
+    ReportTemplate: '',
     ReportCreatDate: '',
     ReportWriterID: '',
     ReportCheckID: '',
     ReportCheckDate: '',
-    ReportDate: '',
-    ReportConten: '',
+    ReportContent: '',
     ReportState: '0', //????? 0.空文档 1.草稿 2.加载 3.审核
     ReportSave: false,
     ReportChange: false,
@@ -17,6 +16,7 @@ var g_reportData = {
 };
 
 var g_currentReportOrderIdentity = '';
+var g_currentReportData = g_reportData;
 
 layui.use('laydate', function() {
     var laydate = layui.laydate; //执行一个laydate实例
