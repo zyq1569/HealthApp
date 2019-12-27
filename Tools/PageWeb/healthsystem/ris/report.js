@@ -39,6 +39,24 @@ function getReportContent() {
 function setReportContent() {
     tinyMCE.editors[g_tinyID].setContent(g_initContent);
 }
+
+function getFormatDateTime() {
+    var date = new Date();
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    m = m < 10 ? ('0' + m) : m;
+    var d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    var h = date.getHours();
+    h = h < 10 ? ('0' + h) : h;
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+    minute = minute < 10 ? ('0' + minute) : minute;
+    second = second < 10 ? ('0' + second) : second;
+    //var currentDateTime = y + '' + m + '' + d + '' + h + '' + minute + '' + second;
+    var currentDateTime = '' + y + m + d + h + minute + second;
+    return currentDateTime;
+}
 // 设置内容
 function setStudyReportContent(data) {
     if (g_currentReportOrderIdentity == data.ReportIdentity) {
@@ -47,8 +65,13 @@ function setStudyReportContent(data) {
     } else {
         g_currentReportOrderIdentity = data.ReportIdentity;
         g_currentReportData = data;
+        if (g_currentReportData.ReportCreatDate == '') {
+            g_currentReportData.ReportCreatDate = getFormatDateTime();
+            g_currentReportData.ReportCheckDate = getFormatDateTime();
+            //layer.alert('-----ReportCreatDate|' + g_currentReportData.ReportCreatDate);
+        }
     }
-    layer.msg('ReportIdentity:' + g_currentReportData.ReportIdentity);
+    //layer.msg('ReportIdentity:' + g_currentReportData.ReportIdentity);
     tinyMCE.editors[g_tinyID].setContent(g_currentReportData.ReportContent);
     g_initContent = data.ReportContent;
 }
