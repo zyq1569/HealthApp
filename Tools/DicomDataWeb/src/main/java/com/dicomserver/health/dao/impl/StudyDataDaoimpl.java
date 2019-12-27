@@ -2,6 +2,7 @@ package com.dicomserver.health.dao.impl;
 
 import com.dicomserver.health.dao.BaseDao;
 import com.dicomserver.health.dao.StudyDataDao;
+import com.dicomserver.health.entity.ReportData;
 import com.dicomserver.health.entity.StudyData;
 
 import java.sql.ResultSet;
@@ -39,7 +40,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 stu.setStudyUID(rs.getString("s.StudyUID"));
                 //stu.setStudyIdentity(rs.getString("s.StudyOrderIdentity"));
                 stu.setStudyID(rs.getString("s.StudyID"));
-               // stu.setScheduledDateTime(rs.getString("s.ScheduledDateTime"));
+                // stu.setScheduledDateTime(rs.getString("s.ScheduledDateTime"));
                 stu.setStudyDateTime(rs.getString("s.StudyDateTime"));
                 str = rs.getString("s.StudyDescription");
                 if (str.length() < 1)
@@ -61,9 +62,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
     public List<StudyData> getAllStudy() {
         List<StudyData> list = new ArrayList<StudyData>();
         String sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
-                 "p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType,"+
-                 "s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState, s.ScheduledDateTime" +
-                 " from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0";
+                "p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
+                "s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState, s.ScheduledDateTime" +
+                " from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0";
         Object[] params = {};
         ResultSet rs = this.executeQuerySQL(sql, params);
         try {
@@ -224,6 +225,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
 
         return row;
     }
+
     @Override
     public boolean findStudy(StudyData study) {
         boolean flag = true;
@@ -253,7 +255,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
 
     //patient table
     @Override
-    public int addPatient(StudyData orderStudy){
+    public int addPatient(StudyData orderStudy) {
         int row = 0;
         boolean find = false;
         String PatientIdentity = "";
@@ -274,9 +276,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 e.printStackTrace();
             }
         }
-        if (find){
+        if (find) {
             return updatePatient(orderStudy);
-        }else {
+        } else {
             if (PatientIdentity.equals("")) {
                 PatientIdentity = orderStudy.creatPatientIdentity();
                 orderStudy.setPatientIdentity(PatientIdentity);
@@ -284,8 +286,8 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             String sql = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`," +
                     "`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?,?)";
             Object[] params = {PatientIdentity, orderStudy.getPatientName(), orderStudy.getPatientBirthday(),
-                                orderStudy.getPatientSex(), orderStudy.getPatientID(), orderStudy.getPatientTelNumber(),
-                                orderStudy.getPatientAddr(), orderStudy.getPatientCarID(),orderStudy.getPatientType(),orderStudy.getPatientEmail()};
+                    orderStudy.getPatientSex(), orderStudy.getPatientID(), orderStudy.getPatientTelNumber(),
+                    orderStudy.getPatientAddr(), orderStudy.getPatientCarID(), orderStudy.getPatientType(), orderStudy.getPatientEmail()};
             row = this.executeUpdateSQL(sql, params);
             if (row > 0) {
                 System.out.println("增加患者成功");
@@ -295,13 +297,14 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             return row;
         }
     }
+
     @Override
-    public int updatePatient(StudyData orderStudy){
+    public int updatePatient(StudyData orderStudy) {
         int row = 0;
         String sql = "update  h_patient set `PatientAddr`=?,`PatientName`=?,`PatientBirthday`=?,`PatientSex`=?,`patientTelNumber`=?,`PatientCarID`=?,`PatientType`=? ,`PatientEmail`=? where `PatientID`=?";
         Object[] params = {orderStudy.getPatientAddr(), orderStudy.getPatientName(), orderStudy.getPatientBirthday(),
-                           orderStudy.getPatientSex(), orderStudy.getPatientTelNumber(), orderStudy.getPatientCarID(),
-                           orderStudy.getPatientType(),orderStudy.getPatientEmail(), orderStudy.getPatientID()};
+                orderStudy.getPatientSex(), orderStudy.getPatientTelNumber(), orderStudy.getPatientCarID(),
+                orderStudy.getPatientType(), orderStudy.getPatientEmail(), orderStudy.getPatientID()};
         row = this.executeUpdateSQL(sql, params);
         if (row > 0) {
             System.out.println("update患者成功");
@@ -310,8 +313,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         }
         return row;
     }
+
     @Override
-    public int markPatient(StudyData orderStudy){
+    public int markPatient(StudyData orderStudy) {
         int row = 0;
         String sql = "update  h_patient set 'PatientState'=?  where `PatientID`= ? ";
         Object[] params = {"-1", orderStudy.getPatientID()};
@@ -326,18 +330,18 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
 
     //order table
     @Override
-    public int addOrderStudy(StudyData orderStudy){
+    public int addOrderStudy(StudyData orderStudy) {
         String StudyOrderIdentity = orderStudy.getStudyOrderIdentity();
-        if (!StudyOrderIdentity.equals("")){
+        if (!StudyOrderIdentity.equals("")) {
             return updateOrderStudy(orderStudy);
         }
         String PatientIdentity = orderStudy.getPatientIdentity();
 
-        if (orderStudy.getsStudyUID() == null || orderStudy.getsStudyUID().equals("")){
+        if (orderStudy.getsStudyUID() == null || orderStudy.getsStudyUID().equals("")) {
             String SUID = orderStudy.creatStudyUID();
             orderStudy.setStudyUID(SUID);
         }
-        if (orderStudy.getsStudyID() == null || orderStudy.getsStudyID().equals("")){
+        if (orderStudy.getsStudyID() == null || orderStudy.getsStudyID().equals("")) {
             String ID = orderStudy.creatStudyID();
             orderStudy.setStudyID(ID);
         }
@@ -347,7 +351,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 + " `StudyCost`,`StudyCode`,`StudyDepart`,`CostType`) value(?,?,?,?,?,?,?,?,?,?,?)";
         Object[] params = {orderStudy.getStudyOrderIdentity(), orderStudy.getStudyID(), orderStudy.getStudyUID(), PatientIdentity,
                 orderStudy.getScheduledDateTime(), orderStudy.getStudyDescription(), orderStudy.getStudyModality(), orderStudy.getStudyCost(),
-                orderStudy.getStudyCode(),orderStudy.getStudyDepart(),orderStudy.getCostType()};
+                orderStudy.getStudyCode(), orderStudy.getStudyDepart(), orderStudy.getCostType()};
         int studyrow = this.executeUpdateSQL(sql, params);
         if (studyrow > 0) {
             System.out.println("增加预约检查成功");
@@ -356,13 +360,14 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         }
         return studyrow;
     }
+
     @Override
-    public int updateOrderStudy(StudyData orderStudy){
+    public int updateOrderStudy(StudyData orderStudy) {
         String StudyOrderIdentity = orderStudy.getStudyOrderIdentity();
         String sql = "update h_order set `ScheduledDateTime`=?, `StudyDescription`=?,`StudyModality`=?,`StudyCost`=?,`StudyCode`=? "
                 + " ,`StudyDepart`=?,`CostType`=? where StudyOrderIdentity=?";
         Object[] params = {orderStudy.getScheduledDateTime(), orderStudy.getStudyDescription(), orderStudy.getStudyModality(), orderStudy.getStudyCost(),
-                orderStudy.getStudyCode(),orderStudy.getStudyDepart(),orderStudy.getCostType(),StudyOrderIdentity};
+                orderStudy.getStudyCode(), orderStudy.getStudyDepart(), orderStudy.getCostType(), StudyOrderIdentity};
         int updaterow = this.executeUpdateSQL(sql, params);
         if (updaterow > 0) {
             System.out.println("更新预约检查成功");
@@ -371,12 +376,13 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         }
         return updaterow;
     }
+
     @Override
-    public int markOrderStudy(StudyData orderStudy){
+    public int markOrderStudy(StudyData orderStudy) {
         int row = 0;
         String StudyOrderIdentity = orderStudy.getStudyOrderIdentity();
         String sql = "update h_order set `StudyState`=? where StudyOrderIdentity=?";
-        Object[] params = {"-1",StudyOrderIdentity};
+        Object[] params = {"-1", StudyOrderIdentity};
         int studyrow = this.executeUpdateSQL(sql, params);
         if (studyrow > 0) {
             System.out.println("增加预约检查成功");
@@ -384,5 +390,90 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             System.out.println("增加预约检查失败");
         }
         return row;
+    }
+
+    //deal report table
+    public int getStudyReport(ReportData reportData) {
+        String reportIdentity = reportData.getReportIdentity();
+        if (!reportIdentity.equals("")) {
+            // 查找是否存在指定的reportIdentity
+            String findsql = "select  * from h_report where `ReportIdentity`=?";
+            Object[] findparams = {reportIdentity};
+            ResultSet rs = this.executeQuerySQL(findsql, findparams);
+            try {
+                while (rs.next()) {
+                    //`StudyOrderIdentity`, `ReportIdentity`,`ReportState`,`ReportTemplate`,`ReportCreatDate`, `ReportWriterID`,`ReportCheckID`, `ReportCheckDate`,`ReportContent`,`ReportOther`
+//                    reportData.setReportIdentity(rs.getString("ReportIdentity"));
+                    reportData.setStudyOrderIdentity(rs.getString("StudyOrderIdentity"));
+                    reportData.setReportState(rs.getString("ReportState"));
+                    reportData.setReportTemplate(rs.getString("ReportTemplate"));
+                    reportData.setReportCreatDate(rs.getString("ReportCreatDate"));
+                    reportData.setReportWriterID(rs.getString("ReportWriterID"));
+                    reportData.setReportCheckID(rs.getString("ReportCheckID"));
+                    reportData.setReportCheckDate(rs.getString("ReportCheckDate"));
+                    reportData.setReportContent(rs.getString("ReportContent"));
+                    reportData.setReportOther(rs.getString("ReportOther"));
+                    return 1;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    public int addStudyReport(ReportData reportData) {
+        String studyOrderIdentity = reportData.getStudyOrderIdentity();
+        String reportIdentity = reportData.getReportIdentity();
+        if (!reportIdentity.equals("")) {
+            // 查找是否存在指定的reportIdentity
+            String findsql = "select  * from h_report where `ReportIdentity`=?";
+            Object[] findparams = {reportIdentity};
+            ResultSet findrs = this.executeQuerySQL(findsql, findparams);
+            try {
+                while (findrs.next()) {
+                    return updateStudyReport(reportData);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return 0;
+        }
+        if (!studyOrderIdentity.equals("")) {
+            if (reportIdentity.equals("")) {
+                reportData.setReportIdentity(studyOrderIdentity);
+            }
+            String sql = "insert into h_report (`StudyOrderIdentity`, `ReportIdentity`,`ReportState`,`ReportTemplate`,`ReportCreatDate`, `ReportWriterID`,`ReportCheckID`, "
+                    + " `ReportCheckDate`,`ReportContent`,`ReportOther`) value(?,?,?,?,?,?,?,?,?,?)";
+            Object[] params = {reportData.getStudyOrderIdentity(), reportData.getReportIdentity(), reportData.getReportState(),
+                    reportData.getReportTemplate(), reportData.getReportCreatDate(), reportData.getReportWriterID(), reportData.getReportCheckID(),
+                    reportData.getReportCheckDate(), reportData.getReportContent(), reportData.getReportOther()};
+            int reportrow = this.executeUpdateSQL(sql, params);
+            if (reportrow > 0) {
+                System.out.println("add 报告成功");
+                return reportrow;
+            }
+        }
+        System.out.println("add 报告失败");
+        return 0;
+    }
+
+    public int updateStudyReport(ReportData reportData) {
+        int row = 0;
+        String sql = "update  h_report set `ReportState`=?,`ReportTemplate`=?,`ReportCheckID`=?,`ReportCheckDate`=?,`ReportContent`=?,`ReportOther`=?," +
+                "  where `ReportIdentity`=?";
+        Object[] params = {reportData.getReportState(), reportData.getReportTemplate(), reportData.getReportCheckID(),
+                reportData.getReportCheckDate(), reportData.getReportContent(), reportData.getReportOther(), reportData.getReportIdentity()};
+        row = this.executeUpdateSQL(sql, params);
+        if (row > 0) {
+            System.out.println("update报告成功");
+        } else {
+            System.out.println("update报告失败");
+        }
+        return row;
+    }
+
+    public int markStudyReport(ReportData reportData) {
+        return 0;
     }
 }

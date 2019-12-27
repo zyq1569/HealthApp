@@ -1,5 +1,6 @@
 package com.dicomserver.health.dao;
 
+import com.dicomserver.health.entity.ReportData;
 import com.dicomserver.health.entity.StudyData;
 
 import java.util.List;
@@ -23,5 +24,9 @@ public interface StudyDataDao {
     public int updateOrderStudy(StudyData orderStudy);
     public int markOrderStudy(StudyData orderStudy);
 
-    //
+    //deal report table
+    public int getStudyReport(ReportData reportData);
+    public int addStudyReport(ReportData reportData);
+    public int updateStudyReport(ReportData reportData);
+    public int markStudyReport(ReportData reportData);
 }

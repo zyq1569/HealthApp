@@ -581,7 +581,15 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             Gson gson = new Gson();
             ReportData reportData = gson.fromJson(content,ReportData.class);
             System.out.println("---fromJson ReportContent:--"+reportData.getReportContent());
-
+            StudyDataDao addReport = new StudyDataDaoimpl();
+            if (addReport.addStudyReport(reportData) > 0){
+                String message = "OK";
+                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(message.getBytes("UTF-8")));
+                response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain");
+                this.sendAndCleanupConnection(ctx, response);
+                return;
+            }
             sendError(ctx,METHOD_NOT_ALLOWED);
             return;
         }
