@@ -151,17 +151,38 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     //  });
     //监听表格行双击
     table.on('rowDouble(studytabledatas)', function(obj) {
-        // console.log(obj)
-        element.tabChange('TabBrief', 'layid_report');
+        var patient = JSON.stringify(obj.data);
+        var json = JSON.parse(patient);
+        if (json.studyOrderIdentity == g_currentReportOrderIdentity) {
+            return;
+        } else if (g_currentReportOrderIdentity.length > 0) {
+            saveReport2ServerContent();
+        }
         var reportdata = g_reportData;
-        var data = JSON.stringify(obj.data);
-        var json = JSON.parse(data);
         reportdata.StudyOrderIdentity = json.studyOrderIdentity;
         reportdata.ReportIdentity = json.studyOrderIdentity;
-        reportdata.ReportContent = data;
+        // reportdata.ReportContent = patient;
+        var reportjsonstring = '';
+        //获取数据库检查报告信息
+        $.ajax({
+            type: "POST",
+            url: window.location.host + '/healthsystem/ris/getportdata',
+            async: true, //同步：意思是当有返回值以后才会进行后面的js程序。
+            data: JSON.stringify(reportdata), //请求save处理数据
+            // dataType: "json",
+            success: function(result) {
+                //reportjsonstring = JSON.stringify(result);
+                //layer.alert('------rpt-------' + reportjsonstring);
+                if (result.ReportContent.length > 0) {
+                    reportdata = result;
+                    element.tabChange('TabBrief', 'layid_report');
+                    setStudyReportContent(reportdata);
+                    return;
+                }
+            }
+        });
+        element.tabChange('TabBrief', 'layid_report');
         setStudyReportContent(reportdata);
-        //layer.alert('patientName:' + json.patientName);
-        // layer.alert(obj.tr[0].rowIndex + ' 选中数据:' + data);
     });
     //上传
     upload.render({

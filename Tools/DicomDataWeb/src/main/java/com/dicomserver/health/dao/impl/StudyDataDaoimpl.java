@@ -436,8 +436,8 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                return  0;
             }
-            return 0;
         }
         if (!studyOrderIdentity.equals("")) {
             if (reportIdentity.equals("")) {

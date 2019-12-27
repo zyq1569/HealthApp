@@ -40,37 +40,20 @@ function setReportContent() {
     tinyMCE.editors[g_tinyID].setContent(g_initContent);
 }
 
-function getFormatDateTime() {
-    var date = new Date();
-    var y = date.getFullYear();
-    var m = date.getMonth() + 1;
-    m = m < 10 ? ('0' + m) : m;
-    var d = date.getDate();
-    d = d < 10 ? ('0' + d) : d;
-    var h = date.getHours();
-    h = h < 10 ? ('0' + h) : h;
-    var minute = date.getMinutes();
-    var second = date.getSeconds();
-    minute = minute < 10 ? ('0' + minute) : minute;
-    second = second < 10 ? ('0' + second) : second;
-    //var currentDateTime = y + '' + m + '' + d + '' + h + '' + minute + '' + second;
-    var currentDateTime = '' + y + m + d + h + minute + second;
-    return currentDateTime;
-}
 // 设置内容
 function setStudyReportContent(data) {
-    if (g_currentReportOrderIdentity == data.ReportIdentity) {
-        layer.alert('Same study report!');
-        return;
-    } else {
-        g_currentReportOrderIdentity = data.ReportIdentity;
-        g_currentReportData = data;
-        if (g_currentReportData.ReportCreatDate == '') {
-            g_currentReportData.ReportCreatDate = getFormatDateTime();
-            g_currentReportData.ReportCheckDate = getFormatDateTime();
-            //layer.alert('-----ReportCreatDate|' + g_currentReportData.ReportCreatDate);
-        }
+    // if (g_currentReportOrderIdentity == data.ReportIdentity) {
+    //     layer.alert('Same study report!');
+    //     return;
+    // } else {
+    g_currentReportOrderIdentity = data.ReportIdentity;
+    g_currentReportData = data;
+    if (g_currentReportData.ReportCreatDate == '') {
+        g_currentReportData.ReportCreatDate = getFormatDateTime();
+        g_currentReportData.ReportCheckDate = getFormatDateTime();
+        //layer.alert('-----ReportCreatDate|' + g_currentReportData.ReportCreatDate);
     }
+    // }
     //layer.msg('ReportIdentity:' + g_currentReportData.ReportIdentity);
     tinyMCE.editors[g_tinyID].setContent(g_currentReportData.ReportContent);
     g_initContent = data.ReportContent;
@@ -82,14 +65,17 @@ function clearReportContent() {
 }
 
 function saveReport2ServerContent() {
-    // tinyMCE.editors[g_tinyID].getContent(g_initContent);
-    g_currentReportData.ReportContent = tinyMCE.editors[g_tinyID].getContent();
+    var content = tinyMCE.editors[g_tinyID].getContent();
+    if (content.length < 1) {
+        return;
+    }
+    g_currentReportData.ReportContent = content;
     var postdata = JSON.stringify(g_currentReportData);
     //layer.alert('-----postdata|' + postdata);
     var host = window.location.host;
     $.ajax({
         type: "POST",
-        url: host + '/healthsystem/ris/reportdata/',
+        url: host + '/healthsystem/ris/saveportdata/',
         async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
         data: postdata, //请求save处理数据
         success: function(mess) {
