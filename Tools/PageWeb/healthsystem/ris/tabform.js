@@ -158,7 +158,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         var json = JSON.parse(data);
         reportdata.StudyOrderIdentity = json.studyOrderIdentity;
         reportdata.ReportIdentity = json.studyOrderIdentity;
-        reportdata.ReportConten = data;
+        reportdata.ReportContent = data;
         setStudyReportContent(reportdata);
         //layer.alert('patientName:' + json.patientName);
         // layer.alert(obj.tr[0].rowIndex + ' 选中数据:' + data);

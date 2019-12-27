@@ -9,6 +9,7 @@ import com.dicomserver.health.dao.UserService;
 import com.dicomserver.health.dao.impl.StudyDataDaoimpl;
 import com.dicomserver.health.dao.impl.UserServiceimp;
 import com.dicomserver.health.entity.LoginUser;
+import com.dicomserver.health.entity.ReportData;
 import com.dicomserver.health.entity.StudyData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -574,8 +575,13 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
             this.sendAndCleanupConnection(ctx, response);
         }
-        if (lowerUri.contains("/healthsystem/ris/report")){
-            System.out.println("---content:"+ request.content().toString(CharsetUtil.UTF_8));
+        if (lowerUri.contains("/healthsystem/ris/reportdata")){
+            String content = request.content().toString(CharsetUtil.UTF_8);
+            System.out.println("---content:"+ content);
+            Gson gson = new Gson();
+            ReportData reportData = gson.fromJson(content,ReportData.class);
+            System.out.println("---fromJson ReportContent:--"+reportData.getReportContent());
+
             sendError(ctx,METHOD_NOT_ALLOWED);
             return;
         }

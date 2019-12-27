@@ -49,8 +49,8 @@ function setStudyReportContent(data) {
         g_currentReportData = data;
     }
     layer.msg('ReportIdentity:' + g_currentReportData.ReportIdentity);
-    tinyMCE.editors[g_tinyID].setContent(g_currentReportData.ReportConten);
-    g_initContent = data.ReportConten;
+    tinyMCE.editors[g_tinyID].setContent(g_currentReportData.ReportContent);
+    g_initContent = data.ReportContent;
 }
 // 清空内容
 function clearReportContent() {
@@ -60,13 +60,13 @@ function clearReportContent() {
 
 function saveReport2ServerContent() {
     // tinyMCE.editors[g_tinyID].getContent(g_initContent);
-    var reportdata = g_currentReportData;
-    var postdata = JSON.stringify(reportdata);
-    layer.alert('-----postdata|' + postdata);
+    g_currentReportData.ReportContent = tinyMCE.editors[g_tinyID].getContent();
+    var postdata = JSON.stringify(g_currentReportData);
+    //layer.alert('-----postdata|' + postdata);
     var host = window.location.host;
     $.ajax({
         type: "POST",
-        url: host + '/healthsystem/ris/report/',
+        url: host + '/healthsystem/ris/reportdata/',
         async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
         data: postdata, //请求save处理数据
         success: function(mess) {
