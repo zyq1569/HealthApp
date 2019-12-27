@@ -17,7 +17,29 @@ var g_reportData = {
 
 var g_currentReportOrderIdentity = '';
 var g_currentReportData = g_reportData;
+var g_server_json_report_url = '/healthsystem/ris/saveportdata/';
 
+function getFormatDateTime() {
+    var date = new Date();
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    m = m < 10 ? ('0' + m) : m;
+    var d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    var h = date.getHours();
+    h = h < 10 ? ('0' + h) : h;
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+    minute = minute < 10 ? ('0' + minute) : minute;
+    second = second < 10 ? ('0' + second) : second;
+    //var currentDateTime = y + '' + m + '' + d + '' + h + '' + minute + '' + second;
+    var currentDateTime = '' + y + m + d + h + minute + second;
+    return currentDateTime;
+}
+
+function getCurrentFormatDateTime() {
+    return getFormatDateTime();
+}
 layui.use('laydate', function() {
     var laydate = layui.laydate; //执行一个laydate实例
     laydate.render({

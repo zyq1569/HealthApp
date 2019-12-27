@@ -239,7 +239,16 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         strvalue = gson.toJson(respjson);
         return strvalue;
     }
-
+    public String getStudyReport(ReportData reportData) {
+        String strvalue="";
+        StudyDataDao addReport = new StudyDataDaoimpl();
+        if (addReport.getStudyReport(reportData) > 0){
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            strvalue = gson.toJson(reportData,ReportData.class);
+            System.out.println("------StudyReport:--"+strvalue);
+        }
+        return strvalue;
+    }
     public String readToString(String fileName) {
         String encoding = "UTF-8";
         File file = new File(fileName);
@@ -575,7 +584,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
             this.sendAndCleanupConnection(ctx, response);
         }
-        if (lowerUri.contains("/healthsystem/ris/reportdata")){
+        if (lowerUri.contains("/healthsystem/ris/saveportdata")){
             String content = request.content().toString(CharsetUtil.UTF_8);
             System.out.println("---content:"+ content);
             Gson gson = new Gson();
@@ -591,6 +600,24 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 return;
             }
             sendError(ctx,METHOD_NOT_ALLOWED);
+            return;
+        }
+        if (lowerUri.contains("/healthsystem/ris/getportdata")){
+            String content = request.content().toString(CharsetUtil.UTF_8);
+            Gson gson = new Gson();
+            ReportData reportData = gson.fromJson(content,ReportData.class);
+//            ReportData reportData = gson.fromJson(request.content().toString(CharsetUtil.UTF_8),ReportData.class);
+            String buf = getStudyReport(reportData);
+            if (buf.equals("")) {
+                sendError(ctx,METHOD_NOT_ALLOWED);
+                return;
+            }
+            ByteBuf buffer = ctx.alloc().buffer(buf.length());
+            buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
+            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
+            this.sendAndCleanupConnection(ctx, response);
             return;
         }
         if (!lowerUri.contains("/stduydata/")) {
