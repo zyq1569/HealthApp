@@ -22,4 +22,6 @@ public interface StudyDataDao {
     public int addOrderStudy(StudyData orderStudy);
     public int updateOrderStudy(StudyData orderStudy);
     public int markOrderStudy(StudyData orderStudy);
+
+    //
 }
