@@ -1,5 +1,6 @@
 var g_tinyID = 'ReportArea';
 var g_initContent = 'frist';
+var g_mess_savereportfail = 'please go to report editer! save report fail!';
 var g_reportData = {
     ReportIdentity: 0,
     StudyOrderIdentity: 0,
@@ -14,9 +15,23 @@ var g_reportData = {
     ReportChange: false,
     ReportOther: ''
 };
-
+// to do 深拷贝 浅拷贝 ????
+var g_currentReportData = {
+    ReportIdentity: 0,
+    StudyOrderIdentity: 0,
+    ReportTemplate: '',
+    ReportCreatDate: '',
+    ReportWriterID: '',
+    ReportCheckID: '',
+    ReportCheckDate: '',
+    ReportContent: '',
+    ReportState: '0', //????? 0.空文档 1.草稿 2.加载 3.审核
+    ReportSave: false,
+    ReportChange: false,
+    ReportOther: ''
+};
 var g_currentReportOrderIdentity = '';
-var g_currentReportData = g_reportData;
+
 var g_server_json_report_url = '/healthsystem/ris/saveportdata/';
 
 function getFormatDateTime() {
@@ -63,3 +78,36 @@ layui.use('laydate', function() {
         calendar: true
     });
 });
+// $.ajax({
+//     url: 'http://.......',
+//     type: "post",
+//     timeout: 5000,
+//     async: true,
+//     cache: true,
+//     data: "user_id=12&page=0",
+//     dataType: "json",
+//     contentType: "application/x-www-form-urlencoded",
+//     beforeSend: function(XMLHttpRequest) {
+//         console.log(this);
+//         $("#inp").val("正在获取数据...");
+//     },
+//     success: function(data) {
+//         console.log(data);
+//         $(".display").html("获取到的数据:</br>");
+//         $(".display").append("总条数:" + data.data.all_count);
+//         $("#inp").val("点击获取数据");
+//     },
+//     complete: function(XMLHttpRequest, textStatus) {
+//         if (textStatus == 'timeout') {
+//             var xmlhttp = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHttp");
+//             xmlhttp.abort();
+//             $(".box").html("网络超时！");　　　　
+//         }
+//         $("#inp").val("点击获取数据");
+//     },
+//     error: function(XMLHttpRequest, textStatus) {
+//         console.log(XMLHttpRequest); //XMLHttpRequest.responseText    XMLHttpRequest.status   XMLHttpRequest.readyState
+//         console.log(textStatus);
+//         $(".box").html("服务器错误！");
+//     }
+// });

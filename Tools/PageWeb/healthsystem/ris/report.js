@@ -42,21 +42,32 @@ function setReportContent() {
 
 // 设置内容
 function setStudyReportContent(data) {
-    // if (g_currentReportOrderIdentity == data.ReportIdentity) {
-    //     layer.alert('Same study report!');
-    //     return;
-    // } else {
+    if (data.ReportIdentity == '' || data.StudyOrderIdentity == '') {
+        layer.alert("data(ReportIdentity =='' or StudyOrderIdentity == '') error!");
+        return -1;
+    }
+    if (g_currentReportOrderIdentity == data.ReportIdentity) {
+        return 1;
+    }
+    if (g_currentReportOrderIdentity != '') {
+        if (saveReport2ServerContent() < 0) {
+            layer.alert(g_mess_savereportfail);
+            return;
+        }
+    }
     g_currentReportOrderIdentity = data.ReportIdentity;
     g_currentReportData = data;
     if (g_currentReportData.ReportCreatDate == '') {
         g_currentReportData.ReportCreatDate = getFormatDateTime();
-        g_currentReportData.ReportCheckDate = getFormatDateTime();
-        //layer.alert('-----ReportCreatDate|' + g_currentReportData.ReportCreatDate);
     }
-    // }
-    //layer.msg('ReportIdentity:' + g_currentReportData.ReportIdentity);
+    if (g_currentReportData.ReportCheckDate == '') {
+        g_currentReportData.ReportCheckDate = getFormatDateTime();
+    }
+    //layer.alert('ok:' + data.ReportContent);
     tinyMCE.editors[g_tinyID].setContent(g_currentReportData.ReportContent);
     g_initContent = data.ReportContent;
+    return 1;
+
 }
 // 清空内容
 function clearReportContent() {
@@ -67,11 +78,19 @@ function clearReportContent() {
 function saveReport2ServerContent() {
     var content = tinyMCE.editors[g_tinyID].getContent();
     if (content.length < 1) {
-        return;
+        return 1;
     }
+    //判断是否修改过内容
+    if (content == g_currentReportData.ReportContent) {
+        return 1;
+    }
+    if (g_currentReportData.ReportSave == true) {
+        return 1;
+    }
+    //修改过内容,保存到数据库中
     g_currentReportData.ReportContent = content;
+    g_currentReportData.ReportSave = false;
     var postdata = JSON.stringify(g_currentReportData);
-    //layer.alert('-----postdata|' + postdata);
     var host = window.location.host;
     $.ajax({
         type: "POST",
@@ -80,10 +99,17 @@ function saveReport2ServerContent() {
         data: postdata, //请求save处理数据
         success: function(mess) {
             if (mess == "OK") { //根据返回值进行跳转
+                g_currentReportData.ReportSave = true;
                 layer.msg('--save ok!--' + postdata);
+                return 1;
             } else {
                 layer.alert(mess + "--save fail:" + postdata);
+                return -1;
             }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            layer.alert("--save fail:" + XMLHttpRequest + textStatus + postdata);
+            return -1;
         }
     });
 }

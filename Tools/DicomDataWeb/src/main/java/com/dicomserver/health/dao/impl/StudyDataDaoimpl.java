@@ -417,6 +417,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                return -1;
             }
         }
         return 0;
@@ -443,6 +444,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             if (reportIdentity.equals("")) {
                 reportData.setReportIdentity(studyOrderIdentity);
             }
+            if (reportData.getReportCheckDate().equals("")){
+                reportData.setReportCheckDate("20191228");
+            }
             String sql = "insert into h_report (`StudyOrderIdentity`, `ReportIdentity`,`ReportState`,`ReportTemplate`,`ReportCreatDate`, `ReportWriterID`,`ReportCheckID`, "
                     + " `ReportCheckDate`,`ReportContent`,`ReportOther`) value(?,?,?,?,?,?,?,?,?,?)";
             Object[] params = {reportData.getStudyOrderIdentity(), reportData.getReportIdentity(), reportData.getReportState(),
@@ -460,7 +464,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
 
     public int updateStudyReport(ReportData reportData) {
         int row = 0;
-        String sql = "update  h_report set `ReportState`=?,`ReportTemplate`=?,`ReportCheckID`=?,`ReportCheckDate`=?,`ReportContent`=?,`ReportOther`=?," +
+        String sql = "update  h_report set `ReportState`=?,`ReportTemplate`=?,`ReportCheckID`=?,`ReportCheckDate`=?,`ReportContent`=?,`ReportOther`=?" +
                 "  where `ReportIdentity`=?";
         Object[] params = {reportData.getReportState(), reportData.getReportTemplate(), reportData.getReportCheckID(),
                 reportData.getReportCheckDate(), reportData.getReportContent(), reportData.getReportOther(), reportData.getReportIdentity()};
