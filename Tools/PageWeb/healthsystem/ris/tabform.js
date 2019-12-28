@@ -151,38 +151,48 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     //  });
     //监听表格行双击
     table.on('rowDouble(studytabledatas)', function(obj) {
-        var patient = JSON.stringify(obj.data);
-        var json = JSON.parse(patient);
+        //var patient = JSON.stringify(obj.data);
+        var json = obj.data; // JSON.parse(patient);
         if (json.studyOrderIdentity == g_currentReportOrderIdentity) {
             return;
         } else if (g_currentReportOrderIdentity.length > 0) {
-            saveReport2ServerContent();
+            if (saveReport2ServerContent() < 0) {
+                layer.alert(g_mess_savereportfail);
+                element.tabChange('TabBrief', 'layid_report');
+                return -1;
+            }
         }
-        var reportdata = g_reportData;
+        var reportdata = g_reportData; //temp_report
         reportdata.StudyOrderIdentity = json.studyOrderIdentity;
         reportdata.ReportIdentity = json.studyOrderIdentity;
-        // reportdata.ReportContent = patient;
-        var reportjsonstring = '';
+        reportdata.ReportContent = ''; // to do ... next
+        var postdata = JSON.stringify(reportdata);
         //获取数据库检查报告信息
         $.ajax({
             type: "POST",
             url: window.location.host + '/healthsystem/ris/getportdata',
-            async: true, //同步：意思是当有返回值以后才会进行后面的js程序。
-            data: JSON.stringify(reportdata), //请求save处理数据
+            async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
+            data: postdata, //JSON.stringify(reportdata), //请求save处理数据
             // dataType: "json",
             success: function(result) {
-                //reportjsonstring = JSON.stringify(result);
-                //layer.alert('------rpt-------' + reportjsonstring);
                 if (result.ReportContent.length > 0) {
                     reportdata = result;
+                    // layer.alert('ok:' + reportdata.ReportContent);
                     element.tabChange('TabBrief', 'layid_report');
                     setStudyReportContent(reportdata);
                     return;
+                } else {
+                    setStudyReportContent(reportdata);
+                    layer.alert('no report data! to create new empty report!');
+                    element.tabChange('TabBrief', 'layid_report');
                 }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                setStudyReportContent(reportdata);
+                layer.alert('Get report error! no report data!');
+                element.tabChange('TabBrief', 'layid_report');
             }
         });
-        element.tabChange('TabBrief', 'layid_report');
-        setStudyReportContent(reportdata);
     });
     //上传
     upload.render({

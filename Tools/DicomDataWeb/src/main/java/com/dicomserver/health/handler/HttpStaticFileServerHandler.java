@@ -242,10 +242,16 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public String getStudyReport(ReportData reportData) {
         String strvalue="";
         StudyDataDao addReport = new StudyDataDaoimpl();
-        if (addReport.getStudyReport(reportData) > 0){
+        int result = addReport.getStudyReport(reportData);
+        if (result > 0){
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             strvalue = gson.toJson(reportData,ReportData.class);
             System.out.println("------StudyReport:--"+strvalue);
+        }else if (result == 0){
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            strvalue = gson.toJson(reportData,ReportData.class);
+            System.out.println("------StudyReport is empty:--"+strvalue);
+            return strvalue;
         }
         return strvalue;
     }
