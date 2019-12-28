@@ -245,6 +245,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         limit: 20,
         patientId: "testReload",
         size: 'sm',
+        type: 'radio',
         even: true, //开启隔行背景
         cols: [
             [ //表头
