@@ -80,11 +80,11 @@ function saveReport2ServerContent() {
     if (content.length < 1) {
         return 1;
     }
-    //判断是否修改过内容
-    if (content == g_currentReportData.ReportContent) {
+    if (g_currentReportData.ReportSave == true) {
         return 1;
     }
-    if (g_currentReportData.ReportSave == true) {
+    //判断是否修改过内容
+    if (content == g_currentReportData.ReportContent) {
         return 1;
     }
     //修改过内容,保存到数据库中

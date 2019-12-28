@@ -154,6 +154,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         //var patient = JSON.stringify(obj.data);
         var json = obj.data; // JSON.parse(patient);
         if (json.studyOrderIdentity == g_currentReportOrderIdentity) {
+            element.tabChange('TabBrief', 'layid_report');
             return;
         } else if (g_currentReportOrderIdentity.length > 0) {
             if (saveReport2ServerContent() < 0) {
