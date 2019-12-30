@@ -83,25 +83,25 @@
             <div class="layui-tab-item">
                 <form class="layui-form layui-form-pane1" action="" lay-filter="formpatient">
                     <div class="layui-form-item">
-                        <label class="layui-form-label">PatientName:</label>
+                        <label class="layui-form-label">PatientName</label>
                         <div class="layui-input-inline">
                             <input type="text" name="PatientName" lay-verify="required|title" lay-reqText="PatientName不能为空" required placeholder="name" autocomplete="off" class="layui-input">
                         </div>
-                        <label class="layui-form-label">PatientID:</label>
+                        <label class="layui-form-label">PatientID</label>
                         <div class="layui-input-inline">
                             <input type="text" name="PatientID" placeholder="System Value" class="layui-input" readonly="readonly">
                         </div>
-                        <label class="layui-form-label">PatientIdentity:</label>
+                        <label class="layui-form-label">PatientIdentity</label>
                         <div class="layui-input-inline">
                             <input type="text" name="PatientIdentity" placeholder="System Value" class="layui-input" readonly="readonly">
                         </div>
-                        <label class="layui-form-label">StudyOrderIdentity:</label>
+                        <label class="layui-form-label">StudyOrderID</label>
                         <div class="layui-input-inline">
                             <input type="text" name="StudyOrderIdentity" placeholder="System Value" class="layui-input" readonly="readonly">
                         </div>
                     </div>
                     <div class="layui-form-item" pane>
-                        <label class="layui-form-label">PatientSex:</label>
+                        <label class="layui-form-label">PatientSex</label>
                         <div class="layui-input-block">
                             <input type="radio" name="PatientSex" value="M" title="男" checked>
                             <input type="radio" name="PatientSex" value="F" title="女">
@@ -109,44 +109,44 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">PatientBirth:</label>
+                        <label class="layui-form-label">PatientBirth</label>
                         <div class="layui-input-inline">
                             <input type="text" name="PatientBirthday" id="birthdate" lay-verify="datetime" placeholder="yyyyMMdd" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">phoneNumber:</label>
+                        <label class="layui-form-label">TelNumber</label>
                         <div class="layui-input-inline">
                             <input type="tel" name="PatientTelNumber" lay-verify="required|number" lay-verType="tips" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">Email:</label>
+                        <label class="layui-form-label">Email</label>
                         <div class="layui-input-inline">
                             <input type="email" name="PatientEmail" lay-verify="email" lay-verType="alert" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">PatientCarID:</label>
+                        <label class="layui-form-label">PatientCarID</label>
                         <div class="layui-input-inline">
                             <input type="text" name="PatientCarID" lay-verify="required|title" lay-reqText="PatientCarID标题不能为空" required placeholder="CarID" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">PatientAddr:</label>
+                        <label class="layui-form-label">PatientAddr</label>
                         <div class="layui-input-block">
                             <input type="text" name="PatientAddr" lay-verify="required|title" lay-reqText="PatientAddr不能为空" required placeholder="PatientAddr" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">Cost:</label>
+                            <label class="layui-form-label">Cost</label>
                             <div class="layui-input-inline" style="width: 100px;">
                                 <input type="text" name="StudyCost" placeholder="￥" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">StudyRoom:</label>
+                            <label class="layui-form-label">StudyRoom</label>
                             <div class="layui-input-block">
                                 <select name="StudyDepart" lay-filter="contents">
                                         <option value="">SelectDepartments </option>
@@ -166,7 +166,7 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">StudyModality:</label>
+                            <label class="layui-form-label">StudyModality</label>
                             <div class="layui-input-block">
                                 <select name="StudyModality" lay-verify="required" lay-verType="tips">
                                     <option value="">Select study modality</option>
@@ -185,7 +185,7 @@
 
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">ScheduledDate:</label>
+                        <label class="layui-form-label">PlanDate</label>
                         <div class="layui-input-inline">
                             <input type="text" name="ScheduledDate" id="ScheduledDate" lay-verify="datetime" placeholder="yyyyMMdd" autocomplete="off" class="layui-input">
                         </div>
@@ -221,11 +221,11 @@
             </div>
             <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$ end form $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$----- -->
             <div class="layui-tab-item ">
-                <input type="button" class="layui-btn layui-btn-sm" onclick="getReportContent()" value="GetContent">
+                <!-- <input type="button" class="layui-btn layui-btn-sm" onclick="getReportContent()" value="GetContent">
                 <input type="button" class="layui-btn layui-btn-sm" onclick="setReportContent()" value="SetContent">
                 <input type="button" class="layui-btn layui-btn-sm" onclick="saveReport2ServerContent()" value="SaveContent">
                 <input type="button" class="layui-btn layui-btn-sm" onclick="clearReportContent()" value="ClearContent">
-                <input type="button" class="layui-btn layui-btn-sm" onclick=" ChangeTab('TabBrief', 'layid_patients');" value="Return patient">
+                <input type="button" class="layui-btn layui-btn-sm" onclick=" ChangeTab('TabBrief', 'layid_patients');" value="Return patient"> -->
                 <!-- <form method="post"> -->
                 <textarea id="ReportArea"></textarea>
                 <!-- </form> -->
