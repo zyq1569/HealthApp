@@ -84,8 +84,8 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
 
     $('.SerarchTable .layui-btn').on('click', function() {
         layer.msg('to do next...');
-        var type = $(this).data('type');
-        active[type] ? active[type].call(this) : '';
+        // var type = $(this).data('type');
+        // active[type] ? active[type].call(this) : '';
     });
 
     //监听头工具栏事件
@@ -221,7 +221,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                     // layer.alert(mess + '--save ok!' + postdata);
                     tableObj.reload(); //重载表格
                     ChangeTab('TabBrief', 'layid_addedit');
-                    //layer.msg('--save ok!--' + postdata);
+                    layer.msg('   save ok!   ');
                     //table.render("studytabledatas");
                 } else {
                     layer.alert(mess + "--save fail:" + postdata);
@@ -249,12 +249,12 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         limit: 20,
         patientId: "testReload",
         size: 'sm',
-        type: 'radio',
+        // type: 'radio',
         // even: true, //开启隔行背景
         cols: [
             [ //表头
                 {
-                    type: 'checkbox',
+                    type: 'radio', //'checkbox',
                     fixed: 'left'
                 }, {
                     field: 'patientId',
