@@ -167,6 +167,10 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         reportdata.StudyOrderIdentity = json.studyOrderIdentity;
         reportdata.ReportIdentity = json.studyOrderIdentity;
         reportdata.ReportContent = ''; // to do ... next
+        //set title content
+        //document.getElementById("reporpatientname").innerText = "Name:" + json.patientName;
+        //document.getElementById("reporpatientid").innerText = "ID:" + json.patientId;
+        // document.getElementById("reportheadtitle").innerText = 'PatientName:' + json.patientName + ' PatientID:' + json.patientId;
         var postdata = JSON.stringify(reportdata);
         //获取数据库检查报告信息
         $.ajax({
@@ -246,7 +250,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         patientId: "testReload",
         size: 'sm',
         type: 'radio',
-        even: true, //开启隔行背景
+        // even: true, //开启隔行背景
         cols: [
             [ //表头
                 {
@@ -258,24 +262,29 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                     width: 100,
                     sort: true,
                     fixed: 'left',
+                    event: 'setSign',
                     totalRowText: '合计：'
                 }, {
                     field: 'patientName',
                     width: 120,
+                    event: 'setSign',
                     title: 'PatientName'
                 }, {
                     field: 'studyDate',
                     title: 'StudyDateTime',
                     sort: true,
+                    event: 'setSign',
                     totalRow: false
                 }, {
                     field: 'patientSex',
                     title: 'PatientSex',
                     width: 100,
+                    event: 'setSign',
                     sort: false
                 }, {
                     field: 'studyModality',
                     title: 'StudyModality',
+                    event: 'setSign',
                     width: 100
                 }, {
                     field: 'studyId',
@@ -283,82 +292,97 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                     width: 120,
                     sort: true,
                     hide: true,
+                    event: 'setSign',
                     totalRow: false
                 }, {
                     field: 'patientBirthday',
                     title: 'PatientBirthday',
+                    event: 'setSign',
                     sort: true
                 }, {
                     field: 'studyDescription',
+                    event: 'setSign',
                     title: 'StudyDescription'
                 }, {
                     field: 'scheduledDateTime',
                     title: 'ScheduledDateTime',
+                    event: 'setSign',
                     sort: true,
                     totalRow: false
                 }, {
                     field: 'studyuid',
                     title: 'Studyuid',
+                    event: 'setSign',
                     sort: true,
                     hide: true,
                     totalRow: false
                 }, {
                     field: 'studystate',
                     title: 'Studystate',
+                    event: 'setSign',
                     sort: true,
                     hide: true,
                     totalRow: false
                 }, {
                     field: 'patientIdentity',
                     title: 'PatientIdentity',
+                    event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
                     field: 'studyOrderIdentity',
                     title: 'StudyOrderIdentity',
+                    event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
                     field: 'patientAddr',
                     title: 'PatientAddr',
+                    event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
                     field: 'patientEmail',
                     title: 'PatientEmail',
+                    event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
                     field: 'patientCarID',
                     title: 'PatientCarID',
+                    event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
                     field: 'patientTelNumber',
                     title: 'TelNumber',
+                    event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
                     field: 'studyDepart',
                     title: 'StudyDepart',
+                    event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
                     field: 'studyCost',
                     title: 'StudyCost',
+                    event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: true
                 }, {
                     field: 'costType',
                     title: 'CostType',
+                    event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false

@@ -129,7 +129,7 @@ function saveReport2ServerContent() {
         success: function(mess) {
             if (mess == "OK") { //根据返回值进行跳转
                 g_currentReportData.ReportSave = true;
-                layer.msg('--save ok!--' + postdata);
+                layer.msg('--save ok!--'); //+ postdata
                 return 1;
             } else {
                 layer.alert(mess + "--save fail:" + postdata);
