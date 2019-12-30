@@ -15,10 +15,10 @@ tinymce.init({
         'insertdatetime media table paste code help wordcount',
         'autosave'
     ],
-    toolbar: 'undo redo | formatselect | ' +
-        ' bold italic backcolor | alignleft aligncenter ' +
+    toolbar: 'SaveReport |undo redo|formatselect| ' +
+        ' bold italic backcolor| alignleft aligncenter ' +
         ' alignright alignjustify | bullist numlist outdent indent |' +
-        ' removeformat | help',
+        ' removeformat |GetContent|ClearContent|ReturnPatient| help',
     menubar: 'edit view insert format tools table tc help',
     autosave_restore_when_empty: true,
     autosave_interval: "10s",
@@ -28,6 +28,35 @@ tinymce.init({
         // });
         clearReportContent();
         //tinyMCE.editor[g_tinyID].setContent("");
+    },
+    setup: function(editor) {
+        editor.ui.registry.addButton('SaveReport', {
+            text: 'SaveReport',
+            onAction: function(_) {
+                if (saveReport2ServerContent() > 1) {
+                    layer.msg('save ok!');
+                }
+                //editor.insertContent('&nbsp;<strong>It\'s my button!</strong>&nbsp;');
+            }
+        });
+        editor.ui.registry.addButton('ReturnPatient', {
+            text: 'ReturnPatient',
+            onAction: function(_) {
+                ChangeTab('TabBrief', 'layid_patients');
+            }
+        });
+        editor.ui.registry.addButton('ClearContent', {
+            text: 'ClearContent',
+            onAction: function(_) {
+                clearReportContent();
+            }
+        });
+        editor.ui.registry.addButton('GetContent', {
+            text: 'GetContent',
+            onAction: function(_) {
+                getReportContent();
+            }
+        });
     }
 });
 // 获得内容
