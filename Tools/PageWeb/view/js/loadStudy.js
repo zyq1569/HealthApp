@@ -1,20 +1,9 @@
 // Load JSON study information for each study
-//http: //127.0.0.1:8080/WADO?studyuid=1.3.51.0.7.633918642.633920010109.6339100821&
-//seriesuid=1.3.51.5145.15142.20010109.1105627&
-//sopinstanceuid=1.3.51.5145.5142.20010109.1105627.1.0.1.dcm
-// var server_json_url = "http://127.0.0.1:8080/";
-// var server_wado_url = "wadouri:http://127.0.0.1:8080/WADO?studyuid=";
 function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url) {
-    //var server_url = "wadouri:http://s3.amazonaws.com/lury/";
-    //var server_json_url = "http://127.0.0.1:8080/webstudies/";
-    var server_url = server_wado_url; // "wadouri:http://127.0.0.1:8080/WADO?studyuid=";
-    // Get the JSON data for the selected studyId server_json_url+
-    // $.getJSON( "webstudies/" + studyId, function(data) {
+    var server_url = server_wado_url;
     $.getJSON(server_json_url, function(data) {
-
         var imageViewer = new ImageViewer(studyViewer, viewportModel);
         imageViewer.setLayout('2x2'); // default layout
-
         function initViewports() {
             imageViewer.forEachElement(function(el) {
                 cornerstone.enable(el);
@@ -27,10 +16,8 @@ function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url)
                 });
             });
         }
-
         // setup the tool buttons
         setupButtons(studyViewer);
-
         // layout choose
         $(studyViewer).find('.choose-layout a').click(function() {
             var previousUsed = [];
@@ -39,7 +26,6 @@ function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url)
                     previousUsed.push($(el).data('useStack'));
                 }
             });
-
             var type = $(this).text();
             imageViewer.setLayout(type);
             initViewports();
@@ -51,15 +37,8 @@ function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url)
                     useItemStack(item++, v);
                 });
             }
-
-            //return false;
         });
-
-        // Load the first series into the viewport (?)
-        //var stacks = [];
-        //var currentStackIndex = 0;
         var seriesIndex = 0;
-
         // Create a stack object for each series
         data.seriesList.forEach(function(series) {
             var stack = {
@@ -71,12 +50,8 @@ function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url)
                 seriesUid: series.seriesUid,
                 frameRate: series.frameRate
             };
-
-
             // Populate imageIds array with the imageIds from each series
             // For series with frame information, get the image url's by requesting each frame
-            // var server_url = "wadouri:http://s3.amazonaws.com/lury/";
-            // var server_url = "wadouri:http://127.0.0.1:8080/WADO?studyuid=";
             if (series.numberOfFrames !== undefined) {
                 var numberOfFrames = series.numberOfFrames;
                 for (var i = 0; i < numberOfFrames; i++) {
@@ -110,38 +85,24 @@ function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url)
         var imageViewerElement = $(studyViewer).find('.imageViewer')[0];
         var viewportWrapper = $(imageViewerElement).find('.viewportWrapper')[0];
         var parentDiv = $(studyViewer).find('.viewer')[0];
-
-        //viewportWrapper.style.width = (parentDiv.style.width - 10) + "px";
-        //viewportWrapper.style.height = (window.innerHeight - 150) + "px";
-
         var studyRow = $(studyViewer).find('.studyRow')[0];
         var width = $(studyRow).width();
 
-        //$(parentDiv).width(width - 170);
-        //viewportWrapper.style.width = (parentDiv.style.width - 10) + "px";
-        //viewportWrapper.style.height = (window.innerHeight - 150) + "px";
-
         // Get the viewport elements
         var element = $(studyViewer).find('.viewport')[0];
-
         // Image enable the dicomImage element
         initViewports();
         //cornerstone.enable(element);
-
         // Get series list from the series thumbnails (?)
         var seriesList = $(studyViewer).find('.thumbnails')[0];
-        var div_id_index = 0;
         imageViewer.stacks.forEach(function(stack, stackIndex) {
-            div_id_index++;
             // Create series thumbnail item
             var seriesEntry = '<a class="list-group-item" + ' +
                 'oncontextmenu="return false"' +
                 'unselectable="on"' +
                 'onselectstart="return false;"' +
                 'onmousedown="return false;">' +
-                '<div id="thumbnail_' + div_id_index +
-                '" class="csthumbnail"' +
-                //'<div class="csthumbnail"' +
+                '<div class="csthumbnail"' +
                 'oncontextmenu="return false"' +
                 'unselectable="on"' +
                 'onselectstart="return false;"' +
@@ -158,10 +119,6 @@ function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url)
             cornerstone.enable(thumbnail);
 
             // Have cornerstone load the thumbnail image
-            //var el = document.getElementById('thumbnail_'+ div_id_index.toString);
-            //var ThumbnailID = imageViewer.stacks[stack.seriesIndex].imageIds[0];
-            //console.log("----Thumbnail id---" + thumbnail);
-            //console.log(ThumbnailID);
             cornerstone.loadAndCacheImage(imageViewer.stacks[stack.seriesIndex].imageIds[0]).then(function(image) {
                     //cornerstone.loadAndCacheImage(ThumbnailID).then(function(image) {
                     // Make the first thumbnail active
@@ -218,7 +175,6 @@ function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url)
 
             imageViewer.forEachElement(function(el, vp) {
                 cornerstone.resize(el, true);
-
                 if ($(el).data('waiting')) {
                     var ol = vp.find('.overlay-text');
                     if (ol.length < 1) {
@@ -237,6 +193,5 @@ function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url)
         resizeStudyViewer();
         if (imageViewer.isSingle())
             useItemStack(0, 0);
-
     });
 }
