@@ -168,7 +168,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         reportdata.ReportIdentity = json.studyOrderIdentity;
         reportdata.ReportContent = ''; // to do ... next
         //set title content
-        //document.getElementById("reporpatientname").innerText = "Name:" + json.patientName;
+        // document.getElementById("reporpatientname").innerText = "Name:" + json.patientName;
         //document.getElementById("reporpatientid").innerText = "ID:" + json.patientId;
         // document.getElementById("reportheadtitle").innerText = 'PatientName:' + json.patientName + ' PatientID:' + json.patientId;
         var postdata = JSON.stringify(reportdata);
