@@ -113,7 +113,7 @@ function saveReport2ServerContent() {
         return 1;
     }
     //判断是否修改过内容
-    if (content == g_currentReportData.ReportContent) {
+    if (content == g_currentReportData.ReportContent && g_currentReportOrderIdentity == g_currentReportData.ReportIdentity) {
         return 1;
     }
     //修改过内容,保存到数据库中
