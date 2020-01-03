@@ -1,6 +1,4 @@
 package com.dicomserver.health.handler;
-
-
 //reference :netty demo
 
 import com.dicomserver.health.config.ServerConfig;
@@ -47,13 +45,11 @@ import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
-
 /**
  * A  file handler that serves incoming HTTP requests to send their respective
  * HTTP responses.
  */
 public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
-
     public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
     public static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
     public static final int HTTP_CACHE_SECONDS = 60;
@@ -206,28 +202,28 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             robject.addProperty("patientBirthday", stu.getPatientBirthday());
             robject.addProperty("studyDescription", stu.getStudyDescription());
             robject.addProperty("scheduledDateTime", stu.getScheduledDateTime());
-            robject.addProperty("studyuid",stu.getStudyUID());
-            if (stu.getStudyState().equals("1")){
-                robject.addProperty("studystate","已预约");
-            }else if (stu.getStudyState().equals("2")){
-                robject.addProperty("studystate","检查中");
-            }else if (stu.getStudyState().equals("3")){
-                robject.addProperty("studystate","已检查");
-            }else if (stu.getStudyState().equals("4")){
-                robject.addProperty("studystate","诊断");
-            }else if (stu.getStudyState().equals("5")){
-                robject.addProperty("studystate","已审核");
+            robject.addProperty("studyuid", stu.getStudyUID());
+            if (stu.getStudyState().equals("1")) {
+                robject.addProperty("studystate", "已预约");
+            } else if (stu.getStudyState().equals("2")) {
+                robject.addProperty("studystate", "检查中");
+            } else if (stu.getStudyState().equals("3")) {
+                robject.addProperty("studystate", "已检查");
+            } else if (stu.getStudyState().equals("4")) {
+                robject.addProperty("studystate", "诊断");
+            } else if (stu.getStudyState().equals("5")) {
+                robject.addProperty("studystate", "已审核");
             }
-            robject.addProperty("patientIdentity",stu.getPatientIdentity());
-            robject.addProperty("patientEmail",stu.getPatientEmail());
-            robject.addProperty("patientAddr",stu.getPatientAddr());
-            robject.addProperty("patientCarID",stu.getPatientCarID());
-            robject.addProperty("patientTelNumber",stu.getPatientTelNumber());
-            robject.addProperty("studyDepart",stu.getStudyDepart());
-            robject.addProperty("studyCost",stu.getStudyCost());
-            robject.addProperty("costType",stu.getCostType());
-            robject.addProperty("studyDescription",stu.getStudyDescription());
-            robject.addProperty("studyOrderIdentity",stu.getStudyOrderIdentity());
+            robject.addProperty("patientIdentity", stu.getPatientIdentity());
+            robject.addProperty("patientEmail", stu.getPatientEmail());
+            robject.addProperty("patientAddr", stu.getPatientAddr());
+            robject.addProperty("patientCarID", stu.getPatientCarID());
+            robject.addProperty("patientTelNumber", stu.getPatientTelNumber());
+            robject.addProperty("studyDepart", stu.getStudyDepart());
+            robject.addProperty("studyCost", stu.getStudyCost());
+            robject.addProperty("costType", stu.getCostType());
+            robject.addProperty("studyDescription", stu.getStudyDescription());
+            robject.addProperty("studyOrderIdentity", stu.getStudyOrderIdentity());
             rarray.add(robject);
         }
         respjson.addProperty("code", 0);
@@ -239,22 +235,24 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         strvalue = gson.toJson(respjson);
         return strvalue;
     }
+
     public String getStudyReport(ReportData reportData) {
-        String strvalue="";
+        String strvalue = "";
         StudyDataDao addReport = new StudyDataDaoimpl();
         int result = addReport.getStudyReport(reportData);
-        if (result > 0){
+        if (result > 0) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            strvalue = gson.toJson(reportData,ReportData.class);
+            strvalue = gson.toJson(reportData, ReportData.class);
 //            System.out.println("------StudyReport:--"+strvalue);
-        }else if (result == 0){
+        } else if (result == 0) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            strvalue = gson.toJson(reportData,ReportData.class);
-            System.out.println("------StudyReport is empty:--"+strvalue);
+            strvalue = gson.toJson(reportData, ReportData.class);
+            System.out.println("------StudyReport is empty:--" + strvalue);
             return strvalue;
         }
         return strvalue;
     }
+
     public String readToString(String fileName) {
         String encoding = "UTF-8";
         File file = new File(fileName);
@@ -280,11 +278,11 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
     public void returnWeb(ChannelHandlerContext ctx, FullHttpRequest request, String path, boolean keepAlive) throws Exception {
         // to do :Optimize the code
-        if (!path.contains(".css")){
+        if (!path.contains(".css")) {
             int pos = path.indexOf("?v=");
             if (pos > 0) {
                 path = path.substring(0, pos);
-                SendFileData(ctx,request,path,path,keepAlive,true);
+                SendFileData(ctx, request, path, path, keepAlive, true);
                 return;
             }
         }
@@ -319,7 +317,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/woff");
         } else if (path.endsWith(".woff2")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/woff2");
-        }else if (path.endsWith(".jpg")) {
+        } else if (path.endsWith(".jpg")) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/x-jpg");
         }
         this.sendAndCleanupConnection(ctx, response);
@@ -429,18 +427,19 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             lastContentFuture.addListener(ChannelFutureListener.CLOSE);
         }
     }
+
     public void SavePatient(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
         String path = uri;
         System.out.println(path);
         // to do ... change use json
         String content = request.content().toString(CharsetUtil.UTF_8);
         Gson gson = new Gson();
-        StudyData stu = gson.fromJson(content,StudyData.class);
+        StudyData stu = gson.fromJson(content, StudyData.class);
         // to do save&update patient data
         stu.setPatientType("0");
         StudyDataDao addStudy = new StudyDataDaoimpl();
-        if (addStudy.addPatient(stu) > 0){
-            if (addStudy.addOrderStudy(stu) > 0){
+        if (addStudy.addPatient(stu) > 0) {
+            if (addStudy.addOrderStudy(stu) > 0) {
                 String message = "OK";
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(message.getBytes("UTF-8")));
                 response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
@@ -456,6 +455,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain");
         this.sendAndCleanupConnection(ctx, response);
     }
+
     public void LoginHealth(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
         String path = uri;
         System.out.println(path);
@@ -535,8 +535,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
     public void HealthSystem(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
         String lowerUri = uri.toLowerCase();
-        if(lowerUri.contains("/healthsystem/ris/updata")){
-            SavePatient(ctx,request,uri,keepAlive);
+        if (lowerUri.contains("/healthsystem/ris/updata")) {
+            SavePatient(ctx, request, uri, keepAlive);
             return;
         }
         if (lowerUri.contains("/healthsystem/ris/stduydata")) {
@@ -549,14 +549,14 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
             this.sendAndCleanupConnection(ctx, response);
         }
-        if (lowerUri.contains("/healthsystem/ris/saveportdata")){
+        if (lowerUri.contains("/healthsystem/ris/saveportdata")) {
             String content = request.content().toString(CharsetUtil.UTF_8);
-            System.out.println("---content:"+ content);
+            System.out.println("---content:" + content);
             Gson gson = new Gson();
-            ReportData reportData = gson.fromJson(content,ReportData.class);
-            System.out.println("---fromJson ReportContent:--"+reportData.getReportContent());
+            ReportData reportData = gson.fromJson(content, ReportData.class);
+            System.out.println("---fromJson ReportContent:--" + reportData.getReportContent());
             StudyDataDao addReport = new StudyDataDaoimpl();
-            if (addReport.addStudyReport(reportData) > 0){
+            if (addReport.addStudyReport(reportData) > 0) {
                 String message = "OK";
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(message.getBytes("UTF-8")));
                 response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
@@ -564,17 +564,17 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 this.sendAndCleanupConnection(ctx, response);
                 return;
             }
-            sendError(ctx,METHOD_NOT_ALLOWED);
+            sendError(ctx, METHOD_NOT_ALLOWED);
             return;
         }
-        if (lowerUri.contains("/healthsystem/ris/getportdata")){
+        if (lowerUri.contains("/healthsystem/ris/getportdata")) {
             String content = request.content().toString(CharsetUtil.UTF_8);
             Gson gson = new Gson();
-            ReportData reportData = gson.fromJson(content,ReportData.class);
+            ReportData reportData = gson.fromJson(content, ReportData.class);
 //            ReportData reportData = gson.fromJson(request.content().toString(CharsetUtil.UTF_8),ReportData.class);
             String buf = getStudyReport(reportData);
             if (buf.equals("")) {
-                sendError(ctx,METHOD_NOT_ALLOWED);
+                sendError(ctx, METHOD_NOT_ALLOWED);
                 return;
             }
             ByteBuf buffer = ctx.alloc().buffer(buf.length());
@@ -587,11 +587,11 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
         if (!lowerUri.contains("/stduydata/")) {
             int pos = uri.indexOf(".html?");
-            if (pos > 0 ){
-                uri = uri.substring(0,pos+5);
+            if (pos > 0) {
+                uri = uri.substring(0, pos + 5);
             }
             String path = serverconfig.getString("webdir") + uri;
-            returnWeb(ctx,request,path,keepAlive);
+            returnWeb(ctx, request, path, keepAlive);
             return;
         }
     }
@@ -718,8 +718,13 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             }
 
             if (uri.contains(".html") || uri.contains(".js") || uri.contains(".css")) {
-                String htmlname = serverconfig.getString("webdir") + uri;
-                path = htmlname;
+                String htmlurl = uri.toLowerCase();
+                int pos = htmlurl.lastIndexOf(".html?");
+                if (pos > 1 ){
+                    htmlurl = htmlurl.substring(0,pos+5);
+                }
+//                String htmlname = serverconfig.getString("webdir") + htmlurl;
+                path = serverconfig.getString("webdir") + htmlurl;
                 returnWeb(ctx, request, path, keepAlive);
                 return;
             }
@@ -733,14 +738,16 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             }
         }
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        if (path.contains("favicon.ico")){
-            this.sendError(ctx, NOT_FOUND);
-            System.out.println("not found:" + path);
+        if (path.contains("favicon.ico")) {
+//            this.sendError(ctx, NOT_FOUND);
+//            System.out.println("not found:" + path);
+//            return;
+            path = serverconfig.getString("webdir")+"/favicon.ico";
+            SendFileData(ctx, request, uri, path, keepAlive, true);
             return;
         }
         SendFileData(ctx, request, uri, path, keepAlive, bSetFilename);
     }
-
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
