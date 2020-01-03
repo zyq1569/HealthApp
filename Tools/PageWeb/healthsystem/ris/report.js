@@ -18,7 +18,7 @@ tinymce.init({
     toolbar: 'SaveReport |undo redo|formatselect| ' +
         ' bold italic backcolor| alignleft aligncenter ' +
         ' alignright alignjustify | bullist numlist outdent indent |' +
-        ' removeformat |GetContent|ClearContent|ReturnPatient| help',
+        ' removeformat|charmap|GetContent|ClearContent|ReturnPatient|print|help',
     menubar: 'edit view insert format tools table tc help',
     autosave_restore_when_empty: true,
     autosave_interval: "10s",
