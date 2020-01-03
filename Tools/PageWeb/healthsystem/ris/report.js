@@ -13,12 +13,14 @@ tinymce.init({
         'advlist autolink lists link image charmap print preview anchor',
         'searchreplace visualblocks code fullscreen',
         'insertdatetime media table paste code help wordcount',
-        'autosave'
+        'autosave',
+        'emoticons',
+        'fullscreen'
     ],
     toolbar: 'SaveReport |undo redo|formatselect| ' +
         ' bold italic backcolor| alignleft aligncenter ' +
         ' alignright alignjustify | bullist numlist outdent indent |' +
-        ' removeformat|charmap|GetContent|ClearContent|ReturnPatient|print|help',
+        ' removeformat|visualchars|emoticons|fullscreen|charmap|GetContent|ClearContent|ReturnPatient|print|help',
     menubar: 'edit view insert format tools table tc help',
     autosave_restore_when_empty: true,
     autosave_interval: "10s",

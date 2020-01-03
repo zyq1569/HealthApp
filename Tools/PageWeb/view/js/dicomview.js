@@ -248,6 +248,7 @@ function showStduyImage(studystudyuid) {
 //     }
 // }
 // var studystudyuid = '1.2.840.113619.2.55.3.604688119.868.1249343483.504';
+//http://127.0.0.1/view/testview.html?1.2.840.113619.2.55.3.604688119.868.1249343483.504
 var url = location.search;
 var studystudyuid = url.substring(1, url.length);
 showStduyImage(studystudyuid);
