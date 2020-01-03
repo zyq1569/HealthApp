@@ -246,7 +246,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         if (result > 0){
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             strvalue = gson.toJson(reportData,ReportData.class);
-            System.out.println("------StudyReport:--"+strvalue);
+//            System.out.println("------StudyReport:--"+strvalue);
         }else if (result == 0){
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             strvalue = gson.toJson(reportData,ReportData.class);
@@ -433,51 +433,10 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         String path = uri;
         System.out.println(path);
         // to do ... change use json
-        String parameter = request.content().toString(CharsetUtil.UTF_8);
-        parameter = parameter.substring(1,parameter.length()-1);
-        parameter = parameter.replaceAll("\"","");
-        parameter = parameter.replaceAll(":","=");
-        parameter = parameter.replaceAll(",","&");
-        Map<String, Object> map = getParameter("?" + parameter);
-
-        StudyData stu = new StudyData();
+        String content = request.content().toString(CharsetUtil.UTF_8);
+        Gson gson = new Gson();
+        StudyData stu = gson.fromJson(content,StudyData.class);
         // to do save&update patient data
-        for (String key : map.keySet()) {
-            String value = (String) map.get(key);
-            if (key.equals("PatientName")) {
-                stu.setPatientName(value);
-            }else if (key.equals("PatientEmail")) {
-                stu.setPatientEmail(value);
-            }else if (key.equals("PatientID")) {
-                stu.setPatientID(value);
-            }else if (key.equals("StudyDepart")) {
-                stu.setStudyDepart(value);
-            } else if (key.equals("PatientSex")) {
-                stu.setPatientSex(value);
-            }else if (key.equals("PatientBirthday")) {
-                stu.setPatientBirthday(value);
-            }else if (key.equals("PatientTelNumber")) {
-                stu.setPatientTelNumber(value);
-            }else if (key.equals("PatientCarID")) {
-                stu.setPatientCarID(value);
-            }else if (key.equals("PatientAddr")) {
-                stu.setPatientAddr(value);
-            }else if (key.equals("StudyCost")) {
-                stu.setStudyCost(value);
-            }else if (key.equals("StudyModality")) {
-                stu.setStudyModality(value);
-            }else if (key.equals("ScheduledDate")) {
-                stu.setScheduledDateTime(value);
-            }else if (key.equals("CostType")) {
-                stu.setCostType(value);
-            }else if (key.equals("StudyDescription")) {
-                stu.setStudyDescription(value);
-            }else if (key.equals("PatientIdentity")) {
-                stu.setPatientIdentity(value);
-            }else if (key.equals("StudyOrderIdentity")) {
-                stu.setStudyOrderIdentity(value);
-            }
-        }
         stu.setPatientType("0");
         StudyDataDao addStudy = new StudyDataDaoimpl();
         if (addStudy.addPatient(stu) > 0){

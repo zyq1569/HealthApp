@@ -1,8 +1,15 @@
 package com.dicomserver.health.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+//序列化参考 https://github.com/whiskeyfei/Gson-Review
+//SerializedName注解提供了两个属性，上面用到了其中一个，另外还有一个属性alternate，接收一个String数组。
+//@SerializedName(value = "emailAddress", alternate = {"email", "email_address"})
+//public String emailAddress;
+//        当上面的三个属性 email_address、email、emailAddress 中出现任意一个时均可以得到正确的结果。
+//        当多种情况同时出时，以最后一个出现的值为准。
 public class StudyData {
     //patient table
     private String PatientIdentity;
@@ -17,6 +24,8 @@ public class StudyData {
     private String StudyOrderIdentity;
     private String StudyID;
     private String StudyUID;
+    //@SerializedName(value = "ScheduledDate", alternate = {"ScheduledDate","Scheduled"})
+    @SerializedName("ScheduledDate")
     private String ScheduledDateTime;
     private String OrderDateTime;
     private String StudyDescription;

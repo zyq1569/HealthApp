@@ -10,19 +10,30 @@ loadTemplate("templates/studyViewer.html", function(element) {
 // var viewportModel = viewportTemplate;
 // var studyViewer = studyViewerTemplate; //.clone();
 // var imageViewer = new ImageViewer(studyViewer, viewportModel);
+var imageViewer;
+var viewportModel;
+var studyViewer;
+
 function showStduyImage(studystudyuid) {
     var host = window.location.host;
     var server_json_url = "http://" + host + "/";
     var server_wado_url = "wadouri:http://" + host + "/WADO?studyuid=";
     server_json_url = server_json_url + "WADO?studyuid=" + studystudyuid + "&type=json";
     $.getJSON(server_json_url, function(data) {
-        var viewportModel = viewportTemplate;
-        var studyViewer = studyViewerTemplate; //.clone();
+        if (typeof viewportModel === 'undefined') {
+            viewportModel = viewportTemplate;
+        }
+        if (typeof studyViewer === 'undefined') {
+            studyViewer = studyViewerTemplate.clone();
+        }
         // Make the viewer visible
         studyViewer.removeClass('hidden');
         // Add section to the tab content
         studyViewer.appendTo('#image');
-        var imageViewer = new ImageViewer(studyViewer, viewportModel);
+        // var imageViewer = new ImageViewer(studyViewer, viewportModel);
+        if (typeof imageViewer === 'undefined') {
+            imageViewer = new ImageViewer(studyViewer, viewportModel);
+        }
         imageViewer.setLayout('2x2'); // default layout
         function initViewports() {
             imageViewer.forEachElement(function(el) {
@@ -210,23 +221,29 @@ function showStduyImage(studystudyuid) {
     });
 }
 
-// var int = self.setInterval("clock()", 10000);
+var int = self.setInterval("clock()", 5000);
+var times = 1;
 
-// function clock() {
-//     var d = new Date();
-//     var t = d.getMilliseconds();
-//     var studystudyuid = '';
-//     if (t > 20) {
-//         studystudyuid = '1.2.826.0.1.3680043.2.461.5557068.4030893584';
-//         showStduyImage(studystudyuid);
-//     }
-//     if (t > 10) {
-//         studystudyuid = '1.2.840.113619.2.55.3.604688119.868.1249343483.504';
-//         showStduyImage(studystudyuid);
-//     }
-// }
-var studystudyuid = '1.2.840.113619.2.55.3.604688119.868.1249343483.504';
-showStduyImage(studystudyuid);
+function clock() {
+    var d = new Date();
+    var t = d.getMilliseconds();
+    var studystudyuid = '';
+    if (t > 20) {
+        studystudyuid = '1.2.826.0.1.3680043.2.461.5557068.4030893584';
+        showStduyImage(studystudyuid);
+        times = times + 1;
+    }
+    if (t > 10) {
+        studystudyuid = '1.2.840.113619.2.55.3.604688119.868.1249343483.504';
+        showStduyImage(studystudyuid);
+        times = times + 1;
+    }
+    if (times > 2) {
+        self.clearInterval(int);
+    }
+}
+// var studystudyuid = '1.2.840.113619.2.55.3.604688119.868.1249343483.504';
+// showStduyImage(studystudyuid);
 
 // Resize main
 function resizeMain() {
