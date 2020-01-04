@@ -207,6 +207,16 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
             console.log(res);
         }
     });
+    //studyimage
+    var host = window.location.host;
+    var imageview_url = "http://" + host + "/view/testview.html?";
+    table.on('rowDouble(studyimagedatas)', function(obj) {
+        //var patient = JSON.stringify(obj.data);
+        var json = obj.data; // JSON.parse(patient);
+        // layer.alert(JSON.stringify(obj.data));
+        window.open(imageview_url + json.studyuid);
+        // layer.alert(json.studyuid);
+    });
     //submit patientform
     form.on('submit(patientform)', function(data) {
         var postdata = JSON.stringify(data.field);
@@ -219,7 +229,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
             success: function(mess) {
                 if (mess == "OK") { //根据返回值进行跳转
                     // layer.alert(mess + '--save ok!' + postdata);
-                    tableObj.reload(); //重载表格
+                    tablePatient.reload(); //重载表格
                     ChangeTab('TabBrief', 'layid_addedit');
                     layer.msg('   save ok!   ');
                     //table.render("studytabledatas");
@@ -234,7 +244,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     // var mytime = myDate.toLocaleTimeString();
     // layer.msg('mytime:' + mytime);
     //执行一个 table 实例
-    var tableObj = table.render({
+    var tablePatient = table.render({
         elem: '#studytable',
         height: 'full-200',
         url: window.location.host + '/healthsystem/ris/stduydata/?start=20190101&end=20191219', //数据接口 http://127.0.0.1:80/
@@ -398,9 +408,9 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     var tableStudyImage = table.render({
         elem: '#studyimage',
         height: 'full-200',
-        url: window.location.host + '/healthsystem/ris/stduydata/?start=20190101&end=20191219', //数据接口 http://127.0.0.1:80/
+        url: window.location.host + '/healthsystem/ris/stduyimage/?start=20190101&end=20191219', //数据接口 http://127.0.0.1:80/
         //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
-        title: 'pstudyimages',
+        title: 'studyimages',
         page: true, //开启分页
         toolbar: 'default', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
         totalRow: true, //开启合计行

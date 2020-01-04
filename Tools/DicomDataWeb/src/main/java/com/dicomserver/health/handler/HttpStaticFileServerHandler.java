@@ -158,6 +158,40 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         return filePath;
     }
 
+    public String getImageTableData() {
+        String strvalue;
+        StudyDataDao studydata = new StudyDataDaoimpl();
+        List<StudyData> list = studydata.getAllStudyImageData();
+        int size = list.size();
+        JsonObject respjson = new JsonObject();
+        JsonArray rarray = new JsonArray();
+        for (StudyData stu : list) {
+            JsonObject robject = new JsonObject();
+            robject.addProperty("patientId", stu.getPatientID());
+            robject.addProperty("patientName", stu.getPatientName());
+            robject.addProperty("studyDate", stu.getStudyDateTime());
+            robject.addProperty("patientSex", stu.getPatientSex());
+            robject.addProperty("studyModality", stu.getStudyModality());
+            robject.addProperty("studyId", stu.getStudyID());
+            robject.addProperty("patientBirthday", stu.getPatientBirthday());
+            robject.addProperty("studyDescription", stu.getStudyDescription());
+            robject.addProperty("scheduledDateTime", stu.getScheduledDateTime());
+            robject.addProperty("studyuid", stu.getStudyUID());
+            robject.addProperty("patientIdentity", stu.getPatientIdentity());
+            robject.addProperty("studyDescription", stu.getStudyDescription());
+            robject.addProperty("studyOrderIdentity", stu.getStudyOrderIdentity());
+            rarray.add(robject);
+        }
+        respjson.addProperty("code", 0);
+        respjson.addProperty("msg", "");
+        respjson.addProperty("count", size);
+        respjson.add("data", rarray);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //System.out.println( gson.toJson(respjson));
+        strvalue = gson.toJson(respjson);
+        return strvalue;
+    }
+
     public String getStudysImageData() {
         String strvalue;
         StudyDataDao studydata = new StudyDataDaoimpl();
@@ -179,7 +213,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
         respjson.add("studyList", rarray);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        //System.out.println( gson.toJson(respjson));
+        System.out.println( gson.toJson(respjson));
         strvalue = gson.toJson(respjson);
         return strvalue;
     }
@@ -548,6 +582,18 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
             this.sendAndCleanupConnection(ctx, response);
+            return;
+        }
+        if (lowerUri.contains("/healthsystem/ris/stduyimage")) {
+            //get patientstudy data json
+            String buf = getImageTableData();
+            ByteBuf buffer = ctx.alloc().buffer(buf.length());
+            buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
+            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");//@@@@@@@@@测试使用允许同个域客户端访问
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json;charset=UTF-8;");
+            this.sendAndCleanupConnection(ctx, response);
+            return;
         }
         if (lowerUri.contains("/healthsystem/ris/saveportdata")) {
             String content = request.content().toString(CharsetUtil.UTF_8);
