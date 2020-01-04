@@ -236,7 +236,50 @@
                 <textarea id="ReportArea"></textarea>
                 <!-- </form> -->
             </div>
-            <div class="layui-tab-item ">StudyImage to do next...</div>
+            <!-- <div class="layui-tab-item ">StudyImage to do next...</div> -->
+            <div class="layui-tab-item ">
+                <!-- patients datas table start -->
+                <table class="layui-hide" id="studyimage" lay-filter="studyimagedatas"></table>
+                <div class="layui-inline">
+                    DateFrom:
+                </div>
+                <div class="layui-inline">
+                    <input type="text" class="layui-input" id="stduystart" placeholder="yyyyMMdd">
+                </div>
+                <div class="layui-inline">
+                    DateEnd:
+                </div>
+                <div class="layui-inline">
+                    <input type="text" class="layui-input" id="stduyend" placeholder="yyyyMMdd">
+                </div>
+                <div class="layui-inline"> PatientType: </div>
+                <div class="layui-inline">
+                    <select name="StudyRoom" lay-filter="ptype">
+                            <option value="10">Depart Room </option>
+                            <optgroup label="RIS">
+                                <option value="10">普放科</option>
+                                <option value="11">核医学</option>
+                            </optgroup>
+                            <optgroup label="US">
+                                <option value="20">心脏科</option>
+                                <option value="21">彩超科</option>
+                            </optgroup>
+                            <optgroup label="ES">
+                                <option value="30">肠镜科</option>
+                                <option value="31">胃镜科</option>
+                            </optgroup>
+                        </select>
+                </div>
+                <div class="layui-inline">
+                    <div class="SerarchTable">
+                        search:
+                        <div class="layui-inline">
+                            <input class="layui-input" name="searchitem" id="searchReload" autocomplete="off">
+                        </div>
+                        <button class="layui-btn" data-type="reload">search</button>
+                    </div>
+                </div>
+            </div>
             <div class="layui-tab-item ">
                 upload file to server
                 <div class="layui-inline ">
