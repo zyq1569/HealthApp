@@ -4,7 +4,7 @@ loadTemplate("templates/viewport.html", function(element) {
     viewportTemplate = element;
 });
 var studyViewerTemplate; // the study viewer template
-loadTemplate("templates/studyViewer.html", function(element) {
+loadTemplate("templates/studyViewercopy.html", function(element) {
     studyViewerTemplate = element;
 });
 // var viewportModel = viewportTemplate;
@@ -16,21 +16,24 @@ var studyViewer;
 
 function showStduyImage(studystudyuid) {
     if (studystudyuid.length < 1) {
+        $("image").text("no image get from server");
         return -1;
     }
+    // $(image).style.height = "100%";
     var host = window.location.host;
     var server_json_url = "http://" + host + "/";
     var server_wado_url = "wadouri:http://" + host + "/WADO?studyuid=";
     server_json_url = server_json_url + "WADO?studyuid=" + studystudyuid + "&type=json";
     $.getJSON(server_json_url, function(data) {
+        // document.getElementById("image").style.height = parseInt(document.body.clientHeight) - 2 + 'px';
         if (typeof viewportModel === 'undefined') {
             viewportModel = viewportTemplate;
         }
         if (typeof studyViewer === 'undefined') {
-            studyViewer = studyViewerTemplate.clone();
+            studyViewer = studyViewerTemplate; //.clone(); remove
         }
         // Make the viewer visible
-        studyViewer.removeClass('hidden');
+        // studyViewer.removeClass('hidden');remove
         // Add section to the tab content
         studyViewer.appendTo('#image');
         // var imageViewer = new ImageViewer(studyViewer, viewportModel);
@@ -224,30 +227,6 @@ function showStduyImage(studystudyuid) {
     });
 }
 
-// var int = self.setInterval("clock()", 5000);
-// var times = 1;
-
-// function clock() {
-//     var d = new Date();
-//     var t = d.getMilliseconds();
-//     var studystudyuid = '';
-//     if (t > 20) {
-//         studystudyuid = '1.2.826.0.1.3680043.2.461.5557068.4030893584';
-//         showStduyImage(studystudyuid);
-//         times = times + 1;
-//     }
-//     if (t > 10) {
-//         studystudyuid = '1.2.840.113619.2.55.3.604688119.868.1249343483.504';
-//         showStduyImage(studystudyuid);
-//         times = times + 1;
-//     }
-//     if (times > 2) {
-//         alert(location.search);
-//         self.clearInterval(int);
-//         window.open("//www.bing.com");
-//     }
-// }
-// var studystudyuid = '1.2.840.113619.2.55.3.604688119.868.1249343483.504';
 //http://127.0.0.1/view/testview.html?1.2.840.113619.2.55.3.604688119.868.1249343483.504
 var url = location.search;
 var studystudyuid = url.substring(1, url.length);
@@ -257,7 +236,8 @@ showStduyImage(studystudyuid);
 function resizeMain() {
     var height = $(window).height();
     $('#main').height(height - 50);
-    $('#image').height(height - 50 - 42);
+    // $('#image').height(height - 50 - 42);
+    $('#image').height(height - 2);
 }
 
 // Call resize main on window resize
