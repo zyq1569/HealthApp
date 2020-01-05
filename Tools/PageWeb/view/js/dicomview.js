@@ -35,7 +35,8 @@ function showStduyImage(studystudyuid) {
         // Make the viewer visible
         // studyViewer.removeClass('hidden');remove
         // Add section to the tab content
-        studyViewer.appendTo('#image');
+        //studyViewer.appendTo('#image');
+        $(studyViewer).appendTo('#image');
         // var imageViewer = new ImageViewer(studyViewer, viewportModel);
         if (typeof imageViewer === 'undefined') {
             imageViewer = new ImageViewer(studyViewer, viewportModel);
