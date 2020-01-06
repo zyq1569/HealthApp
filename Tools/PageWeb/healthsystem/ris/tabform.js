@@ -411,7 +411,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
         title: 'studyimages',
         page: true, //开启分页
-        toolbar: 'default', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+        // toolbar: 'default', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
         totalRow: true, //开启合计行
         loading: true,
         //skin: 'row' ,
@@ -474,17 +474,11 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                     event: 'setSign',
                     title: 'StudyDescription'
                 }, {
-                    field: 'scheduledDateTime',
-                    title: 'ScheduledDateTime',
-                    event: 'setSign',
-                    sort: true,
-                    totalRow: false
-                }, {
                     field: 'studyuid',
                     title: 'Studyuid',
                     event: 'setSign',
                     sort: true,
-                    hide: true,
+                    hide: false,
                     totalRow: false
                 }, {
                     field: 'studystate',
@@ -508,59 +502,18 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                     hide: true,
                     totalRow: false
                 }, {
-                    field: 'patientAddr',
-                    title: 'PatientAddr',
-                    event: 'setSign',
-                    sort: false,
-                    hide: true,
-                    totalRow: false
-                }, {
-                    field: 'patientEmail',
-                    title: 'PatientEmail',
-                    event: 'setSign',
-                    sort: false,
-                    hide: true,
-                    totalRow: false
-                }, {
-                    field: 'patientCarID',
-                    title: 'PatientCarID',
-                    event: 'setSign',
-                    sort: false,
-                    hide: true,
-                    totalRow: false
-                }, {
-                    field: 'patientTelNumber',
-                    title: 'TelNumber',
-                    event: 'setSign',
-                    sort: false,
-                    hide: true,
-                    totalRow: false
-                }, {
                     field: 'studyDepart',
                     title: 'StudyDepart',
                     event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
-                }, {
-                    field: 'studyCost',
-                    title: 'StudyCost',
-                    event: 'setSign',
-                    sort: false,
-                    hide: true,
-                    totalRow: true
-                }, {
-                    field: 'costType',
-                    title: 'CostType',
-                    event: 'setSign',
-                    sort: false,
-                    hide: true,
-                    totalRow: false
-                }, {
-                    fixed: 'right',
-                    align: 'center',
-                    toolbar: '#table_row_btns'
                 }
+                // , {
+                //     fixed: 'right',
+                //     align: 'center',
+                //     toolbar: '#table_row_btns'
+                // }
             ]
         ]
     });
