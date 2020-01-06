@@ -170,7 +170,6 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         //set title content
         // document.getElementById("reporpatientname").innerText = "Name:" + json.patientName;
         //document.getElementById("reporpatientid").innerText = "ID:" + json.patientId;
-        // document.getElementById("reportheadtitle").innerText = 'PatientName:' + json.patientName + ' PatientID:' + json.patientId;
         var postdata = JSON.stringify(reportdata);
         //获取数据库检查报告信息
         $.ajax({
