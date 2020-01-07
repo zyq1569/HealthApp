@@ -57,14 +57,29 @@ function getCurrentFormatDateTime() {
 }
 layui.use('laydate', function() {
     var laydate = layui.laydate; //执行一个laydate实例
+    var date = new Date();
     laydate.render({
         elem: '#stduystart', //指定元素
         format: 'yyyyMMdd',
+        value: date,
         calendar: true
     });
     laydate.render({
         elem: '#stduyend', //指定元素
         format: 'yyyyMMdd',
+        value: date,
+        calendar: true
+    });
+    laydate.render({
+        elem: '#imagestduystart', //指定元素
+        format: 'yyyyMMdd',
+        value: date,
+        calendar: true
+    });
+    laydate.render({
+        elem: '#imagestduyend', //指定元素
+        format: 'yyyyMMdd',
+        value: date,
         calendar: true
     });
     laydate.render({
@@ -78,6 +93,7 @@ layui.use('laydate', function() {
         calendar: true
     });
 });
+
 // $.ajax({
 //     url: 'http://.......',
 //     type: "post",

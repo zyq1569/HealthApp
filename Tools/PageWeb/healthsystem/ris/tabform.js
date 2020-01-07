@@ -50,6 +50,9 @@ function ChangeTab(table, item) {
     layui.element.tabChange(table, item);
 }
 
+var searchImageTime = 'start=19700101&end=20191230';
+var searchStudyTime = 'start=19700101&end=20191230';
+
 layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     var laypage = layui.laypage, //分页
         table = layui.table, //表格
@@ -83,7 +86,19 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         };
 
     $('.SerarchTable .layui-btn').on('click', function() {
-        layer.msg('to do next...');
+        searchStudyTime = 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val();
+        tableStudyImage.reload({
+            //window.location.host + '/healthsystem/ris/stduydata/?start=20190101&end=20191219'
+            url: window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime
+        });
+        // var type = $(this).data('type');
+        // active[type] ? active[type].call(this) : '';
+    });
+    $('.SerarchImageTable .layui-btn').on('click', function() {
+        searchImageTime = 'start=' + $('#imagestduystart').val() + '&end=' + $('#imagestduyend').val();
+        tableStudyImage.reload({
+            url: window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime
+        });
         // var type = $(this).data('type');
         // active[type] ? active[type].call(this) : '';
     });
@@ -246,7 +261,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     var tablePatient = table.render({
         elem: '#studytable',
         height: 'full-200',
-        url: window.location.host + '/healthsystem/ris/stduydata/?start=20190101&end=20191219', //数据接口 http://127.0.0.1:80/
+        url: window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime, //数据接口 http://127.0.0.1:80/
         //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
         title: 'patients',
         page: true, //开启分页
@@ -254,7 +269,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         totalRow: true, //开启合计行
         loading: true,
         //skin: 'row' ,
-        limits: [20, 40, 60, 80, 100, 150, 200, 300],
+        limits: [10, 20, 40, 60, 80, 100, 150, 200, 300],
         limit: 20,
         patientId: "testReload",
         size: 'sm',
@@ -407,7 +422,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     var tableStudyImage = table.render({
         elem: '#studyimage',
         height: 'full-200',
-        url: window.location.host + '/healthsystem/ris/stduyimage/?start=20190101&end=20191219', //数据接口 http://127.0.0.1:80/
+        url: window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime, //数据接口 http://127.0.0.1:80/
         //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
         title: 'studyimages',
         page: true, //开启分页
@@ -415,8 +430,8 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         totalRow: true, //开启合计行
         loading: true,
         //skin: 'row' ,
-        limits: [20, 40, 60, 80, 100, 150, 200, 300],
-        limit: 20,
+        limits: [10, 20, 40, 60, 80, 100, 150, 200, 300],
+        limit: 10,
         patientId: "testReload",
         size: 'sm',
         // type: 'radio',

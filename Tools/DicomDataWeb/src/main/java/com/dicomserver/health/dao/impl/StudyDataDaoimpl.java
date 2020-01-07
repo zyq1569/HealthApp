@@ -12,7 +12,7 @@ import java.util.List;
 
 public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
     @Override //check all dcm image info
-    public List<StudyData> getAllStudyImageData() {
+    public List<StudyData> getAllStudyImageData(String startTime,String endTime, String page, String limit) {
         List<StudyData> list = new ArrayList<StudyData>();
         /*
          * String sql =
@@ -22,6 +22,14 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         String sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber,s.StudyID,s.StudyUID "
                 + ",s.StudyIdentity,s.StudyDateTime,s.StudyDescription, s.StudyModality from "
                 + "h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity";
+        if (startTime.length() > 0 && endTime.length()>0 && page.length()>0 && limit.length()>0){
+            String s = String.valueOf((Integer.parseInt(page)-1)*Integer.parseInt(limit));
+            sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber,s.StudyID,s.StudyUID "
+                    + ",s.StudyIdentity,s.StudyDateTime,s.StudyDescription, s.StudyModality from "
+                    + "h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and "
+                    + " s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
+                    " order by s.PatientIdentity limit " + s + ","+limit;
+        }
         Object[] params = {};
         String str;
         ResultSet rs = this.executeQuerySQL(sql, params);
@@ -59,12 +67,47 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
     }
 
     @Override
-    public List<StudyData> getAllStudy() {
+    public int getAllStudyImageCount(String startTime, String endTime, String page, String limit) {
+        String select_count = "";
+        int count = 0;
+        if (startTime.length() > 0 && endTime.length()>0 && page.length()>0 && limit.length()>0){
+            String s = String.valueOf((Integer.parseInt(page)-1)*Integer.parseInt(limit));
+            select_count = "select count(*) count from "
+                    + "h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and "
+                    + " s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= "
+                    + endTime;
+        }
+        Object[] params = {};
+        if (select_count.length() >0 ){
+            ResultSet rs_count = this.executeQuerySQL(select_count, params);
+            try {
+                while (rs_count.next()) {
+                    count = Integer.parseInt(rs_count.getString("count")) ;
+                    return count;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public List<StudyData> getAllStudy(String startTime,String endTime, String page, String limit) {
         List<StudyData> list = new ArrayList<StudyData>();
         String sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
-                "p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
-                "s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState, s.ScheduledDateTime" +
+                " p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
+                " s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState, s.ScheduledDateTime" +
                 " from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0";
+        if (startTime.length() > 0 && endTime.length()>0 && page.length()>0 && limit.length()>0){
+            String s = String.valueOf((Integer.parseInt(page)-1)*Integer.parseInt(limit));
+            sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
+                    " p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
+                    " s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState, s.ScheduledDateTime" +
+                    " from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
+                    " s.ScheduledDateTime>=" + startTime +" and  s.ScheduledDateTime<="+ endTime +" order by s.StudyOrderIdentity " +
+                    " limit " + s + ","+limit;
+        }
         Object[] params = {};
         ResultSet rs = this.executeQuerySQL(sql, params);
         try {
@@ -97,6 +140,32 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             e.printStackTrace();
         }
         return list;
+    }
+
+    @Override
+    public int getAllStudyCount(String startTime, String endTime, String page, String limit) {
+        String select_count = "";
+        int count = 0;
+        if (startTime.length() > 0 && endTime.length()>0 && page.length()>0 && limit.length()>0){
+            String s = String.valueOf((Integer.parseInt(page)-1)*Integer.parseInt(limit));
+            select_count = "select count(*) count from "
+                    + " h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and"
+                    + "  s.ScheduledDateTime>= " + startTime + " and  s.ScheduledDateTime <= "
+                    + endTime;
+        }
+        Object[] params = {};
+        if (select_count.length() >0 ){
+            ResultSet rs_count = this.executeQuerySQL(select_count, params);
+            try {
+                while (rs_count.next()) {
+                    count = Integer.parseInt(rs_count.getString("count")) ;
+                    return count;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return count;
     }
 
     @Override

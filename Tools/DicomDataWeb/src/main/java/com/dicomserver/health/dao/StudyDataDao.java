@@ -6,8 +6,10 @@ import com.dicomserver.health.entity.StudyData;
 import java.util.List;
 
 public interface StudyDataDao {
-    public List<StudyData> getAllStudy();
-    public List<StudyData> getAllStudyImageData();
+    public List<StudyData> getAllStudy(String startTime,String endTime, String page, String limit);
+    public int getAllStudyCount(String startTime,String endTime, String page, String limit);
+    public List<StudyData> getAllStudyImageData(String startTime,String endTime, String page, String limit);
+    public int getAllStudyImageCount(String startTime,String endTime, String page, String limit);
     public StudyData getStudyMoreInfo(StudyData study);
     public int addStudy(StudyData study);
     public int delStudy(StudyData study);

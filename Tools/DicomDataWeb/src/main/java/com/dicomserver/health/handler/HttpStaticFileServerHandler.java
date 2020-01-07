@@ -158,11 +158,14 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         return filePath;
     }
 
-    public String getImageTableData() {
+    public String getImageTableData(String startTime,String endTime, String page, String limit) {
         String strvalue;
         StudyDataDao studydata = new StudyDataDaoimpl();
-        List<StudyData> list = studydata.getAllStudyImageData();
-        int size = list.size();
+        List<StudyData> list = studydata.getAllStudyImageData(startTime,endTime, page, limit);
+        int size = studydata.getAllStudyImageCount(startTime,endTime, page, limit);//list.size();
+        if (list.size() > size){
+            size = list.size();
+        }
         JsonObject respjson = new JsonObject();
         JsonArray rarray = new JsonArray();
         for (StudyData stu : list) {
@@ -195,7 +198,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public String getStudysImageData() {
         String strvalue;
         StudyDataDao studydata = new StudyDataDaoimpl();
-        List<StudyData> list = studydata.getAllStudyImageData();
+//        String startTime = null, endTime= null,  page= null,  limint= null;
+        List<StudyData> list = studydata.getAllStudyImageData(null, null, null, null);
         int size = list.size();
         JsonObject respjson = new JsonObject();
         JsonArray rarray = new JsonArray();
@@ -218,11 +222,14 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         return strvalue;
     }
 
-    public String getPatientStudyData() {
+    public String getPatientStudyData(String startTime,String endTime, String page, String limit) {
         String strvalue;
         StudyDataDao studydata = new StudyDataDaoimpl();
-        List<StudyData> list = studydata.getAllStudy();
-        int size = list.size();
+        List<StudyData> list = studydata.getAllStudy(startTime,endTime, page, limit);
+        int size = studydata.getAllStudyCount(startTime,endTime, page, limit);//list.size();
+        if (list.size() > size){
+            size = list.size();
+        }
         JsonObject respjson = new JsonObject();
         JsonArray rarray = new JsonArray();
         for (StudyData stu : list) {
@@ -573,9 +580,26 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             SavePatient(ctx, request, uri, keepAlive);
             return;
         }
-        if (lowerUri.contains("/healthsystem/ris/stduydata")) {
+        if (lowerUri.contains("/healthsystem/ris/studydata")) {
+            Map<String, Object> map = getParameter(lowerUri);
+            String startTime = "";
+            String endTime = "";
+            String page = "";
+            String limit = "";
+            for (String key : map.keySet()) {
+                String value = (String) map.get(key);
+                if (key.contains("start")) {
+                    startTime = value;
+                } else if (key.contains("end")) {
+                    endTime = value;
+                } else if (key.contains("page")) {
+                    page = value;
+                } else if (key.contains("limit")) {
+                    limit = value;
+                }
+            }
             //get patientstudy data json
-            String buf = getPatientStudyData();
+            String buf = getPatientStudyData(startTime,endTime, page, limit);
             ByteBuf buffer = ctx.alloc().buffer(buf.length());
             buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
             FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
@@ -586,7 +610,24 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
         if (lowerUri.contains("/healthsystem/ris/stduyimage")) {
             //get patientstudy data json
-            String buf = getImageTableData();
+            Map<String, Object> map = getParameter(lowerUri);
+            String startTime = "";
+            String endTime = "";
+            String page = "";
+            String limit = "";
+            for (String key : map.keySet()) {
+                String value = (String) map.get(key);
+                if (key.contains("start")) {
+                    startTime = value;
+                } else if (key.contains("end")) {
+                    endTime = value;
+                } else if (key.contains("page")) {
+                    page = value;
+                } else if (key.contains("limit")) {
+                    limit = value;
+                }
+            }
+            String buf = getImageTableData(startTime,endTime, page, limit);
             ByteBuf buffer = ctx.alloc().buffer(buf.length());
             buffer.writeCharSequence(buf, CharsetUtil.UTF_8);
             FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, buffer);
