@@ -87,7 +87,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
 
     $('.SerarchTable .layui-btn').on('click', function() {
         searchStudyTime = 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val();
-        tableStudyImage.reload({
+        tablePatient.reload({
             //window.location.host + '/healthsystem/ris/stduydata/?start=20190101&end=20191219'
             url: window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime
         });
@@ -262,6 +262,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         elem: '#studytable',
         height: 'full-200',
         url: window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime, //数据接口 http://127.0.0.1:80/
+        // url: window.location.host + '/healthsystem/ris/studydata/?' + 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val(), //数据接口 http://127.0.0.1:80/
         //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
         title: 'patients',
         page: true, //开启分页
@@ -426,7 +427,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
         title: 'studyimages',
         page: true, //开启分页
-        // toolbar: 'default', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+        toolbar: 'default', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
         totalRow: true, //开启合计行
         loading: true,
         //skin: 'row' ,
