@@ -137,28 +137,38 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                 break;
         }
     });
-
-    //监听行工具事件 
-    table.on('tool(studytabledatas)', function(obj) {
-        var data = obj.data, //获得当前行数据
-            layEvent = obj.event; //获得 lay-event 对应的值
-        if (layEvent === 'detail') {
-            //layer.msg('查看操作');
-            layer.alert('detail： rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(obj.data));
-        } else if (layEvent === 'del') {
-            layer.msg('权限禁止删除！');
-            // layer.confirm('真的删除行么', function(index) {
-            //     // obj.del(); //删除对应行（tr）的DOM结构
-            //     // layer.close(index);
-            //     //向服务端发送删除指令
-            // });
-        } else if (layEvent === 'edit') {
-            element.tabChange('TabBrief', 'layid_addedit');
-            //layer.alert('rowDouble rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(data));
-            SetFormValue(JSON.stringify(obj.data));
-            //layer.msg('编辑操作');
+    table.on('toolbar(studyimagedatas)', function(obj) {
+        var checkStatus = table.checkStatus(obj.config.id),
+            data = checkStatus.data; //获取选中的数据
+        switch (obj.event) {
+            //自定义头工具栏右侧图标 - 提示
+            case 'LAYTABLE_TIPS':
+                layer.alert('检查图像表,不一定在预约表中');
+                break;
         }
     });
+
+    //监听行工具事件 
+    // table.on('tool(studytabledatas)', function(obj) {
+    //     var data = obj.data, //获得当前行数据
+    //         layEvent = obj.event; //获得 lay-event 对应的值
+    //     if (layEvent === 'detail') {
+    //         //layer.msg('查看操作');
+    //         layer.alert('detail： rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(obj.data));
+    //     } else if (layEvent === 'del') {
+    //         layer.msg('权限禁止删除！');
+    //         // layer.confirm('真的删除行么', function(index) {
+    //         //     // obj.del(); //删除对应行（tr）的DOM结构
+    //         //     // layer.close(index);
+    //         //     //向服务端发送删除指令
+    //         // });
+    //     } else if (layEvent === 'edit') {
+    //         element.tabChange('TabBrief', 'layid_addedit');
+    //         //layer.alert('rowDouble rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(data));
+    //         SetFormValue(JSON.stringify(obj.data));
+    //         //layer.msg('编辑操作');
+    //     }
+    // });
     //监听表格行点击
     // table.on('row(studytabledatas)', function(obj){
     //     console.log(obj)
@@ -266,7 +276,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
         title: 'patients',
         page: true, //开启分页
-        toolbar: 'default', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+        toolbar: 'default', //开启工具栏，此处显示默认图标
         totalRow: true, //开启合计行
         loading: true,
         //skin: 'row' ,
@@ -427,12 +437,17 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
         title: 'studyimages',
         page: true, //开启分页
-        toolbar: 'default', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+        toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
+        defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+            title: '提示',
+            layEvent: 'LAYTABLE_TIPS',
+            icon: 'layui-icon-tips'
+        }],
         totalRow: true, //开启合计行
         loading: true,
         //skin: 'row' ,
         limits: [10, 20, 40, 60, 80, 100, 150, 200, 300],
-        limit: 10,
+        limit: 20,
         patientId: "testReload",
         size: 'sm',
         // type: 'radio',
