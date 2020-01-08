@@ -677,7 +677,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
     public boolean CheckCookieLogin(FullHttpRequest request) {
         String cookiestr = request.headers().get(HttpHeaderNames.COOKIE);
-        System.out.println("------COOKIE str:" + cookiestr);
+//        System.out.println("------COOKIE str:" + cookiestr);
         if (cookiestr != null) {
             Set<io.netty.handler.codec.http.cookie.Cookie> cookies = ServerCookieDecoder.STRICT.decode(cookiestr);
             if (!cookies.isEmpty()) {
