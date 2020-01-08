@@ -51,7 +51,7 @@ public class HealthApplication {
 			sslCtx = null;
 		}
 
-		EventLoopGroup bossGroup = new NioEventLoopGroup(2);
+		EventLoopGroup bossGroup = new NioEventLoopGroup(9);
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
 		try {
 			ServerBootstrap b = new ServerBootstrap();

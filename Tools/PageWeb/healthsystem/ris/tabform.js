@@ -22,6 +22,30 @@ function SetFormValue(jsonstring) {
     });
 }
 
+function AddOrderStudyOfPatient(jsonstring) {
+    var data = JSON.parse(jsonstring);
+    //layer.alert(data);
+    //给表单赋值
+    layui.form.val("formpatient", {
+        "PatientName": data.patientName,
+        "PatientSex": data.patientSex,
+        "PatientBirthday": data.patientBirthday,
+        "PatientTelNumber": data.patientTelNumber,
+        "PatientEmail": data.patientEmail,
+        "PatientCarID": data.patientCarID,
+        "PatientAddr": data.patientAddr,
+        // "StudyCost": data.studyCost,
+        // "StudyDepart": data.studyDepart,
+        // "StudyModality": data.studyModality,
+        // "ScheduledDate": data.scheduledDateTime,
+        // "CostType": data.costType,
+        // "StudyDescription": data.studyDescription,
+        "PatientID": data.patientId,
+        "PatientIdentity": data.patientIdentity,
+        // "StudyOrderIdentity": data.studyOrderIdentity
+    });
+}
+
 function ClearFormValue() {
     //layer.alert(data);
     //给表单赋值
@@ -112,6 +136,9 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                 {
                     ClearFormValue();
                     element.tabChange('TabBrief', 'layid_addedit');
+                    if (data.length === 1) {
+                        AddOrderStudyOfPatient(JSON.stringify(data[0]));
+                    }
                     break;
                 }
             case 'update':
@@ -178,11 +205,26 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                 }
         }
     });
+    // table.on('radio(studytabledatas)', function(obj) {
+    //     layer.alert('---' + obj.tr.data('isChecked'));
+    //     if (obj.tr.data('isChecked')) {
+    //         obj.checked = false;
+    //         obj.tr.find(':radio[lay-type="layTableRadio"]').prop('checked', false);
+    //         layui.form.render();
+    //     }
+    // });
     //监听表格行点击
-    // table.on('row(studytabledatas)', function(obj){
-    //     console.log(obj)
-    //     layer.alert('row rowIndex:'+ obj.tr[0].rowIndex +' 选中数据:'+JSON.stringify(obj.data));
-    //  });
+    // table.on('row(studytabledatas)', function(obj) {
+    // if (obj.checked) {
+    //     obj.checked = false;
+    //     // obj.tr.find(':radio[lay-type="layTableRadio"]').prop('checked', false);
+    //     layui.form.render();
+    // }
+    // $('input:radio[name=sex]')[0].checked = false;
+    // form.render('radio');
+    // console.log(obj);
+    // layer.alert('row rowIndex:'+ obj.tr[0].rowIndex +' 选中数据:'+JSON.stringify(obj.data));
+    // });
     //监听表格行双击
     table.on('rowDouble(studytabledatas)', function(obj) {
         //var patient = JSON.stringify(obj.data);

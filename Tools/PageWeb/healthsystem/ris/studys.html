@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html>
+<!-- 表单验证 ay-verify	required（必填项）
+phone（手机号）
+email（邮箱）
+url（网址）
+number（数字）
+date（日期）
+identity（身份证）
+自定义值 -->
 
 <head>
     <meta charset="utf-8">
@@ -50,8 +58,8 @@
                 <div class="layui-inline">
                     <input type="text" class="layui-input" id="stduyend" placeholder="yyyyMMdd">
                 </div>
-                <div class="layui-inline"> PatientType: </div>
-                <div class="layui-inline">
+                <div class="layui-inline" style="visibility:hidden;"> PatientType: </div>
+                <div class="layui-inline" style="visibility:hidden;">
                     <select name="StudyRoom" lay-filter="ptype">
                             <option value="10">Depart Room </option>
                             <optgroup label="RIS">
@@ -70,8 +78,8 @@
                 </div>
                 <div class="layui-inline">
                     <div class="SerarchTable">
-                        search:
-                        <div class="layui-inline">
+                        <!-- search: -->
+                        <div class="layui-inline" style="visibility:hidden;">
                             <input class="layui-input" name="searchitem" id="searchReload" autocomplete="off">
                         </div>
                         <button class="layui-btn" data-type="reload">search</button>
@@ -85,7 +93,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">PatientName</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="PatientName" lay-verify="required|title" lay-reqText="PatientName不能为空" required placeholder="name" autocomplete="off" class="layui-input">
+                            <input type="text" name="PatientName" lay-verify="required" lay-reqText="PatientName不能为空" required placeholder="name" autocomplete="off" class="layui-input">
                         </div>
                         <label class="layui-form-label">PatientID</label>
                         <div class="layui-input-inline">
@@ -111,7 +119,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">PatientBirth</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="PatientBirthday" id="birthdate" lay-verify="datetime" placeholder="yyyyMMdd" autocomplete="off" class="layui-input">
+                            <input type="text" name="PatientBirthday" id="birthdate" lay-verify="required|datetime" placeholder="yyyyMMdd" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -123,32 +131,32 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">Email</label>
                         <div class="layui-input-inline">
-                            <input type="email" name="PatientEmail" lay-verify="email" lay-verType="alert" autocomplete="off" class="layui-input">
+                            <input type="email" name="PatientEmail" lay-verify="required|email" lay-verType="alert" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">PatientCarID</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="PatientCarID" lay-verify="required|title" lay-reqText="PatientCarID标题不能为空" required placeholder="CarID" autocomplete="off" class="layui-input">
+                            <input type="text" name="PatientCarID" lay-verify="required" lay-reqText="PatientCarID标题不能为空" required placeholder="CarID" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">PatientAddr</label>
                         <div class="layui-input-block">
-                            <input type="text" name="PatientAddr" lay-verify="required|title" lay-reqText="PatientAddr不能为空" required placeholder="PatientAddr" autocomplete="off" class="layui-input">
+                            <input type="text" name="PatientAddr" lay-verify="required" lay-reqText="PatientAddr不能为空" required placeholder="PatientAddr" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">Cost</label>
                             <div class="layui-input-inline" style="width: 100px;">
-                                <input type="text" name="StudyCost" placeholder="￥" autocomplete="off" class="layui-input">
+                                <input type="text" name="StudyCost" placeholder="￥" lay-verify="required" lay-reqText="StudyCost不能为空" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">StudyRoom</label>
                             <div class="layui-input-block">
-                                <select name="StudyDepart" lay-filter="contents">
+                                <select name="StudyDepart" lay-verify="required" lay-reqText="StudyRoom(StudyDepart)不能为空" lay-filter="contents">
                                         <option value="">SelectDepartments </option>
                                         <optgroup label="RIS">
                                           <option value="10">普放科</option>
@@ -168,7 +176,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">StudyModality</label>
                             <div class="layui-input-block">
-                                <select name="StudyModality" lay-verify="required" lay-verType="tips">
+                                <select name="StudyModality" lay-verify="required" lay-filter="interest" lay-reqText="StudyModality不能为空" lay-verType="tips">
                                     <option value="">Select study modality</option>
                                     <option value="CT">CT</option>
                                     <option value="MR">MR</option>
@@ -187,13 +195,13 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">PlanDate</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="ScheduledDate" id="ScheduledDate" lay-verify="datetime" placeholder="yyyyMMdd" autocomplete="off" class="layui-input">
+                            <input type="text" name="ScheduledDate" id="ScheduledDate" lay-verify="required|datetime" placeholder="yyyyMMdd" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">CostType</label>
                         <div class="layui-input-inline">
-                            <select name="CostType" lay-filter="interest">
+                            <select name="CostType" lay-verify="required" lay-filter="interest" lay-reqText="CostType不能为空">
                                   <option value=""></option>
                                   <option value="自费">自费</option>
                                   <option value="公费">公费</option>
@@ -205,7 +213,7 @@
                     <div class="layui-form-item layui-form-text">
                         <label class="layui-form-label">请填写检查描述</label>
                         <div class="layui-input-block">
-                            <textarea placeholder="检查描述" class="layui-textarea" name="StudyDescription"></textarea>
+                            <textarea placeholder="检查描述" lay-verify="required" class="layui-textarea" name="StudyDescription"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -252,8 +260,8 @@
                 <div class="layui-inline">
                     <input type="text" class="layui-input" id="imagestduyend" placeholder="yyyyMMdd">
                 </div>
-                <div class="layui-inline"> PatientType: </div>
-                <div class="layui-inline">
+                <div class="layui-inline" style="visibility:hidden;"> PatientType: </div>
+                <div class="layui-inline" style="visibility:hidden;">
                     <select name="StudyRoom" lay-filter="ptype">
                             <option value="10">Depart Room </option>
                             <optgroup label="RIS">
@@ -272,8 +280,8 @@
                 </div>
                 <div class="layui-inline">
                     <div class="SerarchImageTable">
-                        search:
-                        <div class="layui-inline">
+                        <!-- search: -->
+                        <div class="layui-inline" style="visibility:hidden;">
                             <input class="layui-input" name="searchitem" id="imageSearchReload" autocomplete="off">
                         </div>
                         <button class="layui-btn" data-type="reload">search</button>
