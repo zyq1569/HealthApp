@@ -233,7 +233,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     });
     //studyimage
     var host = window.location.host;
-    var imageview_url = "http://" + host + "/view/testview.html?";
+    var imageview_url = "http://" + host + "/view/view.html?";
     table.on('rowDouble(studyimagedatas)', function(obj) {
         //var patient = JSON.stringify(obj.data);
         var json = obj.data; // JSON.parse(patient);
