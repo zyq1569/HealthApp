@@ -148,27 +148,36 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         }
     });
 
-    //监听行工具事件 
-    // table.on('tool(studytabledatas)', function(obj) {
-    //     var data = obj.data, //获得当前行数据
-    //         layEvent = obj.event; //获得 lay-event 对应的值
-    //     if (layEvent === 'detail') {
-    //         //layer.msg('查看操作');
-    //         layer.alert('detail： rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(obj.data));
-    //     } else if (layEvent === 'del') {
-    //         layer.msg('权限禁止删除！');
-    //         // layer.confirm('真的删除行么', function(index) {
-    //         //     // obj.del(); //删除对应行（tr）的DOM结构
-    //         //     // layer.close(index);
-    //         //     //向服务端发送删除指令
-    //         // });
-    //     } else if (layEvent === 'edit') {
-    //         element.tabChange('TabBrief', 'layid_addedit');
-    //         //layer.alert('rowDouble rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(data));
-    //         SetFormValue(JSON.stringify(obj.data));
-    //         //layer.msg('编辑操作');
-    //     }
-    // });
+    //监听行工具事件 row event
+    table.on('tool(studytabledatas)', function(obj) {
+        var data = obj.data, //获得当前行数据
+            layEvent = obj.event; //获得 lay-event 对应的值
+        switch (layEvent) {
+            case 'detail':
+                {
+                    //layer.msg('查看操作');  
+                    layer.alert('detail： rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(obj.data));
+                    break;
+                }
+            case 'del ':
+                {
+                    layer.alert('权限禁止删除！');
+                    // layer.confirm('真的删除行么', function(index) {
+                    // obj.del(); //删除对应行（tr）的DOM结构
+                    // layer.close(index);
+                    //向服务端发送删除指令
+                    break;
+                }
+            case 'edit':
+                {
+                    element.tabChange('TabBrief', 'layid_addedit');
+                    //layer.alert('rowDouble rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(data));
+                    SetFormValue(JSON.stringify(obj.data));
+                    //layer.msg('编辑操作');
+                    break;
+                }
+        }
+    });
     //监听表格行点击
     // table.on('row(studytabledatas)', function(obj){
     //     console.log(obj)
