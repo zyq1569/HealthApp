@@ -161,7 +161,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                 }
             case 'del ':
                 {
-                    layer.alert('权限禁止删除！');
+                    layer.msg('权限禁止删除！');
                     // layer.confirm('真的删除行么', function(index) {
                     // obj.del(); //删除对应行（tr）的DOM结构
                     // layer.close(index);
