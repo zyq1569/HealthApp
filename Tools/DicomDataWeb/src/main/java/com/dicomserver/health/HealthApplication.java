@@ -17,8 +17,6 @@ import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-//
-//
 //	public static void main(String[] args) {
 //		SpringApplication.run(HealthApplication.class, args);
 //	}
