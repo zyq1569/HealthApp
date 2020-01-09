@@ -1,11 +1,27 @@
-<configuration debug="false">
+<!--<configuration debug="false">-->
+<configuration>
+  <contextName>Health</contextName>
+  <property name="log.dir" value="D:/code/C++/HealthApp/bin/win32/log" />
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
   </appender>
 
+  <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${log.dir}/HealthApp.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${log.dir}/logs/log-%d{yyyy-MM-dd}.log</fileNamePattern>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{25}[%method] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!--  <appender-ref ref="FILE" />-->
+
   <root level="${logLevel:-info}">
     <appender-ref ref="STDOUT" />
+    <appender-ref ref="rollingFile" />
   </root>
 </configuration>

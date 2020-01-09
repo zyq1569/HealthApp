@@ -1,12 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define QPROCESSSIZE 4
+#define QPROCESSSIZE 5
 
 #define WLMSCPQ 0
 #define STORESCPQ 1
 #define QUERSCPQ 2
 #define DCM2DBQ 3
+#define WEBSER 4
 
 #include <QMainWindow>
 
@@ -27,7 +28,8 @@ public:
     QString m_QuerRScpName;
     QString m_WLMScpName;
     QString m_Dcm2DBName;
-    QString m_MysqlServer,m_MysqlDbName,m_MysqlUserName,m_MysqlPWD;
+    QString m_MysqlServer,m_WebServerName,m_MysqlDbName,m_MysqlUserName,m_MysqlPWD;
+    QString m_WebSerPort;
 private slots:
     void on_StoreSCP_clicked();
 
@@ -36,6 +38,8 @@ private slots:
     void on_QRSCP_clicked();
 
     void on_Dcm2DB_clicked();
+
+    void on_WebServer_clicked();
 
 protected:
     QProcess *m_pQProcess[QPROCESSSIZE];//,*m_pStoreQProcess,*m_pQuerQProcess,*m_pWLMQProcess,*m_pDcmQProcess;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>436</width>
-    <height>439</height>
+    <height>466</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>4</x>
-      <y>43</y>
+      <y>30</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -31,7 +31,7 @@
     <property name="geometry">
      <rect>
       <x>4</x>
-      <y>81</y>
+      <y>68</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>163</y>
+      <y>147</y>
       <width>75</width>
       <height>31</height>
      </rect>
@@ -66,7 +66,7 @@
     <property name="geometry">
      <rect>
       <x>5</x>
-      <y>211</y>
+      <y>191</y>
       <width>91</width>
       <height>20</height>
      </rect>
@@ -79,7 +79,7 @@
     <property name="geometry">
      <rect>
       <x>259</x>
-      <y>74</y>
+      <y>61</y>
       <width>75</width>
       <height>31</height>
      </rect>
@@ -101,7 +101,7 @@
     <property name="geometry">
      <rect>
       <x>4</x>
-      <y>171</y>
+      <y>155</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -114,7 +114,7 @@
     <property name="geometry">
      <rect>
       <x>259</x>
-      <y>35</y>
+      <y>22</y>
       <width>75</width>
       <height>31</height>
      </rect>
@@ -136,7 +136,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>41</y>
+      <y>28</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -152,7 +152,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>80</y>
+      <y>67</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -168,7 +168,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>125</y>
+      <y>109</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -184,7 +184,7 @@
     <property name="geometry">
      <rect>
       <x>3</x>
-      <y>5</y>
+      <y>3</y>
       <width>61</width>
       <height>21</height>
      </rect>
@@ -205,7 +205,7 @@
     <property name="geometry">
      <rect>
       <x>259</x>
-      <y>119</y>
+      <y>103</y>
       <width>75</width>
       <height>31</height>
      </rect>
@@ -227,7 +227,7 @@
     <property name="geometry">
      <rect>
       <x>4</x>
-      <y>126</y>
+      <y>110</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -240,7 +240,7 @@
     <property name="geometry">
      <rect>
       <x>99</x>
-      <y>210</y>
+      <y>190</y>
       <width>271</width>
       <height>21</height>
      </rect>
@@ -256,7 +256,7 @@
     <property name="geometry">
      <rect>
       <x>6</x>
-      <y>252</y>
+      <y>227</y>
       <width>61</width>
       <height>16</height>
      </rect>
@@ -269,7 +269,7 @@
     <property name="geometry">
      <rect>
       <x>73</x>
-      <y>249</y>
+      <y>224</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -285,7 +285,7 @@
     <property name="geometry">
      <rect>
       <x>244</x>
-      <y>249</y>
+      <y>224</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -301,7 +301,7 @@
     <property name="geometry">
      <rect>
       <x>185</x>
-      <y>252</y>
+      <y>227</y>
       <width>61</width>
       <height>16</height>
      </rect>
@@ -314,7 +314,7 @@
     <property name="geometry">
      <rect>
       <x>73</x>
-      <y>280</y>
+      <y>255</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -330,7 +330,7 @@
     <property name="geometry">
      <rect>
       <x>7</x>
-      <y>283</y>
+      <y>258</y>
       <width>61</width>
       <height>16</height>
      </rect>
@@ -343,7 +343,7 @@
     <property name="geometry">
      <rect>
       <x>183</x>
-      <y>283</y>
+      <y>258</y>
       <width>61</width>
       <height>16</height>
      </rect>
@@ -356,7 +356,7 @@
     <property name="geometry">
      <rect>
       <x>244</x>
-      <y>280</y>
+      <y>255</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -372,7 +372,7 @@
     <property name="geometry">
      <rect>
       <x>8</x>
-      <y>336</y>
+      <y>280</y>
       <width>71</width>
       <height>20</height>
      </rect>
@@ -385,7 +385,7 @@
     <property name="geometry">
      <rect>
       <x>73</x>
-      <y>357</y>
+      <y>301</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -401,7 +401,7 @@
     <property name="geometry">
      <rect>
       <x>9</x>
-      <y>360</y>
+      <y>304</y>
       <width>51</width>
       <height>16</height>
      </rect>
@@ -414,7 +414,7 @@
     <property name="geometry">
      <rect>
       <x>176</x>
-      <y>360</y>
+      <y>304</y>
       <width>61</width>
       <height>16</height>
      </rect>
@@ -427,7 +427,7 @@
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>357</y>
+      <y>301</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -443,7 +443,7 @@
     <property name="geometry">
      <rect>
       <x>9</x>
-      <y>386</y>
+      <y>330</y>
       <width>61</width>
       <height>16</height>
      </rect>
@@ -456,7 +456,7 @@
     <property name="geometry">
      <rect>
       <x>73</x>
-      <y>383</y>
+      <y>327</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -466,6 +466,112 @@
     </property>
     <property name="text">
      <string>127.0.0.1</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_webserver">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>371</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>HealthWeb Server port:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="port_webserver">
+    <property name="geometry">
+     <rect>
+      <x>141</x>
+      <y>370</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>8888</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="WebServer">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>364</y>
+      <width>75</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run store scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>启动</string>
+    </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>348</y>
+      <width>431</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>178</y>
+      <width>431</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_PagefileDir">
+    <property name="geometry">
+     <rect>
+      <x>6</x>
+      <y>411</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pagefile Dir:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="Dir_Pagefile">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>410</y>
+      <width>271</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>D:/code/C++/HealthApp/Tools/PageWeb</string>
     </property>
    </widget>
   </widget>
