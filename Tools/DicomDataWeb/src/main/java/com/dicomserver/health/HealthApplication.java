@@ -3,11 +3,7 @@ package com.dicomserver.health;
 //reference :netty demo
 
 import com.dicomserver.health.config.ServerConfig;
-import com.dicomserver.health.dao.StudyDataDao;
-import com.dicomserver.health.dao.impl.StudyDataDaoimpl;
-import com.dicomserver.health.entity.StudyData;
 import com.dicomserver.health.handler.HttpStaticFileServerInitializer;
-import com.google.gson.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -19,13 +15,7 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
-import net.minidev.json.JSONValue;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import javax.validation.constraints.Null;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.List;
 
 //
 //
