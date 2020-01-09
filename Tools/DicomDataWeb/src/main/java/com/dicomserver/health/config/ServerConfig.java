@@ -4,9 +4,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+//driver=com.mysql.cj.jdbc.Driver
+//        url=jdbc:mysql://127.0.0.1:3306/hit?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+//        username=root
+//        password=root
+//        port=8080
+//        filePath=D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images
+//        webdir=D:/code/C++/HealthApp/Tools/PageWeb
 public final class ServerConfig {
     private Properties properties;
     private static ServerConfig serverConfig;
+    public String url = ""; public  String driver = ""; public String username = "";
+    public String password = ""; public String port = ""; public String filePath = "";
+    public String webdir = "";
+    public boolean bparm = false;
     public ServerConfig(){
         String filePath = "application.properties";
         InputStream is = ServerConfig.class.getClassLoader().getResourceAsStream(filePath);
@@ -27,68 +38,29 @@ public final class ServerConfig {
     }
 
     public String getString(String key)    {
+        if (bparm){
+            if (key.equals("url")){
+                return  url;
+            }
+            if (key.equals("driver")){
+                return  driver;
+            }
+            if (key.equals("username")){
+                return  username;
+            }
+            if (key.equals("password")){
+                return  password;
+            }
+            if (key.equals("port")){
+                return  port;
+            }
+            if (key.equals("filePath")){
+                return  filePath;
+            }
+            if (key.equals("webdir")){
+                return  webdir;
+            }
+        }
         return properties.getProperty(key);
     }
-
-
-//    static final boolean SSL = System.getProperty("ssl") != null;
-//    static final int PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
-//    public  String PROPERTIES_NAME = System.getProperty("user.dir")+"/src/main/resources/application.properties";
-//    public  FileInputStream in = null;
-//    public String config_port = "";
-//
-//    public static String file_path = "D:\\";
-//    public static String image_path = "D:\\";
-//    public static int server_port = 0;
-//
-//    public  void Init(){
-//        if (server_port > 0)
-//            return;
-//        try {
-//            Properties properties = new Properties();
-//            in = new FileInputStream(PROPERTIES_NAME);
-//            properties.load(in);
-//            config_port = properties.getProperty("netty.dicom.port");
-//            server_port = Integer.parseInt(config_port);
-//            System.out.println("读取配置信息成功！config_port:" + config_port);
-//            file_path =   properties.getProperty("netty.dicom.filePath");
-//            image_path =  properties.getProperty("netty.dicom.imagePath");
-//            System.out.println("读取配置信息成功！file_path:" + file_path);
-//        } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//        } finally {
-//            if (in != null) {
-//                try {
-//                    in.close();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
-//    public int GetPort(){
-//        Init();
-//        if (server_port > 0)
-//            return server_port;
-//        return PORT;
-//    }
-//    public  String StrPort(){
-//        Init();
-//        if (server_port >0)
-//            return config_port;
-//        return Integer.toString(PORT);
-//    }
-//    public String GetFilePath(){
-//        Init();
-//        return file_path;
-//    }
-//    public String GetImagePath(){
-//        Init();
-//        return image_path;
-//    }
-//    public static boolean GetSSL(){
-//        return SSL;
-//    }
 }

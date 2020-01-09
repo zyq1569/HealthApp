@@ -22,6 +22,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
     m_QuerRScpName = "dcmqrScp.exe";
     m_WLMScpName = "WorklistScp.exe";
     m_Dcm2DBName = "SaveDcmInfoDb.exe";
+    m_WebServerName = "health.jar";
 }
 
 HMainWindow::~HMainWindow()
@@ -166,6 +167,53 @@ void HMainWindow::on_Dcm2DB_clicked()
         m_pQProcess[DCM2DBQ] = NULL;
         m_bstorescp[DCM2DBQ] = false;
         ui->Dcm2DB->setText("启动");
+        //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
+    }
+}
+
+void HMainWindow::on_WebServer_clicked()
+{
+//    serverconfig.driver = args[0];
+//    serverconfig.url = args[1];
+//    serverconfig.username = args[2];
+//    serverconfig.password = args[3];
+//    serverconfig.port = args[4];
+//    serverconfig.filePath = args[5];
+//    serverconfig.webdir = args[6];
+    m_MysqlServer = ui->mysqlServerValue->text();
+    m_MysqlDbName = ui->mysqldbNameValue->text();
+    m_MysqlUserName = ui->mysqlUserNameValue->text();
+    m_MysqlPWD = ui->mysqlPWDValue->text();
+    m_WebSerPort = ui->port_webserver->text();
+    QString program = "java";
+    QStringList arg;
+
+    arg.append("-jar");
+    arg.append(m_ExeDir + m_WebServerName);
+
+    arg.append("com.mysql.cj.jdbc.Driver");
+    QString DriverUrl = "jdbc:mysql://"+m_MysqlServer+":3306/"+m_MysqlDbName+"?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC";
+    arg.append(DriverUrl);
+    arg.append(m_MysqlUserName);
+    arg.append(m_MysqlPWD);
+    arg.append(m_WebSerPort);
+    arg.append(ui->Dir_Store->text()+"/Images");
+    arg.append(ui->Dir_Pagefile->text());
+    if (!m_bstorescp[WEBSER] && m_pQProcess[WEBSER]==nullptr)
+    {
+        m_pQProcess[WEBSER] =  new QProcess(this);
+        m_pQProcess[WEBSER]->start(program,arg);
+        m_bstorescp[WEBSER] = true;
+        ui->WebServer->setText("运行中!");
+        //QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
+    }
+    else if( m_pQProcess[WEBSER]!=NULL)
+    {
+        m_pQProcess[WEBSER]->close();
+        delete m_pQProcess[WEBSER];
+        m_pQProcess[WEBSER] = NULL;
+        m_bstorescp[WEBSER] = false;
+        ui->WebServer->setText("启动");
         //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
     }
 }
