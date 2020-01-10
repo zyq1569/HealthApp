@@ -13,8 +13,8 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 //	public static void main(String[] args) {
@@ -27,7 +27,7 @@ public class HealthApplication {
     //	static final int PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
     private static final ServerConfig serverconfig = new ServerConfig();
     public static void main(String[] args) throws Exception {
-        Logger log = LoggerFactory.getLogger(HealthApplication.class);
+        Logger log = LogManager.getLogger(HealthApplication.class);
         if (args.length == 7) {
             serverconfig.bparm = true;
             serverconfig.driver = args[0];

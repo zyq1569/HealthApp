@@ -1,16 +1,19 @@
 package com.dicomserver.health.dao.impl;
 
+import com.dicomserver.health.HealthApplication;
 import com.dicomserver.health.dao.BaseDao;
 import com.dicomserver.health.dao.StudyDataDao;
 import com.dicomserver.health.entity.ReportData;
 import com.dicomserver.health.entity.StudyData;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
+    private static Logger log = LogManager.getLogger(StudyDataDaoimpl.class);
     @Override //check all dcm image info
     public List<StudyData> getAllStudyImageData(String startTime,String endTime, String page, String limit) {
         List<StudyData> list = new ArrayList<StudyData>();
@@ -242,9 +245,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                     study.getPatientSex(), study.getPatientID(), study.getPatientTelNumber()};
             row = this.executeUpdateSQL(sql, params);
             if (row > 0) {
-                System.out.println("增加患者成功");
+                log.info("增加患者成功");
             } else {
-                System.out.println("增加患者失败");
+                log.error("增加患者失败");
             }
         }
         String SUID = study.creatStudyUID();
@@ -257,9 +260,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 study.getScheduledDateTime(), study.getStudyDescription(), study.getStudyModality()};
         int studyrow = this.executeUpdateSQL(sql, params);
         if (studyrow > 0) {
-            System.out.println("增加预约检查成功");
+            log.info("增加预约检查成功");
         } else {
-            System.out.println("增加预约检查失败");
+            log.error("增加预约检查失败");
         }
 
         return row;
@@ -272,9 +275,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         Object[] params = {study.getPatientID()};
         row = this.executeUpdateSQL(sql, params);
         if (row > 0) {
-            System.out.println("删除预约检查成功");
+            log.info("删除预约检查成功");
         } else {
-            System.out.println("删除预约检查失败");
+            log.error("删除预约检查失败");
         }
         return row;
     }
@@ -287,9 +290,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 study.getPatientTelNumber(), study.getPatientID()};
         row = this.executeUpdateSQL(sql, params);
         if (row > 0) {
-            System.out.println("修改患者成功");
+            log.info("修改患者成功");
         } else {
-            System.out.println("修改患者失败");
+            log.error("修改患者失败");
         }
 
         return row;
@@ -312,10 +315,10 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         }
 
         if (row > 0) {
-            System.out.println("此患者已经存在");
+            log.info("此患者已经存在");
             flag = true;
         } else {
-            System.out.println("没有这个患者");
+            log.error("没有这个患者",study.getPatientName());
             flag = false;
         }
         return flag;
@@ -359,9 +362,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                     orderStudy.getPatientAddr(), orderStudy.getPatientCarID(), orderStudy.getPatientType(), orderStudy.getPatientEmail()};
             row = this.executeUpdateSQL(sql, params);
             if (row > 0) {
-                System.out.println("增加患者成功");
+                log.info("增加患者成功");
             } else {
-                System.out.println("增加患者失败");
+                log.error("增加患者失败");
             }
             return row;
         }
@@ -376,9 +379,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 orderStudy.getPatientType(), orderStudy.getPatientEmail(), orderStudy.getPatientID()};
         row = this.executeUpdateSQL(sql, params);
         if (row > 0) {
-            System.out.println("update患者成功");
+            log.info("update患者成功");
         } else {
-            System.out.println("update患者失败");
+            log.error("update患者失败");
         }
         return row;
     }
@@ -390,9 +393,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         Object[] params = {"-1", orderStudy.getPatientID()};
         row = this.executeUpdateSQL(sql, params);
         if (row > 0) {
-            System.out.println("mark delete患者成功");
+            log.info("mark delete患者成功");
         } else {
-            System.out.println("mark delete患者失败");
+            log.error("mark delete患者失败");
         }
         return row;
     }
@@ -423,9 +426,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 orderStudy.getStudyCode(), orderStudy.getStudyDepart(), orderStudy.getCostType()};
         int studyrow = this.executeUpdateSQL(sql, params);
         if (studyrow > 0) {
-            System.out.println("增加预约检查成功");
+            log.info("增加预约检查成功");
         } else {
-            System.out.println("增加预约检查失败");
+            log.error("增加预约检查失败");
         }
         return studyrow;
     }
@@ -439,9 +442,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 orderStudy.getStudyCode(), orderStudy.getStudyDepart(), orderStudy.getCostType(), StudyOrderIdentity};
         int updaterow = this.executeUpdateSQL(sql, params);
         if (updaterow > 0) {
-            System.out.println("更新预约检查成功");
+            log.info("更新预约检查成功");
         } else {
-            System.out.println("更新预约检查失败");
+            log.error("更新预约检查失败");
         }
         return updaterow;
     }
@@ -454,9 +457,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
         Object[] params = {"-1", StudyOrderIdentity};
         int studyrow = this.executeUpdateSQL(sql, params);
         if (studyrow > 0) {
-            System.out.println("增加预约检查成功");
+            log.info("增加预约检查成功");
         } else {
-            System.out.println("增加预约检查失败");
+            log.error("增加预约检查失败");
         }
         return row;
     }
@@ -523,11 +526,11 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                     reportData.getReportCheckDate(), reportData.getReportContent(), reportData.getReportOther()};
             int reportrow = this.executeUpdateSQL(sql, params);
             if (reportrow > 0) {
-                System.out.println("add 报告成功");
+                log.info("add 报告成功");
                 return reportrow;
             }
         }
-        System.out.println("add 报告失败");
+        log.error("add 报告失败");
         return 0;
     }
 
@@ -539,9 +542,9 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 reportData.getReportCheckDate(), reportData.getReportContent(), reportData.getReportOther(), reportData.getReportIdentity()};
         row = this.executeUpdateSQL(sql, params);
         if (row > 0) {
-            System.out.println("update报告成功");
+            log.info("update报告成功");
         } else {
-            System.out.println("update报告失败");
+            log.info("update报告失败");
         }
         return row;
     }

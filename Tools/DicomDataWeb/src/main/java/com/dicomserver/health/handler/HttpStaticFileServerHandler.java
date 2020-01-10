@@ -1,6 +1,6 @@
 package com.dicomserver.health.handler;
 //reference :netty demo
-
+import com.dicomserver.health.HealthApplication;
 import com.dicomserver.health.config.ServerConfig;
 import com.dicomserver.health.dao.StudyDataDao;
 import com.dicomserver.health.dao.UserService;
@@ -22,6 +22,8 @@ import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedFile;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.SystemPropertyUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -47,6 +49,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public static final String HTTP_PATH = SystemPropertyUtil.get("user.dir");
     private FullHttpRequest request;
     private static final ServerConfig serverconfig = new ServerConfig();
+    private static Logger log = LogManager.getLogger(HttpStaticFileServerHandler.class);
 
     public class OFHashValue {
         public int first = 0;
@@ -115,7 +118,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(map);
+        log.info ("map:",map);
         return map;
     }
 
@@ -174,7 +177,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         respjson.addProperty("count", size);
         respjson.add("data", rarray);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        //System.out.println( gson.toJson(respjson));
+        //log.info ( gson.toJson(respjson));
         strvalue = gson.toJson(respjson);
         return strvalue;
     }
@@ -201,7 +204,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
         respjson.add("studyList", rarray);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        System.out.println(gson.toJson(respjson));
+        log.info (gson.toJson(respjson));
         strvalue = gson.toJson(respjson);
         return strvalue;
     }
@@ -256,7 +259,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         respjson.addProperty("count", size);
         respjson.add("data", rarray);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        //System.out.println( gson.toJson(respjson));
+        //log.info ( gson.toJson(respjson));
         strvalue = gson.toJson(respjson);
         return strvalue;
     }
@@ -268,11 +271,12 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         if (result > 0) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             strvalue = gson.toJson(reportData, ReportData.class);
-//            System.out.println("------StudyReport:--"+strvalue);
+//            log.info ("------StudyReport:--"+strvalue);
         } else if (result == 0) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             strvalue = gson.toJson(reportData, ReportData.class);
-            System.out.println("------StudyReport is empty:--" + strvalue);
+//            log.info ("------StudyReport is empty:--" + strvalue);
+            log.warn("------StudyReport is empty:--", strvalue);
             return strvalue;
         }
         return strvalue;
@@ -295,7 +299,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         try {
             return new String(filecontent, encoding);
         } catch (UnsupportedEncodingException e) {
-            System.err.println("The OS does not support " + encoding);
+//            log.error("The OS does not support " + encoding);
+            log.error("The OS does not support ", encoding);
             e.printStackTrace();
             return null;
         }
@@ -352,7 +357,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         File file = new File(path);
         if (file.isHidden() || !file.exists()) {
             this.sendError(ctx, NOT_FOUND);
-            System.out.println("not found:" + path);
+            log.info("not found:",path);
             return;
         }
 
@@ -434,15 +439,15 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             @Override
             public void operationProgressed(ChannelProgressiveFuture future, long progress, long total) {
                 if (total < 0) { // total unknown
-                    System.err.println(future.channel() + " Transfer progress: " + progress);
+                    log.info(future.channel() + " Transfer progress: " + progress);
                 } else {
-                    System.err.println(future.channel() + " Transfer progress: " + progress + " / " + total);
+                    log.error(future.channel() + " Transfer progress: " + progress + " / " + total);
                 }
             }
 
             @Override
             public void operationComplete(ChannelProgressiveFuture future) {
-                System.err.println(future.channel() + " Transfer complete.");
+                log.info(future.channel() + " Transfer complete.");
             }
         });
 
@@ -455,7 +460,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
     public void SavePatient(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
         String path = uri;
-        System.out.println(path);
+        log.info (path);
         // to do ... change use json
         String content = request.content().toString(CharsetUtil.UTF_8);
         Gson gson = new Gson();
@@ -483,7 +488,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
     public void LoginHealth(ChannelHandlerContext ctx, FullHttpRequest request, String uri, boolean keepAlive) throws Exception {
         String path = uri;
-        System.out.println(path);
+        log.info (path);
         int login = 0;
         LoginUser user = new LoginUser();
         if (path.toLowerCase().contains("checkuser")) {
@@ -621,10 +626,10 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
         if (lowerUri.contains("/healthsystem/ris/saveportdata")) {
             String content = request.content().toString(CharsetUtil.UTF_8);
-            System.out.println("---content:" + content);
+            log.info("---content:" + content);
             Gson gson = new Gson();
             ReportData reportData = gson.fromJson(content, ReportData.class);
-            System.out.println("---fromJson ReportContent:--" + reportData.getReportContent());
+            log.debug("---fromJson ReportContent:--" + reportData.getReportContent());
             StudyDataDao addReport = new StudyDataDaoimpl();
             if (addReport.addStudyReport(reportData) > 0) {
                 String message = "OK";
@@ -668,19 +673,19 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
     public boolean CheckCookieLogin(FullHttpRequest request) {
         String cookiestr = request.headers().get(HttpHeaderNames.COOKIE);
-//        System.out.println("------COOKIE str:" + cookiestr);
+//        log.info ("------COOKIE str:" + cookiestr);
         if (cookiestr != null) {
             Set<io.netty.handler.codec.http.cookie.Cookie> cookies = ServerCookieDecoder.STRICT.decode(cookiestr);
             if (!cookies.isEmpty()) {
                 for (io.netty.handler.codec.http.cookie.Cookie cookie : cookies) {
                     if (cookie != null) {
-//                        System.out.println("---cookie.name()---" + cookie.name());
-//                        System.out.println("---cookie.value()---" + cookie.value());
-//                        System.out.println("---cookie.path()---" + cookie.path());
+//                        log.info ("---cookie.name()---" + cookie.name());
+//                        log.info ("---cookie.value()---" + cookie.value());
+//                        log.info ("---cookie.path()---" + cookie.path());
                         if (cookie.name().equals("user")) {
                             // todo login check
                             if (cookie.value() != "") {
-                                System.out.println("---cookie.value()---" + cookie.value());
+                                log.info ("---cookie.value()---" + cookie.value());
                                 return true;
                             }
                         }
@@ -695,8 +700,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         this.request = request;
         boolean bSetFilename = false;
-//        System.out.println("---content:"+ request.content().toString(CharsetUtil.UTF_8));
-//        System.out.println("---request:" + request);
+//        log.info ("---content:"+ request.content().toString(CharsetUtil.UTF_8));
+//        log.info ("---request:" + request);
         if (!request.decoderResult().isSuccess()) {
             sendError(ctx, BAD_REQUEST);
             return;
@@ -707,7 +712,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
         final boolean keepAlive = HttpUtil.isKeepAlive(request);
         final String uri = request.uri();
-        System.out.println("channelRead0----uri:" + uri);
+        log.info ("channelRead0----uri:" + uri);
         String path = sanitizeUri(uri);//        final String path = sanitizeUri(uri);
         if (uri.toLowerCase().contains("/healthsystem")) {
             if (!CheckCookieLogin(request)) {
@@ -747,7 +752,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                     sopinstanceuid = value;
                     bsouid = true;
                 }
-                System.out.println(key + ":" + value);
+                log.info (key + ":" + value);
             }
             if (bstuid && bseuid && bsouid) {
                 //根据请求参数查找请求的dicom
@@ -811,7 +816,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         if (path.contains("favicon.ico")) {
 //            this.sendError(ctx, NOT_FOUND);
-//            System.out.println("not found:" + path);
+//            log.info ("not found:" + path);
 //            return;
             path = serverconfig.getString("webdir") + "/favicon.ico";
             SendFileData(ctx, request, uri, path, keepAlive, true);

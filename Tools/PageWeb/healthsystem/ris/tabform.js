@@ -1,3 +1,6 @@
+console.log(window.location.host);
+console.log(window.location.port);
+
 function SetFormValue(jsonstring) {
     var data = JSON.parse(jsonstring);
     //layer.alert(data);
@@ -319,10 +322,13 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     // var mytime = myDate.toLocaleTimeString();
     // layer.msg('mytime:' + mytime);
     //执行一个 table 实例
+    var posturl = window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime;
+    console.log("posturl-" + posturl);
     var tablePatient = table.render({
         elem: '#studytable',
         height: 'full-200',
-        url: window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime, //数据接口 http://127.0.0.1:80/
+        url: posturl,
+        // url: window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime, //数据接口 http://127.0.0.1:80/
         // url: window.location.host + '/healthsystem/ris/studydata/?' + 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val(), //数据接口 http://127.0.0.1:80/
         //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
         title: 'patients',
