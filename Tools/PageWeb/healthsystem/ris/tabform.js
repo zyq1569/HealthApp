@@ -1,5 +1,5 @@
-console.log(window.location.host);
-console.log(window.location.port);
+// console.log(window.location.host);
+// console.log(window.location.port);
 
 function SetFormValue(jsonstring) {
     var data = JSON.parse(jsonstring);
@@ -116,7 +116,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         searchStudyTime = 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val();
         tablePatient.reload({
             //window.location.host + '/healthsystem/ris/stduydata/?start=20190101&end=20191219'
-            url: window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime
+            url: 'http://' + window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime
         });
         // var type = $(this).data('type');
         // active[type] ? active[type].call(this) : '';
@@ -124,7 +124,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     $('.SerarchImageTable .layui-btn').on('click', function() {
         searchImageTime = 'start=' + $('#imagestduystart').val() + '&end=' + $('#imagestduyend').val();
         tableStudyImage.reload({
-            url: window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime
+            url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime
         });
         // var type = $(this).data('type');
         // active[type] ? active[type].call(this) : '';
@@ -253,7 +253,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         //获取数据库检查报告信息
         $.ajax({
             type: "POST",
-            url: window.location.host + '/healthsystem/ris/getportdata',
+            url: 'http://' + window.location.host + '/healthsystem/ris/getportdata',
             async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
             data: postdata, //JSON.stringify(reportdata), //请求save处理数据
             // dataType: "json",
@@ -278,13 +278,13 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         });
     });
     //上传
-    upload.render({
-        elem: '#uploadDemo',
-        url: '', //上传接口
-        done: function(res) {
-            console.log(res);
-        }
-    });
+    // upload.render({
+    //     elem: '#uploadDemo',
+    //     url: '', //上传接口
+    //     done: function(res) {
+    //         console.log(res);
+    //     }
+    // });
     //studyimage
     var host = window.location.host;
     var imageview_url = "http://" + host + "/view/view.html?";
@@ -301,7 +301,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         var host = window.location.host;
         $.ajax({
             type: "POST",
-            url: host + '/healthsystem/ris/updata/',
+            url: 'http://' + host + '/healthsystem/ris/updata/',
             async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
             data: postdata, //请求save处理数据
             success: function(mess) {
@@ -322,8 +322,8 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     // var mytime = myDate.toLocaleTimeString();
     // layer.msg('mytime:' + mytime);
     //执行一个 table 实例
-    var posturl = window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime;
-    console.log("posturl-" + posturl);
+    var posturl = 'http://' + window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime;
+    // console.log("posturl-" + posturl);
     var tablePatient = table.render({
         elem: '#studytable',
         height: 'full-200',
@@ -490,7 +490,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     var tableStudyImage = table.render({
         elem: '#studyimage',
         height: 'full-200',
-        url: window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime, //数据接口 http://127.0.0.1:80/
+        url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime, //数据接口 http://127.0.0.1:80/
         //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
         title: 'studyimages',
         page: true, //开启分页

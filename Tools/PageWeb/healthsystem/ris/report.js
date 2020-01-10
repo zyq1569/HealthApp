@@ -97,6 +97,7 @@ function setStudyReportContent(data) {
     //layer.alert('ok:' + data.ReportContent);
     tinyMCE.editors[g_tinyID].setContent(g_currentReportData.ReportContent);
     g_initContent = data.ReportContent;
+    g_currentReportData.ReportSave = false;
     return 1;
 
 }
@@ -107,15 +108,22 @@ function clearReportContent() {
 }
 
 function saveReport2ServerContent() {
+    if (g_currentReportOrderIdentity == '') {
+        layer.alert('no patients info! pls select patient!');
+        return;
+    }
     var content = tinyMCE.editors[g_tinyID].getContent();
     if (content.length < 1) {
+        // console.log('content.length < 1');
         return 1;
     }
     if (g_currentReportData.ReportSave == true) {
+        // console.log('g_currentReportData.ReportSave == true');
         return 1;
     }
     //判断是否修改过内容
     if (content == g_currentReportData.ReportContent && g_currentReportOrderIdentity == g_currentReportData.ReportIdentity) {
+        // console.log('content == g_currentReportData.ReportContent && g_currentReportOrderIdentity == g_currentReportData.ReportIdentity');
         return 1;
     }
     //修改过内容,保存到数据库中
@@ -125,7 +133,7 @@ function saveReport2ServerContent() {
     var host = window.location.host;
     $.ajax({
         type: "POST",
-        url: host + '/healthsystem/ris/saveportdata/',
+        url: 'http://' + host + '/healthsystem/ris/saveportdata/',
         async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
         data: postdata, //请求save处理数据
         success: function(mess) {
