@@ -31,15 +31,17 @@
                 // alert("hello Login");
                 // 异步对象
                 var host = window.location.host;
+                console.log(host);
                 $.ajax({
                     type: "POST",
-                    url: host + '/login/checkuser',
+                    url: 'http://' + host + '/login/checkuser',
+                    // jsonp: "callbackparam",
                     async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
                     data: "user=" + document.getElementById("user").value + '&password=' + document.getElementById("password").value, //请求需要发送的处理数据
-                    success: function(mess) {
+                    success: function(mess, textStatus) {
                         //var cook = document.cookie;
                         //alert("cook:" + cook);
-                        //alert(mess);
+                        console.log(mess);
                         if (mess == "OK") { //根据返回值进行跳转
                             //alert(result.Login + "client");
                             window.location = 'http://' + host + '/healthsystem/ris/studys.html';
@@ -48,8 +50,21 @@
                             alert("message from server: " + mess);
                             // $("#errorplace").show();
                         }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest);
+                        // 状态码
+                        console.log(XMLHttpRequest.status);
+                        // 状态
+                        console.log(XMLHttpRequest.readyState);
+                        // 错误信息   
+                        console.log(textStatus);
+                    },
+                    complete: function(XMLHttpRequest, textStatus) {
+                        console.log(XMLHttpRequest);
                     }
                 });
+
             }
         </script>
         <script type="text/javascript">
