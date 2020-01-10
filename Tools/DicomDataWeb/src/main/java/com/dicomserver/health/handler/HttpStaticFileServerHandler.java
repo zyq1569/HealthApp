@@ -1,6 +1,5 @@
 package com.dicomserver.health.handler;
 //reference :netty demo
-import com.dicomserver.health.HealthApplication;
 import com.dicomserver.health.config.ServerConfig;
 import com.dicomserver.health.dao.StudyDataDao;
 import com.dicomserver.health.dao.UserService;
@@ -118,7 +117,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info ("map:",map);
+//        log.info("map:",map);
         return map;
     }
 
