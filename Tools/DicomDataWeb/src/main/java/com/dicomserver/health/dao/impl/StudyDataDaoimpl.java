@@ -1,6 +1,5 @@
 package com.dicomserver.health.dao.impl;
 
-import com.dicomserver.health.HealthApplication;
 import com.dicomserver.health.dao.BaseDao;
 import com.dicomserver.health.dao.StudyDataDao;
 import com.dicomserver.health.entity.ReportData;
