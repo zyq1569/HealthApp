@@ -16,8 +16,6 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
@@ -26,6 +24,7 @@ import java.io.File;
 //		SpringApplication.run(HealthApplication.class, args);
 //	}
 //
+//https://xingyun.blog.csdn.net/article/details/100856124 Spring Boot 2.x 最佳实践之 Apache Log4j2 集成
 @SpringBootApplication
 public class HealthApplication {
     static final boolean SSL = System.getProperty("ssl") != null;
@@ -33,13 +32,11 @@ public class HealthApplication {
     private static final ServerConfig serverconfig = new ServerConfig();
 
     public static void main(String[] args) throws Exception {
-//        LoggerContext logContext = LogManager.getContext(false);
         LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
-        File conFile = new File("D:/code/C++/HealthApp/bin/win32/log4j2.xml");
-        logContext.setConfigLocation(conFile.toURI());
-        logContext.reconfigure();
+//        File conFile = new File("D:/code/C++/HealthApp/bin/win32/log4j2.xml");
+//        logContext.setConfigLocation(conFile.toURI());
+//        logContext.reconfigure();
         Logger log = LogManager.getLogger(HealthApplication.class);
-//        D:\code\C++\HealthApp\bin\win32
 //        log.info(HealthApplication.getAttribute("log4j2ConfigFile"));
         if (args.length == 7) {
             serverconfig.bparm = true;
@@ -51,7 +48,7 @@ public class HealthApplication {
             serverconfig.filePath = args[5];
             serverconfig.webdir = args[6];
             String port = serverconfig.getString("port");
-            System.err.println(port);
+//            System.err.println(port);
             log.info("HealthApplication string:{}", port);
             for (String s : args) {
                 log.info("args string:{}", s);
