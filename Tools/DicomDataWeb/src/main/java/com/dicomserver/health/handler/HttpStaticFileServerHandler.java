@@ -45,7 +45,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
     public static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
     public static final int HTTP_CACHE_SECONDS = 60;
-    public static final String HTTP_PATH = SystemPropertyUtil.get("user.dir");
+//    public static final String HTTP_PATH = SystemPropertyUtil.get("user.dir");
     private FullHttpRequest request;
     private static final ServerConfig serverconfig = new ServerConfig();
     private static Logger log = LogManager.getLogger(HttpStaticFileServerHandler.class);
@@ -117,7 +117,8 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        log.info("map:",map);
+        System.out.println(map);
+//        syste (map);
         return map;
     }
 
