@@ -31,14 +31,14 @@ public class HealthApplication {
 
     public static void main(String[] args) throws Exception {
 //        Logger log = LogManager.getLogger(HealthApplication.class);
-//        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
-//        if (args.length > 17) {
-//            File conFile = new File(args[7]);//"D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
-////            File conFile = new File("D:/code/C++/HealthApp/bin/win32/log4j2.xml");
-////        File conFile = new File("D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
-//            logContext.setConfigLocation(conFile.toURI());
-//            logContext.reconfigure();
-//        }
+        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
+        if (args.length > 7) {
+            File conFile = new File(args[7]);//"D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
+//            File conFile = new File("D:/code/C++/HealthApp/bin/win32/log4j2.xml");
+//            File conFile = new File("D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
+            logContext.setConfigLocation(conFile.toURI());
+            logContext.reconfigure();
+        }
         Logger log = LogManager.getLogger(HealthApplication.class);
         if (args.length >6 ) {
             serverconfig.bparm = true;
