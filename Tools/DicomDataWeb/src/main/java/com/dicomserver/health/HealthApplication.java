@@ -1,5 +1,4 @@
 package com.dicomserver.health;
-
 import com.dicomserver.health.config.ServerConfig;
 import com.dicomserver.health.handler.HttpStaticFileServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -17,9 +16,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import java.io.File;
-
+//SpringBootBestPracticesSample  https://github.com/geekxingyun/SpringBootBestPracticesSample
 //	public static void main(String[] args) {
 //		SpringApplication.run(HealthApplication.class, args);
 //	}
@@ -32,13 +30,16 @@ public class HealthApplication {
     private static final ServerConfig serverconfig = new ServerConfig();
 
     public static void main(String[] args) throws Exception {
-        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
-//        File conFile = new File("D:/code/C++/HealthApp/bin/win32/log4j2.xml");
-//        logContext.setConfigLocation(conFile.toURI());
-//        logContext.reconfigure();
+//        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
+//        if (args.length > 7) {
+//            File conFile = new File(args[7]);//"D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
+////            File conFile = new File("D:/code/C++/HealthApp/bin/win32/log4j2.xml");
+////        File conFile = new File("D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
+//            logContext.setConfigLocation(conFile.toURI());
+//            logContext.reconfigure();
+//        }
         Logger log = LogManager.getLogger(HealthApplication.class);
-//        log.info(HealthApplication.getAttribute("log4j2ConfigFile"));
-        if (args.length == 7) {
+        if (args.length >6 ) {
             serverconfig.bparm = true;
             serverconfig.driver = args[0];
             serverconfig.url = args[1];
@@ -81,3 +82,11 @@ public class HealthApplication {
         }
     }
 }
+
+//        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
+//        Configuration loggerConfiguration = logContext.getConfiguration();
+//        String strname = loggerConfiguration.getName();
+//        File conFile = new File("D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
+//        logContext.setConfigLocation(conFile.toURI());
+//        logContext.reconfigure();
+//        Logger log = LogManager.getLogger(HealthApplication.class);

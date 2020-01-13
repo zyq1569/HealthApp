@@ -2,18 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!-- 设置当前项目的父项目为Spring Boot -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.2.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.dicomserver</groupId>
     <artifactId>health</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>health</name>
     <description>for dicom file down</description>
+
     <properties>
+        <!-- 设置当前项目源码使用字符编码为UTF-8 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- 设置当前项目所需要的JDK版本 Open JDK下载地址:https://jdk.java.net/ -->
         <java.version>11</java.version>
     </properties>
     <dependencies>
@@ -79,6 +85,7 @@
     </dependencies>
     <build>
         <plugins>
+            <!--该插件可以让我们通过maven命令将项目打包成一个可执行的Jar-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
