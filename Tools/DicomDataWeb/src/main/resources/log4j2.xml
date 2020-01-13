@@ -1,0 +1,84 @@
+<!--<configuration debug="false">-->
+<!--%d{HH:mm:ss.SSS} 表示输出到毫秒的时间-->
+<!--%t 输出当前线程名称-->
+<!--%-5level 输出日志级别，-5表示左对齐并且固定输出5个字符，如果不足在右边补0-->
+<!--%logger 输出logger名称，因为Root Logger没有名称，所以没有输出-->
+<!--%msg 日志文本-->
+<!--%n 换行-->
+<!--其他常用的占位符有：-->
+<!--%F 输出所在的类文件名，如Log4j2Test.java-->
+<!--%L 输出行号-->
+<!--%M 输出所在方法名-->
+<!--%l 输出语句所在的行数, 包括类名、方法名、文件名、行数-->
+<!--异步设置参考https://zhuanlan.zhihu.com/p/36554554-->
+<!--http://logging.apache.org/log4j/2.x/manual/async.html-->
+<!--详细配置参考 https://xingyun.blog.csdn.net/article/details/100856124#0x04_XML_55-->
+<!--从版本2.9开始，出于安全原因，Log4j不处理XML文件中的DTD-->
+<!--monitorInterval="30" 每隔30秒检查下当前配置文件是否有改动如果有重新自动加载,最小间隔为5秒。 -->
+<!-- status可选值"trace", "debug", "info", "warn", "error" and "fatal" log4j进行故障排除使用-->
+<!--是否严格检查log4j2.xml配置文件格式 strict="false"-->
+<!--verbose="" 加载插件时启用诊断信息。-->
+<!--<configuration name="log4j2Config" monitorInterval="30" status="WARN" strict="false" >-->
+<configuration name="log4j2Config" status="INFO" strict="false">
+    <!--    http://logging.apache.org/log4j/2.x/-->
+    <Properties>
+        <property name="appName" value="HealthApp"/>
+        <Property name="baseDir" value="D:/code/C++/HealthApp/bin/win32/log"></Property>
+        <Property name="logName" value="${baseDir}/${appName}.log"></Property>
+        <Property name="logArchive" value="${baseDir}/$${date:yyyyMMdd}/${appName}-archive-%d{yyyyMMdd}-%i.log.gz"/>
+    </Properties>
+    <!--先定义所有的appender-->
+    <appenders>
+        <!--输出到控制台-->
+        <console name="Console" target="SYSTEM_OUT">
+            <!--输出日志的格式-->
+            <PatternLayout charset="GB18030"
+                           pattern="%d{yyyyMMdd HH:mm:ss:SSS} %t %p %logger{36} %method %m%n"/>
+        </console>
+        <!--打印到文件中，这个log每次运行程序会自动清空，由append属性决定-->
+        <!--        <File name="log" fileName="D:/code/C++/HealthApp/bin/win32/log/HealthApp.log" append="false">-->
+        <!--            <PatternLayout charset="GB18030" pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>-->
+        <!--        </File>-->
+        <!--文件滚动, 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFileInfo" fileName="${logName}" append="true"
+                     bufferSize="8192" immediateFlush="false"
+                     filePattern="${logArchive}" ignoreExceptions="true">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout charset="GB18030" pattern="%d{yyyyMMdd HH:mm:ss:SSS} %t %p  %m%n"/>
+            <Policies>
+<!--                <DefaultRolloverStrategy max="20"/>   &lt;!&ndash;文件夹下最多的文件个数&ndash;&gt;-->
+<!--                <TimeBasedTriggeringPolicy interval="2"/>            &lt;!&ndash;多长时间滚动一次&ndash;&gt;-->
+<!--                <SizeBasedTriggeringPolicy size="100 MB"/>        &lt;!&ndash; 一个日志文件的最大大小 &ndash;&gt;-->
+            </Policies>
+            <!--最多保留100个归档-->
+            <DefaultRolloverStrategy max="20" min="1">
+                <!--删除策略 -->
+                <Delete basePath="${baseDir}" maxDepth="8">
+                    <IfFileName glob="*/app-*.log.gz">
+                        <!--会保留大小10G或者最近的10个文件-->
+                        <IfLastModified age="30d">
+                            <IfAny>
+                                <IfAccumulatedFileSize exceeds="10GB"/>
+                                <IfAccumulatedFileCount exceeds="100"/>
+                            </IfAny>
+                        </IfLastModified>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </appenders>
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+    <loggers>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <logger name="com.dicomserver.health" level="INFO" additivity="true"></logger>
+        <!--    <logger name="org.mybatis" level="INFO"></logger>-->
+        <!--        <root level="INFO">-->
+        <root level="INFO">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="RollingFileInfo"/>
+            <!--            <appender-ref ref="RollingFileWarn"/>-->
+            <!--            <appender-ref ref="RollingFileError"/>-->
+        </root>
+    </loggers>
+</configuration>

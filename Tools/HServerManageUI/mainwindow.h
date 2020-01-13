@@ -30,6 +30,7 @@ public:
     QString m_Dcm2DBName;
     QString m_MysqlServer,m_WebServerName,m_MysqlDbName,m_MysqlUserName,m_MysqlPWD;
     QString m_WebSerPort;
+    QString m_Log4j2Config;
 private slots:
     void on_StoreSCP_clicked();
 

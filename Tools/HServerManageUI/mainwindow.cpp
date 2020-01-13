@@ -18,6 +18,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
     m_ExeDir = m_ExeDir.remove("/debug");
     m_ExeDir = m_ExeDir.remove("/ServerUI");
     m_ExeDir = m_ExeDir+"/win32/";
+    m_Log4j2Config = m_ExeDir + "log4j2.xml";
     m_StoreScpName = "StoreDcmSCP.exe";
     m_QuerRScpName = "dcmqrScp.exe";
     m_WLMScpName = "WorklistScp.exe";
@@ -199,6 +200,7 @@ void HMainWindow::on_WebServer_clicked()
     arg.append(m_WebSerPort);
     arg.append(ui->Dir_Store->text()+"/Images");
     arg.append(ui->Dir_Pagefile->text());
+    arg.append(m_Log4j2Config);
     if (!m_bstorescp[WEBSER] && m_pQProcess[WEBSER]==nullptr)
     {
         m_pQProcess[WEBSER] =  new QProcess(this);
