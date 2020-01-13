@@ -30,8 +30,9 @@ public class HealthApplication {
     private static final ServerConfig serverconfig = new ServerConfig();
 
     public static void main(String[] args) throws Exception {
+//        Logger log = LogManager.getLogger(HealthApplication.class);
 //        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
-//        if (args.length > 7) {
+//        if (args.length > 17) {
 //            File conFile = new File(args[7]);//"D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
 ////            File conFile = new File("D:/code/C++/HealthApp/bin/win32/log4j2.xml");
 ////        File conFile = new File("D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
@@ -50,7 +51,7 @@ public class HealthApplication {
             serverconfig.webdir = args[6];
             String port = serverconfig.getString("port");
 //            System.err.println(port);
-            log.info("HealthApplication string:{}", port);
+            log.info("HealthApplication port:{}", port);
             for (String s : args) {
                 log.info("args string:{}", s);
             }
