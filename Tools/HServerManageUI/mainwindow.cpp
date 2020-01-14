@@ -205,6 +205,7 @@ void HMainWindow::on_WebServer_clicked()
     arg.append(ui->Dir_Store->text()+"/Images");
     arg.append(ui->Dir_Pagefile->text());
     arg.append(m_Log4j2Config);
+    arg.append(ui->comLevel->currentText());
     if (!m_bstorescp[WEBSER] && m_pQProcess[WEBSER]==nullptr)
     {
         m_pQProcess[WEBSER] =  new QProcess(this);
