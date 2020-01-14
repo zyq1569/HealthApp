@@ -16,7 +16,6 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.*;
@@ -37,7 +36,7 @@ public class HealthApplication {
 
     public static void SetLoggerConfig(String LogDir) {
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        builder.setStatusLevel(Level.ERROR);
+        builder.setStatusLevel(Level.WARN);
         builder.setConfigurationName("RollingBuilder");
 // create a console appender
         AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
@@ -65,8 +64,9 @@ public class HealthApplication {
 //                .add(builder.newAppenderRef("Stdout")).add(builder.newAppenderRef("Stdout"))
 //                .addAttribute("additivity", false));
         builder.add(builder.newRootLogger(Level.WARN).add(builder.newAppenderRef("rolling")).add(builder.newAppenderRef("Stdout")));
-        LoggerContext logContext = Configurator.initialize(builder.build());
-        logContext.updateLoggers();
+        Configurator.initialize(builder.build());
+//        LoggerContext logContext = Configurator.initialize(builder.build());
+//        logContext.updateLoggers();
     }
 
     public static void main(String[] args) throws Exception {
