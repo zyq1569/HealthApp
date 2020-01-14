@@ -34,9 +34,24 @@ public class HealthApplication {
     //	static final int PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
     private static final ServerConfig serverconfig = new ServerConfig();
 
-    public static void SetLoggerConfig(String LogDir) {
+    public static void SetLoggerConfig(String LogDir, String levels) {
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        builder.setStatusLevel(Level.WARN);
+        Level level = Level.WARN;
+        levels = levels.toUpperCase();
+        if (levels.length()>1){
+            if (levels.contains("WARN")){
+                level = Level.WARN;
+            }else if (levels.contains("INFO")){
+                level = Level.INFO;
+            }else if (levels.contains("ERROR")){
+                level = Level.ERROR;
+            }else if (levels.contains("FATAL")){
+                level = Level.FATAL;
+            }else if (levels.contains("OFF")){
+                level = Level.OFF;
+            }
+        }
+        builder.setStatusLevel(level);//Level.WARN);
         builder.setConfigurationName("RollingBuilder");
 // create a console appender
         AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
@@ -63,7 +78,7 @@ public class HealthApplication {
 //        builder.add(builder.newLogger("StdoutSet", Level.INFO)
 //                .add(builder.newAppenderRef("Stdout")).add(builder.newAppenderRef("Stdout"))
 //                .addAttribute("additivity", false));
-        builder.add(builder.newRootLogger(Level.WARN).add(builder.newAppenderRef("rolling")).add(builder.newAppenderRef("Stdout")));
+        builder.add(builder.newRootLogger(level).add(builder.newAppenderRef("rolling")).add(builder.newAppenderRef("Stdout")));
         Configurator.initialize(builder.build());
 //        LoggerContext logContext = Configurator.initialize(builder.build());
 //        logContext.updateLoggers();
@@ -72,7 +87,11 @@ public class HealthApplication {
     public static void main(String[] args) throws Exception {
         if (args.length > 7) {
             String LogDir = args[7];
-            SetLoggerConfig(LogDir);
+            String levels="";
+            if (args.length >8){
+                levels = args[8];
+            }
+            SetLoggerConfig(LogDir,levels);
         }
         Logger log = LogManager.getLogger(HealthApplication.class);
         if (args.length > 6) {
