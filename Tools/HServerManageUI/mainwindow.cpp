@@ -13,17 +13,21 @@ HMainWindow::HMainWindow(QWidget *parent) :
         m_pQProcess[i] = NULL;
         m_bstorescp[i] = false;
     }
-    m_ExeDir = QDir::currentPath();
+    QString Dir = QDir::currentPath();
+    m_ExeDir = Dir;
     m_ImageDir = m_ExeDir;
     m_ExeDir = m_ExeDir.remove("/debug");
     m_ExeDir = m_ExeDir.remove("/ServerUI");
     m_ExeDir = m_ExeDir+"/win32/";
-    m_Log4j2Config = m_ExeDir + "log4j2.xml";
+    ui->Dir_Store->setText(Dir+"/DCM_SAVE");
+    ui->Dir_Pagefile->setText(Dir+"/PageWeb");
+    m_Log4j2Config = m_ExeDir + "log";
     m_StoreScpName = "StoreDcmSCP.exe";
     m_QuerRScpName = "dcmqrScp.exe";
     m_WLMScpName = "WorklistScp.exe";
     m_Dcm2DBName = "SaveDcmInfoDb.exe";
     m_WebServerName = "health.jar";
+
 }
 
 HMainWindow::~HMainWindow()
