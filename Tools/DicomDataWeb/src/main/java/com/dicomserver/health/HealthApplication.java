@@ -1,4 +1,5 @@
 package com.dicomserver.health;
+
 import com.dicomserver.health.config.ServerConfig;
 import com.dicomserver.health.handler.HttpStaticFileServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -12,11 +13,16 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.builder.api.*;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import java.io.File;
+
 //SpringBootBestPracticesSample  https://github.com/geekxingyun/SpringBootBestPracticesSample
 //	public static void main(String[] args) {
 //		SpringApplication.run(HealthApplication.class, args);
@@ -29,18 +35,47 @@ public class HealthApplication {
     //	static final int PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
     private static final ServerConfig serverconfig = new ServerConfig();
 
+    public static void SetLoggerConfig(String LogDir) {
+        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        builder.setStatusLevel(Level.ERROR);
+        builder.setConfigurationName("RollingBuilder");
+// create a console appender
+        AppenderComponentBuilder appenderBuilder = builder.newAppender("Stdout", "CONSOLE").addAttribute("target",
+                ConsoleAppender.Target.SYSTEM_OUT);
+//        appenderBuilder.add(builder.newLayout("PatternLayout")
+//                .addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+        appenderBuilder.add(builder.newLayout("PatternLayout")
+                .addAttribute("pattern", "%d{HH:mm:ss:SSS} %t %p %logger{36} %method %m%n"));
+        builder.add(appenderBuilder);
+// create a rolling file appender
+        LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+                .addAttribute("pattern", "%d{yyyyMMdd HH:mm:ss:SSS} %t %p  %m%n");
+        ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
+                .addComponent(builder.newComponent("CronTriggeringPolicy").addAttribute("schedule", "0 0 0 * * ?"))
+                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "100M"));
+        appenderBuilder = builder.newAppender("rolling", "RollingFile")
+                .addAttribute("fileName", LogDir + "/HealthApp.log")
+                .addAttribute("filePattern", LogDir + "/logs/rolling-%d{MM-dd-yy}.log.gz")
+                .add(layoutBuilder)
+                .addComponent(triggeringPolicy);
+        builder.add(appenderBuilder);
+// create the new logger
+//        过滤掉指定一些无用的INFO信息
+//        builder.add(builder.newLogger("StdoutSet", Level.INFO)
+//                .add(builder.newAppenderRef("Stdout")).add(builder.newAppenderRef("Stdout"))
+//                .addAttribute("additivity", false));
+        builder.add(builder.newRootLogger(Level.WARN).add(builder.newAppenderRef("rolling")).add(builder.newAppenderRef("Stdout")));
+        LoggerContext logContext = Configurator.initialize(builder.build());
+        logContext.updateLoggers();
+    }
+
     public static void main(String[] args) throws Exception {
-//        Logger log = LogManager.getLogger(HealthApplication.class);
-        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
         if (args.length > 7) {
-            File conFile = new File(args[7]);//"D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
-//            File conFile = new File("D:/code/C++/HealthApp/bin/win32/log4j2.xml");
-//            File conFile = new File("D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
-            logContext.setConfigLocation(conFile.toURI());
-            logContext.reconfigure();
+            String LogDir = args[7];
+            SetLoggerConfig(LogDir);
         }
         Logger log = LogManager.getLogger(HealthApplication.class);
-        if (args.length >6 ) {
+        if (args.length > 6) {
             serverconfig.bparm = true;
             serverconfig.driver = args[0];
             serverconfig.url = args[1];
@@ -91,3 +126,14 @@ public class HealthApplication {
 //        logContext.setConfigLocation(conFile.toURI());
 //        logContext.reconfigure();
 //        Logger log = LogManager.getLogger(HealthApplication.class);
+
+// set cofigfile log4j2.xml
+//        Logger log = LogManager.getLogger(HealthApplication.class);
+//        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
+//        if (args.length > 7) {
+//            File conFile = new File(args[7]);//"D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
+////            File conFile = new File("D:/code/C++/HealthApp/bin/win32/log4j2.xml");
+////            File conFile = new File("D:/code/C++/HealthApp/Tools/DicomDataWeb/src/main/resources/log4j2.xml");
+//            logContext.setConfigLocation(conFile.toURI());
+//            logContext.reconfigure();
+//        }
