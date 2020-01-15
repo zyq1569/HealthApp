@@ -4,6 +4,7 @@ import com.dicomserver.health.config.ServerConfig;
 import com.dicomserver.health.handler.HttpStaticFileServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -124,10 +125,11 @@ public class HealthApplication {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .handler(new LoggingHandler())
+                    .option(ChannelOption.SO_BACKLOG,1024)
                     .childHandler(new HttpStaticFileServerInitializer(sslCtx));
             Channel ch = b.bind(Integer.parseInt(serverconfig.getString("port")/*PORT*/)).sync().channel();
-//			Channel ch = b.bind(PORT).sync().channel();
+//			Channel ch = b.bind(PORT).sync().channel();//LogLevel.ERROR
             log.info("HealthApplication :{}", "Open your web browser and navigate to " + (SSL ? "https" : "http") + "://127.0.0.1:" + serverconfig.getString("port") + '/');
             ch.closeFuture().sync();
         } finally {
