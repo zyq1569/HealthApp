@@ -104,8 +104,7 @@ public class HealthApplication {
             serverconfig.filePath = args[5];
             serverconfig.webdir = args[6];
             String port = serverconfig.getString("port");
-//            System.err.println(port);
-            log.info("HealthApplication port:{}", port);
+            log.error("HealthApplication port:{}", port);
             for (String s : args) {
                 log.info("args string:{}", s);
             }
