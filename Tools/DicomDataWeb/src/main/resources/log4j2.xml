@@ -23,7 +23,7 @@
     <!--    http://logging.apache.org/log4j/2.x/-->
     <Properties>
         <property name="appName" value="HealthApp"/>
-        <Property name="baseDir" value="D:/code/C++/HealthApp/bin/win32/log"></Property>
+        <Property name="baseDir" value="c:/log"></Property>
         <Property name="logName" value="${baseDir}/${appName}.log"></Property>
         <Property name="logArchive" value="${baseDir}/$${date:yyyyMMdd}/${appName}-archive-%d{yyyyMMdd}-%i.log.gz"/>
     </Properties>

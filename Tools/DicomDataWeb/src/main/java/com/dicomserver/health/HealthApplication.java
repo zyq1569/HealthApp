@@ -33,7 +33,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HealthApplication {
     static final boolean SSL = System.getProperty("ssl") != null;
     //	static final int PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
-    private static final ServerConfig serverconfig = new ServerConfig();
+    public static final ServerConfig serverconfig = new ServerConfig();
 
     public static void SetLoggerConfig(String LogDir, String levels) {
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
