@@ -64,6 +64,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            log.error("sql {}",sql);
         }
         return list;
     }
@@ -89,6 +90,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                log.error("sql {}",select_count);
             }
         }
         return count;
@@ -140,6 +142,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            log.error("sql {}",sql);
         }
         return list;
     }
@@ -165,6 +168,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                log.error("sql {}",select_count);
             }
         }
         return count;
@@ -193,6 +197,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            log.error("sql {}",sql);
         }
         sql = "select * from h_order where `StudyOrderIdentity`=?";
         Object[] Identity = {StudyIdentity/* stu.getStudyIdentity() */};
@@ -207,6 +212,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            log.error("sql {}",sql);
         }
         return stu;
     }
@@ -232,6 +238,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                log.error("sql {}",findsql);
             }
             //
         }
