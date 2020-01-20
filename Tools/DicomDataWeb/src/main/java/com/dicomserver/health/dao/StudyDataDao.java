@@ -2,7 +2,6 @@ package com.dicomserver.health.dao;
 
 import com.dicomserver.health.entity.ReportData;
 import com.dicomserver.health.entity.StudyData;
-
 import java.util.List;
 
 public interface StudyDataDao {

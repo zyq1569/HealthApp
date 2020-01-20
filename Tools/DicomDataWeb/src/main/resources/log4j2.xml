@@ -19,8 +19,8 @@
 <!--是否严格检查log4j2.xml配置文件格式 strict="false"-->
 <!--verbose="" 加载插件时启用诊断信息。-->
 <!--<configuration name="log4j2Config" monitorInterval="30" status="WARN" strict="false" >-->
+<!--    http://logging.apache.org/log4j/2.x/-->
 <configuration name="log4j2Config" status="WARN" strict="false">
-    <!--    http://logging.apache.org/log4j/2.x/-->
     <Properties>
         <property name="appName" value="HealthApp"/>
         <Property name="baseDir" value="c:/log"></Property>
