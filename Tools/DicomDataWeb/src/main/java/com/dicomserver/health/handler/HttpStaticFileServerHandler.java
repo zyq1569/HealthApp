@@ -1,6 +1,7 @@
 package com.dicomserver.health.handler;
 //reference :netty demo
-import com.dicomserver.health.config.ServerConfig;
+
+import com.dicomserver.health.HealthApplication;
 import com.dicomserver.health.dao.StudyDataDao;
 import com.dicomserver.health.dao.UserService;
 import com.dicomserver.health.dao.impl.StudyDataDaoimpl;
@@ -20,7 +21,6 @@ import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedFile;
 import io.netty.util.CharsetUtil;
-import io.netty.util.internal.SystemPropertyUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,7 +47,6 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     public static final int HTTP_CACHE_SECONDS = 60;
 //    public static final String HTTP_PATH = SystemPropertyUtil.get("user.dir");
     private FullHttpRequest request;
-    private static final ServerConfig serverconfig = new ServerConfig();
     private static Logger log = LogManager.getLogger(HttpStaticFileServerHandler.class);
 
     public class OFHashValue {
@@ -509,12 +508,12 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             if (uerService.findUser(user)) {//存在这个用户，可以正常访问信息
                 request.headers().set(HttpHeaderNames.SET_COOKIE, user);
                 login = 1;
-                path = serverconfig.getString("webdir") + "/view/imageview.html";
+                path = HealthApplication.serverconfig.getString("webdir") + "/view/imageview.html";
             } else {//不存在这个用户，给出提示
                 String message = "用户名或密码错误";
                 request.headers().set(HttpHeaderNames.SET_COOKIE, message);
                 login = 2;
-                path = serverconfig.getString("webdir") + "/Login/index.html";
+                path = HealthApplication.serverconfig.getString("webdir") + "/Login/index.html";
             }
 
             if (login == 1) {
@@ -665,7 +664,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             if (pos > 0) {
                 uri = uri.substring(0, pos + 5);
             }
-            String path = serverconfig.getString("webdir") + uri;
+            String path = HealthApplication.serverconfig.getString("webdir") + uri;
             returnWeb(ctx, request, path, keepAlive);
             return;
         }
@@ -724,7 +723,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             return;
         }
         if (uri.toUpperCase().contains("/LOGIN")) {
-            path = serverconfig.getString("webdir") + File.separator + uri;
+            path = HealthApplication.serverconfig.getString("webdir") + File.separator + uri;
             if (path.contains(".jpg")) {
                 SendFileData(ctx, request, uri, path, keepAlive, true);
                 return;
@@ -756,11 +755,11 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             }
             if (bstuid && bseuid && bsouid) {
                 //根据请求参数查找请求的dicom
-                String filePath = serverconfig.getString("filePath");
+                String filePath = HealthApplication.serverconfig.getString("filePath");
                 path = filePath + File.separator + getDicomPath(studyuid, seruid, sopinstanceuid);
                 bSetFilename = true;
             } else if (bstuid) {
-                String filePath = serverconfig.getString("filePath");
+                String filePath = HealthApplication.serverconfig.getString("filePath");
                 path = filePath + File.separator + getJsonPath(studyuid);
                 //GetJsonData(path);
                 path = path + ".json";
@@ -799,13 +798,13 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
                 if (pos > 1) {
                     htmlurl = htmlurl.substring(0, pos + 5);
                 }
-//                String htmlname = serverconfig.getString("webdir") + htmlurl;
-                path = serverconfig.getString("webdir") + htmlurl;
+//                String htmlname = HealthApplication.serverconfig.getString("webdir") + htmlurl;
+                path = HealthApplication.serverconfig.getString("webdir") + htmlurl;
                 returnWeb(ctx, request, path, keepAlive);
                 return;
             }
             if (path.contains(".woff") || uri.contains(".ttf") || uri.contains(".otf") || uri.contains(".eot") || uri.contains(".map")) {
-                String htmlname = serverconfig.getString("webdir") + uri;
+                String htmlname = HealthApplication.serverconfig.getString("webdir") + uri;
                 path = htmlname;
                 int pos = path.indexOf("?v=");
                 if (pos > -1) {
@@ -818,7 +817,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 //            this.sendError(ctx, NOT_FOUND);
 //            log.info ("not found:" + path);
 //            return;
-            path = serverconfig.getString("webdir") + "/favicon.ico";
+            path = HealthApplication.serverconfig.getString("webdir") + "/favicon.ico";
             SendFileData(ctx, request, uri, path, keepAlive, true);
             return;
         }
@@ -866,7 +865,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
         }
 
         // Convert to absolute path.
-        String filePath = serverconfig.getString("filePath");
+        String filePath = HealthApplication.serverconfig.getString("filePath");
         ;
         return filePath + File.separator + uri;
 //        return SystemPropertyUtil.get("user.dir") + File.separator + uri;

@@ -28,6 +28,8 @@ HMainWindow::HMainWindow(QWidget *parent) :
     m_Dcm2DBName = "SaveDcmInfoDb.exe";
     m_WebServerName = "health.jar";
 
+//    QSettings * configIniRead = new QSettings("config.ini",QSettings::IniFormat);//初始化读取Ini文件对象
+
 }
 
 HMainWindow::~HMainWindow()
