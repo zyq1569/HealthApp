@@ -23,6 +23,7 @@
 <configuration name="log4j2Config" status="WARN" strict="false">
     <Properties>
         <property name="appName" value="HealthApp"/>
+        <!--        临时log目录设置-->
         <Property name="baseDir" value="c:/log"></Property>
         <Property name="logName" value="${baseDir}/${appName}.log"></Property>
         <Property name="logArchive" value="${baseDir}/$${date:yyyyMMdd}/${appName}-archive-%d{yyyyMMdd}-%i.log.gz"/>
@@ -47,9 +48,9 @@
             <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout charset="GB18030" pattern="%d{yyyyMMdd HH:mm:ss:SSS} %t %p  %m%n"/>
             <Policies>
-<!--                <DefaultRolloverStrategy max="20"/>   &lt;!&ndash;文件夹下最多的文件个数&ndash;&gt;-->
-<!--                <TimeBasedTriggeringPolicy interval="2"/>            &lt;!&ndash;多长时间滚动一次&ndash;&gt;-->
-<!--                <SizeBasedTriggeringPolicy size="100 MB"/>        &lt;!&ndash; 一个日志文件的最大大小 &ndash;&gt;-->
+                <!-- <DefaultRolloverStrategy max="20"/>   &lt;!&ndash;文件夹下最多的文件个数&ndash;&gt;-->
+                <!--<TimeBasedTriggeringPolicy interval="2"/>  &lt;!&ndash;多长时间滚动一次&ndash;&gt;-->
+                <!--<SizeBasedTriggeringPolicy size="100 MB"/>  &lt;!&ndash; 一个日志文件的最大大小 &ndash;&gt;-->
             </Policies>
             <!--最多保留100个归档-->
             <DefaultRolloverStrategy max="20" min="1">
@@ -77,8 +78,8 @@
         <root level="WARN">
             <appender-ref ref="Console"/>
             <appender-ref ref="RollingFileInfo"/>
-            <!--            <appender-ref ref="RollingFileWarn"/>-->
-            <!--            <appender-ref ref="RollingFileError"/>-->
+            <!-- <appender-ref ref="RollingFileWarn"/>-->
+            <!-- <appender-ref ref="RollingFileError"/>-->
         </root>
     </loggers>
 </configuration>
