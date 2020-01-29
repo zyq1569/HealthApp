@@ -5,7 +5,8 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"fmt"
+
+	// "fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
@@ -33,15 +34,18 @@ func checkErr(err error) {
 }
 
 func checkMariDB() {
-	db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/hit?charset=utf8")
+	db, err := sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8")
 	rows, err := db.Query("SELECT * FROM h_user")
 	for rows.Next() {
 		var id int
 		var username string
-		err = rows.Scan(&id, &username)
+		var password string
+		err = rows.Scan(&id, &username, &password)
+		// err = rows.Scan(&id, &username)
 		checkErr(err)
-		fmt.Println(id)
-		fmt.Println(username)
+		println(id)
+		println(username)
+		// println(password)
 	}
 }
 
@@ -53,5 +57,9 @@ func main() {
 		Format: "${time_rfc3339_nano} ${remote_ip} ${method} ${uri} ${status}\n",
 	}))
 	e.GET("/Login/*", Login)
+	e.GET("favicon.ico", func(c echo.Context) error {
+		println("----------favicon.ico--------")
+		return c.File("D:/code/C++/HealthApp/Tools/PageWeb/favicon.ico")
+	})
 	e.Logger.Fatal(e.Start(":9090"))
 }
