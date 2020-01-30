@@ -29,7 +29,7 @@ type StudyData struct {
 	PatientTelNumber, PatientAddr, PatientCarID, PatientType, PatientEmail                    string
 	StudyOrderIdentity, StudyID, StudyUID, ScheduledDateTime, OrderDateTime, StudyDescription string
 	StudyModality, AETitle, StudyType, StudyCode, StudyState, StudyCost                       string
-	StudyDateTime, sStudyID, StudyDepart, sStudyModality, sStudyUID, CostType                 string
+	StudyDateTime, StudyID, StudyDepart, StudyModality, sStudyUID, CostType                   string
 }
 
 const (
