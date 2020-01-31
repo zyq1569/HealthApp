@@ -107,7 +107,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
             String s = String.valueOf((Integer.parseInt(page)-1)*Integer.parseInt(limit));
             sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
                     " p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
-                    " s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState, s.ScheduledDateTime" +
+                    " s.StudyOrderIdentity,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState, s.ScheduledDateTime" +
                     " from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
                     " s.ScheduledDateTime>=" + startTime +" and  s.ScheduledDateTime<="+ endTime +" order by s.StudyOrderIdentity " +
                     " limit " + s + ","+limit;
