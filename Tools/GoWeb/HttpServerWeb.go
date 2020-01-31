@@ -17,7 +17,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"strings"
+	// "strings"
 
 	"encoding/json"
 
@@ -255,6 +255,7 @@ func OpenDB() (success bool, db *sql.DB) {
 
 func main() {
 	var hash string = Units.GetStudyHashDir("1.2.3.2.4")
+	println(hash)
 	maridb_db = nil
 	open, db := OpenDB()
 	if open == true {
