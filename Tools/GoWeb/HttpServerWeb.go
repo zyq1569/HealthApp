@@ -254,7 +254,7 @@ func OpenDB() (success bool, db *sql.DB) {
 }
 
 func main() {
-	var hash string = Units.GetStudyHashDir("1.2.3.2.4")
+	var hash string = Units.GetStudyHashDir("1.2.826.0.1.3680043.9.7606.20091101104529.177289.200911020017")
 	println(hash)
 	maridb_db = nil
 	open, db := OpenDB()
