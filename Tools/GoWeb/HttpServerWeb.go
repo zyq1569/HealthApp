@@ -17,11 +17,12 @@ import (
 	"net/http"
 	"strconv"
 
-	// "strings"
+	"strings"
 
 	"encoding/json"
 
 	"./Data"
+	"./Units"
 
 	// "fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -31,6 +32,8 @@ import (
 
 const (
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
+	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
+	PAGE_Dir  = "D:/code/C++/HealthApp/Tools/PageWeb"
 )
 
 var name string
@@ -51,8 +54,16 @@ func Healthsystem(c echo.Context) error {
 func Login(c echo.Context) error {
 	req := c.Request()
 	println("req.URL.Path:" + req.URL.Path)
-	println("D:/code/C++/HealthApp/Tools/PageWeb" + req.URL.Path)
-	filepath := "D:/code/C++/HealthApp/Tools/PageWeb" + req.URL.Path
+	println(PAGE_Dir + req.URL.Path)
+	filepath := PAGE_Dir + req.URL.Path
+	return c.File(filepath)
+}
+
+func LoadImageFile(c echo.Context) error {
+	req := c.Request()
+	println("req.URL.Path:" + req.URL.Path)
+	println(PAGE_Dir + req.URL.Path)
+	filepath := PAGE_Dir + req.URL.Path
 	return c.File(filepath)
 }
 
@@ -243,6 +254,7 @@ func OpenDB() (success bool, db *sql.DB) {
 }
 
 func main() {
+	var hash string = Units.GetStudyHashDir("1.2.3.2.4")
 	maridb_db = nil
 	open, db := OpenDB()
 	if open == true {
@@ -259,6 +271,7 @@ func main() {
 	e.GET("healthsystem/ris/studydata/", GetDBStudyData)
 	e.GET("healthsystem/ris/stduyimage/", GetDBStudyImage)
 	e.GET("/Login/*", Login)
+	e.GET("/view/view.html", LoadImageFile)
 	e.GET("/healthsystem/*", Healthsystem)
 	e.GET("/favicon.ico", func(c echo.Context) error {
 		// println("----------favicon.ico--------")
@@ -267,5 +280,38 @@ func main() {
 	e.Logger.Fatal(e.Start(":9090"))
 }
 
+//参考
+func queryMySal() {
+	var err error
+	connect := "f:f@tcp(192.168.1.0:3306)/lr1"
+	db, err := sql.Open("mysql", connect)
+	if err != nil {
+		println("connect mysql failed, address = "+connect, err)
+	} else {
+		sqlContent := "select real_nm, sex, birth, ext from member where tenant=? and mem_id=?"
+		rows, err := db.Query(sqlContent, "ST", "2017")
+		if err != nil {
+			println(err)
+		} else {
+			for rows.Next() {
+				nm := sql.NullString{String: "", Valid: false}
+				sex := sql.NullString{String: "", Valid: false}
+				birth := sql.NullString{String: "", Valid: false}
+				ext := sql.NullString{String: "", Valid: false}
+				err := rows.Scan(&nm, &sex, &birth, &ext) // birth字段在数据库中是空字段
+				if err != nil {
+					println("d12 error. ", err)
+				}
+				println(nm.String)
+				println(sex.String)
+				println(birth.String)
+				println(ext.String)
+			}
+		}
+	}
+}
+
+// sqlContent := "select real_nm, sex, birth, ext from member where tenant=? and mem_id=?"
+// rows, err := db.Query(sqlContent, "ST", "2017")
 // stmt, err := maridb_db.Prepare(sql)
 // rows, err := stmt.Exec()//https://www.cnblogs.com/jackylee92/p/6209596.html
