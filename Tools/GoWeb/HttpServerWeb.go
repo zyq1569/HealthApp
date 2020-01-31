@@ -16,21 +16,18 @@ import (
 	"flag"
 	"net/http"
 	"strconv"
-	"strings"
+
+	// "strings"
+
+	"encoding/json"
+
+	"./Data"
 
 	// "fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
-
-type StudyData struct {
-	PatientIdentity, PatientName, PatientID, PatientSex, PatientBirthday                      string
-	PatientTelNumber, PatientAddr, PatientCarID, PatientType, PatientEmail                    string
-	StudyOrderIdentity, StudyID, StudyUID, ScheduledDateTime, OrderDateTime, StudyDescription string
-	StudyModality, AETitle, StudyType, StudyCode, StudyState, StudyCost                       string
-	StudyDateTime, StudyID, StudyDepart, StudyModality, sStudyUID, CostType                   string
-}
 
 const (
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
@@ -69,36 +66,92 @@ func CheckLogin(c echo.Context) error {
 }
 
 func GetDBStudyImage(c echo.Context) error {
-	start := c.FormValue("start")
-	end := c.FormValue("password")
+	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
+	startTime := c.FormValue("start")
+	endTime := c.FormValue("end")
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
-
-	println("start:" + start + "/end:" + end + "/page:" + page + "/limit:" + limit)
-
-	return c.String(http.StatusOK, "ok")
+	// var mess strings.Builder
+	// mess.WriteString("start:")
+	// mess.WriteString(startTime)
+	// mess.WriteString("end:")
+	// mess.WriteString(endTime)
+	// mess.WriteString("page:")
+	// mess.WriteString(page)
+	// mess.WriteString("limit:")
+	// mess.WriteString(limit)
+	// // mess := "start:" + startTime + "end:" + end + "page:" + page + "limit:" + limit
+	// println(mess.String())
+	var studyjson Study.StudyDataJson
+	if maridb_db != nil {
+		var count int
+		p, err := strconv.Atoi(page)
+		checkErr(err)
+		lim, err := strconv.Atoi(limit)
+		checkErr(err)
+		count = (p - 1) * lim
+		var sql string
+		sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
+			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyIdentity,s.StudyDateTime," +
+			" s.StudyDescription, s.StudyModality from " +
+			" h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
+			" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
+			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
+		println(sql)
+		rows, err := maridb_db.Query(sql)
+		if err != nil {
+			println(err)
+		} else {
+			studyjson.Code = 0
+			studyjson.Msg = ""
+			studyjson.Count = 21
+			for rows.Next() {
+				var data Study.StudyData
+				err = rows.Scan(&data.PatientIdentity, &data.PatientName,
+					&data.PatientID, &data.PatientBirthday,
+					&data.PatientSex, &data.StudyUID, &data.StudyID,
+					&data.StudyOrderIdentity, &data.StudyDateTime,
+					&data.StudyDescription, &data.StudyModality)
+				studyjson.Data = append(studyjson.Data, data)
+			}
+			sql = "select count(*) count from " +
+				"h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
+				" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime
+			rows, err := maridb_db.Query(sql)
+			if err == nil {
+				for rows.Next() {
+					rows.Scan(&studyjson.Count)
+				}
+			}
+		}
+	}
+	js, err := json.Marshal(studyjson)
+	if err != nil {
+		println(err)
+		return c.String(http.StatusOK, "null")
+	}
+	println(string(js))
+	return c.String(http.StatusOK, string(js))
 }
 
 func GetDBStudyData(c echo.Context) error {
+	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
-	endTime := c.FormValue("password")
+	endTime := c.FormValue("end")
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
-
-	var mess strings.Builder
-	mess.WriteString("start:")
-	mess.WriteString(startTime)
-	mess.WriteString("end:")
-	mess.WriteString(endTime)
-
-	mess.WriteString("page:")
-	mess.WriteString(page)
-	mess.WriteString("limit:")
-	mess.WriteString(limit)
-
-	// mess := "start:" + startTime + "end:" + end + "page:" + page + "limit:" + limit
-	println(mess.String())
-
+	// var mess strings.Builder
+	// mess.WriteString("start:")
+	// mess.WriteString(startTime)
+	// mess.WriteString("end:")
+	// mess.WriteString(endTime)
+	// mess.WriteString("page:")
+	// mess.WriteString(page)
+	// mess.WriteString("limit:")
+	// mess.WriteString(limit)
+	// // mess := "start:" + startTime + "end:" + end + "page:" + page + "limit:" + limit
+	// println(mess.String())
+	var studyjson Study.StudyDataJson
 	if maridb_db != nil {
 		var count int
 		p, err := strconv.Atoi(page)
@@ -109,16 +162,50 @@ func GetDBStudyData(c echo.Context) error {
 		var sql string
 		sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
 			" p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
-			" s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState, s.ScheduledDateTime" +
+			" s.StudyOrderIdentity,s.ScheduledDateTime,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
 			" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
 			" s.ScheduledDateTime>=" + startTime + " and  s.ScheduledDateTime<=" + endTime + " order by s.StudyOrderIdentity " +
 			" limit " + strconv.Itoa(count) + "," + limit
+		println(sql)
 		rows, err := maridb_db.Query(sql)
-		for rows.Next() {
-
+		if err != nil {
+			println(err)
+		} else {
+			studyjson.Code = 0
+			studyjson.Msg = ""
+			studyjson.Count = 21
+			for rows.Next() {
+				var data Study.StudyData
+				err = rows.Scan(&data.PatientIdentity, &data.PatientName,
+					&data.PatientID, &data.PatientBirthday,
+					&data.PatientSex, &data.PatientTelNumber,
+					&data.PatientAddr, &data.PatientEmail,
+					&data.PatientCarID, &data.StudyID,
+					&data.StudyUID, &data.StudyDepart,
+					&data.CostType, &data.StudyOrderIdentity,
+					&data.ScheduledDateTime, &data.StudyDateTime, &data.StudyDescription,
+					&data.StudyModality, &data.StudyCost,
+					&data.StudyState)
+				studyjson.Data = append(studyjson.Data, data)
+			}
+			sql = "select count(*) count from " +
+				" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and" +
+				"  s.ScheduledDateTime>= " + startTime + " and  s.ScheduledDateTime <= " + endTime
+			rows, err := maridb_db.Query(sql)
+			if err == nil {
+				for rows.Next() {
+					rows.Scan(&studyjson.Count)
+				}
+			}
 		}
 	}
-	return c.String(http.StatusOK, "ok")
+	js, err := json.Marshal(studyjson)
+	if err != nil {
+		println(err)
+		return c.String(http.StatusOK, "null")
+	}
+	println(string(js))
+	return c.String(http.StatusOK, string(js))
 }
 
 func checkErr(err error) {
@@ -132,12 +219,12 @@ func checkMariDB(db *sql.DB) {
 	rows, err := db.Query("SELECT * FROM h_user")
 
 	for rows.Next() {
-		var id int
+		var idd int
 		var username string
 		var password string
-		err = rows.Scan(&id, &username, &password)
+		err = rows.Scan(&idd, &username, &password)
 		checkErr(err)
-		println(id)
+		println(idd)
 		println(username)
 		println(password)
 	}
@@ -170,7 +257,7 @@ func main() {
 	}))
 	e.POST("/login/checkuser", CheckLogin)
 	e.GET("healthsystem/ris/studydata/", GetDBStudyData)
-	e.GET("healthsystem/ris/studydata/", GetDBStudyImage)
+	e.GET("healthsystem/ris/stduyimage/", GetDBStudyImage)
 	e.GET("/Login/*", Login)
 	e.GET("/healthsystem/*", Healthsystem)
 	e.GET("/favicon.ico", func(c echo.Context) error {
