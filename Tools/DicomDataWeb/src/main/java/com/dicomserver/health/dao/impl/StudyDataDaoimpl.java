@@ -98,6 +98,7 @@ public class StudyDataDaoimpl extends BaseDao implements StudyDataDao {
 
     @Override
     public List<StudyData> getAllStudy(String startTime,String endTime, String page, String limit) {
+        //分页查询https://blog.csdn.net/myth_g/article/details/89672722
         List<StudyData> list = new ArrayList<StudyData>();
         String sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
                 " p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
