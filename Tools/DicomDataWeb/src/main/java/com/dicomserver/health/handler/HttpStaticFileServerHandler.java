@@ -622,7 +622,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             this.sendAndCleanupConnection(ctx, response);
             return;
         }
-        if (lowerUri.contains("/healthsystem/ris/saveportdata")) {
+        if (lowerUri.contains("/healthsystem/ris/savereportdata")) {
             String content = request.content().toString(CharsetUtil.UTF_8);
             log.info("---content:" + content);
             Gson gson = new Gson();
@@ -640,7 +640,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
             sendError(ctx, METHOD_NOT_ALLOWED);
             return;
         }
-        if (lowerUri.contains("/healthsystem/ris/getportdata")) {
+        if (lowerUri.contains("/healthsystem/ris/getreportdata")) {
             String content = request.content().toString(CharsetUtil.UTF_8);
             Gson gson = new Gson();
             ReportData reportData = gson.fromJson(content, ReportData.class);
