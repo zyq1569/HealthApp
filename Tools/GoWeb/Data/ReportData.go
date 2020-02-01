@@ -1,3 +1,4 @@
+//ReportData json
 package Report
 
 type ReportData struct {
