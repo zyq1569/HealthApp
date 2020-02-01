@@ -254,7 +254,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         //获取数据库检查报告信息
         $.ajax({
             type: "POST",
-            url: 'http://' + window.location.host + '/healthsystem/ris/getportdata',
+            url: 'http://' + window.location.host + '/healthsystem/ris/getreportdata',
             async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
             data: postdata, //JSON.stringify(reportdata), //请求save处理数据
             // dataType: "json",
