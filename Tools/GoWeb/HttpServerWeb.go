@@ -106,22 +106,7 @@ func CheckLogin(c echo.Context) error {
 }
 
 func SaveReportdata(c echo.Context) error {
-	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
-	startTime := c.FormValue("start")
-	endTime := c.FormValue("end")
-	page := c.FormValue("page")
-	limit := c.FormValue("limit")
-	// var mess strings.Builder
-	// mess.WriteString("start:")
-	// mess.WriteString(startTime)
-	// mess.WriteString("end:")
-	// mess.WriteString(endTime)
-	// mess.WriteString("page:")
-	// mess.WriteString(page)
-	// mess.WriteString("limit:")
-	// mess.WriteString(limit)
-	// // mess := "start:" + startTime + "end:" + end + "page:" + page + "limit:" + limit
-	// println(mess.String())
+	ReportIdentity := c.FormValue("ReportIdentity")
 	var studyjson Study.StudyDataJson
 	if maridb_db != nil {
 		var count int
@@ -131,12 +116,7 @@ func SaveReportdata(c echo.Context) error {
 		checkErr(err)
 		count = (p - 1) * lim
 		var sql string
-		sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
-			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyIdentity,s.StudyDateTime," +
-			" s.StudyDescription, s.StudyModality from " +
-			" h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
-			" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
-			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
+		sql = "select  * from h_report where `ReportIdentity`=" + ReportIdentity
 		println(sql)
 		rows, err := maridb_db.Query(sql)
 		if err != nil {
@@ -175,22 +155,8 @@ func SaveReportdata(c echo.Context) error {
 }
 
 func GetReportdata(c echo.Context) error {
-	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
-	startTime := c.FormValue("start")
-	endTime := c.FormValue("end")
-	page := c.FormValue("page")
-	limit := c.FormValue("limit")
-	// var mess strings.Builder
-	// mess.WriteString("start:")
-	// mess.WriteString(startTime)
-	// mess.WriteString("end:")
-	// mess.WriteString(endTime)
-	// mess.WriteString("page:")
-	// mess.WriteString(page)
-	// mess.WriteString("limit:")
-	// mess.WriteString(limit)
-	// // mess := "start:" + startTime + "end:" + end + "page:" + page + "limit:" + limit
-	// println(mess.String())
+	var reportdata Report
+	reportdata.ReportIdentity = c.FormValue("ReportIdentity")
 	var studyjson Study.StudyDataJson
 	if maridb_db != nil {
 		var count int
@@ -200,12 +166,7 @@ func GetReportdata(c echo.Context) error {
 		checkErr(err)
 		count = (p - 1) * lim
 		var sql string
-		sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
-			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyIdentity,s.StudyDateTime," +
-			" s.StudyDescription, s.StudyModality from " +
-			" h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
-			" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
-			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
+		sql = "select  * from h_report where `ReportIdentity`=" + reportdata.ReportIdentity
 		println(sql)
 		rows, err := maridb_db.Query(sql)
 		if err != nil {
