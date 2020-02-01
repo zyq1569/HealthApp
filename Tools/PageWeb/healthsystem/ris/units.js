@@ -32,7 +32,7 @@ var g_currentReportData = {
 };
 var g_currentReportOrderIdentity = '';
 
-var g_server_json_report_url = '/healthsystem/ris/saveportdata/';
+var g_server_json_report_url = '/healthsystem/ris/saverereportdata/';
 
 function getFormatDateTime() {
     var date = new Date();
