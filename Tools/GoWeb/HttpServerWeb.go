@@ -60,21 +60,42 @@ func Login(c echo.Context) error {
 }
 
 func LoadImageFile(c echo.Context) error {
-	req := c.Request()
-	println("-----Healthsystem-------")
-	println("req.URL.Path:" + req.URL.Path)
-	println(PAGE_Dir)
-	index := strings.IndexAny(req.URL.Path, "?")
-	studyuid := req.URL.Path[index:]
-	println(studyuid)
+	// println("---LoadImageFile---------")
+	studyuid := c.FormValue("studyuid")
 	image_hash_dir := Units.GetStudyHashDir(studyuid)
-	filepath := PAGE_Dir + image_hash_dir
+	filepath := IMAGE_Dir + image_hash_dir
 	filepath += "/"
 	filepath += studyuid
-	filepath += ".json"
-	println(studyuid)
-	println(filepath)
-	return c.File(filepath)
+	filetype := c.FormValue("type")
+	// println(filetype)
+	if filetype == "json" {
+		filepath += "/"
+		filepath += studyuid
+		filepath += ".json"
+		return c.File(filepath)
+	} else {
+		seriesuid := c.FormValue("seriesuid")
+		sopinstanceuid := c.FormValue("sopinstanceuid")
+		filepath += "/"
+		filepath += seriesuid
+		filepath += "/"
+		filepath += sopinstanceuid
+		filepath += ".dcm"
+		return c.File(filepath)
+	}
+}
+
+func LoadViewPage(c echo.Context) error {
+	req := c.Request()
+	filepath := PAGE_Dir + req.URL.Path
+	index := strings.Index(req.URL.Path, ".html?")
+	if index > -1 {
+		filename := req.URL.Path[0 : index+5]
+		filepath = PAGE_Dir + filename
+		return c.File(filepath)
+	} else {
+		return c.File(PAGE_Dir + req.URL.Path)
+	}
 }
 
 func CheckLogin(c echo.Context) error {
@@ -264,30 +285,34 @@ func OpenDB() (success bool, db *sql.DB) {
 }
 
 func main() {
-	var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
-	println(hash)
+	// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
+	// println(hash)
 	maridb_db = nil
 	open, db := OpenDB()
 	if open == true {
 		maridb_db = db
-		checkMariDB(db)
+		// test
+		//checkMariDB(db)
 	}
 
 	flag.Parse() //暂停获取参数
 	e := echo.New()
+	//定义日志属性
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "${time_rfc3339_nano} ${remote_ip} ${method} ${uri} ${status}\n",
 	}))
 	e.POST("/login/checkuser", CheckLogin)
-	e.GET("healthsystem/ris/studydata/", GetDBStudyData)
-	e.GET("healthsystem/ris/stduyimage/", GetDBStudyImage)
+	e.GET("/healthsystem/ris/studydata/", GetDBStudyData)
+	e.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
 	e.GET("/Login/*", Login)
-	e.GET("/view/view.html", LoadImageFile)
+	e.GET("/view/*", LoadViewPage)
 	e.GET("/healthsystem/*", Healthsystem)
 	e.GET("/favicon.ico", func(c echo.Context) error {
 		// println("----------favicon.ico--------")
 		return c.File("D:/code/C++/HealthApp/Tools/PageWeb/favicon.ico")
 	})
+	//需要定义/WADO?*路由??
+	e.GET("/*", LoadImageFile) //WADO?*
 	e.Logger.Fatal(e.Start(":9090"))
 }
 
