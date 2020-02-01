@@ -17,7 +17,7 @@ import (
 	"net/http"
 	"strconv"
 
-	// "strings"
+	"strings"
 
 	"encoding/json"
 
@@ -61,9 +61,19 @@ func Login(c echo.Context) error {
 
 func LoadImageFile(c echo.Context) error {
 	req := c.Request()
+	println("-----Healthsystem-------")
 	println("req.URL.Path:" + req.URL.Path)
-	println(PAGE_Dir + req.URL.Path)
-	filepath := PAGE_Dir + req.URL.Path
+	println(PAGE_Dir)
+	index := strings.IndexAny(req.URL.Path, "?")
+	studyuid := req.URL.Path[index:]
+	println(studyuid)
+	image_hash_dir := Units.GetStudyHashDir(studyuid)
+	filepath := PAGE_Dir + image_hash_dir
+	filepath += "/"
+	filepath += studyuid
+	filepath += ".json"
+	println(studyuid)
+	println(filepath)
 	return c.File(filepath)
 }
 
@@ -254,7 +264,7 @@ func OpenDB() (success bool, db *sql.DB) {
 }
 
 func main() {
-	var hash string = Units.GetStudyHashDir("1.2.826.0.1.3680043.9.7606.20091101104529.177289.200911020017")
+	var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
 	println(hash)
 	maridb_db = nil
 	open, db := OpenDB()
@@ -316,3 +326,12 @@ func queryMySal() {
 // rows, err := db.Query(sqlContent, "ST", "2017")
 // stmt, err := maridb_db.Prepare(sql)
 // rows, err := stmt.Exec()//https://www.cnblogs.com/jackylee92/p/6209596.html
+// text1 := "abcdefg"
+// fmt.Println(text1[n]) //获取字符串索引位置为n的原始字节，比如a为97
+// fmt.Println(text1[n:m]) //截取得字符串索引位置为 n 到 m-1 的字符串
+// fmt.Println(text1[n:]) //截取得字符串索引位置为 n 到 len(s)-1 的字符串
+// fmt.Println(text1[:m]) //截取得字符串索引位置为 0 到 m-1 的字符串
+// fmt.Println(len(text1)) //获取字符串的字节数
+// fmt.Println(utf8.RuneCountInString(text1)) //获取字符串字符的个数
+// fmt.Println([]rune(text1)) // 将字符串的每一个字节转换为码点值，比如这里会输出[97 98 99 100 101 102 103]
+// fmt.Println(string(text1[n])) // 获取字符串索引位置为n的字符值
