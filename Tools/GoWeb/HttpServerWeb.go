@@ -105,6 +105,144 @@ func CheckLogin(c echo.Context) error {
 	return c.String(http.StatusOK, "ok")
 }
 
+func SaveReportdata(c echo.Context) error {
+	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
+	startTime := c.FormValue("start")
+	endTime := c.FormValue("end")
+	page := c.FormValue("page")
+	limit := c.FormValue("limit")
+	// var mess strings.Builder
+	// mess.WriteString("start:")
+	// mess.WriteString(startTime)
+	// mess.WriteString("end:")
+	// mess.WriteString(endTime)
+	// mess.WriteString("page:")
+	// mess.WriteString(page)
+	// mess.WriteString("limit:")
+	// mess.WriteString(limit)
+	// // mess := "start:" + startTime + "end:" + end + "page:" + page + "limit:" + limit
+	// println(mess.String())
+	var studyjson Study.StudyDataJson
+	if maridb_db != nil {
+		var count int
+		p, err := strconv.Atoi(page)
+		checkErr(err)
+		lim, err := strconv.Atoi(limit)
+		checkErr(err)
+		count = (p - 1) * lim
+		var sql string
+		sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
+			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyIdentity,s.StudyDateTime," +
+			" s.StudyDescription, s.StudyModality from " +
+			" h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
+			" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
+			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
+		println(sql)
+		rows, err := maridb_db.Query(sql)
+		if err != nil {
+			println(err)
+		} else {
+			studyjson.Code = 0
+			studyjson.Msg = ""
+			studyjson.Count = 21
+			for rows.Next() {
+				var data Study.StudyData
+				err = rows.Scan(&data.PatientIdentity, &data.PatientName,
+					&data.PatientID, &data.PatientBirthday,
+					&data.PatientSex, &data.StudyUID, &data.StudyID,
+					&data.StudyOrderIdentity, &data.StudyDateTime,
+					&data.StudyDescription, &data.StudyModality)
+				studyjson.Data = append(studyjson.Data, data)
+			}
+			sql = "select count(*) count from " +
+				"h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
+				" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime
+			rows, err := maridb_db.Query(sql)
+			if err == nil {
+				for rows.Next() {
+					rows.Scan(&studyjson.Count)
+				}
+			}
+		}
+	}
+	js, err := json.Marshal(studyjson)
+	if err != nil {
+		println(err)
+		return c.String(http.StatusOK, "null")
+	}
+	println(string(js))
+	return c.String(http.StatusOK, string(js))
+}
+
+func GetReportdata(c echo.Context) error {
+	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
+	startTime := c.FormValue("start")
+	endTime := c.FormValue("end")
+	page := c.FormValue("page")
+	limit := c.FormValue("limit")
+	// var mess strings.Builder
+	// mess.WriteString("start:")
+	// mess.WriteString(startTime)
+	// mess.WriteString("end:")
+	// mess.WriteString(endTime)
+	// mess.WriteString("page:")
+	// mess.WriteString(page)
+	// mess.WriteString("limit:")
+	// mess.WriteString(limit)
+	// // mess := "start:" + startTime + "end:" + end + "page:" + page + "limit:" + limit
+	// println(mess.String())
+	var studyjson Study.StudyDataJson
+	if maridb_db != nil {
+		var count int
+		p, err := strconv.Atoi(page)
+		checkErr(err)
+		lim, err := strconv.Atoi(limit)
+		checkErr(err)
+		count = (p - 1) * lim
+		var sql string
+		sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
+			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyIdentity,s.StudyDateTime," +
+			" s.StudyDescription, s.StudyModality from " +
+			" h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
+			" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
+			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
+		println(sql)
+		rows, err := maridb_db.Query(sql)
+		if err != nil {
+			println(err)
+		} else {
+			studyjson.Code = 0
+			studyjson.Msg = ""
+			studyjson.Count = 21
+			for rows.Next() {
+				var data Study.StudyData
+				err = rows.Scan(&data.PatientIdentity, &data.PatientName,
+					&data.PatientID, &data.PatientBirthday,
+					&data.PatientSex, &data.StudyUID, &data.StudyID,
+					&data.StudyOrderIdentity, &data.StudyDateTime,
+					&data.StudyDescription, &data.StudyModality)
+				studyjson.Data = append(studyjson.Data, data)
+			}
+			sql = "select count(*) count from " +
+				"h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
+				" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime
+			rows, err := maridb_db.Query(sql)
+			if err == nil {
+				for rows.Next() {
+					rows.Scan(&studyjson.Count)
+				}
+			}
+		}
+	}
+	js, err := json.Marshal(studyjson)
+	if err != nil {
+		println(err)
+		return c.String(http.StatusOK, "null")
+	}
+	println(string(js))
+	return c.String(http.StatusOK, string(js))
+}
+
 func GetDBStudyImage(c echo.Context) error {
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
@@ -306,7 +444,8 @@ func main() {
 	//ris
 	e.GET("/healthsystem/ris/studydata/", GetDBStudyData)
 	e.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
-	e.GET("/healthsystem/ris/getportdata")
+	e.GET("/healthsystem/ris/getreportdata", GetReportdata)
+	e.GET("/healthsystem/ris/savereportdata", SaveReportdata)
 	e.GET("/healthsystem/*", Healthsystem)
 
 	// view dicom
@@ -317,6 +456,7 @@ func main() {
 		// println("----------favicon.ico--------")
 		return c.File("D:/code/C++/HealthApp/Tools/PageWeb/favicon.ico")
 	})
+
 	// load image file
 	//需要定义/WADO?*路由??
 	e.GET("/*", LoadImageFile) //WADO?*
