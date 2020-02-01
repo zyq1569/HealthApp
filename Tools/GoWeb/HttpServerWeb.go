@@ -106,65 +106,15 @@ func CheckLogin(c echo.Context) error {
 }
 
 func SaveReportdata(c echo.Context) error {
-	ReportIdentity := c.FormValue("ReportIdentity")
-	var studyjson Study.StudyDataJson
-	if maridb_db != nil {
-		var count int
-		p, err := strconv.Atoi(page)
-		checkErr(err)
-		lim, err := strconv.Atoi(limit)
-		checkErr(err)
-		count = (p - 1) * lim
-		var sql string
-		sql = "select  * from h_report where `ReportIdentity`=" + ReportIdentity
-		println(sql)
-		rows, err := maridb_db.Query(sql)
-		if err != nil {
-			println(err)
-		} else {
-			studyjson.Code = 0
-			studyjson.Msg = ""
-			studyjson.Count = 21
-			for rows.Next() {
-				var data Study.StudyData
-				err = rows.Scan(&data.PatientIdentity, &data.PatientName,
-					&data.PatientID, &data.PatientBirthday,
-					&data.PatientSex, &data.StudyUID, &data.StudyID,
-					&data.StudyOrderIdentity, &data.StudyDateTime,
-					&data.StudyDescription, &data.StudyModality)
-				studyjson.Data = append(studyjson.Data, data)
-			}
-			sql = "select count(*) count from " +
-				"h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
-				" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime
-			rows, err := maridb_db.Query(sql)
-			if err == nil {
-				for rows.Next() {
-					rows.Scan(&studyjson.Count)
-				}
-			}
-		}
-	}
-	js, err := json.Marshal(studyjson)
-	if err != nil {
-		println(err)
-		return c.String(http.StatusOK, "null")
-	}
-	println(string(js))
+	var js string
 	return c.String(http.StatusOK, string(js))
 }
 
 func GetReportdata(c echo.Context) error {
-	var reportdata Report
+	var reportdata Study.ReportData
 	reportdata.ReportIdentity = c.FormValue("ReportIdentity")
 	var studyjson Study.StudyDataJson
 	if maridb_db != nil {
-		var count int
-		p, err := strconv.Atoi(page)
-		checkErr(err)
-		lim, err := strconv.Atoi(limit)
-		checkErr(err)
-		count = (p - 1) * lim
 		var sql string
 		sql = "select  * from h_report where `ReportIdentity`=" + reportdata.ReportIdentity
 		println(sql)
@@ -184,9 +134,7 @@ func GetReportdata(c echo.Context) error {
 					&data.StudyDescription, &data.StudyModality)
 				studyjson.Data = append(studyjson.Data, data)
 			}
-			sql = "select count(*) count from " +
-				"h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
-				" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime
+
 			rows, err := maridb_db.Query(sql)
 			if err == nil {
 				for rows.Next() {
