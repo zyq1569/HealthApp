@@ -134,7 +134,7 @@ function saveReport2ServerContent() {
     var host = window.location.host;
     $.ajax({
         type: "POST",
-        url: 'http://' + host + '/healthsystem/ris/saveportdata/',
+        url: 'http://' + host + '/healthsystem/ris/savereportdata/',
         async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
         data: postdata, //请求save处理数据
         success: function(mess) {
