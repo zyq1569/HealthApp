@@ -38,3 +38,18 @@ type StudyData struct {
 	// SstudyUID          string `json:"sStudyUID"`
 	CostType string `json:"costType"`
 }
+
+type ReportData struct {
+	ReportIdentity     string
+	StudyOrderIdentity string
+	ReportTemplate     string
+	ReportCreatDate    string
+	ReportWriterID     string
+	ReportCheckID      string
+	ReportCheckDate    string
+	ReportContent      string
+	ReportState        string
+	ReportSave         string
+	ReportChange       string
+	ReportOther        string
+}
