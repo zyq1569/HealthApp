@@ -13,13 +13,11 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"flag"
 	"net/http"
 	"strconv"
-
 	"strings"
-
-	"encoding/json"
 
 	"./Data"
 	"./Units"
@@ -295,22 +293,31 @@ func main() {
 		//checkMariDB(db)
 	}
 
-	flag.Parse() //暂停获取参数
+	// flag.Parse() //暂停获取参数
 	e := echo.New()
 	//定义日志属性
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "${time_rfc3339_nano} ${remote_ip} ${method} ${uri} ${status}\n",
 	}))
+	//login
 	e.POST("/login/checkuser", CheckLogin)
+	e.GET("/Login/*", Login)
+
+	//ris
 	e.GET("/healthsystem/ris/studydata/", GetDBStudyData)
 	e.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
-	e.GET("/Login/*", Login)
-	e.GET("/view/*", LoadViewPage)
+	e.GET("/healthsystem/ris/getportdata")
 	e.GET("/healthsystem/*", Healthsystem)
+
+	// view dicom
+	e.GET("/view/*", LoadViewPage)
+
+	// other
 	e.GET("/favicon.ico", func(c echo.Context) error {
 		// println("----------favicon.ico--------")
 		return c.File("D:/code/C++/HealthApp/Tools/PageWeb/favicon.ico")
 	})
+	// load image file
 	//需要定义/WADO?*路由??
 	e.GET("/*", LoadImageFile) //WADO?*
 	e.Logger.Fatal(e.Start(":9090"))
