@@ -519,6 +519,7 @@ int AppRun(int argc, char *argv[])
 //debug --single - process
 int main(int argc, char *argv[])
 {
+    OFString s = GetStudyHashDir("1.2.826.0.1.3680043.9.7606.20091101104529.177289.200911020017");
     if (argc > 3)
     {
         OFString s = argv[argc-1];
