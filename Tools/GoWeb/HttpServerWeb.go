@@ -1,12 +1,16 @@
 // HttpWeb
 //go get -u github.com/labstack/echo/...
-/*DSN数据源名称
+/*
+DSN数据源名称
   [username[:password]@][protocol[(address)]]/dbname[?param1=value1¶mN=valueN]
   user@unix(/path/to/socket)/dbname
   user:password@tcp(localhost:5555)/dbname?charset=utf8&autocommit=true
   user:password@tcp([de:ad:be:ef::ca:fe]:80)/dbname?charset=utf8mb4,utf8
   user:password@/dbname
   无数据库: user:password@/
+
+echo web 参考例子
+https://blog.csdn.net/Noob_coder_JZ/article/details/83410095
 */
 
 package main
@@ -16,8 +20,11 @@ import (
 	"encoding/json"
 	"flag"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
+
+	"io/ioutil"
 
 	"./Data"
 	"./Units"
@@ -51,8 +58,8 @@ func Healthsystem(c echo.Context) error {
 
 func Login(c echo.Context) error {
 	req := c.Request()
-	println("req.URL.Path:" + req.URL.Path)
-	println(PAGE_Dir + req.URL.Path)
+	// println("req.URL.Path:" + req.URL.Path)
+	// println(PAGE_Dir + req.URL.Path)
 	filepath := PAGE_Dir + req.URL.Path
 	return c.File(filepath)
 }
@@ -111,39 +118,48 @@ func SaveReportdata(c echo.Context) error {
 }
 
 func GetReportdata(c echo.Context) error {
+	println("--------GetReportdata---------------------")
 	var reportdata Study.ReportData
 	reportdata.ReportIdentity = c.FormValue("ReportIdentity")
-	var studyjson Study.StudyDataJson
+	// println("-----c.Request().Context()------")
+	// println(c.Request().FormValue("ReportIdentity"))
+	// println(reportdata.ReportIdentity)
+	// reportdata.ReportIdentity = c.ParamValues("ReportIdentity")
+	// println(reportdata.ReportIdentity)
+	//
+	// 获取请求报文的内容长度
+	len := c.Request().ContentLength
+	println(len)
+	// 新建一个字节切片，长度与请求报文的内容长度相同
+	body := make([]byte, len)
+	// 读取 r 的请求主体，并将具体内容读入 body 中
+	c.Request().Body.Read(body)
+	println("string(body)")
+	println(string(body))
+	s, _ := ioutil.ReadAll(c.Request().Body) //把  body 内容读入字符串 s
+	println(s)
+	//-------------
 	if maridb_db != nil {
-		var sql string
-		sql = "select  * from h_report where `ReportIdentity`=" + reportdata.ReportIdentity
-		println(sql)
-		rows, err := maridb_db.Query(sql)
+		var sqlstr string
+		sqlstr = "select  * from h_report where `ReportIdentity`=" + reportdata.ReportIdentity
+		println(sqlstr)
+		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
 		} else {
-			studyjson.Code = 0
-			studyjson.Msg = ""
-			studyjson.Count = 21
 			for rows.Next() {
-				var data Study.StudyData
-				err = rows.Scan(&data.PatientIdentity, &data.PatientName,
-					&data.PatientID, &data.PatientBirthday,
-					&data.PatientSex, &data.StudyUID, &data.StudyID,
-					&data.StudyOrderIdentity, &data.StudyDateTime,
-					&data.StudyDescription, &data.StudyModality)
-				studyjson.Data = append(studyjson.Data, data)
-			}
-
-			rows, err := maridb_db.Query(sql)
-			if err == nil {
-				for rows.Next() {
-					rows.Scan(&studyjson.Count)
-				}
+				// reportdata.ReportWriterID = sql.NullString{String: "", Valid: false}
+				// reportdata.ReportCheckID = sql.NullString{String: "", Valid: false}
+				// reportdata.ReportOther = sql.NullString{String: "", Valid: false}
+				err = rows.Scan(&reportdata.ReportIdentity, &reportdata.StudyOrderIdentity,
+					&reportdata.ReportState, &reportdata.ReportTemplate,
+					&reportdata.ReportCreatDate, &reportdata.ReportWriterID,
+					&reportdata.ReportCheckID, &reportdata.ReportCheckDate,
+					&reportdata.ReportContent, &reportdata.ReportOther)
 			}
 		}
 	}
-	js, err := json.Marshal(studyjson)
+	js, err := json.Marshal(reportdata)
 	if err != nil {
 		println(err)
 		return c.String(http.StatusOK, "null")
@@ -177,15 +193,15 @@ func GetDBStudyImage(c echo.Context) error {
 		lim, err := strconv.Atoi(limit)
 		checkErr(err)
 		count = (p - 1) * lim
-		var sql string
-		sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
+		var sqlstr string
+		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
 			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyIdentity,s.StudyDateTime," +
 			" s.StudyDescription, s.StudyModality from " +
 			" h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
 			" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
 			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
-		println(sql)
-		rows, err := maridb_db.Query(sql)
+		println(sqlstr)
+		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
 		} else {
@@ -201,10 +217,10 @@ func GetDBStudyImage(c echo.Context) error {
 					&data.StudyDescription, &data.StudyModality)
 				studyjson.Data = append(studyjson.Data, data)
 			}
-			sql = "select count(*) count from " +
+			sqlstr = "select count(*) count from " +
 				"h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
 				" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime
-			rows, err := maridb_db.Query(sql)
+			rows, err := maridb_db.Query(sqlstr)
 			if err == nil {
 				for rows.Next() {
 					rows.Scan(&studyjson.Count)
@@ -246,15 +262,15 @@ func GetDBStudyData(c echo.Context) error {
 		lim, err := strconv.Atoi(limit)
 		checkErr(err)
 		count = (p - 1) * lim
-		var sql string
-		sql = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
+		var sqlstr string
+		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
 			" p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
 			" s.StudyOrderIdentity,s.ScheduledDateTime,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
 			" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
 			" s.ScheduledDateTime>=" + startTime + " and  s.ScheduledDateTime<=" + endTime + " order by s.StudyOrderIdentity " +
 			" limit " + strconv.Itoa(count) + "," + limit
-		println(sql)
-		rows, err := maridb_db.Query(sql)
+		println(sqlstr)
+		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
 		} else {
@@ -275,10 +291,10 @@ func GetDBStudyData(c echo.Context) error {
 					&data.StudyState)
 				studyjson.Data = append(studyjson.Data, data)
 			}
-			sql = "select count(*) count from " +
+			sqlstr = "select count(*) count from " +
 				" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and" +
 				"  s.ScheduledDateTime>= " + startTime + " and  s.ScheduledDateTime <= " + endTime
-			rows, err := maridb_db.Query(sql)
+			rows, err := maridb_db.Query(sqlstr)
 			if err == nil {
 				for rows.Next() {
 					rows.Scan(&studyjson.Count)
@@ -330,6 +346,9 @@ func OpenDB() (success bool, db *sql.DB) {
 }
 
 func main() {
+	arg0 := os.Args[0:]
+	println("--arg0--")
+	println(arg0)
 	// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
 	// println(hash)
 	maridb_db = nil
@@ -349,12 +368,16 @@ func main() {
 	//login
 	e.POST("/login/checkuser", CheckLogin)
 	e.GET("/Login/*", Login)
+	e.GET("/login/*", Login)
 
 	//ris
 	e.GET("/healthsystem/ris/studydata/", GetDBStudyData)
 	e.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
-	e.GET("/healthsystem/ris/getreportdata", GetReportdata)
-	e.GET("/healthsystem/ris/savereportdata", SaveReportdata)
+
+	//ris/report
+	e.POST("/healthsystem/ris/getreportdata", GetReportdata)
+	e.POST("/healthsystem/ris/savereportdata", SaveReportdata)
+
 	e.GET("/healthsystem/*", Healthsystem)
 
 	// view dicom
