@@ -13,6 +13,15 @@ echo web 参考例子
 https://blog.csdn.net/Noob_coder_JZ/article/details/83410095
 */
 
+// HTTP状态码的分类
+
+// 分类	分类描述
+// 1** 	信息，服务器收到请求，需要请求者继续执行操作
+// 2** 	成功，操作被成功接收并处理
+// 3** 	重定向，需要进一步的操作以完成请求
+// 4**	客户端错误，请求包含语法错误或无法完成请求
+// 5** 	服务器错误，服务器在处理请求的过程中发生了错误
+
 package main
 
 import (
@@ -24,16 +33,22 @@ import (
 	"strconv"
 	"strings"
 
+	// "encoding/json"
 	"io/ioutil"
 
 	"./Data"
 	"./Units"
 
 	// "fmt"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
+
+type CustomContext struct {
+	echo.Context
+}
 
 const (
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
@@ -119,6 +134,24 @@ func SaveReportdata(c echo.Context) error {
 
 func GetReportdata(c echo.Context) error {
 	println("--------GetReportdata---------------------")
+	var bodyBytes []byte
+	if c.Request().Body != nil {
+		bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
+	}
+	println(string(bodyBytes))
+	// json_map := make(map[string]interface{})
+	// err := json.NewDecoder(c.Request().Body).Decode(&json_map)
+	// if err != nil {
+	// 	return err
+	// } else {
+	// 	//json_map has the JSON Payload decoded into a map
+	// 	cb_type := json_map["type"]
+	// 	challenge := json_map["challenge"]
+	// 	println(cb_type)
+	// 	println(challenge)
+	// }
+	// , r *http.Request  r.Body
+	//
 	var reportdata Study.ReportData
 	reportdata.ReportIdentity = c.FormValue("ReportIdentity")
 	// println("-----c.Request().Context()------")
@@ -130,14 +163,17 @@ func GetReportdata(c echo.Context) error {
 	// 获取请求报文的内容长度
 	len := c.Request().ContentLength
 	println(len)
-	// 新建一个字节切片，长度与请求报文的内容长度相同
-	body := make([]byte, len)
+	// // 新建一个字节切片，长度与请求报文的内容长度相同
+	// body := make([]byte, len)
 	// 读取 r 的请求主体，并将具体内容读入 body 中
-	c.Request().Body.Read(body)
-	println("string(body)")
-	println(string(body))
+	// c.Request().Body.Read(body)
+	// c.Request().Body.Close()
+	// println(string(body))
 	s, _ := ioutil.ReadAll(c.Request().Body) //把  body 内容读入字符串 s
+	c.Request().Body.Close()
+	println(c.ParamValues())
 	println(s)
+	println("---s------")
 	//-------------
 	if maridb_db != nil {
 		var sqlstr string
@@ -362,9 +398,10 @@ func main() {
 	// flag.Parse() //暂停获取参数
 	e := echo.New()
 	//定义日志属性
-	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format: "${time_rfc3339_nano} ${remote_ip} ${method} ${uri} ${status}\n",
-	}))
+	// e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+	// 	Format: "${time_rfc3339_nano} ${remote_ip} ${method} ${uri} ${status}\n",
+	// }))
+	e.Use(middleware.Logger())
 	//login
 	e.POST("/login/checkuser", CheckLogin)
 	e.GET("/Login/*", Login)
