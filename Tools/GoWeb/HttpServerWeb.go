@@ -133,47 +133,21 @@ func SaveReportdata(c echo.Context) error {
 }
 
 func GetReportdata(c echo.Context) error {
-	println("--------GetReportdata---------------------")
+	var reportdata Study.ReportData
 	var bodyBytes []byte
 	if c.Request().Body != nil {
 		bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
+		err := json.Unmarshal(bodyBytes, &reportdata)
+		// reportdata = json.Unmarshal(bodyBytes)
+		println("reportdata.ReportIdentity")
+		println(reportdata.ReportIdentity)
+		if err != nil {
+			println(err)
+		}
+
 	}
 	println(string(bodyBytes))
-	// json_map := make(map[string]interface{})
-	// err := json.NewDecoder(c.Request().Body).Decode(&json_map)
-	// if err != nil {
-	// 	return err
-	// } else {
-	// 	//json_map has the JSON Payload decoded into a map
-	// 	cb_type := json_map["type"]
-	// 	challenge := json_map["challenge"]
-	// 	println(cb_type)
-	// 	println(challenge)
-	// }
-	// , r *http.Request  r.Body
-	//
-	var reportdata Study.ReportData
-	reportdata.ReportIdentity = c.FormValue("ReportIdentity")
-	// println("-----c.Request().Context()------")
-	// println(c.Request().FormValue("ReportIdentity"))
-	// println(reportdata.ReportIdentity)
-	// reportdata.ReportIdentity = c.ParamValues("ReportIdentity")
-	// println(reportdata.ReportIdentity)
-	//
-	// 获取请求报文的内容长度
-	len := c.Request().ContentLength
-	println(len)
-	// // 新建一个字节切片，长度与请求报文的内容长度相同
-	// body := make([]byte, len)
-	// 读取 r 的请求主体，并将具体内容读入 body 中
-	// c.Request().Body.Read(body)
-	// c.Request().Body.Close()
-	// println(string(body))
-	s, _ := ioutil.ReadAll(c.Request().Body) //把  body 内容读入字符串 s
-	c.Request().Body.Close()
-	println(c.ParamValues())
-	println(s)
-	println("---s------")
+	// reportdata.ReportIdentity = c.FormValue("ReportIdentity")
 	//-------------
 	if maridb_db != nil {
 		var sqlstr string
