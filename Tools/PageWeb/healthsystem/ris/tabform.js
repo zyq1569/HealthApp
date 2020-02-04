@@ -259,6 +259,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
             data: postdata, //JSON.stringify(reportdata), //请求save处理数据
             // dataType: "json",
             success: function(result) {
+                //layer.alert(result);
                 if (result.ReportContent.length > 0) {
                     reportdata = result;
                     // layer.alert('ok:' + reportdata.ReportContent);
