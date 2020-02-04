@@ -356,9 +356,11 @@ func OpenDB() (success bool, db *sql.DB) {
 }
 
 func main() {
-	arg0 := os.Args[0:]
-	println("--arg0--")
-	println(arg0)
+	if len(os.Args) > 0 {
+		arg0 := os.Args[0:]
+		println("--arg0--")
+		println(arg0)
+	}
 	// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
 	// println(hash)
 	maridb_db = nil
