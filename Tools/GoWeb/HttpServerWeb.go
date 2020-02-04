@@ -25,6 +25,7 @@ https://blog.csdn.net/Noob_coder_JZ/article/details/83410095
 package main
 
 import (
+	"bytes"
 	"database/sql"
 	"encoding/json"
 	"flag"
@@ -51,9 +52,14 @@ type CustomContext struct {
 }
 
 const (
+	empty = ""
+	tab   = "\t"
+)
+const (
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
 	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
-	PAGE_Dir  = "D:/code/C++/HealthApp/Tools/PageWeb"
+	PAGE_TEST = "D:/code/C++/HealthApp/Tools/PageWeb"
+	PAGE_Dir  = "F:/temp/HealthApp/PageWeb"
 )
 
 var name string
@@ -134,6 +140,8 @@ func SaveReportdata(c echo.Context) error {
 
 func GetReportdata(c echo.Context) error {
 	var reportdata Study.ReportData
+	reportdata.ReportSave = "false"
+	reportdata.ReportChange = "false"
 	var bodyBytes []byte
 	if c.Request().Body != nil {
 		bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
@@ -169,13 +177,39 @@ func GetReportdata(c echo.Context) error {
 			}
 		}
 	}
-	js, err := json.Marshal(reportdata)
-	if err != nil {
-		println(err)
-		return c.String(http.StatusOK, "null")
-	}
-	println(string(js))
-	return c.String(http.StatusOK, string(js))
+	// 2-------------------------
+	// reportdata.ReportContent = "this is json promble"
+	// js, err := json.Marshal(reportdata)
+	// println(string(js))
+	// if err != nil {
+	// 	println(err)
+	// 	return c.String(http.StatusOK, string(js))
+	// }
+	// return c.String(http.StatusOK, string(js))
+	// println(string(js))
+	// println(reportdata.ReportContent)
+	////////////////3----------------------
+	buf := bytes.NewBuffer([]byte{})
+	jsonE := json.NewEncoder(buf)
+	jsonE.SetEscapeHTML(false)
+	// jsonE.SetIndent(empty, tab)
+	reportdata.ReportContent = "this is json promble"
+	jsonE.Encode(reportdata)
+	// reportstring := buf.String()
+	// reportstring = strings.ReplaceAll(reportstring, "\\\"", "\"")
+	println(buf.String())
+	// println(reportstring)
+	return c.String(http.StatusOK, buf.String())
+	// return c.String(http.StatusOK, reportstring)
+	//////////////////
+	// jsoncode := &Study.JsonCode{
+	// 	Code: 1,
+	// 	Msg:  "success",
+	// 	Data: reportdata,
+	// }
+	// js, _ := json.Marshal(jsoncode)
+	// println(string(js))
+	// return c.String(http.StatusOK, string(js))
 }
 
 func GetDBStudyImage(c echo.Context) error {
