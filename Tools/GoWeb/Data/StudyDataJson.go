@@ -40,16 +40,22 @@ type StudyData struct {
 }
 
 type ReportData struct {
-	ReportIdentity     string
-	StudyOrderIdentity string
-	ReportTemplate     string
-	ReportCreatDate    string
-	ReportWriterID     string
-	ReportCheckID      string
-	ReportCheckDate    string
-	ReportContent      string
-	ReportState        string
-	ReportSave         string
-	ReportChange       string
-	ReportOther        string
+	ReportIdentity     string `json:"ReportIdentity"`
+	StudyOrderIdentity string `json:"StudyOrderIdentity"`
+	ReportTemplate     string `json:"ReportTemplate"`
+	ReportCreatDate    string `json:"ReportCreatDate"`
+	ReportWriterID     string `json:"ReportWriterID"`
+	ReportCheckID      string `json:"ReportCheckID"`
+	ReportCheckDate    string `json:"ReportCheckDate"`
+	ReportContent      string `json:"ReportContent"`
+	ReportState        string `json:"ReportState"`
+	ReportSave         string `json:"ReportSave"`
+	ReportChange       string `json:"ReportChange"`
+	ReportOther        string `json:"ReportOther"`
+}
+
+type JsonCode struct {
+	Code int         `json:"code"`
+	Msg  string      `json:"msg"`
+	Data interface{} ` json:"data"`
 }
