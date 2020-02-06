@@ -25,7 +25,8 @@ https://blog.csdn.net/Noob_coder_JZ/article/details/83410095
 package main
 
 import (
-	"bytes"
+	//"./jsonparser"
+	// "bytes"
 	"database/sql"
 	"encoding/json"
 	"flag"
@@ -41,7 +42,6 @@ import (
 	"./Units"
 
 	// "fmt"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -53,13 +53,13 @@ type CustomContext struct {
 
 const (
 	empty = ""
-	tab   = "\t"
+	tab   = ""
 )
 const (
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
 	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
-	PAGE_Dir  = "D:/code/C++/HealthApp/Tools/PageWeb"
 	PAGE_TEST = "F:/temp/HealthApp/PageWeb"
+	PAGE_Dir  = "D:/code/C++/HealthApp/Tools/PageWeb"
 )
 
 var name string
@@ -145,18 +145,16 @@ func GetReportdata(c echo.Context) error {
 		bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
 		err := json.Unmarshal(bodyBytes, &reportdata)
 		// reportdata = json.Unmarshal(bodyBytes)
-		println("reportdata.ReportIdentity")
-		println(reportdata.ReportIdentity)
+		// println("reportdata.ReportIdentity")
+		// println(reportdata.ReportIdentity)
 		if err != nil {
 			println(err)
 		}
-
 	}
-	println(string(bodyBytes))
+	// println(string(bodyBytes))
 	//-------------
-	var reportDBdata Study.ReportData
-	reportDBdata.ReportSave = "false"
-	reportDBdata.ReportChange = "false"
+	reportdata.ReportSave = "false"
+	reportdata.ReportChange = "false"
 	if maridb_db != nil {
 		var sqlstr string
 		sqlstr = "select  * from h_report where `ReportIdentity`=" + reportdata.ReportIdentity
@@ -169,68 +167,36 @@ func GetReportdata(c echo.Context) error {
 				// reportdata.ReportWriterID = sql.NullString{String: "", Valid: false}
 				// reportdata.ReportCheckID = sql.NullString{String: "", Valid: false}
 				// reportdata.ReportOther = sql.NullString{String: "", Valid: false}
-				err = rows.Scan(&reportDBdata.ReportIdentity, &reportDBdata.StudyOrderIdentity,
-					&reportDBdata.ReportState, &reportDBdata.ReportTemplate,
-					&reportDBdata.ReportCreatDate, &reportDBdata.ReportWriterID,
-					&reportDBdata.ReportCheckID, &reportDBdata.ReportCheckDate,
-					&reportDBdata.ReportContent, &reportDBdata.ReportOther)
+				err = rows.Scan(&reportdata.ReportIdentity, &reportdata.StudyOrderIdentity,
+					&reportdata.ReportState, &reportdata.ReportTemplate,
+					&reportdata.ReportCreatDate, &reportdata.ReportWriterID,
+					&reportdata.ReportCheckID, &reportdata.ReportCheckDate,
+					&reportdata.ReportContent, &reportdata.ReportOther)
 			}
 		}
 	}
 	// 2-------------------------
-	// reportdata.ReportContent = "this is json promble"
-	// println("reportDBdata.ReportContent")
-	// println(reportDBdata.ReportContent)
-
-	// js, err := json.Marshal(reportDBdata)
-	// println(string(js))
-	// if err != nil {
-	// 	println(err)
-	// 	return c.String(http.StatusOK, string(js))
-	// }
+	println("----reportDBdata.ReportContent--------")
+	js, err := json.Marshal(reportdata)
+	// js, err := json.MarshalIndent(reportdata, "", "  ")
+	jsdata := strings.ReplaceAll(string(js), "=", "\\u003d")
+	// println(jsdata)
+	if err != nil {
+		println(err)
+	}
+	// println("------------jsdata--------------")
+	// return c.JSONPretty()
+	return c.String(http.StatusOK, jsdata)
 	////////////////////--
-	// var data Study.ReportData
-	// data.ReportSave = "false"
-	// data.ReportChange = "false"
-	// err = json.Unmarshal(js, &data)
-	// println("data.ReportContent")
-	// println(data.ReportContent)
-	// var jsonstr string
-	// jsonstr = "{\"ReportIdentity\": \"1577160124447\",\"StudyOrderIdentity\": "
-	// jsonstr += "\"1577160124447\",\"ReportTemplate\": \"0\",\"ReportCreatDate\": \"2019-12-28 17:13:52\","
-	// jsonstr += "\"ReportWriterID\": \"0\",\"ReportCheckID\": \"0\",\"ReportCheckDate\": \"2019-12-28 17:13:52\","
-	// jsonstr += "\"ReportContent\": \"this a big box! json\""
-	// jsonstr += ",\"ReportState\": \"0\",\"ReportSave\": \"false\",\"ReportChange\": \"false\",\"ReportOther\": \"0\"}"
-	// //////////////////////////////////////////
-	// println(jsonstr)
-	// return c.String(http.StatusOK, string(jsonstr))
-	// return c.String(http.StatusOK, string(js))
 	////////////////3----------------------
-	buf := bytes.NewBuffer([]byte{})
-	jsonE := json.NewEncoder(buf)
-	jsonE.SetEscapeHTML(false)
-	jsonE.SetIndent(empty, tab)
-	// reportdata.ReportContent = "this is json promble"
-	jsonE.Encode(reportDBdata)
-	reportstring := buf.String()
-	// reportstring = strings.ReplaceAll(reportstring, "\\\"", "\"")
-	reportstring = strings.ReplaceAll(reportstring, ":", " :")
-	println("-----buf.String()-----------——")
-	println(reportDBdata.ReportContent)
-	println(buf.String())
-	println(reportstring)
-	// return c.String(http.StatusOK, buf.String())
-	return c.String(http.StatusOK, reportstring)
-
-	//////////////////
-	// jsoncode := &Study.JsonCode{
-	// 	Code: 1,
-	// 	Msg:  "success",
-	// 	Data: reportdata,
-	// }
-	// js, _ := json.Marshal(jsoncode)
-	// println(string(js))
-	// return c.String(http.StatusOK, string(js))
+	// buf := bytes.NewBuffer([]byte{})
+	// jsonE := json.NewEncoder(buf) //jsonE.SetEscapeHTML(false) //This replacement can be disabled when using an Encoder
+	// jsonE.SetIndent(empty, tab)
+	// jsonE.Encode(reportdata)                                        // reportdata.ReportContent = "this is json promble"
+	// reportstring := buf.String()                                    // reportstring = strings.ReplaceAll(reportstring, "\\\"", "\"")
+	// reportstring = strings.ReplaceAll(reportstring, "=", "\\u003d") // reportstring = strings.ReplaceAll(reportstring, ":", " :")
+	// println(reportstring)
+	// return c.String(http.StatusOK, reportstring) // return c.String(http.StatusOK, buf.String())
 }
 
 func GetDBStudyImage(c echo.Context) error {
