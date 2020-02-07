@@ -144,15 +144,10 @@ func GetReportdata(c echo.Context) error {
 	if c.Request().Body != nil {
 		bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
 		err := json.Unmarshal(bodyBytes, &reportdata)
-		// reportdata = json.Unmarshal(bodyBytes)
-		// println("reportdata.ReportIdentity")
-		// println(reportdata.ReportIdentity)
 		if err != nil {
 			println(err)
 		}
 	}
-	// println(string(bodyBytes))
-	//-------------
 	reportdata.ReportSave = "false"
 	reportdata.ReportChange = "false"
 	if maridb_db != nil {
@@ -175,8 +170,8 @@ func GetReportdata(c echo.Context) error {
 			}
 		}
 	}
-	// 2-------------------------
-	println("----reportDBdata.ReportContent--------")
+	// // 2-------------------------
+	// println("----reportDBdata.ReportContent--------")
 	js, err := json.Marshal(reportdata)
 	// js, err := json.MarshalIndent(reportdata, "", "  ")
 	jsdata := strings.ReplaceAll(string(js), "=", "\\u003d")
@@ -184,19 +179,7 @@ func GetReportdata(c echo.Context) error {
 	if err != nil {
 		println(err)
 	}
-	// println("------------jsdata--------------")
-	// return c.JSONPretty()
 	return c.String(http.StatusOK, jsdata)
-	////////////////////--
-	////////////////3----------------------
-	// buf := bytes.NewBuffer([]byte{})
-	// jsonE := json.NewEncoder(buf) //jsonE.SetEscapeHTML(false) //This replacement can be disabled when using an Encoder
-	// jsonE.SetIndent(empty, tab)
-	// jsonE.Encode(reportdata)                                        // reportdata.ReportContent = "this is json promble"
-	// reportstring := buf.String()                                    // reportstring = strings.ReplaceAll(reportstring, "\\\"", "\"")
-	// reportstring = strings.ReplaceAll(reportstring, "=", "\\u003d") // reportstring = strings.ReplaceAll(reportstring, ":", " :")
-	// println(reportstring)
-	// return c.String(http.StatusOK, reportstring) // return c.String(http.StatusOK, buf.String())
 }
 
 func GetDBStudyImage(c echo.Context) error {

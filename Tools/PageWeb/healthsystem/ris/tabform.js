@@ -259,12 +259,13 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
             data: postdata, //JSON.stringify(reportdata), //请求save处理数据
             // dataType: "json",
             success: function(result) {
-                // layer.alert();
-                // if (typeof result == 'string') {
-                // layer.alert(typeof result);
-                // console(typeof result);
-                result = JSON.parse(result);
-                // }
+                try {
+                    if (typeof result == 'string') {
+                        result = JSON.parse(result);
+                    }
+                } catch (e) {
+                    console.log('result != string');
+                }
                 if (result.ReportContent.length > 0) {
                     reportdata = result;
                     // layer.alert('ok:' + reportdata.ReportContent);
