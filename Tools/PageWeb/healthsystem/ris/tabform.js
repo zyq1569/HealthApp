@@ -261,7 +261,10 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
             success: function(result) {
                 try {
                     if (typeof result == 'string') {
-                        result = JSON.parse(result);
+                        var jsondata;
+                        jsondata = JSON.parse(result);
+                        // console.log('result == string');
+                        result = jsondata;
                     }
                 } catch (e) {
                     console.log('result != string');
