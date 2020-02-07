@@ -56,10 +56,11 @@ const (
 	tab   = ""
 )
 const (
-	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
-	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
-	PAGE_TEST = "F:/temp/HealthApp/PageWeb"
-	PAGE_Dir  = "D:/code/C++/HealthApp/Tools/PageWeb"
+	DB_Driver   = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
+	IMAGE_Dir   = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
+	PAGE_TEST   = "F:/temp/HealthApp/PageWeb"
+	PAGE_Dir    = "D:/code/C++/HealthApp/Tools/PageWeb"
+	TIME_LAYOUT = "2000-01-02 15:04:05"
 )
 
 var name string
@@ -71,8 +72,8 @@ func init() {
 
 func Healthsystem(c echo.Context) error {
 	req := c.Request()
-	println("req.URL.Path:" + req.URL.Path)
-	println("D:/code/C++/HealthApp/Tools/PageWeb" + req.URL.Path)
+	// println("req.URL.Path:" + req.URL.Path)
+	// println("D:/code/C++/HealthApp/Tools/PageWeb" + req.URL.Path)
 	filepath := "D:/code/C++/HealthApp/Tools/PageWeb" + req.URL.Path
 	return c.File(filepath)
 }
@@ -128,14 +129,75 @@ func CheckLogin(c echo.Context) error {
 	username := c.FormValue("user")
 	userpwd := c.FormValue("password")
 	println("username:" + username + "/userpwd:" + userpwd)
-	// c.Response(http.StatusText())
-	//c.SetResponse()
 	return c.String(http.StatusOK, "ok")
 }
 
 func SaveReportdata(c echo.Context) error {
-	var js string
-	return c.String(http.StatusOK, string(js))
+	println("---SaveReportdata-----")
+	var reportdata Study.ReportData
+	reportdata.ReportIdentity = ""
+	var bodyBytes []byte
+	if c.Request().Body != nil {
+		bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
+		err := json.Unmarshal(bodyBytes, &reportdata)
+		if reportdata.ReportIdentity == "" {
+			println(err)
+		}
+	}
+	if maridb_db != nil {
+		var sqlstr string
+		reportIdentity := reportdata.ReportIdentity
+		reportdata.ReportCheckDate = "2000-09-10 00:00:00"
+		reportdata.ReportCreatDate = "2000-09-10 00:00:00"
+		if reportIdentity != "" {
+			sqlstr = "update  h_report set `ReportState`=?,`ReportTemplate`=?,`ReportCheckID`=?,`ReportCheckDate`=?,`ReportContent`=?,`ReportOther`=?" +
+				" where `ReportIdentity`=?"
+			stmt, perr := maridb_db.Prepare(sqlstr)
+			if perr != nil {
+				println(perr)
+			}
+			affect_count, err := stmt.Exec(reportdata.ReportState, reportdata.ReportTemplate, reportdata.ReportCheckDate, reportdata.ReportContent, reportdata.ReportOther, reportdata.ReportIdentity)
+			if err != nil {
+				println(err)
+			} else {
+				println(affect_count)
+			}
+		} else {
+			sqlstr = "insert into h_report (`StudyOrderIdentity`, `ReportIdentity`,`ReportState`,`ReportTemplate`,`ReportCreatDate`," +
+				"`ReportWriterID`,`ReportCheckID`, `ReportCheckDate`,`ReportContent`,`ReportOther`) value(?,?,?,?,?,?,?,?,?,?)"
+			stmt, perr := maridb_db.Prepare(sqlstr)
+			if perr != nil {
+				println(perr)
+			}
+			reportdata.ReportIdentity = reportdata.StudyOrderIdentity
+			affect_count, err := stmt.Exec(reportdata.StudyOrderIdentity, reportdata.ReportIdentity, reportdata.ReportState,
+				reportdata.ReportTemplate, reportdata.ReportCreatDate, reportdata.ReportWriterID, reportdata.ReportCheckID, reportdata.ReportCheckDate, reportdata.ReportContent, reportdata.ReportOther)
+			lastInsertId, err := affect_count.RowsAffected()
+			if err != nil {
+				println(err)
+			} else {
+				println(lastInsertId)
+			}
+		}
+
+		sqlstr = "update  * from h_report where `ReportIdentity`=" + reportdata.ReportIdentity
+		rows, err := maridb_db.Query(sqlstr)
+		if err != nil {
+			println(err)
+		} else {
+			for rows.Next() {
+				// reportdata.ReportWriterID = sql.NullString{String: "", Valid: false}
+				// reportdata.ReportCheckID = sql.NullString{String: "", Valid: false}
+				// reportdata.ReportOther = sql.NullString{String: "", Valid: false}
+				err = rows.Scan(&reportdata.ReportIdentity, &reportdata.StudyOrderIdentity,
+					&reportdata.ReportState, &reportdata.ReportTemplate,
+					&reportdata.ReportCreatDate, &reportdata.ReportWriterID,
+					&reportdata.ReportCheckID, &reportdata.ReportCheckDate,
+					&reportdata.ReportContent, &reportdata.ReportOther)
+			}
+		}
+	}
+	return c.String(http.StatusOK, "ok")
 }
 
 func GetReportdata(c echo.Context) error {
@@ -153,7 +215,7 @@ func GetReportdata(c echo.Context) error {
 	if maridb_db != nil {
 		var sqlstr string
 		sqlstr = "select  * from h_report where `ReportIdentity`=" + reportdata.ReportIdentity
-		println(sqlstr)
+		// println(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
@@ -203,7 +265,7 @@ func GetDBStudyImage(c echo.Context) error {
 			" h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
 			" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
 			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
-		println(sqlstr)
+		// println(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
@@ -236,7 +298,7 @@ func GetDBStudyImage(c echo.Context) error {
 		println(err)
 		return c.String(http.StatusOK, "null")
 	}
-	println(string(js))
+	// println(string(js))
 	return c.String(http.StatusOK, string(js))
 }
 
@@ -272,7 +334,7 @@ func GetDBStudyData(c echo.Context) error {
 			" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
 			" s.ScheduledDateTime>=" + startTime + " and  s.ScheduledDateTime<=" + endTime + " order by s.StudyOrderIdentity " +
 			" limit " + strconv.Itoa(count) + "," + limit
-		println(sqlstr)
+		// println(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
@@ -310,7 +372,7 @@ func GetDBStudyData(c echo.Context) error {
 		println(err)
 		return c.String(http.StatusOK, "null")
 	}
-	println(string(js))
+	// println(string(js))
 	return c.String(http.StatusOK, string(js))
 }
 
@@ -330,9 +392,9 @@ func checkMariDB(db *sql.DB) {
 		var password string
 		err = rows.Scan(&idd, &username, &password)
 		checkErr(err)
-		println(idd)
-		println(username)
-		println(password)
+		// println(idd)
+		// println(username)
+		// println(password)
 	}
 }
 
@@ -382,7 +444,7 @@ func main() {
 
 	//ris/report
 	e.POST("/healthsystem/ris/getreportdata", GetReportdata)
-	e.POST("/healthsystem/ris/savereportdata", SaveReportdata)
+	e.POST("/healthsystem/ris/savereportdata/", SaveReportdata)
 
 	e.GET("/healthsystem/*", Healthsystem)
 
@@ -423,10 +485,10 @@ func queryMySal() {
 				if err != nil {
 					println("d12 error. ", err)
 				}
-				println(nm.String)
-				println(sex.String)
-				println(birth.String)
-				println(ext.String)
+				// println(nm.String)
+				// println(sex.String)
+				// println(birth.String)
+				// println(ext.String)
 			}
 		}
 	}
