@@ -42,6 +42,9 @@ import (
 	"./Units"
 
 	// "fmt"
+	"math/rand"
+	"time"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -154,12 +157,15 @@ func SaveReportdata(c echo.Context) error {
 				" where `ReportIdentity`=?"
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
+				println(sqlstr)
+				println(reportIdentity)
 				println(perr)
 			}
-			affect_count, err := stmt.Exec(reportdata.ReportState, reportdata.ReportTemplate, reportdata.ReportCheckDate, reportdata.ReportContent, reportdata.ReportOther, reportdata.ReportIdentity)
+			affect_count, err := stmt.Exec(reportdata.ReportState, reportdata.ReportTemplate, reportdata.ReportCheckID, reportdata.ReportCheckDate, reportdata.ReportContent, reportdata.ReportOther, reportdata.ReportIdentity)
 			if err != nil {
 				println(err)
 			} else {
+				println("affect_count")
 				println(affect_count)
 			}
 		} else {
@@ -167,6 +173,7 @@ func SaveReportdata(c echo.Context) error {
 				"`ReportWriterID`,`ReportCheckID`, `ReportCheckDate`,`ReportContent`,`ReportOther`) value(?,?,?,?,?,?,?,?,?,?)"
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
+				println(sqlstr)
 				println(perr)
 			}
 			reportdata.ReportIdentity = reportdata.StudyOrderIdentity
@@ -176,24 +183,8 @@ func SaveReportdata(c echo.Context) error {
 			if err != nil {
 				println(err)
 			} else {
+				println("lastInsertId:")
 				println(lastInsertId)
-			}
-		}
-
-		sqlstr = "update  * from h_report where `ReportIdentity`=" + reportdata.ReportIdentity
-		rows, err := maridb_db.Query(sqlstr)
-		if err != nil {
-			println(err)
-		} else {
-			for rows.Next() {
-				// reportdata.ReportWriterID = sql.NullString{String: "", Valid: false}
-				// reportdata.ReportCheckID = sql.NullString{String: "", Valid: false}
-				// reportdata.ReportOther = sql.NullString{String: "", Valid: false}
-				err = rows.Scan(&reportdata.ReportIdentity, &reportdata.StudyOrderIdentity,
-					&reportdata.ReportState, &reportdata.ReportTemplate,
-					&reportdata.ReportCreatDate, &reportdata.ReportWriterID,
-					&reportdata.ReportCheckID, &reportdata.ReportCheckDate,
-					&reportdata.ReportContent, &reportdata.ReportOther)
 			}
 		}
 	}
@@ -299,6 +290,32 @@ func GetDBStudyImage(c echo.Context) error {
 		return c.String(http.StatusOK, "null")
 	}
 	// println(string(js))
+	return c.String(http.StatusOK, string(js))
+}
+
+func UpdateDBStudyData(c echo.Context) error {
+	var studyData Study.StudyData
+	var bodyBytes []byte
+	if c.Request().Body != nil {
+		bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
+		err := json.Unmarshal(bodyBytes, &studyData)
+		if err != nil {
+			println(err)
+		}
+	}
+	PatientIdentity := studyData.PatientIdentity
+	PatientID := studyData.PatientID
+	if PatientID == "" { //create a study
+		rand.Seed(int64(time.Now().UnixNano()))
+		PatientID = string(rand.Int())
+		if PatientIdentity == "" {
+			PatientIdentity = string(rand.Int())
+
+		}
+		sql = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`," +
+			"`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?,?)"
+	}
+	var js string
 	return c.String(http.StatusOK, string(js))
 }
 
@@ -417,6 +434,7 @@ func main() {
 		println(arg0)
 	}
 	// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
+
 	// println(hash)
 	maridb_db = nil
 	open, db := OpenDB()
@@ -441,6 +459,10 @@ func main() {
 	//ris
 	e.GET("/healthsystem/ris/studydata/", GetDBStudyData)
 	e.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
+
+	//ris//update ->studydata
+	e.POST("/healthsystem/ris/updata/", UpdateDBStudyData)
+	e.POST("/healthsystem/ris/update/", UpdateDBStudyData)
 
 	//ris/report
 	e.POST("/healthsystem/ris/getreportdata", GetReportdata)
