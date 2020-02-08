@@ -138,7 +138,7 @@ function saveReport2ServerContent() {
         async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
         data: postdata, //请求save处理数据
         success: function(mess) {
-            if (mess == "OK") { //根据返回值进行跳转
+            if (mess.toUpperCase() == "OK") { //根据返回值进行跳转
                 g_currentReportData.ReportSave = true;
                 layer.msg('--save ok!--'); //+ postdata
                 return 1;

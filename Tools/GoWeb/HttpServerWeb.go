@@ -337,7 +337,7 @@ func UpdateDBStudyData(c echo.Context) error {
 				println(PatientID)
 				println(perr)
 			} else {
-				println("------ok update PatientID:--------")
+				println("------ok maridb_db.Prepare: --------" + sqlstr)
 			}
 			affect_count, err := stmt.Exec(studyData.PatientAddr, studyData.PatientName, studyData.PatientBirthday,
 				studyData.PatientSex, studyData.PatientTelNumber, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail, studyData.PatientID)
