@@ -305,18 +305,90 @@ func UpdateDBStudyData(c echo.Context) error {
 	}
 	PatientIdentity := studyData.PatientIdentity
 	PatientID := studyData.PatientID
-	if PatientID == "" { //create a study
-		rand.Seed(int64(time.Now().UnixNano()))
-		PatientID = string(rand.Int())
-		if PatientIdentity == "" {
-			PatientIdentity = string(rand.Int())
-
+	println("PatientID:" + PatientID)
+	println("PatientIdentity:" + PatientIdentity)
+	if maridb_db != nil {
+		var sqlstr string
+		if PatientID == "" { //create a study
+			rand.Seed(int64(time.Now().UnixNano()))
+			PatientID = string(rand.Int())
+			if PatientIdentity == "" {
+				PatientIdentity = string(rand.Int())
+			}
+			sqlstr = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`," +
+				"`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?,?)"
+			stmt, err := maridb_db.Prepare(sqlstr)
+			affect_count, err := stmt.Exec(PatientIdentity, studyData.PatientName, studyData.PatientBirthday, studyData.PatientSex,
+				PatientID, studyData.PatientTelNumber, studyData.PatientAddr, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail)
+			lastInsertId, err := affect_count.RowsAffected()
+			if err != nil {
+				println(err)
+			} else {
+				println("--UpdateDBStudyData--lastInsertId:")
+				println(lastInsertId)
+			}
+		} else {
+			sqlstr = "update  h_patient set `PatientAddr`=?,`PatientName`=?,`PatientBirthday`=?,`PatientSex`=?," +
+				" `patientTelNumber`=?,`PatientCarID`=?,`PatientType`=? ,`PatientEmail`=? where `PatientID`=?"
+			stmt, perr := maridb_db.Prepare(sqlstr)
+			if perr != nil {
+				println(sqlstr)
+				println("------fail update PatientID:--------")
+				println(PatientID)
+				println(perr)
+			} else {
+				println("------ok update PatientID:--------")
+			}
+			affect_count, err := stmt.Exec(studyData.PatientAddr, studyData.PatientName, studyData.PatientBirthday,
+				studyData.PatientSex, studyData.PatientTelNumber, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail, studyData.PatientID)
+			if err != nil {
+				println("fail to  update PatientI affect_count:")
+				println(err)
+			} else {
+				println("ok update PatientI affect_count:")
+				println(affect_count)
+			}
 		}
-		sql = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`," +
-			"`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?,?)"
+		//update order table
+		StudyOrderIdentity := studyData.StudyOrderIdentity
+		if StudyOrderIdentity == "" {
+			rand.Seed(int64(time.Now().UnixNano()))
+			StudyOrderIdentity = string(rand.Int())
+			sqlstr = "insert into h_order (`StudyOrderIdentity`,`StudyID`, `StudyUID`,`PatientIdentity`,`ScheduledDateTime`, `StudyDescription`,`StudyModality`, " +
+				" `StudyCost`,`StudyCode`,`StudyDepart`,`CostType`) value(?,?,?,?,?,?,?,?,?,?,?)"
+			stmt, err := maridb_db.Prepare(sqlstr)
+			affect_count, err := stmt.Exec(StudyOrderIdentity, studyData.StudyID, studyData.StudyUID, studyData.PatientIdentity,
+				studyData.ScheduledDateTime, studyData.StudyDescription, studyData.StudyModality,
+				studyData.StudyCost, studyData.StudyCode, studyData.StudyDepart, studyData.CostType)
+			lastInsertId, err := affect_count.RowsAffected()
+			println("-to -UpdateDBStudyData")
+			if err != nil {
+				println(err)
+			} else {
+				println("--UpdateDBStudyData--lastInsertId:")
+				println(lastInsertId)
+			}
+		} else {
+			sqlstr = "update h_order set `ScheduledDateTime`=?, `StudyDescription`=?,`StudyModality`=?,`StudyCost`=?,`StudyCode`=? " +
+				" ,`StudyDepart`=?,`CostType`=? where StudyOrderIdentity=?"
+			stmt, perr := maridb_db.Prepare(sqlstr)
+			if perr != nil {
+				println(sqlstr)
+				println("StudyOrderIdentity:")
+				println(StudyOrderIdentity)
+				println(perr)
+			}
+			affect_count, err := stmt.Exec(studyData.ScheduledDateTime, studyData.StudyDescription, studyData.StudyModality,
+				studyData.StudyCost, studyData.StudyCode, studyData.StudyDepart, studyData.CostType, studyData.StudyOrderIdentity)
+			if err != nil {
+				println(err)
+			} else {
+				println("affect_count:")
+				println(affect_count)
+			}
+		}
 	}
-	var js string
-	return c.String(http.StatusOK, string(js))
+	return c.String(http.StatusOK, "OK")
 }
 
 func GetDBStudyData(c echo.Context) error {
