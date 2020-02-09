@@ -48,7 +48,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	// "github.com/labstack/echo/middleware"
 )
 
 type CustomContext struct {
@@ -564,7 +564,7 @@ func main() {
 	// e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 	// 	Format: "${time_rfc3339_nano} ${remote_ip} ${method} ${uri} ${status}\n",
 	// }))
-	e.Use(middleware.Logger())
+	// e.Use(middleware.Logger())
 	//login
 	e.POST("/login/checkuser", CheckLogin)
 	e.GET("/Login/*", Login)
