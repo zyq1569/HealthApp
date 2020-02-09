@@ -25,14 +25,21 @@ https://blog.csdn.net/Noob_coder_JZ/article/details/83410095
 package main
 
 import (
+	"errors"
 	"log"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+
 	//"./jsonparser"
 	// "bytes"
 	"database/sql"
 	"encoding/json"
 	"flag"
 	"net/http"
-	"os"
+
+	// "os"
 	"strconv"
 	"strings"
 
@@ -56,19 +63,53 @@ type CustomContext struct {
 }
 
 const (
-	DB_Driver   = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
-	IMAGE_Dir   = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
-	PAGE_TEST   = "F:/temp/HealthApp/PageWeb"
-	PAGE_Dir    = "D:/code/C++/HealthApp/Tools/PageWeb"
+	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
+	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
+	PAGE_TEST = "F:/temp/HealthApp/PageWeb"
+	// PAGE_Dir    = "D:/code/C++/HealthApp/Tools/PageWeb"
 	TIME_LAYOUT = "2000-01-02 15:04:05"
 	PRE_UID     = "1.2.826.0.1.3680043.9.7604."
 )
 
+var PAGE_Dir string
 var name string
 var maridb_db *sql.DB
 
 func init() {
 	flag.StringVar(&name, "name", "default", "log in user")
+}
+
+func PathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+func GetCurrentPath() (string, error) {
+	file, err := exec.LookPath(os.Args[0])
+	if err != nil {
+		return "", err
+	}
+	path, err := filepath.Abs(file)
+	if err != nil {
+		return "", err
+	}
+	//fmt.Println("path111:", path)
+	if runtime.GOOS == "windows" {
+		path = strings.Replace(path, "\\", "/", -1)
+	}
+	//fmt.Println("path222:", path)
+	i := strings.LastIndex(path, "/")
+	if i < 0 {
+		return "", errors.New(`Can't find "/" or "\".`)
+	}
+	//fmt.Println("path333:", path)
+	return string(path[0 : i+1]), nil
 }
 
 func Healthsystem(c echo.Context) error {
@@ -547,6 +588,26 @@ func main() {
 	// println(strconv.Itoa(id))
 	// println(strconv.Itoa(rand.Int()))
 	// println(Units.GetCurrentTime())
+	exepath, err := GetCurrentPath()
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		PAGE_Dir = exepath + "/PageWeb"
+		exist, err := PathExists(PAGE_Dir)
+		if err != nil {
+			println("get dir error![%v]\n", err)
+			PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
+			//log.Fatal(err)
+		}
+		if exist {
+			println("PAGE_Dir:" + PAGE_Dir)
+		} else {
+			PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
+			println("use coe page:" + PAGE_Dir)
+			//log.Fatal(err)
+		}
+		println(exepath)
+	}
 	//
 
 	// println(hash)
