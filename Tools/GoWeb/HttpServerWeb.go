@@ -25,6 +25,7 @@ https://blog.csdn.net/Noob_coder_JZ/article/details/83410095
 package main
 
 import (
+	"log"
 	//"./jsonparser"
 	// "bytes"
 	"database/sql"
@@ -55,15 +56,12 @@ type CustomContext struct {
 }
 
 const (
-	empty = ""
-	tab   = ""
-)
-const (
 	DB_Driver   = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
 	IMAGE_Dir   = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
 	PAGE_TEST   = "F:/temp/HealthApp/PageWeb"
 	PAGE_Dir    = "D:/code/C++/HealthApp/Tools/PageWeb"
 	TIME_LAYOUT = "2000-01-02 15:04:05"
+	PRE_UID     = "1.2.826.0.1.3680043.9.7604."
 )
 
 var name string
@@ -305,69 +303,105 @@ func UpdateDBStudyData(c echo.Context) error {
 	}
 	PatientIdentity := studyData.PatientIdentity
 	PatientID := studyData.PatientID
+	println(string(bodyBytes))
 	println("PatientID:" + PatientID)
 	println("PatientIdentity:" + PatientIdentity)
 	if maridb_db != nil {
 		var sqlstr string
 		if PatientID == "" { //create a study
 			rand.Seed(int64(time.Now().UnixNano()))
-			PatientID = string(rand.Int())
-			if PatientIdentity == "" {
-				PatientIdentity = string(rand.Int())
-			}
+			PatientID = strconv.Itoa(rand.Int())
+			PatientIdentity = strconv.Itoa(rand.Int())
+			studyData.PatientIdentity = PatientIdentity
 			sqlstr = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`," +
 				"`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
+			if err != nil {
+				println("------fail update PatientID:--------")
+				println("PatientID:" + PatientID)
+				println("PatientIdentity:" + PatientIdentity)
+				log.Fatal(err)
+			} else {
+				println("PatientID:" + PatientID)
+				println("PatientIdentity:" + PatientIdentity)
+			}
+			if studyData.PatientType == "" {
+				studyData.PatientType = "0"
+			}
 			affect_count, err := stmt.Exec(PatientIdentity, studyData.PatientName, studyData.PatientBirthday, studyData.PatientSex,
 				PatientID, studyData.PatientTelNumber, studyData.PatientAddr, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail)
-			lastInsertId, err := affect_count.RowsAffected()
 			if err != nil {
-				println(err)
+				println("fail to  insert into h_patient affect_count:")
+				log.Print(affect_count)
+				log.Fatal(err)
 			} else {
-				println("--UpdateDBStudyData--lastInsertId:")
-				println(lastInsertId)
+				lastInsertId, err := affect_count.RowsAffected()
+				if err != nil {
+					println("lastInsertId:")
+					println(lastInsertId)
+					log.Fatal(err)
+				} else {
+					println("--insert into h_patient--lastInsertId:")
+					println(lastInsertId)
+				}
 			}
 		} else {
 			sqlstr = "update  h_patient set `PatientAddr`=?,`PatientName`=?,`PatientBirthday`=?,`PatientSex`=?," +
 				" `patientTelNumber`=?,`PatientCarID`=?,`PatientType`=? ,`PatientEmail`=? where `PatientID`=?"
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
-				println(sqlstr)
 				println("------fail update PatientID:--------")
 				println(PatientID)
-				println(perr)
-			} else {
+				log.Fatal(perr)
+			} /*else {
 				println("------ok maridb_db.Prepare: --------" + sqlstr)
+			}*/
+			if studyData.PatientType == "" {
+				studyData.PatientType = "0"
 			}
 			affect_count, err := stmt.Exec(studyData.PatientAddr, studyData.PatientName, studyData.PatientBirthday,
 				studyData.PatientSex, studyData.PatientTelNumber, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail, studyData.PatientID)
 			if err != nil {
 				println("fail to  update PatientI affect_count:")
-				println(err)
-			} else {
+				log.Print(affect_count)
+				log.Fatal(err)
+			} /* else {
 				println("ok update PatientI affect_count:")
-				println(affect_count)
-			}
+				log.Print(affect_count)
+			}*/
 		}
 		//update order table
 		StudyOrderIdentity := studyData.StudyOrderIdentity
 		if StudyOrderIdentity == "" {
 			rand.Seed(int64(time.Now().UnixNano()))
-			StudyOrderIdentity = string(rand.Int())
+			StudyOrderIdentity = strconv.Itoa(rand.Int())
+			if studyData.StudyID == "" {
+				studyData.StudyID = Units.GetCurrentTime()
+				studyData.StudyUID = PRE_UID + Units.GetCurrentTime()
+			}
 			sqlstr = "insert into h_order (`StudyOrderIdentity`,`StudyID`, `StudyUID`,`PatientIdentity`,`ScheduledDateTime`, `StudyDescription`,`StudyModality`, " +
 				" `StudyCost`,`StudyCode`,`StudyDepart`,`CostType`) value(?,?,?,?,?,?,?,?,?,?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
-			affect_count, err := stmt.Exec(StudyOrderIdentity, studyData.StudyID, studyData.StudyUID, studyData.PatientIdentity,
-				studyData.ScheduledDateTime, studyData.StudyDescription, studyData.StudyModality,
-				studyData.StudyCost, studyData.StudyCode, studyData.StudyDepart, studyData.CostType)
-			lastInsertId, err := affect_count.RowsAffected()
-			println("-to -UpdateDBStudyData")
 			if err != nil {
-				println(err)
-			} else {
-				println("--UpdateDBStudyData--lastInsertId:")
-				println(lastInsertId)
+				println("------fail  maridb_db.Prepare(sqlstr) insert into h_order:--------")
+				println(StudyOrderIdentity)
+				log.Fatal(err)
 			}
+			affect_count, err := stmt.Exec(StudyOrderIdentity, studyData.StudyID, studyData.StudyUID, studyData.PatientIdentity,
+				studyData.ScheduledDate, studyData.StudyDescription, studyData.StudyModality,
+				studyData.StudyCost, studyData.StudyCode, studyData.StudyDepart, studyData.CostType)
+			if err != nil {
+				println(affect_count)
+				log.Fatal(err)
+			} /*else {
+				lastInsertId, err := affect_count.RowsAffected()
+				if err != nil {
+					log.Fatal(err)
+				} else {
+					println("--UpdateDBStudyData--lastInsertId:")
+					println(lastInsertId)
+				}
+			}*/
 		} else {
 			sqlstr = "update h_order set `ScheduledDateTime`=?, `StudyDescription`=?,`StudyModality`=?,`StudyCost`=?,`StudyCode`=? " +
 				" ,`StudyDepart`=?,`CostType`=? where StudyOrderIdentity=?"
@@ -376,16 +410,18 @@ func UpdateDBStudyData(c echo.Context) error {
 				println(sqlstr)
 				println("StudyOrderIdentity:")
 				println(StudyOrderIdentity)
-				println(perr)
+				log.Fatal(perr)
 			}
-			affect_count, err := stmt.Exec(studyData.ScheduledDateTime, studyData.StudyDescription, studyData.StudyModality,
+			affect_count, err := stmt.Exec(studyData.ScheduledDate, studyData.StudyDescription, studyData.StudyModality,
 				studyData.StudyCost, studyData.StudyCode, studyData.StudyDepart, studyData.CostType, studyData.StudyOrderIdentity)
 			if err != nil {
-				println(err)
-			} else {
+				println("studyData.ScheduledDate" + studyData.ScheduledDate)
+				println(affect_count)
+				log.Fatal(err)
+			} /*else {
 				println("affect_count:")
 				println(affect_count)
-			}
+			}*/
 		}
 	}
 	return c.String(http.StatusOK, "OK")
@@ -506,6 +542,12 @@ func main() {
 		println(arg0)
 	}
 	// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
+	// rand.Seed(int64(time.Now().UnixNano()))
+	// id := rand.Int()
+	// println(strconv.Itoa(id))
+	// println(strconv.Itoa(rand.Int()))
+	// println(Units.GetCurrentTime())
+	//
 
 	// println(hash)
 	maridb_db = nil
