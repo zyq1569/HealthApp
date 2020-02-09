@@ -23,6 +23,7 @@ type StudyData struct {
 	StudyID            string `json:"studyId"`
 	StudyUID           string `json:"studyuid"`
 	ScheduledDateTime  string `json:"scheduledDateTime"`
+	ScheduledDate      string `json:"ScheduledDate"`
 	OrderDateTime      string `json:"orderDateTime"`
 	StudyDescription   string `json:"studyDescription"`
 	StudyModality      string `json:"studyModality"`
