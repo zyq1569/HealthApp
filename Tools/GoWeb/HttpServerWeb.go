@@ -63,14 +63,13 @@ type CustomContext struct {
 
 const (
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
-	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
 	PAGE_TEST = "F:/temp/HealthApp/PageWeb"
 	// PAGE_Dir    = "D:/code/C++/HealthApp/Tools/PageWeb"
 	TIME_LAYOUT = "2000-01-02 15:04:05"
 	PRE_UID     = "1.2.826.0.1.3680043.9.7604."
 )
 
-var PAGE_Dir string
+var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name string
 var name string
 var maridb_db *sql.DB
 
@@ -591,8 +590,32 @@ func OpenDB() (success bool, db *sql.DB) {
 }
 
 func main() {
+	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
 	for idx, args := range os.Args {
 		println("参数"+strconv.Itoa(idx)+":", args)
+	}
+	//1 mysql: 1 ip 2 name 3 user  4pwd
+	//5 page web / 6 port
+	//7 studyimage dir
+	//8 level
+	//var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name string
+	if len(os.Args) > 8 {
+		// for idx, args := range os.Args {
+		// 	//println("参数"+strconv.Itoa(idx)+":", args)
+		// }
+		// MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name
+		for i := 1; i < 9; i++ {
+			println(os.Args[i])
+		}
+		MySQL_IP = os.Args[1]
+		MySQL_Name = os.Args[2]
+		MySQL_User = os.Args[3]
+		MySQL_PWD = os.Args[4]
+
+		PAGE_Dir = os.Args[5]
+		Web_Port = os.Args[6]
+
+		IMAGE_Dir = os.Args[7]
 	}
 	// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
 	// rand.Seed(int64(time.Now().UnixNano()))
