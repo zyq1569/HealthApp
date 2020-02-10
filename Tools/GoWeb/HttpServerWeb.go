@@ -432,7 +432,7 @@ func UpdateDBStudyData(c echo.Context) error {
 			StudyOrderIdentity = Units.GetRandUID()
 			if studyData.StudyID == "" {
 				studyData.StudyID = Units.GetCurrentTime()
-				studyData.StudyUID = PRE_UID + Units.GetCurrentTime()
+				studyData.StudyUID = Units.GetNewStudyUID()
 			}
 			sqlstr = "insert into h_order (`StudyOrderIdentity`,`StudyID`, `StudyUID`,`PatientIdentity`,`ScheduledDateTime`, `StudyDescription`,`StudyModality`, " +
 				" `StudyCost`,`StudyCode`,`StudyDepart`,`CostType`) value(?,?,?,?,?,?,?,?,?,?,?)"

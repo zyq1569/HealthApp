@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+const (
+	PRE_STUDYUID = "1.2.826.0.1.3680043.9.7604."
+)
+
 type OFHashValue struct {
 	first  int32
 	second int32
@@ -41,6 +45,10 @@ func GetCurrentFormatTime() string {
 func GetRandUID() string {
 	rand.Seed(int64(time.Now().UnixNano()))
 	return strconv.Itoa(rand.Int())
+}
+
+func GetNewStudyUID() string {
+	return PRE_STUDYUID + GetCurrentTime()
 }
 
 func CreateHashValue(buffer []byte, length int) OFHashValue {
