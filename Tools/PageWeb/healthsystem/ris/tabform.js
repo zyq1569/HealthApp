@@ -277,6 +277,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                     return;
                 } else {
                     setStudyReportContent(reportdata);
+                    reportdata.ReportIdentity = "";
                     layer.alert('no report data! to create new empty report!');
                     element.tabChange('TabBrief', 'layid_report');
                 }
