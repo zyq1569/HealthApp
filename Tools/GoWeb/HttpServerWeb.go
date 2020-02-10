@@ -50,8 +50,7 @@ import (
 	"./Units"
 
 	// "fmt"
-	"math/rand"
-	"time"
+	// "time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
@@ -186,7 +185,6 @@ func SaveReportdata(c echo.Context) error {
 		// 	println(err)
 		// }
 	}
-	println("Reportdata:" + string(bodyBytes))
 	if maridb_db != nil {
 		var sqlstr string
 		reportIdentity := reportdata.ReportIdentity
@@ -362,21 +360,20 @@ func UpdateDBStudyData(c echo.Context) error {
 	}
 	PatientIdentity := studyData.PatientIdentity
 	PatientID := studyData.PatientID
-	println(string(bodyBytes))
-	println("PatientID:" + PatientID)
-	println("PatientIdentity:" + PatientIdentity)
+	// println(string(bodyBytes))
+	// println("PatientID:" + PatientID)
+	// println("PatientIdentity:" + PatientIdentity)
 	if maridb_db != nil {
 		var sqlstr string
 		if PatientID == "" { //create a study
-			rand.Seed(int64(time.Now().UnixNano()))
-			PatientID = strconv.Itoa(rand.Int())
-			PatientIdentity = strconv.Itoa(rand.Int())
+			PatientID = Units.GetRandUID()
+			PatientIdentity = Units.GetRandUID()
 			studyData.PatientIdentity = PatientIdentity
 			sqlstr = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`," +
 				"`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
 			if err != nil {
-				println("------fail update PatientID:--------")
+				println("------fail insert into h_patient maridb_db.Prepare--------")
 				println("PatientID:" + PatientID)
 				println("PatientIdentity:" + PatientIdentity)
 				log.Fatal(err)
@@ -399,10 +396,10 @@ func UpdateDBStudyData(c echo.Context) error {
 					println("lastInsertId:")
 					println(lastInsertId)
 					log.Fatal(err)
-				} else {
+				} /*else {
 					println("--insert into h_patient--lastInsertId:")
 					println(lastInsertId)
-				}
+				}*/
 			}
 		} else {
 			sqlstr = "update  h_patient set `PatientAddr`=?,`PatientName`=?,`PatientBirthday`=?,`PatientSex`=?," +
@@ -432,8 +429,7 @@ func UpdateDBStudyData(c echo.Context) error {
 		//update order table
 		StudyOrderIdentity := studyData.StudyOrderIdentity
 		if StudyOrderIdentity == "" {
-			rand.Seed(int64(time.Now().UnixNano()))
-			StudyOrderIdentity = strconv.Itoa(rand.Int())
+			StudyOrderIdentity = Units.GetRandUID()
 			if studyData.StudyID == "" {
 				studyData.StudyID = Units.GetCurrentTime()
 				studyData.StudyUID = PRE_UID + Units.GetCurrentTime()

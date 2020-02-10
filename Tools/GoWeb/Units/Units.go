@@ -2,6 +2,7 @@
 package Units
 
 import (
+	"math/rand"
 	"strconv"
 	"strings"
 	"time"
@@ -33,12 +34,13 @@ func GetCurrentTime() string {
 
 func GetCurrentFormatTime() string {
 	st := time.Now().String()
-	// st = strings.ReplaceAll(st, "-", "")
-	// st = strings.ReplaceAll(st, ":", "")
-	// st = strings.ReplaceAll(st, ".", "")
-	// st = strings.ReplaceAll(st, " ", "")
 	st = st[0:19]
 	return st
+}
+
+func GetRandUID() string {
+	rand.Seed(int64(time.Now().UnixNano()))
+	return strconv.Itoa(rand.Int())
 }
 
 func CreateHashValue(buffer []byte, length int) OFHashValue {
