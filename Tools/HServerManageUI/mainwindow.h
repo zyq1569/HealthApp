@@ -28,7 +28,7 @@ public:
     QString m_QuerRScpName;
     QString m_WLMScpName;
     QString m_Dcm2DBName;
-    QString m_MysqlServer,m_WebServerName,m_MysqlDbName,m_MysqlUserName,m_MysqlPWD;
+    QString m_MysqlServer,m_WebServerName,m_WebServerGoName,m_MysqlDbName,m_MysqlUserName,m_MysqlPWD;
     QString m_WebSerPort;
     QString m_Log4j2Config;
 private slots:
