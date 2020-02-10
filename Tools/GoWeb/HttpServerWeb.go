@@ -175,56 +175,74 @@ func CheckLogin(c echo.Context) error {
 }
 
 func SaveReportdata(c echo.Context) error {
-	println("---SaveReportdata-----")
 	var reportdata Study.ReportData
 	reportdata.ReportIdentity = ""
 	var bodyBytes []byte
 	if c.Request().Body != nil {
 		bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
-		err := json.Unmarshal(bodyBytes, &reportdata)
-		if reportdata.ReportIdentity == "" {
-			println(err)
-		}
+		/*err := */
+		json.Unmarshal(bodyBytes, &reportdata)
+		// if reportdata.ReportIdentity == "" {
+		// 	println(err)
+		// }
 	}
+	println("Reportdata:" + string(bodyBytes))
 	if maridb_db != nil {
 		var sqlstr string
 		reportIdentity := reportdata.ReportIdentity
-		reportdata.ReportCheckDate = "2000-09-10 00:00:00"
-		reportdata.ReportCreatDate = "2000-09-10 00:00:00"
 		if reportIdentity != "" {
 			sqlstr = "update  h_report set `ReportState`=?,`ReportTemplate`=?,`ReportCheckID`=?,`ReportCheckDate`=?,`ReportContent`=?,`ReportOther`=?" +
 				" where `ReportIdentity`=?"
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
 				println(sqlstr)
-				println(reportIdentity)
-				println(perr)
+				log.Fatal(perr)
 			}
 			affect_count, err := stmt.Exec(reportdata.ReportState, reportdata.ReportTemplate, reportdata.ReportCheckID, reportdata.ReportCheckDate, reportdata.ReportContent, reportdata.ReportOther, reportdata.ReportIdentity)
 			if err != nil {
-				println(err)
-			} else {
 				println("affect_count")
 				println(affect_count)
-			}
+				log.Fatal(err)
+			} /*else {
+				println("affect_count")
+				println(affect_count)
+			}*/
 		} else {
+			reportdata.ReportCheckDate = Units.GetCurrentFormatTime()
+			reportdata.ReportCreatDate = Units.GetCurrentFormatTime()
+			reportdata.ReportTemplate = "0"
+			reportdata.ReportWriterID = "0"
+			reportdata.ReportCheckID = "0"
+			reportdata.ReportOther = "0"
 			sqlstr = "insert into h_report (`StudyOrderIdentity`, `ReportIdentity`,`ReportState`,`ReportTemplate`,`ReportCreatDate`," +
 				"`ReportWriterID`,`ReportCheckID`, `ReportCheckDate`,`ReportContent`,`ReportOther`) value(?,?,?,?,?,?,?,?,?,?)"
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
 				println(sqlstr)
-				println(perr)
-			}
+				log.Fatal(perr)
+			} /* else {
+				println(sqlstr)
+			}*/
 			reportdata.ReportIdentity = reportdata.StudyOrderIdentity
 			affect_count, err := stmt.Exec(reportdata.StudyOrderIdentity, reportdata.ReportIdentity, reportdata.ReportState,
 				reportdata.ReportTemplate, reportdata.ReportCreatDate, reportdata.ReportWriterID, reportdata.ReportCheckID, reportdata.ReportCheckDate, reportdata.ReportContent, reportdata.ReportOther)
-			lastInsertId, err := affect_count.RowsAffected()
 			if err != nil {
 				println(err)
-			} else {
+				log.Fatal(err)
+			} /*else {
+				println("affect_count:")
+				println(affect_count)
+			}*/
+			lastInsertId, err := affect_count.RowsAffected()
+			if err != nil {
 				println("lastInsertId:")
 				println(lastInsertId)
-			}
+				println(err)
+				log.Fatal(err)
+			} /*else {
+				println("lastInsertId:")
+				println(lastInsertId)
+			}*/
 		}
 	}
 	return c.String(http.StatusOK, "ok")
@@ -577,10 +595,8 @@ func OpenDB() (success bool, db *sql.DB) {
 }
 
 func main() {
-	if len(os.Args) > 0 {
-		arg0 := os.Args[0:]
-		println("--arg0--")
-		println(arg0)
+	for idx, args := range os.Args {
+		println("参数"+strconv.Itoa(idx)+":", args)
 	}
 	// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
 	// rand.Seed(int64(time.Now().UnixNano()))
