@@ -54,7 +54,9 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
+
 	// "github.com/labstack/echo/middleware"
+	log4go "github.com/jeanphorn/log4go"
 )
 
 type CustomContext struct {
@@ -62,19 +64,132 @@ type CustomContext struct {
 }
 
 const (
-	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
+	// DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
 	PAGE_TEST = "F:/temp/HealthApp/PageWeb"
 	// PAGE_Dir    = "D:/code/C++/HealthApp/Tools/PageWeb"
 	TIME_LAYOUT = "2000-01-02 15:04:05"
 	PRE_UID     = "1.2.826.0.1.3680043.9.7604."
 )
 
-var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name string
+var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_DBName, DB_Driver string
 var name string
 var maridb_db *sql.DB
 
 func init() {
 	flag.StringVar(&name, "name", "default", "log in user")
+}
+
+func main() {
+	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
+	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
+	PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
+	Web_Port = "9090"
+	log4go.LoadConfiguration("./logConfig.json")
+	log4go.LOGGER("Test").Info("log4go Test ...")
+	for idx, args := range os.Args {
+		println("参数"+strconv.Itoa(idx)+":", args)
+	}
+	//1 mysql: 1 ip 2 name 3 user  4pwd
+	//5 page web / 6 port
+	//7 studyimage dir
+	//8 level
+	//var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name string
+	if len(os.Args) > 8 {
+		// for idx, args := range os.Args {
+		// 	//println("参数"+strconv.Itoa(idx)+":", args)
+		// }
+		// MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name
+		for i := 1; i < 9; i++ {
+			println(os.Args[i])
+			log4go.Info(os.Args[i])
+		}
+		MySQL_IP = os.Args[1]
+		MySQL_DBName = os.Args[2]
+		MySQL_User = os.Args[3]
+		MySQL_PWD = os.Args[4]
+		//DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
+		DB_Driver = MySQL_User + ":" + MySQL_PWD + "@tcp(" + MySQL_IP + ":3306)/" + MySQL_DBName + "?charset=utf8"
+		PAGE_Dir = os.Args[5]
+		Web_Port = os.Args[6]
+		IMAGE_Dir = os.Args[7]
+	}
+	// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
+	// rand.Seed(int64(time.Now().UnixNano()))
+	// id := rand.Int()
+	// println(strconv.Itoa(id))
+	// println(strconv.Itoa(rand.Int()))
+	// println(Units.GetCurrentTime())
+	exepath, err := GetCurrentPath()
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		PAGE_Dir = exepath + "/PageWeb"
+		exist, err := PathExists(PAGE_Dir)
+		if err != nil {
+			println("get dir error![%v]\n", err)
+			PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
+			//log.Fatal(err)
+		}
+		if exist {
+			println("PAGE_Dir:" + PAGE_Dir)
+		} else {
+			PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
+			println("use coe page:" + PAGE_Dir)
+			//log.Fatal(err)
+		}
+		println(exepath)
+	}
+	//
+
+	// println(hash)
+	maridb_db = nil
+	open, db := OpenDB()
+	if open == true {
+		maridb_db = db
+		// test
+		//checkMariDB(db)
+	}
+
+	// flag.Parse() //暂停获取参数
+	e := echo.New()
+	//定义日志属性
+	// e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+	// 	Format: "${time_rfc3339_nano} ${remote_ip} ${method} ${uri} ${status}\n",
+	// }))
+	// e.Use(middleware.Logger())
+	//login
+	e.POST("/login/checkuser", CheckLogin)
+	e.GET("/Login/*", Login)
+	e.GET("/login/*", Login)
+
+	//ris
+	e.GET("/healthsystem/ris/studydata/", GetDBStudyData)
+	e.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
+
+	//ris//update ->studydata
+	e.POST("/healthsystem/ris/updata/", UpdateDBStudyData)
+	e.POST("/healthsystem/ris/update/", UpdateDBStudyData)
+
+	//ris/report
+	e.POST("/healthsystem/ris/getreportdata", GetReportdata)
+	e.POST("/healthsystem/ris/savereportdata/", SaveReportdata)
+
+	e.GET("/healthsystem/*", Healthsystem)
+
+	// view dicom
+	e.GET("/view/*", LoadViewPage)
+
+	// other
+	e.GET("/favicon.ico", func(c echo.Context) error {
+		// println("----------favicon.ico--------")
+		return c.File("D:/code/C++/HealthApp/Tools/PageWeb/favicon.ico")
+	})
+
+	// load image file
+	//需要定义/WADO?*路由??
+	e.GET("/*", LoadImageFile) //WADO?*
+	e.Logger.Fatal(e.Start(":" + Web_Port))
+	// e.Logger.Fatal(e.Start(":9090"))
 }
 
 func PathExists(path string) (bool, error) {
@@ -587,112 +702,6 @@ func OpenDB() (success bool, db *sql.DB) {
 	}
 	checkErr(err)
 	return isOpen, db
-}
-
-func main() {
-	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
-	for idx, args := range os.Args {
-		println("参数"+strconv.Itoa(idx)+":", args)
-	}
-	//1 mysql: 1 ip 2 name 3 user  4pwd
-	//5 page web / 6 port
-	//7 studyimage dir
-	//8 level
-	//var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name string
-	if len(os.Args) > 8 {
-		// for idx, args := range os.Args {
-		// 	//println("参数"+strconv.Itoa(idx)+":", args)
-		// }
-		// MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name
-		for i := 1; i < 9; i++ {
-			println(os.Args[i])
-		}
-		MySQL_IP = os.Args[1]
-		MySQL_Name = os.Args[2]
-		MySQL_User = os.Args[3]
-		MySQL_PWD = os.Args[4]
-
-		PAGE_Dir = os.Args[5]
-		Web_Port = os.Args[6]
-
-		IMAGE_Dir = os.Args[7]
-	}
-	// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
-	// rand.Seed(int64(time.Now().UnixNano()))
-	// id := rand.Int()
-	// println(strconv.Itoa(id))
-	// println(strconv.Itoa(rand.Int()))
-	// println(Units.GetCurrentTime())
-	exepath, err := GetCurrentPath()
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		PAGE_Dir = exepath + "/PageWeb"
-		exist, err := PathExists(PAGE_Dir)
-		if err != nil {
-			println("get dir error![%v]\n", err)
-			PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
-			//log.Fatal(err)
-		}
-		if exist {
-			println("PAGE_Dir:" + PAGE_Dir)
-		} else {
-			PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
-			println("use coe page:" + PAGE_Dir)
-			//log.Fatal(err)
-		}
-		println(exepath)
-	}
-	//
-
-	// println(hash)
-	maridb_db = nil
-	open, db := OpenDB()
-	if open == true {
-		maridb_db = db
-		// test
-		//checkMariDB(db)
-	}
-
-	// flag.Parse() //暂停获取参数
-	e := echo.New()
-	//定义日志属性
-	// e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-	// 	Format: "${time_rfc3339_nano} ${remote_ip} ${method} ${uri} ${status}\n",
-	// }))
-	// e.Use(middleware.Logger())
-	//login
-	e.POST("/login/checkuser", CheckLogin)
-	e.GET("/Login/*", Login)
-	e.GET("/login/*", Login)
-
-	//ris
-	e.GET("/healthsystem/ris/studydata/", GetDBStudyData)
-	e.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
-
-	//ris//update ->studydata
-	e.POST("/healthsystem/ris/updata/", UpdateDBStudyData)
-	e.POST("/healthsystem/ris/update/", UpdateDBStudyData)
-
-	//ris/report
-	e.POST("/healthsystem/ris/getreportdata", GetReportdata)
-	e.POST("/healthsystem/ris/savereportdata/", SaveReportdata)
-
-	e.GET("/healthsystem/*", Healthsystem)
-
-	// view dicom
-	e.GET("/view/*", LoadViewPage)
-
-	// other
-	e.GET("/favicon.ico", func(c echo.Context) error {
-		// println("----------favicon.ico--------")
-		return c.File("D:/code/C++/HealthApp/Tools/PageWeb/favicon.ico")
-	})
-
-	// load image file
-	//需要定义/WADO?*路由??
-	e.GET("/*", LoadImageFile) //WADO?*
-	e.Logger.Fatal(e.Start(":9090"))
 }
 
 //参考
