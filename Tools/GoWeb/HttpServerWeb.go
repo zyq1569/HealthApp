@@ -54,9 +54,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
-
 	// "github.com/labstack/echo/middleware"
-	log4go "github.com/jeanphorn/log4go"
+	// log4go "github.com/jeanphorn/log4go"
 )
 
 type CustomContext struct {
@@ -84,8 +83,8 @@ func main() {
 	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
 	PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
 	Web_Port = "9090"
-	log4go.LoadConfiguration("./logConfig.json")
-	log4go.LOGGER("Test").Info("log4go Test ...")
+	// log4go.LoadConfiguration("./logConfig.json")
+	// log4go.LOGGER("Test").Info("log4go Test ...")
 	for idx, args := range os.Args {
 		println("参数"+strconv.Itoa(idx)+":", args)
 	}
@@ -101,7 +100,7 @@ func main() {
 		// MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name
 		for i := 1; i < 9; i++ {
 			println(os.Args[i])
-			log4go.Info(os.Args[i])
+			// log4go.Info(os.Args[i])
 		}
 		MySQL_IP = os.Args[1]
 		MySQL_DBName = os.Args[2]
