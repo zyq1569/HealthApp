@@ -29,7 +29,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
     m_WLMScpName = "WorklistScp.exe";
     m_Dcm2DBName = "SaveDcmInfoDb.exe";
     m_WebServerName = "health.jar";
-    m_WebServerGoName = Dir + "/GoWeb.exe";
+    m_WebServerGoName = "GoWeb.exe";
 
 //    QSettings * configIniRead = new QSettings("config.ini",QSettings::IniFormat);//初始化读取Ini文件对象
 }
@@ -227,6 +227,11 @@ void HMainWindow::on_WebServer_clicked()
             //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
         }
     }else {
+        QString JavaWeb = m_ExeDir + m_WebServerName;
+        if (!isFileExist(goWebServer)){
+            QMessageBox::information(this, tr("No web program Exist!"), tr("Exit!"));
+            return;
+        }
         m_MysqlServer = ui->mysqlServerValue->text();
         m_MysqlDbName = ui->mysqldbNameValue->text();
         m_MysqlUserName = ui->mysqlUserNameValue->text();
