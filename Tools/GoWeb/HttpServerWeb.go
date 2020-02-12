@@ -14,7 +14,6 @@ https://blog.csdn.net/Noob_coder_JZ/article/details/83410095
 */
 
 // HTTP状态码的分类
-
 // 分类	分类描述
 // 1** 	信息，服务器收到请求，需要请求者继续执行操作
 // 2** 	成功，操作被成功接收并处理
@@ -69,9 +68,25 @@ const (
 	// PAGE_Dir    = "D:/code/C++/HealthApp/Tools/PageWeb"
 	TIME_LAYOUT = "2000-01-02 15:04:05"
 	PRE_UID     = "1.2.826.0.1.3680043.9.7604."
+
+	//size
+	CONGIG_SIZE = 9
+	//---------------------
+	MySQL_IP     = 1
+	MySQL_DBName = 2
+	MySQL_User   = 3
+	MySQL_PWD    = 4
+	PAGE_Dir     = 5
+	Web_Port     = 6
+	IMAGE_Dir    = 7
+	LOG_Level    = 8
+	//DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
+	//DB_Driver = MySQL_User + ":" + MySQL_PWD + "@tcp(" + MySQL_IP + ":3306)/" + MySQL_DBName + "?charset=utf8"
+	//--------------------
 )
 
-var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_DBName, DB_Driver string
+var CONFIG [CONGIG_SIZE]string
+var DB_Driver string
 var name string
 var maridb_db *sql.DB
 
@@ -81,63 +96,42 @@ func init() {
 
 func main() {
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
-	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
-	PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
-	Web_Port = "9090"
+	CONFIG[IMAGE_Dir] = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
+	CONFIG[PAGE_Dir] = "D:/code/C++/HealthApp/Tools/PageWeb"
+	CONFIG[Web_Port] = "9090"
 	log4go.LoadConfiguration("./logConfig.json") // to do set ?
 	log4go.LOGGER("Test").Info("log4go Test ...")
-	for idx, args := range os.Args {
-		// println("参数"+strconv.Itoa(idx)+":", args)
-		log4go.Info("参数" + strconv.Itoa(idx) + ":" + args)
-	}
-	//1 mysql: 1 ip 2 name 3 user  4pwd
-	//5 page web / 6 port
-	//7 studyimage dir
-	//8 level
+
+	//1 mysql: 1 ip 2 name 3 user  4pwd	//5 page web / 6 port//7 studyimage dir	//8 level
 	//var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name string
 	if len(os.Args) > 8 {
-		// for idx, args := range os.Args {
-		// 	//println("参数"+strconv.Itoa(idx)+":", args)
-		// }
+		// for idx, args := range os.Args {		// 	//println("参数"+strconv.Itoa(idx)+":", args)		// }
 		// MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name
 		for i := 1; i < 9; i++ {
-			println(os.Args[i])
-			log4go.Info(os.Args[i])
+			CONFIG[i] = os.Args[i]
+			log4go.Info(CONFIG[i])
 		}
-		MySQL_IP = os.Args[1]
-		MySQL_DBName = os.Args[2]
-		MySQL_User = os.Args[3]
-		MySQL_PWD = os.Args[4]
 		//DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
-		DB_Driver = MySQL_User + ":" + MySQL_PWD + "@tcp(" + MySQL_IP + ":3306)/" + MySQL_DBName + "?charset=utf8"
-		PAGE_Dir = os.Args[5]
-		Web_Port = os.Args[6]
-		IMAGE_Dir = os.Args[7]
+		DB_Driver = CONFIG[MySQL_User] + ":" + CONFIG[MySQL_PWD] + "@tcp(" + CONFIG[MySQL_IP] + ":3306)/" + CONFIG[MySQL_DBName] + "?charset=utf8"
 	}
-	// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
-	// rand.Seed(int64(time.Now().UnixNano()))
-	// id := rand.Int()
-	// println(strconv.Itoa(id))
-	// println(strconv.Itoa(rand.Int()))
-	// println(Units.GetCurrentTime())
 	exepath, err := GetCurrentPath()
 	if err != nil {
 		// log.Fatal(err)
 		log4go.Error(err)
 		os.Exit(1)
 	} else {
-		PAGE_Dir = exepath + "/PageWeb"
-		exist, err := PathExists(PAGE_Dir)
+		CONFIG[PAGE_Dir] = exepath + "/PageWeb"
+		exist, err := PathExists(CONFIG[PAGE_Dir])
 		if err != nil {
 			println("get dir error![%v]\n", err)
-			PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
+			CONFIG[PAGE_Dir] = "D:/code/C++/HealthApp/Tools/PageWeb"
 			//log.Fatal(err)
 		}
 		if exist {
-			println("PAGE_Dir:" + PAGE_Dir)
+			println("PAGE_Dir:" + CONFIG[PAGE_Dir])
 		} else {
-			PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
-			println("use coe page:" + PAGE_Dir)
+			CONFIG[PAGE_Dir] = "D:/code/C++/HealthApp/Tools/PageWeb"
+			println("use coe page:" + CONFIG[PAGE_Dir])
 			//log.Fatal(err)
 		}
 		println(exepath)
@@ -149,8 +143,6 @@ func main() {
 	open, db := OpenDB()
 	if open == true {
 		maridb_db = db
-		// test
-		//checkMariDB(db)
 	}
 
 	// flag.Parse() //暂停获取参数
@@ -187,7 +179,7 @@ func main() {
 	// load image file
 	//需要定义/WADO?*路由??
 	e.GET("/*", LoadImageFile) //WADO?*
-	e.Logger.Fatal(e.Start(":" + Web_Port))
+	e.Logger.Fatal(e.Start(":" + CONFIG[Web_Port]))
 	// e.Logger.Fatal(e.Start(":9090"))
 }
 
@@ -234,7 +226,7 @@ func Login(c echo.Context) error {
 	req := c.Request()
 	// println("req.URL.Path:" + req.URL.Path)
 	// println(PAGE_Dir + req.URL.Path)
-	filepath := PAGE_Dir + req.URL.Path
+	filepath := CONFIG[PAGE_Dir] + req.URL.Path
 	return c.File(filepath)
 }
 
@@ -242,7 +234,7 @@ func LoadImageFile(c echo.Context) error {
 	// println("---LoadImageFile---------")
 	studyuid := c.FormValue("studyuid")
 	image_hash_dir := Units.GetStudyHashDir(studyuid)
-	filepath := IMAGE_Dir + image_hash_dir
+	filepath := CONFIG[IMAGE_Dir] + image_hash_dir
 	filepath += "/"
 	filepath += studyuid
 	filetype := c.FormValue("type")
@@ -266,14 +258,14 @@ func LoadImageFile(c echo.Context) error {
 
 func LoadViewPage(c echo.Context) error {
 	req := c.Request()
-	filepath := PAGE_Dir + req.URL.Path
+	filepath := CONFIG[PAGE_Dir] + req.URL.Path
 	index := strings.Index(req.URL.Path, ".html?")
 	if index > -1 {
 		filename := req.URL.Path[0 : index+5]
-		filepath = PAGE_Dir + filename
+		filepath = CONFIG[PAGE_Dir] + filename
 		return c.File(filepath)
 	} else {
-		return c.File(PAGE_Dir + req.URL.Path)
+		return c.File(CONFIG[PAGE_Dir] + req.URL.Path)
 	}
 }
 
@@ -700,37 +692,37 @@ func OpenDB() (success bool, db *sql.DB) {
 	return isOpen, db
 }
 
+//----------------------------------------------------------------------------------
+// for idx, args := range os.Args {
+// 	// println("参数"+strconv.Itoa(idx)+":", args)
+// 	log4go.Info("参数" + strconv.Itoa(idx) + ":" + args)
+// }
 //参考
-func queryMySal() {
-	var err error
-	connect := "f:f@tcp(192.168.1.0:3306)/lr1"
-	db, err := sql.Open("mysql", connect)
-	if err != nil {
-		println("connect mysql failed, address = "+connect, err)
-	} else {
-		sqlContent := "select real_nm, sex, birth, ext from member where tenant=? and mem_id=?"
-		rows, err := db.Query(sqlContent, "ST", "2017")
-		if err != nil {
-			println(err)
-		} else {
-			for rows.Next() {
-				nm := sql.NullString{String: "", Valid: false}
-				sex := sql.NullString{String: "", Valid: false}
-				birth := sql.NullString{String: "", Valid: false}
-				ext := sql.NullString{String: "", Valid: false}
-				err := rows.Scan(&nm, &sex, &birth, &ext) // birth字段在数据库中是空字段
-				if err != nil {
-					println("d12 error. ", err)
-				}
-				// println(nm.String)
-				// println(sex.String)
-				// println(birth.String)
-				// println(ext.String)
-			}
-		}
-	}
-}
-
+// func queryMySal() {
+// 	var err error
+// 	connect := "f:f@tcp(192.168.1.0:3306)/lr1"
+// 	db, err := sql.Open("mysql", connect)
+// 	if err != nil {
+// 		println("connect mysql failed, address = "+connect, err)
+// 	} else {
+// 		sqlContent := "select real_nm, sex, birth, ext from member where tenant=? and mem_id=?"
+// 		rows, err := db.Query(sqlContent, "ST", "2017")
+// 		if err != nil {
+// 			println(err)
+// 		} else {
+// 			for rows.Next() {
+// 				nm := sql.NullString{String: "", Valid: false}
+// 				sex := sql.NullString{String: "", Valid: false}
+// 				birth := sql.NullString{String: "", Valid: false}
+// 				ext := sql.NullString{String: "", Valid: false}
+// 				err := rows.Scan(&nm, &sex, &birth, &ext) // birth字段在数据库中是空字段
+// 				if err != nil {
+// 					println("d12 error. ", err)
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 // sqlContent := "select real_nm, sex, birth, ext from member where tenant=? and mem_id=?"
 // rows, err := db.Query(sqlContent, "ST", "2017")
 // stmt, err := maridb_db.Prepare(sql)
@@ -744,3 +736,16 @@ func queryMySal() {
 // fmt.Println(utf8.RuneCountInString(text1)) //获取字符串字符的个数
 // fmt.Println([]rune(text1)) // 将字符串的每一个字节转换为码点值，比如这里会输出[97 98 99 100 101 102 103]
 // fmt.Println(string(text1[n])) // 获取字符串索引位置为n的字符值
+// CONFIG[MySQL_IP] = os.Args[1]
+// CONFIG[MySQL_DBName] = os.Args[2]
+// CONFIG[MySQL_User] = os.Args[3]
+// CONFIG[MySQL_PWD] = os.Args[4]
+// CONFIG[PAGE_Dir] = os.Args[5]
+// CONFIG[Web_Port] = os.Args[6]
+// CONFIG[IMAGE_Dir] = os.Args[7]
+// var hash string = Units.GetStudyHashDir("1.2.840.113619.2.55.3.604688119.868.1249343483.504")
+// rand.Seed(int64(time.Now().UnixNano()))
+// id := rand.Int()
+// println(strconv.Itoa(id))
+// println(strconv.Itoa(rand.Int()))
+// println(Units.GetCurrentTime())
