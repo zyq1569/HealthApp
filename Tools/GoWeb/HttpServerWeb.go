@@ -685,6 +685,9 @@ func OpenDB() (success bool, db *sql.DB) {
 	db, err := sql.Open("mysql", DB_Driver)
 	if err != nil {
 		isOpen = false
+		log4go.Error("Exit 0. Open db fail!")
+		log4go.Error(err)
+		os.Exit(1)
 	} else {
 		isOpen = true
 	}
