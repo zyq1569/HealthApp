@@ -26,7 +26,7 @@ package main
 
 import (
 	"errors"
-	"log"
+	// "log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -54,8 +54,9 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
+
 	// "github.com/labstack/echo/middleware"
-	// log4go "github.com/jeanphorn/log4go"
+	log4go "github.com/jeanphorn/log4go"
 )
 
 type CustomContext struct {
@@ -83,10 +84,11 @@ func main() {
 	IMAGE_Dir = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
 	PAGE_Dir = "D:/code/C++/HealthApp/Tools/PageWeb"
 	Web_Port = "9090"
-	// log4go.LoadConfiguration("./logConfig.json")
-	// log4go.LOGGER("Test").Info("log4go Test ...")
+	log4go.LoadConfiguration("./logConfig.json") // to do set ?
+	log4go.LOGGER("Test").Info("log4go Test ...")
 	for idx, args := range os.Args {
-		println("参数"+strconv.Itoa(idx)+":", args)
+		// println("参数"+strconv.Itoa(idx)+":", args)
+		log4go.Info("参数" + strconv.Itoa(idx) + ":" + args)
 	}
 	//1 mysql: 1 ip 2 name 3 user  4pwd
 	//5 page web / 6 port
@@ -100,7 +102,7 @@ func main() {
 		// MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name
 		for i := 1; i < 9; i++ {
 			println(os.Args[i])
-			// log4go.Info(os.Args[i])
+			log4go.Info(os.Args[i])
 		}
 		MySQL_IP = os.Args[1]
 		MySQL_DBName = os.Args[2]
@@ -120,7 +122,9 @@ func main() {
 	// println(Units.GetCurrentTime())
 	exepath, err := GetCurrentPath()
 	if err != nil {
-		log.Fatal(err)
+		// log.Fatal(err)
+		log4go.Error(err)
+		os.Exit(1)
 	} else {
 		PAGE_Dir = exepath + "/PageWeb"
 		exist, err := PathExists(PAGE_Dir)
@@ -307,13 +311,15 @@ func SaveReportdata(c echo.Context) error {
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
 				println(sqlstr)
-				log.Fatal(perr)
+				log4go.Error(perr)
+				os.Exit(1)
 			}
 			affect_count, err := stmt.Exec(reportdata.ReportState, reportdata.ReportTemplate, reportdata.ReportCheckID, reportdata.ReportCheckDate, reportdata.ReportContent, reportdata.ReportOther, reportdata.ReportIdentity)
 			if err != nil {
 				println("affect_count")
 				println(affect_count)
-				log.Fatal(err)
+				log4go.Error(err)
+				os.Exit(1)
 			} /*else {
 				println("affect_count")
 				println(affect_count)
@@ -330,7 +336,8 @@ func SaveReportdata(c echo.Context) error {
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
 				println(sqlstr)
-				log.Fatal(perr)
+				log4go.Error(perr)
+				os.Exit(1)
 			} /* else {
 				println(sqlstr)
 			}*/
@@ -339,7 +346,8 @@ func SaveReportdata(c echo.Context) error {
 				reportdata.ReportTemplate, reportdata.ReportCreatDate, reportdata.ReportWriterID, reportdata.ReportCheckID, reportdata.ReportCheckDate, reportdata.ReportContent, reportdata.ReportOther)
 			if err != nil {
 				println(err)
-				log.Fatal(err)
+				log4go.Error(err)
+				os.Exit(1)
 			} /*else {
 				println("affect_count:")
 				println(affect_count)
@@ -349,7 +357,8 @@ func SaveReportdata(c echo.Context) error {
 				println("lastInsertId:")
 				println(lastInsertId)
 				println(err)
-				log.Fatal(err)
+				log4go.Error(err)
+				os.Exit(1)
 			} /*else {
 				println("lastInsertId:")
 				println(lastInsertId)
@@ -489,7 +498,8 @@ func UpdateDBStudyData(c echo.Context) error {
 				println("------fail insert into h_patient maridb_db.Prepare--------")
 				println("PatientID:" + PatientID)
 				println("PatientIdentity:" + PatientIdentity)
-				log.Fatal(err)
+				log4go.Error(err)
+				os.Exit(1)
 			} else {
 				println("PatientID:" + PatientID)
 				println("PatientIdentity:" + PatientIdentity)
@@ -501,14 +511,16 @@ func UpdateDBStudyData(c echo.Context) error {
 				PatientID, studyData.PatientTelNumber, studyData.PatientAddr, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail)
 			if err != nil {
 				println("fail to  insert into h_patient affect_count:")
-				log.Print(affect_count)
-				log.Fatal(err)
+				log4go.Info(affect_count)
+				log4go.Error(err)
+				os.Exit(1)
 			} else {
 				lastInsertId, err := affect_count.RowsAffected()
 				if err != nil {
 					println("lastInsertId:")
 					println(lastInsertId)
-					log.Fatal(err)
+					log4go.Error(err)
+					os.Exit(1)
 				} /*else {
 					println("--insert into h_patient--lastInsertId:")
 					println(lastInsertId)
@@ -521,7 +533,8 @@ func UpdateDBStudyData(c echo.Context) error {
 			if perr != nil {
 				println("------fail update PatientID:--------")
 				println(PatientID)
-				log.Fatal(perr)
+				log4go.Error(perr)
+				os.Exit(1)
 			} /*else {
 				println("------ok maridb_db.Prepare: --------" + sqlstr)
 			}*/
@@ -532,8 +545,9 @@ func UpdateDBStudyData(c echo.Context) error {
 				studyData.PatientSex, studyData.PatientTelNumber, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail, studyData.PatientID)
 			if err != nil {
 				println("fail to  update PatientI affect_count:")
-				log.Print(affect_count)
-				log.Fatal(err)
+				log4go.Info(affect_count)
+				log4go.Error(err)
+				os.Exit(1)
 			} /* else {
 				println("ok update PatientI affect_count:")
 				log.Print(affect_count)
@@ -553,14 +567,16 @@ func UpdateDBStudyData(c echo.Context) error {
 			if err != nil {
 				println("------fail  maridb_db.Prepare(sqlstr) insert into h_order:--------")
 				println(StudyOrderIdentity)
-				log.Fatal(err)
+				log4go.Error(err)
+				os.Exit(1)
 			}
 			affect_count, err := stmt.Exec(StudyOrderIdentity, studyData.StudyID, studyData.StudyUID, studyData.PatientIdentity,
 				studyData.ScheduledDate, studyData.StudyDescription, studyData.StudyModality,
 				studyData.StudyCost, studyData.StudyCode, studyData.StudyDepart, studyData.CostType)
 			if err != nil {
 				println(affect_count)
-				log.Fatal(err)
+				log4go.Error(err)
+				os.Exit(1)
 			} /*else {
 				lastInsertId, err := affect_count.RowsAffected()
 				if err != nil {
@@ -578,14 +594,16 @@ func UpdateDBStudyData(c echo.Context) error {
 				println(sqlstr)
 				println("StudyOrderIdentity:")
 				println(StudyOrderIdentity)
-				log.Fatal(perr)
+				log4go.Error(perr)
+				os.Exit(1)
 			}
 			affect_count, err := stmt.Exec(studyData.ScheduledDate, studyData.StudyDescription, studyData.StudyModality,
 				studyData.StudyCost, studyData.StudyCode, studyData.StudyDepart, studyData.CostType, studyData.StudyOrderIdentity)
 			if err != nil {
 				println("studyData.ScheduledDate" + studyData.ScheduledDate)
 				println(affect_count)
-				log.Fatal(err)
+				log4go.Error(err)
+				os.Exit(1)
 			} /*else {
 				println("affect_count:")
 				println(affect_count)
@@ -678,7 +696,6 @@ func checkErr(err error) {
 func checkMariDB(db *sql.DB) {
 	//db, err := OpenDB()//sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8")
 	rows, err := db.Query("SELECT * FROM h_user")
-
 	for rows.Next() {
 		var idd int
 		var username string
