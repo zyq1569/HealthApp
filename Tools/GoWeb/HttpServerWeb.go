@@ -155,11 +155,7 @@ func main() {
 
 	// flag.Parse() //暂停获取参数
 	e := echo.New()
-	//定义日志属性
-	// e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-	// 	Format: "${time_rfc3339_nano} ${remote_ip} ${method} ${uri} ${status}\n",
-	// }))
-	// e.Use(middleware.Logger())
+
 	//login
 	e.POST("/login/checkuser", CheckLogin)
 	e.GET("/Login/*", Login)
@@ -230,8 +226,6 @@ func GetCurrentPath() (string, error) {
 
 func Healthsystem(c echo.Context) error {
 	req := c.Request()
-	// println("req.URL.Path:" + req.URL.Path)
-	// println("D:/code/C++/HealthApp/Tools/PageWeb" + req.URL.Path)
 	filepath := "D:/code/C++/HealthApp/Tools/PageWeb" + req.URL.Path
 	return c.File(filepath)
 }
@@ -389,9 +383,6 @@ func GetReportdata(c echo.Context) error {
 			println(err)
 		} else {
 			for rows.Next() {
-				// reportdata.ReportWriterID = sql.NullString{String: "", Valid: false}
-				// reportdata.ReportCheckID = sql.NullString{String: "", Valid: false}
-				// reportdata.ReportOther = sql.NullString{String: "", Valid: false}
 				err = rows.Scan(&reportdata.ReportIdentity, &reportdata.StudyOrderIdentity,
 					&reportdata.ReportState, &reportdata.ReportTemplate,
 					&reportdata.ReportCreatDate, &reportdata.ReportWriterID,
@@ -619,17 +610,6 @@ func GetDBStudyData(c echo.Context) error {
 	endTime := c.FormValue("end")
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
-	// var mess strings.Builder
-	// mess.WriteString("start:")
-	// mess.WriteString(startTime)
-	// mess.WriteString("end:")
-	// mess.WriteString(endTime)
-	// mess.WriteString("page:")
-	// mess.WriteString(page)
-	// mess.WriteString("limit:")
-	// mess.WriteString(limit)
-	// // mess := "start:" + startTime + "end:" + end + "page:" + page + "limit:" + limit
-	// println(mess.String())
 	var studyjson Study.StudyDataJson
 	if maridb_db != nil {
 		var count int
