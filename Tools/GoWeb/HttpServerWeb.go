@@ -90,8 +90,8 @@ var maridb_db *sql.DB
 
 func main() {
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
-	CONFIG[IMAGE_Dir] = GetCurrentPathStr() + "/DCM_SAVE/Images"
-	CONFIG[PAGE_Dir] = GetCurrentPathStr() + "/PageWeb"
+	CONFIG[IMAGE_Dir] = "F:/temp/HealthApp/DCM_SAVE/DCM_SAVE/Images"
+	CONFIG[PAGE_Dir] = "F:/temp/HealthApp/PageWeb/PageWeb"
 	CONFIG[Web_Port] = "9090"
 	log4go.LoadConfiguration("./logConfig.json") // to do set ?
 	log4go.LOGGER("Test").Info("log4go Test ...")
@@ -177,7 +177,6 @@ func main() {
 	// log4go.LOGGER("Test").Info("Start Web:" + CONFIG[Web_Port])
 	println("Start Web:" + CONFIG[Web_Port])
 	WebServer.Logger.Fatal(WebServer.Start(":" + CONFIG[Web_Port])) // e.Logger.Fatal(e.Start(":9090"))
-
 }
 
 func OutRouter(c echo.Context) error {
