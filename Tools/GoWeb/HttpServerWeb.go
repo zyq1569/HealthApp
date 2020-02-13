@@ -35,7 +35,8 @@ import (
 	// "bytes"
 	"database/sql"
 	"encoding/json"
-	"flag"
+
+	// "flag"
 	"net/http"
 
 	// "os"
@@ -57,10 +58,6 @@ import (
 	// "github.com/labstack/echo/middleware"
 	log4go "github.com/jeanphorn/log4go"
 )
-
-type CustomContext struct {
-	echo.Context
-}
 
 const (
 	// DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
@@ -87,17 +84,14 @@ const (
 
 var CONFIG [CONGIG_SIZE]string
 var DB_Driver string
-var name string
-var maridb_db *sql.DB
 
-func init() {
-	flag.StringVar(&name, "name", "default", "log in user")
-}
+// var name string
+var maridb_db *sql.DB
 
 func main() {
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
-	CONFIG[IMAGE_Dir] = "D:/code/C++/HealthApp/bin/win32/DCM_SAVE/Images"
-	CONFIG[PAGE_Dir] = "D:/code/C++/HealthApp/Tools/PageWeb"
+	CONFIG[IMAGE_Dir] = GetCurrentPathStr() + "/DCM_SAVE/Images"
+	CONFIG[PAGE_Dir] = GetCurrentPathStr() + "/PageWeb"
 	CONFIG[Web_Port] = "9090"
 	log4go.LoadConfiguration("./logConfig.json") // to do set ?
 	log4go.LOGGER("Test").Info("log4go Test ...")
@@ -194,6 +188,14 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
+func GetCurrentPathStr() string {
+	path, err := GetCurrentPath()
+	if err != nil {
+		return ""
+	} else {
+		return path
+	}
+}
 func GetCurrentPath() (string, error) {
 	file, err := exec.LookPath(os.Args[0])
 	if err != nil {
@@ -752,3 +754,9 @@ func OpenDB() (success bool, db *sql.DB) {
 // println(strconv.Itoa(id))
 // println(strconv.Itoa(rand.Int()))
 // println(Units.GetCurrentTime())
+// type CustomContext struct {
+// 	echo.Context
+// }
+// func init() {
+// 	flag.StringVar(&name, "name", "default", "log in user")
+// }
