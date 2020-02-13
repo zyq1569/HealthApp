@@ -140,43 +140,54 @@ func main() {
 	}
 
 	// flag.Parse() //暂停获取参数
-	e := echo.New()
+	WebServer := echo.New()
 
 	//login
-	e.POST("/login/checkuser", CheckLogin)
-	e.GET("/Login/*", Login)
-	e.GET("/login/*", Login)
+	WebServer.POST("/login/checkuser", CheckLogin)
+	WebServer.GET("/Login/*", Login)
+	WebServer.GET("/login/*", Login)
 
 	//ris
-	e.GET("/healthsystem/ris/studydata/", GetDBStudyData)
-	e.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
+	WebServer.GET("/healthsystem/ris/studydata/", GetDBStudyData)
+	WebServer.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
 
 	//ris//update ->studydata
-	e.POST("/healthsystem/ris/updata/", UpdateDBStudyData)
-	e.POST("/healthsystem/ris/update/", UpdateDBStudyData)
+	WebServer.POST("/healthsystem/ris/updata/", UpdateDBStudyData)
+	WebServer.POST("/healthsystem/ris/update/", UpdateDBStudyData)
 
 	//ris/report
-	e.POST("/healthsystem/ris/getreportdata", GetReportdata)
-	e.POST("/healthsystem/ris/savereportdata/", SaveReportdata)
+	WebServer.POST("/healthsystem/ris/getreportdata", GetReportdata)
+	WebServer.POST("/healthsystem/ris/savereportdata/", SaveReportdata)
 
-	e.GET("/healthsystem/*", Healthsystem)
+	WebServer.GET("/healthsystem/*", Healthsystem)
 
 	// view dicom
-	e.GET("/view/*", LoadViewPage)
+	WebServer.GET("/view/*", LoadViewPage)
 
 	// other
-	e.GET("/favicon.ico", func(c echo.Context) error {
+	WebServer.GET("/favicon.ico", func(c echo.Context) error {
 		// println("----------favicon.ico--------")
 		return c.File("D:/code/C++/HealthApp/Tools/PageWeb/favicon.ico")
 	})
 
 	// load image file
 	//需要定义/WADO?*路由??
-	e.GET("/*", LoadImageFile) //WADO?*
-	e.Logger.Fatal(e.Start(":" + CONFIG[Web_Port]))
-	// e.Logger.Fatal(e.Start(":9090"))
+	WebServer.GET("/*", LoadImageFile) //WADO?*
+	// WebServer.GET("/", OutRouter) //WADO?*
+	// log4go.LOGGER("Test").Info("Start Web:" + CONFIG[Web_Port])
+	println("Start Web:" + CONFIG[Web_Port])
+	WebServer.Logger.Fatal(WebServer.Start(":" + CONFIG[Web_Port])) // e.Logger.Fatal(e.Start(":9090"))
+
 }
 
+func OutRouter(c echo.Context) error {
+	println(c.Request().URL.Path)
+	if c.Request().URL.Path == "/WADO" {
+		return LoadImageFile(c)
+	}
+	log4go.LOGGER("Test").Info("OutRouter URL:" + c.Request().URL.Path)
+	return c.String(http.StatusOK, "No Page! maybe remove!"+c.Request().URL.Path)
+}
 func PathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -186,6 +197,28 @@ func PathExists(path string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+func IsPathExists(path string) bool {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true
+	}
+	if os.IsNotExist(err) {
+		return false
+	}
+	return false
+}
+
+func IsFileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	if err == nil {
+		return true
+	}
+	if os.IsNotExist(err) {
+		return false
+	}
+	return false
 }
 
 func GetCurrentPathStr() string {
@@ -229,11 +262,12 @@ func Login(c echo.Context) error {
 	// println("req.URL.Path:" + req.URL.Path)
 	// println(PAGE_Dir + req.URL.Path)
 	filepath := CONFIG[PAGE_Dir] + req.URL.Path
+	//log4go.LOGGER("Test").Info(filepath)
 	return c.File(filepath)
 }
 
 func LoadImageFile(c echo.Context) error {
-	// println("---LoadImageFile---------")
+	//log4go.LOGGER("Test").Info(c.Request().URL.Path)
 	studyuid := c.FormValue("studyuid")
 	image_hash_dir := Units.GetStudyHashDir(studyuid)
 	filepath := CONFIG[IMAGE_Dir] + image_hash_dir
@@ -245,7 +279,9 @@ func LoadImageFile(c echo.Context) error {
 		filepath += "/"
 		filepath += studyuid
 		filepath += ".json"
-		return c.File(filepath)
+		if IsFileExists(filepath) {
+			return c.File(filepath)
+		}
 	} else {
 		seriesuid := c.FormValue("seriesuid")
 		sopinstanceuid := c.FormValue("sopinstanceuid")
@@ -254,8 +290,11 @@ func LoadImageFile(c echo.Context) error {
 		filepath += "/"
 		filepath += sopinstanceuid
 		filepath += ".dcm"
-		return c.File(filepath)
+		if IsFileExists(filepath) {
+			return c.File(filepath)
+		}
 	}
+	return c.String(http.StatusOK, "No file! maybe remove!")
 }
 
 func LoadViewPage(c echo.Context) error {
