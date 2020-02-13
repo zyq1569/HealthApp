@@ -130,8 +130,6 @@ func main() {
 		}
 		println(exepath)
 	}
-	//
-
 	// println(hash)
 	maridb_db = nil
 	open, db := OpenDB()
