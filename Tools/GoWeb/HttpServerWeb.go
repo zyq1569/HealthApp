@@ -94,8 +94,6 @@ func main() {
 	CONFIG[PAGE_Dir] = "F:/temp/HealthApp/PageWeb/PageWeb"
 	CONFIG[Web_Port] = "9090"
 	log4go.LoadConfiguration("./logConfig.json") // to do set ?
-	log4go.LOGGER("Test").Info("log4go Test ...")
-
 	//1 mysql: 1 ip 2 name 3 user  4pwd	//5 page web / 6 port//7 studyimage dir	//8 level
 	//var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name string
 	if len(os.Args) > 8 {
@@ -135,6 +133,10 @@ func main() {
 	open, db := OpenDB()
 	if open == true {
 		maridb_db = db
+		for i := 1; i < 9; i++ {
+			CONFIG[i] = os.Args[i]
+			log4go.Info("CONFIG:" + CONFIG[i])
+		}
 	}
 
 	// flag.Parse() //暂停获取参数
@@ -165,7 +167,7 @@ func main() {
 	// other
 	WebServer.GET("/favicon.ico", func(c echo.Context) error {
 		// println("----------favicon.ico--------")
-		return c.File("D:/code/C++/HealthApp/Tools/PageWeb/favicon.ico")
+		return c.File(CONFIG[PAGE_Dir] + "/favicon.ico")
 	})
 
 	// load image file
@@ -249,22 +251,24 @@ func GetCurrentPath() (string, error) {
 }
 
 func Healthsystem(c echo.Context) error {
+	// log4go.Info(c.Request().URL.Path)
 	req := c.Request()
-	filepath := "D:/code/C++/HealthApp/Tools/PageWeb" + req.URL.Path
+	filepath := CONFIG[PAGE_Dir] + req.URL.Path
 	return c.File(filepath)
 }
 
 func Login(c echo.Context) error {
+	// log4go.Info(c.Request().URL.Path)
 	req := c.Request()
 	// println("req.URL.Path:" + req.URL.Path)
 	// println(PAGE_Dir + req.URL.Path)
 	filepath := CONFIG[PAGE_Dir] + req.URL.Path
-	//log4go.LOGGER("Test").Info(filepath)
+	// log4go.Info("filepath:" + filepath)
 	return c.File(filepath)
 }
 
 func LoadImageFile(c echo.Context) error {
-	//log4go.LOGGER("Test").Info(c.Request().URL.Path)
+	// log4go.Info(c.Request().URL.Path)
 	studyuid := c.FormValue("studyuid")
 	image_hash_dir := Units.GetStudyHashDir(studyuid)
 	filepath := CONFIG[IMAGE_Dir] + image_hash_dir
@@ -291,10 +295,12 @@ func LoadImageFile(c echo.Context) error {
 			return c.File(filepath)
 		}
 	}
+	log4go.Info("No filepath:" + filepath)
 	return c.String(http.StatusOK, "No file! maybe remove!")
 }
 
 func LoadViewPage(c echo.Context) error {
+	//log4go.Info(c.Request().URL.Path)
 	req := c.Request()
 	filepath := CONFIG[PAGE_Dir] + req.URL.Path
 	index := strings.Index(req.URL.Path, ".html?")
@@ -308,13 +314,15 @@ func LoadViewPage(c echo.Context) error {
 }
 
 func CheckLogin(c echo.Context) error {
+	//log4go.Info(c.Request().URL.Path)
 	username := c.FormValue("user")
 	userpwd := c.FormValue("password")
-	println("username:" + username + "/userpwd:" + userpwd)
+	log4go.Info("username:" + username + "/userpwd:" + userpwd)
 	return c.String(http.StatusOK, "ok")
 }
 
 func SaveReportdata(c echo.Context) error {
+	//log4go.Info(c.Request().URL.Path)
 	var reportdata Study.ReportData
 	reportdata.ReportIdentity = ""
 	var bodyBytes []byte
@@ -393,6 +401,7 @@ func SaveReportdata(c echo.Context) error {
 }
 
 func GetReportdata(c echo.Context) error {
+	//log4go.Info(c.Request().URL.Path)
 	var reportdata Study.ReportData
 	var bodyBytes []byte
 	if c.Request().Body != nil {
