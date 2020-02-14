@@ -50,13 +50,13 @@ import (
 	"./Units"
 
 	// "fmt"
-	// "time"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 
-	// "github.com/labstack/echo/middleware"
 	log4go "github.com/jeanphorn/log4go"
+	// "github.com/labstack/echo/middleware"
 )
 
 const (
@@ -144,7 +144,7 @@ func main() {
 
 	//login
 	WebServer.POST("/login/checkuser", CheckLogin)
-	WebServer.GET("/Login/*", Login)
+	// WebServer.GET("/Login/*", Login)
 	WebServer.GET("/login/*", Login)
 
 	//ris
@@ -251,10 +251,18 @@ func GetCurrentPath() (string, error) {
 }
 
 func Healthsystem(c echo.Context) error {
-	// log4go.Info(c.Request().URL.Path)
-	req := c.Request()
-	filepath := CONFIG[PAGE_Dir] + req.URL.Path
-	return c.File(filepath)
+	log4go.Info("Healthsystem:" + c.Request().URL.Path)
+	if AuthLogin(c) {
+		req := c.Request()
+		filepath := CONFIG[PAGE_Dir] + req.URL.Path
+		return c.File(filepath)
+	} else {
+		// e := echo.New()
+		// e.Pre(middleware.NonWWWRedirect())
+		// return c.File(CONFIG[PAGE_Dir] + "/login/login.html")
+		log4go.Info(c.Request().Host + "/login/login.html")
+		return c.Redirect(http.StatusOK, c.Request().Host+"/login/login.html")
+	}
 }
 
 func Login(c echo.Context) error {
@@ -313,12 +321,54 @@ func LoadViewPage(c echo.Context) error {
 	}
 }
 
+func AuthLogin(c echo.Context) bool {
+	cookie, err := c.Cookie("admin")
+	if err != nil {
+		// return err
+		// log4go.Error(err)
+		return false
+	} else {
+		if cookie.Name == "admin" {
+			// log4go.Error(cookie.Name)
+			// log4go.Error(cookie.Value)
+			return true
+		}
+	}
+	return false
+}
+
 func CheckLogin(c echo.Context) error {
 	//log4go.Info(c.Request().URL.Path)
 	username := c.FormValue("user")
 	userpwd := c.FormValue("password")
+	if maridb_db != nil {
+		var sqlstr, id, user, pwd string
+		sqlstr = "select * from h_user where username='" + username + "'"
+		rows, err := maridb_db.Query(sqlstr)
+		if err != nil {
+			log4go.Error(err)
+		} else {
+			for rows.Next() {
+				err = rows.Scan(&id, &user, &pwd)
+			}
+			if err != nil {
+				log4go.Error(err)
+			} else {
+				if id != "" && pwd == userpwd {
+					//set cookie
+					cookie := new(http.Cookie)
+					cookie.Name = "admin"
+					cookie.Value = userpwd
+					cookie.HttpOnly = true
+					cookie.Expires = time.Now().Add(24 * time.Hour)
+					c.SetCookie(cookie)
+					return c.String(http.StatusOK, "ok")
+				}
+			}
+		}
+	}
 	log4go.Info("username:" + username + "/userpwd:" + userpwd)
-	return c.String(http.StatusOK, "ok")
+	return c.String(http.StatusOK, "username or userpwd error! fail")
 }
 
 func SaveReportdata(c echo.Context) error {
