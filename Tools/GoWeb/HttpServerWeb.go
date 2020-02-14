@@ -261,7 +261,7 @@ func Healthsystem(c echo.Context) error {
 		// e.Pre(middleware.NonWWWRedirect())
 		// return c.File(CONFIG[PAGE_Dir] + "/login/login.html")
 		log4go.Info(c.Request().Host + "/login/login.html")
-		return c.Redirect(http.StatusOK, c.Request().Host+"/login/login.html")
+		return c.Redirect(http.StatusOK, "http://"+c.Request().Host+"/login/login.html")
 	}
 }
 
