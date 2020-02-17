@@ -251,11 +251,11 @@ func GetCurrentPath() (string, error) {
 }
 
 func Healthsystem(c echo.Context) error {
-	log4go.Info("---AuthLogin---- Healthsystem:" + c.Request().URL.Path)
+	// log4go.Info("---AuthLogin---- Healthsystem:" + c.Request().URL.Path)
 	cookie_Auth_OK := false
 	for _, cookie := range c.Cookies() {
-		log4go.Info("--Cookies-" + cookie.Name)
-		log4go.Info("--Cookies-" + cookie.Value)
+		log4go.Info("--Healthsystem read Cookies-" + cookie.Name)
+		log4go.Info("--Healthsystem read Cookies-" + cookie.Value)
 		if cookie.Name == "admin" {
 			cookie_Auth_OK = true
 			break
