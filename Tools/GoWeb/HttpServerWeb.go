@@ -267,7 +267,7 @@ func Healthsystem(c echo.Context) error {
 		filepath := CONFIG[PAGE_Dir] + req.URL.Path
 		return c.File(filepath)
 	} else {
-		// log4go.Info("Redirect:" + c.Scheme() + "://" + c.Request().Host + "/login/login.html")
+		log4go.Info("No cookie ---->Redirect:" + c.Scheme() + "://" + c.Request().Host + "/login/login.html")
 		//StatusMovedPermanently 301
 		return c.Redirect(http.StatusMovedPermanently, c.Scheme()+"://"+c.Request().Host+"/login/login.html")
 	}
