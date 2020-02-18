@@ -255,7 +255,7 @@ func Healthsystem(c echo.Context) error {
 	cookie_Auth_OK := false
 	for _, cookie := range c.Cookies() {
 		log4go.Info("--Healthsystem read Cookies-" + cookie.Name)
-		log4go.Info("--Healthsystem read Cookies-" + cookie.Value)
+		// log4go.Info("--Healthsystem read Cookies-" + cookie.Value)
 		if cookie.Name == "admin" {
 			cookie_Auth_OK = true
 			break
@@ -383,6 +383,14 @@ func CheckLogin(c echo.Context) error {
 					cookie.Expires = time.Now().Add(24 * time.Hour)
 					c.SetCookie(cookie)
 					log4go.Info("SetCookie / username:" + username + "/userpwd:" + userpwd)
+					// cookies := &http.Cookie{
+					// 	Name:     "cookie-name",
+					// 	Value:    "encoded",
+					// 	Path:     "/",
+					// 	Secure:   true,
+					// 	HttpOnly: true,
+					// }
+					// http.SetCookie(w, cookie)
 					// return c.Redirect(http.StatusMovedPermanently, c.Scheme()+"://"+c.Request().Host+"/healthsystem/ris/studys.html")
 					// for _, cookie := range c.Cookies() {
 					// 	log4go.Info("--read Cookies- Path" + cookie.Path)
