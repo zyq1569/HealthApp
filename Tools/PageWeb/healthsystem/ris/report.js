@@ -16,9 +16,8 @@ tinymce.init({
         'insertdatetime media table paste code help wordcount',
         'autosave', 'emoticons', 'fullscreen'
     ],
-    // SaveReport |
     toolbar: 'save |' +
-        'undo redo|formatselect| ' +
+        'SaveReport |undo redo|formatselect| ' +
         ' bold italic backcolor| alignleft aligncenter ' +
         ' alignright alignjustify | bullist numlist outdent indent |' +
         ' removeformat|visualchars|emoticons|fullscreen|charmap|GetContent|ClearContent|ReturnPatient|print|help',
@@ -124,10 +123,10 @@ function saveReport2ServerContent() {
         // console.log('content.length < 1');
         return 1;
     }
-    if (g_currentReportData.ReportSave == true) {
-        // console.log('g_currentReportData.ReportSave == true');
-        return 1;
-    }
+    // if (g_currentReportData.ReportSave == true) {
+    //     // console.log('g_currentReportData.ReportSave == true');
+    //     return 1;
+    // }
     //判断是否修改过内容
     if (content == g_currentReportData.ReportContent && g_currentReportOrderIdentity == g_currentReportData.ReportIdentity) {
         // console.log('content == g_currentReportData.ReportContent && g_currentReportOrderIdentity == g_currentReportData.ReportIdentity');
