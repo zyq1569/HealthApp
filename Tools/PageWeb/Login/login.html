@@ -44,8 +44,8 @@
                         console.log(mess);
 
                         if (mess.toUpperCase() == "OK") { //根据返回值进行跳转
-                            //alert(result.Login + "client");
-                            window.location = 'http://' + host + '/healthsystem/ris/studys.html';
+                            //alert('http://' + host + '/healthsystem/ris/studys.html');
+                            location.href = 'http://' + host + '/healthsystem/ris/studys.html';
                             //window.location = 'http://' + host + '/view/imageview.html';
                         } else {
                             alert("message from server: " + mess);

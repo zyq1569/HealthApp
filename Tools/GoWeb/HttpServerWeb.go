@@ -228,6 +228,7 @@ func GetCurrentPathStr() string {
 		return path
 	}
 }
+
 func GetCurrentPath() (string, error) {
 	file, err := exec.LookPath(os.Args[0])
 	if err != nil {
@@ -251,18 +252,14 @@ func GetCurrentPath() (string, error) {
 }
 
 func Healthsystem(c echo.Context) error {
-	// log4go.Info("---AuthLogin---- Healthsystem:" + c.Request().URL.Path)
 	cookie_Auth_OK := false
 	for _, cookie := range c.Cookies() {
-		log4go.Info("--Healthsystem read Cookies-" + cookie.Name)
-		// log4go.Info("--Healthsystem read Cookies-" + cookie.Value)
 		if cookie.Name == "admin" {
 			cookie_Auth_OK = true
 			break
 		}
 	}
 	if cookie_Auth_OK {
-		log4go.Info("Healthsystem: AuthLogin true")
 		req := c.Request()
 		filepath := CONFIG[PAGE_Dir] + req.URL.Path
 		return c.File(filepath)
@@ -274,6 +271,22 @@ func Healthsystem(c echo.Context) error {
 }
 
 func Login(c echo.Context) error {
+	//to do login.html
+	cookie_Auth_OK := false
+	for _, cookie := range c.Cookies() {
+		log4go.Info("--Healthsystem read Cookies-" + cookie.Name)
+		if cookie.Name == "admin" {
+			cookie_Auth_OK = true
+			break
+		}
+	}
+	if cookie_Auth_OK {
+		log4go.Info("No cookie ---->Redirect:" + c.Scheme() + "://" + c.Request().Host + "/login/login.html")
+		//StatusMovedPermanently 301
+		return c.Redirect(http.StatusMovedPermanently, c.Scheme()+"://"+c.Request().Host+"/healthsystem/ris/studys.html")
+	}
+	//------------------------------^
+
 	// log4go.Info("-------Login:" + c.Request().URL.Path)
 	// log4go.Info(c.Request().URL.Path)
 	req := c.Request()
@@ -330,8 +343,13 @@ func LoadViewPage(c echo.Context) error {
 	}
 }
 
+func getCookieHandler(w http.ResponseWriter, r *http.Request) {
+	h := r.Header["Cookie"]
+	log4go.Info("---getCookieHandler---")
+	log4go.Info(w, h)
+}
+
 func AuthLogin(c echo.Context) bool {
-	log4go.Info("---to read --c.Cookies-------AuthLogin-------------------")
 	for _, cookie := range c.Cookies() {
 		log4go.Info("--Cookies-" + cookie.Name)
 		log4go.Info("--Cookies-" + cookie.Value)
@@ -382,6 +400,7 @@ func CheckLogin(c echo.Context) error {
 					cookie.HttpOnly = true
 					cookie.Expires = time.Now().Add(24 * time.Hour)
 					c.SetCookie(cookie)
+					// http.HandleFunc("/setcookie", SetCookieHandler)
 					log4go.Info("SetCookie / username:" + username + "/userpwd:" + userpwd)
 					// cookies := &http.Cookie{
 					// 	Name:     "cookie-name",
@@ -397,6 +416,7 @@ func CheckLogin(c echo.Context) error {
 					// 	log4go.Info("--read Cookies- Name" + cookie.Name)
 					// 	log4go.Info("--read Cookies- Value" + cookie.Value)
 					// }
+					// return c.Redirect(http.StatusMovedPermanently, c.Scheme()+"://"+c.Request().Host+"/healthsystem/ris/studys.html")
 					return c.String(http.StatusOK, "OK")
 				}
 			}
