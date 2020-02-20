@@ -50,7 +50,7 @@ import (
 	"./Units"
 
 	// "fmt"
-	"time"
+	// "time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
@@ -366,7 +366,7 @@ func CheckLogin(c echo.Context) error {
 					cookie.Value = userpwd
 					cookie.Secure = false
 					cookie.HttpOnly = true
-					cookie.Expires = time.Now().Add(2 * time.Hour)
+					// cookie.Expires = time.Now().Add(2 * time.Hour)
 					c.SetCookie(cookie)
 					return c.String(http.StatusOK, "OK")
 				}
