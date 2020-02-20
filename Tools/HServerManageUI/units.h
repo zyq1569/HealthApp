@@ -4,4 +4,5 @@
 #endif // UNITS_H
 #include <QString>
 bool isDirExist(QString fullPath);
+bool CreatDir(QString fullPath);
 bool isFileExist(QString fullFileName);
