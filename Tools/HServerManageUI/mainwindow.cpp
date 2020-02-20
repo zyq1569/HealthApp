@@ -247,7 +247,11 @@ void HMainWindow::on_Dcm2DB_clicked()
 
 void HMainWindow::on_WebServer_clicked()
 {
-    QString goWebServer = m_ExeDir + m_WebServerGoName;
+    QString goWebServer = QDir::currentPath()+"/"+m_WebServerGoName;
+    if (!isFileExist(goWebServer))
+    {
+        goWebServer =  m_ExeDir + m_WebServerGoName;
+    }
     if (isFileExist(goWebServer)){
         //1 mysql: 1 ip 2 name 3 user  4pwd
         //5 page web / 6 port
@@ -294,7 +298,7 @@ void HMainWindow::on_WebServer_clicked()
     }else {
         QString JavaWeb = m_ExeDir + m_WebServerName;
         if (!isFileExist(goWebServer)){
-            QMessageBox::information(this, tr("No web program Exist!"), tr("Exit!"));
+            QMessageBox::information(this, tr("No web program Exist!"), tr("No web program Exist!"));
             return;
         }
         m_MysqlServer = ui->mysqlServerValue->text();
