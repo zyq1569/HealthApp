@@ -31,7 +31,37 @@ HMainWindow::HMainWindow(QWidget *parent) :
     m_WebServerName = "health.jar";
     m_WebServerGoName = "GoWeb.exe";
 
-//    QSettings * configIniRead = new QSettings("config.ini",QSettings::IniFormat);//初始化读取Ini文件对象
+    QString iniDir = Dir+"/config";
+    if (!isDirExist( iniDir))
+    {
+        CreatDir(iniDir);
+    }
+    QString configfilename = iniDir+"/serveruiconfig.ini";
+    if (isFileExist(configfilename))
+    {
+        QSettings configini(configfilename,QSettings::IniFormat);
+        //dicom
+        ui->port_wlm->setText(configini.value("/dicom/worklist_port").toString());
+        ui->port_store->setText(configini.value("/dicom/stroe_port").toString());
+        ui->port_qr->setText(configini.value("/dicom/query_port").toString());
+        ui->Dir_Store->setText(configini.value("/dicom/image_dir").toString());
+
+        //client
+        ui->AEtitle->setText(configini.value("/client/aetitle1").toString());
+        ui->clientPortValue->setText(configini.value("/client/port1").toString());
+        ui->IpAddressValue->setText(configini.value("/client/ip1").toString());
+
+        //web
+        ui->Dir_Pagefile->setText(configini.value("/web/pagefile_dir").toString());
+        ui->port_webserver->setText(configini.value("/web/port").toString());
+        ui->comLevel->setCurrentText(configini.value("/web/log").toString());
+
+        //mariadb
+        ui->mysqlServerValue->setText(configini.value("/mariadb/server").toString());
+        ui->mysqldbNameValue->setText(configini.value("/mariadb/sqlname").toString());
+        ui->mysqlUserNameValue->setText(configini.value("/mariadb/username").toString());
+        ui->mysqlPWDValue->setText(configini.value("/mariadb/sqlpwd").toString());
+    }
 }
 
 HMainWindow::~HMainWindow()
@@ -47,6 +77,41 @@ HMainWindow::~HMainWindow()
             m_pQProcess[i] = nullptr;
         }
     }
+    //---------------------------------------------------------------------
+    QString Dir = QDir::currentPath();
+    QString iniDir = Dir+"/config";
+    if (!isDirExist( iniDir))
+    {
+        CreatDir(iniDir);
+    }
+    QString configfilename = iniDir+"/serveruiconfig.ini";
+    if (!isFileExist(configfilename))
+    {
+
+    }
+    QSettings configini(configfilename,QSettings::IniFormat);
+    //dicom
+    configini.setValue("/dicom/worklist_port",ui->port_wlm->text());
+    configini.setValue("/dicom/stroe_port",ui->port_store->text());
+    configini.setValue("/dicom/query_port",ui->port_qr->text());
+    configini.setValue("/dicom/image_dir",ui->Dir_Store->text());
+
+    //client
+    configini.setValue("/client/aetitle1",ui->AEtitle->text());
+    configini.setValue("/client/port1",ui->clientPortValue->text());
+    configini.setValue("/client/ip1",ui->IpAddressValue->text());
+
+    //web
+    configini.setValue("/web/pagefile_dir",ui->Dir_Pagefile->text());
+    configini.setValue("/web/port",ui->port_webserver->text());
+    configini.setValue("/web/log",ui->comLevel->currentText());
+
+    //mariadb
+    configini.setValue("/mariadb/server",ui->mysqlServerValue->text());
+    configini.setValue("/mariadb/sqlname",ui->mysqldbNameValue->text());
+    configini.setValue("/mariadb/username",ui->mysqlUserNameValue->text());
+    configini.setValue("/mariadb/sqlpwd",ui->mysqlPWDValue->text());
+
     //QMessageBox::information(this, tr("All program!"), tr("All exit ok!"));
 }
 void HMainWindow::on_StoreSCP_clicked()

@@ -39,3 +39,16 @@ bool isFileExist(QString fullFileName)
 //        }
 //        return false;
 }
+
+bool CreatDir(QString fullPath)
+{
+    QDir dir(fullPath); // 注意
+    if(dir.exists())
+    {
+        return true;
+    }else{
+        dir.setPath("");
+        bool ok = dir.mkpath(fullPath);
+        return ok;
+    }
+}
