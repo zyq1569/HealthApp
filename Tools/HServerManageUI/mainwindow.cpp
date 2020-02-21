@@ -1,4 +1,5 @@
 #include <QtWidgets>
+#include <QSqlDatabase>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -61,6 +62,19 @@ HMainWindow::HMainWindow(QWidget *parent) :
         ui->mysqldbNameValue->setText(configini.value("/mariadb/sqlname").toString());
         ui->mysqlUserNameValue->setText(configini.value("/mariadb/username").toString());
         ui->mysqlPWDValue->setText(configini.value("/mariadb/sqlpwd").toString());
+    }
+
+    //----
+    QSqlDatabase d = QSqlDatabase::addDatabase("QMYSQL");
+    d.setHostName("127.0.0.1");
+    d.setDatabaseName("HIT");
+    d.setPort(3306);
+    d.setUserName("root");
+    d.setPassword("root");
+    bool flag = d.open();
+    if(flag)
+    {
+        flag=false;
     }
 }
 
