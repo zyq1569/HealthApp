@@ -76,6 +76,10 @@ HMainWindow::HMainWindow(QWidget *parent) :
     {
         flag=false;
     }
+    else
+    {
+//        QMessageBox::critical(0,QObject::tr("连接数据库失败!!!"), d.lastError().text());
+    }
 }
 
 HMainWindow::~HMainWindow()
