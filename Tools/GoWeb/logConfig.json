@@ -12,8 +12,8 @@
     },{ 
         "enable": false,
         "level": "DEBUG",
-        "filename":"rotate_test.log",
-        "category": "TestRotate",
+        "filename":"rotate.log",
+        "category": "Rotate",
         "pattern": "[%D %T] [%C] [%L] (%S) %M",
         "rotate": true,
         "maxsize": "500M",
@@ -23,7 +23,7 @@
     "sockets": [{
         "enable": false,
         "level": "DEBUG",
-        "category": "TestSocket",
+        "category": "Socket",
         "pattern": "[%D %T] [%C] [%L] (%S) %M",
         "addr": "127.0.0.1:12124",
         "protocol":"udp"
