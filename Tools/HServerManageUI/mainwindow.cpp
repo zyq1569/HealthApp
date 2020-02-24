@@ -311,7 +311,6 @@ void HMainWindow::on_WebServer_clicked()
         //启动java 应用的参数 -jar  filename[app.exe] other
         arg.append("-jar");
         arg.append(m_ExeDir + m_WebServerName);
-
         arg.append("com.mysql.cj.jdbc.Driver");
         QString DriverUrl = "jdbc:mysql://"+m_MysqlServer+":3306/"+m_MysqlDbName+"?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC";
         arg.append(DriverUrl);
