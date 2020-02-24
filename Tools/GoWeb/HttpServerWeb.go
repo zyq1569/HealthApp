@@ -69,6 +69,7 @@ const (
 	//size
 	CONGIG_SIZE = 9
 	//---------------------
+	AppName_path = 0
 	MySQL_IP     = 1
 	MySQL_DBName = 2
 	MySQL_User   = 3
