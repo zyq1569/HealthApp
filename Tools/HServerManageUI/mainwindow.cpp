@@ -308,6 +308,7 @@ void HMainWindow::on_WebServer_clicked()
         QString program = "java";
         QStringList arg;
 
+        //启动java 应用的参数 -jar  filename[app.exe] other
         arg.append("-jar");
         arg.append(m_ExeDir + m_WebServerName);
 
