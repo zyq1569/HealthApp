@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>408</width>
-    <height>465</height>
+    <height>470</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>9</x>
-      <y>27</y>
+      <y>33</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -31,7 +31,7 @@
     <property name="geometry">
      <rect>
       <x>9</x>
-      <y>62</y>
+      <y>68</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>133</y>
+      <y>139</y>
       <width>75</width>
       <height>31</height>
      </rect>
@@ -79,7 +79,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>55</y>
+      <y>61</y>
       <width>75</width>
       <height>31</height>
      </rect>
@@ -101,7 +101,7 @@
     <property name="geometry">
      <rect>
       <x>9</x>
-      <y>141</y>
+      <y>147</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -114,7 +114,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>19</y>
+      <y>25</y>
       <width>75</width>
       <height>31</height>
      </rect>
@@ -136,7 +136,7 @@
     <property name="geometry">
      <rect>
       <x>145</x>
-      <y>25</y>
+      <y>31</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -152,7 +152,7 @@
     <property name="geometry">
      <rect>
       <x>145</x>
-      <y>61</y>
+      <y>67</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -168,7 +168,7 @@
     <property name="geometry">
      <rect>
       <x>145</x>
-      <y>99</y>
+      <y>105</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -185,7 +185,7 @@
      <rect>
       <x>3</x>
       <y>0</y>
-      <width>61</width>
+      <width>181</width>
       <height>21</height>
      </rect>
     </property>
@@ -198,14 +198,14 @@
      </font>
     </property>
     <property name="text">
-     <string>Dicom</string>
+     <string>Dicom&amp;Ris Server</string>
     </property>
    </widget>
    <widget class="QPushButton" name="QRSCP">
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>93</y>
+      <y>99</y>
       <width>75</width>
       <height>31</height>
      </rect>
@@ -227,7 +227,7 @@
     <property name="geometry">
      <rect>
       <x>9</x>
-      <y>100</y>
+      <y>106</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -510,7 +510,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>162</y>
+      <y>168</y>
       <width>391</width>
       <height>16</height>
      </rect>
@@ -625,6 +625,19 @@
      <string>MySql</string>
     </property>
    </widget>
+   <widget class="Line" name="line_3">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>15</y>
+      <width>411</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
    <zorder>groupBox_2</zorder>
    <zorder>groupBox_3</zorder>
    <zorder>groupBox</zorder>
@@ -662,6 +675,7 @@
    <zorder>line_2</zorder>
    <zorder>label_PagefileDir</zorder>
    <zorder>Dir_Pagefile</zorder>
+   <zorder>line_3</zorder>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
