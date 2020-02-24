@@ -125,7 +125,9 @@ extern unsigned int mariadb_deinitialize_ssl;
   { \
     (a)->net.last_errno= (b);\
     strncpy((a)->net.sqlstate, (c), SQLSTATE_LENGTH);\
+    (a)->net.sqlstate[SQLSTATE_LENGTH]= 0;\
     strncpy((a)->net.last_error, (d) ? (d) : ER((b)), MYSQL_ERRMSG_SIZE - 1);\
+    (a)->net.last_error[MYSQL_ERRMSG_SIZE - 1]= 0;\
   }
 
 /* For mysql_async.c */
@@ -138,6 +140,7 @@ extern const char *SQLSTATE_UNKNOWN;
     (a)->net.last_errno= 0;\
     strcpy((a)->net.sqlstate, "00000");\
     (a)->net.last_error[0]= '\0';\
+    (a)->net.extension->extended_errno= 0;\
   }
 
 #define MYSQL_COUNT_ERROR (~(unsigned long long) 0)
@@ -233,7 +236,8 @@ extern const char *SQLSTATE_UNKNOWN;
     MARIADB_OPT_MULTI_RESULTS,
     MARIADB_OPT_MULTI_STATEMENTS,
     MARIADB_OPT_INTERACTIVE,
-    MARIADB_OPT_PROXY_HEADER
+    MARIADB_OPT_PROXY_HEADER,
+    MARIADB_OPT_IO_WAIT
   };
 
   enum mariadb_value {
