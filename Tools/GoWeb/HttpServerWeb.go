@@ -283,7 +283,7 @@ func Login(c echo.Context) error {
 }
 
 func LoadImageFile(c echo.Context) error {
-	// log4go.Info(c.Request().URL.Path)
+	// log4go.Info("-------" + c.Request().URL.Path)
 	studyuid := c.FormValue("studyuid")
 	image_hash_dir := Units.GetStudyHashDir(studyuid)
 	filepath := CONFIG[IMAGE_Dir] + image_hash_dir
@@ -310,8 +310,10 @@ func LoadImageFile(c echo.Context) error {
 			return c.File(filepath)
 		}
 	}
-	log4go.Info("No filepath:" + filepath)
-	return c.String(http.StatusOK, "No file! maybe remove!")
+	// log4go.Info("No filepath:" + filepath)
+	// return c.String(http.StatusOK, "No file! maybe remove!")
+	// auto to login.html
+	return c.Redirect(http.StatusMovedPermanently, c.Scheme()+"://"+c.Request().Host+"/login/login.html")
 }
 
 func LoadViewPage(c echo.Context) error {
