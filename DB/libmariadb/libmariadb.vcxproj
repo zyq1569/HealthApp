@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{130C3F1E-FA64-37C8-BB64-F06763FFAB40}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>libmariadb</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\code\C++\HealthApp\lib\mysql\win32</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">mariadbclient.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libmariadb</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\code\C++\mariadb-connector-vc32\libmariadb\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">mariadbclient.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libmariadb</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\code\C++\mariadb-connector-vc32\libmariadb\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">mariadbclient.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">libmariadb</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\code\C++\mariadb-connector-vc32\libmariadb\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">mariadbclient.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">libmariadb</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_COMPRESS;LIBMARIADB;THREAD;WIN32_LEAN_AND_MEAN;MARIADB_SYSTEM_TYPE="Windows";MARIADB_MACHINE_TYPE="AMD64";HAVE_DLOPEN;_CRT_SECURE_NO_WARNINGS;SIZEOF_CHARP=4;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;HAVE_COMPRESS;LIBMARIADB;THREAD;WIN32_LEAN_AND_MEAN;MARIADB_SYSTEM_TYPE=\"Windows\";MARIADB_MACHINE_TYPE=\"AMD64\";HAVE_DLOPEN;_CRT_SECURE_NO_WARNINGS;SIZEOF_CHARP=4;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DBUG_OFF;HAVE_COMPRESS;LIBMARIADB;THREAD;WIN32_LEAN_AND_MEAN;MARIADB_SYSTEM_TYPE="Windows";MARIADB_MACHINE_TYPE="AMD64";HAVE_DLOPEN;_CRT_SECURE_NO_WARNINGS;SIZEOF_CHARP=4;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DBUG_OFF;HAVE_COMPRESS;LIBMARIADB;THREAD;WIN32_LEAN_AND_MEAN;MARIADB_SYSTEM_TYPE=\"Windows\";MARIADB_MACHINE_TYPE=\"AMD64\";HAVE_DLOPEN;_CRT_SECURE_NO_WARNINGS;SIZEOF_CHARP=4;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_COMPRESS;LIBMARIADB;THREAD;WIN32_LEAN_AND_MEAN;MARIADB_SYSTEM_TYPE="Windows";MARIADB_MACHINE_TYPE="AMD64";HAVE_DLOPEN;_CRT_SECURE_NO_WARNINGS;SIZEOF_CHARP=4;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_COMPRESS;LIBMARIADB;THREAD;WIN32_LEAN_AND_MEAN;MARIADB_SYSTEM_TYPE=\"Windows\";MARIADB_MACHINE_TYPE=\"AMD64\";HAVE_DLOPEN;_CRT_SECURE_NO_WARNINGS;SIZEOF_CHARP=4;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DBUG_OFF;HAVE_COMPRESS;LIBMARIADB;THREAD;WIN32_LEAN_AND_MEAN;MARIADB_SYSTEM_TYPE="Windows";MARIADB_MACHINE_TYPE="AMD64";HAVE_DLOPEN;_CRT_SECURE_NO_WARNINGS;SIZEOF_CHARP=4;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DBUG_OFF;HAVE_COMPRESS;LIBMARIADB;THREAD;WIN32_LEAN_AND_MEAN;MARIADB_SYSTEM_TYPE=\"Windows\";MARIADB_MACHINE_TYPE=\"AMD64\";HAVE_DLOPEN;_CRT_SECURE_NO_WARNINGS;SIZEOF_CHARP=4;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\mariadb-connector-vc32\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth;D:\code\C++\mariadb-connector-c-3.1.7-src\include;D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb;D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv;D:\code\C++\mariadb-connector-c-3.1.7-src\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule D:/code/C++/mariadb-connector-c-3.1.7-src/libmariadb/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SD:/code/C++/mariadb-connector-c-3.1.7-src -BD:/code/C++/mariadb-connector-vc32 --check-stamp-file D:/code/C++/mariadb-connector-vc32/libmariadb/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\export.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\sign.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\symlink.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_client_plugin.c.in;D:\code\C++\mariadb-connector-c-3.1.7-src\win\resource.rc.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\code\C++\mariadb-connector-vc32\libmariadb\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule D:/code/C++/mariadb-connector-c-3.1.7-src/libmariadb/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SD:/code/C++/mariadb-connector-c-3.1.7-src -BD:/code/C++/mariadb-connector-vc32 --check-stamp-file D:/code/C++/mariadb-connector-vc32/libmariadb/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\export.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\sign.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\symlink.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_client_plugin.c.in;D:\code\C++\mariadb-connector-c-3.1.7-src\win\resource.rc.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\code\C++\mariadb-connector-vc32\libmariadb\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule D:/code/C++/mariadb-connector-c-3.1.7-src/libmariadb/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SD:/code/C++/mariadb-connector-c-3.1.7-src -BD:/code/C++/mariadb-connector-vc32 --check-stamp-file D:/code/C++/mariadb-connector-vc32/libmariadb/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\export.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\sign.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\symlink.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_client_plugin.c.in;D:\code\C++\mariadb-connector-c-3.1.7-src\win\resource.rc.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\code\C++\mariadb-connector-vc32\libmariadb\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule D:/code/C++/mariadb-connector-c-3.1.7-src/libmariadb/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SD:/code/C++/mariadb-connector-c-3.1.7-src -BD:/code/C++/mariadb-connector-vc32 --check-stamp-file D:/code/C++/mariadb-connector-vc32/libmariadb/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\export.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\sign.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\cmake\symlink.cmake;D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_client_plugin.c.in;D:\code\C++\mariadb-connector-c-3.1.7-src\win\resource.rc.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\code\C++\mariadb-connector-vc32\libmariadb\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth\my_auth.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\auth\old_password.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\plugins\pvio\pvio_socket.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_array.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_charset.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_hash.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_net.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\mariadb_charset.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_time.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_default.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_errmsg.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\mariadb_lib.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_list.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_pvio.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_tls.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_alloc.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_compress.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_init.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_password.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_ll2str.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_sha1.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\mariadb_stmt.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_loaddata.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_stmt_codec.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_string.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_dtoa.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\mariadb_rpl.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-vc32\libmariadb\ma_client_plugin.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_io.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\win-iconv\win_iconv.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\win32_errmsg.c" />
+    <ClInclude Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\win32_errmsg.h" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\adler32.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\compress.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\crc32.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\deflate.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\gzclose.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\gzlib.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\gzread.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\gzwrite.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\infback.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\inffast.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\inflate.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\inftrees.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\trees.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\uncompr.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\zlib\zutil.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\mariadb_dyncol.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\mariadb_async.c" />
+    <ClCompile Include="D:\code\C++\mariadb-connector-c-3.1.7-src\libmariadb\ma_context.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="libmariadb.def" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

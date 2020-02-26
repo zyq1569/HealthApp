@@ -17,7 +17,7 @@ PRIVATE_STORESCP_DECLARATIONS
 #endif
 
 //-------------------------------------------------------------------------------
-static OFLogger maridbLogger = OFLog::getLogger("mysql.MariaDb" OFFIS_CONSOLE_APPLICATION);
+//static OFLogger maridbLogger = OFLog::getLogger("mysql.MariaDb" OFFIS_CONSOLE_APPLICATION);
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialog
@@ -160,8 +160,8 @@ BOOL CTestMariaDbAppDlg::OnInitDialog()
 	GetDlgItem(IDC_DATANAME)->SetWindowText(_T("HIT"));
 
 	GetDlgItem(IDC_SQL)->SetWindowText(_T("SELECT * FROM H_study"));
-    OFString tempstr = "默认配置信息";
-    OFLOG_INFO(maridbLogger, "---------argv[]:" + tempstr + " ----------------------");
+    //OFString tempstr = "默认配置信息";
+    //OFLOG_INFO(maridbLogger, "---------argv[]:" + tempstr + " ----------------------");
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
