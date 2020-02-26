@@ -1,0 +1,1 @@
+version = mariadb-connector-c-3.1.7-src
