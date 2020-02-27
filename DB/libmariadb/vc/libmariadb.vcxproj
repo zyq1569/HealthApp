@@ -260,9 +260,6 @@
     <ClCompile Include="..\..\mariadb\mariadb_async.c" />
     <ClCompile Include="..\..\mariadb\ma_context.c" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="libmariadb.def" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
