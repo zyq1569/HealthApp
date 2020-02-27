@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmariadb", "libmariadb.vcxproj", "{130C3F1E-FA64-37C8-BB64-F06763FFAB40}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestMariaDbApp", "..\..\TestMariaDbApp\TestMariaDbApp.vcxproj", "{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -29,6 +31,22 @@ Global
 		{130C3F1E-FA64-37C8-BB64-F06763FFAB40}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
 		{130C3F1E-FA64-37C8-BB64-F06763FFAB40}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
 		{130C3F1E-FA64-37C8-BB64-F06763FFAB40}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Debug|Win32.Build.0 = Debug|Win32
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Debug|x64.ActiveCfg = Debug|x64
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Debug|x64.Build.0 = Debug|x64
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.MinSizeRel|x64.ActiveCfg = Release|x64
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.MinSizeRel|x64.Build.0 = Release|x64
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Release|Win32.ActiveCfg = Release|Win32
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Release|Win32.Build.0 = Release|Win32
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Release|x64.ActiveCfg = Release|x64
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.Release|x64.Build.0 = Release|x64
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.RelWithDebInfo|Win32.Build.0 = Release|Win32
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{8B3D8EBA-4FAA-44E2-A8CB-A4FA0DB0C87F}.RelWithDebInfo|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
