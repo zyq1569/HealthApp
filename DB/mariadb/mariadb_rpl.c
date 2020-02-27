@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <zlib.h>
+#include "./zlib/zlib.h"
 #include <mariadb_rpl.h>
 
 static int rpl_alloc_string(MARIADB_RPL_EVENT *event,

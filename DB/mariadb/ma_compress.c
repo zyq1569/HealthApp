@@ -22,7 +22,7 @@
 #ifdef HAVE_COMPRESS
 #include <ma_sys.h>
 #include <ma_string.h>
-#include <zlib.h>
+#include "./zlib/zlib.h"
 
 /*
 ** This replaces the packet with a compressed packet
