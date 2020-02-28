@@ -30,10 +30,10 @@
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/mariadb-connector-CB/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/mariadb-connector-CB/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/mariadb-connector-CB/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/mariadb-connector-CB/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;./libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;./libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;./libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;./libmariadb/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
@@ -62,10 +62,10 @@
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/mariadb-connector-CB/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/mariadb-connector-CB/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/mariadb-connector-CB/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/mariadb-connector-CB/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;./libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;./libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;./libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;./libmariadb/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>

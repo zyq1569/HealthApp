@@ -343,18 +343,18 @@ CMakeFiles/pvio_npipe.dir/clean:
 # Target rules for target libmariadb/CMakeFiles/mariadbclient.dir
 
 # All Build rule for target.
-libmariadb/CMakeFiles/mariadbclient.dir/all:
-	$(MAKE) -f libmariadb\CMakeFiles\mariadbclient.dir\build.make libmariadb/CMakeFiles/mariadbclient.dir/depend
-	$(MAKE) -f libmariadb\CMakeFiles\mariadbclient.dir\build.make libmariadb/CMakeFiles/mariadbclient.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\code\C++\mariadb-connector-CB\CMakeFiles --progress-num=49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90 "Built target mariadbclient"
-.PHONY : libmariadb/CMakeFiles/mariadbclient.dir/all
+# libmariadb/CMakeFiles/mariadbclient.dir/all:
+# 	$(MAKE) -f libmariadb\CMakeFiles\mariadbclient.dir\build.make libmariadb/CMakeFiles/mariadbclient.dir/depend
+# 	$(MAKE) -f libmariadb\CMakeFiles\mariadbclient.dir\build.make libmariadb/CMakeFiles/mariadbclient.dir/build
+# 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\code\C++\mariadb-connector-CB\CMakeFiles --progress-num=49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90 "Built target mariadbclient"
+# .PHONY : libmariadb/CMakeFiles/mariadbclient.dir/all
 
 # Build rule for subdir invocation for target.
-libmariadb/CMakeFiles/mariadbclient.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\code\C++\mariadb-connector-CB\CMakeFiles 42
-	$(MAKE) -f CMakeFiles\Makefile2 libmariadb/CMakeFiles/mariadbclient.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\code\C++\mariadb-connector-CB\CMakeFiles 0
-.PHONY : libmariadb/CMakeFiles/mariadbclient.dir/rule
+# libmariadb/CMakeFiles/mariadbclient.dir/rule: cmake_check_build_system
+# 	$(CMAKE_COMMAND) -E cmake_progress_start D:\code\C++\mariadb-connector-CB\CMakeFiles 42
+# 	$(MAKE) -f CMakeFiles\Makefile2 libmariadb/CMakeFiles/mariadbclient.dir/all
+# 	$(CMAKE_COMMAND) -E cmake_progress_start D:\code\C++\mariadb-connector-CB\CMakeFiles 0
+# .PHONY : libmariadb/CMakeFiles/mariadbclient.dir/rule
 
 # Convenience name for target.
 mariadbclient: libmariadb/CMakeFiles/mariadbclient.dir/rule

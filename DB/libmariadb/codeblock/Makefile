@@ -1808,7 +1808,6 @@ help:
 	@echo ... install/local
 	@echo ... install
 	@echo ... install/strip
-	@echo ... mariadbclient
 	@echo ... libmariadb
 	@echo ... libmariadb/get_password.obj
 	@echo ... libmariadb/get_password.i
