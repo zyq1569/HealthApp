@@ -47,10 +47,10 @@ RM = E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -E remove 
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = D:\code\C++\mariadb-connector-c-3.1.7-src
+CMAKE_SOURCE_DIR = D:\code\C++\HealthApp\DB\mariadb
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = D:\code\C++\mariadb-connector-CB
+CMAKE_BINARY_DIR = D:\code\C++\HealthApp\DB\libmariadb\codeblock
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -58,7 +58,7 @@ CMAKE_BINARY_DIR = D:\code\C++\mariadb-connector-CB
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
-	E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cpack.exe --config ./CPackSourceConfig.cmake D:/code/C++/mariadb-connector-CB/CPackSourceConfig.cmake
+	E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cpack.exe --config ./CPackSourceConfig.cmake D:/code/C++/HealthApp/DB/libmariadb/codeblock/CPackSourceConfig.cmake
 .PHONY : package_source
 
 # Special rule for the target package_source
@@ -147,9 +147,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\code\C++\mariadb-connector-CB\CMakeFiles D:\code\C++\mariadb-connector-CB\CMakeFiles\progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\code\C++\HealthApp\DB\libmariadb\codeblock\CMakeFiles D:\code\C++\HealthApp\DB\libmariadb\codeblock\CMakeFiles\progress.marks
 	$(MAKE) -f CMakeFiles\Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start D:\code\C++\mariadb-connector-CB\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\code\C++\HealthApp\DB\libmariadb\codeblock\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -1808,6 +1808,7 @@ help:
 	@echo ... install/local
 	@echo ... install
 	@echo ... install/strip
+	@echo ... mariadbclient
 	@echo ... libmariadb
 	@echo ... libmariadb/get_password.obj
 	@echo ... libmariadb/get_password.i
