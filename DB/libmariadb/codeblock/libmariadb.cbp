@@ -8,7 +8,7 @@
 		<Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\include\;CMake Files\plugins\;CMake Files\plugins\auth\;CMake Files\plugins\connection\;CMake Files\plugins\io\;CMake Files\plugins\pvio\;CMake Files\win\;CMake Files\libmariadb\;" />
 		<Build>
 			<Target title="libmariadb">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadb.a" prefix_auto="0" extension_auto="0" />
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadbclient.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="./" />
 				<Option type="2" />
@@ -40,7 +40,7 @@
 				</MakeCommands>
 			</Target>
 			<Target title="libmariadb/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadb.a" prefix_auto="0" extension_auto="0" />
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadbclient.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="./" />
 				<Option type="2" />
