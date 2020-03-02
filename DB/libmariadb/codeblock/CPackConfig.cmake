@@ -39,7 +39,7 @@ set(CPACK_DEFAULT_PACKAGE_DESCRIPTION_FILE "E:/Tool/Downloads/Dev_tools/cmake-3.
 set(CPACK_DEFAULT_PACKAGE_DESCRIPTION_SUMMARY "mariadb-connector-c built using CMake")
 set(CPACK_GENERATOR "ZIP")
 set(CPACK_INSTALL_CMAKE_PROJECTS "D:/code/C++/HealthApp/DB/libmariadb/codeblock;mariadb-connector-c;ALL;/")
-set(CPACK_INSTALL_PREFIX "C:/Program Files (x86)/mariadb-connector-c")
+set(CPACK_INSTALL_PREFIX "C:/Program Files (x86)/mariadb")
 set(CPACK_MODULE_PATH "")
 set(CPACK_NSIS_DISPLAY_NAME "mariadb_connector_c 3.1.7")
 set(CPACK_NSIS_INSTALLER_ICON_CODE "")

@@ -1,641 +1,1098 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="6" />
+	<FileVersion major="1" minor="6"/>
 	<Project>
-		<Option title="libmariadb" />
-		<Option makefile_is_custom="1" />
-		<Option compiler="gcc" />
-		<Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\include\;CMake Files\plugins\;CMake Files\plugins\auth\;CMake Files\plugins\connection\;CMake Files\plugins\io\;CMake Files\plugins\pvio\;CMake Files\win\;CMake Files\libmariadb\;" />
+		<Option title="mariadb-connector-c"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\include\;CMake Files\plugins\;CMake Files\plugins\auth\;CMake Files\plugins\connection\;CMake Files\plugins\io\;CMake Files\plugins\pvio\;CMake Files\win\;CMake Files\libmariadb\;"/>
 		<Build>
-			<Target title="libmariadb">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadbclient.a" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
-				<Option object_output="./" />
-				<Option type="2" />
-				<Option compiler="gcc" />
+			<Target title="all">
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="mysql_clear_password">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/mysql_clear_password.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
-					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
-					<Add option="-DHAVE_DLOPEN" />
-					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add option="-DSIZEOF_CHARP=8" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/libmariadb" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/win-iconv" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/zlib" />
-					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
-					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
-					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
-					<AskRebuildNeeded command="$make -q -f $makefile $target" />
-					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 mysql_clear_password"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="mysql_clear_password/fast">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/mysql_clear_password.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 mysql_clear_password/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package_source">
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 package_source"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="dialog">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/dialog.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 dialog"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="dialog/fast">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/dialog.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 dialog/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="auth_gssapi_client">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/auth_gssapi_client.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 auth_gssapi_client"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="auth_gssapi_client/fast">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/auth_gssapi_client.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 auth_gssapi_client/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pvio_shmem">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/pvio_shmem.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_shmem"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pvio_shmem/fast">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/pvio_shmem.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_shmem/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="client_ed25519">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/client_ed25519.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 client_ed25519"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="client_ed25519/fast">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/client_ed25519.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 client_ed25519/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="caching_sha2_password">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/caching_sha2_password.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 caching_sha2_password"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="caching_sha2_password/fast">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/caching_sha2_password.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 caching_sha2_password/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="sha256_password">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/sha256_password.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 sha256_password"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="sha256_password/fast">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/sha256_password.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 sha256_password/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pvio_npipe">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/pvio_npipe.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_npipe"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pvio_npipe/fast">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/pvio_npipe.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_npipe/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package">
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 package"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="mariadbclient">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadbclient.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add option="-DSIZEOF_CHARP=8"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/libmariadb"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/win-iconv"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/zlib"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="mariadbclient/fast">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadbclient.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add option="-DSIZEOF_CHARP=8"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/libmariadb"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/win-iconv"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/zlib"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="libmariadb">
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadb.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add option="-DSIZEOF_CHARP=8"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/libmariadb"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/win-iconv"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/zlib"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 libmariadb"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="libmariadb/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadbclient.a" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
-				<Option object_output="./" />
-				<Option type="2" />
-				<Option compiler="gcc" />
+				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadb.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
-					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
-					<Add option="-DHAVE_DLOPEN" />
-					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add option="-DSIZEOF_CHARP=8" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/libmariadb" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/win-iconv" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/zlib" />
-					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
-					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
-					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
+					<Add option="-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;"/>
+					<Add option="-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;"/>
+					<Add option="-DHAVE_DLOPEN"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add option="-DSIZEOF_CHARP=8"/>
+					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/libmariadb"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/win-iconv"/>
+					<Add directory="D:/code/C++/HealthApp/DB/mariadb/zlib"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
-					<AskRebuildNeeded command="$make -q -f $makefile $target" />
-					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+					<Build command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 libmariadb/fast"/>
+					<CompileFile command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="../../mariadb/CMakeLists.txt">
-			<Option virtualFolder="CMake Files/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/ma_client_plugin.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/CheckFunctions.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/mariadbclient.def">
+			<Option target="libmariadb"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/CheckIncludeFiles.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/win/auth_gssapi_client.rc">
+			<Option target="auth_gssapi_client"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/CheckTypes.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/win/caching_sha2_password.rc">
+			<Option target="caching_sha2_password"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/ConnectorName.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/win/client_ed25519.rc">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/SearchLibrary.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/win/dialog.rc">
+			<Option target="dialog"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/export.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/win/libmariadb.rc">
+			<Option target="libmariadb"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/install.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/win/mysql_clear_password.rc">
+			<Option target="mysql_clear_password"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/install_plugins.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/win/pvio_npipe.rc">
+			<Option target="pvio_npipe"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/misc.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/win/pvio_shmem.rc">
+			<Option target="pvio_shmem"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/plugins.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/libmariadb/codeblock/win/sha256_password.rc">
+			<Option target="sha256_password"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/sign.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/get_password.c">
+			<Option target="dialog"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/symlink.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_alloc.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/cmake/version_info.cmake">
-			<Option virtualFolder="CMake Files/cmake/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_array.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/include/CMakeLists.txt">
-			<Option virtualFolder="CMake Files/include/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_charset.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/include/ma_config.h.in">
-			<Option virtualFolder="CMake Files/include/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_compress.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/include/mariadb_version.h.in">
-			<Option virtualFolder="CMake Files/include/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_context.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/CMakeLists.txt">
-			<Option virtualFolder="CMake Files/libmariadb/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_default.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/get_password.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_dtoa.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_alloc.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_errmsg.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_array.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_hash.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_charset.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_init.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_client_plugin.c.in">
-			<Option virtualFolder="CMake Files/libmariadb/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_io.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_compress.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_list.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_context.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_ll2str.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_default.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_loaddata.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_dtoa.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_net.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_errmsg.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_password.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_hash.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_pvio.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_init.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_sha1.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_io.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_stmt_codec.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_list.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_string.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_ll2str.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_time.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_loaddata.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_tls.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_net.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/mariadb_async.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_password.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/mariadb_charset.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_pvio.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/mariadb_dyncol.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_sha1.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/mariadb_lib.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_stmt_codec.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/mariadb_rpl.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_string.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/mariadb_stmt.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_time.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/secure/win_crypt.c">
+			<Option target="client_ed25519"/>
+			<Option target="caching_sha2_password"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/ma_tls.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/win32_errmsg.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/mariadb_async.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/win32_errmsg.h">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/mariadb_charset.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/auth_gssapi_client.c">
+			<Option target="auth_gssapi_client"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/mariadb_dyncol.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/caching_sha2_pw.c">
+			<Option target="caching_sha2_password"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/mariadb_lib.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/dialog.c">
+			<Option target="dialog"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/mariadb_rpl.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ed25519.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/mariadb_stmt.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/mariadb_cleartext.c">
+			<Option target="mysql_clear_password"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/secure/win_crypt.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/my_auth.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/win32_errmsg.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/old_password.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/libmariadb/win32_errmsg.h">
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_0.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/CMakeLists.txt">
-			<Option virtualFolder="CMake Files/plugins/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_1.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/CMakeLists.txt">
-			<Option virtualFolder="CMake Files/plugins/auth/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_add.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/auth_gssapi_client.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_cmov.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/caching_sha2_pw.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_copy.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/dialog.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_frombytes.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ed25519.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_invert.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/mariadb_cleartext.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_isnegative.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/my_auth.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_isnonzero.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/old_password.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_mul.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_0.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_neg.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_1.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_pow22523.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_add.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_sq.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_cmov.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_sq2.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_copy.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_sub.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_frombytes.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/fe_tobytes.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_invert.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_add.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_isnegative.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_add.h">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_isnonzero.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_double_scalarmult.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_mul.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_frombytes.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_neg.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_madd.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_pow22523.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_madd.h">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_sq.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_msub.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_sq2.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_msub.h">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_sub.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_p1p1_to_p2.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/fe_tobytes.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_p1p1_to_p3.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_add.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_p2_0.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_add.h">
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_p2_dbl.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_double_scalarmult.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_p2_dbl.h">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_frombytes.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_p3_0.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_madd.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_p3_dbl.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_madd.h">
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_p3_to_cached.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_msub.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_p3_to_p2.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_msub.h">
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_p3_tobytes.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_p1p1_to_p2.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_precomp_0.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_p1p1_to_p3.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_scalarmult_base.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_p2_0.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_sub.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_p2_dbl.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_sub.h">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_p2_dbl.h">
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/ge_tobytes.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_p3_0.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/keypair.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_p3_dbl.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/open.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_p3_to_cached.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/sc_muladd.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_p3_to_p2.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/sc_reduce.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_p3_tobytes.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/sign.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_precomp_0.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10/verify.c">
+			<Option target="client_ed25519"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_scalarmult_base.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/sha256_pw.c">
+			<Option target="sha256_password"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_sub.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/sspi_client.c">
+			<Option target="auth_gssapi_client"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_sub.h">
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/sspi_errmsg.c">
+			<Option target="auth_gssapi_client"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/ge_tobytes.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/plugin.def">
+			<Option target="mysql_clear_password"/>
+			<Option target="dialog"/>
+			<Option target="auth_gssapi_client"/>
+			<Option target="pvio_shmem"/>
+			<Option target="client_ed25519"/>
+			<Option target="caching_sha2_password"/>
+			<Option target="sha256_password"/>
+			<Option target="pvio_npipe"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/keypair.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio/pvio_npipe.c">
+			<Option target="pvio_npipe"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/open.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio/pvio_shmem.c">
+			<Option target="pvio_shmem"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/sc_muladd.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio/pvio_socket.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/sc_reduce.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/win-iconv/win_iconv.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/sign.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/adler32.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/ref10/verify.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/compress.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/sha256_pw.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/crc32.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/sspi_client.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/crc32.h">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/auth/sspi_errmsg.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/deflate.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/connection/CMakeLists.txt">
-			<Option virtualFolder="CMake Files/plugins/connection/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/deflate.h">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/io/CMakeLists.txt">
-			<Option virtualFolder="CMake Files/plugins/io/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/gzclose.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/plugin.def">
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/gzlib.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/pvio/CMakeLists.txt">
-			<Option virtualFolder="CMake Files/plugins/pvio/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/gzread.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/pvio/pvio_npipe.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/gzwrite.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/pvio/pvio_shmem.c">
-			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/infback.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/plugins/pvio/pvio_socket.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/inffast.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/win-iconv/win_iconv.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/inffast.h">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/win/resource.rc.in">
-			<Option virtualFolder="CMake Files/win/" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/inflate.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/adler32.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/inflate.h">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/compress.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/inftrees.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/crc32.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/inftrees.h">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/crc32.h">
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/trees.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/deflate.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/trees.h">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/deflate.h">
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/uncompr.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/gzclose.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/zutil.c">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/gzlib.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/zlib/zutil.h">
+			<Option target="mariadbclient"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/gzread.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/gzwrite.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/CheckFunctions.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/infback.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/CheckIncludeFiles.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/inffast.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/CheckTypes.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/inffast.h">
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/ConnectorName.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/inflate.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/SearchLibrary.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/inflate.h">
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/export.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/inftrees.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/install.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/inftrees.h">
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/install_plugins.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/trees.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/misc.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/trees.h">
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/plugins.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/uncompr.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/sign.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/zutil.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/symlink.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="../../mariadb/zlib/zutil.h">
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/cmake/version_info.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
 		</Unit>
-		<Unit filename="libmariadb/ma_client_plugin.c">
-			<Option compilerVar="CC" />
-			<Option target="libmariadb" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/include/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\include\"/>
 		</Unit>
-		<Unit filename="libmariadb/mariadbclient.def">
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/include/ma_config.h.in">
+			<Option virtualFolder="CMake Files\include\"/>
 		</Unit>
-		<Unit filename="win/auth_gssapi_client.rc">
-			<Option compilerVar="WINDRES" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/include/mariadb_version.h.in">
+			<Option virtualFolder="CMake Files\include\"/>
 		</Unit>
-		<Unit filename="win/caching_sha2_password.rc">
-			<Option compilerVar="WINDRES" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\plugins\"/>
 		</Unit>
-		<Unit filename="win/client_ed25519.rc">
-			<Option compilerVar="WINDRES" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\plugins\auth\"/>
 		</Unit>
-		<Unit filename="win/dialog.rc">
-			<Option compilerVar="WINDRES" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/connection/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\plugins\connection\"/>
 		</Unit>
-		<Unit filename="win/libmariadb.rc">
-			<Option compilerVar="WINDRES" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/io/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\plugins\io\"/>
 		</Unit>
-		<Unit filename="win/mysql_clear_password.rc">
-			<Option compilerVar="WINDRES" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\plugins\pvio\"/>
 		</Unit>
-		<Unit filename="win/pvio_npipe.rc">
-			<Option compilerVar="WINDRES" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/win/resource.rc.in">
+			<Option virtualFolder="CMake Files\win\"/>
 		</Unit>
-		<Unit filename="win/pvio_shmem.rc">
-			<Option compilerVar="WINDRES" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libmariadb\"/>
 		</Unit>
-		<Unit filename="win/sha256_password.rc">
-			<Option compilerVar="WINDRES" />
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="D:/code/C++/HealthApp/DB/mariadb/libmariadb/ma_client_plugin.c.in">
+			<Option virtualFolder="CMake Files\libmariadb\"/>
 		</Unit>
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
