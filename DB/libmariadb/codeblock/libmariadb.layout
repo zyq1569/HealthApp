@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
-	<ActiveTarget name="libmariadb" />
-	<File name="..\..\mariadb\plugins\auth\ed25519.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1807" topLine="54" />
-		</Cursor>
-	</File>
+	<ActiveTarget name="mariadbclient/fast" />
 	<File name="..\..\mariadb\libmariadb\win32_errmsg.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1402" topLine="27" />
+		</Cursor>
+	</File>
+	<File name="libmariadb\mariadbclient.def" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3560" topLine="147" />
+		</Cursor>
+	</File>
+	<File name="..\..\mariadb\plugins\auth\ed25519.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1807" topLine="54" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
