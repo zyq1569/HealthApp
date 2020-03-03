@@ -152,6 +152,7 @@ mysql_get_ssl_cipher
 mysql_hex_string
 mysql_info
 mysql_init
+mysql_init@4
 mysql_insert_id
 mysql_kill
 mysql_list_dbs
