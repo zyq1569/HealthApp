@@ -296,6 +296,8 @@ func LoadImageFile(c echo.Context) error {
 		filepath += ".json"
 		if IsFileExists(filepath) {
 			return c.File(filepath)
+		} else {
+			log4go.Error("No filepath:" + filepath)
 		}
 	} else {
 		seriesuid := c.FormValue("seriesuid")
@@ -307,6 +309,8 @@ func LoadImageFile(c echo.Context) error {
 		filepath += ".dcm"
 		if IsFileExists(filepath) {
 			return c.File(filepath)
+		} else {
+			log4go.Error("No filepath:" + filepath)
 		}
 	}
 	// log4go.Info("No filepath:" + filepath)
