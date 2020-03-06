@@ -38,7 +38,6 @@ import (
 
 	// "flag"
 	"net/http"
-
 	// "os"
 	"strconv"
 	"strings"
@@ -375,6 +374,9 @@ func CheckLogin(c echo.Context) error {
 				}
 			}
 		}
+	} else {
+		log4go.Info("OpenDB error! username:" + username + "/userpwd:" + userpwd)
+		return c.String(http.StatusOK, "OpenDB error! username or userpwd error! fail")
 	}
 	log4go.Info("username:" + username + "/userpwd:" + userpwd)
 	return c.String(http.StatusOK, "username or userpwd error! fail")
