@@ -1,0 +1,1 @@
+vmhgfs-fuse .host:/win10 /home/zyq/windows_share
