@@ -313,9 +313,9 @@
    <widget class="QLineEdit" name="mysqlServerValue">
     <property name="geometry">
      <rect>
-      <x>85</x>
+      <x>87</x>
       <y>236</y>
-      <width>81</width>
+      <width>100</width>
       <height>21</height>
      </rect>
     </property>
@@ -367,9 +367,9 @@
    <widget class="QLineEdit" name="mysqlUserNameValue">
     <property name="geometry">
      <rect>
-      <x>85</x>
+      <x>87</x>
       <y>267</y>
-      <width>81</width>
+      <width>100</width>
       <height>21</height>
      </rect>
     </property>
@@ -437,9 +437,9 @@
    <widget class="QLineEdit" name="AEtitle">
     <property name="geometry">
      <rect>
-      <x>85</x>
+      <x>87</x>
       <y>333</y>
-      <width>81</width>
+      <width>100</width>
       <height>21</height>
      </rect>
     </property>
@@ -523,9 +523,9 @@
    <widget class="QLineEdit" name="IpAddressValue">
     <property name="geometry">
      <rect>
-      <x>85</x>
+      <x>87</x>
       <y>355</y>
-      <width>81</width>
+      <width>100</width>
       <height>21</height>
      </rect>
     </property>
@@ -558,9 +558,9 @@
    <widget class="QLineEdit" name="port_webserver">
     <property name="geometry">
      <rect>
-      <x>85</x>
+      <x>87</x>
       <y>416</y>
-      <width>81</width>
+      <width>100</width>
       <height>21</height>
      </rect>
     </property>
@@ -684,9 +684,9 @@
     <widget class="QComboBox" name="comLevel">
      <property name="geometry">
       <rect>
-       <x>178</x>
+       <x>198</x>
        <y>28</y>
-       <width>81</width>
+       <width>61</width>
        <height>22</height>
       </rect>
      </property>
@@ -694,31 +694,31 @@
       <locale language="Chinese" country="China"/>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <item>
       <property name="text">
-       <string>Log:INFO</string>
+       <string>INFO</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Log:WARN</string>
+       <string>WARN</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Log:ERROR</string>
+       <string>ERROR</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Log:FATAL</string>
+       <string>FATAL</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Log:OFF</string>
+       <string>OFF</string>
       </property>
      </item>
     </widget>
