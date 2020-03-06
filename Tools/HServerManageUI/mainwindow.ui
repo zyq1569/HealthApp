@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
-    <height>470</height>
+    <width>413</width>
+    <height>512</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,12 +19,15 @@
      <rect>
       <x>9</x>
       <y>33</y>
-      <width>131</width>
+      <width>160</width>
       <height>20</height>
      </rect>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="text">
-     <string>WorklistSCP      port</string>
+     <string>WorklistSCP         port</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_store">
@@ -32,9 +35,12 @@
      <rect>
       <x>9</x>
       <y>68</y>
-      <width>131</width>
+      <width>160</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>DicomStoreSCP    port</string>
@@ -52,6 +58,9 @@
     <property name="toolTip">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;manage dicom info to mysql&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="text">
      <string>启动</string>
     </property>
@@ -67,9 +76,12 @@
      <rect>
       <x>8</x>
       <y>185</y>
-      <width>91</width>
+      <width>100</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>Dicom file Dir</string>
@@ -86,6 +98,9 @@
     </property>
     <property name="toolTip">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run store scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>启动</string>
@@ -106,6 +121,9 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="text">
      <string>SaveDcmInfoDb</string>
     </property>
@@ -122,6 +140,9 @@
     <property name="toolTip">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run worklist scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="text">
      <string>启动</string>
     </property>
@@ -135,7 +156,7 @@
    <widget class="QLineEdit" name="port_wlm">
     <property name="geometry">
      <rect>
-      <x>145</x>
+      <x>167</x>
       <y>31</y>
       <width>71</width>
       <height>21</height>
@@ -144,6 +165,9 @@
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="text">
      <string>1666</string>
     </property>
@@ -151,7 +175,7 @@
    <widget class="QLineEdit" name="port_store">
     <property name="geometry">
      <rect>
-      <x>145</x>
+      <x>167</x>
       <y>67</y>
       <width>71</width>
       <height>21</height>
@@ -160,6 +184,9 @@
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="text">
      <string>1667</string>
     </property>
@@ -167,7 +194,7 @@
    <widget class="QLineEdit" name="port_qr">
     <property name="geometry">
      <rect>
-      <x>145</x>
+      <x>167</x>
       <y>105</y>
       <width>71</width>
       <height>21</height>
@@ -175,6 +202,9 @@
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>1668</string>
@@ -185,7 +215,7 @@
      <rect>
       <x>3</x>
       <y>0</y>
-      <width>181</width>
+      <width>261</width>
       <height>21</height>
      </rect>
     </property>
@@ -196,6 +226,9 @@
       <weight>75</weight>
       <bold>true</bold>
      </font>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>Dicom&amp;Ris Server</string>
@@ -213,6 +246,9 @@
     <property name="toolTip">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run queryRe scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="text">
      <string>启动</string>
     </property>
@@ -228,9 +264,12 @@
      <rect>
       <x>9</x>
       <y>106</y>
-      <width>131</width>
+      <width>160</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>QueryRetrieveSCP port</string>
@@ -239,14 +278,17 @@
    <widget class="QLineEdit" name="Dir_Store">
     <property name="geometry">
      <rect>
-      <x>102</x>
+      <x>112</x>
       <y>184</y>
-      <width>271</width>
+      <width>261</width>
       <height>21</height>
      </rect>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>ImageDir</string>
@@ -255,11 +297,14 @@
    <widget class="QLabel" name="mysqlServer">
     <property name="geometry">
      <rect>
-      <x>14</x>
-      <y>227</y>
-      <width>51</width>
+      <x>11</x>
+      <y>239</y>
+      <width>70</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>Server</string>
@@ -268,14 +313,17 @@
    <widget class="QLineEdit" name="mysqlServerValue">
     <property name="geometry">
      <rect>
-      <x>76</x>
-      <y>224</y>
+      <x>85</x>
+      <y>236</y>
       <width>81</width>
       <height>21</height>
      </rect>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>127.0.0.1</string>
@@ -285,13 +333,16 @@
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>224</y>
+      <y>236</y>
       <width>81</width>
       <height>21</height>
      </rect>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>HIT</string>
@@ -300,11 +351,14 @@
    <widget class="QLabel" name="MySqldbName">
     <property name="geometry">
      <rect>
-      <x>203</x>
-      <y>227</y>
-      <width>51</width>
+      <x>195</x>
+      <y>239</y>
+      <width>70</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>SqlName</string>
@@ -313,14 +367,17 @@
    <widget class="QLineEdit" name="mysqlUserNameValue">
     <property name="geometry">
      <rect>
-      <x>76</x>
-      <y>255</y>
+      <x>85</x>
+      <y>267</y>
       <width>81</width>
       <height>21</height>
      </rect>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>root</string>
@@ -329,11 +386,14 @@
    <widget class="QLabel" name="mysqlUserName">
     <property name="geometry">
      <rect>
-      <x>14</x>
-      <y>258</y>
-      <width>51</width>
+      <x>11</x>
+      <y>270</y>
+      <width>70</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>UserName</string>
@@ -342,11 +402,14 @@
    <widget class="QLabel" name="mysqlPWD">
     <property name="geometry">
      <rect>
-      <x>203</x>
-      <y>258</y>
-      <width>41</width>
+      <x>195</x>
+      <y>270</y>
+      <width>60</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>SqlPWD</string>
@@ -356,13 +419,16 @@
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>255</y>
+      <y>267</y>
       <width>81</width>
       <height>21</height>
      </rect>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>root</string>
@@ -371,14 +437,17 @@
    <widget class="QLineEdit" name="AEtitle">
     <property name="geometry">
      <rect>
-      <x>76</x>
-      <y>301</y>
+      <x>85</x>
+      <y>333</y>
       <width>81</width>
       <height>21</height>
      </rect>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>RADIANT</string>
@@ -387,11 +456,14 @@
    <widget class="QLabel" name="mysqlServer_2">
     <property name="geometry">
      <rect>
-      <x>14</x>
-      <y>304</y>
+      <x>13</x>
+      <y>336</y>
       <width>51</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>AEtitle</string>
@@ -401,10 +473,13 @@
     <property name="geometry">
      <rect>
       <x>203</x>
-      <y>304</y>
+      <y>336</y>
       <width>31</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>Port</string>
@@ -414,13 +489,16 @@
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>301</y>
+      <y>333</y>
       <width>81</width>
       <height>21</height>
      </rect>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>104</string>
@@ -429,11 +507,14 @@
    <widget class="QLabel" name="IpAddress">
     <property name="geometry">
      <rect>
-      <x>14</x>
-      <y>330</y>
-      <width>61</width>
+      <x>13</x>
+      <y>358</y>
+      <width>70</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>IpAddress</string>
@@ -442,14 +523,17 @@
    <widget class="QLineEdit" name="IpAddressValue">
     <property name="geometry">
      <rect>
-      <x>76</x>
-      <y>327</y>
+      <x>85</x>
+      <y>355</y>
       <width>81</width>
       <height>21</height>
      </rect>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>127.0.0.1</string>
@@ -459,10 +543,13 @@
     <property name="geometry">
      <rect>
       <x>13</x>
-      <y>371</y>
+      <y>417</y>
       <width>71</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>port</string>
@@ -471,8 +558,8 @@
    <widget class="QLineEdit" name="port_webserver">
     <property name="geometry">
      <rect>
-      <x>76</x>
-      <y>370</y>
+      <x>85</x>
+      <y>416</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -480,21 +567,27 @@
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="text">
-     <string>8888</string>
+     <string>8080</string>
     </property>
    </widget>
    <widget class="QPushButton" name="WebServer">
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>364</y>
+      <y>415</y>
       <width>75</width>
       <height>31</height>
      </rect>
     </property>
     <property name="toolTip">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run webserver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>启动</string>
@@ -515,6 +608,9 @@
       <height>16</height>
      </rect>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
@@ -523,26 +619,32 @@
     <property name="geometry">
      <rect>
       <x>14</x>
-      <y>404</y>
+      <y>447</y>
       <width>81</width>
       <height>20</height>
      </rect>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="text">
-     <string>Pagefile Dir</string>
+     <string>PagefileDir</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="Dir_Pagefile">
     <property name="geometry">
      <rect>
-      <x>102</x>
-      <y>403</y>
-      <width>271</width>
+      <x>85</x>
+      <y>446</y>
+      <width>281</width>
       <height>21</height>
      </rect>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
      <string>PagefileDir</string>
@@ -552,10 +654,13 @@
     <property name="geometry">
      <rect>
       <x>3</x>
-      <y>281</y>
+      <y>307</y>
       <width>391</width>
       <height>71</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="title">
      <string>QueryClient</string>
@@ -565,10 +670,13 @@
     <property name="geometry">
      <rect>
       <x>3</x>
-      <y>356</y>
+      <y>389</y>
       <width>391</width>
       <height>81</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="title">
      <string>HealthWebServer</string>
@@ -577,10 +685,13 @@
      <property name="geometry">
       <rect>
        <x>178</x>
-       <y>13</y>
+       <y>28</y>
        <width>81</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="locale">
+      <locale language="Chinese" country="China"/>
      </property>
      <property name="currentIndex">
       <number>4</number>
@@ -618,8 +729,11 @@
       <x>3</x>
       <y>210</y>
       <width>391</width>
-      <height>71</height>
+      <height>81</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="title">
      <string>MySql</string>
@@ -636,6 +750,9 @@
       <width>411</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
