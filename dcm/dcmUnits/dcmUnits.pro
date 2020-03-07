@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2020-03-07T17:50:26
+# Project created by QtCreator 2020-03-07T19:21:01
 #
 #-------------------------------------------------
 
@@ -8,8 +8,7 @@ QT       -= core gui
 
 TARGET = dcmUnits
 TEMPLATE = lib
-
-DEFINES += DCMUNITS_LIBRARY
+CONFIG += staticlib
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -27,23 +26,19 @@ DEFINES +=HAVE_PCLOSE
 DEFINES +=USE_NULL_SAFE_OFSTRING
 DEFINES  -= UNICODE
 
-
 SOURCES += \
     CJsonObject.cpp \
+    DcmConfig.cpp \
     HMariaDb.cpp \
     Units.cpp \
     cJSON.c
 
-HEADERS += \
-    ../../include/dcm/win32/dcmUnits/CJsonObject.hpp \
-    ../../include/dcm/win32/dcmUnits/HMariaDb.h \
-    ../../include/dcm/win32/dcmUnits/Units.h \
-    ../../include/dcm/win32/dcmUnits/cJSON.h
-
+HEADERS +=
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
 
 INCLUDEPATH +=../../include/mysql/win32
 INCLUDEPATH +=../../include/dcm/win32/dcmUnits
@@ -52,5 +47,3 @@ INCLUDEPATH +=../../include/dcm/win32/config/include
 INCLUDEPATH +=../../include/dcm/win32/ofstd/include
 INCLUDEPATH +=../../include/dcm/win32/oflog/include
 INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
-
-
