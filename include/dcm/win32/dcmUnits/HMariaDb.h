@@ -22,7 +22,7 @@ class HSqlError : public std::exception
 {
 public:
     HSqlError(const std::string& what)
-        : exception(what.c_str())
+        //: exception(what.c_str())
     {
     }
 };
