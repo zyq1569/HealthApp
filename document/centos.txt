@@ -31,3 +31,19 @@ chrome 先下载指定的文件 从 google-chrome 页面
 OK!
 
 6.Nautilus 文件夹管理工具
+
+7.安装 wxWidgets
+
+mkdir wxWidgets
+cd wxWidgets
+tar xvzf wxWidgets-3.1.0.tar.gz
+cd wxWidgets-3.1.0
+
+./configure --with-gtk --enable-unicode --disable-shared
+make
+sudo make install
+
+cd /etc/ld.so.conf.d/
+sudo touch wxWidgets.conf
+sudo gedit wxWidgets.conf  #增加其内容为/usr/local/lib
+sudo ldconfig
