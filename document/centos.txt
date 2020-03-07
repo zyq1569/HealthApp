@@ -29,3 +29,5 @@ chrome 先下载指定的文件 从 google-chrome 页面
 修改：Exec=/usr/bin/google-chrome-stable %U
 为：Exec=/usr/bin/google-chrome-stable %U --no-sandbox
 OK!
+
+6.Nautilus 文件夹管理工具
