@@ -1,1 +1,31 @@
-vmhgfs-fuse .host:/win10 /home/zyq/windows_share
+
+1.centos7 更新 源方法： mirrors.aliyun.com
+添加aliyun的epel源：
+sudo wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+
+2.挂载vm共享的文件夹到指定的路径（win10->vm共享文件的命名        user ->  帐号名）
+sudo vmhgfs-fuse .host:/win10 /home/user/windows_share
+
+3.识别挂载的磁盘ntfs 格式
+sudo yum install ntfs-3g
+
+4.安装chrome 方法
+chrome 先下载指定的文件 从 google-chrome 页面
+：sudo touch /etc/default/google-chrome
+：sudo yum localinstall google-chrome-stable_current_x86_64.rpm 
+
+5.centos 安装chrome，root 帐号下无法启动方法  
+解决google-chrome无法启动的问题
+问题表现：
+双击Google Chrome图标无反应，无法打开浏览器。 
+在命令行打开报错：
+[root@user ~]# /usr/bin/google-chrome
+[5024:5024:0113/164154.164753:ERROR:zygote_host_impl_linux.cc(89)] Running as root without --no-sandbox is not supported. See https://crbug.com/638180.
+解决方法：
+[root@user ~]# /usr/bin/google-chrome --no-sandbox        //添加--no-sandbox后即可启动浏览器
+桌面图标右击-->属性-->启动命令后添加“--no-sandbox”
+即：/usr/bin/google-chrome-stable %U --no-sandbox
+[root@user ~]# vim  /usr/share/applications/google-chrome.desktop
+修改：Exec=/usr/bin/google-chrome-stable %U
+为：Exec=/usr/bin/google-chrome-stable %U --no-sandbox
+OK!
