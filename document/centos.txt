@@ -32,7 +32,7 @@ OK!
 
 6.Nautilus 文件夹管理工具
 
-7.安装 wxWidgets（需要GTK3+）
+7.安装 wxWidgets（需要GTK3+ ??）
 
 mkdir wxWidgets
 cd wxWidgets
