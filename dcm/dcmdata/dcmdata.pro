@@ -122,9 +122,6 @@ unix {
     INSTALLS += target
 }
 
-INCLUDEPATH +=../../include/mysql/win32
-INCLUDEPATH +=../../include/dcm/win32/dcmUnits
-
 INCLUDEPATH +=../../include/dcm/win32/config/include
 INCLUDEPATH +=../../include/dcm/win32/ofstd/include
 INCLUDEPATH +=../../include/dcm/win32/oflog/include
