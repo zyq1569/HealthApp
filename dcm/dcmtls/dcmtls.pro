@@ -1,12 +1,12 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2020-03-08T20:52:45
+# Project created by QtCreator 2020-03-08T21:50:42
 #
 #-------------------------------------------------
 
 QT       -= core gui
 
-TARGET = dcmstd
+TARGET = dcmtls
 TEMPLATE = lib
 CONFIG += staticlib
 
@@ -23,41 +23,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += HAVE_POPEN
 DEFINES += HAVE_PCLOSE
 DEFINES  -= UNICODE
-
-
 SOURCES += \
-    math.cc \
-    ofchrenc.cc \
-    ofcmdln.cc \
-    ofconapp.cc \
-    ofcond.cc \
-    ofconfig.cc \
-    ofconsol.cc \
-    ofcrc32.cc \
-    ofdate.cc \
-    ofdatime.cc \
-    oferror.cc \
-    offile.cc \
-    offname.cc \
-    oflist.cc \
-    ofmath.cc \
-    ofsockad.cc \
-    ofstd.cc \
-    ofstring.cc \
-    oftempf.cc \
-    ofthread.cc \
-    oftime.cc \
-    oftimer.cc \
-    ofuuid.cc \
-    ofxml.cc
+    tlscond.cc \
+    tlslayer.cc \
+    tlsopt.cc \
+    tlsscu.cc \
+    tlstrans.cc
 
 HEADERS +=
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
+
 INCLUDEPATH +=../../include/dcm/win32/config/include
 INCLUDEPATH +=../../include/dcm/win32/ofstd/include
 INCLUDEPATH +=../../include/dcm/win32/oflog/include
-INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
+INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
+INCLUDEPATH +=../../include/dcm/win32/dcmdata/include
+INCLUDEPATH +=../../include/dcm/win32/dcmnet/include
