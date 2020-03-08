@@ -53,7 +53,7 @@ getFileInfo (FileInfo * fi, tstring const & name)
     if (_tstat (reinterpret_cast<const wchar_t *>(name.c_str ()), &fileStatus) == -1)
         return -1;
 #else
-    if (_tstat name.c_str (), &fileStatus) == -1)
+    if (_tstat ( name.c_str (), &fileStatus) == -1)
         return -1;
 #endif
     fi->mtime = helpers::Time (fileStatus.st_mtime);
