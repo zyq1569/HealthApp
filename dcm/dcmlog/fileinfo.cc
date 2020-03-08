@@ -46,15 +46,24 @@ namespace log4cplus { namespace helpers {
 int
 getFileInfo (FileInfo * fi, tstring const & name)
 {
-#if defined (_WIN32)
+
+#if defined (QTCREATOR)
+    //---QT gcc _tstat:only wchar_t
     struct _stat fileStatus;
-    if (_tstat (name.c_str (), &fileStatus) == -1)
+    if (_tstat (reinterpret_cast<const wchar_t *>(name.c_str ()), &fileStatus) == -1)
         return -1;
     
     fi->mtime = helpers::Time (fileStatus.st_mtime);
     fi->is_link = false;
     fi->size = fileStatus.st_size;
-    
+#elif defined (_WIN32)
+    struct _stat fileStatus;
+    if (_tstat name.c_str (), &fileStatus) == -1)
+        return -1;
+
+    fi->mtime = helpers::Time (fileStatus.st_mtime);
+    fi->is_link = false;
+    fi->size = fileStatus.st_size;
 #else
     struct stat fileStatus;
     if (stat (DCMTK_LOG4CPLUS_TSTRING_TO_STRING (name).c_str (),
