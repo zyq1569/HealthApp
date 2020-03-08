@@ -1,4 +1,4 @@
-
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-----------------centos7--------------------------$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 1.centos7 更新 源方法： mirrors.aliyun.com
 添加aliyun的epel源：
 sudo wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
@@ -47,3 +47,13 @@ cd /etc/ld.so.conf.d/
 sudo touch wxWidgets.conf
 sudo gedit wxWidgets.conf  #增加其内容为/usr/local/lib
 sudo ldconfig
+
+8. QT编译问题
+然后编项目时出现找不到GL/gl.h问题
+
+是少装了gl库
+
+用命令yum install mesa-libGL-devel mesa-libGLU-devel （2个opengl核心库）就可以了
+
+也可以再安装yum install freeglut-devel （OpenGL Utility ToolKit ）【可以不安装】
+
