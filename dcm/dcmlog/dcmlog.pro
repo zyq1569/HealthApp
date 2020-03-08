@@ -28,7 +28,6 @@ SOURCES += \
     apndimpl.cc \
     appender.cc \
     asyncap.cc \
-    clfsap.cc \
     clogger.cc \
     config.cc \
     consap.cc \
