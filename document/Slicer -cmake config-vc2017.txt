@@ -1,0 +1,13 @@
+Slicer 使用cmake 配置成vc2017编译
+1.cmake （3.13.2 使用qt5.63 编译的）
+2.VC2017社区版本 
+
+安装 git（> = 1.7.10） 和  svn（必须支持命令行）
+QT（5.10.x）
+
+CMake配置中：
+Slicer_required_QT_version 配置成安装的版本号
+QT 的路径要配置QT安装的路径（类似C:/Qt/5.12.0/msvc2017/lib/cmake）
+
+然后即可（还有问题可以参考官网
+https://www.slicer.org/wiki/Documentation/Nightly/Developers/Build_Instructions#Qt_4_.28deprecated.29）
