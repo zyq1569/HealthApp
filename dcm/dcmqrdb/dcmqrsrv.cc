@@ -300,8 +300,9 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
     OFString temp_str;
     DCMQRDB_INFO("Received Find SCP:" << OFendl << DIMSE_dumpMessage(temp_str, *request, DIMSE_INCOMING));
 
+    MySqlInfo sqlinfo = GetMysql();//qt don't use temp adress :GetMysql(),in DIMSE_findProvider()
     cond = DIMSE_findProvider(assoc, presID, request,
-        findCallback, &context, options_.blockMode_, options_.dimse_timeout_,&GetMysql());
+        findCallback, &context, options_.blockMode_, options_.dimse_timeout_,&sqlinfo);
     if (cond.bad())
     {
         DCMQRDB_ERROR("Find SCP Failed: " << DimseCondition::dump(temp_str, cond));
