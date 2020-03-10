@@ -79,7 +79,9 @@ void prepareCmdLineArgs(int& argc, char* argv[],
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_IO_H
+#ifndef QTCREATOR
 #include <io.h>
+#endif
 #endif
 
 BEGIN_EXTERN_C

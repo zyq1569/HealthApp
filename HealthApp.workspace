@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="HealthApp" Database="" Version="10000">
+  <Project Name="TestApp" Path="dcm/TestApp/TestApp.project" Active="Yes"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">
       <Environment/>
       <Project Name="dcmUnits" ConfigName="Debug"/>
+      <Project Name="TestApp" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
       <Project Name="dcmUnits" ConfigName="Release"/>
+      <Project Name="TestApp" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
