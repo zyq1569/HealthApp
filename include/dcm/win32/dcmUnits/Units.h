@@ -2,15 +2,24 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/oflog/fileap.h"
 
+
 DCMTK_OFSTD_EXPORT struct OFHashValue
 {
+
+#ifdef _WIN32
     INT16 first;
     INT16 second;
+#else
+    int16_t first;
+    int16_t second;
+#endif
+
     OFHashValue()
     {
         first = second = 0;
     }
 };
+
 
 
 /*
@@ -108,7 +117,12 @@ DCMTK_OFSTD_EXPORT void SearchDirFile(const OFString Dir, const OFString FileExt
 
 DCMTK_OFSTD_EXPORT void SearchDirectory(const OFString Dir, OFList<OFString> &datas);
 
+#ifndef _WIN32
+DCMTK_OFSTD_EXPORT uint64_t CreateGUID();
+#else
 DCMTK_OFSTD_EXPORT UINT64 CreateGUID();
+#endif
+
 DCMTK_OFSTD_EXPORT OFString StringGUID();
 
 DCMTK_OFSTD_EXPORT OFString GetCurrentDir();
@@ -132,8 +146,8 @@ DCMTK_OFSTD_EXPORT OFBool SaveString2File(OFString str, OFString filename);
 //!根据字符计算两个Hash数值
 //OFHashValue CreateHashValue(const char * buffer, unsigned int length)
 //{
-//    //2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 
-//    //101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 
+//    //2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
+//    //101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179
 //    //181 191 193 197 199
 //    static const int M1 = 71;
 //    static const int M2 = 79;

@@ -4,7 +4,7 @@
 #include "dcmtk/oflog/fileap.h"
 #include "dcmtk/oflog/oflog.h"
 //--------------------
-#include "mysql.h" 
+#include "mysql.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -37,7 +37,11 @@ struct MySQLData
     short tiny_data;
     int int32_data;
     bool bit_data;
+    #ifdef _WIN32
     __int64 int64_data;
+    #else
+    int64_t int64_data;
+    #endif
     float float_data;
     double double_data;
     MYSQL_TIME time_data;
