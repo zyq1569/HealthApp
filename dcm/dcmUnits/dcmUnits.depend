@@ -11,7 +11,7 @@
 
 1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/dcmUnits/cJSON.h
 
-1583904085 source:/home/zyq/windows_share/HealthApp/dcm/dcmUnits/DcmConfig.cpp
+1583905418 source:/home/zyq/windows_share/HealthApp/dcm/dcmUnits/DcmConfig.cpp
 	"dcmtk/config/osconfig.h"
 	"dcmconfig.h"
 	"dcmtk/ofstd/ofstdinc.h"
@@ -256,4 +256,185 @@
 	<memory>
 	"dcmtk/ofstd/ofthread.h"
 	<windows.h>
+
+1583905418 source:/home/zyq/windows_share/HealthApp/dcm/dcmUnits/HMariaDb.cpp
+	"HMariaDb.h"
+
+1583904913 /home/zyq/windows_share/HealthApp/include/dcm/win32/dcmUnits/HMariaDb.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/oflog/fileap.h"
+	"dcmtk/oflog/oflog.h"
+	"mysql.h"
+	<iostream>
+	<string>
+	<vector>
+	<map>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/fileap.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/appender.h"
+	"dcmtk/oflog/fstreams.h"
+	"dcmtk/oflog/helpers/timehelp.h"
+	"dcmtk/oflog/helpers/lockfile.h"
+	<fstream>
+	<locale>
+	<memory>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/config.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/ofdefine.h"
+	"dcmtk/oflog/config/win32.h"
+	"dcmtk/oflog/config/macosx.h"
+	"dcmtk/oflog/config/defines.h"
+	"dcmtk/oflog/helpers/threadcf.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/config/win32.h
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/config/macosx.h
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/config/defines.h
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/helpers/threadcf.h
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/appender.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/ofstd/ofmem.h"
+	"dcmtk/oflog/layout.h"
+	"dcmtk/oflog/loglevel.h"
+	"dcmtk/oflog/tstring.h"
+	"dcmtk/oflog/helpers/pointer.h"
+	"dcmtk/oflog/spi/filter.h"
+	"dcmtk/oflog/helpers/lockfile.h"
+	<memory>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/layout.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/loglevel.h"
+	"dcmtk/oflog/streams.h"
+	"dcmtk/oflog/tstring.h"
+	"dcmtk/ofstd/ofvector.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/loglevel.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/ofstd/ofvector.h"
+	"dcmtk/oflog/tstring.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/tstring.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/ofstd/ofstring.h"
+	"dcmtk/oflog/tchar.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/tchar.h
+	"dcmtk/oflog/config.h"
+	<cstddef>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/streams.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/tchar.h"
+	"dcmtk/ofstd/ofstream.h"
+	<iosfwd>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/helpers/pointer.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/thread/syncprim.h"
+	<algorithm>
+	<cassert>
+	<atomic>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/thread/syncprim.h
+	"dcmtk/oflog/config.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/spi/filter.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/helpers/pointer.h"
+	"dcmtk/oflog/loglevel.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/helpers/lockfile.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/tstring.h"
+	"dcmtk/oflog/thread/syncprim.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/fstreams.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/tchar.h"
+	<iosfwd>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/helpers/timehelp.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/tstring.h"
+	<time.h>
+	<ctime>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/oflog.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/oflog/logger.h"
+	"dcmtk/oflog/logmacro.h"
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/ofmem.h"
+	"dcmtk/ofstd/ofconapp.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/logger.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/loglevel.h"
+	"dcmtk/oflog/tstring.h"
+	"dcmtk/oflog/spi/apndatch.h"
+	"dcmtk/oflog/spi/logfact.h"
+	"dcmtk/ofstd/ofvector.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/spi/apndatch.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/appender.h"
+	"dcmtk/oflog/tstring.h"
+	"dcmtk/oflog/helpers/pointer.h"
+	"dcmtk/ofstd/ofvector.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/spi/logfact.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/tstring.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/logmacro.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/streams.h"
+	"dcmtk/oflog/logger.h"
+	"dcmtk/oflog/helpers/snprintf.h"
+	"dcmtk/oflog/tracelog.h"
+	<sstream>
+	<utility>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/helpers/snprintf.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/tchar.h"
+	<cstdarg>
+	"dcmtk/ofstd/ofvector.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/oflog/include/dcmtk/oflog/tracelog.h
+	"dcmtk/oflog/config.h"
+	"dcmtk/oflog/logger.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofconapp.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/ofcmdln.h"
+	"dcmtk/ofstd/ofstring.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/mysql/win32/mysql.h
+	<stdarg.h>
+	<sys/types.h>
+	"mariadb_com.h"
+	"mariadb_version.h"
+	"ma_list.h"
+	"mariadb_ctype.h"
+	"mariadb_stmt.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/mysql/win32/mariadb_com.h
+
+1583625144 /home/zyq/windows_share/HealthApp/include/mysql/win32/mariadb_version.h
+	<custom_conf.h>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/mysql/win32/ma_list.h
+
+1583625144 /home/zyq/windows_share/HealthApp/include/mysql/win32/mariadb_ctype.h
+	<ctype.h>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/mysql/win32/mariadb_stmt.h
 

@@ -22,6 +22,13 @@
 
 #ifndef HAVE_WINDOWS_H
 #include <uuid/uuid.h>
+typedef struct _GUID
+{
+    unsigned long Data1;
+    unsigned short Data2;
+    unsigned short Data3;
+    unsigned char Data4[8];
+} GUID, UUID;
 #endif
  // _WIN32
 
@@ -490,8 +497,9 @@ uint64_t CreateGUID()
     return *((UINT64*)uid);
 #else
     //to do add! install uuid-dev
-    //uuid_generate(reinterpret_cast<unsigned char *>(&guid));
-    //uid[0] = guid.Data1;
+    GUID guid;
+    uuid_generate(reinterpret_cast<unsigned char *>(&guid));
+    uid[0] = guid.Data1;
     return *((uint64_t*)uid);
 #endif
     //return *((UINT64*)uid);
