@@ -48,14 +48,14 @@
 			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/liboflog.a" />
 			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libdcmtls.a" />
 			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libofstd.a" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libdcmdata.a" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libdcmnet.a" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/liboflog.a" />
 			<Add library="pthread" />
 			<Add library="icuuc" />
 			<Add library="icudata" />
 			<Add library="z" />
 			<Add library="nsl" />
+			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libdcmdata.a" />
+			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libdcmnet.a" />
+			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libofstd.a" />
 		</Linker>
 		<Unit filename="main.cpp" />
 		<Extensions>
