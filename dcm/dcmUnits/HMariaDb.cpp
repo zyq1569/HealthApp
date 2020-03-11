@@ -81,8 +81,8 @@ void HMariaDb::getresult(ResultSet& rs)
     MYSQL_RES *result = NULL;
     MYSQL_FIELD *fields = NULL;
 
-    // You must call mysql_store_result() or mysql_use_result() 
-    // for every query that successfully retrieves data (SELECT, SHOW, DESCRIBE, EXPLAIN). 
+    // You must call mysql_store_result() or mysql_use_result()
+    // for every query that successfully retrieves data (SELECT, SHOW, DESCRIBE, EXPLAIN).
 
     result = mysql_use_result(pConnectionHandlerPtr);
     if (result == NULL)

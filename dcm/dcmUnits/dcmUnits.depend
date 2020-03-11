@@ -1,0 +1,259 @@
+# depslib dependency file v1.0
+1583625144 source:/home/zyq/windows_share/HealthApp/dcm/dcmUnits/cJSON.c
+	<string.h>
+	<stdio.h>
+	<math.h>
+	<stdlib.h>
+	<float.h>
+	<limits.h>
+	<ctype.h>
+	"cJSON.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/dcmUnits/cJSON.h
+
+1583904085 source:/home/zyq/windows_share/HealthApp/dcm/dcmUnits/DcmConfig.cpp
+	"dcmtk/config/osconfig.h"
+	"dcmconfig.h"
+	"dcmtk/ofstd/ofstdinc.h"
+	"dcmtk/ofstd/ofcmdln.h"
+	"dcmtk/ofstd/ofmap.h"
+	"dcmtk/ofstd/ofchrenc.h"
+
+1583900570 /home/zyq/windows_share/HealthApp/include/dcm/win32/config/include/dcmtk/config/osconfig.h
+	"osconfig_win32.h"
+	"osconfig_linux.h"
+
+1583900569 /home/zyq/windows_share/HealthApp/include/dcm/win32/config/include/dcmtk/config/osconfig_win32.h
+
+1583900569 /home/zyq/windows_share/HealthApp/include/dcm/win32/config/include/dcmtk/config/osconfig_linux.h
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofstdinc.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/ofalgo.h"
+	"dcmtk/ofstd/ofstream.h"
+	"dcmtk/ofstd/oflist.h"
+	<locale>
+	<locale.h>
+	"dcmtk/ofstd/ofmap.h"
+	<memory>
+	<memory.h>
+	<new>
+	<new.h>
+	"dcmtk/ofstd/ofstack.h"
+	<streambuf>
+	<streambuf.h>
+	"dcmtk/ofstd/ofstring.h"
+	"dcmtk/ofstd/ofvector.h"
+	<cassert>
+	<assert.h>
+	<cctype>
+	<ctype.h>
+	<cerrno>
+	<errno.h>
+	<cfloat>
+	<float.h>
+	<ciso646>
+	<iso646.h>
+	<climits>
+	<limits.h>
+	<clocale>
+	<locale.h>
+	<cmath>
+	<math.h>
+	<csetjmp>
+	<setjmp.h>
+	<csignal>
+	<signal.h>
+	<cstdarg>
+	<stdarg.h>
+	<cstddef>
+	<stddef.h>
+	<cstdint>
+	<stdint.h>
+	<sys/types.h>
+	<cstdio>
+	<stdio.h>
+	<cstdlib>
+	<stdlib.h>
+	<cstring>
+	<string.h>
+	<strings.h>
+	<ctime>
+	<time.h>
+	<cwctype>
+	<wctype.h>
+	<libc.h>
+	<unistd.h>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofalgo.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftypes.h"
+	<algorithm>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/oftypes.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/ofdefine.h"
+	<cstdint>
+	<cstddef>
+	<ostream>
+	"dcmtk/ofstd/ofstdinc.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofdefine.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/ofcast.h"
+	"dcmtk/ofstd/ofexport.h"
+	"dcmtk/ofstd/ofstdinc.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofcast.h
+	"dcmtk/config/osconfig.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofexport.h
+	"dcmtk/config/osconfig.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofstream.h
+	"dcmtk/config/osconfig.h"
+	<iostream>
+	<ios>
+	<fstream>
+	<iomanip>
+	<sstream>
+	<strstream>
+	<iostream.h>
+	<fstream.h>
+	<strstrea.h>
+	<strstream.h>
+	<sstream.h>
+	<iomanip.h>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/oflist.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/ofcast.h"
+	"dcmtk/ofstd/ofdefine.h"
+	<list>
+	"dcmtk/ofstd/ofstdinc.h"
+	<sys/types.h>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofmap.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/ofutil.h"
+	<map>
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/ofcast.h"
+	"dcmtk/ofstd/oflist.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofutil.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftraits.h"
+	"dcmtk/ofstd/oftypes.h"
+	<utility>
+	<tuple>
+	"dcmtk/ofstd/variadic/tuplefwd.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/oftraits.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftypes.h"
+	<type_traits>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofstack.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/ofcast.h"
+	"dcmtk/ofstd/ofdefine.h"
+	<stack>
+	"dcmtk/ofstd/ofstdinc.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofstring.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/ofcast.h"
+	"dcmtk/ofstd/ofdefine.h"
+	<string>
+	"dcmtk/ofstd/ofstdinc.h"
+	"dcmtk/ofstd/ofstream.h"
+	"dcmtk/ofstd/oftypes.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofvector.h
+	"dcmtk/config/osconfig.h"
+	<vector>
+	"dcmtk/ofstd/ofstdinc.h"
+	"dcmtk/ofstd/oftypes.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofcmdln.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/oflist.h"
+	"dcmtk/ofstd/ofstring.h"
+	"dcmtk/ofstd/ofconsol.h"
+	"dcmtk/ofstd/offile.h"
+	"dcmtk/ofstd/ofstdinc.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofconsol.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/ofstream.h"
+	"dcmtk/ofstd/ofthread.h"
+	"dcmtk/ofstd/ofstdinc.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofthread.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/ofstring.h"
+
+1583657908 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/offile.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/ofstring.h"
+	"dcmtk/ofstd/ofstd.h"
+	"dcmtk/ofstd/ofstdinc.h"
+	<sys/stat.h>
+	<unix.h>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofstd.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oflist.h"
+	"dcmtk/ofstd/ofstring.h"
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/oftraits.h"
+	"dcmtk/ofstd/ofcond.h"
+	"dcmtk/ofstd/oflimits.h"
+	"dcmtk/ofstd/oferror.h"
+	"dcmtk/ofstd/ofstdinc.h"
+	<sys/types.h>
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofcond.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/oftypes.h"
+	"dcmtk/ofstd/ofstring.h"
+	"dcmtk/ofstd/ofcast.h"
+	"dcmtk/ofstd/ofstdinc.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/oflimits.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/config/arith.h"
+	"dcmtk/ofstd/oftypes.h"
+	<limits>
+	"dcmtk/ofstd/ofstdinc.h"
+
+1583900569 /home/zyq/windows_share/HealthApp/include/dcm/win32/config/include/dcmtk/config/arith.h
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/oferror.h
+	"dcmtk/config/osconfig.h"
+	<system_error>
+	"dcmtk/ofstd/ofstdinc.h"
+	"dcmtk/ofstd/ofstring.h"
+
+1583625144 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofchrenc.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/ofcond.h"
+	"dcmtk/ofstd/ofstring.h"
+	"dcmtk/ofstd/ofmem.h"
+
+1583829175 /home/zyq/windows_share/HealthApp/include/dcm/win32/ofstd/include/dcmtk/ofstd/ofmem.h
+	"dcmtk/config/osconfig.h"
+	"dcmtk/ofstd/ofutil.h"
+	<memory>
+	"dcmtk/ofstd/ofthread.h"
+	<windows.h>
+
