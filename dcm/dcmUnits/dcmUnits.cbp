@@ -39,8 +39,8 @@
 			<Add directory="../../include/dcm/win32/config/include" />
 			<Add directory="../../include/dcm/win32/ofstd/include" />
 			<Add directory="../../include/dcm/win32/oflog/include" />
-			<Add directory="../../include/mysql/win32" />
 			<Add directory="../../include/dcm/win32/dcmqrdb/include" />
+			<Add directory="../../include/mysql/win32" />
 		</Compiler>
 		<Unit filename="DcmConfig.cpp" />
 		<Unit filename="HMariaDb.cpp" />
