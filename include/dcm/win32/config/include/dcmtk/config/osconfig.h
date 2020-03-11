@@ -6,8 +6,8 @@
 #include "osconfig_win32.h"
 
 #else
-	
-#include "osconfig_linux.h"	
+
+#include "osconfig_linux.h"
 
 #endif
 
