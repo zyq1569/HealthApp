@@ -20,6 +20,15 @@
 #include "Units.h"
 #include "dcmtk/ofstd/ofdatime.h"
 
+#ifndef HAVE_WINDOWS_H
+#include <uuid/uuid.h>
+#endif
+ // _WIN32
+
+//#ifndef _WIN32
+//typedef uint64_t UINT64
+//#endif // _WIN32
+
 OFString GetStudyHashDir(OFString studyuid)
 {
     OFString dir;
@@ -30,8 +39,8 @@ OFString GetStudyHashDir(OFString studyuid)
 //!根据字符计算两个Hash数值  to do user uint64
 OFHashValue CreateHashValue(const char * buffer, unsigned int length)
 {
-//2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 
-//101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 
+//2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
+//101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179
 //181 191 193 197 199
     static const int M1 = 71;
     static const int M2 = 79;
@@ -89,8 +98,19 @@ bool DirectoryExists(const OFString Dir)
 {
     if (Dir == "")
         return false;
-    int Code = GetFileAttributes(Dir.c_str());
+    int Code = -3;
+#ifdef _WIN32
+    Code = GetFileAttributes(Dir.c_str());
+    //int Code = GetFileAttributes(Dir.c_str());
     return (Code != -1) && ((FILE_ATTRIBUTE_DIRECTORY & Code) != 0);
+#else
+    struct stat statbuff;
+    Code = stat(Dir.c_str(), &statbuff);
+    if(Code == 0)
+        return true;
+    else
+        return false;
+#endif // _WIN32
 }
 
 //在全路径文件名中提取文件路径。
@@ -127,15 +147,22 @@ bool ForceDirectories(const OFString Dir)
         //if (::CreateDirectory(Dir.c_str(), NULL) == 0)
 #ifdef HAVE_WINDOWS_H
         if (_mkdir(Dir.c_str()) == -1)
-#else
-        if (mkdir(Dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
-#endif
         {
             OFString msg;
             msg = "CreateDirectory() failed with error %s,(%s)" + GetLastError() + Dir;
             //OFLOG_ERROR(storescpLogger, msg);
             return false;
         }
+#else
+        if (mkdir(Dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
+        {
+            OFString msg;
+            msg = "CreateDirectory() failed with error %s,(%s)" + Dir;
+            //OFLOG_ERROR(storescpLogger, msg);
+            return false;
+        }
+#endif
+
     }
     return true;
 }
@@ -229,7 +256,8 @@ void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> 
                 else if (Not == true && OFStandard::toUpper(temp, FileExt) != OFStandard::toUpper(temp, name))
                     datas.push_back(dir + name);
             }
-        } while (FindNextFile(h, &sr) != 0);
+        }
+        while (FindNextFile(h, &sr) != 0);
         FindClose(h);
     }
 #else
@@ -395,7 +423,8 @@ void SearchDirectory(const OFString Dir, OFList<OFString> &datas)
                     datas.push_back(dir + name);
                 }
             }
-        } while (FindNextFile(h, &sr) != 0);
+        }
+        while (FindNextFile(h, &sr) != 0);
         FindClose(h);
     }
 #else
@@ -409,9 +438,17 @@ OFString StringGUID()
     OFString s = uuid;
     return s;
 }
+#ifdef _WIN32
 UINT64 CreateGUID()
+#else
+uint64_t CreateGUID()
+#endif // _WIN32
 {
+#ifdef _WIN32
     UINT32 uid[2];
+#else
+    uint32_t uid[2];
+#endif // _WIN32
     // get the current time (needed for subdirectory name)
     OFDateTime dateTime;
     dateTime.setCurrentDateTime();
@@ -419,37 +456,45 @@ UINT64 CreateGUID()
     // create a name for the new subdirectory.
     char timestamp[32];
     sprintf(timestamp, "%04u%02u%02u%02u%02u%02u%03u",
-        dateTime.getDate().getYear(), dateTime.getDate().getMonth(),
-        dateTime.getDate().getDay(), dateTime.getTime().getHour(),
-        dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(),
-        dateTime.getTime().getMilliSecond());
+            dateTime.getDate().getYear(), dateTime.getDate().getMonth(),
+            dateTime.getDate().getDay(), dateTime.getTime().getHour(),
+            dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(),
+            dateTime.getTime().getMilliSecond());
     //2019 0424 0951 14 708
     //2005 0000 0000 00 000
-    UINT64 delt_y = (dateTime.getDate().getYear() - 2015) * 365;
-    UINT64 delt_M = dateTime.getDate().getMonth() * 30;
-    UINT64 delt_d = dateTime.getDate().getDay() * 24 * 60 * 60 * 1000;
-    UINT64 delt_h = dateTime.getTime().getHour() * 60 * 60 * 1000;
-    UINT64 delt_m = dateTime.getTime().getMinute() * 60 * 1000;
-    UINT64 delt_s = dateTime.getTime().getIntSecond() * 1000;
-    UINT64 delt_ma = delt_y + delt_M;
-    UINT64 delt_mi = delt_d + delt_h + delt_m + delt_s + dateTime.getTime().getMilliSecond();
+    #ifdef _WIN32
+    UINT64 delt_y,delt_M,delt_d,delt_h,delt_m,delt_s,delt_ma,delt_mi;
+    #else
+    uint64_t delt_y,delt_M,delt_d,delt_h,delt_m,delt_s,delt_ma,delt_mi;
+    #endif // _WIN32
+     delt_y = (dateTime.getDate().getYear() - 2015) * 365;
+     delt_M = dateTime.getDate().getMonth() * 30;
+     delt_d = dateTime.getDate().getDay() * 24 * 60 * 60 * 1000;
+     delt_h = dateTime.getTime().getHour() * 60 * 60 * 1000;
+     delt_m = dateTime.getTime().getMinute() * 60 * 1000;
+     delt_s = dateTime.getTime().getIntSecond() * 1000;
+     delt_ma = delt_y + delt_M;
+     delt_mi = delt_d + delt_h + delt_m + delt_s + dateTime.getTime().getMilliSecond();
     uid[1] = delt_ma << 11;
     uid[1] += delt_mi;
 #ifdef HAVE_WINDOWS_H
     GUID guid;
     HRESULT result = NULL;
-    do{
+    do
+    {
         result = CoCreateGuid(&guid);
         uid[0] = guid.Data1;
-    } while (result != S_OK);
+    }
+    while (result != S_OK);
 
     return *((UINT64*)uid);
 #else
-    //to do add!apt-get install uuid-dev  #include <uuid/uuid.h>
-    uuid_generate(reinterpret_cast<unsigned char *>(&guid));
-    uid[0] = guid.Data1;
+    //to do add! install uuid-dev
+    //uuid_generate(reinterpret_cast<unsigned char *>(&guid));
+    //uid[0] = guid.Data1;
+    return *((uint64_t*)uid);
 #endif
-    return *((UINT64*)uid);
+    //return *((UINT64*)uid);
 }
 
 OFString GetCurrentDir()
@@ -487,7 +532,8 @@ OFString FormatePatienName(OFString name)
 OFString GetFromFile(OFString filename)
 {
     OFString value;
-    if (OFStandard::fileExists(filename)){
+    if (OFStandard::fileExists(filename))
+    {
         using namespace std;
         char buffer[256];
         fstream out;
