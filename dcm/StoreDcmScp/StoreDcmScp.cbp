@@ -42,20 +42,21 @@
 			<Add directory="../../include/dcm/win32/dcmqrdb/include" />
 		</Compiler>
 		<Linker>
+			<Add library="../../lib/dcm/win32/dcmdata.lib" />
+			<Add library="../../lib/dcm/win32/libdcmnet.a" />
+			<Add library="../../lib/dcm/win32/liboflog.a" />
+			<Add library="../../lib/dcm/win32/libdcmtls.a" />
+			<Add library="../../lib/dcm/win32/libofstd.a" />
 			<Add library="../../lib/dcm/win32/libdcmUnits.a" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libdcmdata.a" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libdcmnet.a" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/liboflog.a" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libdcmtls.a" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libofstd.a" />
 			<Add library="pthread" />
 			<Add library="icuuc" />
 			<Add library="icudata" />
 			<Add library="z" />
 			<Add library="nsl" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libdcmdata.a" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libdcmnet.a" />
-			<Add library="../../../dcmtk/dcmtk-3.6.3-CB/lib/libofstd.a" />
+			<Add library="../../lib/dcm/win32/dcmdata.lib" />
+			<Add library="../../lib/dcm/win32/libdcmnet.a" />
+			<Add library="../../lib/dcm/win32/liboflog.a" />
+			<Add library="../../lib/dcm/win32/libofstd.a" />
 		</Linker>
 		<Unit filename="main.cpp" />
 		<Extensions>

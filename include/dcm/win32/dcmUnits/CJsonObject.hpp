@@ -31,16 +31,28 @@ extern "C" {
 typedef signed char         INT8, *PINT8;
 typedef signed short        INT16, *PINT16;
 typedef signed int          INT32, *PINT32;
+
+#ifdef _WIN32
 typedef signed __int64      INT64, *PINT64;
+typedef unsigned __int64    UINT64, *PUINT64;
+typedef signed __int64      int64;
+typedef unsigned __int64    uint64;
+#else
+typedef __int64_t               INT64, *PINT64;
+typedef __uint64_t    UINT64, *PUINT64;
+//typedef __int64_t               int64;
+//typedef __uint64_t    uint64;
+#endif
+
 typedef unsigned char       UINT8, *PUINT8;
 typedef unsigned short      UINT16, *PUINT16;
 typedef unsigned int        UINT32, *PUINT32;
-typedef unsigned __int64    UINT64, *PUINT64;
+
 
 typedef INT32 int32;
 typedef UINT32 uint32;
-typedef INT64 int64;
-typedef UINT64 uint64;
+//typedef INT64 int64;
+//typedef UINT64 uint64;
 
 namespace CJSON
 {

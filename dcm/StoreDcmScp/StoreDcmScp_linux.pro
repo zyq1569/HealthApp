@@ -8,7 +8,6 @@ DEFINES += HAVE_POPEN
 DEFINES += HAVE_PCLOSE
 DEFINES  -= UNICODE
 
-#MOC_DIR = ../../temp/win32/scp
 
 SOURCES += \
         storescp.cc
@@ -24,44 +23,19 @@ INCLUDEPATH +=../../include/dcm/win32/dcmdata/include
 INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
 INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
 
-LIBS += ../../lib/dcm/win32/libdcmnet.a
-LIBS += ../../lib/dcm/win32/libdcmdata.a
-LIBS += ../../lib/dcm/win32/liboflog.a
-LIBS += ../../lib/dcm/win32/libofstd.a
-LIBS += ../../lib/dcm/win32/libdcmtls.a
+LIBS +=../../lib/dcm/win32/libdcmnet.a
+LIBS +=../../lib/dcm/win32/libdcmdata.a
+LIBS +=../../lib/dcm/win32/liboflog.a
+LIBS +=../../lib/dcm/win32/libofstd.a
+LIBS +=../../lib/dcm/win32/libdcmtls.a
+LIBS +=../../lib/dcm/win32/libdcmnet.a
+LIBS +=../../lib/dcm/win32/libdcmdata.a
+LIBS +=../../lib/dcm/win32/liboflog.a
+LIBS +=../../lib/dcm/win32/libofstd.a
+LIBS +=../../lib/dcm/win32/libdcmUnits.a
 
-LIBS += ../../lib/dcm/win32/libdcmnet.a
-LIBS += ../../lib/dcm/win32/libdcmdata.a
-LIBS += ../../lib/dcm/win32/liboflog.a
-LIBS += ../../lib/dcm/win32/libofstd.a
-LIBS += ../../lib/dcm/win32/libdcmUnits.a
 LIBS +=-lpthread
 LIBS +=-licuuc
 LIBS +=-licudata
 LIBS +=-lnsl
 LIBS +=-lz
-#LIBS +=-lssl
-#LIBS +=-lcrypto
-#LIBS += ../../lib/dcm/win32/ofstd.lib
-#LIBS += ../../lib/dcm/win32/dcmtls.lib
-#LIBS += ../../lib/dcm/win32/oflog.lib
-#LIBS += ../../lib/dcm/win32/dcmdata.lib
-#LIBS += ../../lib/dcm/win32/dcmnet.lib
-#LIBS += ../../lib/dcm/win32/dcmtls.lib
-#LIBS += ../../lib/dcm/win32/dcmnet.lib
-#LIBS += ../../lib/dcm/win32/dcmdata.lib
-#LIBS += ../../lib/dcm/win32/oflog.lib
-#LIBS += ../../lib/dcm/win32/ofstd.lib
-#LIBS += ../../lib/dcm/win32/dcmUnits.lib
-#iphlpapi.lib;ws2_32.lib;netapi32.lib;
-#wsock32.lib;kernel32.lib;user32.lib;
-#gdi32.lib;winspool.lib;shell32.lib;
-#ole32.lib;oleaut32.lib;uuid.lib;
-#comdlg32.lib;advapi32.lib
-#LIBS += icuuc
-#LIBS += licudata
-#LIBS += lnsl
-#LIBS += lpthread
-#LIBS += lssl
-#LIBS += lcrypto
-#LIBS += -lwsock32
