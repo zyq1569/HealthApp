@@ -1,16 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Workspace Name="HealthApp" Database="" Version="10000">
-  <Project Name="TestApp" Path="dcm/TestApp/TestApp.project" Active="Yes"/>
-  <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="no">
-      <Environment/>
-      <Project Name="dcmUnits" ConfigName="Debug"/>
-      <Project Name="TestApp" ConfigName="Debug"/>
-    </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="yes">
-      <Environment/>
-      <Project Name="dcmUnits" ConfigName="Release"/>
-      <Project Name="TestApp" ConfigName="Release"/>
-    </WorkspaceConfiguration>
-  </BuildMatrix>
-</CodeLite_Workspace>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Workspace">
+		<Project filename="../dcmtk/dcmtk-3.6.3-CB/DCMTK.cbp" />
+		<Project filename="dcm/StoreDcmScp/StoreDcmScp.cbp" />
+		<Project filename="dcm/dcmUnits/dcmUnits.cbp" />
+		<Project filename="../Dev_Tool/codelite-master-CB/CodeLite.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>
