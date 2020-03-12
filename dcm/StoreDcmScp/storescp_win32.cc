@@ -307,7 +307,7 @@ int AppRun(int argc, char *argv[])
     {
         currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
         Log_Dir = currentAppPath + "/log";
-        /*DcmConfigFile config;
+        DcmConfigFile config;
         OFString configdir = currentAppPath + "/config/DcmServerConfig.cfg";;
         if (config.init(configdir.c_str()))
         {
@@ -326,8 +326,8 @@ int AppRun(int argc, char *argv[])
                     Log_Dir = opt_outputFilePath.substr(0, pos) + "/log";
                 }
             }
-        }*/
-        //else
+        }
+        else
         {
             opt_port = 1024;
             opt_outputFilePath = currentAppPath + "/DCM_SAVE";
@@ -380,7 +380,7 @@ int AppRun(int argc, char *argv[])
 
 #ifdef WITH_ZLIB
     //if (cmd.findOption("--prefer-deflated"))
-     //   opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+    //    opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
 
     opt_acceptAllXfers = OFTrue;
@@ -2797,7 +2797,7 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
             if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
 
             // store file either with meta header or as pure dataset
-            fileName = fileName + ".dcm";//add
+            fileName = fileName + ".dcm";//add 
             OFLOG_INFO(storescpLogger, "storing DICOM file: " << fileName);
             if (OFStandard::fileExists(fileName))
             {
