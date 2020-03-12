@@ -207,6 +207,10 @@ OFString GetCurrWorkingDir()
     strPath = OFString(szFull);
 #else
     //to do add!
+    if((strPath = getcwd(NULL, 0)) == "")
+    {
+        perror("getcwd error");
+    }
 #endif
     return strPath;
 }

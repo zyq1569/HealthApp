@@ -1642,7 +1642,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     OFString temp_str;
 
 #ifdef PRIVATE_STORESCP_VARIABLES
-    PRIVATE_STORESCP_VARIABLES
+       PRIVATE_STORESCP_VARIABLES
 #endif
         const char* knownAbstractSyntaxes[] =
     {

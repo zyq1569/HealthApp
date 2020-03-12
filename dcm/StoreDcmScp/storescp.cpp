@@ -117,10 +117,10 @@ static OFString replaceChars(const OFString &srcstr, const OFString &pattern, co
 static void executeCommand(const OFString &cmd);
 static void cleanChildren(pid_t pid, OFBool synch);
 static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
-    T_ASC_Parameters * params,
-    const char* transferSyntaxes[],
-    int transferSyntaxCount,
-    T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
+        T_ASC_Parameters * params,
+        const char* transferSyntaxes[],
+        int transferSyntaxCount,
+        T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
 /* sort study mode */
 enum E_SortStudyMode
@@ -246,7 +246,7 @@ OFBool Accept_NotMatchSOPClass = OFTrue;
 //--------------------------
 
 //--single-process 默认为fork 模式，该设置为单进程
-//1040 -od \\192.168.0.11\common\Test_dcmtk_rec\SCP
+//1040  \\home\testStoreSCP\Test_dcmtk_rec\SCP
 int AppRun(int argc, char *argv[])
 {
     OFString strArg,tmp;
@@ -281,14 +281,18 @@ int AppRun(int argc, char *argv[])
         app.printMessage(path.c_str());
 #else
         //to do add!
+        OFString message = " start app by commline:";
+        app.printMessage(message.c_str());
+        path = GetCurrWorkingDir();
+        app.printMessage("GetCurrWorkingDir filePath:");
+        app.printMessage(path.c_str());
 #endif
     }
     OFString currentAppPath, Log_Dir;
     if (argc > 2)
     {
-        int i = argc - 3;
-        opt_port = atoi(argv[i]);
-        opt_outputFilePath = argv[i+1];
+        opt_port = atoi(argv[1]);
+        opt_outputFilePath = argv[2];
         int pos = opt_outputFilePath.find_last_of("/");
         if (pos > -1)
         {
@@ -301,36 +305,6 @@ int AppRun(int argc, char *argv[])
             {
                 Log_Dir = opt_outputFilePath.substr(0, pos) + "/log";
             }
-        }
-    }
-    else
-    {
-        currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
-        Log_Dir = currentAppPath + "/log";
-        /*DcmConfigFile config;
-        OFString configdir = currentAppPath + "/config/DcmServerConfig.cfg";;
-        if (config.init(configdir.c_str()))
-        {
-            opt_outputFilePath = config.getStoreDir()->front();
-            opt_port = config.getStoreScpPort();
-            int pos = opt_outputFilePath.find_last_of("/");
-            if (pos > -1)
-            {
-                Log_Dir = opt_outputFilePath.substr(0, pos) + "/log";
-            }
-            else
-            {
-                int pos = opt_outputFilePath.find_last_of("\\");
-                if (pos > -1)
-                {
-                    Log_Dir = opt_outputFilePath.substr(0, pos) + "/log";
-                }
-            }
-        }*/
-        //else
-        {
-            opt_port = 1024;
-            opt_outputFilePath = currentAppPath + "/DCM_SAVE";
         }
     }
     app.printMessage("log_dir:");
@@ -380,7 +354,7 @@ int AppRun(int argc, char *argv[])
 
 #ifdef WITH_ZLIB
     //if (cmd.findOption("--prefer-deflated"))
-     //   opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+    //   opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
 
     opt_acceptAllXfers = OFTrue;
@@ -402,7 +376,7 @@ int AppRun(int argc, char *argv[])
     if (!dcmDataDict.isDictionaryLoaded())
     {
         OFLOG_WARN(storescpLogger, "no data dictionary loaded, check environment variable: "
-            << DCM_DICT_ENVIRONMENT_VARIABLE);
+                   << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* if the output directory does not equal "." (default directory) */
@@ -430,7 +404,10 @@ int AppRun(int argc, char *argv[])
 
 #ifdef HAVE_FORK
     if (opt_forkMode)
+    {
+        argc = 2;
         DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+    }
 #elif defined(_WIN32)
     if (opt_forkedChild)
     {
@@ -515,24 +492,22 @@ int AppRun(int argc, char *argv[])
 #endif
     return 0;
 }
-
+//1667 /home/zyq/windows_share/HealthApp/bin/win32/DCM_SAVE
 int main(int argc, char *argv[])
 {
-    OFString s = GetStudyHashDir("1.2.826.0.1.3680043.9.7606.20091101104529.177289.200911020017");
-    if (argc > 3)
+    //OFString s = GetStudyHashDir("1.2.826.0.1.3680043.9.7606.20091101104529.177289.200911020017");
+    printf("---int main(int argc, char *argv[])---");
+    if (argc > 2)
     {
-        OFString s = argv[argc-1];
-        s = OFStandard::toUpper(s);
-        int pos = s.find("APPSTART");
-        if (pos > -1)
-        {
-            return AppRun(argc, argv);
-        }
+        return AppRun(argc, argv);
     }
     else
     {
-
+        printf("...argc must value[3]...\n...[1: port 2: save image dir ]...\n");
+        printf("...eg: ./StoreDcmScp_linux 1400 /home/Images ...\n");
+        printf("...now exit!...\n");
     }
+    return 0;
 }
 
 static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfiguration& asccfg)
@@ -543,18 +518,18 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     OFString sprofile;
     OFString temp_str;
 
-#ifdef PRIVATE_STORESCP_VARIABLES
-    PRIVATE_STORESCP_VARIABLES
-#endif
-        const char* knownAbstractSyntaxes[] =
+    //#ifdef PRIVATE_STORESCP_VARIABLES
+    //       PRIVATE_STORESCP_VARIABLES
+    //#endif
+    const char* knownAbstractSyntaxes[] =
     {
         UID_VerificationSOPClass
     };
 
     const char* transferSyntaxes[] =
     { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 21
-    NULL
+      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 21
+      NULL
     };                                                      // +1
     int numTransferSyntaxes = 0;
 
@@ -621,7 +596,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 #if defined(HAVE_FORK) || defined(_WIN32)
     if (opt_forkMode)
         OFLOG_INFO(storescpLogger, "Association Received in " << (DUL_processIsForkedChild() ? "child" : "parent")
-        << " process (pid: " << OFStandard::getProcessID() << ")");
+                   << " process (pid: " << OFStandard::getProcessID() << ")");
     else
 #endif
         OFLOG_INFO(storescpLogger, "Association Received");
@@ -917,7 +892,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         {
             /* accept everything not known not to be a storage SOP class */
             cond = acceptUnknownContextsWithPreferredTransferSyntaxes(
-                assoc->params, transferSyntaxes, numTransferSyntaxes);
+                        assoc->params, transferSyntaxes, numTransferSyntaxes);
             if (cond.bad())
             {
                 OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
@@ -972,8 +947,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     {
 #ifdef PRIVATE_STORESCP_CODE
         PRIVATE_STORESCP_CODE
-#endif
-            cond = ASC_acknowledgeAssociation(assoc);
+        #endif
+                cond = ASC_acknowledgeAssociation(assoc);
         if (cond.bad())
         {
             OFLOG_ERROR(storescpLogger, DimseCondition::dump(temp_str, cond));
@@ -995,8 +970,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
      * prefix known to exhibit the buggy behaviour.
      */
     if (0 == strncmp(assoc->params->theirImplementationClassUID,
-        BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX,
-        strlen(BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX)))
+                     BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX,
+                     strlen(BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX)))
     {
         dcmEnableAutomaticInputDataCorrection.set(OFFalse);
         dcmPeerRequiresExactUIDCopy.set(OFTrue);
@@ -1160,8 +1135,8 @@ processCommands(T_ASC_Association * assoc)
                 // we cannot handle this kind of message
                 cond = DIMSE_BADCOMMANDTYPE;
                 OFLOG_ERROR(storescpLogger, "Expected C-ECHO or C-STORE request but received DIMSE command 0x"
-                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-                    << OFstatic_cast(unsigned, msg.CommandField));
+                            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+                            << OFstatic_cast(unsigned, msg.CommandField));
                 OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(tempStr, msg, DIMSE_INCOMING, NULL, presID));
                 break;
             }
@@ -1197,7 +1172,7 @@ static OFCondition echoSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg, T_A
 
 // substitute non-ASCII characters with ASCII "equivalents"
 static void mapCharacterAndAppendToString(Uint8 c,
-    OFString &output)
+                                          OFString &output)
 {
     static const char *latin1_table[] =
     {
@@ -1401,8 +1376,8 @@ void SaveDcmIni(DicomFileInfo image, OFString filename)
 }
 
 static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress, T_DIMSE_C_StoreRQ *req,
-    char * /*imageFileName*/, DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, DcmDataset **statusDetail)
-    /*
+                             char * /*imageFileName*/, DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, DcmDataset **statusDetail)
+/*
      * This function.is used to indicate progress when storescp receives instance data over the
      * network. On the final call to this function (identified by progress->state == DIMSE_StoreEnd)
      * this function will store the data set which was received over the network to a file.
@@ -1426,7 +1401,7 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
 
     // determine if the association shall be aborted
     if ((opt_abortDuringStore && progress->state != DIMSE_StoreBegin) ||
-        (opt_abortAfterStore && progress->state == DIMSE_StoreEnd))
+            (opt_abortAfterStore && progress->state == DIMSE_StoreEnd))
     {
         OFLOG_INFO(storescpLogger, "ABORT initiated (due to command line options)");
         ASC_abortAssociation((OFstatic_cast(StoreCallbackData*, callbackData))->assoc);
@@ -1508,7 +1483,7 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                         // default if patient name is missing or empty
                         tmpName = "ANONYMOUS";
                         OFLOG_WARN(storescpLogger, "element PatientName " << DCM_PatientName << " absent or empty in data set, using '"
-                            << tmpName << "' instead");
+                                   << tmpName << "' instead");
                     }
                     else
                     {
@@ -1556,8 +1531,8 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                     // create a name for the new subdirectory.
                     char timestamp[32];
                     sprintf(timestamp, "%04u%02u%02u_%02u%02u%02u%03u",
-                        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-                        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
+                            dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+                            dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
 
                     OFString subdirectoryName;
                     switch (opt_sortStudyMode)
@@ -1631,8 +1606,8 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                         //------------------------------------------------
                         //subdirectoryName += currentStudyInstanceUID;//原来是保存stuyduid的文件夹方式
                     }
-                    // pattern: "[prefix]_[Study Instance UID]"
-                    break;
+                        // pattern: "[prefix]_[Study Instance UID]"
+                        break;
                     case ESM_PatientName:
                         // pattern: "[Patient's Name]_[YYYYMMDD]_[HHMMSSMMM]"
                         subdirectoryName = currentPatientName;
@@ -1706,8 +1681,8 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                 OFLOG_WARN(storescpLogger, "DICOM file already exists, overwriting: " << fileName);
             }
             OFCondition cond = cbdata->dcmff->saveFile(fileName.c_str(), xfer, opt_sequenceType, opt_groupLength,
-                opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
-                (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
+                                                       opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
+                                                       (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
             if (cond.bad())
             {
                 OFLOG_ERROR(storescpLogger, "cannot write DICOM file: " << fileName << ": " << cond.text());
@@ -1758,10 +1733,10 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
 
 
 static OFCondition storeSCP(
-    T_ASC_Association *assoc,
-    T_DIMSE_Message *msg,
-    T_ASC_PresentationContextID presID)
-    /*
+        T_ASC_Association *assoc,
+        T_DIMSE_Message *msg,
+        T_ASC_PresentationContextID presID)
+/*
      * This function processes a DIMSE C-STORE-RQ command that was
      * received over the network connection.
      *
@@ -1800,7 +1775,7 @@ static OFCondition storeSCP(
             char buf[70];
             dcmGenerateUniqueIdentifier(buf);
             sprintf(imageFileName, "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
-                buf, opt_fileNameExtension.c_str());
+                    buf, opt_fileNameExtension.c_str());
         }
         else if (opt_timeNames)
         {
@@ -1815,17 +1790,17 @@ static OFCondition storeSCP(
             {
                 // timeNameCounter not set -> last written filename has to be without "serial number"
                 sprintf(cmpFileName, "%04u%02u%02u%02u%02u%02u%03u.%s%s",
-                    dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-                    dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-                    dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
+                        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+                        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+                        dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
             }
             else
             {
                 // counter was active before, so generate filename with "serial number" for comparison
                 sprintf(cmpFileName, "%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", // millisecond version
-                    dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-                    dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-                    timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
+                        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+                        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+                        timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
             }
             if ((outputFileNameArray.size() != 0) && (outputFileNameArray.back() == cmpFileName))
             {
@@ -1833,17 +1808,17 @@ static OFCondition storeSCP(
                 // generate one with a serial number (incremented by 1)
                 timeNameCounter++;
                 sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, // millisecond version
-                    dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-                    dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-                    timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
+                        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+                        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+                        timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
             }
             else
             {
                 // first run or filenames are different: create filename without serial number
                 sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, // millisecond version
-                    dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-                    dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-                    dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
+                        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+                        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+                        dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
                 // reset counter, because timestamp and therefore filename has changed
                 timeNameCounter = -1;
             }
@@ -1858,7 +1833,7 @@ static OFCondition storeSCP(
             {
                 // don't create new UID, use the study instance UID as found in object
                 sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
-                    req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
+                        req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
             }
         }
     }
@@ -1873,7 +1848,7 @@ static OFCondition storeSCP(
     else
     {
         OFLOG_INFO(storescpLogger, "Received Store Request (MsgID " << req->MessageID << ", "
-            << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
+                   << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
     }
 
     // initialize some variables
@@ -1900,12 +1875,12 @@ static OFCondition storeSCP(
     if (opt_bitPreserving)
     {
         cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL,
-            storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
+                                   storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
     }
     else
     {
         cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader, &dset,
-            storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
+                                   storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
     }
 
     // if some error occurred, dump corresponding information and remove the outfile if necessary
@@ -2267,7 +2242,7 @@ static void cleanChildren(pid_t pid, OFBool synch)
 static
 DUL_PRESENTATIONCONTEXT *
 findPresentationContextID(LST_HEAD * head,
-T_ASC_PresentationContextID presentationContextID)
+                          T_ASC_PresentationContextID presentationContextID)
 {
     DUL_PRESENTATIONCONTEXT *pc;
     LST_HEAD **l;
@@ -2306,9 +2281,9 @@ T_ASC_PresentationContextID presentationContextID)
  *  @param acceptedRole SCU/SCP role to accept
  */
 static OFCondition acceptUnknownContextsWithTransferSyntax(
-    T_ASC_Parameters * params,
-    const char* transferSyntax,
-    T_ASC_SC_ROLE acceptedRole)
+        T_ASC_Parameters * params,
+        const char* transferSyntax,
+        T_ASC_SC_ROLE acceptedRole)
 {
     OFCondition cond = EC_Normal;
     int n, i, k;
@@ -2342,8 +2317,8 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
         if (accepted)
         {
             cond = ASC_acceptPresentationContext(
-                params, pc.presentationContextID,
-                transferSyntax, acceptedRole);
+                        params, pc.presentationContextID,
+                        transferSyntax, acceptedRole);
             if (cond.bad()) return cond;
         }
         else
@@ -2352,7 +2327,7 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
 
             /* do not refuse if already accepted */
             dpc = findPresentationContextID(params->DULparams.acceptedPresentationContext,
-                pc.presentationContextID);
+                                            pc.presentationContextID);
             if ((dpc == NULL) || ((dpc != NULL) && (dpc->result != ASC_P_ACCEPTANCE)))
             {
 
@@ -2389,9 +2364,9 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
  *  @param acceptedRole SCU/SCP role to accept
  */
 static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
-    T_ASC_Parameters * params,
-    const char* transferSyntaxes[], int transferSyntaxCount,
-    T_ASC_SC_ROLE acceptedRole)
+        T_ASC_Parameters * params,
+        const char* transferSyntaxes[], int transferSyntaxCount,
+        T_ASC_SC_ROLE acceptedRole)
 {
     OFCondition cond = EC_Normal;
     /*
