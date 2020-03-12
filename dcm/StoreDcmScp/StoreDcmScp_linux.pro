@@ -10,7 +10,7 @@ DEFINES  -= UNICODE
 
 
 SOURCES += \
-        storescp.cc
+        storescp.cpp
 
 INCLUDEPATH +=../../include/mysql/win32
 INCLUDEPATH +=../../include/dcm/win32/dcmUnits
