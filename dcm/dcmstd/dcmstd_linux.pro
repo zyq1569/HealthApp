@@ -6,7 +6,7 @@
 
 QT       -= core gui
 
-TARGET = dcmstd
+TARGET = ofstd
 TEMPLATE = lib
 CONFIG += staticlib
 

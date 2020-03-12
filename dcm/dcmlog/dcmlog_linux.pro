@@ -6,7 +6,7 @@
 
 QT       -= core gui
 
-TARGET = dcmlog
+TARGET = oflog
 TEMPLATE = lib
 CONFIG += staticlib
 
