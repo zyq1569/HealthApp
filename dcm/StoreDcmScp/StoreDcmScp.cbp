@@ -42,7 +42,7 @@
 			<Add directory="../../include/dcm/win32/dcmqrdb/include" />
 		</Compiler>
 		<Linker>
-			<Add library="../../lib/dcm/win32/dcmdata.lib" />
+			<Add library="../../lib/dcm/win32/libdcmdata.a" />
 			<Add library="../../lib/dcm/win32/libdcmnet.a" />
 			<Add library="../../lib/dcm/win32/liboflog.a" />
 			<Add library="../../lib/dcm/win32/libdcmtls.a" />
@@ -53,10 +53,12 @@
 			<Add library="icudata" />
 			<Add library="z" />
 			<Add library="nsl" />
-			<Add library="../../lib/dcm/win32/dcmdata.lib" />
+			<Add library="../../lib/dcm/win32/libdcmdata.a" />
 			<Add library="../../lib/dcm/win32/libdcmnet.a" />
 			<Add library="../../lib/dcm/win32/liboflog.a" />
 			<Add library="../../lib/dcm/win32/libofstd.a" />
+			<Add library="../../lib/dcm/win32/libdcmtls.a" />
+			<Add library="uuid" />
 		</Linker>
 		<Unit filename="main.cpp" />
 		<Extensions>
