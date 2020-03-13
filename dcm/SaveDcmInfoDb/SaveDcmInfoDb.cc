@@ -346,6 +346,7 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
         }
     }
 #else
+#include <dirent.h>
     /* try to open the directory */
     DIR *dirPtr = opendir(dirName.getCharPointer());
     if (dirPtr != NULL)
