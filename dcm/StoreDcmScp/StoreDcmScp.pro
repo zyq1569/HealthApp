@@ -31,6 +31,12 @@ LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
 LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
 LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
 
+LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
+LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
+LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
+LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
+LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
+LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
 #LIBS +=-lpthread
 #LIBS +=-licuuc
 #LIBS +=-licudata

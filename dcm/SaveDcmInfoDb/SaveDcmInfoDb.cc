@@ -83,7 +83,7 @@ END_EXTERN_C
 static OFLogger SaveDcmInfoDbLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
-OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+        OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default application titles */
 #define APPLICATIONTITLE     "STORESCU"
@@ -222,10 +222,10 @@ static OFCondition  checkUserIdentityResponse(T_ASC_Parameters *params);
 //}
 
 uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
-    OFList<OFFilename> &fileList,
-    const OFFilename &pattern = "",
-    const OFFilename &dirPrefix = "",
-    const OFBool recurse = OFTrue)
+                                         OFList<OFFilename> &fileList,
+                                         const OFFilename &pattern = "",
+                                         const OFFilename &dirPrefix = "",
+                                         const OFBool recurse = OFTrue)
 {
     const size_t initialSize = fileList.size();
     OFFilename dirName, pathName, tmpString;
@@ -346,6 +346,7 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
         }
     }
 #else
+#include<sys/types.h>
 #include <dirent.h>
     /* try to open the directory */
     DIR *dirPtr = opendir(dirName.getCharPointer());
@@ -602,129 +603,8 @@ OFBool CjsonSaveFile(HStudyInfo dcminfo, OFString filename)
 OFBool SaveDcmInfoJsonFile(HStudyInfo dcminfo, OFString filename)
 {
     return CjsonSaveFile(dcminfo,filename);
-    //////////////////////////////////////
-    //if (OFStandard::fileExists(filename))
-    //{
-    //    OFFile jsonfile;
-    //    jsonfile.fopen(filename, "r+");
-    //    const int maxline = 256;
-    //    char line[maxline];
-    //    OFList<OFString> StudyInfo;
-    //    OFString strjson;
-    //    while (jsonfile.fgets(line, maxline) != NULL)
-    //    {
-    //        strjson += line;
-    //    }
-    //    jsonfile.fclose();
-    //    cJSON *study = cJSON_Parse(strjson.c_str());
-    //    cJSON *item = cJSON_GetObjectItem(study, "numImages");
-    //    if (item != NULL)
-    //    {
-    //        int n = item->valueint+1;
-    //        cJSON *newitem = cJSON_AddNumberToObject(study, "numImages", n);//update
-    //        cJSON_ReplaceItemInObject(study, "numImages", newitem);
-    //    }
-
-    //    //cJSON *jsonitem = cJSON_GetObjectItem(study, "seriesList");
-    //    if (study != NULL)
-    //    {
-    //        cJSON *jsonitem = cJSON_GetObjectItem(study, "seriesList");
-    //        int size = cJSON_GetArraySize(jsonitem);
-    //        OFBool bfindser = OFFalse;
-    //        for (int i = 0; i < size; i++)
-    //        {
-    //            cJSON *serlist = cJSON_GetArrayItem(jsonitem, i);
-    //            if (serlist != NULL)
-    //            {
-    //                cJSON *seritem = cJSON_GetObjectItem(serlist, "seriesUid");
-    //                const OFString servalue = cJSON_GetStringValue(seritem);
-    //                if (servalue == dcminfo.Seriesuid)
-    //                {
-    //                    bfindser = OFTrue;
-    //                    OFBool bfindimage = OFFalse;
-    //                    cJSON *imageitem = cJSON_GetObjectItem(serlist, "instanceList");
-    //                    int imagesize = cJSON_GetArraySize(imageitem);
-    //                    for (int j = 0; j < imagesize; j++)
-    //                    {
-    //                        cJSON *images = cJSON_GetArrayItem(imageitem, j);//cJSON_GetObjectItem(imageitem, "imageid");
-    //                        cJSON *image = cJSON_GetObjectItem(images, "imageId");
-    //                        const OFString imagevalue = cJSON_GetStringValue(image);
-    //                        if (imagevalue == dcminfo.Sopinstanceuid)
-    //                        {
-    //                            bfindimage = OFTrue;
-    //                            return OFTrue;
-    //                        }
-    //                    }
-    //                    cJSON *image = cJSON_CreateObject();
-    //                    cJSON_AddStringToObject(imageitem, "imageId", dcminfo.Sopinstanceuid.c_str());
-    //                    char *p = cJSON_Print(study->child);
-
-    //                    SaveString2File(p, filename);
-    //                    cJSON_Delete(image);
-    //                    return OFTrue;
-    //                    //add image info
-    //                }
-    //            }
-    //        }
-    //        //add series image info
-    //        if (!bfindser)
-    //        {
-    //            cJSON *series = cJSON_CreateObject();
-    //            const char *seriesList = "seriesList";
-    //            cJSON_AddItemToObject(jsonitem, seriesList, series);
-    //            cJSON_AddStringToObject(series, "seriesUid", dcminfo.Seriesuid.c_str());
-    //            cJSON_AddStringToObject(series, "seriesDescription", dcminfo.Seriesdescription.c_str());
-    //            cJSON_AddStringToObject(series, "seriesNumber", dcminfo.Seriesnumber.c_str());
-
-    //            cJSON *image = cJSON_CreateObject();
-    //            cJSON_AddStringToObject(image, "imageId", dcminfo.Sopinstanceuid.c_str());
-    //            cJSON_AddItemToObject(series, "instanceList", image);
-    //            char *p = cJSON_Print(study);
-    //            SaveString2File(p, filename);
-    //            cJSON_Delete(series);
-    //            return OFTrue;
-    //        }
-    //    }
-    //}
-    //else
-    //{
-    //    cJSON *study = cJSON_CreateObject();
-
-    //    //studyinfo
-    //    cJSON_AddStringToObject(study, "patientName", dcminfo.StudyPatientName.c_str());
-    //    cJSON_AddStringToObject(study, "patientId", dcminfo.StudyPatientId.c_str());
-    //    cJSON_AddStringToObject(study, "studyDate", dcminfo.StudyDateTime.c_str());
-    //    cJSON_AddStringToObject(study, "modality", dcminfo.StudyModality.c_str());
-    //    cJSON_AddStringToObject(study, "studyDescription", dcminfo.studydescription.c_str());
-    //    cJSON_AddNumberToObject(study, "numImages", 1);
-    //    cJSON_AddStringToObject(study, "studyId", dcminfo.StudyID.c_str());
-    //    cJSON_AddStringToObject(study, "studyuid", dcminfo.StudyInstanceUID.c_str());
-
-    //    //seriesinfo
-    //    cJSON *seriesListItem = cJSON_CreateArray();
-    //    const char *seriesList = "seriesList";
-    //    cJSON_AddItemToObject(study, seriesList, seriesListItem);
-    //    cJSON *series = cJSON_CreateObject();
-    //    cJSON_AddItemToObject(seriesListItem, seriesList, series);
-    //    cJSON_AddStringToObject(series, "seriesUid", dcminfo.Seriesuid.c_str());
-    //    cJSON_AddStringToObject(series, "seriesDescription", dcminfo.Seriesdescription.c_str());
-    //    cJSON_AddStringToObject(series, "seriesNumber", dcminfo.Seriesnumber.c_str());
-
-    //    cJSON *images = cJSON_CreateArray();
-    //    cJSON_AddItemToObject(series, "instanceList", images);
-    //    //imageid
-    //    cJSON *imageid = cJSON_CreateObject();
-    //    cJSON_AddStringToObject(imageid, "imageId", dcminfo.Sopinstanceuid.c_str());
-    //    cJSON_AddItemToObject(images, "instanceList", imageid);
-
-    //    char *p = cJSON_Print(study);
-    //    SaveString2File(p, filename);
-    //    cJSON_Delete(study);
-    //    //cJSON_free(study);
-    //    return OFTrue;
-    //}
-    return OFTrue;
 }
+
 OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
 {
     OFFile inifile;
@@ -831,6 +711,7 @@ OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
     }
     return OFTrue;
 }
+
 OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
 {
     //UINT64 uuid = CreateGUID();
@@ -979,10 +860,10 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 {
 #ifdef _UNICODE
                     g_pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
-                        W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+                                              W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 #else
                     g_pMariaDb = new HMariaDb(g_mySql_IP.c_str(), g_mySql_username.c_str(), \
-                        g_mySql_pwd.c_str(), g_mySql_dbname.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+                                              g_mySql_pwd.c_str(), g_mySql_dbname.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 
 #endif
                 }
@@ -997,9 +878,9 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                     sprintf(uuid, "%llu", CreateGUID());
                     PatientIdentity = uuid;
                     querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
-                                                                                                                                                                                                                                                                                       PatientSex,PatientBirthday) value(";
-                    querysql += PatientIdentity;
-                    querysql += ",'";
+                            PatientSex,PatientBirthday) value(";
+                                                              querysql += PatientIdentity;
+                            querysql += ",'";
                     querysql += StudyInfo.StudyPatientId;
                     querysql += "','";
                     querysql += StudyInfo.StudyPatientName;
@@ -1084,6 +965,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
     }
     return OFTrue;
 }
+
 int main(int argc, char *argv[])
 {
     static DcmConfigFile dcmconfig;
@@ -1094,22 +976,14 @@ int main(int argc, char *argv[])
     OFString tempstr, path = argv[0];
     OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
     int pos = 0;
-#ifdef HAVE_WINDOWS_H
     pos = path.find_last_of('\\');
-#else
-    //to do add!
-#endif
     if (pos < 1)
     {
-#ifdef HAVE_WINDOWS_H
         OFString message = " start app by commline:";
         app.printMessage(message.c_str());
         path = GetCurrWorkingDir();
         app.printMessage("GetCurrWorkingDir filePath:");
         app.printMessage(path.c_str());
-#else
-        //to do add!
-#endif
     }
 
     if (argc > 1)
@@ -1117,9 +991,9 @@ int main(int argc, char *argv[])
         OFString dir = argv[1];
         if (OFStandard::dirExists(dir))
         {
-            Task_Dir = dir + "/Task/1";
-            Error_Dir = dir + "/Task/error";
-            Log_Dir = dir + "/log";
+            Task_Dir   = dir + "/Task/1";
+            Error_Dir  = dir + "/Task/error";
+            Log_Dir    = dir + "/log";
             g_ImageDir = dir + "/Images";
             int pos = dir.find_last_of("/");
             if (pos > -1)
@@ -1137,10 +1011,10 @@ int main(int argc, char *argv[])
         }
         if (argc > 5)
         {
-            g_mySql_IP = argv[2];
-            g_mySql_dbname = argv[3];
+            g_mySql_IP       = argv[2];
+            g_mySql_dbname   = argv[3];
             g_mySql_username = argv[4];
-            g_mySql_pwd = argv[5];
+            g_mySql_pwd      = argv[5];
         }
     }
     else
@@ -1148,9 +1022,9 @@ int main(int argc, char *argv[])
         if (dcmconfig.init((currentAppPath + "/config/DcmServerConfig.cfg").c_str()))
         {
             OFString dir = dcmconfig.getStoreDir()->front();
-            Task_Dir = dir + "/Task/1";
-            Error_Dir = dir + "/Task/error";
-            Log_Dir = dir + "/log";
+            Task_Dir   = dir + "/Task/1";
+            Error_Dir  = dir + "/Task/error";
+            Log_Dir    = dir + "/log";
             g_ImageDir = dir + "/Images";
             int pos = dir.find_last_of("/");
             if (pos > -1)
@@ -1166,17 +1040,17 @@ int main(int argc, char *argv[])
                 }
             }
             //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
-            g_mySql_IP = dcmconfig.getSqlServer();
+            g_mySql_IP       = dcmconfig.getSqlServer();
             g_mySql_username = dcmconfig.getSqlusername();
-            g_mySql_pwd = dcmconfig.getSqlpwd();
-            g_mySql_dbname = dcmconfig.getSqldbname();
+            g_mySql_pwd      = dcmconfig.getSqlpwd();
+            g_mySql_dbname   = dcmconfig.getSqldbname();
         }
         else
         {
-            Task_Dir = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
-            Error_Dir = currentAppPath + "/DCM_SAVE/Task/error";
+            Task_Dir   = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
+            Error_Dir  = currentAppPath + "/DCM_SAVE/Task/error";
             g_ImageDir = currentAppPath + "/DCM_SAVE/Images";
-            Log_Dir = currentAppPath + "/log";
+            Log_Dir    = currentAppPath + "/log";
         }
     }
 
@@ -1216,7 +1090,7 @@ int main(int argc, char *argv[])
     {
         list_file_ini.clear();
         SearchDirFile(Task_Dir, "ini", list_file_ini);
-        Sleep(2);
+        Sleep(1);
         if (list_file_ini.size() > 0)
         {
             OFListIterator(OFString) iter = list_file_ini.begin();
@@ -1241,4 +1115,5 @@ int main(int argc, char *argv[])
         delete g_pMariaDb;
         g_pMariaDb = NULL;
     }
+    return  1;
 }
