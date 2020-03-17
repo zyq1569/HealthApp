@@ -30,7 +30,7 @@ typedef struct _GUID
     unsigned char Data4[8];
 } GUID, UUID;
 #endif
- // _WIN32
+// _WIN32
 
 //#ifndef _WIN32
 //typedef uint64_t UINT64
@@ -46,9 +46,9 @@ OFString GetStudyHashDir(OFString studyuid)
 //!根据字符计算两个Hash数值  to do user uint64
 OFHashValue CreateHashValue(const char * buffer, unsigned int length)
 {
-//2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
-//101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179
-//181 191 193 197 199
+    //2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
+    //101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179
+    //181 191 193 197 199
     static const int M1 = 71;
     static const int M2 = 79;
 
@@ -459,11 +459,14 @@ uint64_t CreateGUID()
     UINT32 uid[2];
 #else
     uint32_t uid[2];
+
 #endif // _WIN32
+
+#ifdef _WIN32
+    //-------------
     // get the current time (needed for subdirectory name)
     OFDateTime dateTime;
     dateTime.setCurrentDateTime();
-
     // create a name for the new subdirectory.
     char timestamp[32];
     sprintf(timestamp, "%04u%02u%02u%02u%02u%02u%03u",
@@ -473,21 +476,37 @@ uint64_t CreateGUID()
             dateTime.getTime().getMilliSecond());
     //2019 0424 0951 14 708
     //2005 0000 0000 00 000
-    #ifdef _WIN32
     UINT64 delt_y,delt_M,delt_d,delt_h,delt_m,delt_s,delt_ma,delt_mi;
-    #else
+    delt_y = (dateTime.getDate().getYear() - 2015) * 365;
+    delt_M = dateTime.getDate().getMonth() * 30;
+    delt_d = dateTime.getDate().getDay() * 24 * 60 * 60 * 1000;
+    delt_h = dateTime.getTime().getHour() * 60 * 60 * 1000;
+    delt_m = dateTime.getTime().getMinute() * 60 * 1000;
+    delt_s = dateTime.getTime().getIntSecond() * 1000;
+    delt_ma = delt_y + delt_M;
+    delt_mi = delt_d + delt_h + delt_m + delt_s + dateTime.getTime().getMilliSecond();
+#else
     uint64_t delt_y,delt_M,delt_d,delt_h,delt_m,delt_s,delt_ma,delt_mi;
-    #endif // _WIN32
-     delt_y = (dateTime.getDate().getYear() - 2015) * 365;
-     delt_M = dateTime.getDate().getMonth() * 30;
-     delt_d = dateTime.getDate().getDay() * 24 * 60 * 60 * 1000;
-     delt_h = dateTime.getTime().getHour() * 60 * 60 * 1000;
-     delt_m = dateTime.getTime().getMinute() * 60 * 1000;
-     delt_s = dateTime.getTime().getIntSecond() * 1000;
-     delt_ma = delt_y + delt_M;
-     delt_mi = delt_d + delt_h + delt_m + delt_s + dateTime.getTime().getMilliSecond();
+    time_t t;
+    time(&t);
+    struct tm *t1;
+    t1=localtime(&t);
+    delt_y = t1->tm_year;
+    delt_M = t1->tm_mon;
+    delt_d = t1->tm_mday;
+    delt_h = t1->tm_hour;
+    delt_m = t1->tm_min;
+    delt_s = t1->tm_sec;
+    delt_ma = delt_y + delt_M;
+    delt_mi = delt_d + delt_h + delt_m + delt_s + t1->tm_gmtoff;
+//    struct timeval t_start; //microseconds
+//    gettimeofday(&t_start, NULL);
+//    printf("Start time: %ld us", t_start.tv_usec);
+#endif // _WIN32
+
     uid[1] = delt_ma << 11;
     uid[1] += delt_mi;
+    //----------
 #ifdef HAVE_WINDOWS_H
     GUID guid;
     HRESULT result = NULL;
