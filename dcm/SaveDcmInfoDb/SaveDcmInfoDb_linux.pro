@@ -23,16 +23,24 @@ INCLUDEPATH +=../../include/dcm/win32/dcmdata/include
 INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
 INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
 
-LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/win32/libdcmnet.a
-LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/win32/libdcmdata.a
-LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/win32/liboflog.a
-LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/win32/libofstd.a
-LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/win32/libdcmtls.a
-LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/win32/libdcmUnits.a
-
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmnet.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmdata.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/liboflog.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libofstd.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmtls.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmUnits.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libmariadbclient.a
 LIBS +=-luuid
+LIBS +=-lpthread
 LIBS +=-lpthread
 LIBS +=-licuuc
 LIBS +=-licudata
 LIBS +=-lnsl
 LIBS +=-lz
+LIBS +=-ldl
+LIBS +=-lm
+LIBS +=-lssl
+LIBS +=-lcrypto
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libofstd.a
+#LIBS +=-Wl
+#-lz -ldl -lm -lpthread -lpthread -ldl -lm -lssl -lcrypto -Wl

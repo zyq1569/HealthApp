@@ -69,6 +69,16 @@ END_EXTERN_C
 #include <zlib.h>          /* for zlibVersion() */
 #endif
 
+#ifndef _WIN32
+//#include <stdio.h>
+#include <dirent.h>
+//#include <stdlib.h>
+//#include <string.h>
+//#include <unistd.h>
+//#include <error.h>
+//#include <sys/stat.h>
+//#include <malloc.h>
+#endif
 
 #include "Units.h"
 
@@ -78,54 +88,17 @@ END_EXTERN_C
 #define PATTERN_MATCHING_AVAILABLE
 #endif
 
-#define OFFIS_CONSOLE_APPLICATION "storescu"
+#define OFFIS_CONSOLE_APPLICATION "saveDcmInfoDB"
+
+#define MAX_FILE_NAME_LEN 256
 
 static OFLogger SaveDcmInfoDbLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
         OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-/* default application titles */
-#define APPLICATIONTITLE     "STORESCU"
-#define PEERAPPLICATIONTITLE "ANY-SCP"
-
-static OFBool opt_showPresentationContexts = OFFalse;
-static OFBool opt_abortAssociation = OFFalse;
-static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
-static OFCmdUnsignedInt opt_maxSendPDULength = 0;
-
-static E_TransferSyntax opt_networkTransferSyntax = EXS_Unknown;
-static E_FileReadMode opt_readMode = ERM_autoDetect;
-
-static OFBool opt_scanDir = OFTrue;
 static OFBool opt_recurse = OFTrue;
 static const char *opt_scanPattern = "";
-
-static OFBool opt_haltOnUnsuccessfulStore = OFFalse;
-static OFBool unsuccessfulStoreEncountered = OFFalse;
-static int lastStatusCode = STATUS_Success;
-
-static OFBool opt_proposeOnlyRequiredPresentationContexts = OFFalse; //修改为True
-static OFBool opt_combineProposedTransferSyntaxes = OFFalse;
-
-static OFCmdUnsignedInt opt_repeatCount = 1;
-static OFCmdUnsignedInt opt_inventPatientCount = 25;
-static OFCmdUnsignedInt opt_inventStudyCount = 50;
-static OFCmdUnsignedInt opt_inventSeriesCount = 100;
-static OFBool opt_inventSOPInstanceInformation = OFFalse;
-static OFBool opt_correctUIDPadding = OFFalse;
-static OFString patientNamePrefix("OFFIS^TEST_PN_");   // PatientName is PN (maximum 16 chars)
-static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
-static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
-static OFString accessionNumberPrefix;   // AccessionNumber is SH (maximum 16 chars)
-static OFBool opt_secureConnection = OFFalse; /* default: no secure connection */
-static const char *opt_configFile = NULL;
-static const char *opt_profileName = NULL;
-T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
-int opt_dimse_timeout = 0;
-int opt_acse_timeout = 30;
-OFCmdSignedInt opt_socket_timeout = 60;
-
 static HMariaDb *g_pMariaDb = NULL;
 static OFString g_mySql_IP = "127.0.0.1";
 static OFString g_mySql_username = "root";
@@ -133,94 +106,93 @@ static OFString g_mySql_pwd = "root";
 static OFString g_mySql_dbname = "HIT";
 static OFString g_ImageDir = "";
 
-#ifdef WITH_ZLIB
-static OFCmdUnsignedInt opt_compressionLevel = 0;
+
+
+#ifndef _WIN32
+typedef struct foldernode_t {
+  char *path;                // point to foldername or filename path
+  struct foldernode_t *next;
+} foldernode;
+
+static void travel_files(char *path)
+{
+    DIR *dir;
+    struct dirent *ptr;
+    char foldername[MAX_FILE_NAME_LEN] = {0};
+    char folderpath[MAX_FILE_NAME_LEN] = {0};
+
+    foldernode *folderstart;
+    folderstart =(foldernode*) calloc(1, sizeof(foldernode));/* ignore err case */
+    folderstart->path = (char *)calloc(1, MAX_FILE_NAME_LEN + 1);
+    strncpy(folderstart->path, path, MAX_FILE_NAME_LEN);
+    folderstart->next = NULL;
+
+    foldernode *folderfirst = folderstart; /* use to search */
+    foldernode *folderlast = folderstart; /* use to add foldernode */
+    foldernode *oldfirst = NULL;
+
+    while(folderfirst != NULL) {
+        printf("dir=%s\n", folderfirst->path);
+        if ((dir = opendir(folderfirst->path)) != NULL) {
+            while ((ptr = readdir(dir)) != NULL) {
+                if(strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0) {
+                    continue;
+                } else if (ptr->d_type == DT_REG) { /* regular file */
+                    printf("%s\n", ptr->d_name);
+                } else if (ptr->d_type == DT_DIR) { /* dir */
+                    bzero(foldername, sizeof(foldername));
+                    bzero(folderpath, sizeof(folderpath));
+                    strncpy(foldername, ptr->d_name, sizeof(foldername));
+                    snprintf(folderpath, sizeof(folderpath), "%s/%s", folderfirst->path , foldername);
+                    printf("%s\n", folderpath);
+
+                    foldernode *foldernew;
+                    foldernew = (foldernode *)calloc(1, sizeof(foldernode));
+                    foldernew->path = (char *)calloc(1, MAX_FILE_NAME_LEN + 1);
+                    strncpy(foldernew->path, folderpath, MAX_FILE_NAME_LEN);
+                    foldernew->next = NULL;
+
+                    folderlast->next = foldernew;
+                    folderlast = foldernew;
+
+                }
+            }
+        } else {
+            printf("opendir[%s] error: %m\n", folderfirst->path);
+            return;
+        }
+        oldfirst = folderfirst;
+        folderfirst = folderfirst->next; // change folderfirst point to next foldernode
+        if (oldfirst) {
+            if (oldfirst->path) {
+                free(oldfirst->path);
+                oldfirst->path = NULL;
+            }
+            free(oldfirst);
+            oldfirst = NULL;
+        }
+        closedir(dir);
+    }
+}
 #endif
 
-#ifdef WITH_OPENSSL
-static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
-static OFBool      opt_doAuthenticate = OFFalse;
-static const char *opt_privateKeyFile = NULL;
-static const char *opt_certificateFile = NULL;
-static const char *opt_passwd = NULL;
-#if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-static OFString    opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#else
-static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
-#endif
-static const char *opt_readSeedFile = NULL;
-static const char *opt_writeSeedFile = NULL;
-static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
-static const char *opt_dhparam = NULL;
-#endif
+uint Linux_searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
+                                               OFList<OFFilename> &fileList,
+                                               const OFFilename &pattern = "",
+                                               const OFFilename &dirPrefix = "",
+                                               const OFBool recurse = OFTrue)
+{
+    const size_t initialSize = fileList.size();
+    OFFilename dirName, pathName, tmpString;
+    OFStandard::combineDirAndFilename(dirName, dirPrefix, directory);
 
-// User Identity Negotiation
-static T_ASC_UserIdentityNegotiationMode opt_identMode = ASC_USER_IDENTITY_NONE;
-static OFString opt_user;
-static OFString opt_password;
-static OFString opt_identFile;
-static OFBool opt_identResponse = OFFalse;
+    /* return number of added files */
+    return fileList.size() - initialSize;
 
-static OFCondition  addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString> &sopClasses);
 
-static OFCondition  cstore(T_ASC_Association *assoc, const OFString &fname);
+}
 
-static OFBool  findSOPClassAndInstanceInFile(const char *fname, char *sopClass, char *sopInstance);
-
-static OFCondition  configureUserIdentityRequest(T_ASC_Parameters *params);
-
-static OFCondition  checkUserIdentityResponse(T_ASC_Parameters *params);
-
-/* helper macro for converting stream output to a string */
-#define CONVERT_TO_STRING(output, string) \
-    optStream.str(""); \
-    optStream.clear(); \
-    optStream << output << OFStringStream_ends; \
-    OFSTRINGSTREAM_GETOFSTRING(optStream, string)
-
-#define SHORTCOL 4
-#define LONGCOL 19
-
-//-------------------------------------------------------------------------------------
-//OFBool CreatDir(OFString dir)
-//{
-//    if (!OFStandard::dirExists(dir))
-//    {
-//#if HAVE_WINDOWS_H
-//        if (_mkdir(dir.c_str()) == -1)
-//#else
-//        if( mkdir( dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
-//#endif
-//        {
-//            OFLOG_ERROR(SaveDcmInfoDbLogger, "mkdir :" + dir + "  .error!");
-//            return OFFalse;
-//        }
-//        else
-//        {
-//            return OFTrue;
-//        }
-//    }
-//    return OFTrue;
-//}
-
-//OFString GetCurrentDir()
-//{
-//    static OFString CurrentDir = "";
-//    if (CurrentDir != "")
-//    {
-//        return CurrentDir;
-//    }
-//    OFString tempstr, path;
-//#if HAVE_WINDOWS_H
-//    char szFullPath[MAX_PATH];
-//    ZeroMemory(szFullPath, MAX_PATH);
-//    ::GetModuleFileName(NULL, szFullPath, MAX_PATH);
-//    path = szFullPath;
-//#endif
-//    CurrentDir = OFStandard::getDirNameFromPath(tempstr, path);
-//    return CurrentDir;
-//}
-
+#ifdef HAVE_WINDOWS_H
 uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
                                          OFList<OFFilename> &fileList,
                                          const OFFilename &pattern = "",
@@ -230,67 +202,10 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
     const size_t initialSize = fileList.size();
     OFFilename dirName, pathName, tmpString;
     OFStandard::combineDirAndFilename(dirName, dirPrefix, directory);
-#ifdef HAVE_WINDOWS_H
     /* check whether given directory exists */
     if (OFStandard::dirExists(dirName))
     {
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
-        /* check whether to use the wide-char version of the API function */
-        if (dirName.usesWideChars())
-        {
-            HANDLE handle;
-            WIN32_FIND_DATAW data;
-            /* check whether file pattern is given */
-            if (!pattern.isEmpty())
-            {
-                /* first, search for matching files on this directory level */
-                handle = FindFirstFileW(combineDirAndFilename(tmpString, dirName, pattern, OFTrue /*allowEmptyDirName*/).getWideCharPointer(), &data);
-                if (handle != INVALID_HANDLE_VALUE)
-                {
-                    do {
-                        /* avoid leading "." */
-                        if (wcscmp(dirName.getWideCharPointer(), L".") == 0)
-                            pathName.set(data.cFileName, OFTrue /*convert*/);
-                        else
-                            combineDirAndFilename(pathName, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
-                        /* ignore directories and the like */
-                        if (fileExists(combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
-                            fileList.push_back(pathName);
-                    } while (FindNextFileW(handle, &data));
-                    FindClose(handle);
-                }
-            }
-            /* then search for _any_ file/directory entry */
-            handle = FindFirstFileW(combineDirAndFilename(tmpString, dirName, L"*.*", OFTrue /*allowEmptyDirName*/).getWideCharPointer(), &data);
-            if (handle != INVALID_HANDLE_VALUE)
-            {
-                do {
-                    /* filter out current and parent directory */
-                    if ((wcscmp(data.cFileName, L".") != 0) && (wcscmp(data.cFileName, L"..") != 0))
-                    {
-                        /* avoid leading "." */
-                        if (wcscmp(dirName.getWideCharPointer(), L".") == 0)
-                            pathName.set(data.cFileName, OFTrue /*convert*/);
-                        else
-                            combineDirAndFilename(pathName, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
-                        if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
-                        {
-                            /* recursively search sub directories */
-                            if (recurse)
-                                searchDirectoryRecursively(pathName, fileList, pattern, dirPrefix, recurse);
-                        }
-                        else if (pattern.isEmpty())
-                        {
-                            /* add filename to the list (if no pattern is given) */
-                            fileList.push_back(pathName);
-                        }
-                    }
-                } while (FindNextFileW(handle, &data));
-                FindClose(handle);
-            }
-        } else
-#endif
-            /* otherwise, use the conventional 8-bit characters version */
+        /* otherwise, use the conventional 8-bit characters version */
         {
             HANDLE handle;
             WIN32_FIND_DATAA data;
@@ -345,55 +260,13 @@ uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
             }
         }
     }
-#else
-#include<sys/types.h>
-#include <dirent.h>
-    /* try to open the directory */
-    DIR *dirPtr = opendir(dirName.getCharPointer());
-    if (dirPtr != NULL)
-    {
-        struct dirent *entry = NULL;
-#ifdef HAVE_READDIR_R
-        dirent d = {};
-        while (!readdir_r(dirPtr, &d, &entry) && entry)
-#else
-        while ((entry = readdir(dirPtr)) != NULL)
-#endif
-        {
-            /* filter out current (".") and parent directory ("..") */
-            if ((strcmp(entry->d_name, ".") != 0) && (strcmp(entry->d_name, "..") != 0))
-            {
-                /* avoid leading "." */
-                if (strcmp(dirName.getCharPointer(), ".") == 0)
-                    pathName = entry->d_name;
-                else
-                    combineDirAndFilename(pathName, directory, entry->d_name, OFTrue /*allowEmptyDirName*/);
-                if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
-                {
-                    /* recursively search sub directories */
-                    if (recurse)
-                        searchDirectoryRecursively(pathName, fileList, pattern, dirPrefix, recurse);
-                }
-                else
-                {
-#ifdef HAVE_FNMATCH_H
-                    /* check whether filename matches pattern */
-                    if ((pattern.isEmpty()) || (fnmatch(pattern.getCharPointer(), entry->d_name, FNM_PATHNAME) == 0))
-#else
-                    /* no pattern matching, sorry :-/ */
-#endif
-                    fileList.push_back(pathName);
-                }
-            }
-        }
-        closedir(dirPtr);
-    }
-#endif
     /* return number of added files */
     return fileList.size() - initialSize;
 }
+#endif
+
 void writesendfile(OFString filename, OFList<OFString> inputFiles);
-//_beginthread( BounceProc, 0, &ThreadNr );  
+
 void searchdicomfile(OFString inputdir)
 {
     OFList<OFString> inputFiles;
@@ -405,10 +278,14 @@ void searchdicomfile(OFString inputdir)
         /* search directory recursively (if required) */
         if (OFStandard::dirExists(inputdir))
         {
+#ifdef HAVE_WINDOWS_H
             //if (opt_scanDir)
             searchDirectoryRecursivelyAndRecord(inputdir, filenameList, opt_scanPattern, "" /*dirPrefix*/, opt_recurse);
             //else
             //   OFLOG_WARN(storescuLogger, "ignoring directory because option --scan-directories is not set: " << inputdir);
+#else
+            Linux_searchDirectoryRecursivelyAndRecord(inputdir, filenameList, opt_scanPattern, "" /*dirPrefix*/, opt_recurse);
+#endif
         }
         //else
         //    inputFiles.push_back(paramString);
@@ -624,12 +501,6 @@ OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
             OFString str = line;
             if (flag)
             {
-                //static OFBool binster = OFTrue;
-                //if (binster)
-                //{
-                //    StudyInfo.push_back("\n");
-                //    binster = OFFalse;
-                //}
                 if (str.find(imageinfo) == 0)
                 {
                     inifile.fclose();//该image信息 已经添加
@@ -655,7 +526,6 @@ OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
                     }
                 }
             }
-
         }
         if (!flag)//直接在后面追加即可
         {
@@ -1090,7 +960,7 @@ int main(int argc, char *argv[])
     {
         list_file_ini.clear();
         SearchDirFile(Task_Dir, "ini", list_file_ini);
-        Sleep(1);
+        //Sleep(1);
         if (list_file_ini.size() > 0)
         {
             OFListIterator(OFString) iter = list_file_ini.begin();
