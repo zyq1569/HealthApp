@@ -18,7 +18,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
-DEFINES += dcmdata_EXPORTS
 DEFINES += O3
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
