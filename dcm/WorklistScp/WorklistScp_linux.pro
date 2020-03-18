@@ -1,6 +1,6 @@
 TEMPLATE = app
 CONFIG += console
-
+TARGET = WorklistScp
 CONFIG -= app_bundle
 CONFIG -= qt
 
@@ -29,16 +29,19 @@ INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
 INCLUDEPATH +=../../include/dcm/win32/dcmwlm/include
 
 
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
-
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmnet.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmdata.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/liboflog.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libofstd.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmtls.a
+#LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmnet.a
+#LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmdata.a
+#LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/liboflog.a
+#LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libofstd.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmUnits.a
+LIBS +=-luuid
+LIBS +=-lpthread
+LIBS +=-licuuc
+LIBS +=-licudata
+LIBS +=-lnsl
+LIBS +=-lz
