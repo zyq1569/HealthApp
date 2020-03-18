@@ -114,7 +114,7 @@ typedef struct foldernode_t {
     struct foldernode_t *next;
 } foldernode;
 
-void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 50)
+void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 100)
 {
     OFString UpfileExt;
     OFStandard::toUpper(UpfileExt, FileExt);//OFStandard::toUpper(FileExt);
