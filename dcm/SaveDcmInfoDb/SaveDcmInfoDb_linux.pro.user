@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.7.1, 2020-03-16T21:19:07. -->
+<!-- Written by QtCreator 4.7.1, 2020-03-18T14:12:59. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -309,7 +309,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/zyq/windows_share/HealthApp/dcm/SaveDcmInfoDb/SaveDcmInfoDb_linux.pro</value>
     <value type="bool" key="QmakeProjectManager.QmakeRunConfiguration.UseLibrarySearchPath">true</value>
-    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments"></value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">/home/zyq/windows_share/HealthApp/bin/win32/DCM_SAVE 192.168.0.106 HIT root password</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">SaveDcmInfoDb_linux.pro</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory"></value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory.default">/home/zyq/windows_share/HealthApp/bin/win32/linux/SaveDcmInfoDB</value>
