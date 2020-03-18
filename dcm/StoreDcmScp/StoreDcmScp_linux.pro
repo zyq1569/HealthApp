@@ -1,4 +1,5 @@
 TEMPLATE = app
+TARGET = StoreDcmScp
 CONFIG += console
 #CONFIG += no_lflags_merge
 CONFIG -= app_bundle

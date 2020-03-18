@@ -114,7 +114,7 @@ typedef struct foldernode_t {
     struct foldernode_t *next;
 } foldernode;
 
-void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 200)
+void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 50)
 {
     OFString UpfileExt;
     OFStandard::toUpper(UpfileExt, FileExt);//OFStandard::toUpper(FileExt);
@@ -154,6 +154,22 @@ void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, c
                     {
                         OFString path = folderfirst->path;
                         datas.push_back(path+"/"+filename);
+                        if (datas.size() > Count)
+                        {
+                            oldfirst = folderfirst;
+                            if (oldfirst)
+                            {
+                                if (oldfirst->path)
+                                {
+                                    free(oldfirst->path);
+                                    oldfirst->path = NULL;
+                                }
+                                free(oldfirst);
+                                oldfirst = NULL;
+                            }
+                            closedir(dir);
+                            return;
+                        }
 //                        printf("folderfirst->path : %s\n", folderfirst->path);
 //                        printf("------********ptr->d_name : %s\n", ptr->d_name);
                     }
