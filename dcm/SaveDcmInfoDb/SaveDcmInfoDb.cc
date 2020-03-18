@@ -156,16 +156,28 @@ void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, c
                         datas.push_back(path+"/"+filename);
                         if (datas.size() > Count)
                         {
-                            oldfirst = folderfirst;
-                            if (oldfirst)
+                            //释放当前查找目录节点&新的目录节点 空间，并返回
+                            foldernode *currentDir = folderfirst;
+                            if (currentDir)
                             {
-                                if (oldfirst->path)
+                                if (currentDir->path)
                                 {
-                                    free(oldfirst->path);
-                                    oldfirst->path = NULL;
+                                    free(currentDir->path);
+                                    currentDir->path = NULL;
                                 }
-                                free(oldfirst);
-                                oldfirst = NULL;
+                                free(currentDir);
+                                currentDir = NULL;
+                            }
+                            if (folderfirst->next)
+                            {
+                                foldernode *nextDir = folderfirst->next;
+                                if (nextDir->path)
+                                {
+                                    free(nextDir->path);
+                                    nextDir->path = NULL;
+                                }
+                                free(nextDir);
+                                nextDir = NULL;
                             }
                             closedir(dir);
                             return;
@@ -187,6 +199,7 @@ void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, c
                     snprintf(folderpath, sizeof(folderpath), "%s/%s", folderfirst->path, foldername);
 //                    printf("folderpath: %s\n", folderpath);
 
+                    //增加新的目录节点,并释放空间
                     foldernode *foldernew;
                     foldernew = (foldernode *)calloc(1, sizeof(foldernode));
                     foldernew->path = (char *)calloc(1, MAX_FILE_NAME_LEN + 1);
@@ -203,6 +216,7 @@ void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, c
             printf("opendir[%s] error: %m\n", folderfirst->path);
             return;
         }
+        //释放当前查找目录节点空间，开始查找下一个目录节点
         oldfirst = folderfirst;
         folderfirst = folderfirst->next; // change folderfirst point to next foldernode
         if (oldfirst)
@@ -216,6 +230,7 @@ void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, c
             oldfirst = NULL;
         }
         closedir(dir);
+        //---
     }
 }
 #endif
