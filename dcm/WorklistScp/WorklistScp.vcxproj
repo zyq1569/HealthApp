@@ -178,7 +178,7 @@
     </ProjectReference>
     <Link>
       <AdditionalOptions>/machine:X86 setargv %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>..\..\lib\dcm\win32\dcmnet.lib;..\..\lib\dcm\win32\dcmdata.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\ofstd.lib;..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\dcmwlm.lib;..\..\lib\mysql\win32\libmariadb.lib;..\..\lib\dcm\win32\dcmUnits.lib;iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\..\lib\dcm\win32\dcmnet.lib;..\..\lib\dcm\win32\dcmdata.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\ofstd.lib;..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\dcmwlm.lib;..\..\lib\mysql\win32\libmariadbclient.a;..\..\lib\dcm\win32\dcmUnits.lib;iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <Version>0.0</Version>
       <ProgramDatabaseFile>..\..\temp\$(ProjectName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
