@@ -1,6 +1,6 @@
 TEMPLATE = app
+TARGET = SaveDcmInfoDb
 CONFIG += console
-#CONFIG += no_lflags_merge
 CONFIG -= app_bundle
 CONFIG -= qt
 
