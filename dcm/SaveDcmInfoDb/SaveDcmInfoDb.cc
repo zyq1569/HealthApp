@@ -110,19 +110,22 @@ static OFString g_ImageDir = "";
 
 #ifndef _WIN32
 typedef struct foldernode_t {
-  char *path;                // point to foldername or filename path
-  struct foldernode_t *next;
+    char *path;                // point to foldername or filename path
+    struct foldernode_t *next;
 } foldernode;
 
-static void travel_files(char *path)
+void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, const bool Not = false, const int Count = 200)
 {
+    OFString UpfileExt;
+    OFStandard::toUpper(UpfileExt, FileExt);//OFStandard::toUpper(FileExt);
+    UpfileExt = "." + UpfileExt;
     DIR *dir;
     struct dirent *ptr;
-    char foldername[MAX_FILE_NAME_LEN] = {0};
-    char folderpath[MAX_FILE_NAME_LEN] = {0};
+    char foldername[MAX_FILE_NAME_LEN] = { 0 };
+    char folderpath[MAX_FILE_NAME_LEN] = { 0 };
 
     foldernode *folderstart;
-    folderstart =(foldernode*) calloc(1, sizeof(foldernode));/* ignore err case */
+    folderstart = (foldernode*)calloc(1, sizeof(foldernode));/* ignore err case */
     folderstart->path = (char *)calloc(1, MAX_FILE_NAME_LEN + 1);
     strncpy(folderstart->path, path, MAX_FILE_NAME_LEN);
     folderstart->next = NULL;
@@ -131,40 +134,65 @@ static void travel_files(char *path)
     foldernode *folderlast = folderstart; /* use to add foldernode */
     foldernode *oldfirst = NULL;
 
-    while(folderfirst != NULL) {
-        printf("dir=%s\n", folderfirst->path);
-        if ((dir = opendir(folderfirst->path)) != NULL) {
-            while ((ptr = readdir(dir)) != NULL) {
-                if(strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0) {
+    while (folderfirst != NULL)
+    {
+//        printf("folderfirst->path: dir=%s\n", folderfirst->path);
+        if ((dir = opendir(folderfirst->path)) != NULL)
+        {
+            while ((ptr = readdir(dir)) != NULL)
+            {
+                if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0)
+                {
                     continue;
-                } else if (ptr->d_type == DT_REG) { /* regular file */
-                    printf("%s\n", ptr->d_name);
-                } else if (ptr->d_type == DT_DIR) { /* dir */
+                }
+                else if (ptr->d_type == DT_REG)
+                { /* regular file */
+                    OFString filename = ptr->d_name;
+                    size_t len = filename.length();
+                    OFString ext = filename.substr(len-4,len);
+                    if (OFStandard::toUpper(ext) == UpfileExt)
+                    {
+                        OFString path = folderfirst->path;
+                        datas.push_back(path+"/"+filename);
+//                        printf("folderfirst->path : %s\n", folderfirst->path);
+//                        printf("------********ptr->d_name : %s\n", ptr->d_name);
+                    }
+//                    else
+//                    {
+//                        printf("folderfirst->path : %s\n", folderfirst->path);
+//                        printf("------#########ptr->d_name : %s\n", ptr->d_name);
+//                    }
+                }
+                else if (ptr->d_type == DT_DIR)
+                { /* dir */
                     bzero(foldername, sizeof(foldername));
                     bzero(folderpath, sizeof(folderpath));
                     strncpy(foldername, ptr->d_name, sizeof(foldername));
-                    snprintf(folderpath, sizeof(folderpath), "%s/%s", folderfirst->path , foldername);
-                    printf("%s\n", folderpath);
+                    snprintf(folderpath, sizeof(folderpath), "%s/%s", folderfirst->path, foldername);
+//                    printf("folderpath: %s\n", folderpath);
 
                     foldernode *foldernew;
                     foldernew = (foldernode *)calloc(1, sizeof(foldernode));
                     foldernew->path = (char *)calloc(1, MAX_FILE_NAME_LEN + 1);
                     strncpy(foldernew->path, folderpath, MAX_FILE_NAME_LEN);
                     foldernew->next = NULL;
-
                     folderlast->next = foldernew;
                     folderlast = foldernew;
 
                 }
             }
-        } else {
+        }
+        else
+        {
             printf("opendir[%s] error: %m\n", folderfirst->path);
             return;
         }
         oldfirst = folderfirst;
         folderfirst = folderfirst->next; // change folderfirst point to next foldernode
-        if (oldfirst) {
-            if (oldfirst->path) {
+        if (oldfirst)
+        {
+            if (oldfirst->path)
+            {
                 free(oldfirst->path);
                 oldfirst->path = NULL;
             }
@@ -175,202 +203,6 @@ static void travel_files(char *path)
     }
 }
 #endif
-
-uint Linux_searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
-                                               OFList<OFFilename> &fileList,
-                                               const OFFilename &pattern = "",
-                                               const OFFilename &dirPrefix = "",
-                                               const OFBool recurse = OFTrue)
-{
-    const size_t initialSize = fileList.size();
-    OFFilename dirName, pathName, tmpString;
-    OFStandard::combineDirAndFilename(dirName, dirPrefix, directory);
-
-    /* return number of added files */
-    return fileList.size() - initialSize;
-
-
-}
-
-#ifdef HAVE_WINDOWS_H
-uint searchDirectoryRecursivelyAndRecord(const OFFilename &directory,
-                                         OFList<OFFilename> &fileList,
-                                         const OFFilename &pattern = "",
-                                         const OFFilename &dirPrefix = "",
-                                         const OFBool recurse = OFTrue)
-{
-    const size_t initialSize = fileList.size();
-    OFFilename dirName, pathName, tmpString;
-    OFStandard::combineDirAndFilename(dirName, dirPrefix, directory);
-    /* check whether given directory exists */
-    if (OFStandard::dirExists(dirName))
-    {
-        /* otherwise, use the conventional 8-bit characters version */
-        {
-            HANDLE handle;
-            WIN32_FIND_DATAA data;
-            /* check whether file pattern is given */
-            if (!pattern.isEmpty())
-            {
-                /* first, search for matching files on this directory level */
-                handle = FindFirstFileA(OFStandard::combineDirAndFilename(tmpString, dirName, pattern, OFTrue /*allowEmptyDirName*/).getCharPointer(), &data);
-                if (handle != INVALID_HANDLE_VALUE)
-                {
-                    do {
-                        /* avoid leading "." */
-                        if (strcmp(dirName.getCharPointer(), ".") == 0)
-                            pathName.set(data.cFileName);
-                        else
-                            OFStandard::combineDirAndFilename(pathName, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
-                        /* ignore directories and the like */
-                        if (OFStandard::fileExists(OFStandard::combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
-                            fileList.push_back(pathName);
-                    } while (FindNextFileA(handle, &data));
-                    FindClose(handle);
-                }
-            }
-            /* then search for _any_ file/directory entry */
-            handle = FindFirstFileA(OFStandard::combineDirAndFilename(tmpString, dirName, "*.*", OFTrue /*allowEmptyDirName*/).getCharPointer(), &data);
-            if (handle != INVALID_HANDLE_VALUE)
-            {
-                do
-                {
-                    /* filter out current and parent directory */
-                    if ((strcmp(data.cFileName, ".") != 0) && (strcmp(data.cFileName, "..") != 0))
-                    {
-                        /* avoid leading "." */
-                        if (strcmp(dirName.getCharPointer(), ".") == 0)
-                            pathName.set(data.cFileName);
-                        else
-                            OFStandard::combineDirAndFilename(pathName, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
-                        if (OFStandard::dirExists(OFStandard::combineDirAndFilename(tmpString, dirPrefix, pathName, OFTrue /*allowEmptyDirName*/)))
-                        {
-                            /* recursively search sub directories */
-                            if (recurse)
-                                searchDirectoryRecursivelyAndRecord(pathName, fileList, pattern, dirPrefix, recurse);
-                        }
-                        else if (pattern.isEmpty())
-                        {
-                            /* add filename to the list (if no pattern is given) */
-                            fileList.push_back(pathName);
-                        }
-                    }
-                } while (FindNextFileA(handle, &data));
-                FindClose(handle);
-            }
-        }
-    }
-    /* return number of added files */
-    return fileList.size() - initialSize;
-}
-#endif
-
-void writesendfile(OFString filename, OFList<OFString> inputFiles);
-
-void searchdicomfile(OFString inputdir)
-{
-    OFList<OFString> inputFiles;
-    OFList<OFFilename> filenameList;
-    /* iterate over all input filenames/directories */
-    //for (int i = 3; i <= paramCount; i++)
-    {
-        //cmd.getParam(i, paramString);
-        /* search directory recursively (if required) */
-        if (OFStandard::dirExists(inputdir))
-        {
-#ifdef HAVE_WINDOWS_H
-            //if (opt_scanDir)
-            searchDirectoryRecursivelyAndRecord(inputdir, filenameList, opt_scanPattern, "" /*dirPrefix*/, opt_recurse);
-            //else
-            //   OFLOG_WARN(storescuLogger, "ignoring directory because option --scan-directories is not set: " << inputdir);
-#else
-            Linux_searchDirectoryRecursivelyAndRecord(inputdir, filenameList, opt_scanPattern, "" /*dirPrefix*/, opt_recurse);
-#endif
-        }
-        //else
-        //    inputFiles.push_back(paramString);
-    }
-
-
-
-    /* call the real function */
-    //const size_t result = searchDirectoryRecursively(directory, filenameList, pattern, dirPrefix, recurse);
-    /* copy all list entries to reference parameter */
-    OFListIterator(OFFilename) iter = filenameList.begin();
-    OFListIterator(OFFilename) last = filenameList.end();
-    while (iter != last)
-    {
-        inputFiles.push_back(OFSTRING_GUARD((*iter).getCharPointer()));
-        ++iter;
-    }
-    uint size = inputFiles.size();
-    OFString file_send_name = GetCurrentDir() + "\\index.txt";
-    writesendfile(file_send_name, inputFiles);
-    /* check whether there are any input files at all */
-}
-void writesendfile(OFString filename, OFList<OFString> inputFiles)
-{
-    using namespace std;
-    ofstream savedcmfile;
-    char *pfilename = (char *)filename.c_str();
-    savedcmfile.open(filename.c_str(), ios::out | ios::app); //ios::trunc表示在打开文件前将文件清空,由于是写入,文件不存在则创建
-    OFListIterator(OFString) iter = inputFiles.begin();
-    OFListIterator(OFString) last = inputFiles.end();
-    while (iter != last)
-    {
-        savedcmfile << iter->c_str() << "\n";
-        ++iter;
-    }
-    savedcmfile.close();//关闭文件
-}
-
-void readSendFile(OFList<OFString> &inputFiles)
-{
-    using namespace std;
-    char buffer[256];
-    fstream out;
-    OFString filename = GetCurrentDir() + "\\index.txt";
-    out.open(filename.c_str(), ios::in);
-    //cout<<"com.txt"<<" 的内容如下:"<<endl;
-    while (!out.eof())
-    {
-        out.getline(buffer, 256, '\n');//getline(char *,int,char) 表示该行字符达到256个或遇到换行就结束
-        /*cout<<buffer<<endl;*/
-        OFString file_path = OFString(buffer);
-        if (file_path.length() > 3)
-        {
-            inputFiles.push_back(OFString(buffer));
-        }
-    }
-    out.close();
-}
-
-void getSendFile(OFString dicomDir, OFList<OFString> &inputFiles)
-{
-    OFString filename = GetCurrentDir() + "\\index.txt";
-    if (OFStandard::fileExists(filename))
-    {
-        readSendFile(inputFiles);
-    }
-    else
-    {
-        searchdicomfile(dicomDir);
-        readSendFile(inputFiles);
-    }
-
-}
-
-struct SendParm
-{
-    int argc;
-    char **argv;
-
-};
-OFBool thread_end = OFFalse;
-long long int dicom_total_count = 0;
-long long int dicom_send_count = 0;
-
-//            OFString Studydescription = "studydescription=";
 
 struct  HStudyInfo
 {
@@ -859,6 +691,8 @@ int main(int argc, char *argv[])
     if (argc > 1)
     {
         OFString dir = argv[1];
+        //OFList<OFString> list_file_ini_test;
+        //travel_files((char*)dir.c_str(),"ini",list_file_ini_test);
         if (OFStandard::dirExists(dir))
         {
             Task_Dir   = dir + "/Task/1";
@@ -959,7 +793,11 @@ int main(int argc, char *argv[])
     while (true)
     {
         list_file_ini.clear();
+#ifndef _WIN32
+        travel_files((char*)Task_Dir.c_str(),"ini",list_file_ini);
+#else
         SearchDirFile(Task_Dir, "ini", list_file_ini);
+#endif
         //Sleep(1);
         if (list_file_ini.size() > 0)
         {

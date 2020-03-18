@@ -380,9 +380,8 @@ int AppRun(int argc, char *argv[])
 
 #ifdef WITH_ZLIB
     //if (cmd.findOption("--prefer-deflated"))
-     //   opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+    //    opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
-
     opt_acceptAllXfers = OFTrue;
     opt_networkTransferSyntax = EXS_Unknown;
 

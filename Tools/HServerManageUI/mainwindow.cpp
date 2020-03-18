@@ -15,33 +15,35 @@ HMainWindow::HMainWindow(QWidget *parent) :
         m_pQProcess[i] = nullptr;
         m_bstorescp[i] = false;
     }
-    QString Dir = QDir::currentPath();
-    m_ExeDir = Dir;
-    m_ImageDir = m_ExeDir;
-    m_ExeDir = m_ExeDir.remove("/debug");
-    m_ExeDir = m_ExeDir.remove("/ServerUI");
-    m_ExeDir = m_ExeDir+"/win32/";
+    QString Dir     = QDir::currentPath();
+    m_ExeDir        = Dir;
+    m_ImageDir      = m_ExeDir;
+    m_ExeDir        = m_ExeDir.remove("/debug");
+    m_ExeDir        = m_ExeDir.remove("/ServerUI");
     ui->Dir_Store->setText(Dir+"/DCM_SAVE");
     ui->Dir_Pagefile->setText(Dir+"/PageWeb");
-    m_Log4j2Config = m_ExeDir + "log";
+    m_Log4j2Config  = m_ExeDir + "log";
     m_WebServerName = "health.jar";
 #if defined(Q_OS_LINUX)
-    m_StoreScpName = "StoreDcmSCP";
-    m_QuerRScpName = "dcmqrScp";
-    m_WLMScpName = "WorklistScp";
-    m_Dcm2DBName = "SaveDcmInfoDb";
+    m_ExeDir          = m_ExeDir+"/linux/";
+    m_StoreScpName    = "StoreDcmSCP";
+    m_QuerRScpName    = "dcmqrScp";
+    m_WLMScpName      = "WorklistScp";
+    m_Dcm2DBName      = "SaveDcmInfoDb";
     m_WebServerGoName = "GoWeb";
 #elif defined(Q_OS_WIN32)
-    m_StoreScpName = "StoreDcmSCP.exe";
-    m_QuerRScpName = "dcmqrScp.exe";
-    m_WLMScpName = "WorklistScp.exe";
-    m_Dcm2DBName = "SaveDcmInfoDb.exe";
+    m_ExeDir          = m_ExeDir+"/win32/";
+    m_StoreScpName    = "StoreDcmSCP.exe";
+    m_QuerRScpName    = "dcmqrScp.exe";
+    m_WLMScpName      = "WorklistScp.exe";
+    m_Dcm2DBName      = "SaveDcmInfoDb.exe";
     m_WebServerGoName = "GoWeb.exe";
 #elif defined(Q_OS_WIN64)
-    m_StoreScpName = "StoreDcmSCP.exe";
-    m_QuerRScpName = "dcmqrScp.exe";
-    m_WLMScpName = "WorklistScp.exe";
-    m_Dcm2DBName = "SaveDcmInfoDb.exe";
+    m_ExeDir          = m_ExeDir+"/win32/";
+    m_StoreScpName    = "StoreDcmSCP.exe";
+    m_QuerRScpName    = "dcmqrScp.exe";
+    m_WLMScpName      = "WorklistScp.exe";
+    m_Dcm2DBName      = "SaveDcmInfoDb.exe";
     m_WebServerGoName = "GoWeb.exe";
 #endif
 
