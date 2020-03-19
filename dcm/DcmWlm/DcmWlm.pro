@@ -20,17 +20,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
 DEFINES += HAVE_POPEN
 DEFINES += HAVE_PCLOSE
 DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
 DEFINES += dcmwlm_EXPORTS
-DEFINES += O3
 DEFINES  -= UNICODE
 DEFINES  -= _UNICODE
-
 
 SOURCES += \
     wlds.cc \
