@@ -33,18 +33,19 @@ LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
 LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
 LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
 LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
-
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
 LIBS += -liphlpapi
 LIBS += -lwsock32
 LIBS += -lws2_32
 LIBS += -lole32
 LIBS += -lnetapi32
+
+
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
 #iphlpapi.lib
 #ws2_32.lib
 #netapi32.lib

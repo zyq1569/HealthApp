@@ -43,7 +43,7 @@
      <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
-     <string>DicomStoreSCP    port</string>
+     <string>DicomStoreSCP       port</string>
     </property>
    </widget>
    <widget class="QPushButton" name="Dcm2DB">
@@ -272,7 +272,7 @@
      <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
-     <string>QueryRetrieveSCP port</string>
+     <string>QueryRetrieveSCP    port</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="Dir_Store">
