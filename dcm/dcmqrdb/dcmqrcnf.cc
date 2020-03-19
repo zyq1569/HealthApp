@@ -434,7 +434,14 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
             free(c);
             store_dir_index = 1;
             char index[3];
+            //store_index_name = itoa(store_dir_index, index, 10);
+            //store_index_name = "store_dir_" + store_index_name;
+#ifdef _WIN32
             store_index_name = itoa(store_dir_index, index, 10);
+#else
+            sprintf(index, "%d", store_dir_index);
+            store_index_name = index;
+#endif
             store_index_name = "store_dir_" + store_index_name;
 
         }
@@ -449,7 +456,14 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
             {
                 store_dir_index++;
                 char index[3];
+                //store_index_name = itoa(store_dir_index, index, 10);
+                //store_index_name = "store_dir_" + store_index_name;
+#ifdef _WIN32
                 store_index_name = itoa(store_dir_index, index, 10);
+#else
+                sprintf(index, "%d", store_dir_index);
+                store_index_name = index;
+#endif
                 store_index_name = "store_dir_" + store_index_name;
             }
         }
