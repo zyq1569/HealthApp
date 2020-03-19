@@ -219,6 +219,7 @@ int RunQRSCP(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
 
 #ifdef HAVE_FORK
+    OFCommandLine cmd;
     cmd.beginOptionBlock();
     if (cmd.findOption("--single-process"))
         options.singleProcess_ = OFTrue;
