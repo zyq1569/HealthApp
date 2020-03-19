@@ -447,7 +447,6 @@ OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
 
 OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
 {
-    //UINT64 uuid = CreateGUID();
     HStudyInfo StudyInfo;
     OFFile inifile;
     if (OFStandard::fileExists(filename))

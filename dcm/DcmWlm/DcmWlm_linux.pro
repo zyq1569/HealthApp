@@ -23,6 +23,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 DEFINES += HAVE_POPEN
 DEFINES += HAVE_PCLOSE
+DEFINES += DCMTK_BUILD_IN_PROGRESS
+DEFINES += DCMTK_HAVE_POLL=1
+DEFINES += USE_NULL_SAFE_OFSTRING
+DEFINES += _REENTRANT
+DEFINES += Ddcmwlm_EXPORTS
 DEFINES  -= UNICODE
 DEFINES  -= _UNICODE
 
@@ -49,3 +54,7 @@ INCLUDEPATH +=../../include/dcm/win32/dcmnet/include
 INCLUDEPATH +=../../include/dcm/win32/dcmdata/include
 INCLUDEPATH +=../../include/dcm/win32/dcmwlm/include
 INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
+
+LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmnet.a
+
+#-DDCMTK_BUILD_IN_PROGRESS -DDCMTK_HAVE_POLL=1 -DUSE_NULL_SAFE_OFSTRING -D_REENTRANT -Ddcmwlm_EXPORTS
