@@ -53,6 +53,9 @@ HMainWindow::HMainWindow(QWidget *parent) :
         CreatDir(iniDir);
     }
     QString configfilename = iniDir+"/serveruiconfig.ini";
+#if defined(Q_OS_LINUX)
+    configfilename = iniDir+"/serveruiconfig_linux.ini";
+#endif
     if (isFileExist(configfilename))
     {
         QSettings configini(configfilename,QSettings::IniFormat);
@@ -101,6 +104,9 @@ HMainWindow::~HMainWindow()
         CreatDir(iniDir);
     }
     QString configfilename = iniDir+"/serveruiconfig.ini";
+#if defined(Q_OS_LINUX)
+    configfilename = iniDir+"/serveruiconfig_linux.ini";
+#endif
     if (!isFileExist(configfilename))
     {
 
@@ -133,6 +139,11 @@ HMainWindow::~HMainWindow()
 void HMainWindow::on_StoreSCP_clicked()
 {
     QString program = m_ExeDir + m_StoreScpName;
+    if (!isFileExist(program))
+    {
+        QMessageBox::information(this, tr("No StoreSCP program Exist!"), tr("No StoreSCP program Exist!"));
+        return;
+    }
     QStringList arg;
     QString port = ui->port_store->text();
     arg.append(port);
@@ -165,6 +176,11 @@ void HMainWindow::on_StoreSCP_clicked()
 void HMainWindow::on_WLMSCP_clicked()
 {
     QString program = m_ExeDir + m_WLMScpName;
+    if (!isFileExist(program))
+    {
+        QMessageBox::information(this, tr("No WLMSCP program Exist!"), tr("No WLMSCP program Exist!"));
+        return;
+    }
     m_MysqlServer = ui->mysqlServerValue->text();
     m_MysqlDbName = ui->mysqldbNameValue->text();
     m_MysqlUserName = ui->mysqlUserNameValue->text();
@@ -197,6 +213,11 @@ void HMainWindow::on_WLMSCP_clicked()
 void HMainWindow::on_QRSCP_clicked()
 {
     QString program = m_ExeDir + m_QuerRScpName;
+    if (!isFileExist(program))
+    {
+        QMessageBox::information(this, tr("No QRSCP program Exist!"), tr("No QRSCP program Exist!"));
+        return;
+    }
     m_MysqlServer = ui->mysqlServerValue->text();
     m_MysqlDbName = ui->mysqldbNameValue->text();
     m_MysqlUserName = ui->mysqlUserNameValue->text();
@@ -234,7 +255,11 @@ void HMainWindow::on_QRSCP_clicked()
 void HMainWindow::on_Dcm2DB_clicked()
 {
     QString program = m_ExeDir + m_Dcm2DBName;
-
+    if (!isFileExist(program))
+    {
+        QMessageBox::information(this, tr("No Dcm2DBapp program Exist!"), tr("No Dcm2DBapp program Exist!"));
+        return;
+    }
     m_MysqlServer = ui->mysqlServerValue->text();
     m_MysqlDbName = ui->mysqldbNameValue->text();
     m_MysqlUserName = ui->mysqlUserNameValue->text();
