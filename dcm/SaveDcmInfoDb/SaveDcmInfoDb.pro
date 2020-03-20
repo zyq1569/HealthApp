@@ -31,6 +31,11 @@ LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
 LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
 LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
 
+LIBS += -liphlpapi
+LIBS += -lwsock32
+LIBS += -lws2_32
+LIBS += -lole32
+LIBS += -lnetapi32
 #LIBS +=-luuid
 #LIBS +=-lpthread
 #LIBS +=-licuuc
