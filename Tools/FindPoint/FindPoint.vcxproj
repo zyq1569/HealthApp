@@ -68,9 +68,11 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\lib\mysql\win32\libmariadb.lib;..\..\lib\dcm\win32\dcmtls_d.lib;..\..\lib\dcm\win32\oflog_d.lib;..\..\lib\dcm\win32\ofstd_d.lib;netapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\lib\dcm\win32\dcmtls_d.lib;..\..\lib\dcm\win32\oflog_d.lib;..\..\lib\dcm\win32\ofstd_d.lib</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <ProgramDatabaseFile>..\..\temp\$(ProjectName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

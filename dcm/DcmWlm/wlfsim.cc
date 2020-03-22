@@ -360,14 +360,12 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
             strPwd = configfile->getSqlpwd();
             strDadaName = configfile->getSqldbname();
         }
-
 #ifdef _UNICODE
         pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
             W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 #else
         pMariaDb = new HMariaDb(strIP.c_str(), strUser.c_str(), \
             strPwd.c_str(), strDadaName.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
-
 #endif
     }
     //int count;//数据库查询的记录条数
@@ -389,6 +387,7 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
         }
         StartDate = s;
     }
+    OFString tempSql = sql;
     if (!StartDate.empty())
     {
         StartDate = ToDateFormate(StartDate);
@@ -406,6 +405,16 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
             EndDate += EndTime;
         }
         sql = sql + " and s.ScheduledDateTime<=" + EndDate;
+    }
+    if (!StartDate.empty() && !EndDate.empty())
+    {
+        int ST = atoi(StartDate.c_str());
+        int ET = atoi(EndDate.c_str());
+        if (ST > ET)
+        {
+            sql = tempSql + " and s.ScheduledDateTime>=" + EndDate;
+            sql = sql + " and s.ScheduledDateTime<=" + StartDate;
+        }
     }
     if (!PatientName.empty())
     {
@@ -529,19 +538,9 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
                 }
                 else
                 {
-                    //OFDate date = OFStandard
-                    //OFDateTime dateTime;
-                    //dateTime.setCurrentDateTime();
-                    //char timestamp[32];
-                    //char timestamp[32];
-                    //sprintf(timestamp, "%04u%02u%02u%02u%02u%02u%03u",
-                    //    dateTime.getDate().getYear(), dateTime.getDate().getMonth(),
-                    //    dateTime.getDate().getDay(), dateTime.getTime().getHour(),
-                    //    dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(),
-                    //    dateTime.getTime().getMilliSecond());
                     ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate, "20190208");
                     ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime, "21:44:00");
-                }//
+                }
                 if (rs->getValue(row_index, "StudyCode", StudyCode))
                 {
                     ditem->putAndInsertString(DCM_ScheduledProcedureStepID, StudyCode.c_str());
