@@ -240,6 +240,8 @@ extern "C" void sigChildHandler(int)
 #define SHORTCOL 4
 #define LONGCOL 21
 
+
+//----------------------QT Creator----------------------------------------------
 //----20190425增加配置参数允许NotMatchSOPClass
 OFBool Accept_NotMatchSOPClass = OFTrue;
 #define TEST_STORE  //line:2599 考虑存储空间有限，直接删除store 服务收到的dcm文件

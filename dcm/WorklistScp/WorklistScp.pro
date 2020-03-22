@@ -4,12 +4,13 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
+#-DDCMTK_BUILD_IN_PROGRESS -DUSE_NULL_SAFE_OFSTRING -D_REENTRANT
 DEFINES += HAVE_POPEN
 DEFINES += HAVE_PCLOSE
 DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
-DEFINES  -= UNICODE
+DEFINES -= UNICODE
 
 
 SOURCES += \
@@ -36,14 +37,8 @@ LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
 LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
 LIBS +=F:/temp/HealthApp/lib/dcm/win32/libDcmWlm.a
 LIBS +=F:/temp/HealthApp/lib/dcm/win32/libmariadbclient.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
 
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
+
 LIBS += -liphlpapi
 LIBS += -lwsock32
 LIBS += -lws2_32
@@ -55,17 +50,6 @@ LIBS += -lwinspool
 LIBS += -ladvapi32
 LIBS += -lcomdlg32
 LIBS += -luuid
-#iphlpapi.lib
-#ws2_32.lib
-#netapi32.lib
-#wsock32.lib
-#kernel32.lib
-#user32.lib
-#gdi32.lib
-#winspool.lib
-#shell32.lib
-#ole32.lib
-#oleaut32.lib
-#uuid.lib
-#comdlg32.lib
-#advapi32.lib
+#LIBS += -out-implib
+#LIBS += -enable-auto-import
+#LIBS += -fno-whole-file

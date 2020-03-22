@@ -519,7 +519,7 @@ uint64_t CreateGUID()
 
     return *((UINT64*)uid);
 #else
-    //to do add! install uuid-dev
+    //to do add! :centos yum install uuid-dev
     GUID guid;
     uuid_generate(reinterpret_cast<unsigned char *>(&guid));
     uid[0] = guid.Data1;

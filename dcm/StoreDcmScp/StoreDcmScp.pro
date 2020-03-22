@@ -14,7 +14,7 @@ DEFINES  -= UNICODE
 #MOC_DIR = ../../temp/win32/scp
 
 SOURCES += \
-        storescp.cc
+        storescp.cpp
 
 INCLUDEPATH +=../../include/mysql/win32
 INCLUDEPATH +=../../include/dcm/win32/dcmUnits
