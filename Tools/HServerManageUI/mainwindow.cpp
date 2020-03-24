@@ -141,7 +141,7 @@ void HMainWindow::on_StoreSCP_clicked()
     QString program = m_ExeDir + m_StoreScpName;
     if (!isFileExist(program))
     {
-        QMessageBox::information(this, tr("No StoreSCP program Exist!"), tr("No StoreSCP program Exist!"));
+        QMessageBox::information(this, m_StoreScpName, tr("No StoreSCP program Exist!"));
         return;
     }
     QStringList arg;
@@ -149,9 +149,9 @@ void HMainWindow::on_StoreSCP_clicked()
     arg.append(port);
     arg.append(ui->Dir_Store->text());
 
-#ifdef defined(Q_OS_WIN32) || defined(Q_OS_WIN32)
-    arg.append("AppStart");// start sigle string
-#endif
+//#ifdef defined(Q_OS_WIN32) || defined(Q_OS_WIN32)
+//    arg.append("AppStart");// start sigle string
+//#endif
 
     if (!m_bstorescp[STORESCPQ] && m_pQProcess[STORESCPQ]==nullptr)
     {
@@ -178,7 +178,7 @@ void HMainWindow::on_WLMSCP_clicked()
     QString program = m_ExeDir + m_WLMScpName;
     if (!isFileExist(program))
     {
-        QMessageBox::information(this, tr("No WLMSCP program Exist!"), tr("No WLMSCP program Exist!"));
+        QMessageBox::information(this,m_WLMScpName, tr("No WLMSCP program Exist!"));
         return;
     }
     m_MysqlServer = ui->mysqlServerValue->text();
@@ -215,7 +215,7 @@ void HMainWindow::on_QRSCP_clicked()
     QString program = m_ExeDir + m_QuerRScpName;
     if (!isFileExist(program))
     {
-        QMessageBox::information(this, tr("No QRSCP program Exist!"), tr("No QRSCP program Exist!"));
+        QMessageBox::information(this, m_QuerRScpName, tr("No QRSCP program Exist!"));
         return;
     }
     m_MysqlServer = ui->mysqlServerValue->text();
@@ -257,7 +257,7 @@ void HMainWindow::on_Dcm2DB_clicked()
     QString program = m_ExeDir + m_Dcm2DBName;
     if (!isFileExist(program))
     {
-        QMessageBox::information(this, tr("No Dcm2DBapp program Exist!"), tr("No Dcm2DBapp program Exist!"));
+        QMessageBox::information(this, m_Dcm2DBName, tr("No Dcm2DBapp program Exist!"));
         return;
     }
     m_MysqlServer = ui->mysqlServerValue->text();
