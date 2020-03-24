@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dcmqrscp.cc" />
+    <ClCompile Include="dcmqrscp.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7AAA4734-C26B-468B-BCE7-AF1E458413A2}</ProjectGuid>
