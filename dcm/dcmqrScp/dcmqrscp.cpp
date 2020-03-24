@@ -254,7 +254,7 @@ int RunQRSCP(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcmqrscpLogger, "no data dictionary loaded, check environment variable: "
+        OFLOG_ERROR(dcmqrscpLogger, "no data dictionary loaded, check environment variable: "
             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
