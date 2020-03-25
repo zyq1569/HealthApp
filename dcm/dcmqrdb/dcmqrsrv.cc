@@ -799,35 +799,35 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         /* we accept all supported transfer syntaxes
         * (similar to "AnyTransferSyntax" in "storescp.cfg")
         */
-        //transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
-        //transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
-        //transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;
-        //transferSyntaxes[3] = UID_JPEGProcess1TransferSyntax;
-        //transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
-        //transferSyntaxes[5] = UID_JPEGLSLossyTransferSyntax;
-        //transferSyntaxes[6] = UID_JPEGLSLosslessTransferSyntax;
-        //transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
-        //transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-        //transferSyntaxes[9] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
-        //transferSyntaxes[10] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
-        //transferSyntaxes[11] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
-        //transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
-        //transferSyntaxes[13] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
-        //transferSyntaxes[14] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
-        //transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
-        //transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
-        //transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-        ////if (gLocalByteOrder == EBO_LittleEndian)
-        ////{
-        //transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
-        //transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
-        ////}
-        ///* else {
-        //     transferSyntaxes[18] = UID_BigEndianExplicitTransferSyntax;
-        //     transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
-        //     }*/
-        //transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
-        //numTransferSyntaxes = 21;
+        transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;
+        transferSyntaxes[3] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
+        transferSyntaxes[5] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[6] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        transferSyntaxes[9] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
+        transferSyntaxes[10] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
+        transferSyntaxes[11] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+        transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+        transferSyntaxes[13] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+        transferSyntaxes[14] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
+        transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
+        transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
+        transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        //if (gLocalByteOrder == EBO_LittleEndian)
+        //{
+        transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
+        //}
+        /* else {
+             transferSyntaxes[18] = UID_BigEndianExplicitTransferSyntax;
+             transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
+             }*/
+        transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 21;
         ///
 
         //if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
@@ -841,8 +841,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         //}
         //transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         //numTransferSyntaxes = 3;
-        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 1;
+        //transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
+        //numTransferSyntaxes = 1;
         break;
     }
 
@@ -1026,9 +1026,13 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     for (i = 0; i < (int)DIM_OF(queryRetrievePairs); i++)
     {
         movepid = ASC_findAcceptedPresentationContextID(assoc, queryRetrievePairs[i].moveSyntax);
+        DCMQRDB_INFO("moveSyntax:");
+        DCMQRDB_INFO(queryRetrievePairs[i].moveSyntax);
         if (movepid != 0)
         {
             findpid = ASC_findAcceptedPresentationContextID(assoc, queryRetrievePairs[i].findSyntax);
+            DCMQRDB_INFO("findSyntax:");
+            DCMQRDB_INFO(queryRetrievePairs[i].findSyntax);
             if (findpid == 0)
             {
                 if (options_.requireFindForMove_)
@@ -1038,6 +1042,9 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
                 }
                 else
                 {
+                    DCMQRDB_ERROR("movepid/findpid");
+                    DCMQRDB_ERROR(queryRetrievePairs[i].moveSyntax);
+                    DCMQRDB_ERROR(queryRetrievePairs[i].findSyntax);
                     DCMQRDB_ERROR("Move Presentation Context but no Find (accepting for now)");
                 }
             }
