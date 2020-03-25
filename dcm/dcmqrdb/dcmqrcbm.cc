@@ -911,7 +911,7 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
          * If we are running on a Little Endian machine we prefer
          * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
          */
-       /* transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
         transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
         transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;
         transferSyntaxes[3] = UID_JPEGProcess1TransferSyntax;
@@ -932,7 +932,7 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
         transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 21;*/
+        numTransferSyntaxes = 21;
         //if (gLocalByteOrder == EBO_LittleEndian)
         //{
         //}
@@ -957,8 +957,8 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
         //numTransferSyntaxes = 3;
         //---------------------
         //1.2.840.10008.1.2 = Implicit VR Little Endian : Default Transfer Syntax for DICOM
-        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 1;
+        //transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
+        //numTransferSyntaxes = 1;
         break;
     }
 #endif

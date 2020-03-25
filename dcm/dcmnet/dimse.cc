@@ -942,12 +942,12 @@ DcmDataset **commandSet)
         if (dataObject)
         {
             // 2019 07 25 add test  
-            DcmXfer writeXferSyntax(xferSyntax);
-            DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
-            if (!dataObject->canWriteXfer(xferSyntax))
-            {
-                xferSyntax = dataObject->getOriginalXfer();
-            }
+            //DcmXfer writeXferSyntax(xferSyntax);
+            //DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
+            //if (!dataObject->canWriteXfer(xferSyntax))
+            //{
+            //    xferSyntax = dataObject->getOriginalXfer();
+            //}
             //------------------
             // add test
             if (dataObject->isEmpty())
