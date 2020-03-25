@@ -110,6 +110,16 @@ OFCmdUnsignedInt g_worklist_port = 1668;
 #define SHORTCOL 4
 #define LONGCOL 22
 
+OFBool             opt_forkedChild = OFFalse;
+#if defined(HAVE_FORK) || defined(_WIN32)
+OFBool             opt_forkMode = OFTrue/*OFFalse*/;//修改为默认多进程处理
+#endif
+
+OFString g_imagedir;
+DcmQueryRetrieveConfig g_config;
+DcmQueryRetrieveOptions g_options;
+DcmAssociationConfiguration g_asccfg;
+
 static void mangleAssociationProfileKey(OFString& key)
 {
     for (size_t ui = 0; ui < key.size();)
@@ -123,7 +133,10 @@ static void mangleAssociationProfileKey(OFString& key)
     }
 }
 
-
+#ifdef _WIN32
+//
+DWORD WINAPI threadFunc(LPVOID threadNum);
+#endif
 // qrscp way:
 //OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 //OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OFBool correctUIDPadding)
@@ -173,8 +186,6 @@ int RunQRSCP(int argc, char *argv[])
     OFCondition cond = EC_Normal;
     //OFCmdUnsignedInt overridePort = 0;
     OFCmdUnsignedInt overrideMaxPDU = 0;
-    DcmQueryRetrieveOptions options;
-    DcmAssociationConfiguration asccfg;
 
     OFStandard::initializeNetwork();
     /* evaluate command line */
@@ -202,13 +213,13 @@ int RunQRSCP(int argc, char *argv[])
     }
 
     int imagedirsize = 1;
-    OFString imagedir;
+    //OFString imagedir;
     OFString clientAE;
     int clientPort;
-    DcmQueryRetrieveConfig config;
-    options.maxAssociations_ = 30;
+    //DcmQueryRetrieveConfig config;
+    g_options.maxAssociations_ = 30;
     opt_port = 1668;
-    if (!config.init(opt_configFileName))
+    if (!g_config.init(opt_configFileName))
     {
         OFLOG_FATAL(dcmqrscpLogger, "bad config file: " << opt_configFileName);
     }
@@ -216,14 +227,14 @@ int RunQRSCP(int argc, char *argv[])
     {
         OFString filepath = opt_configFileName;
         OFLOG_INFO(dcmqrscpLogger, "----opt_configFileName:" + filepath);
-        options.maxAssociations_ = config.getMaxAssociations();
-        opt_port = config.getNetworkTCPPort();
+        g_options.maxAssociations_ = g_config.getMaxAssociations();
+        opt_port = g_config.getNetworkTCPPort();
     }
     if (argc > 4) // 0:exe dir  1: scp port 2:Image Dir 3 :client AE 4:client port
     {
         g_worklist_port = atoi(argv[1]);
         opt_port = g_worklist_port;
-        imagedir = argv[2];
+        g_imagedir = argv[2];
         clientAE = argv[3];
         clientPort = atoi(argv[4]);
     }
@@ -240,16 +251,16 @@ int RunQRSCP(int argc, char *argv[])
         OFLOG_INFO(dcmqrscpLogger, msg);
     }
 
-    options.maxPDU_ = config.getMaxPDUSize();
-    if (options.maxPDU_ == 0)
-        options.maxPDU_ = ASC_DEFAULTMAXPDU; /* not set, use default */
-    if (options.maxPDU_ < ASC_MINIMUMPDUSIZE || options.maxPDU_ > ASC_MAXIMUMPDUSIZE)
+    g_options.maxPDU_ = g_config.getMaxPDUSize();
+    if (g_options.maxPDU_ == 0)
+        g_options.maxPDU_ = ASC_DEFAULTMAXPDU; /* not set, use default */
+    if (g_options.maxPDU_ < ASC_MINIMUMPDUSIZE || g_options.maxPDU_ > ASC_MAXIMUMPDUSIZE)
     {
         OFLOG_FATAL(dcmqrscpLogger, "invalid MaxPDUSize in config file");
         return 10;
     }
     if (overrideMaxPDU > 0)
-        options.maxPDU_ = overrideMaxPDU;
+        g_options.maxPDU_ = overrideMaxPDU;
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -259,7 +270,7 @@ int RunQRSCP(int argc, char *argv[])
     }
 
     OFString temp_str;
-    cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
+    cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, g_options.acse_timeout_, &g_options.net_);
     if (cond.bad())
     {
         OFLOG_FATAL(dcmqrscpLogger, "cannot initialize network: " << DimseCondition::dump(temp_str, cond));
@@ -272,20 +283,21 @@ int RunQRSCP(int argc, char *argv[])
         OFLOG_FATAL(dcmqrscpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
         return 10;
     }
+
     // use linear index database (index.dat)
-    DcmQueryRetrieveIndexDatabaseHandleFactory factory(&config);
-    DcmQueryRetrieveSCP scp(config, options, factory, asccfg);
+    DcmQueryRetrieveIndexDatabaseHandleFactory factory(&g_config);
+    DcmQueryRetrieveSCP scp(g_config, g_options, factory, g_asccfg);
     scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
-    if ( imagedir.length() >0 && argc > 5)
+    if (g_imagedir.length() > 0 && argc > 5)
     {
         scp.SetDcmDirSize(1);
-        scp.SetDcmDir(0, imagedir);
+        scp.SetDcmDir(0, g_imagedir);
         QueryClientInfo qc;
         qc.AEtitle = argv[3];
         qc.port = atoi(argv[4]);
         qc.IpAddress = argv[5];
         scp.SetQueryClientSize(1);
-        scp.SetQueryClient(&qc,0);
+        scp.SetQueryClient(&qc, 0);
         if (argc > 9)
         {
             MySqlInfo sql;
@@ -296,16 +308,55 @@ int RunQRSCP(int argc, char *argv[])
             scp.SetMysql(&sql);
         }
     }
+#ifdef HAVE_FORK
+    //if (cmd.findOption("--single-process"))
+    //    options.singleProcess_ = OFTrue;
+    //if (cmd.findOption("--fork"))//默认设置linux 为 fork
+    options.singleProcess_ = OFFalse;
+#endif
 
+#ifdef _WIN32_Thread
+    DWORD threadID;
+    if (CreateThread(NULL, 0, threadFunc, NULL, 0, &threadID) == NULL)
+    {
+        //fail
+        DcmQueryRetrieveIndexDatabaseHandleFactory factory(&g_config);
+        DcmQueryRetrieveSCP scp(g_config, g_options, factory, g_asccfg);
+        scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
+        if (g_imagedir.length() > 0 && argc > 5)
+        {
+            scp.SetDcmDirSize(1);
+            scp.SetDcmDir(0, g_imagedir);
+            QueryClientInfo qc;
+            qc.AEtitle = argv[3];
+            qc.port = atoi(argv[4]);
+            qc.IpAddress = argv[5];
+            scp.SetQueryClientSize(1);
+            scp.SetQueryClient(&qc, 0);
+            if (argc > 9)
+            {
+                MySqlInfo sql;
+                sql.IpAddress = argv[6];
+                sql.SqlName = argv[7];
+                sql.SqlUserName = argv[8];
+                sql.SqlPWD = argv[9];
+                scp.SetMysql(&sql);
+            }
+        }
+    }
+    else
+    {
+       //ok
+    }
+#endif
     /* loop waiting for associations */
     while (cond.good())
     {
-        cond = scp.waitForAssociation(options.net_);
-        if (!options.singleProcess_)
+        cond = scp.waitForAssociation(g_options.net_);
+        if (!g_options.singleProcess_)
             scp.cleanChildren();  /* clean up any child processes */
     }
-
-    cond = ASC_dropNetwork(&options.net_);
+    cond = ASC_dropNetwork(&g_options.net_);
     if (cond.bad())
     {
         OFLOG_FATAL(dcmqrscpLogger, "cannot drop network: " << DimseCondition::dump(temp_str, cond));
@@ -315,6 +366,18 @@ int RunQRSCP(int argc, char *argv[])
     OFStandard::shutdownNetwork();
     return 0;
 }
+
+#ifdef _WIN32
+DWORD WINAPI threadFunc(LPVOID threadNum)
+{
+    while (1)
+    {
+        //
+    }
+    return 0;
+}
+#endif
+
 int main(int argc, char *argv[])
 {
     return RunQRSCP(argc, argv);
