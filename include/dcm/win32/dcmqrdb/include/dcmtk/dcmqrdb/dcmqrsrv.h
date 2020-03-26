@@ -51,6 +51,9 @@ enum CTN_RefuseReason
     CTN_NoReason
 };
 
+#ifdef _WIN32
+typedef int(*fun_call_net_qrscp)(int, int);
+#endif
 /** main class for Query/Retrieve Service Class Provider
  */
 #define DCMFILEDIRMAX 10
@@ -194,6 +197,11 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   OFCondition waitForAssociation(T_ASC_Network *theNet);
+#ifdef _WIN32
+  //typedef int(*fun_call_net_qrscp)(int, int);
+  OFCondition waitForAssociation_win32_thread(T_ASC_Network *theNet, fun_call_net_qrscp qrscp_thread_nessage);
+#endif
+
 
   /** set database flags
    *  @param dbCheckFindIdentifier flag indicating that a check should be performed for C-FIND requests

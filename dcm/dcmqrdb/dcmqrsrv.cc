@@ -1072,6 +1072,151 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     return cond;
 }
 
+#ifdef _WIN32
+OFCondition DcmQueryRetrieveSCP::waitForAssociation_win32_thread(T_ASC_Network *theNet, fun_call_net_qrscp qrscp_thread_nessage)
+{
+    OFCondition cond = EC_Normal;
+    OFString temp_str;
+    T_ASC_Association  *assoc;
+    char                buf[BUFSIZ];
+    int timeout;
+    OFBool go_cleanup = OFFalse;
+    if (options_.singleProcess_)
+    {
+        timeout = 1000;
+    }
+    else
+    {
+        if (processtable_.countChildProcesses() > 0)
+        {
+            timeout = 1;
+        }
+        else
+        {
+            timeout = 1000;
+        }
+    }
+
+    if (ASC_associationWaiting(theNet, timeout))
+    {
+        qrscp_thread_nessage(1, 2);
+        cond = ASC_receiveAssociation(theNet, &assoc, (int)options_.maxPDU_);
+        if (cond.bad())
+        {
+            DCMQRDB_INFO("Failed to receive association: " << DimseCondition::dump(temp_str, cond));
+            go_cleanup = OFTrue;
+        }
+    }
+    else
+    {
+        return EC_Normal;
+    }
+
+    if (!go_cleanup)
+    {
+        DCMQRDB_INFO("Association Received (" << assoc->params->DULparams.callingPresentationAddress
+            << ":" << assoc->params->DULparams.callingAPTitle << " -> "
+            << assoc->params->DULparams.calledAPTitle << ")");
+
+        DCMQRDB_DEBUG("Parameters:" << OFendl << ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_RQ));
+
+        if (options_.refuse_)
+        {
+            DCMQRDB_INFO("Refusing Association (forced via command line)");
+            cond = refuseAssociation(&assoc, CTN_NoReason);
+            go_cleanup = OFTrue;
+        }
+    }
+
+    if (!go_cleanup)
+    {
+        /* Application Context Name */
+        cond = ASC_getApplicationContextName(assoc->params, buf);
+        if (cond.bad() || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
+        {
+            /* reject: the application context name is not supported */
+            DCMQRDB_INFO("Bad AppContextName: " << buf);
+            cond = refuseAssociation(&assoc, CTN_BadAppContext);
+            go_cleanup = OFTrue;
+        }
+    }
+
+    if (!go_cleanup)
+    {
+        /* Implementation Class UID */
+        if (options_.rejectWhenNoImplementationClassUID_ &&
+            strlen(assoc->params->theirImplementationClassUID) == 0)
+        {
+            /* reject: no implementation Class UID provided */
+            DCMQRDB_INFO("No implementation Class UID provided");
+            cond = refuseAssociation(&assoc, CTN_NoReason);
+            go_cleanup = OFTrue;
+        }
+    }
+
+    if (!go_cleanup)
+    {
+        // too many concurrent associations ??
+        if (processtable_.countChildProcesses() >= OFstatic_cast(size_t, options_.maxAssociations_))
+        {
+            cond = refuseAssociation(&assoc, CTN_TooManyAssociations);
+            go_cleanup = OFTrue;
+        }
+    }
+
+    if (!go_cleanup)
+    {
+        cond = negotiateAssociation(assoc);
+        if (cond.bad())
+            go_cleanup = OFTrue;
+    }
+
+    if (!go_cleanup)
+    {
+        cond = ASC_acknowledgeAssociation(assoc);
+        if (cond.bad())
+        {
+            DCMQRDB_ERROR(DimseCondition::dump(temp_str, cond));
+            go_cleanup = OFTrue;
+        }
+    }
+
+    if (!go_cleanup)
+    {
+        DCMQRDB_INFO("Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")");
+        if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
+            DCMQRDB_INFO("    (but no valid presentation contexts)");
+        DCMQRDB_DEBUG(ASC_dumpParameters(temp_str, assoc->params, ASC_ASSOC_AC));
+
+        if (options_.singleProcess_)
+        {
+            /* don't spawn a sub-process to handle the association */
+            cond = handleAssociation(assoc, options_.correctUIDPadding_);
+        }
+    }
+
+    // cleanup code
+    OFCondition oldcond = cond;    /* store condition flag for later use */
+    if (!options_.singleProcess_ && (cond != ASC_SHUTDOWNAPPLICATION))
+    {
+        /* the child will handle the association, we can drop it */
+        cond = ASC_dropAssociation(assoc);
+        if (cond.bad())
+        {
+            DCMQRDB_ERROR("Cannot Drop Association: " << DimseCondition::dump(temp_str, cond));
+        }
+        cond = ASC_destroyAssociation(&assoc);
+        if (cond.bad())
+        {
+            DCMQRDB_ERROR("Cannot Destroy Association: " << DimseCondition::dump(temp_str, cond));
+        }
+    }
+
+    if (oldcond == ASC_SHUTDOWNAPPLICATION)
+        cond = oldcond; /* abort flag is reported to top-level wait loop */
+    return cond;
+}
+#endif
 
 OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 {
