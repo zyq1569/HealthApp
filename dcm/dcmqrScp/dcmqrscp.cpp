@@ -136,6 +136,12 @@ static void mangleAssociationProfileKey(OFString& key)
 #ifdef _WIN32
 //
 DWORD WINAPI threadFunc(LPVOID threadNum);
+
+int call_net_qrscp(int a, int b);
+
+int g_argc;
+char **g_argv;
+
 #endif
 // qrscp way:
 //OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
@@ -148,6 +154,10 @@ DWORD WINAPI threadFunc(LPVOID threadNum);
 //    DcmQueryRetrieveMoveContext::startMoveRequest(
 int RunQRSCP(int argc, char *argv[])
 {
+#ifdef _WIN32
+g_argc = argc;
+g_argv = argv;
+#endif
     //##################---------------------------------------------------------------------------------
     const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
     OFString temps, path = argv[0];
@@ -269,6 +279,15 @@ int RunQRSCP(int argc, char *argv[])
             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
+#ifdef HAVE_FORK
+    //if (cmd.findOption("--single-process"))
+    //    options.singleProcess_ = OFTrue;
+    //if (cmd.findOption("--fork"))//默认设置linux 为 fork
+    g_options.singleProcess_ = OFFalse;
+#endif
+
+#ifdef _WIN32
+    //-------------------------------- need thread
     OFString temp_str;
     cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, g_options.acse_timeout_, &g_options.net_);
     if (cond.bad())
@@ -283,7 +302,28 @@ int RunQRSCP(int argc, char *argv[])
         OFLOG_FATAL(dcmqrscpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
         return 10;
     }
+    //----------------------------------------
+    call_net_qrscp(1, 1);
+    while (true)
+    {
+        Sleep(1);
+    }
+    OFStandard::shutdownNetwork();
+#else 
+    OFString temp_str;
+    cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, g_options.acse_timeout_, &g_options.net_);
+    if (cond.bad())
+    {
+        OFLOG_FATAL(dcmqrscpLogger, "cannot initialize network: " << DimseCondition::dump(temp_str, cond));
+        return 10;
+    }
 
+    /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
+    if (OFStandard::dropPrivileges().bad())
+    {
+        OFLOG_FATAL(dcmqrscpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
+        return 10;
+    }
     // use linear index database (index.dat)
     DcmQueryRetrieveIndexDatabaseHandleFactory factory(&g_config);
     DcmQueryRetrieveSCP scp(g_config, g_options, factory, g_asccfg);
@@ -308,47 +348,6 @@ int RunQRSCP(int argc, char *argv[])
             scp.SetMysql(&sql);
         }
     }
-#ifdef HAVE_FORK
-    //if (cmd.findOption("--single-process"))
-    //    options.singleProcess_ = OFTrue;
-    //if (cmd.findOption("--fork"))//默认设置linux 为 fork
-    options.singleProcess_ = OFFalse;
-#endif
-
-#ifdef _WIN32_Thread
-    DWORD threadID;
-    if (CreateThread(NULL, 0, threadFunc, NULL, 0, &threadID) == NULL)
-    {
-        //fail
-        DcmQueryRetrieveIndexDatabaseHandleFactory factory(&g_config);
-        DcmQueryRetrieveSCP scp(g_config, g_options, factory, g_asccfg);
-        scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
-        if (g_imagedir.length() > 0 && argc > 5)
-        {
-            scp.SetDcmDirSize(1);
-            scp.SetDcmDir(0, g_imagedir);
-            QueryClientInfo qc;
-            qc.AEtitle = argv[3];
-            qc.port = atoi(argv[4]);
-            qc.IpAddress = argv[5];
-            scp.SetQueryClientSize(1);
-            scp.SetQueryClient(&qc, 0);
-            if (argc > 9)
-            {
-                MySqlInfo sql;
-                sql.IpAddress = argv[6];
-                sql.SqlName = argv[7];
-                sql.SqlUserName = argv[8];
-                sql.SqlPWD = argv[9];
-                scp.SetMysql(&sql);
-            }
-        }
-    }
-    else
-    {
-       //ok
-    }
-#endif
     /* loop waiting for associations */
     while (cond.good())
     {
@@ -362,19 +361,63 @@ int RunQRSCP(int argc, char *argv[])
         OFLOG_FATAL(dcmqrscpLogger, "cannot drop network: " << DimseCondition::dump(temp_str, cond));
         return 10;
     }
-
     OFStandard::shutdownNetwork();
+#endif
+
     return 0;
 }
 
 #ifdef _WIN32
 DWORD WINAPI threadFunc(LPVOID threadNum)
 {
-    while (1)
+    DcmQueryRetrieveIndexDatabaseHandleFactory factory(&g_config);
+    //DcmQueryRetrieveOptions options;
+    //options = g_options;
+    //options.maxAssociations_ = g_options.maxAssociations_;
+    //options.maxPDU_ = g_options.maxPDU_;
+    //ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
+    DcmQueryRetrieveSCP scp(g_config, g_options, factory, g_asccfg);
+    scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
+    if (g_imagedir.length() > 0 && g_argc > 5)
     {
-        //
+        scp.SetDcmDirSize(1);
+        scp.SetDcmDir(0, g_imagedir);
+        QueryClientInfo qc;
+        qc.AEtitle = g_argv[3];
+        qc.port = atoi(g_argv[4]);
+        qc.IpAddress = g_argv[5];
+        scp.SetQueryClientSize(1);
+        scp.SetQueryClient(&qc, 0);
+        if (g_argc > 9)
+        {
+            MySqlInfo sql;
+            sql.IpAddress = g_argv[6];
+            sql.SqlName = g_argv[7];
+            sql.SqlUserName = g_argv[8];
+            sql.SqlPWD = g_argv[9];
+            scp.SetMysql(&sql);
+        }
     }
+    scp.waitForAssociation_win32_thread(g_options.net_, &call_net_qrscp);
+    //ASC_dropNetwork(&options.net_);
+    OFLOG_INFO(dcmqrscpLogger, "threadID Exit");
     return 0;
+}
+int call_net_qrscp(int i, int j)
+{
+    DWORD threadID = 0;
+    if (CreateThread(NULL, 0, threadFunc, NULL, 0, &threadID) == NULL)
+    {
+        //fail
+        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread fial! ID:" + longToString(threadID));
+    }
+    else
+    {
+        //ok
+        OFString id = longToString(threadID);
+        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread threadID:" + longToString(threadID));
+    }
+    return 1;
 }
 #endif
 
