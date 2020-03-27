@@ -201,16 +201,6 @@ g_argv = argv;
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
 
-#ifdef HAVE_FORK
-    OFCommandLine cmd;
-    cmd.beginOptionBlock();
-    if (cmd.findOption("--single-process"))
-        options.singleProcess_ = OFTrue;
-    if (cmd.findOption("--fork"))
-        options.singleProcess_ = OFFalse;
-    cmd.endOptionBlock();
-#endif
-
     /* print resource identifier */
     OFLOG_DEBUG(dcmqrscpLogger, rcsid << OFendl);
 
@@ -283,7 +273,7 @@ g_argv = argv;
     //if (cmd.findOption("--single-process"))
     //    options.singleProcess_ = OFTrue;
     //if (cmd.findOption("--fork"))//Ä¬ÈÏÉèÖÃlinux Îª fork
-    g_options.singleProcess_ = OFFalse;
+    g_options.singleProcess_ = OFFalse;//OFTrue;//OFFalse;
 #endif
 
 #ifdef _WIN32
@@ -406,7 +396,8 @@ DWORD WINAPI threadFunc(LPVOID threadNum)
 int call_net_qrscp(int i, int j)
 {
     DWORD threadID = 0;
-    if (CreateThread(NULL, 0, threadFunc, NULL, 0, &threadID) == NULL)
+    HANDLE hand = NULL;
+    if ((hand = CreateThread(NULL, 0, threadFunc, NULL, 0, &threadID)) == NULL)
     {
         //fail
         OFLOG_INFO(dcmqrscpLogger, "CreateNewThread fial! ID:" + longToString(threadID));
@@ -417,11 +408,16 @@ int call_net_qrscp(int i, int j)
         OFString id = longToString(threadID);
         OFLOG_INFO(dcmqrscpLogger, "CreateNewThread threadID:" + longToString(threadID));
     }
+    CloseHandle(hand);
     return 1;
 }
 #endif
 
 int main(int argc, char *argv[])
 {
+    //OFList<OFString> data;
+    //OFString dir = "F:/temp/HealthApp/bin/win32/DCM_SAVE/Images/43/26/1.2.826.1.1.3680043.2.461.20091102105235.177796.200911020159";
+    //OFString uid = "/1.2.826.1.1.3680043.2.461.20091102105235.177796.200911020159.ini";
+    //ReadStudyInfo(dir + uid, dir, data);
     return RunQRSCP(argc, argv);
 }

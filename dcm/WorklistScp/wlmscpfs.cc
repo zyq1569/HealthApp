@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
     memcpy(parm[2], strtemp.c_str(), strtemp.length());
     // Initialize and provide service. After having terminated free memory.
     WlmConsoleEngineFileSystem *consoleEngine;
-    if (argc == 6)
+    if (argc >= 6)
     {
         int count = 3;
         char *new_argv[3];// = new char*[count]; WlmFileSystemInteractionManager

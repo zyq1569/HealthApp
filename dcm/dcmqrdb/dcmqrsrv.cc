@@ -1026,13 +1026,13 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     for (i = 0; i < (int)DIM_OF(queryRetrievePairs); i++)
     {
         movepid = ASC_findAcceptedPresentationContextID(assoc, queryRetrievePairs[i].moveSyntax);
-        DCMQRDB_INFO("moveSyntax:");
-        DCMQRDB_INFO(queryRetrievePairs[i].moveSyntax);
+        DCMQRDB_DEBUG("moveSyntax:");
+        DCMQRDB_DEBUG(queryRetrievePairs[i].moveSyntax);
         if (movepid != 0)
         {
             findpid = ASC_findAcceptedPresentationContextID(assoc, queryRetrievePairs[i].findSyntax);
-            DCMQRDB_INFO("findSyntax:");
-            DCMQRDB_INFO(queryRetrievePairs[i].findSyntax);
+            DCMQRDB_DEBUG("findSyntax:");
+            DCMQRDB_DEBUG(queryRetrievePairs[i].findSyntax);
             if (findpid == 0)
             {
                 if (options_.requireFindForMove_)
@@ -1042,10 +1042,10 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
                 }
                 else
                 {
-                    DCMQRDB_ERROR("movepid/findpid");
-                    DCMQRDB_ERROR(queryRetrievePairs[i].moveSyntax);
-                    DCMQRDB_ERROR(queryRetrievePairs[i].findSyntax);
-                    DCMQRDB_ERROR("Move Presentation Context but no Find (accepting for now)");
+                    DCMQRDB_DEBUG("movepid/findpid");
+                    DCMQRDB_DEBUG(queryRetrievePairs[i].moveSyntax);
+                    DCMQRDB_DEBUG(queryRetrievePairs[i].findSyntax);
+                    DCMQRDB_DEBUG("Move Presentation Context but no Find (accepting for now)");
                 }
             }
         }
