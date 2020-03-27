@@ -27,7 +27,7 @@
      <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
-     <string>WorklistSCP         port</string>
+     <string>WorklistSCP            port</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_store">
@@ -43,7 +43,7 @@
      <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
-     <string>DicomStoreSCP       port</string>
+     <string>DicomStoreSCP      port</string>
     </property>
    </widget>
    <widget class="QPushButton" name="Dcm2DB">
@@ -156,7 +156,7 @@
    <widget class="QLineEdit" name="port_wlm">
     <property name="geometry">
      <rect>
-      <x>167</x>
+      <x>176</x>
       <y>31</y>
       <width>71</width>
       <height>21</height>
@@ -175,7 +175,7 @@
    <widget class="QLineEdit" name="port_store">
     <property name="geometry">
      <rect>
-      <x>167</x>
+      <x>176</x>
       <y>67</y>
       <width>71</width>
       <height>21</height>
@@ -194,7 +194,7 @@
    <widget class="QLineEdit" name="port_qr">
     <property name="geometry">
      <rect>
-      <x>167</x>
+      <x>176</x>
       <y>105</y>
       <width>71</width>
       <height>21</height>
@@ -272,7 +272,7 @@
      <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
-     <string>QueryRetrieveSCP    port</string>
+     <string>QueryRetrieveSCP   port</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="Dir_Store">
