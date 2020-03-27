@@ -958,9 +958,23 @@ DcmDataset **commandSet)
             }
             else if (!dataObject->canWriteXfer(xferSyntax))
             {
+               
                 /* if we cannot write all elements in the required transfer syntax, create a warning. */
                 DcmXfer writeXferSyntax(xferSyntax);
                 DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
+                //#include <dcmtk/dcmjpeg/djdecode.h>
+                //if (writeXferSyntax.getXferName() == UID_JPEG2000TransferSyntax ||
+                //    writeXferSyntax.getXferName() == UID_JPEG2000LosslessOnlyTransferSyntax)
+                //{
+                //    //DJDecoderRegistration::registerCodecs();
+                //    DcmDataset *dataset = dataObject;
+                //    dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+                //    if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+                //    {
+                //        //pDcmFileformat->saveFile(fiilepath,EXS_LittleEndianExplicit);
+                //    }
+                //    //DJDecoderRegistration::cleanup();
+                //}
                 if (fromFile && dataFileName)
                 {
                     DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
