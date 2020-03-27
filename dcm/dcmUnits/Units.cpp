@@ -582,48 +582,6 @@ OFString GetFromFile(OFString filename)
 
 OFBool SaveStudy2JsonFile(StudyInfo studyinfo, OFString filename)
 {
-    //cJSON *study = cJSON_CreateObject();
-    ////studyinfo
-    //cJSON_AddStringToObject(study, "patientName", studyinfo.patientName.c_str());
-    //cJSON_AddStringToObject(study, "patientId", studyinfo.patientId.c_str());
-    //cJSON_AddStringToObject(study, "studyDate", studyinfo.studyDate.c_str());
-    //cJSON_AddStringToObject(study, "modality", studyinfo.modality.c_str());
-    //cJSON_AddStringToObject(study, "studyDescription", studyinfo.studyDescription.c_str());
-    //cJSON_AddNumberToObject(study, "numImages", studyinfo.seriesInfoList.size());
-    //cJSON_AddStringToObject(study, "studyId", studyinfo.studyId.c_str());
-    //cJSON_AddStringToObject(study, "studyuid", studyinfo.studyUID.c_str());
-    ////seriesinfo
-
-    //cJSON *seriesListItem = cJSON_CreateArray();
-    //const char *seriesList = "seriesList";
-    //cJSON_AddItemToObject(study, seriesList, seriesListItem);
-    //OFListIterator(SeriesInfo) iter = studyinfo.seriesInfoList.begin();
-    //OFListIterator(SeriesInfo) last = studyinfo.seriesInfoList.end();
-    //while (iter != last)
-    //{
-    //    cJSON *series = cJSON_CreateObject();
-    //    cJSON_AddItemToObject(seriesListItem, seriesList, series);
-    //    cJSON_AddStringToObject(series, "seriesUid", (*iter).seriesUID.c_str());
-    //    cJSON_AddStringToObject(series, "seriesDescription", (*iter).seriesDescription.c_str());
-    //    cJSON_AddStringToObject(series, "seriesNumber", longToString((*iter).seriesNumber).c_str());
-
-    //    OFListIterator(ImageInfo) ibegin = (*iter).imagesInfoList.begin();
-    //    OFListIterator(ImageInfo) lend = (*iter).imagesInfoList.end();
-    //    cJSON *images = cJSON_CreateArray();
-    //    cJSON_AddItemToObject(series, "instanceList", images);
-    //    while (ibegin != lend)
-    //    {
-    //        cJSON *imageid = cJSON_CreateObject();
-    //        cJSON_AddStringToObject(imageid, "imageId", (*ibegin).imageSOPInstanceUID.c_str());
-    //        cJSON_AddItemToObject(images, "instanceList", imageid);
-    //        ibegin++;
-    //    }
-    //    ++iter;
-    //}
-    //char *p = cJSON_Print(study);
-    //SaveString2File(p, filename);
-    //cJSON_Delete(study);
-
     return OFTrue;
 }
 OFBool SaveString2File(OFString str, OFString filename)
@@ -640,6 +598,53 @@ OFBool SaveString2File(OFString str, OFString filename)
         inifile.fopen(filename, "w");
         inifile.fputs(str.c_str());
         inifile.fclose();
+    }
+    return OFTrue;
+}
+
+OFBool ReadStudyInfo(OFString filename,OFString dir, OFList<OFString> &data)
+{
+    OFString value;
+    if (OFStandard::fileExists(filename))
+    {
+        using namespace std;
+        int max = 1024;
+        char buffer[1024];
+        fstream out;
+        out.open(filename.c_str(), ios::in);
+        out.getline(buffer, max, '\n');//getline(char *,int,char) 表示该行字符达到256个或遇到换行就结束
+        value = OFString(buffer);
+        do
+        {
+            if (value == "[SERIES]")
+            {
+                out.getline(buffer, max, '\n');//getline(char *,int,char) 表示该行字符达到256个或遇到换行就结束
+                value = OFString(buffer);
+                int pos = value.find_last_of('|');
+                OFString seruid = value.substr(pos + 1, value.length());
+                out.getline(buffer, max, '\n');
+                out.getline(buffer, max, '\n');
+                value = OFString(buffer);
+                while (value != "[SERIES]"&&!out.eof())
+                {
+                    pos = value.find('|');
+                    OFString imageuid = value.substr(pos + 1, value.length());
+                    value = dir + "/";
+                    value += seruid;
+                    value += "/";
+                    value += imageuid+".dcm";
+                    data.push_back(value);
+                    out.getline(buffer, max, '\n');
+                    value = OFString(buffer);
+                }
+            }
+            else
+            {
+                out.getline(buffer, max, '\n');//getline(char *,int,char) 表示该行字符达到256个或遇到换行就结束
+                value = OFString(buffer);
+            }
+        } while (!out.eof());
+        out.close();
     }
     return OFTrue;
 }

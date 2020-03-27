@@ -15,7 +15,7 @@ DEFINES  -= UNICODE
 
 
 SOURCES += \
-        dcmqrscp.cc
+        dcmqrscp.cpp
 
 INCLUDEPATH +=../../include/mysql/win32
 INCLUDEPATH +=../../include/dcm/win32/dcmUnits
@@ -35,7 +35,7 @@ LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/liboflog.a
 LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libofstd.a
 
 LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmUnits.a
-LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libmariadbclient.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/mysql/linux/libmariadbclient.a
 LIBS +=-lz
 LIBS +=-licuuc
 LIBS +=-licudata

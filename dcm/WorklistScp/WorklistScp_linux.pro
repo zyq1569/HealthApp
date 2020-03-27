@@ -43,7 +43,7 @@ LIBS +=-lz
 #LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libofstd.a
 
 LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libdcmUnits.a
-LIBS +=/home/zyq/windows_share/HealthApp/lib/dcm/linux/libmariadbclient.a
+LIBS +=/home/zyq/windows_share/HealthApp/lib/mysql/linux/libmariadbclient.a
 
 LIBS +=-luuid
 LIBS +=-licuuc

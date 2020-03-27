@@ -99,8 +99,8 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     OFHashValue path = CreateHashValue(StudyInstanceUID.c_str(), StudyInstanceUID.length());
     OFString hash_dir = longToString(path.first) + "/" + longToString(path.second);
     OFString temp_dir = "/Images/" + hash_dir + "/" + StudyInstanceUID;
-    //OFLOG_INFO(dcmqrscpLogger, "---------hash_dir:" + hash_dir + " ----------------------");
-    //OFLOG_INFO(dcmqrscpLogger, "---------study_dir:" + hash_dir + " ----------------------");
+    OFLOG_DEBUG(dcmqrscpLogger, "---------hash_dir:" + hash_dir + " ----------------------");
+    OFLOG_DEBUG(dcmqrscpLogger, "---------study_dir:" + hash_dir + " ----------------------");
     OFString find_dir;
     OFBool find = OFFalse;
     OFListIterator(OFString) if_iter;
@@ -129,7 +129,16 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
 
     if (find && !find_dir.empty())
     {
-        SearchDirFile(find_dir, "dcm", m_matchingFiles);
+        OFString fileini = find_dir + "/" + StudyInstanceUID + ".ini";
+        if (OFStandard::fileExists(fileini))
+        {
+            ReadStudyInfo(fileini, find_dir, m_matchingFiles);
+        }
+        else
+        {
+            DCMQRDB_WARN("NO StudyInstanceUID ini:"+fileini);
+            SearchDirFile(find_dir, "dcm", m_matchingFiles,false, 10000);
+        }
     }
     else
     {
