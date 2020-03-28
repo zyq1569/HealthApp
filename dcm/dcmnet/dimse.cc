@@ -117,7 +117,7 @@
 #include "dcmtk/dcmdata/dcdicent.h"    /* for class DcmDictEntry, needed for MSVC5 */
 #include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 #include "dcmtk/dcmdata/dcvrui.h"      /* for class DcmUniqueIdentifier */
-
+#include<dcmtk/dcmjpeg/djdecode.h>
 
 /*
  * Global variables, mutex protected
@@ -958,38 +958,57 @@ DcmDataset **commandSet)
             }
             else if (!dataObject->canWriteXfer(xferSyntax))
             {
-               
                 /* if we cannot write all elements in the required transfer syntax, create a warning. */
                 DcmXfer writeXferSyntax(xferSyntax);
                 DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
-                //#include <dcmtk/dcmjpeg/djdecode.h>
-                //if (writeXferSyntax.getXferName() == UID_JPEG2000TransferSyntax ||
-                //    writeXferSyntax.getXferName() == UID_JPEG2000LosslessOnlyTransferSyntax)
-                //{
-                //    //DJDecoderRegistration::registerCodecs();
-                //    DcmDataset *dataset = dataObject;
-                //    dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-                //    if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
-                //    {
-                //        //pDcmFileformat->saveFile(fiilepath,EXS_LittleEndianExplicit);
-                //    }
-                //    //DJDecoderRegistration::cleanup();
-                //}
-                if (fromFile && dataFileName)
+                //add ---------------begin
+                if (writeXferSyntax.getXferName() == UID_JPEG2000TransferSyntax ||
+                    writeXferSyntax.getXferName() == UID_JPEG2000LosslessOnlyTransferSyntax)
                 {
-                    DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
-                        << dataFileName << "' from '" << originalXferSyntax.getXferName()
-                        << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'");
+                    OFString newfile = dataFileName;
+                    newfile += ".JK2";
+                    DcmFileFormat newdcmff;
+                    if (!OFStandard::fileExists(newfile))
+                    {
+                        DJDecoderRegistration::registerCodecs();
+                        DcmDataset *dataset = dataObject;
+                        dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+                        if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+                        {
+                            dcmff.saveFile(newfile, EXS_LittleEndianExplicit);
+                        }
+                        DcmFileFormat newdcmff;
+                        if (newdcmff.loadFile(newfile, EXS_Unknown).good())
+                        {
+                            dataObject = newdcmff.getDataset();
+                        }
+                        DJDecoderRegistration::cleanup();
+                    }
+                    if (newdcmff.loadFile(newfile, EXS_Unknown).good())
+                    {
+                        dataObject = newdcmff.getDataset();
+                    }
                 }
-                else {
-                    DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset from '"
-                        << originalXferSyntax.getXferName() << "' transfer syntax to '"
-                        << writeXferSyntax.getXferName() << "'");
-                }
-                cond = DIMSE_SENDFAILED;
+                //----------add ---------------end--2020-03-28
+                //------------------------------------------------------
+                //delete begin
+                //if (fromFile && dataFileName)
+                //{
+                //    DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
+                //        << dataFileName << "' from '" << originalXferSyntax.getXferName()
+                //        << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'");
+                //}
+                //else {
+                //    DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset from '"
+                //        << originalXferSyntax.getXferName() << "' transfer syntax to '"
+                //        << writeXferSyntax.getXferName() << "'");
+                //}
+                //cond = DIMSE_SENDFAILED;
+                //delete end
             }
         }
-        else {
+        else
+        {
             /* if there is neither a data object nor a file name, create a warning, since */
             /* the information in msg specified that instance data should be present. */
             DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: no dataset to send");
