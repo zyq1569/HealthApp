@@ -134,3 +134,23 @@ DCMTK_OFSTD_EXPORT OFBool SaveStudy2JsonFile(StudyInfo study, OFString filename)
 DCMTK_OFSTD_EXPORT OFBool SaveString2File(OFString str, OFString filename);
 
 DCMTK_OFSTD_EXPORT OFBool ReadStudyInfo(OFString filename, OFString dir, OFList<OFString> &data);
+
+//重载std::vector的operator[]方法，主要为了解决原operator[]操作直接弹出异常窗口，日志无法捕获的问题
+template<class T> class DVector : public std::vector<T>
+{
+public:
+    DVector()    {    }
+    DVector(size_type _Count) :std::vector<T>(_Count)    {    }
+    const_reference operator[](size_type _Pos) const
+    {
+        if (size() <= _Pos || _Pos < 0)
+            _Xran();
+        return (*(begin() + _Pos));
+    }
+    reference operator[](size_type _Pos)
+    {
+        if (size() <= _Pos || _Pos < 0)
+            _Xran();
+        return (*(begin() + _Pos));
+    }
+};

@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3EBD1165-094C-429E-AE01-0153ED6C3C13}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>dcmjpeg</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\lib\dcm\win32\</OutDir>
+    <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\lib\dcm\win32\</OutDir>
+    <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>DEBUG;ijg16_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;.\libijg8;.\libijg12;.\libijg16;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;ijg16_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;.\libijg8;.\libijg12;.\libijg16;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libijg16\jaricom.c" />
+    <ClCompile Include="libijg16\jcapimin.c" />
+    <ClCompile Include="libijg16\jcapistd.c" />
+    <ClCompile Include="libijg16\jcarith.c" />
+    <ClCompile Include="libijg16\jccoefct.c" />
+    <ClCompile Include="libijg16\jccolor.c" />
+    <ClCompile Include="libijg16\jcdctmgr.c" />
+    <ClCompile Include="libijg16\jcdiffct.c" />
+    <ClCompile Include="libijg16\jchuff.c" />
+    <ClCompile Include="libijg16\jcinit.c" />
+    <ClCompile Include="libijg16\jclhuff.c" />
+    <ClCompile Include="libijg16\jclossls.c" />
+    <ClCompile Include="libijg16\jclossy.c" />
+    <ClCompile Include="libijg16\jcmainct.c" />
+    <ClCompile Include="libijg16\jcmarker.c" />
+    <ClCompile Include="libijg16\jcmaster.c" />
+    <ClCompile Include="libijg16\jcodec.c" />
+    <ClCompile Include="libijg16\jcomapi.c" />
+    <ClCompile Include="libijg16\jcparam.c" />
+    <ClCompile Include="libijg16\jcphuff.c" />
+    <ClCompile Include="libijg16\jcpred.c" />
+    <ClCompile Include="libijg16\jcprepct.c" />
+    <ClCompile Include="libijg16\jcsample.c" />
+    <ClCompile Include="libijg16\jcscale.c" />
+    <ClCompile Include="libijg16\jcshuff.c" />
+    <ClCompile Include="libijg16\jctrans.c" />
+    <ClCompile Include="libijg16\jdapimin.c" />
+    <ClCompile Include="libijg16\jdapistd.c" />
+    <ClCompile Include="libijg16\jdarith.c" />
+    <ClCompile Include="libijg16\jdatadst.c" />
+    <ClCompile Include="libijg16\jdatasrc.c" />
+    <ClCompile Include="libijg16\jdcoefct.c" />
+    <ClCompile Include="libijg16\jdcolor.c" />
+    <ClCompile Include="libijg16\jddctmgr.c" />
+    <ClCompile Include="libijg16\jddiffct.c" />
+    <ClCompile Include="libijg16\jdhuff.c" />
+    <ClCompile Include="libijg16\jdinput.c" />
+    <ClCompile Include="libijg16\jdlhuff.c" />
+    <ClCompile Include="libijg16\jdlossls.c" />
+    <ClCompile Include="libijg16\jdlossy.c" />
+    <ClCompile Include="libijg16\jdmainct.c" />
+    <ClCompile Include="libijg16\jdmarker.c" />
+    <ClCompile Include="libijg16\jdmaster.c" />
+    <ClCompile Include="libijg16\jdmerge.c" />
+    <ClCompile Include="libijg16\jdphuff.c" />
+    <ClCompile Include="libijg16\jdpostct.c" />
+    <ClCompile Include="libijg16\jdpred.c" />
+    <ClCompile Include="libijg16\jdsample.c" />
+    <ClCompile Include="libijg16\jdscale.c" />
+    <ClCompile Include="libijg16\jdshuff.c" />
+    <ClCompile Include="libijg16\jdtrans.c" />
+    <ClCompile Include="libijg16\jerror.c" />
+    <ClCompile Include="libijg16\jfdctflt.c" />
+    <ClCompile Include="libijg16\jfdctfst.c" />
+    <ClCompile Include="libijg16\jfdctint.c" />
+    <ClCompile Include="libijg16\jidctflt.c" />
+    <ClCompile Include="libijg16\jidctfst.c" />
+    <ClCompile Include="libijg16\jidctint.c" />
+    <ClCompile Include="libijg16\jidctred.c" />
+    <ClCompile Include="libijg16\jmemmgr.c" />
+    <ClCompile Include="libijg16\jmemnobs.c" />
+    <ClCompile Include="libijg16\jquant1.c" />
+    <ClCompile Include="libijg16\jquant2.c" />
+    <ClCompile Include="libijg16\jutils.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="libijg16\jchuff16.h" />
+    <ClInclude Include="libijg16\jconfig16.h" />
+    <ClInclude Include="libijg16\jdct16.h" />
+    <ClInclude Include="libijg16\jdhuff16.h" />
+    <ClInclude Include="libijg16\jerror16.h" />
+    <ClInclude Include="libijg16\jinclude16.h" />
+    <ClInclude Include="libijg16\jlossls16.h" />
+    <ClInclude Include="libijg16\jlossy16.h" />
+    <ClInclude Include="libijg16\jmemsys16.h" />
+    <ClInclude Include="libijg16\jmorecfg16.h" />
+    <ClInclude Include="libijg16\jpegint16.h" />
+    <ClInclude Include="libijg16\jpeglib16.h" />
+    <ClInclude Include="libijg16\jversion16.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
