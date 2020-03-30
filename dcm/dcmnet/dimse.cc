@@ -961,33 +961,51 @@ DcmDataset **commandSet)
                 /* if we cannot write all elements in the required transfer syntax, create a warning. */
                 DcmXfer writeXferSyntax(xferSyntax);
                 DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
+                DCMNET_WARN(DIMSE_warn_str(assoc) << "-------writeXferSyntax.getXferName():" << writeXferSyntax.getXferName());
                 //add ---------------begin
-                if (writeXferSyntax.getXferName() == UID_JPEG2000TransferSyntax ||
-                    writeXferSyntax.getXferName() == UID_JPEG2000LosslessOnlyTransferSyntax)
+                //UID_JPEGProcess14SV1TransferSyntax
+                OFString TransferSyntax = writeXferSyntax.getXferID();
+                if (TransferSyntax == UID_JPEG2000TransferSyntax||
+                    TransferSyntax == UID_JPEG2000LosslessOnlyTransferSyntax)
                 {
                     OFString newfile = dataFileName;
                     newfile += ".JK2";
                     DcmFileFormat newdcmff;
+                    DCMNET_WARN(DIMSE_warn_str(assoc) << "writeXferSyntax.getXferName():" << writeXferSyntax.getXferName() << newfile);
                     if (!OFStandard::fileExists(newfile))
                     {
                         DJDecoderRegistration::registerCodecs();
-                        DcmDataset *dataset = dataObject;
-                        dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-                        if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+                        dataObject->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+                        if (dataObject->canWriteXfer(EXS_LittleEndianExplicit))
                         {
                             dcmff.saveFile(newfile, EXS_LittleEndianExplicit);
                         }
+                        DJDecoderRegistration::cleanup();
                         DcmFileFormat newdcmff;
                         if (newdcmff.loadFile(newfile, EXS_Unknown).good())
                         {
                             dataObject = newdcmff.getDataset();
                         }
-                        DJDecoderRegistration::cleanup();
                     }
                     if (newdcmff.loadFile(newfile, EXS_Unknown).good())
                     {
                         dataObject = newdcmff.getDataset();
                     }
+                }
+                else
+                {
+                    if (fromFile && dataFileName)
+                    {
+                        DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
+                            << dataFileName << "' from '" << originalXferSyntax.getXferName()
+                            << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'");
+                    }
+                    else {
+                        DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset from '"
+                            << originalXferSyntax.getXferName() << "' transfer syntax to '"
+                            << writeXferSyntax.getXferName() << "'");
+                    }
+                    cond = DIMSE_SENDFAILED;
                 }
                 //----------add ---------------end--2020-03-28
                 //------------------------------------------------------
@@ -1006,6 +1024,7 @@ DcmDataset **commandSet)
                 //cond = DIMSE_SENDFAILED;
                 //delete end
             }
+
         }
         else
         {
