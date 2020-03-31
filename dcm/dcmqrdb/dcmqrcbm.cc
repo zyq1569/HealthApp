@@ -139,6 +139,10 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
             DCMQRDB_WARN("NO StudyInstanceUID ini:"+fileini);
             SearchDirFile(find_dir, "dcm", m_matchingFiles,false, 10000);
         }
+        if (m_matchingFiles.size() < 1)
+        {
+            DCMQRDB_WARN("NO find StudyInstanceUID dcm:" + StudyInstanceUID);
+        }
     }
     else
     {

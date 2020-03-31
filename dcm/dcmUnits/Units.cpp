@@ -625,6 +625,17 @@ OFBool ReadStudyInfo(OFString filename,OFString dir, OFList<OFString> &data)
                 out.getline(buffer, max, '\n');
                 out.getline(buffer, max, '\n');
                 value = OFString(buffer);
+                if (out.eof())
+                {
+                    pos = value.find('|');
+                    OFString imageuid = value.substr(pos + 1, value.length());
+                    value = dir + "/";
+                    value += seruid;
+                    value += "/";
+                    value += imageuid + ".dcm";
+                    data.push_back(value);
+                    break;
+                }
                 while (value != "[SERIES]"&&!out.eof())
                 {
                     pos = value.find('|');
