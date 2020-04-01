@@ -415,9 +415,9 @@ int call_net_qrscp(int i, int j)
 
 int main(int argc, char *argv[])
 {
-    OFList<OFString> data;
-    OFString dir = "F:\temp\HealthApp\bin\win32\DCM_SAVE\Images\106\164\1.2.840.113619.2.66.2158408118.16050010109105933.20000";
-    OFString uid = "/1.2.840.113619.2.66.2158408118.16050010109105933.20000.ini";
-    ReadStudyInfo(dir + uid, dir, data);
+    //OFList<OFString> data;
+    //OFString dir = "F:\temp\HealthApp\bin\win32\DCM_SAVE\Images\106\164\1.2.840.113619.2.66.2158408118.16050010109105933.20000";
+    //OFString uid = "/1.2.840.113619.2.66.2158408118.16050010109105933.20000.ini";
+    //ReadStudyInfo(dir + uid, dir, data);
     return RunQRSCP(argc, argv);
 }

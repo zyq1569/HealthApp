@@ -636,7 +636,7 @@ OFBool ReadStudyInfo(OFString filename,OFString dir, OFList<OFString> &data)
                     data.push_back(value);
                     break;
                 }
-                while (value != "[SERIES]"&&!out.eof())
+                while (value != "[SERIES]")
                 {
                     pos = value.find('|');
                     OFString imageuid = value.substr(pos + 1, value.length());
@@ -647,6 +647,17 @@ OFBool ReadStudyInfo(OFString filename,OFString dir, OFList<OFString> &data)
                     data.push_back(value);
                     out.getline(buffer, max, '\n');
                     value = OFString(buffer);
+                    if (out.eof())
+                    {
+                        pos = value.find('|');
+                        imageuid = value.substr(pos + 1, value.length());
+                        value = dir + "/";
+                        value += seruid;
+                        value += "/";
+                        value += imageuid + ".dcm";
+                        data.push_back(value);
+                        break;
+                    }
                 }
             }
             else
