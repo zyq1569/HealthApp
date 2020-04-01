@@ -120,6 +120,7 @@ DcmQueryRetrieveConfig g_config;
 DcmQueryRetrieveOptions g_options;
 DcmAssociationConfiguration g_asccfg;
 
+
 static void mangleAssociationProfileKey(OFString& key)
 {
     for (size_t ui = 0; ui < key.size();)
@@ -135,12 +136,23 @@ static void mangleAssociationProfileKey(OFString& key)
 
 #ifdef _WIN32
 //
+//控制台程序隐藏
+#pragma comment( linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )
+//--------------------
 DWORD WINAPI threadFunc(LPVOID threadNum);
 
 int call_net_qrscp(int a, int b);
 
 int g_argc;
 char **g_argv;
+CRITICAL_SECTION g_Lock;
+struct ThreadInfo
+{
+    HANDLE hand;
+    OFString threadID;
+};
+#define MAX_THREAD_NU 500
+ThreadInfo g_thread_hand[MAX_THREAD_NU];
 
 #endif
 // qrscp way:
@@ -155,8 +167,8 @@ char **g_argv;
 int RunQRSCP(int argc, char *argv[])
 {
 #ifdef _WIN32
-g_argc = argc;
-g_argv = argv;
+    g_argc = argc;
+    g_argv = argv;
 #endif
     //##################---------------------------------------------------------------------------------
     const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
@@ -293,10 +305,40 @@ g_argv = argv;
         return 10;
     }
     //----------------------------------------
+    for (int i = 0; i < MAX_THREAD_NU; i++)
+    {
+        g_thread_hand[i].hand = NULL;
+    }
+    InitializeCriticalSection(&g_Lock);
     call_net_qrscp(1, 1);
     while (true)
     {
-        Sleep(1);
+        bool bNotActiveThread = true;
+        for (int i = 0; i < MAX_THREAD_NU; i++)
+        {
+            if (NULL != g_thread_hand[i].hand)
+            {
+                DWORD   dwExitCode;
+                WaitForSingleObject(g_thread_hand[i].hand, INFINITE);
+                GetExitCodeThread(g_thread_hand[i].hand, &dwExitCode);
+                if (STILL_ACTIVE != dwExitCode)
+                {
+                    OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + g_thread_hand[i].threadID + ") exited with code :" + longToString(dwExitCode));
+                    CloseHandle(g_thread_hand[i].hand);
+                    g_thread_hand[i].hand = NULL;
+                }
+                bNotActiveThread = false;
+            }
+        }
+        if (bNotActiveThread)
+        {
+            OFLOG_WARN(dcmqrscpLogger, "Last Thread overtime exit!");
+            call_net_qrscp(1, 1);
+        }
+        else
+        {
+            Sleep(1);
+        }
     }
     OFStandard::shutdownNetwork();
 #else 
@@ -353,7 +395,6 @@ g_argv = argv;
     }
     OFStandard::shutdownNetwork();
 #endif
-
     return 0;
 }
 
@@ -393,22 +434,83 @@ DWORD WINAPI threadFunc(LPVOID threadNum)
     OFLOG_INFO(dcmqrscpLogger, "threadID Exit");
     return 0;
 }
+unsigned __stdcall QueryThread(void *argv)
+{
+    DcmQueryRetrieveIndexDatabaseHandleFactory factory(&g_config);
+    DcmQueryRetrieveSCP scp(g_config, g_options, factory, g_asccfg);
+    scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
+    if (g_imagedir.length() > 0 && g_argc > 5)
+    {
+        scp.SetDcmDirSize(1);
+        scp.SetDcmDir(0, g_imagedir);
+        QueryClientInfo qc;
+        qc.AEtitle = g_argv[3];
+        qc.port = atoi(g_argv[4]);
+        qc.IpAddress = g_argv[5];
+        scp.SetQueryClientSize(1);
+        scp.SetQueryClient(&qc, 0);
+        if (g_argc > 9)
+        {
+            MySqlInfo sql;
+            sql.IpAddress = g_argv[6];
+            sql.SqlName = g_argv[7];
+            sql.SqlUserName = g_argv[8];
+            sql.SqlPWD = g_argv[9];
+            scp.SetMysql(&sql);
+        }
+    }
+    scp.waitForAssociation_win32_thread(g_options.net_, &call_net_qrscp);
+    return 0;
+}
 int call_net_qrscp(int i, int j)
 {
-    DWORD threadID = 0;
+    //_beginthreadex
     HANDLE hand = NULL;
-    if ((hand = CreateThread(NULL, 0, threadFunc, NULL, 0, &threadID)) == NULL)
+    DWORD   dwExitCode;
+    OFString ThreadID;
+    unsigned  uiThreadID = 0;
+    hand = (HANDLE)_beginthreadex(NULL,// security
+        0,// stack size
+        QueryThread,
+        NULL,           // arg list
+        CREATE_SUSPENDED,  // so we can later call ResumeThread()
+        &uiThreadID);
+
+    if (hand == NULL)
     {
         //fail
-        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread fial! ID:" + longToString(threadID));
+        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread fial! ID:" + ThreadID);
+        //to do add ? fail to  help call
     }
     else
     {
-        //ok
-        OFString id = longToString(threadID);
-        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread threadID:" + longToString(threadID));
+        ResumeThread(hand);
+        //ok g_Lock.Lock();
+        //进入临界区 (加锁)
+        EnterCriticalSection(&g_Lock);
+        ThreadID = longToString(uiThreadID);
+        bool flag = false;
+        while (!flag)
+        {
+            for (int i = 0; i < MAX_THREAD_NU; i++)
+            {
+                if (NULL == g_thread_hand[i].hand)
+                {
+                    g_thread_hand[i].threadID = ThreadID;
+                    g_thread_hand[i].hand = hand;
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag)
+            {
+                Sleep(1);//wait NULL
+            }
+        }
+        //解锁
+        LeaveCriticalSection(&g_Lock);
+        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread thread ID:" + ThreadID);
     }
-    CloseHandle(hand);
     return 1;
 }
 #endif
