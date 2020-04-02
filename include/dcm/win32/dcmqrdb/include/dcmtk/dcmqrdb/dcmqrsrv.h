@@ -52,7 +52,7 @@ enum CTN_RefuseReason
 };
 
 #ifdef _WIN32
-typedef int(*fun_call_net_qrscp)(int, int);
+typedef int(*fun_call_net_qrscp)(int startcode);
 #endif
 /** main class for Query/Retrieve Service Class Provider
  */

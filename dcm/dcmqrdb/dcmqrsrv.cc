@@ -1073,7 +1073,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
 }
 
 #ifdef _WIN32
-OFCondition DcmQueryRetrieveSCP::waitForAssociation_win32_thread(T_ASC_Network *theNet, fun_call_net_qrscp qrscp_thread_nessage)
+OFCondition DcmQueryRetrieveSCP::waitForAssociation_win32_thread(T_ASC_Network *theNet, fun_call_net_qrscp qrscp_thread)
 {
     OFCondition cond = EC_Normal;
     OFString temp_str;
@@ -1099,7 +1099,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation_win32_thread(T_ASC_Network *
 
     if (ASC_associationWaiting(theNet, timeout))
     {
-        qrscp_thread_nessage(1, 2);
+        qrscp_thread(0);
         cond = ASC_receiveAssociation(theNet, &assoc, (int)options_.maxPDU_);
         if (cond.bad())
         {

@@ -141,15 +141,17 @@ static void mangleAssociationProfileKey(OFString& key)
 //--------------------
 DWORD WINAPI threadFunc(LPVOID threadNum);
 
-int call_net_qrscp(int a, int b);
+int call_net_qrscp(int startcode);
 
 int g_argc;
 char **g_argv;
 CRITICAL_SECTION g_Lock;
+enum ThreadState { Init = -1, Listen, Run, Wait, Suspend };
 struct ThreadInfo
 {
     HANDLE hand;
     OFString threadID;
+    int  state;//-1,0,1//init run Suspend
 };
 #define MAX_THREAD_NU 500
 ThreadInfo g_thread_hand[MAX_THREAD_NU];
@@ -308,9 +310,10 @@ int RunQRSCP(int argc, char *argv[])
     for (int i = 0; i < MAX_THREAD_NU; i++)
     {
         g_thread_hand[i].hand = NULL;
+        g_thread_hand[i].state = Init;
     }
     InitializeCriticalSection(&g_Lock);
-    call_net_qrscp(1, 1);
+    call_net_qrscp(1);
     while (true)
     {
         bool bNotActiveThread = true;
@@ -318,22 +321,21 @@ int RunQRSCP(int argc, char *argv[])
         {
             if (NULL != g_thread_hand[i].hand)
             {
-                DWORD   dwExitCode;
-                WaitForSingleObject(g_thread_hand[i].hand, INFINITE);
-                GetExitCodeThread(g_thread_hand[i].hand, &dwExitCode);
-                if (STILL_ACTIVE != dwExitCode)
+                if (Wait == g_thread_hand[i].state)
                 {
-                    OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + g_thread_hand[i].threadID + ") exited with code :" + longToString(dwExitCode));
-                    CloseHandle(g_thread_hand[i].hand);
-                    g_thread_hand[i].hand = NULL;
+                    SuspendThread(g_thread_hand[i].hand);
+                    g_thread_hand[i].state = Suspend;
                 }
-                bNotActiveThread = false;
+                else if (Listen == g_thread_hand[i].state)
+                {
+                    bNotActiveThread = false;
+                }
             }
         }
         if (bNotActiveThread)
         {
             OFLOG_WARN(dcmqrscpLogger, "Last Thread overtime exit!");
-            call_net_qrscp(1, 1);
+            call_net_qrscp(0);
         }
         else
         {
@@ -399,41 +401,6 @@ int RunQRSCP(int argc, char *argv[])
 }
 
 #ifdef _WIN32
-DWORD WINAPI threadFunc(LPVOID threadNum)
-{
-    DcmQueryRetrieveIndexDatabaseHandleFactory factory(&g_config);
-    //DcmQueryRetrieveOptions options;
-    //options = g_options;
-    //options.maxAssociations_ = g_options.maxAssociations_;
-    //options.maxPDU_ = g_options.maxPDU_;
-    //ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
-    DcmQueryRetrieveSCP scp(g_config, g_options, factory, g_asccfg);
-    scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
-    if (g_imagedir.length() > 0 && g_argc > 5)
-    {
-        scp.SetDcmDirSize(1);
-        scp.SetDcmDir(0, g_imagedir);
-        QueryClientInfo qc;
-        qc.AEtitle = g_argv[3];
-        qc.port = atoi(g_argv[4]);
-        qc.IpAddress = g_argv[5];
-        scp.SetQueryClientSize(1);
-        scp.SetQueryClient(&qc, 0);
-        if (g_argc > 9)
-        {
-            MySqlInfo sql;
-            sql.IpAddress = g_argv[6];
-            sql.SqlName = g_argv[7];
-            sql.SqlUserName = g_argv[8];
-            sql.SqlPWD = g_argv[9];
-            scp.SetMysql(&sql);
-        }
-    }
-    scp.waitForAssociation_win32_thread(g_options.net_, &call_net_qrscp);
-    //ASC_dropNetwork(&options.net_);
-    OFLOG_INFO(dcmqrscpLogger, "threadID Exit");
-    return 0;
-}
 unsigned __stdcall QueryThread(void *argv)
 {
     DcmQueryRetrieveIndexDatabaseHandleFactory factory(&g_config);
@@ -459,15 +426,66 @@ unsigned __stdcall QueryThread(void *argv)
             scp.SetMysql(&sql);
         }
     }
-    scp.waitForAssociation_win32_thread(g_options.net_, &call_net_qrscp);
+    //HANDLE hand = NULL;
+    //scp.waitForAssociation_win32_thread(g_options.net_, &call_net_qrscp);
+    OFString ThreadID = longToString(GetCurrentThreadId());
+    int index = -1;
+    for (int i = 0; i < MAX_THREAD_NU; i++)
+    {
+        if (ThreadID == g_thread_hand[i].threadID)
+        {
+            index = i;
+            break;
+        }
+    }
+    //SuspendThread(hand);
+    while (true)
+    {
+        if (Listen == g_thread_hand[index].state)
+        {
+            scp.waitForAssociation_win32_thread(g_options.net_, &call_net_qrscp);
+            OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + ThreadID + ") finish!");
+            while (Listen == g_thread_hand[index].state)
+            {
+                Sleep(1);
+            }
+            g_thread_hand[index].state = Wait;
+            OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + ThreadID + ") Wait!");
+            while (Wait == g_thread_hand[index].state)
+            {
+                Sleep(1);
+            }
+        }
+    }
     return 0;
 }
-int call_net_qrscp(int i, int j)
+int call_net_qrscp(int startcode)
 {
+    OFString ThreadID = longToString(GetCurrentThreadId());
+    for (int i = 0; i < MAX_THREAD_NU; i++)
+    {
+        if (NULL != g_thread_hand[i].hand && ThreadID == g_thread_hand[i].threadID)
+        {
+            g_thread_hand[i].state = Run;
+            OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + ThreadID + ") run!");
+            break;
+        }
+    }
+    for (int i = 0; i < MAX_THREAD_NU; i++)
+    {
+        if (NULL != g_thread_hand[i].hand && Suspend == g_thread_hand[i].state)
+        {
+            ResumeThread(g_thread_hand[i].hand);
+            g_thread_hand[i].state = Listen;
+            OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + g_thread_hand[i].threadID + ") Listen!");
+            return 0 ;
+        }
+    }
+
     //_beginthreadex
     HANDLE hand = NULL;
     DWORD   dwExitCode;
-    OFString ThreadID;
+    OFString newThreadID;
     unsigned  uiThreadID = 0;
     hand = (HANDLE)_beginthreadex(NULL,// security
         0,// stack size
@@ -479,16 +497,15 @@ int call_net_qrscp(int i, int j)
     if (hand == NULL)
     {
         //fail
-        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread fial! ID:" + ThreadID);
+        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread fial! ID:" + newThreadID);
         //to do add ? fail to  help call
     }
     else
     {
-        ResumeThread(hand);
         //ok g_Lock.Lock();
         //进入临界区 (加锁)
         EnterCriticalSection(&g_Lock);
-        ThreadID = longToString(uiThreadID);
+        newThreadID = longToString(uiThreadID);
         bool flag = false;
         while (!flag)
         {
@@ -496,8 +513,11 @@ int call_net_qrscp(int i, int j)
             {
                 if (NULL == g_thread_hand[i].hand)
                 {
-                    g_thread_hand[i].threadID = ThreadID;
+                    g_thread_hand[i].threadID = newThreadID;
                     g_thread_hand[i].hand = hand;
+                    g_thread_hand[i].state = Listen;
+                    OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + newThreadID + ") Listen!");
+                    ResumeThread(hand);
                     flag = true;
                     break;
                 }
@@ -509,7 +529,7 @@ int call_net_qrscp(int i, int j)
         }
         //解锁
         LeaveCriticalSection(&g_Lock);
-        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread thread ID:" + ThreadID);
+        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread thread ID:" + newThreadID);
     }
     return 1;
 }
@@ -523,3 +543,14 @@ int main(int argc, char *argv[])
     //ReadStudyInfo(dir + uid, dir, data);
     return RunQRSCP(argc, argv);
 }
+
+
+//DWORD   dwExitCode;
+//WaitForSingleObject(g_thread_hand[i].hand, INFINITE);
+//GetExitCodeThread(g_thread_hand[i].hand, &dwExitCode);
+//if (STILL_ACTIVE != dwExitCode)
+//{
+//    OFLOG_INFO(dcmqrscpLogger, "free Thread hand/ThreadID(" + g_thread_hand[i].threadID + ") exited with code :" + longToString(dwExitCode));
+//    CloseHandle(g_thread_hand[i].hand);
+//    g_thread_hand[i].hand = NULL;
+//}
