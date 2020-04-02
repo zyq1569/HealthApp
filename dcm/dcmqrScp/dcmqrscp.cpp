@@ -142,11 +142,13 @@ static void mangleAssociationProfileKey(OFString& key)
 DWORD WINAPI threadFunc(LPVOID threadNum);
 
 int call_net_qrscp(int startcode);
+int start_qrscp(int startcode);
 
 int g_argc;
 char **g_argv;
 CRITICAL_SECTION g_Lock;
 enum ThreadState { Init = -1, Listen, Run, Wait, Suspend };
+int g_thread_nums ;
 struct ThreadInfo
 {
     HANDLE hand;
@@ -155,6 +157,7 @@ struct ThreadInfo
 };
 #define MAX_THREAD_NU 500
 ThreadInfo g_thread_hand[MAX_THREAD_NU];
+
 
 #endif
 // qrscp way:
@@ -313,33 +316,56 @@ int RunQRSCP(int argc, char *argv[])
         g_thread_hand[i].state = Init;
     }
     InitializeCriticalSection(&g_Lock);
-    call_net_qrscp(1);
+    start_qrscp(1);
+    int thread_num = 0;
     while (true)
     {
-        bool bNotActiveThread = true;
+        thread_num = 0;
+        bool bNoListenThread = true;
+        bool bStartNewThread = true;
         for (int i = 0; i < MAX_THREAD_NU; i++)
         {
             if (NULL != g_thread_hand[i].hand)
             {
                 if (Wait == g_thread_hand[i].state)
                 {
-                    SuspendThread(g_thread_hand[i].hand);
+                    //SuspendThread(g_thread_hand[i].hand);
                     g_thread_hand[i].state = Suspend;
+                    OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + g_thread_hand[i].threadID + ") Suspend!");
                 }
-                else if (Listen == g_thread_hand[i].state)
+                if (bNoListenThread && Listen == g_thread_hand[i].state)
                 {
-                    bNotActiveThread = false;
+                    bNoListenThread = false;
                 }
+                thread_num++;
             }
         }
-        if (bNotActiveThread)
+        if (thread_num == MAX_THREAD_NU-1)
         {
-            OFLOG_WARN(dcmqrscpLogger, "Last Thread overtime exit!");
-            call_net_qrscp(0);
+            g_thread_nums = MAX_THREAD_NU;
+        }
+        if (bNoListenThread)
+        {
+            for (int i = 0; i < MAX_THREAD_NU; i++)
+            {
+                if (NULL != g_thread_hand[i].hand && Suspend == g_thread_hand[i].state)
+                {
+                    //ResumeThread(g_thread_hand[i].hand);
+                    g_thread_hand[i].state = Listen;
+                    OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + g_thread_hand[i].threadID + ") Listen!");
+                    bStartNewThread = false;
+                    break;
+                }
+            }
+            if (bStartNewThread)
+            {
+                start_qrscp(0);
+            }
         }
         else
         {
-            Sleep(1);
+            //Sleep(1);
+            //OFLOG_WARN(dcmqrscpLogger, "All Thread Numbers:" + longToString(thread_num));
         }
     }
     OFStandard::shutdownNetwork();
@@ -426,8 +452,6 @@ unsigned __stdcall QueryThread(void *argv)
             scp.SetMysql(&sql);
         }
     }
-    //HANDLE hand = NULL;
-    //scp.waitForAssociation_win32_thread(g_options.net_, &call_net_qrscp);
     OFString ThreadID = longToString(GetCurrentThreadId());
     int index = -1;
     for (int i = 0; i < MAX_THREAD_NU; i++)
@@ -443,45 +467,26 @@ unsigned __stdcall QueryThread(void *argv)
     {
         if (Listen == g_thread_hand[index].state)
         {
+            OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") Listening for client!");
             scp.waitForAssociation_win32_thread(g_options.net_, &call_net_qrscp);
-            OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + ThreadID + ") finish!");
-            while (Listen == g_thread_hand[index].state)
-            {
-                Sleep(1);
-            }
+            OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") finish!");
             g_thread_hand[index].state = Wait;
-            OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + ThreadID + ") Wait!");
+            OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") Wait!");
             while (Wait == g_thread_hand[index].state)
             {
                 Sleep(1);
             }
         }
+        else
+        {
+            Sleep(1);
+        }
     }
     return 0;
 }
-int call_net_qrscp(int startcode)
-{
-    OFString ThreadID = longToString(GetCurrentThreadId());
-    for (int i = 0; i < MAX_THREAD_NU; i++)
-    {
-        if (NULL != g_thread_hand[i].hand && ThreadID == g_thread_hand[i].threadID)
-        {
-            g_thread_hand[i].state = Run;
-            OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + ThreadID + ") run!");
-            break;
-        }
-    }
-    for (int i = 0; i < MAX_THREAD_NU; i++)
-    {
-        if (NULL != g_thread_hand[i].hand && Suspend == g_thread_hand[i].state)
-        {
-            ResumeThread(g_thread_hand[i].hand);
-            g_thread_hand[i].state = Listen;
-            OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + g_thread_hand[i].threadID + ") Listen!");
-            return 0 ;
-        }
-    }
 
+int start_qrscp(int startcode)
+{
     //_beginthreadex
     HANDLE hand = NULL;
     DWORD   dwExitCode;
@@ -516,7 +521,7 @@ int call_net_qrscp(int startcode)
                     g_thread_hand[i].threadID = newThreadID;
                     g_thread_hand[i].hand = hand;
                     g_thread_hand[i].state = Listen;
-                    OFLOG_INFO(dcmqrscpLogger, "ThreadID(" + newThreadID + ") Listen!");
+                    OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + newThreadID + ") Listen!");
                     ResumeThread(hand);
                     flag = true;
                     break;
@@ -529,7 +534,22 @@ int call_net_qrscp(int startcode)
         }
         //½âËø
         LeaveCriticalSection(&g_Lock);
-        OFLOG_INFO(dcmqrscpLogger, "CreateNewThread thread ID:" + newThreadID);
+        OFLOG_INFO(dcmqrscpLogger, "qrscp:CreateNewThread thread ID:" + newThreadID);
+    }
+    return 1;
+}
+
+int call_net_qrscp(int startcode)
+{
+    OFString ThreadID = longToString(GetCurrentThreadId());
+    for (int i = 0; i < MAX_THREAD_NU; i++)
+    {
+        if (NULL != g_thread_hand[i].hand && ThreadID == g_thread_hand[i].threadID)
+        {
+            g_thread_hand[i].state = Run;
+            OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") run!");
+            break;
+        }
     }
     return 1;
 }
