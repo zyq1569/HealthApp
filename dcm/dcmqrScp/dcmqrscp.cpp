@@ -119,6 +119,7 @@ OFString g_imagedir;
 DcmQueryRetrieveConfig g_config;
 DcmQueryRetrieveOptions g_options;
 DcmAssociationConfiguration g_asccfg;
+DcmQueryRetrieveSCP *g_scp;
 
 
 static void mangleAssociationProfileKey(OFString& key)
@@ -142,7 +143,7 @@ static void mangleAssociationProfileKey(OFString& key)
 DWORD WINAPI threadFunc(LPVOID threadNum);
 
 int call_net_qrscp(int startcode);
-int start_qrscp(int startcode);
+int start_newqrscp(int startcode);
 
 int g_argc;
 char **g_argv;
@@ -151,13 +152,108 @@ enum ThreadState { Init = -1, Listen, Run, Wait, Suspend };
 int g_thread_nums;
 struct ThreadInfo
 {
-    HANDLE hand, event;
+    HANDLE hand;
     OFString threadID;
     int  state;//-1,0,1//init run Suspend
 };
 #define MAX_THREAD_NU 500
 ThreadInfo g_thread_hand[MAX_THREAD_NU];
 
+OFBool g_bSuspend = OFTrue;// OFFalse;
+HANDLE g_event = NULL;
+//---------use Hthread ---
+unsigned __stdcall MainQuerScpThread(void *argv)
+{
+    int thread_num = 0;
+    while (TRUE)
+    {
+        thread_num = 0;
+        bool bNoListenThread = true;
+        bool bStartNewThread = true;
+        for (int i = 0; i < MAX_THREAD_NU; i++)
+        {
+            if (NULL != g_thread_hand[i].hand)
+            {
+                if (Wait == g_thread_hand[i].state)
+                {
+                    OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + g_thread_hand[i].threadID + ") Suspend!");
+                    if (g_bSuspend)
+                    {
+                        ::SuspendThread(g_thread_hand[i].hand);
+                    }
+                    g_thread_hand[i].state = Suspend;
+                }
+                if (bNoListenThread && Listen == g_thread_hand[i].state)
+                {
+                    bNoListenThread = false;
+                }
+                thread_num++;
+            }
+        }
+        if (thread_num == MAX_THREAD_NU - 1)
+        {
+            g_thread_nums = MAX_THREAD_NU;
+        }
+        if (bNoListenThread)
+        {
+            for (int i = 0; i < MAX_THREAD_NU; i++)
+            {
+                if (NULL != g_thread_hand[i].hand && Suspend == g_thread_hand[i].state)
+                {
+                    if (g_bSuspend)
+                    {
+                        ::ResumeThread(g_thread_hand[i].hand);
+                    }
+                    g_thread_hand[i].state = Listen;
+                    OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + g_thread_hand[i].threadID + ") Listen!");
+                    bStartNewThread = false;
+                    break;
+                }
+            }
+            if (bStartNewThread)
+            {
+                start_newqrscp(0);
+            }
+        }
+        Sleep(1);
+    }
+    return 0;
+}
+
+class HQuerScp : public DcmQueryCallBack
+{
+public:
+    HQuerScp()
+    {
+
+    }
+    ~HQuerScp()
+    {
+        for (int i = 0; i < MAX_THREAD_NU; i++)
+        {
+            if (NULL != g_thread_hand[i].hand)
+            {
+                CloseHandle(g_thread_hand[i].hand);
+                g_thread_hand[i].hand = NULL;
+            }
+        }
+    }
+    int CallBack(void* statecode)
+    {
+        OFString ThreadID = longToString(::GetCurrentThreadId());
+        for (int i = 0; i < MAX_THREAD_NU; i++)
+        {
+            if (NULL != g_thread_hand[i].hand && ThreadID == g_thread_hand[i].threadID)
+            {
+                g_thread_hand[i].state = Run;
+                OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") run!");
+                break;
+            }
+        }
+        return 1;
+    }
+};
+HQuerScp g_QueryScp;
 #endif
 // qrscp way:
 //OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
@@ -273,7 +369,7 @@ int RunQRSCP(int argc, char *argv[])
     if (g_options.maxPDU_ < ASC_MINIMUMPDUSIZE || g_options.maxPDU_ > ASC_MAXIMUMPDUSIZE)
     {
         OFLOG_FATAL(dcmqrscpLogger, "invalid MaxPDUSize in config file");
-        return 10;
+        return 0;
     }
     if (overrideMaxPDU > 0)
         g_options.maxPDU_ = overrideMaxPDU;
@@ -314,60 +410,21 @@ int RunQRSCP(int argc, char *argv[])
         g_thread_hand[i].state = Init;
     }
     InitializeCriticalSection(&g_Lock);
-    start_qrscp(1);
-    int thread_num = 0;
-    while (true)
+    start_newqrscp(1);
+    unsigned uThreadID;
+    HANDLE hand = (HANDLE)_beginthreadex(NULL,// security
+        0,// stack size
+        MainQuerScpThread,
+        NULL,           // arg list
+        CREATE_SUSPENDED,  // so we can later call ResumeThread()
+        &uThreadID);
+    ResumeThread(hand);
+    HANDLE vent = CreateEvent(NULL, FALSE, FALSE, NULL);
+    while (WaitForSingleObject(vent, INFINITE) != WAIT_OBJECT_0)
     {
-        thread_num = 0;
-        bool bNoListenThread = true;
-        bool bStartNewThread = true;
-        for (int i = 0; i < MAX_THREAD_NU; i++)
-        {
-            if (NULL != g_thread_hand[i].hand)
-            {
-                if (Wait == g_thread_hand[i].state)
-                {
-                    //SuspendThread(g_thread_hand[i].hand);
-                    g_thread_hand[i].state = Suspend;
-                    OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + g_thread_hand[i].threadID + ") Suspend!");
-                }
-                if (bNoListenThread && Listen == g_thread_hand[i].state)
-                {
-                    bNoListenThread = false;
-                }
-                thread_num++;
-            }
-        }
-        if (thread_num == MAX_THREAD_NU - 1)
-        {
-            g_thread_nums = MAX_THREAD_NU;
-        }
-        if (bNoListenThread)
-        {
-            for (int i = 0; i < MAX_THREAD_NU; i++)
-            {
-                if (NULL != g_thread_hand[i].hand && Suspend == g_thread_hand[i].state)
-                {
-                    //ResumeThread(g_thread_hand[i].hand);
-                    g_thread_hand[i].state = Listen;
-                    //g_thread_hand[i].state = Listen;
-                    ::SetEvent(g_thread_hand[i].event);
-                    OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + g_thread_hand[i].threadID + ") Listen!");
-                    bStartNewThread = false;
-                    break;
-                }
-            }
-            if (bStartNewThread)
-            {
-                start_qrscp(0);
-            }
-        }
-        else
-        {
-            //Sleep(1);
-            //OFLOG_WARN(dcmqrscpLogger, "All Thread Numbers:" + longToString(thread_num));
-        }
+        //stop here
     }
+    CloseHandle(hand);
     OFStandard::shutdownNetwork();
 #else
     OFString temp_str;
@@ -466,15 +523,10 @@ unsigned __stdcall QueryThread(void *argv)
     //SuspendThread(hand);
     while (true)
     {
-        OFLOG_INFO(dcmqrscpLogger, "qrscp: WaitForSingleObject start ThreadID(" + ThreadID + ")");
-        while (WaitForSingleObject(g_thread_hand[index].event, INFINITE) != WAIT_OBJECT_0)
-        { 
-        }
-        OFLOG_INFO(dcmqrscpLogger, "qrscp: WaitForSingleObject end ThreadID(" + ThreadID + ")");
         if (Listen == g_thread_hand[index].state)
         {
             OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") Listening for client!");
-            scp.waitForAssociation_win32_thread(g_options.net_, &call_net_qrscp);
+            scp.waitForAssociation_win32_thread(g_options.net_, &g_QueryScp);
             OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") finish!");
             g_thread_hand[index].state = Wait;
             OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") Wait!");
@@ -483,7 +535,7 @@ unsigned __stdcall QueryThread(void *argv)
     return 0;
 }
 
-int start_qrscp(int startcode)
+int start_newqrscp(int startcode)
 {
     //_beginthreadex
     HANDLE hand = NULL;
@@ -505,7 +557,6 @@ int start_qrscp(int startcode)
     }
     else
     {
-        HANDLE Event = CreateEvent(NULL, FALSE, FALSE, NULL);
         //ok g_Lock.Lock();
         //进入临界区 (加锁)
         EnterCriticalSection(&g_Lock);
@@ -519,18 +570,12 @@ int start_qrscp(int startcode)
                 {
                     g_thread_hand[i].threadID = newThreadID;
                     g_thread_hand[i].hand = hand;
-                    g_thread_hand[i].event = Event;
                     g_thread_hand[i].state = Listen;
-                    OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + newThreadID + ") Listen!");
-                    ::SetEvent(Event);
+                    OFLOG_INFO(dcmqrscpLogger, "qrscp:new ThreadID(" + newThreadID + ")start Listen!");
                     ResumeThread(hand);
                     flag = true;
                     break;
                 }
-            }
-            if (!flag)
-            {
-                Sleep(1);//wait NULL
             }
         }
         //解锁
@@ -542,7 +587,7 @@ int start_qrscp(int startcode)
 
 int call_net_qrscp(int startcode)
 {
-    OFString ThreadID = longToString(GetCurrentThreadId());
+    OFString ThreadID = longToString(::GetCurrentThreadId());
     for (int i = 0; i < MAX_THREAD_NU; i++)
     {
         if (NULL != g_thread_hand[i].hand && ThreadID == g_thread_hand[i].threadID)
@@ -555,7 +600,6 @@ int call_net_qrscp(int startcode)
     return 1;
 }
 
-
 #endif
 
 int main(int argc, char *argv[])
@@ -564,7 +608,8 @@ int main(int argc, char *argv[])
     //OFString dir = "F:\temp\HealthApp\bin\win32\DCM_SAVE\Images\106\164\1.2.840.113619.2.66.2158408118.16050010109105933.20000";
     //OFString uid = "/1.2.840.113619.2.66.2158408118.16050010109105933.20000.ini";
     //ReadStudyInfo(dir + uid, dir, data);
-    return RunQRSCP(argc, argv);
+    RunQRSCP(argc, argv);
+    return 0;
 }
 
 
