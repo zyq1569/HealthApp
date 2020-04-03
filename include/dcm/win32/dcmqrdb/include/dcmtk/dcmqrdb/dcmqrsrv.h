@@ -53,6 +53,19 @@ enum CTN_RefuseReason
 
 #ifdef _WIN32
 typedef int(*fun_call_net_qrscp)(int startcode);
+class DCMTK_DCMQRDB_EXPORT DcmQueryCallBack
+{
+public:
+    DcmQueryCallBack()
+    {}
+    ~DcmQueryCallBack()
+    {}
+    //virtual int CallBack(void *data) = 0;
+    virtual int CallBack(void *data)
+    {
+        return 0;
+    }
+};
 #endif
 /** main class for Query/Retrieve Service Class Provider
  */
@@ -199,7 +212,7 @@ public:
   OFCondition waitForAssociation(T_ASC_Network *theNet);
 #ifdef _WIN32
   //typedef int(*fun_call_net_qrscp)(int, int);
-  OFCondition waitForAssociation_win32_thread(T_ASC_Network *theNet, fun_call_net_qrscp qrscp_thread_nessage);
+  OFCondition waitForAssociation_win32_thread(T_ASC_Network *theNet, DcmQueryCallBack* qrscp_call);
 #endif
 
 
