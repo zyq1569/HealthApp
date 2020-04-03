@@ -148,16 +148,15 @@ int g_argc;
 char **g_argv;
 CRITICAL_SECTION g_Lock;
 enum ThreadState { Init = -1, Listen, Run, Wait, Suspend };
-int g_thread_nums ;
+int g_thread_nums;
 struct ThreadInfo
 {
-    HANDLE hand;
+    HANDLE hand, event;
     OFString threadID;
     int  state;//-1,0,1//init run Suspend
 };
 #define MAX_THREAD_NU 500
 ThreadInfo g_thread_hand[MAX_THREAD_NU];
-
 
 #endif
 // qrscp way:
@@ -294,20 +293,19 @@ int RunQRSCP(int argc, char *argv[])
 #endif
 
 #ifdef _WIN32
-    //-------------------------------- need thread
     OFString temp_str;
     cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, g_options.acse_timeout_, &g_options.net_);
     if (cond.bad())
     {
         OFLOG_FATAL(dcmqrscpLogger, "cannot initialize network: " << DimseCondition::dump(temp_str, cond));
-        return 10;
+        return 0;
     }
 
     /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
     if (OFStandard::dropPrivileges().bad())
     {
         OFLOG_FATAL(dcmqrscpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
-        return 10;
+        return 0;
     }
     //----------------------------------------
     for (int i = 0; i < MAX_THREAD_NU; i++)
@@ -340,7 +338,7 @@ int RunQRSCP(int argc, char *argv[])
                 thread_num++;
             }
         }
-        if (thread_num == MAX_THREAD_NU-1)
+        if (thread_num == MAX_THREAD_NU - 1)
         {
             g_thread_nums = MAX_THREAD_NU;
         }
@@ -352,6 +350,8 @@ int RunQRSCP(int argc, char *argv[])
                 {
                     //ResumeThread(g_thread_hand[i].hand);
                     g_thread_hand[i].state = Listen;
+                    //g_thread_hand[i].state = Listen;
+                    ::SetEvent(g_thread_hand[i].event);
                     OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + g_thread_hand[i].threadID + ") Listen!");
                     bStartNewThread = false;
                     break;
@@ -369,20 +369,20 @@ int RunQRSCP(int argc, char *argv[])
         }
     }
     OFStandard::shutdownNetwork();
-#else 
+#else
     OFString temp_str;
     cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, g_options.acse_timeout_, &g_options.net_);
     if (cond.bad())
     {
         OFLOG_FATAL(dcmqrscpLogger, "cannot initialize network: " << DimseCondition::dump(temp_str, cond));
-        return 10;
+        return 0;
     }
 
     /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
     if (OFStandard::dropPrivileges().bad())
     {
         OFLOG_FATAL(dcmqrscpLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
-        return 10;
+        return 0;
     }
     // use linear index database (index.dat)
     DcmQueryRetrieveIndexDatabaseHandleFactory factory(&g_config);
@@ -427,6 +427,7 @@ int RunQRSCP(int argc, char *argv[])
 }
 
 #ifdef _WIN32
+
 unsigned __stdcall QueryThread(void *argv)
 {
     DcmQueryRetrieveIndexDatabaseHandleFactory factory(&g_config);
@@ -465,6 +466,11 @@ unsigned __stdcall QueryThread(void *argv)
     //SuspendThread(hand);
     while (true)
     {
+        OFLOG_INFO(dcmqrscpLogger, "qrscp: WaitForSingleObject start ThreadID(" + ThreadID + ")");
+        while (WaitForSingleObject(g_thread_hand[index].event, INFINITE) != WAIT_OBJECT_0)
+        { 
+        }
+        OFLOG_INFO(dcmqrscpLogger, "qrscp: WaitForSingleObject end ThreadID(" + ThreadID + ")");
         if (Listen == g_thread_hand[index].state)
         {
             OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") Listening for client!");
@@ -472,14 +478,6 @@ unsigned __stdcall QueryThread(void *argv)
             OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") finish!");
             g_thread_hand[index].state = Wait;
             OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + ThreadID + ") Wait!");
-            while (Wait == g_thread_hand[index].state)
-            {
-                Sleep(1);
-            }
-        }
-        else
-        {
-            Sleep(1);
         }
     }
     return 0;
@@ -507,6 +505,7 @@ int start_qrscp(int startcode)
     }
     else
     {
+        HANDLE Event = CreateEvent(NULL, FALSE, FALSE, NULL);
         //ok g_Lock.Lock();
         //进入临界区 (加锁)
         EnterCriticalSection(&g_Lock);
@@ -520,8 +519,10 @@ int start_qrscp(int startcode)
                 {
                     g_thread_hand[i].threadID = newThreadID;
                     g_thread_hand[i].hand = hand;
+                    g_thread_hand[i].event = Event;
                     g_thread_hand[i].state = Listen;
                     OFLOG_INFO(dcmqrscpLogger, "qrscp:ThreadID(" + newThreadID + ") Listen!");
+                    ::SetEvent(Event);
                     ResumeThread(hand);
                     flag = true;
                     break;
@@ -553,6 +554,8 @@ int call_net_qrscp(int startcode)
     }
     return 1;
 }
+
+
 #endif
 
 int main(int argc, char *argv[])
