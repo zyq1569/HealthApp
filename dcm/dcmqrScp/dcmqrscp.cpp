@@ -237,6 +237,7 @@ public:
                 g_thread_hand[i].hand = NULL;
             }
         }
+        OFLOG_FATAL(dcmqrscpLogger, "CloseHandle All g_thread_hand.");
     }
     int CallBack(void* statecode)
     {
@@ -253,7 +254,7 @@ public:
         return 1;
     }
 };
-HQuerScp g_QueryScp;
+static HQuerScp g_QueryScp;
 #endif
 // qrscp way:
 //OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
