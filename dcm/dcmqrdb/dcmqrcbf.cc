@@ -1058,8 +1058,16 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
         sql = sql + " and p.PatientName = '" + PatientName + "'";
     }
     sql = sql + ";";
-    pMariaDb->query(sql.c_str());
-    ResultSet * rs = pMariaDb->QueryResult();
+    ResultSet * rs = NULL;
+    try
+    {
+        pMariaDb->query(sql.c_str());
+        rs = pMariaDb->QueryResult();
+    }
+    catch (...)
+    {
+        DCMQRDB_ERROR("connection or query database error! ");
+    }
     if (rs == NULL)
     {
         DCMQRDB_DEBUG("No data info in database");

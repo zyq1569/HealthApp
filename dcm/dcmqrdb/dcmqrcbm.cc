@@ -99,8 +99,8 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     OFHashValue path = CreateHashValue(StudyInstanceUID.c_str(), StudyInstanceUID.length());
     OFString hash_dir = longToString(path.first) + "/" + longToString(path.second);
     OFString temp_dir = "/Images/" + hash_dir + "/" + StudyInstanceUID;
-    OFLOG_DEBUG(dcmqrscpLogger, "---------hash_dir:" + hash_dir + " ----------------------");
-    OFLOG_DEBUG(dcmqrscpLogger, "---------study_dir:" + hash_dir + " ----------------------");
+    //OFLOG_DEBUG(dcmqrscpLogger, "---------hash_dir:" + hash_dir + " ----------------------");
+    //OFLOG_DEBUG(dcmqrscpLogger, "---------study_dir:" + hash_dir + " ----------------------");
     OFString find_dir;
     OFBool find = OFFalse;
     OFListIterator(OFString) if_iter;
@@ -267,9 +267,9 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
     response->NumberOfWarningSubOperations = nWarning;
     *stDetail = dbStatus.extractStatusDetail();
 
-    OFString str;
     DCMQRDB_INFO("Move SCP Response " << responseCount << " [status: "
         << DU_cmoveStatusString(dbStatus.status()) << "]");
+    OFString str;
     DCMQRDB_DEBUG(DIMSE_dumpMessage(str, *response, DIMSE_OUTGOING));
     if (DICOM_PENDING_STATUS(dbStatus.status()) && (*responseIdentifiers != NULL))
     {
@@ -509,7 +509,6 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
             if (cond == DUL_ASSOCIATIONREJECTED)
             {
                 T_ASC_RejectParameters rej;
-
                 ASC_getRejectParameters(params, &rej);
                 DCMQRDB_ERROR("moveSCP: Sub-Association Rejected" << OFendl << ASC_printRejectParameters(temp_str, &rej));
             }
