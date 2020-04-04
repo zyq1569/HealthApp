@@ -603,6 +603,8 @@ int call_net_qrscp(int startcode)
 
 #endif
 
+//free OFCondition nextFindResponse(
+// find data -->OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
 int main(int argc, char *argv[])
 {
     //OFList<OFString> data;

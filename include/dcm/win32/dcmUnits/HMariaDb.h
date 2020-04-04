@@ -209,6 +209,7 @@ public:
 private:
     MYSQL* pConnectionHandlerPtr;
     ResultSet resultset;
+    std::string m_server, m_user, m_password, m_database;
 protected:
     void close(void)
     {
@@ -219,4 +220,5 @@ protected:
         }
     }
     void getresult(ResultSet& rs);
+    int reconnection();
 };

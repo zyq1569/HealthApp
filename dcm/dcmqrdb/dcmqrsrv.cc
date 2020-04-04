@@ -817,32 +817,13 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
         transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
         transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-        //if (gLocalByteOrder == EBO_LittleEndian)
-        //{
+
         transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
-        //}
-        /* else {
-             transferSyntaxes[18] = UID_BigEndianExplicitTransferSyntax;
-             transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
-             }*/
+
         transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 21;
-        ///
 
-        //if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
-        //{
-        //    transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-        //    transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        //}
-        //else {
-        //    transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-        //    transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        //}
-        //transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        //numTransferSyntaxes = 3;
-        //transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
-        //numTransferSyntaxes = 1;
         break;
     }
 
@@ -1026,13 +1007,10 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     for (i = 0; i < (int)DIM_OF(queryRetrievePairs); i++)
     {
         movepid = ASC_findAcceptedPresentationContextID(assoc, queryRetrievePairs[i].moveSyntax);
-        DCMQRDB_DEBUG("moveSyntax:");
-        DCMQRDB_DEBUG(queryRetrievePairs[i].moveSyntax);
+
         if (movepid != 0)
         {
             findpid = ASC_findAcceptedPresentationContextID(assoc, queryRetrievePairs[i].findSyntax);
-            DCMQRDB_DEBUG("findSyntax:");
-            DCMQRDB_DEBUG(queryRetrievePairs[i].findSyntax);
             if (findpid == 0)
             {
                 if (options_.requireFindForMove_)
