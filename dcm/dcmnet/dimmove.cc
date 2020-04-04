@@ -384,51 +384,65 @@ DIMSE_moveProvider(
 
     cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presIdData, &reqIds, NULL, NULL);
 
-    if (cond.good()) {
-        if (presIdData != presIdCmd) {
+    if (cond.good())
+    {
+        if (presIdData != presIdCmd)
+        {
           cond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Presentation Contexts of Command and Data Differ");
-        } else {
+        }
+        else
+        {
             bzero((char*)&rsp, sizeof(rsp));
             rsp.DimseStatus = STATUS_Pending;   /* assume */
 
-            while (cond == EC_Normal && rsp.DimseStatus == STATUS_Pending && normal) {
+            while (cond == EC_Normal && rsp.DimseStatus == STATUS_Pending && normal)
+            {
                 responseCount++;
-
                 cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);
-                if (cond == EC_Normal) {
+                if (cond == EC_Normal)
+                {
                     /* cancel received */
                     rsp.DimseStatus = STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
                     cancelled = OFTrue;
-                } else if (cond == DIMSE_NODATAAVAILABLE) {
+                }
+                else if (cond == DIMSE_NODATAAVAILABLE)
+                {
                     /* timeout */
-                } else {
+                }
+                else
+                {
                     /* some exception condition occurred, bail out */
                     normal = OFFalse;
                 }
 
-                if (normal) {
-                     if (callback) {
+                if (normal)
+                {
+                     if (callback)
+                     {
                          callback(callbackData, cancelled, request, reqIds, responseCount, imagedir, queryclient, &rsp, &statusDetail, &rspIds);
-                     } else {
+                     }
+                     else
+                     {
                          return makeDcmnetCondition(DIMSEC_NULLKEY, OF_error, "DIMSE_moveProvider: no callback function");
                      }
-
-                     if (cancelled) {
+                     if (cancelled)
+                     {
                          /* make sure */
                          rsp.DimseStatus = STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
-                         if (rspIds != NULL) {
+                         if (rspIds != NULL)
+                         {
                              delete reqIds;
                              reqIds = NULL;
                          }
                      }
-
                      cond = DIMSE_sendMoveResponse(assoc, presIdCmd, request, &rsp, rspIds, statusDetail);
-
-                     if (rspIds != NULL) {
+                     if (rspIds != NULL)
+                     {
                          delete rspIds;
                          rspIds = NULL;
                      }
-                     if (statusDetail != NULL) {
+                     if (statusDetail != NULL)
+                     {
                          delete statusDetail;
                          statusDetail = NULL;
                      }
@@ -436,8 +450,15 @@ DIMSE_moveProvider(
             }
         }
     }
-
-    delete reqIds;
-    delete rspIds;
+    if (reqIds != NULL)
+    {
+        delete reqIds;
+        reqIds = NULL;
+    }
+    if (rspIds != NULL)
+    {
+        delete rspIds;
+        rspIds = NULL;
+    }
     return cond;
 }

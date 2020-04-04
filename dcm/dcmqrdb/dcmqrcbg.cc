@@ -306,11 +306,10 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
     bzero(subImgSOPInstance, sizeof(subImgSOPInstance));
 
     /* get DB response */
-    dbcond = dbHandle.nextMoveResponse(
-        subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
-    if (dbcond.bad()) {
-        DCMQRDB_ERROR("getSCP: Database: nextMoveResponse Failed ("
-            << DU_cmoveStatusString(dbStatus->status()) << "):");
+    dbcond = dbHandle.nextMoveResponse(subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
+    if (dbcond.bad())
+    {
+        DCMQRDB_ERROR("getSCP: Database: nextMoveResponse Failed (" << DU_cmoveStatusString(dbStatus->status()) << "):");
     }
 
     if (dbStatus->status() == STATUS_Pending) {

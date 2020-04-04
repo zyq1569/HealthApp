@@ -341,11 +341,8 @@ OFCondition  DIMSE_sendFindResponse(T_ASC_Association * assoc,
 }
 
 
-OFCondition  DIMSE_findProvider(
-        T_ASC_Association *assoc,
-        T_ASC_PresentationContextID presIdCmd,
-        T_DIMSE_C_FindRQ *request,
-        DIMSE_FindProviderCallback callback, void *callbackData,
+OFCondition  DIMSE_findProvider(T_ASC_Association *assoc, T_ASC_PresentationContextID presIdCmd,
+        T_DIMSE_C_FindRQ *request,DIMSE_FindProviderCallback callback, void *callbackData,
         T_DIMSE_BlockingMode blockMode, int timeout, MySqlInfo *mysql)
     /*
      * This function receives a data set which represents the search mask over the network and
@@ -403,7 +400,6 @@ OFCondition  DIMSE_findProvider(
             {
                 /* increase the counter that counts the number of response messages */
                 responseCount++;
-
                 /* check if a C-CANCEL-RQ is received */
                 cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);
                 if (cond.good())
@@ -429,8 +425,7 @@ OFCondition  DIMSE_findProvider(
                     /* which matches the search mask. This record will be available here through rspIds) */
                     if (callback)
                     {
-                        callback(callbackData, cancelled, request, reqIds,
-                            responseCount, mysql, &rsp, &rspIds, &statusDetail);
+                        callback(callbackData, cancelled, request, reqIds,responseCount,mysql, &rsp, &rspIds, &statusDetail);
                     }
                     else
                     {
@@ -450,8 +445,7 @@ OFCondition  DIMSE_findProvider(
                     }
 
                     /* send a C-FIND-RSP message over the network to the other DICOM application */
-                    cond = DIMSE_sendFindResponse(assoc, presIdCmd, request,
-                        &rsp, rspIds, statusDetail);
+                    cond = DIMSE_sendFindResponse(assoc, presIdCmd, request,&rsp, rspIds, statusDetail);
 
                     /* if there are search results, delete them */
                     if (rspIds != NULL)

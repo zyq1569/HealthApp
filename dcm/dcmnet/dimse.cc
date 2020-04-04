@@ -1044,10 +1044,16 @@ DcmDataset **commandSet)
     {
         /* if the global variable says so, we want to save the */
         /* DIMSE command's information to a file */
-        if (g_dimse_save_dimse_data) saveDimseFragment(cmdObj, OFTrue, OFFalse);
+        if (g_dimse_save_dimse_data)
+        {
+            saveDimseFragment(cmdObj, OFTrue, OFFalse);
+        }
 
         /* return a copy of the DIMSE command if required */
-        if (commandSet) *commandSet = new DcmDataset(*cmdObj);
+        if (commandSet)
+        {
+            *commandSet = new DcmDataset(*cmdObj);
+        }
 
         /* dump information if required */
         DCMNET_TRACE("DIMSE Command to be sent on Presentation Context ID: " << OFstatic_cast(Uint16, presID));
@@ -1062,7 +1068,10 @@ DcmDataset **commandSet)
     if (cond.good() && DIMSE_isDataSetPresent(msg) && (dataObject))
     {
         /* again, if the global variable says so, we want to save the instance data to a file */
-        if (g_dimse_save_dimse_data) saveDimseFragment(dataObject, OFFalse, OFFalse);
+        if (g_dimse_save_dimse_data)
+        {
+            saveDimseFragment(dataObject, OFFalse, OFFalse);
+        }
 
         /* Send the instance data set using the corresponding transfer syntax */
         cond = sendDcmDataset(assoc, dataObject, presID, xferSyntax,
