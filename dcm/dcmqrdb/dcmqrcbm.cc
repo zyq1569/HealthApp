@@ -179,16 +179,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
         m_matchingFiles.clear();
         /* start the database search */
         DCMQRDB_INFO("Move SCP Request Identifiers:" << OFendl << DcmObject::PrintHelper(*requestIdentifiers));
-
-        //if (false)
-        //{
-        //    dbcond = dbHandle.startMoveRequest(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
-        //}
-        //else
-        //{
         dbcond = startMoveRequest(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus,imagedir);
-        //}
-
         if (dbcond.bad())
         {
             DCMQRDB_ERROR("moveSCP: Database: startMoveRequest Failed ("
@@ -230,7 +221,6 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
          * Tear down sub-association (if it exists).
          */
         closeSubAssociation();
-
         /*
          * Need to adjust the final status if any sub-operations failed or
          * had warnings
@@ -250,8 +240,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
         }
     }
 
-    if (dbStatus.status() != STATUS_Success &&
-        dbStatus.status() != STATUS_Pending)
+    if (dbStatus.status() != STATUS_Success && dbStatus.status() != STATUS_Pending)
     {
         /*
          * May only include response identifiers if not Success
@@ -364,10 +353,8 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     DCMQRDB_INFO("Store SCU RQ: MsgID " << msgId << ", ("
         << dcmSOPClassUIDToModality(sopClass, "OT") << ")");
 
-    cond = DIMSE_storeUser(subAssoc, presId, &req,
-        fname, NULL, moveSubOpProgressCallback, this,
-        options_.blockMode_, options_.dimse_timeout_,
-        &rsp, &stDetail);
+    cond = DIMSE_storeUser(subAssoc, presId, &req,fname, NULL, moveSubOpProgressCallback, this,
+            options_.blockMode_, options_.dimse_timeout_,&rsp, &stDetail);
 
 #ifdef LOCK_IMAGE_FILES
     /* unlock image file */
@@ -602,7 +589,6 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
             if (data.getDataset()->findAndGetOFString(DCM_SOPInstanceUID, strImgSOPInstance).bad())
             {
                 strImgSOPInstance.clear();
-
             }
             strcmp(subImgFileName, (char *)filename.c_str());
             ImgFileName = filename;
@@ -978,9 +964,8 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 
     for (i = 0; i < numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++)
     {
-        cond = ASC_addPresentationContext(
-            params, pid, dcmLongSCUStorageSOPClassUIDs[i],
-            transferSyntaxes, numTransferSyntaxes);
+        cond = ASC_addPresentationContext(params, pid, dcmLongSCUStorageSOPClassUIDs[i],
+                                            transferSyntaxes, numTransferSyntaxes);
         pid += 2;   /* only odd presentation context id's */
     }
     return cond;
