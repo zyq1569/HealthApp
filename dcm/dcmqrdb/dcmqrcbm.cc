@@ -130,6 +130,7 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     if (find && !find_dir.empty())
     {
         OFString fileini = find_dir + "/" + StudyInstanceUID + ".ini";
+        m_matchingFiles.clear();
         if (OFStandard::fileExists(fileini))
         {
             ReadStudyInfo(fileini, find_dir, m_matchingFiles);
