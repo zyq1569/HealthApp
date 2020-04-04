@@ -1128,12 +1128,16 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
             makeResponseList(findResponseList, findRequestList, &dbRecod);
             DcmDataset      findResponseIdentifiers;
             nextFindResponse(findResponseList, &findResponseIdentifiers, queryLevel, status, characterSetOptions);
+            DB_FreeElementList(findResponseList);
+            findResponseList = NULL;
             m_matchingDatasets.push_back(findResponseIdentifiers);
             row_index++;
         }
 #ifdef DEBUG
         DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_Pending");
 #endif
+        DB_FreeElementList(findRequestList);
+        findRequestList = NULL;
         status->setStatus(STATUS_Pending);
         return (EC_Normal);
     }
@@ -1141,19 +1145,7 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
 
 OFCondition cancelFindRequest(DcmQueryRetrieveDatabaseStatus *status)
 {
-
-    //handle_->idxCounter = -1;
-    //DB_FreeElementList(handle_->findRequestList);
-    //handle_->findRequestList = NULL;
-    //DB_FreeElementList(handle_->findResponseList);
-    //handle_->findResponseList = NULL;
-    //DB_FreeUidList(handle_->uidList);
-    //handle_->uidList = NULL;
-
     status->setStatus(STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest);
-
-    //DB_unlock();
-
     return (EC_Normal);
 }
 void DcmQueryRetrieveFindContext::callbackHandler(
@@ -1166,9 +1158,6 @@ void DcmQueryRetrieveFindContext::callbackHandler(
     DcmDataset **responseIdentifiers,
     DcmDataset **stDetail)
 {
-    ////////////////////
-
-    ////////////////////
     OFCondition dbcond = EC_Normal;
     DcmQueryRetrieveDatabaseStatus dbStatus(priorStatus);
     *responseIdentifiers = NULL;
@@ -1177,11 +1166,7 @@ void DcmQueryRetrieveFindContext::callbackHandler(
         m_matchingDatasets.clear();
         /* start the database search */
         DCMQRDB_INFO("Find SCP Request Identifiers:" << OFendl << DcmObject::PrintHelper(*requestIdentifiers));
-        //if (false) // original
-        //{
-        //    dbcond = dbHandle.startFindRequest(
-        //        request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
-        //}
+        //m_matchingDatasets: get data 
         dbcond = startFindRequestFromSql(request->AffectedSOPClassUID, requestIdentifiers, &dbStatus, mysql);
         if (dbcond.bad())
         {
@@ -1189,54 +1174,34 @@ void DcmQueryRetrieveFindContext::callbackHandler(
                 << DU_cfindStatusString(dbStatus.status()) << "):");
         }
     }
-
     /* only cancel if we have pending responses */
     if (cancelled && DICOM_PENDING_STATUS(dbStatus.status()))
     {
-        /*dbHandle.*/cancelFindRequest(&dbStatus);
+        cancelFindRequest(&dbStatus);
     }
-
     if (DICOM_PENDING_STATUS(dbStatus.status()))
     {
-        if (false)
+        int size = m_matchingDatasets.size();
+        if (!m_matchingDatasets.empty())
         {
-            dbcond = dbHandle.nextFindResponse(responseIdentifiers, &dbStatus, characterSetOptions);
+            DcmDataset item = m_matchingDatasets.back();
+            *responseIdentifiers = new DcmDataset(item);
+            m_matchingDatasets.pop_back();
+        }
+        if (size > 0)
+        {
+            dbStatus.setStatus(STATUS_Pending);
         }
         else
         {
-            //nextFindResponse(findResponseList, responseIdentifiers, queryLevel, &dbStatus, characterSetOptions);
-            int size = m_matchingDatasets.size();
-            if (!m_matchingDatasets.empty())
-            {
-                DcmDataset item = m_matchingDatasets.back();
-                /////
-                //OFString PatientName;
-                //if (item.findAndGetOFString(DCM_PatientName, PatientName).bad())
-                //{
-                //    PatientName.clear();
-                //}
-                /////
-                *responseIdentifiers = new DcmDataset(item);
-                m_matchingDatasets.pop_back();
-
-            }
-            if (size > 0)
-            {
-                dbStatus.setStatus(STATUS_Pending);
-            }
-            else
-            {
-                dbStatus.setStatus(STATUS_Success);
-            }
-            dbcond = EC_Normal;
+            dbStatus.setStatus(STATUS_Success);
         }
+        dbcond = EC_Normal;
         if (dbcond.bad())
         {
             DCMQRDB_ERROR("findSCP: Database: nextFindResponse Failed ("
                 << DU_cfindStatusString(dbStatus.status()) << "):");
         }
-
-
         if (*responseIdentifiers != NULL)
         {
             if (!DU_putStringDOElement(*responseIdentifiers, DCM_RetrieveAETitle, ourAETitle.c_str()))
@@ -1248,7 +1213,6 @@ void DcmQueryRetrieveFindContext::callbackHandler(
         /* set response status */
         response->DimseStatus = dbStatus.status();
         *stDetail = dbStatus.extractStatusDetail();
-
         OFString str;
         DCMQRDB_INFO("Find SCP Response " << responseCount << " [status: "
             << DU_cfindStatusString(dbStatus.status()) << "]");
