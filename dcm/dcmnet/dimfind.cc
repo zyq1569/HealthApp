@@ -441,8 +441,7 @@ OFCondition  DIMSE_findProvider(
                     if (cancelled)
                     {
                         /* make sure */
-                        rsp.DimseStatus =
-                            STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
+                        rsp.DimseStatus =   STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
                         if (rspIds != NULL)
                         {
                             delete reqIds;

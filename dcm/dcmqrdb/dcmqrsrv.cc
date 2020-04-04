@@ -823,7 +823,6 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
 
         transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 21;
-
         break;
     }
 
@@ -1007,7 +1006,6 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     for (i = 0; i < (int)DIM_OF(queryRetrievePairs); i++)
     {
         movepid = ASC_findAcceptedPresentationContextID(assoc, queryRetrievePairs[i].moveSyntax);
-
         if (movepid != 0)
         {
             findpid = ASC_findAcceptedPresentationContextID(assoc, queryRetrievePairs[i].findSyntax);
