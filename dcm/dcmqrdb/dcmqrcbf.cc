@@ -997,9 +997,9 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     }
     if (cond != EC_Normal)
     {
-        /*handle_->*/idxCounter = -1;
-        DB_FreeElementList(/*handle_->*/findRequestList);
-        /*handle_->*/findRequestList = NULL;
+        idxCounter = -1;
+        DB_FreeElementList(findRequestList);
+        findRequestList = NULL;
 #ifdef DEBUG
         DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_FIND_Failed_UnableToProcess");
 #endif
