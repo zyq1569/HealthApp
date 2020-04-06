@@ -19,6 +19,13 @@
  *
  */
 
+
+//--vld ???????
+//#include <SDKDDKVer.h>
+//#include <stdio.h>
+//#include <tchar.h>
+//#include <vld.h>
+////--vld ???????
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
@@ -92,6 +99,7 @@ END_EXTERN_C
 #endif
 
 #include "Units.h"
+//#include <vld.h>
 //--------------------
 
 static OFLogger dcmqrscpLogger = OFLog::getLogger("dcmtk.dcmqr.apps." OFFIS_CONSOLE_APPLICATION);
@@ -540,7 +548,7 @@ int start_newqrscp(int startcode)
 {
     //_beginthreadex
     HANDLE hand = NULL;
-    DWORD   dwExitCode;
+    //DWORD   dwExitCode;
     OFString newThreadID;
     unsigned  uiThreadID = 0;
     hand = (HANDLE)_beginthreadex(NULL,// security
@@ -611,6 +619,7 @@ int main(int argc, char *argv[])
     //OFString dir = "F:\temp\HealthApp\bin\win32\DCM_SAVE\Images\106\164\1.2.840.113619.2.66.2158408118.16050010109105933.20000";
     //OFString uid = "/1.2.840.113619.2.66.2158408118.16050010109105933.20000.ini";
     //ReadStudyInfo(dir + uid, dir, data);
+    //char *p = new char[100];
     RunQRSCP(argc, argv);
     return 0;
 }
