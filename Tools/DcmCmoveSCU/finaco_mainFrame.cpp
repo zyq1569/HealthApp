@@ -243,6 +243,6 @@ int finaco_mainFrame::fillstudiescallback(Study &study)
     m_studies->SetItem(0, 2, wxString::FromUTF8(buf));
     m_studies->SetItem(0, 3, wxString::FromUTF8(study.studydesc.c_str()));
     m_studies->SetItem(0, 4, wxString::FromUTF8(study.studyuid.c_str()));
-    m_studies->CheckItem(0, study.checked);    
+    m_studies->CheckItem(0, study.checked);
     return 0;
 }
