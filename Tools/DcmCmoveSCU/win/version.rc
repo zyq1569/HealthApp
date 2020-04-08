@@ -7,26 +7,26 @@
 #endif
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION    	VER_FILEVERSION
-PRODUCTVERSION 	VER_PRODUCTVERSION
-FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
-FILEOS         	VOS__WINDOWS32
-FILETYPE       	VFT_APP
-FILESUBTYPE    	VFT2_UNKNOWN
+FILEVERSION        VER_FILEVERSION
+PRODUCTVERSION     VER_PRODUCTVERSION
+FILEFLAGSMASK      VS_FFI_FILEFLAGSMASK
+FILEOS             VOS__WINDOWS32
+FILETYPE           VFT_APP
+FILESUBTYPE        VFT2_UNKNOWN
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
         BLOCK "040904E4"
         BEGIN
             VALUE "CompanyName",      "FrontMotion"
-            VALUE "FileDescription",  "finaco"
+            VALUE "FileDescription",  "CmoveSCU"
             VALUE "FileVersion",      VER_FILEVERSION_STR
-            VALUE "InternalName",     "finaco"
+            VALUE "InternalName",     "CmoveSCU"
             VALUE "LegalCopyright",   "Copyright (c) Ing-Long Eric Kuo"
             VALUE "LegalTrademarks1", ""
             VALUE "LegalTrademarks2", ""
-            VALUE "OriginalFilename", "finaco"
-            VALUE "ProductName",      "finaco"
+            VALUE "OriginalFilename", "CmoveSCU"
+            VALUE "ProductName",      "CmoveSCU"
             VALUE "ProductVersion",   VER_PRODUCTVERSION_STR
         END
     END
