@@ -41,12 +41,11 @@ bool DICOMQueryScanner::ScanPatientName(std::string name, DestinationEntry &dest
     class MyDcmSCU : public DcmSCU
     {
     public:
-        MyDcmSCU(PatientData &patientdata, DICOMQueryScanner &scanner) : patientdata(patientdata), scanner(scanner) {}
+        MyDcmSCU(PatientData &patientdata, DICOMQueryScanner &scanner) : patientdata(patientdata), scanner(scanner)
+        {}
         PatientData &patientdata;
         DICOMQueryScanner &scanner;
-        OFCondition handleFINDResponse(const T_ASC_PresentationContextID presID,
-            QRResponse *response,
-            OFBool &waitForNextResponse)
+        OFCondition handleFINDResponse(const T_ASC_PresentationContextID presID, QRResponse *response, OFBool &waitForNextResponse)
         {
             OFCondition ret = DcmSCU::handleFINDResponse(presID, response, waitForNextResponse);
 
