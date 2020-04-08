@@ -1,8 +1,7 @@
 #include "finaco_mainFrame.h"
 
 finaco_mainFrame::finaco_mainFrame( wxWindow* parent )
-:
-mainFrame( parent )
+:mainFrame( parent )
 {
 #if defined(_WIN32)
     SetMinSize(wxSize(850, 700));
