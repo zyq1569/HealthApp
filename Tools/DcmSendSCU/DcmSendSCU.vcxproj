@@ -22,7 +22,7 @@
     <ProjectGuid>{20185576-9639-37BD-80E5-89B6044D227A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <Platform>Win32</Platform>
-    <ProjectName>DcmSendSCU</ProjectName>
+    <ProjectName>SendSCU</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
