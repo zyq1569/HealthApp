@@ -21,8 +21,6 @@
 #define UNICODE 1
 #endif
 
-
-
 DICOMMover::DICOMMover(PatientData &patientdata)
     : patientdata(patientdata)
 {
@@ -74,7 +72,9 @@ void DICOMMover::DoMove(DestinationEntry destination, std::string moveae, int th
     // run 5 threads
     boost::thread_group threadgroup;
     for (int i = 0; i < threads; i++)
+    {
         threadgroup.create_thread(boost::bind(&boost::asio::io_service::run, &service));
+    }
 
     // wait for everything to finish, Cancel() calls service stop and stops farther work from processing
     threadgroup.join_all();
