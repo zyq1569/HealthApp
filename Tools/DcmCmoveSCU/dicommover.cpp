@@ -126,8 +126,9 @@ int DICOMMover::MoveStudy(std::string studyuid)
     scu.setDatasetConversionMode(true);
     OFList<OFString> defaulttransfersyntax;
     defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);
+    defaulttransfersyntax.push_back(UID_JPEGProcess14SV1TransferSyntax);
     defaulttransfersyntax.push_back(UID_LittleEndianImplicitTransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEG2000TransferSyntax);
+   /* defaulttransfersyntax.push_back(UID_JPEG2000TransferSyntax);
     defaulttransfersyntax.push_back(UID_JPEG2000LosslessOnlyTransferSyntax);
     defaulttransfersyntax.push_back(UID_JPEGProcess2_4TransferSyntax);
     defaulttransfersyntax.push_back(UID_JPEGProcess1TransferSyntax);
@@ -145,7 +146,7 @@ int DICOMMover::MoveStudy(std::string studyuid)
     defaulttransfersyntax.push_back(UID_HEVCMainProfileLevel5_1TransferSyntax);
     defaulttransfersyntax.push_back(UID_HEVCMain10ProfileLevel5_1TransferSyntax);
     defaulttransfersyntax.push_back(UID_DeflatedExplicitVRLittleEndianTransferSyntax);
-    defaulttransfersyntax.push_back(UID_BigEndianExplicitTransferSyntax);
+    defaulttransfersyntax.push_back(UID_BigEndianExplicitTransferSyntax);*/
     scu.addPresentationContext(UID_MOVEStudyRootQueryRetrieveInformationModel, defaulttransfersyntax);
 
     OFCondition cond;
@@ -156,7 +157,7 @@ int DICOMMover::MoveStudy(std::string studyuid)
     if(scu.negotiateAssociation().bad())
         return 1;
 
-    T_ASC_PresentationContextID pid = scu.findAnyPresentationContextID(UID_MOVEStudyRootQueryRetrieveInformationModel, UID_LittleEndianExplicitTransferSyntax);
+    T_ASC_PresentationContextID pid = scu.findAnyPresentationContextID(UID_MOVEStudyRootQueryRetrieveInformationModel, UID_LittleEndianImplicitTransferSyntax);
 
     DcmDataset query;
     query.putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
