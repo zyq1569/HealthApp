@@ -817,10 +817,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
         transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
         transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-
         transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
-
         transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 21;
         break;

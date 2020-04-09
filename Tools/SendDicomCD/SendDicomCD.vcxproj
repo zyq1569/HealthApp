@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B2F01727-C2B6-3E96-B535-F43487DE7759}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>SendDicomCD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\win32\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\win32\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:\temp\dovo-master-vc\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">dovo.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">dovo</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:\temp\dovo-master-vc\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">dovo.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">dovo</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\boost1720;..\..\include\wxWidgets\mswu;..\..\include\wxWidgets;..\sqlite3;..\..\include\;..\..\include\fmjpeg2k;..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;.\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;DOVO_VERSION="1.0.18";_WIN32_WINNT=0x0501;_UNICODE;_BIND_TO_CURRENT_VCLIBS_VERSION=1;DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS=1;OPJ_STATIC;UNICODE;VER_FILEVERSION=1,0,18;VER_FILEVERSION_STR="1.0.18";VER_PRODUCTVERSION=1,0,18;VER_PRODUCTVERSION_STR="1.0.18";BOOST_ALL_NO_LIB;_DEBUG;__WXDEBUG__;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;DEBUG;DOVO_VERSION=\"1.0.18\";_WIN32_WINNT=0x0501;_UNICODE;_BIND_TO_CURRENT_VCLIBS_VERSION=1;DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS=1;OPJ_STATIC;UNICODE;VER_FILEVERSION=1,0,18;VER_FILEVERSION_STR=\"1.0.18\";VER_PRODUCTVERSION=1,0,18;VER_PRODUCTVERSION_STR=\"1.0.18\";BOOST_ALL_NO_LIB;__WXDEBUG__;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\temp\dovo-master;F:\temp\dovo-master\sqlite3;D:\code\C++\Pacs_tools\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;\include;D:\wxWidgets-3.1.3\lib\vc_lib\mswu;D:\wxWidgets-3.1.3\include;C:\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\temp\dovo-master;F:\temp\dovo-master\sqlite3;D:\code\C++\Pacs_tools\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;\include;D:\wxWidgets-3.1.3\lib\vc_lib\mswu;D:\wxWidgets-3.1.3\include;C:\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\..\lib\openjpeg\openjp2.lib;..\..\lib\fmjpeg2k\fmjpeg2k.lib;..\..\lib\zlib\zlibstaticd.lib;..\..\lib\tiff\libtiff_o.lib;..\..\lib\png\libpng_o.lib;..\..\lib\dcm\win32\ofstd.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\dcmdata.lib;..\..\lib\dcm\win32\i2d.lib;..\..\lib\dcm\win32\dcmimgle.lib;..\..\lib\dcm\win32\dcmimage.lib;..\..\lib\dcm\win32\dcmjpeg.lib;..\..\lib\dcm\win32\ijg8.lib;..\..\lib\dcm\win32\ijg12.lib;..\..\lib\dcm\win32\ijg16.lib;..\..\lib\dcm\win32\dcmjpls.lib;..\..\lib\dcm\win32\charls.lib;..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\dcmnet.lib;..\..\lib\dcm\win32\dcmsr.lib;..\..\lib\dcm\win32\cmr.lib;..\..\lib\dcm\win32\dcmdsig.lib;..\..\lib\dcm\win32\dcmwlm.lib;..\..\lib\dcm\win32\dcmqrdb.lib;..\..\lib\dcm\win32\dcmpstat.lib;..\..\lib\dcm\win32\dcmrt.lib;..\..\lib\dcm\win32\dcmiod.lib;..\..\lib\dcm\win32\dcmfg.lib;..\..\lib\dcm\win32\dcmseg.lib;..\..\lib\dcm\win32\dcmtract.lib;..\..\lib\dcm\win32\dcmpmap.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxmsw31u_core.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxbase31u.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxmsw31u_adv.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxpng.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxtiff.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxjpeg.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxzlib.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxregexu.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxexpat.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_thread-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_filesystem-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_system-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_regex-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_date_time-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_chrono-vc120-mt-s-x32-1_72.lib;winmm.lib;comctl32.lib;uuid.lib;oleacc.lib;uxtheme.lib;rpcrt4.lib;shlwapi.lib;version.lib;wsock32.lib;netapi32.lib;odbc32.lib;Rpcrt4.lib;iphlpapi.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>/lib;/lib/$(Configuration);C:/boost_1_72_0/lib32-msvc-12.0;C:/boost_1_72_0/lib32-msvc-12.0/$(Configuration);/lib/Win32;/lib/Win32/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>F:/temp/dovo-master-vc/Debug/dovo.lib</ImportLibrary>
+      <ProgramDataBaseFile>F:/temp/dovo-master-vc/Debug/dovo.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Manifest>
+      <AdditionalManifestFiles>F:\temp\dovo-master\src\win\dovo.manifest;</AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\boost1720;..\..\include\wxWidgets;..\..\include\wxWidgets\mswu;..\sqlite3;..\..\include\;..\..\include\fmjpeg2k;..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;.\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DOVO_VERSION="1.0.18";_WIN32_WINNT=0x0501;_UNICODE;_BIND_TO_CURRENT_VCLIBS_VERSION=1;DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS=1;HAVE_SSIZE_T;WXUSINGDLL;OPJ_STATIC;UNICODE;VER_FILEVERSION=1,0,18;VER_FILEVERSION_STR="1.0.18";VER_PRODUCTVERSION=1,0,18;VER_PRODUCTVERSION_STR="1.0.18";BOOST_ALL_NO_LIB;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DOVO_VERSION=\"1.0.18\";_WIN32_WINNT=0x0501;_UNICODE;_BIND_TO_CURRENT_VCLIBS_VERSION=1;DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS=1;OPJ_STATIC;UNICODE;VER_FILEVERSION=1,0,18;VER_FILEVERSION_STR=\"1.0.18\";VER_PRODUCTVERSION=1,0,18;VER_PRODUCTVERSION_STR=\"1.0.18\";BOOST_ALL_NO_LIB;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\temp\dovo-master;F:\temp\dovo-master\sqlite3;D:\code\C++\Pacs_tools\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;\include;D:\wxWidgets-3.1.3\lib\vc_lib\mswu;D:\wxWidgets-3.1.3\include;C:\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\temp\dovo-master;F:\temp\dovo-master\sqlite3;D:\code\C++\Pacs_tools\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;\include;D:\wxWidgets-3.1.3\lib\vc_lib\mswu;D:\wxWidgets-3.1.3\include;C:\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\..\lib\openjpeg\openjp2.lib;..\..\lib\fmjpeg2k\fmjpeg2k.lib;..\..\lib\zlib\zlibstaticd.lib;..\..\lib\tiff\libtiff_o.lib;..\..\lib\png\libpng_o.lib;..\..\lib\dcm\win32\ofstd.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\dcmdata.lib;..\..\lib\dcm\win32\i2d.lib;..\..\lib\dcm\win32\dcmimgle.lib;..\..\lib\dcm\win32\dcmimage.lib;..\..\lib\dcm\win32\dcmjpeg.lib;..\..\lib\dcm\win32\ijg8.lib;..\..\lib\dcm\win32\ijg12.lib;..\..\lib\dcm\win32\ijg16.lib;..\..\lib\dcm\win32\dcmjpls.lib;..\..\lib\dcm\win32\charls.lib;..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\dcmnet.lib;..\..\lib\dcm\win32\dcmsr.lib;..\..\lib\dcm\win32\cmr.lib;..\..\lib\dcm\win32\dcmdsig.lib;..\..\lib\dcm\win32\dcmwlm.lib;..\..\lib\dcm\win32\dcmqrdb.lib;..\..\lib\dcm\win32\dcmpstat.lib;..\..\lib\dcm\win32\dcmrt.lib;..\..\lib\dcm\win32\dcmiod.lib;..\..\lib\dcm\win32\dcmfg.lib;..\..\lib\dcm\win32\dcmseg.lib;..\..\lib\dcm\win32\dcmtract.lib;..\..\lib\dcm\win32\dcmpmap.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxmsw31u_core.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxbase31u.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxmsw31u_adv.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxpng.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxtiff.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxjpeg.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxzlib.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxregexu.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxexpat.lib;D:\wxMSW-3.1.3_vc120_Dev\lib\vc120_dll\wxmsw31u_aui.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_thread-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_filesystem-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_system-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_regex-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_date_time-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_chrono-vc120-mt-s-x32-1_72.lib;winmm.lib;comctl32.lib;uuid.lib;oleacc.lib;uxtheme.lib;rpcrt4.lib;shlwapi.lib;version.lib;wsock32.lib;netapi32.lib;odbc32.lib;Rpcrt4.lib;iphlpapi.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>/lib;/lib/$(Configuration);C:/boost_1_72_0/lib32-msvc-12.0;C:/boost_1_72_0/lib32-msvc-12.0/$(Configuration);/lib/Win32;/lib/Win32/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>F:/temp/dovo-master-vc/Release/dovo.lib</ImportLibrary>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <ProgramDataBaseFile>F:/temp/dovo-master-vc/Release/dovo.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Manifest>
+      <AdditionalManifestFiles>F:\temp\dovo-master\src\win\dovo.manifest;</AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>F:\temp\dovo-master;F:\temp\dovo-master\sqlite3;D:\code\C++\Pacs_tools\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;\include;D:\wxWidgets-3.1.3\lib\vc_lib\mswu;D:\wxWidgets-3.1.3\include;C:\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DOVO_VERSION="1.0.18";_WIN32_WINNT=0x0501;_UNICODE;_BIND_TO_CURRENT_VCLIBS_VERSION=1;DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS=1;OPJ_STATIC;UNICODE;VER_FILEVERSION=1,0,18;VER_FILEVERSION_STR="1.0.18";VER_PRODUCTVERSION=1,0,18;VER_PRODUCTVERSION_STR="1.0.18";BOOST_ALL_NO_LIB;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DOVO_VERSION=\"1.0.18\";_WIN32_WINNT=0x0501;_UNICODE;_BIND_TO_CURRENT_VCLIBS_VERSION=1;DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS=1;OPJ_STATIC;UNICODE;VER_FILEVERSION=1,0,18;VER_FILEVERSION_STR=\"1.0.18\";VER_PRODUCTVERSION=1,0,18;VER_PRODUCTVERSION_STR=\"1.0.18\";BOOST_ALL_NO_LIB;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\temp\dovo-master;F:\temp\dovo-master\sqlite3;D:\code\C++\Pacs_tools\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;\include;D:\wxWidgets-3.1.3\lib\vc_lib\mswu;D:\wxWidgets-3.1.3\include;C:\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\temp\dovo-master;F:\temp\dovo-master\sqlite3;D:\code\C++\Pacs_tools\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;\include;D:\wxWidgets-3.1.3\lib\vc_lib\mswu;D:\wxWidgets-3.1.3\include;C:\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>D:\code\C++\Pacs_tools\fmjpeg2koj-master-vc\lib\MinSizeRel\fmjpeg2k.lib;openjp2-NOTFOUND;F:\temp\HealthApp\lib\zlib\zlibstatic.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\ofstd.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\oflog.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmdata.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\i2d.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmimgle.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmimage.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmjpeg.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\ijg8.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\ijg12.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\ijg16.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmjpls.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\charls.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmtls.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmnet.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmsr.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\cmr.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmdsig.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmwlm.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmqrdb.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmpstat.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmrt.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmiod.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmfg.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmseg.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmtract.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmpmap.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxmsw31u_core.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxbase31u.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxmsw31u_adv.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxpng.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxtiff.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxjpeg.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxzlib.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxregexu.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxexpat.lib;winmm.lib;comctl32.lib;uuid.lib;oleacc.lib;uxtheme.lib;rpcrt4.lib;shlwapi.lib;version.lib;wsock32.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_thread-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_filesystem-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_system-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_regex-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_date_time-vc120-mt-s-x32-1_72.lib;netapi32.lib;wsock32.lib;odbc32.lib;Rpcrt4.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmtls.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmsr.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmimage.lib;E:\Tool\Downloads\DCMTK\tiff-4.0.10\lib\libtiff_o.lib;E:\Tool\Downloads\DCMTK\libpng-1.6.37\lib\libpng_o.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmdsig.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmqrdb.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmnet.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmimgle.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmfg.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmiod.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\dcmdata.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\oflog.lib;F:\dcmtk-3.6.3-vc\lib\MinSizeRel\ofstd.lib;iphlpapi.lib;ws2_32.lib;E:\Tool\Downloads\DCMTK\zlib-1.2.11\lib\zlib_o.lib;netapi32.lib;wsock32.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_chrono-vc120-mt-s-x32-1_72.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>/lib;/lib/$(Configuration);C:/boost_1_72_0/lib32-msvc-12.0;C:/boost_1_72_0/lib32-msvc-12.0/$(Configuration);/lib/Win32;/lib/Win32/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>F:/temp/dovo-master-vc/MinSizeRel/dovo.lib</ImportLibrary>
+      <ProgramDataBaseFile>F:/temp/dovo-master-vc/MinSizeRel/dovo.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Manifest>
+      <AdditionalManifestFiles>F:\temp\dovo-master\src\win\dovo.manifest;</AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>F:\temp\dovo-master;F:\temp\dovo-master\sqlite3;D:\code\C++\Pacs_tools\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;\include;D:\wxWidgets-3.1.3\lib\vc_lib\mswu;D:\wxWidgets-3.1.3\include;C:\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DOVO_VERSION="1.0.18";_WIN32_WINNT=0x0501;_UNICODE;_BIND_TO_CURRENT_VCLIBS_VERSION=1;DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS=1;OPJ_STATIC;UNICODE;VER_FILEVERSION=1,0,18;VER_FILEVERSION_STR="1.0.18";VER_PRODUCTVERSION=1,0,18;VER_PRODUCTVERSION_STR="1.0.18";BOOST_ALL_NO_LIB;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DOVO_VERSION=\"1.0.18\";_WIN32_WINNT=0x0501;_UNICODE;_BIND_TO_CURRENT_VCLIBS_VERSION=1;DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS=1;OPJ_STATIC;UNICODE;VER_FILEVERSION=1,0,18;VER_FILEVERSION_STR=\"1.0.18\";VER_PRODUCTVERSION=1,0,18;VER_PRODUCTVERSION_STR=\"1.0.18\";BOOST_ALL_NO_LIB;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\temp\dovo-master;F:\temp\dovo-master\sqlite3;D:\code\C++\Pacs_tools\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;\include;D:\wxWidgets-3.1.3\lib\vc_lib\mswu;D:\wxWidgets-3.1.3\include;C:\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\temp\dovo-master;F:\temp\dovo-master\sqlite3;D:\code\C++\Pacs_tools\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;\include;D:\wxWidgets-3.1.3\lib\vc_lib\mswu;D:\wxWidgets-3.1.3\include;C:\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>D:\code\C++\Pacs_tools\fmjpeg2koj-master-vc\lib\RelWithDebInfo\fmjpeg2k.lib;openjp2-NOTFOUND;F:\temp\HealthApp\lib\zlib\zlibstatic.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\ofstd.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\oflog.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmdata.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\i2d.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmimgle.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmimage.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmjpeg.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\ijg8.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\ijg12.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\ijg16.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmjpls.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\charls.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmtls.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmnet.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmsr.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\cmr.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmdsig.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmwlm.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmqrdb.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmpstat.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmrt.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmiod.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmfg.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmseg.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmtract.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmpmap.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxmsw31u_core.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxbase31u.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxmsw31u_adv.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxpng.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxtiff.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxjpeg.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxzlib.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxregexu.lib;D:\wxWidgets-3.1.3\lib\vc_lib\wxexpat.lib;winmm.lib;comctl32.lib;uuid.lib;oleacc.lib;uxtheme.lib;rpcrt4.lib;shlwapi.lib;version.lib;wsock32.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_thread-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_filesystem-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_system-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_regex-vc120-mt-s-x32-1_72.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_date_time-vc120-mt-s-x32-1_72.lib;netapi32.lib;wsock32.lib;odbc32.lib;Rpcrt4.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmtls.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmsr.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmimage.lib;E:\Tool\Downloads\DCMTK\tiff-4.0.10\lib\libtiff_o.lib;E:\Tool\Downloads\DCMTK\libpng-1.6.37\lib\libpng_o.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmdsig.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmqrdb.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmnet.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmimgle.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmfg.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmiod.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\dcmdata.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\oflog.lib;F:\dcmtk-3.6.3-vc\lib\RelWithDebInfo\ofstd.lib;iphlpapi.lib;ws2_32.lib;E:\Tool\Downloads\DCMTK\zlib-1.2.11\lib\zlib_o.lib;netapi32.lib;wsock32.lib;C:\boost_1_72_0\lib32-msvc-12.0\libboost_chrono-vc120-mt-s-x32-1_72.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>/lib;/lib/$(Configuration);C:/boost_1_72_0/lib32-msvc-12.0;C:/boost_1_72_0/lib32-msvc-12.0/$(Configuration);/lib/Win32;/lib/Win32/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>F:/temp/dovo-master-vc/RelWithDebInfo/dovo.lib</ImportLibrary>
+      <ProgramDataBaseFile>F:/temp/dovo-master-vc/RelWithDebInfo/dovo.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Manifest>
+      <AdditionalManifestFiles>F:\temp\dovo-master\src\win\dovo.manifest;</AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="F:\temp\dovo-master-vc\ZERO_CHECK.vcxproj">
+      <Project>{69E0AEC5-37EB-3FC6-AB9C-A8C4A2575BDD}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="alphanum.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\sqlite3\sqlite3.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\sqlite3\sqlite3_exec_stmt.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="dcm2img.cpp" />
+    <ClCompile Include="dicomscanner.cpp" />
+    <ClCompile Include="dicomsender.cpp" />
+    <ClCompile Include="dovo_about.cpp" />
+    <ClCompile Include="dovo_changePatientInfo.cpp" />
+    <ClCompile Include="dovo_destination.cpp" />
+    <ClCompile Include="dovo_mainFrame.cpp" />
+    <ClCompile Include="dovo_searchStatus.cpp" />
+    <ClCompile Include="dovo_sendStatus.cpp" />
+    <ClCompile Include="dovo_updateCheck.cpp" />
+    <ClCompile Include="engine.cpp" />
+    <ClCompile Include="gui.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="patientdata.cpp" />
+    <ClCompile Include="update.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="win\dovo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="win\dovo.rc" />
+    <ResourceCompile Include="win\version.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
