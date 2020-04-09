@@ -1,0 +1,2 @@
+#include "dovo.ico"
+#include "wx/msw/wx.rc"
