@@ -38,7 +38,6 @@ wxIMPLEMENT_APP(MyApp);
 BEGIN_EVENT_TABLE(MyApp, wxApp)
     EVT_MENU(wxID_ABOUT, MyApp::OnAbout)
     END_EVENT_TABLE()
-
     bool MyApp::OnInit()
 {
     wxTheApp->SetAppName("dovo");
