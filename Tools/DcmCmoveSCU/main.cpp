@@ -78,7 +78,7 @@ BEGIN_EVENT_TABLE(MyApp, wxApp)
 #endif
 
 #ifdef _WIN32
-    frame->SetIcon(wxICON(aaaaaaaa));
+    frame->SetIcon(wxICON("CmoveSCU.ico"));
 #endif
 
     frame->Show( true );
