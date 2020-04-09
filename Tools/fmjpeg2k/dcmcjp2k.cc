@@ -141,7 +141,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
       cmd.addOption("--prefer-cooked",          "+pc",    "prefer cooked encoder mode ");
 
     cmd.addSubGroup("JPEG-2000 compression:");
-	  cmd.addOption("--PSNR",                   "+ps", 1, "[s]ize: integer (default: 0 (automatic))",
+      cmd.addOption("--PSNR",                   "+ps", 1, "[s]ize: integer (default: 0 (automatic))",
                                                           "set JPEG-2000 encoding parameter psnr");
       cmd.addOption("--cblkwidth",              "+cw", 1, "[s]ize: integer (default: 64)",
                                                           "set JPEG-2000 encoding parameter code block size");

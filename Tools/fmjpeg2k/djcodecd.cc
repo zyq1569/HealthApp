@@ -69,7 +69,7 @@ OFBool DJPEG2KDecoderBase::canChangeCoding(
   DcmXfer newRep(newRepType);
   if (newRep.isNotEncapsulated() &&
      ((oldRepType == EXS_JPEG2000LosslessOnly)||(oldRepType == EXS_JPEG2000)||
-	  (oldRepType == EXS_JPEG2000MulticomponentLosslessOnly)||(oldRepType == EXS_JPEG2000Multicomponent)))
+      (oldRepType == EXS_JPEG2000MulticomponentLosslessOnly)||(oldRepType == EXS_JPEG2000Multicomponent)))
      return OFTrue;
   
   return OFFalse;
@@ -399,56 +399,56 @@ OFCondition DJPEG2KDecoderBase::decodeFrame(
 
   if (result.good())
   {
-	// see if the last byte is a padding, otherwise, it should be 0xd9
-	if(jlsData[compressedSize - 1] == 0)
-		compressedSize--;
+    // see if the last byte is a padding, otherwise, it should be 0xd9
+    if(jlsData[compressedSize - 1] == 0)
+        compressedSize--;
 
-    DecodeData mysrc((unsigned char*)jlsData, compressedSize);	
-	   
-	// start of open jpeg stuff
-	opj_dparameters_t parameters;
-	opj_codec_t* l_codec = NULL;
-	opj_stream_t *l_stream = NULL;
-	opj_image_t *image = NULL;
-	
-	l_stream = opj_stream_create_memory_stream(&mysrc, OPJ_J2K_STREAM_CHUNK_SIZE, true);
+    DecodeData mysrc((unsigned char*)jlsData, compressedSize);    
+       
+    // start of open jpeg stuff
+    opj_dparameters_t parameters;
+    opj_codec_t* l_codec = NULL;
+    opj_stream_t *l_stream = NULL;
+    opj_image_t *image = NULL;
+    
+    l_stream = opj_stream_create_memory_stream(&mysrc, OPJ_J2K_STREAM_CHUNK_SIZE, true);
 
-	// figure out codec
-	#define JP2_RFC3745_MAGIC "\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a"
-	#define JP2_MAGIC "\x0d\x0a\x87\x0a"
-	/* position 45: "\xff\x52" */
-	#define J2K_CODESTREAM_MAGIC "\xff\x4f\xff\x51"
+    // figure out codec
+    #define JP2_RFC3745_MAGIC "\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a"
+    #define JP2_MAGIC "\x0d\x0a\x87\x0a"
+    /* position 45: "\xff\x52" */
+    #define J2K_CODESTREAM_MAGIC "\xff\x4f\xff\x51"
 
-	OPJ_CODEC_FORMAT format = OPJ_CODEC_UNKNOWN; 
-	if(memcmp(jlsData, JP2_RFC3745_MAGIC, 12) == 0 || memcmp(jlsData, JP2_MAGIC, 4) == 0)
-		format = OPJ_CODEC_JP2;	
-	else if (memcmp(jlsData, J2K_CODESTREAM_MAGIC, 4) == 0)
-		format = OPJ_CODEC_J2K;
-	else
-		format = OPJ_CODEC_J2K;
+    OPJ_CODEC_FORMAT format = OPJ_CODEC_UNKNOWN; 
+    if(memcmp(jlsData, JP2_RFC3745_MAGIC, 12) == 0 || memcmp(jlsData, JP2_MAGIC, 4) == 0)
+        format = OPJ_CODEC_JP2;    
+    else if (memcmp(jlsData, J2K_CODESTREAM_MAGIC, 4) == 0)
+        format = OPJ_CODEC_J2K;
+    else
+        format = OPJ_CODEC_J2K;
 
-	l_codec = opj_create_decompress(format);
+    l_codec = opj_create_decompress(format);
 
-	opj_set_info_handler(l_codec, msg_callback, NULL);
-	opj_set_warning_handler(l_codec, msg_callback, NULL);
-	opj_set_error_handler(l_codec, msg_callback, NULL);
+    opj_set_info_handler(l_codec, msg_callback, NULL);
+    opj_set_warning_handler(l_codec, msg_callback, NULL);
+    opj_set_error_handler(l_codec, msg_callback, NULL);
 
-	opj_set_default_decoder_parameters(&parameters);
+    opj_set_default_decoder_parameters(&parameters);
 
-	if(!opj_setup_decoder(l_codec, &parameters))
-	{		
-		opj_stream_destroy(l_stream); l_stream = NULL;
-		opj_destroy_codec(l_codec); l_codec = NULL;
-		result = EC_CorruptedData;
-	}
+    if(!opj_setup_decoder(l_codec, &parameters))
+    {        
+        opj_stream_destroy(l_stream); l_stream = NULL;
+        opj_destroy_codec(l_codec); l_codec = NULL;
+        result = EC_CorruptedData;
+    }
 
-	if(result.good() && !opj_read_header(l_stream, l_codec, &image))
-	{
-		opj_stream_destroy(l_stream); l_stream = NULL;
-		opj_destroy_codec(l_codec); l_codec = NULL;
-		opj_image_destroy(image); image = NULL;
-		result = EC_CorruptedData;
-	}
+    if(result.good() && !opj_read_header(l_stream, l_codec, &image))
+    {
+        opj_stream_destroy(l_stream); l_stream = NULL;
+        opj_destroy_codec(l_codec); l_codec = NULL;
+        opj_image_destroy(image); image = NULL;
+        result = EC_CorruptedData;
+    }
 
     if (result.good())
     {
@@ -465,40 +465,40 @@ OFCondition DJPEG2KDecoderBase::decodeFrame(
     }
     else
     {
-	  if (!(opj_decode(l_codec, l_stream, image) && opj_end_decompress(l_codec,	l_stream))) {				
-		opj_stream_destroy(l_stream); l_stream = NULL;
-		opj_destroy_codec(l_codec); l_codec = NULL;
-		opj_image_destroy(image); image = NULL;
-		result = EC_CorruptedData;
-	  }
-            	   	        
-	  if(result.good())
-	  {
-		  // copy the image depending on planer configuration and bits
-		  if(image->numcomps == 1)	// Greyscale
-		  {
-			  if(image->comps[0].prec <= 8)
-				copyUint32ToUint8(image, OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
-			  if(image->comps[0].prec > 8)
-				copyUint32ToUint16(image, OFreinterpret_cast(Uint16*, buffer), imageColumns, imageRows);
-		  }
-		  else if(image->numcomps == 3)
-		  {
-			  if(imagePlanarConfiguration == 0)
-			  {
-				  copyRGBUint8ToRGBUint8(image, OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
-			  }
-			  else if(imagePlanarConfiguration == 1)
-			  {
-				  copyRGBUint8ToRGBUint8Planar(image, OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
-			  }
-		  }
-	  }
+      if (!(opj_decode(l_codec, l_stream, image) && opj_end_decompress(l_codec,    l_stream))) {                
+        opj_stream_destroy(l_stream); l_stream = NULL;
+        opj_destroy_codec(l_codec); l_codec = NULL;
+        opj_image_destroy(image); image = NULL;
+        result = EC_CorruptedData;
+      }
+                               
+      if(result.good())
+      {
+          // copy the image depending on planer configuration and bits
+          if(image->numcomps == 1)    // Greyscale
+          {
+              if(image->comps[0].prec <= 8)
+                copyUint32ToUint8(image, OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
+              if(image->comps[0].prec > 8)
+                copyUint32ToUint16(image, OFreinterpret_cast(Uint16*, buffer), imageColumns, imageRows);
+          }
+          else if(image->numcomps == 3)
+          {
+              if(imagePlanarConfiguration == 0)
+              {
+                  copyRGBUint8ToRGBUint8(image, OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
+              }
+              else if(imagePlanarConfiguration == 1)
+              {
+                  copyRGBUint8ToRGBUint8Planar(image, OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
+              }
+          }
+      }
 
-	  opj_stream_destroy(l_stream); l_stream = NULL;
-	  opj_destroy_codec(l_codec); l_codec = NULL;
-	  opj_image_destroy(image); image = NULL;
-	  delete[] jlsData;
+      opj_stream_destroy(l_stream); l_stream = NULL;
+      opj_destroy_codec(l_codec); l_codec = NULL;
+      opj_image_destroy(image); image = NULL;
+      delete[] jlsData;
       
       if (result.good())
       {
@@ -832,7 +832,7 @@ OFCondition copyUint32ToUint8(
   register OPJ_INT32 *g = image->comps[0].data;   // grey plane  
   for (register unsigned long i=numPixels; i; i--)
   {
-	*t++ = *g++;
+    *t++ = *g++;
   }
 
   return EC_Normal;
@@ -853,7 +853,7 @@ OFCondition copyUint32ToUint16(
   register OPJ_INT32 *g = image->comps[0].data;   // grey plane  
   for (register unsigned long i=numPixels; i; i--)
   {
-	*t++ = *g++;
+    *t++ = *g++;
   }
 
   return EC_Normal;
@@ -878,7 +878,7 @@ OFCondition copyRGBUint8ToRGBUint8(
   {
     *t++ = *r++;
     *t++ = *g++;
-    *t++ = *b++;	
+    *t++ = *b++;    
   }
  
   return EC_Normal;
@@ -898,11 +898,11 @@ OFCondition copyRGBUint8ToRGBUint8Planar(
   register Uint8 *t = imageFrame;          // target
   for(register unsigned long j=0; j<3; j++)
   {
-	register OPJ_INT32 *r = image->comps[j].data; // color plane  
-	for (register unsigned long i=numPixels; i; i--)
-	{
-	  *t++ = *r++;    
-	}
+    register OPJ_INT32 *r = image->comps[j].data; // color plane  
+    for (register unsigned long i=numPixels; i; i--)
+    {
+      *t++ = *r++;    
+    }
   }
   return EC_Normal;
 }

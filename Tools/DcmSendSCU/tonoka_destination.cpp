@@ -4,18 +4,18 @@ tonoka_destination::tonoka_destination( wxWindow* parent )
 :
 destination( parent )
 {
-	invalidInput = ",";
-	wxTextValidator textval(wxFILTER_EMPTY | wxFILTER_EXCLUDE_CHAR_LIST);
-	// seems like putting it in the ctor doesn't work
-	textval.SetCharExcludes(invalidInput);
+    invalidInput = ",";
+    wxTextValidator textval(wxFILTER_EMPTY | wxFILTER_EXCLUDE_CHAR_LIST);
+    // seems like putting it in the ctor doesn't work
+    textval.SetCharExcludes(invalidInput);
 
-	m_name->SetValidator(textval);
-	m_destinationHost->SetValidator(textval);
-	m_destinationPort->SetValidator(wxIntegerValidator<int>());
-	m_destinationAETitle->SetValidator(textval);
-	m_destinationAETitle->SetMaxLength(16);
-	m_ourAETitle->SetValidator(textval);
-	m_ourAETitle->SetMaxLength(16);
+    m_name->SetValidator(textval);
+    m_destinationHost->SetValidator(textval);
+    m_destinationPort->SetValidator(wxIntegerValidator<int>());
+    m_destinationAETitle->SetValidator(textval);
+    m_destinationAETitle->SetMaxLength(16);
+    m_ourAETitle->SetValidator(textval);
+    m_ourAETitle->SetMaxLength(16);
 }
 
 void tonoka_destination::OnInitDialog( wxInitDialogEvent& event )
@@ -38,7 +38,7 @@ void tonoka_destination::OnDeselected( wxListEvent& event )
 
 void tonoka_destination::OnSelect( wxListEvent& event )
 {
-	SetCtrlState();
+    SetCtrlState();
 }
 
 void tonoka_destination::OnAdd( wxCommandEvent& event )
@@ -104,82 +104,82 @@ m_destinationList->SetItemText(sel, m_destinations[sel].name);
 
 void tonoka_destination::OnDestinationHostText( wxCommandEvent& event )
 {
-	UpdateItem();
+    UpdateItem();
 }
 
 void tonoka_destination::OnDestinationPortText( wxCommandEvent& event )
 {
-	UpdateItem();
+    UpdateItem();
 }
 
 void tonoka_destination::OnDestinationAETitleText( wxCommandEvent& event )
 {
-	UpdateItem();
+    UpdateItem();
 }
 
 void tonoka_destination::OnOurAETitleText( wxCommandEvent& event )
 {
-	UpdateItem();
+    UpdateItem();
 }
 
 void tonoka_destination::OnOK( wxCommandEvent& event )
 {
-	event.Skip();
+    event.Skip();
 }
 
 
 int tonoka_destination::GetSelectedDestinationItem()
 {
-	long sel = -1;
-	return m_destinationList->GetNextItem(sel, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    long sel = -1;
+    return m_destinationList->GetNextItem(sel, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 }
 
 void tonoka_destination::UpdateItem(int sel)
 {
-	TransferDataFromWindow();
+    TransferDataFromWindow();
 
-	if (sel == -1)
-	{
-		sel = GetSelectedDestinationItem();
-		if (sel == -1)
-			return;
-	}
+    if (sel == -1)
+    {
+        sel = GetSelectedDestinationItem();
+        if (sel == -1)
+            return;
+    }
 
-	m_destinations[sel].name = m_name->GetValue().ToUTF8();
-	m_destinations[sel].destinationHost = m_destinationHost->GetValue().ToUTF8();
-	try { m_destinations[sel].destinationPort = boost::lexical_cast<int>(m_destinationPort->GetValue()); }
-	catch (...) { m_destinations[sel].destinationPort = 104; }
-	m_destinations[sel].destinationAETitle = m_destinationAETitle->GetValue().ToUTF8();
-	m_destinations[sel].ourAETitle = m_ourAETitle->GetValue().ToUTF8();
+    m_destinations[sel].name = m_name->GetValue().ToUTF8();
+    m_destinations[sel].destinationHost = m_destinationHost->GetValue().ToUTF8();
+    try { m_destinations[sel].destinationPort = boost::lexical_cast<int>(m_destinationPort->GetValue()); }
+    catch (...) { m_destinations[sel].destinationPort = 104; }
+    m_destinations[sel].destinationAETitle = m_destinationAETitle->GetValue().ToUTF8();
+    m_destinations[sel].ourAETitle = m_ourAETitle->GetValue().ToUTF8();
 }
 
 void  tonoka_destination::SetCtrlState()
 {
-	long sel = GetSelectedDestinationItem();
-	if (sel == -1)
-	{
-		m_name->Enable(false);
-		m_name->ChangeValue("");
-		m_destinationHost->Enable(false);
-		m_destinationHost->ChangeValue("");
-		m_destinationPort->Enable(false);
-		m_destinationPort->ChangeValue("");
-		m_destinationAETitle->Enable(false);
-		m_destinationAETitle->ChangeValue("");
-		m_ourAETitle->Enable(false);
-		m_ourAETitle->ChangeValue("");
-	}
-	else
-	{
-		m_name->Enable(true);
-		m_name->ChangeValue(wxString::FromUTF8(m_destinations[sel].name.c_str()));
-		m_destinationHost->Enable(true);
-		m_destinationHost->ChangeValue(wxString::FromUTF8(m_destinations[sel].destinationHost.c_str()));
-		m_destinationPort->Enable(true);
-		m_destinationPort->ChangeValue(boost::lexical_cast<std::string>(m_destinations[sel].destinationPort));
-		m_destinationAETitle->Enable(true);
-		m_destinationAETitle->ChangeValue(wxString::FromUTF8(m_destinations[sel].destinationAETitle.c_str()));
-		m_ourAETitle->Enable(true);
-		m_ourAETitle->ChangeValue(wxString::FromUTF8(m_destinations[sel].ourAETitle.c_str()));
-	}
+    long sel = GetSelectedDestinationItem();
+    if (sel == -1)
+    {
+        m_name->Enable(false);
+        m_name->ChangeValue("");
+        m_destinationHost->Enable(false);
+        m_destinationHost->ChangeValue("");
+        m_destinationPort->Enable(false);
+        m_destinationPort->ChangeValue("");
+        m_destinationAETitle->Enable(false);
+        m_destinationAETitle->ChangeValue("");
+        m_ourAETitle->Enable(false);
+        m_ourAETitle->ChangeValue("");
+    }
+    else
+    {
+        m_name->Enable(true);
+        m_name->ChangeValue(wxString::FromUTF8(m_destinations[sel].name.c_str()));
+        m_destinationHost->Enable(true);
+        m_destinationHost->ChangeValue(wxString::FromUTF8(m_destinations[sel].destinationHost.c_str()));
+        m_destinationPort->Enable(true);
+        m_destinationPort->ChangeValue(boost::lexical_cast<std::string>(m_destinations[sel].destinationPort));
+        m_destinationAETitle->Enable(true);
+        m_destinationAETitle->ChangeValue(wxString::FromUTF8(m_destinations[sel].destinationAETitle.c_str()));
+        m_ourAETitle->Enable(true);
+        m_ourAETitle->ChangeValue(wxString::FromUTF8(m_destinations[sel].ourAETitle.c_str()));
+    }
 }

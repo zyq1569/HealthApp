@@ -68,8 +68,8 @@ namespace doj
     }
 #else
     /** this function does not consider the current locale and only
-	works with ASCII digits.
-	@return true if c is a digit character
+    works with ASCII digits.
+    @return true if c is a digit character
     */
     bool alphanum_isdigit(const char c)
     {
@@ -97,73 +97,73 @@ namespace doj
       enum mode_t { STRING, NUMBER } mode=STRING;
 
       while(*l && *r)
-	{
-	  if(mode == STRING)
-	    {
-	      char l_char, r_char;
-	      while((l_char=*l) && (r_char=*r))
-		{
-		  // check if this are digit characters
-		  const bool l_digit=alphanum_isdigit(l_char), r_digit=alphanum_isdigit(r_char);
-		  // if both characters are digits, we continue in NUMBER mode
-		  if(l_digit && r_digit)
-		    {
-		      mode=NUMBER;
-		      break;
-		    }
-		  // if only the left character is a digit, we have a result
-		  if(l_digit) return -1;
-		  // if only the right character is a digit, we have a result
-		  if(r_digit) return +1;
-		  // compute the difference of both characters
-		  const int diff=l_char - r_char;
-		  // if they differ we have a result
-		  if(diff != 0) return diff;
-		  // otherwise process the next characters
-		  ++l;
-		  ++r;
-		}
-	    }
-	  else // mode==NUMBER
-	    {
+    {
+      if(mode == STRING)
+        {
+          char l_char, r_char;
+          while((l_char=*l) && (r_char=*r))
+        {
+          // check if this are digit characters
+          const bool l_digit=alphanum_isdigit(l_char), r_digit=alphanum_isdigit(r_char);
+          // if both characters are digits, we continue in NUMBER mode
+          if(l_digit && r_digit)
+            {
+              mode=NUMBER;
+              break;
+            }
+          // if only the left character is a digit, we have a result
+          if(l_digit) return -1;
+          // if only the right character is a digit, we have a result
+          if(r_digit) return +1;
+          // compute the difference of both characters
+          const int diff=l_char - r_char;
+          // if they differ we have a result
+          if(diff != 0) return diff;
+          // otherwise process the next characters
+          ++l;
+          ++r;
+        }
+        }
+      else // mode==NUMBER
+        {
 #ifdef ALPHANUM_LOCALE
-	      // get the left number
-	      char *end;
-	      unsigned long l_int=strtoul(l, &end, 0);
-	      l=end;
+          // get the left number
+          char *end;
+          unsigned long l_int=strtoul(l, &end, 0);
+          l=end;
 
-	      // get the right number
-	      unsigned long r_int=strtoul(r, &end, 0);
-	      r=end;
+          // get the right number
+          unsigned long r_int=strtoul(r, &end, 0);
+          r=end;
 #else
-	      // get the left number
-	      unsigned long l_int=0;
-	      while(*l && alphanum_isdigit(*l))
-		{
-		  // TODO: this can overflow
-		  l_int=l_int*10 + *l-'0';
-		  ++l;
-		}
+          // get the left number
+          unsigned long l_int=0;
+          while(*l && alphanum_isdigit(*l))
+        {
+          // TODO: this can overflow
+          l_int=l_int*10 + *l-'0';
+          ++l;
+        }
 
-	      // get the right number
-	      unsigned long r_int=0;
-	      while(*r && alphanum_isdigit(*r))
-		{
-		  // TODO: this can overflow
-		  r_int=r_int*10 + *r-'0';
-		  ++r;
-		}
+          // get the right number
+          unsigned long r_int=0;
+          while(*r && alphanum_isdigit(*r))
+        {
+          // TODO: this can overflow
+          r_int=r_int*10 + *r-'0';
+          ++r;
+        }
 #endif
 
-	      // if the difference is not equal to zero, we have a comparison result
-	      const long diff=l_int-r_int;
-	      if(diff != 0)
-		return diff;
+          // if the difference is not equal to zero, we have a comparison result
+          const long diff=l_int-r_int;
+          if(diff != 0)
+        return diff;
 
-	      // otherwise we process the next substring in STRING mode
-	      mode=STRING;
-	    }
-	}
+          // otherwise we process the next substring in STRING mode
+          mode=STRING;
+        }
+    }
 
       if(*r) return -1;
       if(*l) return +1;
