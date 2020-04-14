@@ -14,8 +14,8 @@ DCMTKINCLUDEDIR = $$(DCMTKINCLUDEDIR)
 isEmpty(DCMTKINCLUDEDIR){
     unix:DCMTKINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/dcmtk
     macx:DCMTKINCLUDEDIR = /usr/local/include/dcmtk
-    win32:DCMTKINCLUDEDIR = $$(SystemDrive)/dcmtk/3.6.1_20120515-64
-    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKINCLUDEDIR = $$(SystemDrive)/dcmtk/3.6.1_20120515-64
+    win32:DCMTKINCLUDEDIR = $$(SystemDrive)/dcmtk/3.6.1_20120515-64/include/dcmtk
+    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKINCLUDEDIR = $$(SystemDrive)/dcmtk/3.6.1_20120515-64/include/dcmtk
 }
 
 
@@ -77,8 +77,8 @@ LOG4CXXLIBDIR = $$(LOG4CXXLIBDIR)
 isEmpty(LOG4CXXLIBDIR){
     unix:LOG4CXXLIBDIR = /usr/lib
     macx:LOG4CXXLIBDIR = /usr/local/lib/
-    win32:LOG4CXXLIBDIR = D:/code/C++/starviewer-sdk/apache-log4cxx/src/main
-    win32:contains(QMAKE_TARGET.arch, x86_64):LOG4CXXLIBDIR = C:/log4cxx-64
+    win32:LOG4CXXLIBDIR = C:/log4cxx-64/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):LOG4CXXLIBDIR = C:/log4cxx-64/lib
 }
 LOG4CXXINCLUDEDIR = $$(LOG4CXXINCLUDEDIR)
 isEmpty(LOG4CXXINCLUDEDIR){
