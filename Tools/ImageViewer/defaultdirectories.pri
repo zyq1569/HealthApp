@@ -33,7 +33,7 @@ isEmpty(VTKINCLUDEDIR){
     unix:VTKINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/vtk-6.1
     macx:VTKINCLUDEDIR = /usr/local/include/vtk-6.1
     win32:VTKINCLUDEDIR = C:/DEV_SDK/VTK/include/VTK-8.2.0
-    win32:contains(QMAKE_TARGET.arch, x86_64):VTKINCLUDEDIR =$$(SystemDrive)/VTK/6.1.0-64/include/vtk-6.1
+    win32:contains(QMAKE_TARGET.arch, x86_64):VTKINCLUDEDIR =C:/VTK/6.1.0-64/include/vtk-6.1
 }
 
 
@@ -103,8 +103,8 @@ THREADWEAVERINCLUDEDIR = $$(THREADWEAVERINCLUDEDIR)
 isEmpty(THREADWEAVERINCLUDEDIR){
     unix:THREADWEAVERINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/KF5
     macx:THREADWEAVERINCLUDEDIR = /usr/local/include/KF5
-    win32:THREADWEAVERINCLUDEDIR = $$(SystemDrive)/ThreadWeaver/5.3.0-64/include/KF5
-    win32:contains(QMAKE_TARGET.arch, x86_64):THREADWEAVERINCLUDEDIR = $$(SystemDrive)/ThreadWeaver/5.3.0-64/include/KF5
+    win32:THREADWEAVERINCLUDEDIR = $$(SystemDrive)/ThreadWeaver/5.3.0-64/include
+    win32:contains(QMAKE_TARGET.arch, x86_64):THREADWEAVERINCLUDEDIR = $$(SystemDrive)/ThreadWeaver/5.3.0-64/include
 }
 
 
