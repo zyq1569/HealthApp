@@ -50,8 +50,8 @@ ITKINCLUDEDIR = $$(ITKINCLUDEDIR)
 isEmpty(ITKINCLUDEDIR){
     unix:ITKINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/ITK-4.7
     macx:ITKINCLUDEDIR = /usr/local/include/ITK-4.7
-    win32:ITKINCLUDEDIR = C:/InsightToolkit/4.7.1-64/include/ITK-4.7
-    win32:contains(QMAKE_TARGET.arch, x86_64):ITKINCLUDEDIR = C:/InsightToolkit/4.7.1-64/include/ITK-4.7
+    win32:ITKINCLUDEDIR = D:/SDK/InsightToolkit-4.7.1/Modules
+    win32:contains(QMAKE_TARGET.arch, x86_64):ITKINCLUDEDIR =D:/SDK/InsightToolkit-4.7.1/Modules
 }
 
 # GDCM Libraries
@@ -67,8 +67,8 @@ GDCMINCLUDEDIR = $$(GDCMINCLUDEDIR)
 isEmpty(GDCMINCLUDEDIR){
     unix:GDCMINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/gdcm-2.4
     macx:GDCMINCLUDEDIR = /usr/local/include/gdcm-2.4
-    win32:GDCMINCLUDEDIR = C:/gdcm/include
-    win32:contains(QMAKE_TARGET.arch, x86_64):GDCMINCLUDEDIR = $$(SystemDrive)/gdcm/2.4.4-64/include/gdcm-2.4
+    win32:GDCMINCLUDEDIR = D:/SDK/gdcm-3.0.5
+    win32:contains(QMAKE_TARGET.arch, x86_64):GDCMINCLUDEDIR = D:/SDK/gdcm-3.0.5
 }
 
 # Log4cxx Libraries
@@ -103,8 +103,8 @@ THREADWEAVERINCLUDEDIR = $$(THREADWEAVERINCLUDEDIR)
 isEmpty(THREADWEAVERINCLUDEDIR){
     unix:THREADWEAVERINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/KF5
     macx:THREADWEAVERINCLUDEDIR = /usr/local/include/KF5
-    win32:THREADWEAVERINCLUDEDIR = $$(SystemDrive)/ThreadWeaver/5.3.0-64/include
-    win32:contains(QMAKE_TARGET.arch, x86_64):THREADWEAVERINCLUDEDIR = $$(SystemDrive)/ThreadWeaver/5.3.0-64/include
+    win32:THREADWEAVERINCLUDEDIR = D:/SDK//ThreadWeaver/5.3.0-64/include
+    win32:contains(QMAKE_TARGET.arch, x86_64):THREADWEAVERINCLUDEDIR = D:/SDK/ThreadWeaver/5.3.0-64/include
 }
 
 
