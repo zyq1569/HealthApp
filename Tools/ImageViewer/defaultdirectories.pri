@@ -26,7 +26,7 @@ isEmpty(VTKLIBDIR){
     unix:VTKLIBDIR = $$(SDK_INSTALL_PREFIX)/lib
     macx:VTKLIBDIR = /usr/local/lib
     win32:VTKLIBDIR = D:/code/C++/starviewer-sdk/VTK-8.2.0/lib
-    win32:contains(QMAKE_TARGET.arch, x86_64):VTKLIBDIR = $$(SystemDrive)/VTK/6.1.0-64/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):VTKLIBDIR = C:/VTK/6.1.0-64/lib
 }
 VTKINCLUDEDIR = $$(VTKINCLUDEDIR)
 isEmpty(VTKINCLUDEDIR){
@@ -103,7 +103,7 @@ THREADWEAVERINCLUDEDIR = $$(THREADWEAVERINCLUDEDIR)
 isEmpty(THREADWEAVERINCLUDEDIR){
     unix:THREADWEAVERINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/KF5
     macx:THREADWEAVERINCLUDEDIR = /usr/local/include/KF5
-    win32:THREADWEAVERINCLUDEDIR = D:/SDK//ThreadWeaver/5.3.0-64/include
+    win32:THREADWEAVERINCLUDEDIR = D:/SDK/ThreadWeaver/5.3.0-64/include
     win32:contains(QMAKE_TARGET.arch, x86_64):THREADWEAVERINCLUDEDIR = D:/SDK/ThreadWeaver/5.3.0-64/include
 }
 
