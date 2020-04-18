@@ -8,14 +8,14 @@ isEmpty(DCMTKLIBDIR){
     unix:DCMTKLIBDIR = $$(SDK_INSTALL_PREFIX)/lib
     macx:DCMTKLIBDIR = /usr/local/lib
     win32:DCMTKLIBDIR = D:/code/C++/starviewer-sdk/dcmtk-3.6.3/lib
-    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKLIBDIR = $$(SystemDrive)/dcmtk/3.6.1_20120515-64/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKLIBDIR = D:/SDK/dcmtk/lib
 }
 DCMTKINCLUDEDIR = $$(DCMTKINCLUDEDIR)
 isEmpty(DCMTKINCLUDEDIR){
     unix:DCMTKINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/dcmtk
     macx:DCMTKINCLUDEDIR = /usr/local/include/dcmtk
     win32:DCMTKINCLUDEDIR = $$(SystemDrive)/dcmtk/3.6.1_20120515-64/include/dcmtk
-    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKINCLUDEDIR = $$(SystemDrive)/dcmtk/3.6.1_20120515-64/include/dcmtk
+    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKINCLUDEDIR = D:/SDK/dcmtk
 }
 
 
