@@ -44,7 +44,7 @@ isEmpty(ITKLIBDIR){
     unix:ITKLIBDIR = $$(SDK_INSTALL_PREFIX)/lib
     macx:ITKLIBDIR = /usr/local/lib
     win32:ITKLIBDIR =  D:/code/C++/starviewer-sdk/InsightToolkit-5.0.1/lib
-    win32:contains(QMAKE_TARGET.arch, x86_64):ITKLIBDIR = $$(SystemDrive)/InsightToolkit/4.7.1-64/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):ITKLIBDIR = D:/SDK/InsightToolkit-4.7.1/lib
 }
 ITKINCLUDEDIR = $$(ITKINCLUDEDIR)
 isEmpty(ITKINCLUDEDIR){
