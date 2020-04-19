@@ -7,15 +7,15 @@ DCMTKLIBDIR = $$(DCMTKLIBDIR)
 isEmpty(DCMTKLIBDIR){
     unix:DCMTKLIBDIR = $$(SDK_INSTALL_PREFIX)/lib
     macx:DCMTKLIBDIR = /usr/local/lib
-    win32:DCMTKLIBDIR = D:/code/C++/starviewer-sdk/dcmtk-3.6.3/lib
-    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKLIBDIR = D:/SDK/dcmtk/lib
+    win32:DCMTKLIBDIR = D:/SDK/3.6.1/include/dcmtk/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKLIBDIR = D:/SDK/3.6.1/include/dcmtk/libX64
 }
 DCMTKINCLUDEDIR = $$(DCMTKINCLUDEDIR)
 isEmpty(DCMTKINCLUDEDIR){
     unix:DCMTKINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/dcmtk
     macx:DCMTKINCLUDEDIR = /usr/local/include/dcmtk
-    win32:DCMTKINCLUDEDIR = $$(SystemDrive)/dcmtk/3.6.1_20120515-64/include/dcmtk
-    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKINCLUDEDIR = D:/SDK/dcmtk
+    win32:DCMTKINCLUDEDIR = D:/SDK/dcmtk
+    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKINCLUDEDIR = D:/SDK/3.6.1/include/dcmtk/include
 }
 
 
@@ -25,15 +25,15 @@ VTKLIBDIR = $$(VTKLIBDIR)
 isEmpty(VTKLIBDIR){
     unix:VTKLIBDIR = $$(SDK_INSTALL_PREFIX)/lib
     macx:VTKLIBDIR = /usr/local/lib
-    win32:VTKLIBDIR = D:/code/C++/starviewer-sdk/VTK-8.2.0/lib
-    win32:contains(QMAKE_TARGET.arch, x86_64):VTKLIBDIR = C:/VTK/6.1.0-64/lib
+    win32:VTKLIBDIR = D:/SDK/VTK/6.1.0-64/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):VTKLIBDIR =D:/SDK/VTK/6.1.0-64/libX64
 }
 VTKINCLUDEDIR = $$(VTKINCLUDEDIR)
 isEmpty(VTKINCLUDEDIR){
     unix:VTKINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/vtk-6.1
     macx:VTKINCLUDEDIR = /usr/local/include/vtk-6.1
-    win32:VTKINCLUDEDIR = C:/DEV_SDK/VTK/include/VTK-8.2.0
-    win32:contains(QMAKE_TARGET.arch, x86_64):VTKINCLUDEDIR =C:/VTK/6.1.0-64/include/vtk-6.1
+    win32:VTKINCLUDEDIR = D:/SDK/VTK/6.1.0-64/include
+    win32:contains(QMAKE_TARGET.arch, x86_64):VTKINCLUDEDIR =D:/SDK/VTK/6.1.0-64/include
 }
 
 
@@ -43,8 +43,8 @@ ITKLIBDIR = $$(ITKLIBDIR)
 isEmpty(ITKLIBDIR){
     unix:ITKLIBDIR = $$(SDK_INSTALL_PREFIX)/lib
     macx:ITKLIBDIR = /usr/local/lib
-    win32:ITKLIBDIR =  D:/code/C++/starviewer-sdk/InsightToolkit-5.0.1/lib
-    win32:contains(QMAKE_TARGET.arch, x86_64):ITKLIBDIR = D:/SDK/InsightToolkit-4.7.1/lib
+    win32:ITKLIBDIR =  D:/SDK/InsightToolkit-4.7.1/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):ITKLIBDIR = D:/SDK/InsightToolkit-4.7.1/libX64
 }
 ITKINCLUDEDIR = $$(ITKINCLUDEDIR)
 isEmpty(ITKINCLUDEDIR){
@@ -60,15 +60,15 @@ GDCMLIBDIR = $$(GDCMLIBDIR)
 isEmpty(GDCMLIBDIR){
     unix:GDCMLIBDIR = $$(SDK_INSTALL_PREFIX)/lib
     macx:GDCMLIBDIR = /usr/local/lib
-    win32:GDCMLIBDIR = D:/code/C++/starviewer-sdk/gdcm-3.0.5/lib
-    win32:contains(QMAKE_TARGET.arch, x86_64):GDCMLIBDIR = $$(SystemDrive)/gdcm/2.4.4-64/lib
+    win32:GDCMLIBDIR = D:/SDK/gdcm/2.4.4/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):GDCMLIBDIR = D:/SDK/gdcm/2.4.4/libX64
 }
 GDCMINCLUDEDIR = $$(GDCMINCLUDEDIR)
 isEmpty(GDCMINCLUDEDIR){
     unix:GDCMINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/gdcm-2.4
     macx:GDCMINCLUDEDIR = /usr/local/include/gdcm-2.4
-    win32:GDCMINCLUDEDIR = D:/SDK/gdcm-3.0.5
-    win32:contains(QMAKE_TARGET.arch, x86_64):GDCMINCLUDEDIR = D:/SDK/gdcm-3.0.5
+    win32:GDCMINCLUDEDIR = D:/SDK/gdcm/2.4.4/include
+    win32:contains(QMAKE_TARGET.arch, x86_64):GDCMINCLUDEDIR = D:/SDK/gdcm/2.4.4/include
 }
 
 # Log4cxx Libraries
@@ -77,15 +77,15 @@ LOG4CXXLIBDIR = $$(LOG4CXXLIBDIR)
 isEmpty(LOG4CXXLIBDIR){
     unix:LOG4CXXLIBDIR = /usr/lib
     macx:LOG4CXXLIBDIR = /usr/local/lib/
-    win32:LOG4CXXLIBDIR = C:/log4cxx-64/lib
-    win32:contains(QMAKE_TARGET.arch, x86_64):LOG4CXXLIBDIR = C:/log4cxx-64/lib
+    win32:LOG4CXXLIBDIR = D:/SDK/log4cxx-64/0.10.0/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):LOG4CXXLIBDIR = D:/SDK/log4cxx-64/0.10.0/libX64
 }
 LOG4CXXINCLUDEDIR = $$(LOG4CXXINCLUDEDIR)
 isEmpty(LOG4CXXINCLUDEDIR){
     unix:LOG4CXXINCLUDEDIR = /usr/include/log4cxx
     macx:LOG4CXXINCLUDEDIR = /usr/local/include
-    win32:LOG4CXXINCLUDEDIR =C:/DEV_SDK/log4cxx-64/include
-    win32:contains(QMAKE_TARGET.arch, x86_64):LOG4CXXINCLUDEDIR =C:/log4cxx-64/include
+    win32:LOG4CXXINCLUDEDIR =D:/SDK/log4cxx-64/0.10.0/include
+    win32:contains(QMAKE_TARGET.arch, x86_64):LOG4CXXINCLUDEDIR =D:/SDK/log4cxx-64/0.10.0/include
     #win32:contains(QMAKE_TARGET.arch, x86_64):LOG4CXXINCLUDEDIR = C:/log4cxx-64/include
 }
 
@@ -96,8 +96,8 @@ isEmpty(THREADWEAVERLIBDIR){
     # This unix default is for 64-bit Debian-based systems. It will be different for others.
     unix:THREADWEAVERLIBDIR = $$(SDK_INSTALL_PREFIX)/lib/x86_64-linux-gnu
     macx:THREADWEAVERLIBDIR = /usr/local/lib/
-    win32:THREADWEAVERLIBDIR =  D:/code/C++/starviewer-sdk/threadweaver/lib
-    win32:contains(QMAKE_TARGET.arch, x86_64):THREADWEAVERLIBDIR = $$(SystemDrive)/ThreadWeaver/5.3.0-64/lib
+    win32:THREADWEAVERLIBDIR =  D:/SDK/ThreadWeaver/5.3.0-64/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):THREADWEAVERLIBDIR = D:/SDK/ThreadWeaver/5.3.0-64/libX64
 }
 THREADWEAVERINCLUDEDIR = $$(THREADWEAVERINCLUDEDIR)
 isEmpty(THREADWEAVERINCLUDEDIR){
