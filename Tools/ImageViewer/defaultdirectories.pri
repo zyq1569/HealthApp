@@ -7,15 +7,15 @@ DCMTKLIBDIR = $$(DCMTKLIBDIR)
 isEmpty(DCMTKLIBDIR){
     unix:DCMTKLIBDIR = $$(SDK_INSTALL_PREFIX)/lib
     macx:DCMTKLIBDIR = /usr/local/lib
-    win32:DCMTKLIBDIR = D:/SDK/3.6.1/include/dcmtk/lib
-    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKLIBDIR = D:/SDK/3.6.1/include/dcmtk/libX64
+    win32:DCMTKLIBDIR =  D:/SDK/dcmtk/3.6.1/lib
+    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKLIBDIR = D:/SDK/dcmtk/3.6.1/libX64
 }
 DCMTKINCLUDEDIR = $$(DCMTKINCLUDEDIR)
 isEmpty(DCMTKINCLUDEDIR){
     unix:DCMTKINCLUDEDIR = $$(SDK_INSTALL_PREFIX)/include/dcmtk
     macx:DCMTKINCLUDEDIR = /usr/local/include/dcmtk
-    win32:DCMTKINCLUDEDIR = D:/SDK/dcmtk
-    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKINCLUDEDIR = D:/SDK/3.6.1/include/dcmtk/include
+    win32:DCMTKINCLUDEDIR = D:/SDK/dcmtk/3.6.1/include
+    win32:contains(QMAKE_TARGET.arch, x86_64):DCMTKINCLUDEDIR = D:/SDK/dcmtk/3.6.1/include
 }
 
 
