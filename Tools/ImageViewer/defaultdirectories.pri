@@ -86,7 +86,6 @@ isEmpty(LOG4CXXINCLUDEDIR){
     macx:LOG4CXXINCLUDEDIR = /usr/local/include
     win32:LOG4CXXINCLUDEDIR =D:/SDK/log4cxx-64/0.10.0/include
     win32:contains(QMAKE_TARGET.arch, x86_64):LOG4CXXINCLUDEDIR =D:/SDK/log4cxx-64/0.10.0/include
-    #win32:contains(QMAKE_TARGET.arch, x86_64):LOG4CXXINCLUDEDIR = C:/log4cxx-64/include
 }
 
 # Threadweaver libraries
