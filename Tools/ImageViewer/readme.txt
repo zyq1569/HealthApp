@@ -99,6 +99,7 @@ D:\SDK\gdcm\2.4.4\libX64\gdcmzlib.lib
 D:\SDK\gdcm\2.4.4\libX64\gdcmgetopt.lib
 D:\SDK\gdcm\2.4.4\libX64\vtkgdcm.lib
 D:\SDK\gdcm\2.4.4\libX64\gdcmMSFF.lib
+#qt Gdi32.lib
 D:\SDK\log4cxx-64\0.10.0\libX64\log4cxx_static.lib
 D:\SDK\log4cxx-64\0.10.0\libX64\apr-1.lib
 D:\SDK\log4cxx-64\0.10.0\libX64\aprutil-1.lib
