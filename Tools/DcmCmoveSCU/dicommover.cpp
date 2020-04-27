@@ -126,27 +126,7 @@ int DICOMMover::MoveStudy(std::string studyuid)
     scu.setDatasetConversionMode(true);
     OFList<OFString> defaulttransfersyntax;
     defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEGProcess14SV1TransferSyntax);
-    defaulttransfersyntax.push_back(UID_LittleEndianImplicitTransferSyntax);
-   /* defaulttransfersyntax.push_back(UID_JPEG2000TransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEG2000LosslessOnlyTransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEGProcess2_4TransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEGProcess1TransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEGProcess14SV1TransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEGLSLossyTransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEGLSLosslessTransferSyntax);
-    defaulttransfersyntax.push_back(UID_RLELosslessTransferSyntax);
-    defaulttransfersyntax.push_back(UID_MPEG2MainProfileAtMainLevelTransferSyntax);
-    defaulttransfersyntax.push_back(UID_MPEG2MainProfileAtHighLevelTransferSyntax);
-    defaulttransfersyntax.push_back(UID_MPEG4HighProfileLevel4_1TransferSyntax);
-    defaulttransfersyntax.push_back(UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax);
-    defaulttransfersyntax.push_back(UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax);
-    defaulttransfersyntax.push_back(UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax);
-    defaulttransfersyntax.push_back(UID_MPEG4StereoHighProfileLevel4_2TransferSyntax);
-    defaulttransfersyntax.push_back(UID_HEVCMainProfileLevel5_1TransferSyntax);
-    defaulttransfersyntax.push_back(UID_HEVCMain10ProfileLevel5_1TransferSyntax);
-    defaulttransfersyntax.push_back(UID_DeflatedExplicitVRLittleEndianTransferSyntax);
-    defaulttransfersyntax.push_back(UID_BigEndianExplicitTransferSyntax);*/
+
     scu.addPresentationContext(UID_MOVEStudyRootQueryRetrieveInformationModel, defaulttransfersyntax);
 
     OFCondition cond;
