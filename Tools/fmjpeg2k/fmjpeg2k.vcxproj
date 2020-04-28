@@ -204,14 +204,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\code\C++\fmjpeg2koj-master-static\ZERO_CHECK.vcxproj">
-      <Project>{93A93CA9-712B-3BBB-B008-73FC4FB0B410}</Project>
-      <Name>ZERO_CHECK</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="dcmcjp2k.cc" />
     <ClCompile Include="dcmdjp2k.cc" />
     <ClCompile Include="djcodecd.cc" />
