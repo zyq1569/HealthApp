@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3DA9DA92-7D41-3800-A487-A982652C35A1}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>i2d</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\lib\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">i2d.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">i2d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\lib\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">i2d.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">i2d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\lib\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">i2d.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">i2d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\lib\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">i2d.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">i2d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DEBUG;i2d_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;i2d_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;i2d_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;i2d_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;i2d_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;i2d_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;i2d_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;i2d_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\libi2d\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule E:/Tool/Downloads/DCMTK/dcmtk-3.6.5/dcmdata/libi2d/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SE:/Tool/Downloads/DCMTK/dcmtk-3.6.5 -BE:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc --check-stamp-file E:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc/dcmdata/libi2d/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\dcmdata\libi2d\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule E:/Tool/Downloads/DCMTK/dcmtk-3.6.5/dcmdata/libi2d/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SE:/Tool/Downloads/DCMTK/dcmtk-3.6.5 -BE:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc --check-stamp-file E:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc/dcmdata/libi2d/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\dcmdata\libi2d\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule E:/Tool/Downloads/DCMTK/dcmtk-3.6.5/dcmdata/libi2d/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SE:/Tool/Downloads/DCMTK/dcmtk-3.6.5 -BE:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc --check-stamp-file E:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc/dcmdata/libi2d/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\dcmdata\libi2d\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule E:/Tool/Downloads/DCMTK/dcmtk-3.6.5/dcmdata/libi2d/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SE:/Tool/Downloads/DCMTK/dcmtk-3.6.5 -BE:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc --check-stamp-file E:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc/dcmdata/libi2d/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\dcmdata\libi2d\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\libi2d\i2d.cc" />
+    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\libi2d\i2dplvlp.cc" />
+    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\libi2d\i2djpgs.cc" />
+    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\libi2d\i2dbmps.cc" />
+    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\libi2d\i2dplsc.cc" />
+    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\libi2d\i2dplnsc.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\ZERO_CHECK.vcxproj">
+      <Project>{BF4B90E5-671B-3201-BA83-511B6CC4376F}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\dcmdata\libsrc\dcmdata.vcxproj">
+      <Project>{4E01E3D2-48C3-33E5-9313-73C67A89BFFA}</Project>
+      <Name>dcmdata</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\oflog\libsrc\oflog.vcxproj">
+      <Project>{1B6E88A8-0318-3586-AC6B-2CB6CA137422}</Project>
+      <Name>oflog</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\ofstd\libsrc\ofstd.vcxproj">
+      <Project>{B7AD1AAB-559C-31FB-B55C-DDB1202DAE22}</Project>
+      <Name>ofstd</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
