@@ -59,9 +59,9 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">dcmsr.dir\Debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">dcmsr</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">E:\DCMTK\dcmtk-3.6.5-vc\lib\Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">dcmsr.dir\Release\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">dcmsr</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">E:\DCMTK\dcmtk-3.6.5-vc\lib\MinSizeRel\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">dcmsr.dir\MinSizeRel\</IntDir>
@@ -106,7 +106,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;..\..\include\dcm\win32\dcmUnits;..\..\include\mysql\win32\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -203,138 +203,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\CMakeLists.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule E:/Tool/Downloads/DCMTK/dcmtk-3.6.5/dcmsr/libsrc/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
-E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SE:/Tool/Downloads/DCMTK/dcmtk-3.6.5 -BE:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc --check-stamp-file E:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc/dcmsr/libsrc/CMakeFiles/generate.stamp
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\dcmsr\libsrc\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule E:/Tool/Downloads/DCMTK/dcmtk-3.6.5/dcmsr/libsrc/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
-E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SE:/Tool/Downloads/DCMTK/dcmtk-3.6.5 -BE:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc --check-stamp-file E:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc/dcmsr/libsrc/CMakeFiles/generate.stamp
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\dcmsr\libsrc\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule E:/Tool/Downloads/DCMTK/dcmtk-3.6.5/dcmsr/libsrc/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
-E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SE:/Tool/Downloads/DCMTK/dcmtk-3.6.5 -BE:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc --check-stamp-file E:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc/dcmsr/libsrc/CMakeFiles/generate.stamp
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\dcmsr\libsrc\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule E:/Tool/Downloads/DCMTK/dcmtk-3.6.5/dcmsr/libsrc/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
-E:\Tool\Downloads\Dev_tools\cmake-3.16.4-win64-x64\bin\cmake.exe -SE:/Tool/Downloads/DCMTK/dcmtk-3.6.5 -BE:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc --check-stamp-file E:/Tool/Downloads/DCMTK/dcmtk-3.6.5-vc/dcmsr/libsrc/CMakeFiles/generate.stamp
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\dcmsr\libsrc\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrcitem.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrcodtn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrcodvl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrcomtn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrcomvl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrcontn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrcsidl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrdattn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrdncsr.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrdnflt.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrdoc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrdocst.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrdoctn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrdoctr.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrdtitn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrimgfr.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrimgse.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrimgtn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrimgvl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsritcsr.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrnumtn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrnumvl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrpnmtn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrposcn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrrefin.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrreftn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrscogr.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrsc3gr.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrscotn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrsc3tn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrscovl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrsc3vl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrsoprf.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrstrvl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrtcodt.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrtcosp.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrtcotn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrtcoto.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrtcovl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrtextn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrtimtn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrtpltn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrtree.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrtypes.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsruidtn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrwavch.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrwavtn.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrwavvl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrxmlc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrxmld.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsriodcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrbascc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrenhcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrcomcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrkeycc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrmamcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrchecc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrcolcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrprocc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrxrdcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrspecc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrmaccc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrimpcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrc3dcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrrrdcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsracqcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrsaecc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrprdcc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrpficc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrplicc.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrctpl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrrtpl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrstpl.cc" />
-    <ClCompile Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\libsrc\dsrctxgr.cc" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\ZERO_CHECK.vcxproj">
       <Project>{BF4B90E5-671B-3201-BA83-511B6CC4376F}</Project>
       <Name>ZERO_CHECK</Name>
@@ -361,6 +229,80 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{B7AD1AAB-559C-31FB-B55C-DDB1202DAE22}</Project>
       <Name>ofstd</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dsracqcc.cc" />
+    <ClCompile Include="dsrbascc.cc" />
+    <ClCompile Include="dsrc3dcc.cc" />
+    <ClCompile Include="dsrchecc.cc" />
+    <ClCompile Include="dsrcitem.cc" />
+    <ClCompile Include="dsrcodtn.cc" />
+    <ClCompile Include="dsrcodvl.cc" />
+    <ClCompile Include="dsrcolcc.cc" />
+    <ClCompile Include="dsrcomcc.cc" />
+    <ClCompile Include="dsrcomtn.cc" />
+    <ClCompile Include="dsrcomvl.cc" />
+    <ClCompile Include="dsrcontn.cc" />
+    <ClCompile Include="dsrcsidl.cc" />
+    <ClCompile Include="dsrctpl.cc" />
+    <ClCompile Include="dsrctxgr.cc" />
+    <ClCompile Include="dsrdattn.cc" />
+    <ClCompile Include="dsrdncsr.cc" />
+    <ClCompile Include="dsrdnflt.cc" />
+    <ClCompile Include="dsrdoc.cc" />
+    <ClCompile Include="dsrdocst.cc" />
+    <ClCompile Include="dsrdoctn.cc" />
+    <ClCompile Include="dsrdoctr.cc" />
+    <ClCompile Include="dsrdtitn.cc" />
+    <ClCompile Include="dsrenhcc.cc" />
+    <ClCompile Include="dsrimgfr.cc" />
+    <ClCompile Include="dsrimgse.cc" />
+    <ClCompile Include="dsrimgtn.cc" />
+    <ClCompile Include="dsrimgvl.cc" />
+    <ClCompile Include="dsrimpcc.cc" />
+    <ClCompile Include="dsriodcc.cc" />
+    <ClCompile Include="dsritcsr.cc" />
+    <ClCompile Include="dsrkeycc.cc" />
+    <ClCompile Include="dsrmaccc.cc" />
+    <ClCompile Include="dsrmamcc.cc" />
+    <ClCompile Include="dsrnumtn.cc" />
+    <ClCompile Include="dsrnumvl.cc" />
+    <ClCompile Include="dsrpnmtn.cc" />
+    <ClCompile Include="dsrposcn.cc" />
+    <ClCompile Include="dsrprdcc.cc" />
+    <ClCompile Include="dsrprocc.cc" />
+    <ClCompile Include="dsrrefin.cc" />
+    <ClCompile Include="dsrreftn.cc" />
+    <ClCompile Include="dsrrrdcc.cc" />
+    <ClCompile Include="dsrrtpl.cc" />
+    <ClCompile Include="dsrsaecc.cc" />
+    <ClCompile Include="dsrsc3gr.cc" />
+    <ClCompile Include="dsrsc3tn.cc" />
+    <ClCompile Include="dsrsc3vl.cc" />
+    <ClCompile Include="dsrscogr.cc" />
+    <ClCompile Include="dsrscotn.cc" />
+    <ClCompile Include="dsrscovl.cc" />
+    <ClCompile Include="dsrsoprf.cc" />
+    <ClCompile Include="dsrspecc.cc" />
+    <ClCompile Include="dsrstpl.cc" />
+    <ClCompile Include="dsrstrvl.cc" />
+    <ClCompile Include="dsrtcodt.cc" />
+    <ClCompile Include="dsrtcosp.cc" />
+    <ClCompile Include="dsrtcotn.cc" />
+    <ClCompile Include="dsrtcoto.cc" />
+    <ClCompile Include="dsrtcovl.cc" />
+    <ClCompile Include="dsrtextn.cc" />
+    <ClCompile Include="dsrtimtn.cc" />
+    <ClCompile Include="dsrtpltn.cc" />
+    <ClCompile Include="dsrtree.cc" />
+    <ClCompile Include="dsrtypes.cc" />
+    <ClCompile Include="dsruidtn.cc" />
+    <ClCompile Include="dsrwavch.cc" />
+    <ClCompile Include="dsrwavtn.cc" />
+    <ClCompile Include="dsrwavvl.cc" />
+    <ClCompile Include="dsrxmlc.cc" />
+    <ClCompile Include="dsrxmld.cc" />
+    <ClCompile Include="dsrxrdcc.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
