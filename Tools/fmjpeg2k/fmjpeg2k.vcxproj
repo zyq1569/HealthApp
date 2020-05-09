@@ -17,6 +17,10 @@
       <Configuration>RelWithDebInfo</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Rel_Static|Win32">
+      <Configuration>Rel_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BF443773-11D0-356F-B4EF-4BE741C34C56}</ProjectGuid>
@@ -32,6 +36,11 @@
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
@@ -60,9 +69,13 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)_d</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\lib\fmjpeg2k\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">..\..\lib\fmjpeg2k\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">$(ProjectName)</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\code\C++\fmjpeg2koj-master-static\lib\MinSizeRel\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">fmjpeg2k.dir\MinSizeRel\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">fmjpeg2k</TargetName>
@@ -106,6 +119,39 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\;..\..\openjpeg231\src\lib\openjp2;..\..\include\fmjpeg2k;..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;.\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OPJ_STATIC;fmjpeg2k_EXPORTS;_BIND_TO_CURRENT_VCLIBS_VERSION=1;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;OPJ_STATIC;fmjpeg2k_EXPORTS;_BIND_TO_CURRENT_VCLIBS_VERSION=1;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;E:\Tool\Downloads\DCMTK\include\openjpeg-2.3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\fmjpeg2koj-master\include;F:\dcmtk-3.6.3-vc\config\include;F:\dcmtk-3.6.3\ofstd\include;F:\dcmtk-3.6.3\oflog\include;F:\dcmtk-3.6.3\dcmdata\include;F:\dcmtk-3.6.3\dcmimgle\include;F:\dcmtk-3.6.3\dcmimage\include;F:\dcmtk-3.6.3\dcmjpeg\include;F:\dcmtk-3.6.3\dcmjpls\include;F:\dcmtk-3.6.3\dcmtls\include;F:\dcmtk-3.6.3\dcmnet\include;F:\dcmtk-3.6.3\dcmsr\include;F:\dcmtk-3.6.3\dcmsign\include;F:\dcmtk-3.6.3\dcmwlm\include;F:\dcmtk-3.6.3\dcmqrdb\include;F:\dcmtk-3.6.3\dcmpstat\include;F:\dcmtk-3.6.3\dcmrt\include;F:\dcmtk-3.6.3\dcmiod\include;F:\dcmtk-3.6.3\dcmfg\include;F:\dcmtk-3.6.3\dcmseg\include;F:\dcmtk-3.6.3\dcmtract\include;F:\dcmtk-3.6.3\dcmpmap\include;E:\Tool\Downloads\DCMTK\include\openjpeg-2.3;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\include\;..\..\openjpeg231\src\lib\openjp2;..\..\include\fmjpeg2k;..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;.\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>

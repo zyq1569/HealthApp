@@ -17,6 +17,10 @@
       <Configuration>RelWithDebInfo</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Rel_Static|Win32">
+      <Configuration>Rel_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3DA9DA92-7D41-3800-A487-A982652C35A1}</ProjectGuid>
@@ -32,6 +36,11 @@
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
@@ -60,9 +69,13 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">i2d</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)lib\dcm\win32\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">$(SolutionDir)lib\dcm\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">$(ProjectName)</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\lib\MinSizeRel\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">i2d.dir\MinSizeRel\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">i2d</TargetName>
@@ -105,6 +118,39 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;..\..\include\dcm\win32\dcmUnits;..\..\include\mysql\win32\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;i2d_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;i2d_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\config\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\ofstd\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\oflog\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmdata\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimgle\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmimage\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpeg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmjpls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtls\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmnet\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsr\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmsign\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmwlm\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmqrdb\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpstat\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmrt\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmiod\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmfg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmseg\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmtract\include;E:\Tool\Downloads\DCMTK\dcmtk-3.6.5\dcmpmap\include;E:\Tool\Downloads\DCMTK\zlib-1.2.11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;..\..\include\dcm\win32\dcmUnits;..\..\include\mysql\win32\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
