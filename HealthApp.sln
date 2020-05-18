@@ -55,6 +55,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "i2d", "dcm\libi2d\i2d.vcxpr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcmsr", "dcm\dcmsr\dcmsr.vcxproj", "{744EDCAE-5311-38A3-B6E2-8A736335D85E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcmjpls", "dcm\dcmjpls\dcmjpls.vcxproj", "{2B919D87-D9CD-3B94-8EDC-DF3631307197}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -686,7 +688,8 @@ Global
 		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.Rel_Static|Mixed Platforms.Build.0 = Release|Win32
 		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.Rel_Static|Win32.ActiveCfg = Release|Win32
 		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.Rel_Static|Win32.Build.0 = Release|Win32
-		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.Rel_Static|x64.ActiveCfg = Release|Win32
+		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.Rel_Static|x64.ActiveCfg = Rel_Static|Win32
+		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.Rel_Static|x64.Build.0 = Rel_Static|Win32
 		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.Release|Mixed Platforms.ActiveCfg = Release|Win32
 		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.Release|Win32.ActiveCfg = Release|Win32
@@ -697,6 +700,32 @@ Global
 		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
 		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
 		{744EDCAE-5311-38A3-B6E2-8A736335D85E}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Debug|Win32.Build.0 = Debug|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Debug|x64.ActiveCfg = Debug|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.MinSizeRel|Mixed Platforms.ActiveCfg = MinSizeRel|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.MinSizeRel|Mixed Platforms.Build.0 = MinSizeRel|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.MinSizeRel|x64.ActiveCfg = MinSizeRel|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Rel_Static|Mixed Platforms.ActiveCfg = Release|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Rel_Static|Mixed Platforms.Build.0 = Release|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Rel_Static|Win32.ActiveCfg = Release|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Rel_Static|Win32.Build.0 = Release|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Rel_Static|x64.ActiveCfg = Rel_Static|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Rel_Static|x64.Build.0 = Rel_Static|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Release|Win32.ActiveCfg = Release|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Release|Win32.Build.0 = Release|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.Release|x64.ActiveCfg = Release|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.RelWithDebInfo|Mixed Platforms.ActiveCfg = RelWithDebInfo|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.RelWithDebInfo|Mixed Platforms.Build.0 = RelWithDebInfo|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -726,5 +755,6 @@ Global
 		{B2F01727-C2B6-3E96-B535-F43487DE7759} = {5BA5783E-14F4-4E8C-AE03-9EA39C892740}
 		{3DA9DA92-7D41-3800-A487-A982652C35A1} = {D95A4E12-CC88-48E3-BCFA-49A4F7A92082}
 		{744EDCAE-5311-38A3-B6E2-8A736335D85E} = {D95A4E12-CC88-48E3-BCFA-49A4F7A92082}
+		{2B919D87-D9CD-3B94-8EDC-DF3631307197} = {D95A4E12-CC88-48E3-BCFA-49A4F7A92082}
 	EndGlobalSection
 EndGlobal

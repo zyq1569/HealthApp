@@ -30,6 +30,9 @@
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"
+// JPEG parameters
+#include "dcmtk/dcmjpeg/djdecode.h"      /* for dcmjpeg decoders */
+#include "dcmtk/dcmjpeg/djencode.h"      /* for dcmjpeg decoders */
 
 #include "Units.h"
 
@@ -350,11 +353,38 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     strcpy(req.MoveOriginatorApplicationEntityTitle, origAETitle);
     req.MoveOriginatorID = origMsgId;
 
-    DCMQRDB_INFO("Store SCU RQ: MsgID " << msgId << ", ("
-        << dcmSOPClassUIDToModality(sopClass, "OT") << ")");
+    DCMQRDB_INFO("Store SCU RQ: MsgID " << msgId << ", ("<< dcmSOPClassUIDToModality(sopClass, "OT") << ")");
 
-    cond = DIMSE_storeUser(subAssoc, presId, &req,fname, NULL, moveSubOpProgressCallback, this,
-            options_.blockMode_, options_.dimse_timeout_,&rsp, &stDetail);
+    //add ---------------------jp2k--------------------
+    // register global JPEG decompression codecs
+    DJDecoderRegistration::registerCodecs();
+    // register global JPEG compression codecs
+    DJEncoderRegistration::registerCodecs();
+    DcmFileFormat dcmff;
+    cond = dcmff.loadFile(fname, EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+    /* figure out if an error occured while the file was read*/
+    if (cond.bad()) 
+    {
+        DCMQRDB_ERROR("Bad DICOM file: " << fname << ": " << cond.text());
+        // deregister JPEG codecs
+        DJDecoderRegistration::cleanup();
+        DJEncoderRegistration::cleanup();
+        return cond;
+    }
+
+    T_ASC_PresentationContext pc;
+    ASC_findAcceptedPresentationContext(subAssoc->params, presId, &pc);
+    DcmXfer netTransfer(pc.acceptedTransferSyntax);
+
+    dcmff.getDataset()->chooseRepresentation(netTransfer.getXfer(), NULL);
+
+    //-----------------------jp2k----------------------
+    //cond = DIMSE_storeUser(subAssoc, presId, &req, fname, NULL, moveSubOpProgressCallback, this,
+    //    options_.blockMode_, options_.dimse_timeout_, &rsp, &stDetail);
+    cond = DIMSE_storeUser(subAssoc, presId, &req,
+        NULL, dcmff.getDataset(), moveSubOpProgressCallback, this,
+        options_.blockMode_, options_.dimse_timeout_,
+        &rsp, &stDetail, NULL, OFStandard::getFileSize(fname));
 
 #ifdef LOCK_IMAGE_FILES
     /* unlock image file */
@@ -399,6 +429,9 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
         DCMQRDB_INFO("  Status Detail:" << OFendl << DcmObject::PrintHelper(*stDetail));
         delete stDetail;
     }
+    // deregister JPEG codecs
+    DJDecoderRegistration::cleanup();
+    DJEncoderRegistration::cleanup();
     return cond;
 }
 
