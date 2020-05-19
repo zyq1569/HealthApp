@@ -81,23 +81,21 @@ HMainWindow::HMainWindow(QWidget *parent) :
         ui->mysqlUserNameValue->setText(configini.value("/mariadb/username").toString());
         ui->mysqlPWDValue->setText(configini.value("/mariadb/sqlpwd").toString());
     }
-    // client query info
+    //--------------- client query info
     m_model = nullptr;
     m_model =  new QStandardItemModel();
     m_model->setColumnCount(4);
     m_model->setRowCount(4);
-    m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("Index"));
-    m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
-    m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("Port"));
-    m_model->setHeaderData(3,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
-    m_model->setHeaderData(4,Qt::Horizontal,QString::fromLocal8Bit("Comment"));
-    m_model->setItem(0, 0, new QStandardItem("张三"));
-    m_model->setItem(0, 1, new QStandardItem("20120202"));
-    m_model->setItem(0, 2, new QStandardItem("男"));
-    m_model->setItem(0, 3, new QStandardItem("18"));
+    m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
+    m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
+    m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
+    m_model->setHeaderData(3,Qt::Horizontal,QString::fromLocal8Bit("Comment"));
+    m_model->setItem(0, 0, new QStandardItem("AE"));
+    m_model->setItem(0, 1, new QStandardItem("104"));
+    m_model->setItem(0, 2, new QStandardItem("127.0.0.1"));
     ui->query_clientinfo->setModel(m_model);
     ui->query_clientinfo->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-    //
+    //----------------------------------------------------
 
 }
 
