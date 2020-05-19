@@ -10,7 +10,7 @@
 #define WEBSER 4
 
 #include <QMainWindow>
-
+#include<QStandardItemModel>
 namespace Ui {
 class HMainWindow;
 }
@@ -42,8 +42,13 @@ private slots:
 
     void on_WebServer_clicked();
 
+    void on_query_clientinfo_doubleClicked(const QModelIndex &index);
+
+    void on_query_clientinfo_clicked(const QModelIndex &index);
+
 protected:
     QProcess *m_pQProcess[QPROCESSSIZE];//,*m_pStoreQProcess,*m_pQuerQProcess,*m_pWLMQProcess,*m_pDcmQProcess;
+    QStandardItemModel *m_model;
     bool m_bstorescp[QPROCESSSIZE];
 
 private:

@@ -357,34 +357,33 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
 
     //add ---------------------jp2k--------------------
     // register global JPEG decompression codecs
-    DJDecoderRegistration::registerCodecs();
-    // register global JPEG compression codecs
-    DJEncoderRegistration::registerCodecs();
-    DcmFileFormat dcmff;
-    cond = dcmff.loadFile(fname, EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
-    /* figure out if an error occured while the file was read*/
-    if (cond.bad()) 
-    {
-        DCMQRDB_ERROR("Bad DICOM file: " << fname << ": " << cond.text());
-        // deregister JPEG codecs
-        DJDecoderRegistration::cleanup();
-        DJEncoderRegistration::cleanup();
-        return cond;
-    }
+    //DJDecoderRegistration::registerCodecs();
+    //// register global JPEG compression codecs
+    //DJEncoderRegistration::registerCodecs();
+    //DcmFileFormat dcmff;
+    //cond = dcmff.loadFile(fname, EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
+    ///* figure out if an error occured while the file was read*/
+    //if (cond.bad()) 
+    //{
+    //    DCMQRDB_ERROR("Bad DICOM file: " << fname << ": " << cond.text());
+    //    // deregister JPEG codecs
+    //    DJDecoderRegistration::cleanup();
+    //    DJEncoderRegistration::cleanup();
+    //    return cond;
+    //}
 
-    T_ASC_PresentationContext pc;
-    ASC_findAcceptedPresentationContext(subAssoc->params, presId, &pc);
-    DcmXfer netTransfer(pc.acceptedTransferSyntax);
+    //T_ASC_PresentationContext pc;
+    //ASC_findAcceptedPresentationContext(subAssoc->params, presId, &pc);
+    //DcmXfer netTransfer(pc.acceptedTransferSyntax);
 
-    dcmff.getDataset()->chooseRepresentation(netTransfer.getXfer(), NULL);
+    //dcmff.getDataset()->chooseRepresentation(netTransfer.getXfer(), NULL);
 
     //-----------------------jp2k----------------------
-    //cond = DIMSE_storeUser(subAssoc, presId, &req, fname, NULL, moveSubOpProgressCallback, this,
-    //    options_.blockMode_, options_.dimse_timeout_, &rsp, &stDetail);
-    cond = DIMSE_storeUser(subAssoc, presId, &req,
-        NULL, dcmff.getDataset(), moveSubOpProgressCallback, this,
-        options_.blockMode_, options_.dimse_timeout_,
-        &rsp, &stDetail, NULL, OFStandard::getFileSize(fname));
+    cond = DIMSE_storeUser(subAssoc, presId, &req, fname, NULL, moveSubOpProgressCallback, this,
+        options_.blockMode_, options_.dimse_timeout_, &rsp, &stDetail);
+   /* cond = DIMSE_storeUser(subAssoc, presId, &req, NULL, dcmff.getDataset(),
+           moveSubOpProgressCallback, this, options_.blockMode_, options_.dimse_timeout_,
+           &rsp, &stDetail, NULL, OFStandard::getFileSize(fname));*/
 
 #ifdef LOCK_IMAGE_FILES
     /* unlock image file */

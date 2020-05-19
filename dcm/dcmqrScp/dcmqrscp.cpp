@@ -113,7 +113,7 @@ const char *opt_configFileName = DEFAULT_CONFIGURATION_DIR "DcmServerConfig.cfg"
 OFBool      opt_checkFindIdentifier = OFFalse;
 OFBool      opt_checkMoveIdentifier = OFFalse;
 OFCmdUnsignedInt opt_port = 0;
-OFCmdUnsignedInt g_worklist_port = 1668;
+OFCmdUnsignedInt g_query_port = 1668;
 
 #define SHORTCOL 4
 #define LONGCOL 22
@@ -353,8 +353,8 @@ int RunQRSCP(int argc, char *argv[])
     }
     if (argc > 4) // 0:exe dir  1: scp port 2:Image Dir 3 :client AE 4:client port
     {
-        g_worklist_port = atoi(argv[1]);
-        opt_port = g_worklist_port;
+        g_query_port = atoi(argv[1]);
+        opt_port = g_query_port;
         g_imagedir = argv[2];
         clientAE = argv[3];
         clientPort = atoi(argv[4]);
@@ -362,7 +362,7 @@ int RunQRSCP(int argc, char *argv[])
 
     if (opt_port == 0)
     {
-        opt_port = 1668; /* not set, use default */
+        opt_port = g_query_port; /* not set, use default */
         OFString msg = "----default QR NetworkTCPPort:" + longToString(opt_port);
         OFLOG_INFO(dcmqrscpLogger, msg);
     }
