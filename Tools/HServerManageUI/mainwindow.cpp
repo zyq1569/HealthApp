@@ -60,10 +60,11 @@ HMainWindow::HMainWindow(QWidget *parent) :
     //--------------- client query info
     m_model = nullptr;
     m_model =  new QStandardItemModel();
-    m_model->setColumnCount(3);
+    m_model->setColumnCount(4);
     m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
     m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
     m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
+    m_model->setHeaderData(3,Qt::Horizontal,QString::fromLocal8Bit("Comment"));
     //----------------------------------------------------
     QSettings configini(configfilename,QSettings::IniFormat);
     if (isFileExist(configfilename))
@@ -284,7 +285,7 @@ void HMainWindow::on_QRSCP_clicked()
     int count = m_model->rowCount();
     if (count > 1)
     {
-        arg.append(QString::number(count));
+        arg.append(QString::number(count-1));
         for (int i=1 ; i<count ; i++)
         {
             QString AEtile     = m_model->data(m_model->index(i,0)).toString();

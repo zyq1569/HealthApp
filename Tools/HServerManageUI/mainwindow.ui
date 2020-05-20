@@ -27,7 +27,7 @@
      <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
-     <string>WorklistSCP            port</string>
+     <string>WorklistSCP        port</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_store">
@@ -836,10 +836,10 @@
    <widget class="QTableView" name="query_clientinfo">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>390</y>
-      <width>391</width>
-      <height>101</height>
+      <x>7</x>
+      <y>388</y>
+      <width>381</width>
+      <height>110</height>
      </rect>
     </property>
    </widget>
