@@ -472,7 +472,7 @@
    <widget class="QLabel" name="clientPort">
     <property name="geometry">
      <rect>
-      <x>203</x>
+      <x>213</x>
       <y>336</y>
       <width>31</width>
       <height>16</height>
@@ -668,8 +668,8 @@
     <widget class="QPushButton" name="query_delete">
      <property name="geometry">
       <rect>
-       <x>271</x>
-       <y>50</y>
+       <x>269</x>
+       <y>49</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -694,7 +694,7 @@
      <property name="geometry">
       <rect>
        <x>205</x>
-       <y>50</y>
+       <y>49</y>
        <width>51</width>
        <height>31</height>
       </rect>
