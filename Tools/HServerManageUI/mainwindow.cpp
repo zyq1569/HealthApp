@@ -60,11 +60,14 @@ HMainWindow::HMainWindow(QWidget *parent) :
     //--------------- client query info
     m_model = nullptr;
     m_model =  new QStandardItemModel();
-
+    m_model->setColumnCount(3);
+    m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
+    m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
+    m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
     //----------------------------------------------------
+    QSettings configini(configfilename,QSettings::IniFormat);
     if (isFileExist(configfilename))
     {
-        QSettings configini(configfilename,QSettings::IniFormat);
         //dicom
         ui->port_wlm->setText(configini.value("/dicom/worklist_port").toString());
         ui->port_store->setText(configini.value("/dicom/stroe_port").toString());
@@ -73,11 +76,11 @@ HMainWindow::HMainWindow(QWidget *parent) :
 
         //client //configini.setValue("/client/count",count);
         int count = configini.value("/client/count").toInt();
-        m_model->setColumnCount(3);
+//        m_model->setColumnCount(3);
         m_model->setRowCount(count);
-        m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
-        m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
-        m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
+//        m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
+//        m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
+//        m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
         if (0 < count)
         {
             ui->AEtitle->setText(configini.value("/client/aetitle0").toString());
@@ -85,12 +88,12 @@ HMainWindow::HMainWindow(QWidget *parent) :
             ui->IpAddressValue->setText(configini.value("/client/ip0").toString());
             //m_model->setHeaderData(3,Qt::Horizontal,QString::fromLocal8Bit("Comment"));
             QString pre = "";
-            for (int i=1; i<count; i++)
+            for (int i=0; i<count; i++)
             {
                 pre = QString::number(i);
-                m_model->setItem(0, 0, new QStandardItem(configini.value("/client/aetitle"+pre).toString()));
-                m_model->setItem(0, 1, new QStandardItem(configini.value("/client/port"+pre).toString()));
-                m_model->setItem(0, 2, new QStandardItem(configini.value("/client/ip"+pre).toString()));
+                m_model->setItem(i, 0, new QStandardItem(configini.value("/client/aetitle"+pre).toString()));
+                m_model->setItem(i, 1, new QStandardItem(configini.value("/client/port"+pre).toString()));
+                m_model->setItem(i, 2, new QStandardItem(configini.value("/client/ip"+pre).toString()));
             }
         }
         ui->query_clientinfo->setModel(m_model);
@@ -115,18 +118,6 @@ HMainWindow::HMainWindow(QWidget *parent) :
 
 HMainWindow::~HMainWindow()
 {
-    delete ui;
-    //----------------
-    for (int i=0; i<QPROCESSSIZE; i++)
-    {
-        if( m_pQProcess[i]!=nullptr)
-        {
-            m_pQProcess[i]->close();
-            delete m_pQProcess[i];
-            m_pQProcess[i] = nullptr;
-        }
-    }
-    //---------------------------------------------------------------------
     QString Dir = QDir::currentPath();
     QString iniDir = Dir+"/config";
     if (!isDirExist( iniDir))
@@ -178,7 +169,20 @@ HMainWindow::~HMainWindow()
         configini.setValue("/mariadb/username",ui->mysqlUserNameValue->text());
         configini.setValue("/mariadb/sqlpwd",ui->mysqlPWDValue->text());
     }
-    QMessageBox::information(this, tr("All program!"), tr("All exit ok!"));
+
+    //QMessageBox::information(this, tr("All program!"), tr("All exit ok!"));
+    //----------------
+    for (int i=0; i<QPROCESSSIZE; i++)
+    {
+        if( m_pQProcess[i]!=nullptr)
+        {
+            m_pQProcess[i]->close();
+            delete m_pQProcess[i];
+            m_pQProcess[i] = nullptr;
+        }
+    }
+    //---------------------------------------------------------------------
+    delete ui;//last!!
 }
 void HMainWindow::on_StoreSCP_clicked()
 {
@@ -443,11 +447,27 @@ void HMainWindow::on_query_clientinfo_clicked(const QModelIndex &index)
 
 void HMainWindow::on_query_add_clicked()
 {
-    //configini.setValue("/client/aetitle1",ui->AEtitle->text());
-    //configini.setValue("/client/port1",ui->clientPortValue->text());
-    //configini.setValue("/client/ip1",ui->IpAddressValue->text());
     int count = m_model->rowCount();
     QString pre =  QString::number(count);
+    QString AEtile = ui->AEtitle->text();
+    QString ClientPort = ui->clientPortValue->text();
+    QString IpAddress = ui->IpAddressValue->text();
+    for (int i=0; i<count ; i++)
+    {
+        QString aetitle = m_model->data(m_model->index(i,0)).toString();
+        QString port = m_model->data(m_model->index(i,1)).toString();
+        QString ip = m_model->data(m_model->index(i,2)).toString();
+        if (AEtile == aetitle)
+        {
+            QMessageBox::information(this, tr("Exit!"), tr("AEtile exit ok, no insert!"));
+            return;
+        }
+        if (ClientPort == port && IpAddress == ip)
+        {
+            QMessageBox::information(this, tr("port&IP exit!"), tr("same port&ip, no insert!"));
+            return;
+        }
+    }
     m_model->setItem(count, 0, new QStandardItem(ui->AEtitle->text()));
     m_model->setItem(count, 1, new QStandardItem(ui->clientPortValue->text()));
     m_model->setItem(count, 2, new QStandardItem(ui->IpAddressValue->text()));
@@ -456,9 +476,6 @@ void HMainWindow::on_query_add_clicked()
 
 void HMainWindow::on_query_delete_clicked()
 {
-//    QModelIndexList list = ui->query_clientinfo->selectionMode();
-//    if (list.count() <= 0)
-//        return;
     int curRow=ui->query_clientinfo->currentIndex().row();//选中行
     m_model->removeRow(curRow);
 }
