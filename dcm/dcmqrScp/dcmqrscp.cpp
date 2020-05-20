@@ -473,6 +473,21 @@ int RunQRSCP(int argc, char *argv[])
             sql.SqlPWD = argv[9];
             scp.SetMysql(&sql);
         }
+        if (argc > 10)
+        {
+            //other query client info
+            int size = atoi(argv[10]);
+            scp.SetQueryClientSize(size+1);
+            for (int i = 0; i < size; i++)
+            {
+                QueryClientInfo qc;
+                int delt = i * 3;
+                qc.AEtitle = argv[11 + delt];
+                qc.port = atoi(argv[12 + delt]);
+                qc.IpAddress = argv[13 + delt];
+                scp.SetQueryClient(&qc, i+1);
+            }
+        }
     }
     /* loop waiting for associations */
     while (cond.good())
@@ -517,6 +532,21 @@ unsigned __stdcall QueryThread(void *argv)
             sql.SqlUserName = g_argv[8];
             sql.SqlPWD = g_argv[9];
             scp.SetMysql(&sql);
+        }
+        if (g_argc > 10)
+        {
+            //other query client info
+            int size = atoi(g_argv[10]);
+            scp.SetQueryClientSize(size+1);
+            for (int i = 0; i < size; i++)
+            {
+                QueryClientInfo qc;
+                int delt = i * 3;
+                qc.AEtitle = g_argv[11 + delt];
+                qc.port = atoi(g_argv[12 + delt]);
+                qc.IpAddress = g_argv[13 + delt];
+                scp.SetQueryClient(&qc, i+1);
+            }
         }
     }
     OFString ThreadID = longToString(GetCurrentThreadId());
