@@ -508,7 +508,7 @@
     <property name="geometry">
      <rect>
       <x>13</x>
-      <y>358</y>
+      <y>364</y>
       <width>70</width>
       <height>16</height>
      </rect>
@@ -524,7 +524,7 @@
     <property name="geometry">
      <rect>
       <x>87</x>
-      <y>355</y>
+      <y>361</y>
       <width>100</width>
       <height>21</height>
      </rect>
@@ -665,6 +665,81 @@
     <property name="title">
      <string>QueryClient</string>
     </property>
+    <widget class="QPushButton" name="query_delete">
+     <property name="geometry">
+      <rect>
+       <x>271</x>
+       <y>50</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run webserver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="locale">
+      <locale language="Chinese" country="China"/>
+     </property>
+     <property name="text">
+      <string>删除</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="query_add">
+     <property name="geometry">
+      <rect>
+       <x>205</x>
+       <y>50</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run webserver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="locale">
+      <locale language="Chinese" country="China"/>
+     </property>
+     <property name="text">
+      <string>增加</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="query_modify">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>49</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run webserver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="locale">
+      <locale language="Chinese" country="China"/>
+     </property>
+     <property name="text">
+      <string>修改</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
