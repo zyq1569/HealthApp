@@ -281,6 +281,20 @@ void HMainWindow::on_QRSCP_clicked()
     arg.append(m_MysqlDbName);
     arg.append(m_MysqlUserName);
     arg.append(m_MysqlPWD);
+    int count = m_model->rowCount();
+    if (count > 1)
+    {
+        arg.append(QString::number(count));
+        for (int i=1 ; i<count ; i++)
+        {
+            QString AEtile     = m_model->data(m_model->index(i,0)).toString();
+            QString ClientPort = m_model->data(m_model->index(i,1)).toString();
+            QString IpAddress  = m_model->data(m_model->index(i,2)).toString();
+            arg.append(AEtile);
+            arg.append(ClientPort);
+            arg.append(IpAddress);
+        }
+    }
     if (!m_bstorescp[QUERSCPQ] && m_pQProcess[QUERSCPQ]==nullptr)
     {
         m_pQProcess[QUERSCPQ] =  new QProcess(this);
@@ -452,6 +466,11 @@ void HMainWindow::on_query_add_clicked()
     QString AEtile = ui->AEtitle->text();
     QString ClientPort = ui->clientPortValue->text();
     QString IpAddress = ui->IpAddressValue->text();
+    if (count >= 30)
+    {
+        QMessageBox::information(this, tr("30 client is Max number!"), tr("no insert!"));
+        return;
+    }
     for (int i=0; i<count ; i++)
     {
         QString aetitle = m_model->data(m_model->index(i,0)).toString();
