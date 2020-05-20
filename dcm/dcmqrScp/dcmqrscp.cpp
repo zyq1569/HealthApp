@@ -354,10 +354,10 @@ int RunQRSCP(int argc, char *argv[])
     if (argc > 4) // 0:exe dir  1: scp port 2:Image Dir 3 :client AE 4:client port
     {
         g_query_port = atoi(argv[1]);
-        opt_port = g_query_port;
-        g_imagedir = argv[2];
-        clientAE = argv[3];
-        clientPort = atoi(argv[4]);
+        opt_port     = g_query_port;
+        g_imagedir   = argv[2];
+        clientAE     = argv[3];
+        clientPort   = atoi(argv[4]);
     }
 
     if (opt_port == 0)
