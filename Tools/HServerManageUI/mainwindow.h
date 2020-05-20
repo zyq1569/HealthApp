@@ -46,6 +46,12 @@ private slots:
 
     void on_query_clientinfo_clicked(const QModelIndex &index);
 
+    void on_query_add_clicked();
+
+    void on_query_delete_clicked();
+
+    void on_query_modify_clicked();
+
 protected:
     QProcess *m_pQProcess[QPROCESSSIZE];//,*m_pStoreQProcess,*m_pQuerQProcess,*m_pWLMQProcess,*m_pDcmQProcess;
     QStandardItemModel *m_model;

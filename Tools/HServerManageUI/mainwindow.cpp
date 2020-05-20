@@ -1,5 +1,6 @@
 #include <QtWidgets>
 #include <QtGlobal>
+#include <QModelIndex>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include"units.h"
@@ -56,6 +57,11 @@ HMainWindow::HMainWindow(QWidget *parent) :
 #if defined(Q_OS_LINUX)
     configfilename = iniDir+"/serveruiconfig_linux.ini";
 #endif
+    //--------------- client query info
+    m_model = nullptr;
+    m_model =  new QStandardItemModel();
+
+    //----------------------------------------------------
     if (isFileExist(configfilename))
     {
         QSettings configini(configfilename,QSettings::IniFormat);
@@ -65,10 +71,32 @@ HMainWindow::HMainWindow(QWidget *parent) :
         ui->port_qr->setText(configini.value("/dicom/query_port").toString());
         ui->Dir_Store->setText(configini.value("/dicom/image_dir").toString());
 
-        //client
-        ui->AEtitle->setText(configini.value("/client/aetitle1").toString());
-        ui->clientPortValue->setText(configini.value("/client/port1").toString());
-        ui->IpAddressValue->setText(configini.value("/client/ip1").toString());
+        //client //configini.setValue("/client/count",count);
+        int count = configini.value("/client/count").toInt();
+        m_model->setColumnCount(3);
+        m_model->setRowCount(count);
+        m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
+        m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
+        m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
+        if (0 < count)
+        {
+            ui->AEtitle->setText(configini.value("/client/aetitle0").toString());
+            ui->clientPortValue->setText(configini.value("/client/port0").toString());
+            ui->IpAddressValue->setText(configini.value("/client/ip0").toString());
+            //m_model->setHeaderData(3,Qt::Horizontal,QString::fromLocal8Bit("Comment"));
+            QString pre = "";
+            for (int i=1; i<count; i++)
+            {
+                pre = QString::number(i);
+                m_model->setItem(0, 0, new QStandardItem(configini.value("/client/aetitle"+pre).toString()));
+                m_model->setItem(0, 1, new QStandardItem(configini.value("/client/port"+pre).toString()));
+                m_model->setItem(0, 2, new QStandardItem(configini.value("/client/ip"+pre).toString()));
+            }
+        }
+        ui->query_clientinfo->setModel(m_model);
+        ui->query_clientinfo->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+        ui->query_clientinfo->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
+        //--------------------------------------------------------------------------
 
         //web
         ui->Dir_Pagefile->setText(configini.value("/web/pagefile_dir").toString());
@@ -81,21 +109,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
         ui->mysqlUserNameValue->setText(configini.value("/mariadb/username").toString());
         ui->mysqlPWDValue->setText(configini.value("/mariadb/sqlpwd").toString());
     }
-    //--------------- client query info
-    m_model = nullptr;
-    m_model =  new QStandardItemModel();
-    m_model->setColumnCount(4);
-    m_model->setRowCount(4);
-    m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
-    m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
-    m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
-    m_model->setHeaderData(3,Qt::Horizontal,QString::fromLocal8Bit("Comment"));
-    m_model->setItem(0, 0, new QStandardItem("AE"));
-    m_model->setItem(0, 1, new QStandardItem("104"));
-    m_model->setItem(0, 2, new QStandardItem("127.0.0.1"));
-    ui->query_clientinfo->setModel(m_model);
-    ui->query_clientinfo->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-    //----------------------------------------------------
+
 
 }
 
@@ -123,34 +137,48 @@ HMainWindow::~HMainWindow()
 #if defined(Q_OS_LINUX)
     configfilename = iniDir+"/serveruiconfig_linux.ini";
 #endif
-    if (!isFileExist(configfilename))
-    {
 
-    }
     QSettings configini(configfilename,QSettings::IniFormat);
-    //dicom
-    configini.setValue("/dicom/worklist_port",ui->port_wlm->text());
-    configini.setValue("/dicom/stroe_port",ui->port_store->text());
-    configini.setValue("/dicom/query_port",ui->port_qr->text());
-    configini.setValue("/dicom/image_dir",ui->Dir_Store->text());
+    //if (isFileExist(configfilename))
+    {
+        //QSettings configini(configfilename,QSettings::IniFormat);
+        //dicom
+        configini.setValue("/dicom/worklist_port",ui->port_wlm->text());
+        configini.setValue("/dicom/stroe_port",ui->port_store->text());
+        configini.setValue("/dicom/query_port",ui->port_qr->text());
+        configini.setValue("/dicom/image_dir",ui->Dir_Store->text());
 
-    //client
-    configini.setValue("/client/aetitle1",ui->AEtitle->text());
-    configini.setValue("/client/port1",ui->clientPortValue->text());
-    configini.setValue("/client/ip1",ui->IpAddressValue->text());
+        //client
+//        configini.setValue("/client/aetitle1",ui->AEtitle->text());
+//        configini.setValue("/client/port1",ui->clientPortValue->text());
+//        configini.setValue("/client/ip1",ui->IpAddressValue->text());
+        int count = m_model->rowCount();
+        configini.setValue("/client/count",count);
+        QString pre = "";
+        for (int i=0 ; i<count ; i++)
+        {
+            pre = QString::number(i);
+            configini.setValue("/client/aetitle"+ pre,m_model->data(m_model->index(i,0)).toString() );
+            configini.setValue("/client/port"   + pre,m_model->data(m_model->index(i,1)).toString() );
+            configini.setValue("/client/ip"     + pre,m_model->data(m_model->index(i,2)).toString() );
+        }
+        m_model->removeRows(0,m_model->rowCount());
+        delete m_model;
+        m_model = nullptr;
+        //------------------
 
-    //web
-    configini.setValue("/web/pagefile_dir",ui->Dir_Pagefile->text());
-    configini.setValue("/web/port",ui->port_webserver->text());
-    configini.setValue("/web/log",ui->comLevel->currentText());
+        //web
+        configini.setValue("/web/pagefile_dir",ui->Dir_Pagefile->text());
+        configini.setValue("/web/port",ui->port_webserver->text());
+        configini.setValue("/web/log",ui->comLevel->currentText());
 
-    //mariadb
-    configini.setValue("/mariadb/server",ui->mysqlServerValue->text());
-    configini.setValue("/mariadb/sqlname",ui->mysqldbNameValue->text());
-    configini.setValue("/mariadb/username",ui->mysqlUserNameValue->text());
-    configini.setValue("/mariadb/sqlpwd",ui->mysqlPWDValue->text());
-
-    //QMessageBox::information(this, tr("All program!"), tr("All exit ok!"));
+        //mariadb
+        configini.setValue("/mariadb/server",ui->mysqlServerValue->text());
+        configini.setValue("/mariadb/sqlname",ui->mysqldbNameValue->text());
+        configini.setValue("/mariadb/username",ui->mysqlUserNameValue->text());
+        configini.setValue("/mariadb/sqlpwd",ui->mysqlPWDValue->text());
+    }
+    QMessageBox::information(this, tr("All program!"), tr("All exit ok!"));
 }
 void HMainWindow::on_StoreSCP_clicked()
 {
@@ -165,9 +193,9 @@ void HMainWindow::on_StoreSCP_clicked()
     arg.append(port);
     arg.append(ui->Dir_Store->text());
 
-//#ifdef defined(Q_OS_WIN32) || defined(Q_OS_WIN32)
-//    arg.append("AppStart");// start sigle string
-//#endif
+    //#ifdef defined(Q_OS_WIN32) || defined(Q_OS_WIN32)
+    //    arg.append("AppStart");// start sigle string
+    //#endif
 
     if (!m_bstorescp[STORESCPQ] && m_pQProcess[STORESCPQ]==nullptr)
     {
@@ -405,10 +433,38 @@ void HMainWindow::on_WebServer_clicked()
 
 void HMainWindow::on_query_clientinfo_doubleClicked(const QModelIndex &index)
 {
-    QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("on_query_clientinfo_doubleClicked!"));
+   // QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("on_query_clientinfo_doubleClicked!"));
 }
 
 void HMainWindow::on_query_clientinfo_clicked(const QModelIndex &index)
 {
-    QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("on_query_clientinfo_clicked!"));
+    //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("on_query_clientinfo_clicked!"));
+}
+
+void HMainWindow::on_query_add_clicked()
+{
+    //configini.setValue("/client/aetitle1",ui->AEtitle->text());
+    //configini.setValue("/client/port1",ui->clientPortValue->text());
+    //configini.setValue("/client/ip1",ui->IpAddressValue->text());
+    int count = m_model->rowCount();
+    QString pre =  QString::number(count);
+    m_model->setItem(count, 0, new QStandardItem(ui->AEtitle->text()));
+    m_model->setItem(count, 1, new QStandardItem(ui->clientPortValue->text()));
+    m_model->setItem(count, 2, new QStandardItem(ui->IpAddressValue->text()));
+    ui->query_clientinfo->setModel(m_model);
+}
+
+void HMainWindow::on_query_delete_clicked()
+{
+//    QModelIndexList list = ui->query_clientinfo->selectionMode();
+//    if (list.count() <= 0)
+//        return;
+    int curRow=ui->query_clientinfo->currentIndex().row();//选中行
+    m_model->removeRow(curRow);
+}
+
+
+void HMainWindow::on_query_modify_clicked()
+{
+    //int curRow=ui->query_clientinfo->currentIndex().row();//选中行
 }
