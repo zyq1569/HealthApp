@@ -94,6 +94,7 @@ END_EXTERN_C
 
 //-------add add 201806
 #include "dcmtk/oflog/fileap.h"
+#include "dcmtk/oflog/loglevel.h"
 #ifdef HAVE_WINDOWS_H
 #include <direct.h>      /* for _mkdir() */
 #endif
@@ -304,6 +305,7 @@ int RunQRSCP(int argc, char *argv[])
     logfile->setLayout(OFmove(layout));
     log.removeAllAppenders();
     log.addAppender(logfile);
+    log.setLogLevel(30000);//WARN_LOG_LEVEL
 
     temps = "";
     for (int i = 0; i < argc; i++)
@@ -311,7 +313,7 @@ int RunQRSCP(int argc, char *argv[])
         temps += argv[i];
         temps += " ";
     }
-    OFLOG_INFO(dcmqrscpLogger, "---------argv[]:" + temps + " ----------------------");
+    OFLOG_WARN(dcmqrscpLogger, "---------argv[]:" + temps + " ----------------------");
     OFLOG_INFO(dcmqrscpLogger, "-----$$------DcmNet dcmstoreqrscp start run!---------$$------------");
     //###################------------------------------------------------------------------
     OFCondition cond = EC_Normal;
