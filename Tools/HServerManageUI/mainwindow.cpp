@@ -77,11 +77,11 @@ HMainWindow::HMainWindow(QWidget *parent) :
 
         //client //configini.setValue("/client/count",count);
         int count = configini.value("/client/count").toInt();
-//        m_model->setColumnCount(3);
+        //        m_model->setColumnCount(3);
         m_model->setRowCount(count);
-//        m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
-//        m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
-//        m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
+        //        m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
+        //        m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
+        //        m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
         if (0 < count)
         {
             ui->AEtitle->setText(configini.value("/client/aetitle0").toString());
@@ -141,9 +141,9 @@ HMainWindow::~HMainWindow()
         configini.setValue("/dicom/image_dir",ui->Dir_Store->text());
 
         //client
-//        configini.setValue("/client/aetitle1",ui->AEtitle->text());
-//        configini.setValue("/client/port1",ui->clientPortValue->text());
-//        configini.setValue("/client/ip1",ui->IpAddressValue->text());
+        //        configini.setValue("/client/aetitle1",ui->AEtitle->text());
+        //        configini.setValue("/client/port1",ui->clientPortValue->text());
+        //        configini.setValue("/client/ip1",ui->IpAddressValue->text());
         int count = m_model->rowCount();
         configini.setValue("/client/count",count);
         QString pre = "";
@@ -267,10 +267,10 @@ void HMainWindow::on_QRSCP_clicked()
         QMessageBox::information(this, m_QuerRScpName, tr("No QRSCP program Exist!"));
         return;
     }
-    m_MysqlServer = ui->mysqlServerValue->text();
-    m_MysqlDbName = ui->mysqldbNameValue->text();
+    m_MysqlServer   = ui->mysqlServerValue->text();
+    m_MysqlDbName   = ui->mysqldbNameValue->text();
     m_MysqlUserName = ui->mysqlUserNameValue->text();
-    m_MysqlPWD = ui->mysqlPWDValue->text();
+    m_MysqlPWD      = ui->mysqlPWDValue->text();
 
     QStringList arg;
     arg.append(ui->port_qr->text());
@@ -356,11 +356,17 @@ void HMainWindow::on_Dcm2DB_clicked()
 void HMainWindow::on_WebServer_clicked()
 {
     QString goWebServer = QDir::currentPath()+"/"+m_WebServerGoName;
+    QString goLogconfig  =  QDir::currentPath()+"/logConfig.json";
     if (!isFileExist(goWebServer))
     {
         goWebServer =  m_ExeDir + m_WebServerGoName;
     }
-    if (isFileExist(goWebServer)){
+    if (isFileExist(goWebServer))
+    {
+        if (!isFileExist(goLogconfig)){
+            QMessageBox::information(this, tr("No Web logconfig!"), goLogconfig);
+            return;
+        }
         //1 mysql: 1 ip 2 name 3 user  4pwd
         //5 page web / 6 port
         //7 studyimage dir
@@ -403,17 +409,20 @@ void HMainWindow::on_WebServer_clicked()
             ui->WebServer->setText("启动");
             //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
         }
-    }else {
+    }
+    else
+    {
         QString JavaWeb = m_ExeDir + m_WebServerName;
-        if (!isFileExist(goWebServer)){
+        if (!isFileExist(goWebServer))
+        {
             QMessageBox::information(this, tr("No web program Exist!"), tr("No web program Exist!"));
             return;
         }
-        m_MysqlServer = ui->mysqlServerValue->text();
-        m_MysqlDbName = ui->mysqldbNameValue->text();
+        m_MysqlServer   = ui->mysqlServerValue->text();
+        m_MysqlDbName   = ui->mysqldbNameValue->text();
         m_MysqlUserName = ui->mysqlUserNameValue->text();
-        m_MysqlPWD = ui->mysqlPWDValue->text();
-        m_WebSerPort = ui->port_webserver->text();
+        m_MysqlPWD      = ui->mysqlPWDValue->text();
+        m_WebSerPort    = ui->port_webserver->text();
         QString program = "java";
         QStringList arg;
 
@@ -452,7 +461,7 @@ void HMainWindow::on_WebServer_clicked()
 
 void HMainWindow::on_query_clientinfo_doubleClicked(const QModelIndex &index)
 {
-   // QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("on_query_clientinfo_doubleClicked!"));
+    // QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("on_query_clientinfo_doubleClicked!"));
 }
 
 void HMainWindow::on_query_clientinfo_clicked(const QModelIndex &index)
