@@ -99,6 +99,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
         }
         ui->query_clientinfo->setModel(m_model);
         ui->query_clientinfo->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+        ui->query_clientinfo->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
         ui->query_clientinfo->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
         //--------------------------------------------------------------------------
 
