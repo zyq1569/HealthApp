@@ -707,6 +707,7 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM file Info 2 DB", rcsid);
     OFString tempstr, path = argv[0];
     OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
+    Log_Dir = currentAppPath + "/log";
     int pos = 0;
     pos = path.find_last_of('\\');
     if (pos < 1)
@@ -727,21 +728,21 @@ int main(int argc, char *argv[])
         {
             Task_Dir   = dir + "/Task/1";
             Error_Dir  = dir + "/Task/error";
-            Log_Dir    = dir + "/log";
+            //Log_Dir    = dir + "/log";
             g_ImageDir = dir + "/Images";
-            int pos = dir.find_last_of("/");
-            if (pos > -1)
-            {
-                Log_Dir = dir.substr(0, pos) + "/log";
-            }
-            else
-            {
-                int pos = dir.find_last_of("\\");
-                if (pos > -1)
-                {
-                    Log_Dir = dir.substr(0, pos) + "/log";
-                }
-            }
+            //int pos = dir.find_last_of("/");
+            //if (pos > -1)
+            //{
+            //    Log_Dir = dir.substr(0, pos) + "/log";
+            //}
+            //else
+            //{
+            //    int pos = dir.find_last_of("\\");
+            //    if (pos > -1)
+            //    {
+            //        Log_Dir = dir.substr(0, pos) + "/log";
+            //    }
+            //}
         }
         if (argc > 5)
         {
@@ -758,21 +759,21 @@ int main(int argc, char *argv[])
             OFString dir = dcmconfig.getStoreDir()->front();
             Task_Dir   = dir + "/Task/1";
             Error_Dir  = dir + "/Task/error";
-            Log_Dir    = dir + "/log";
+            //Log_Dir    = dir + "/log";
             g_ImageDir = dir + "/Images";
-            int pos = dir.find_last_of("/");
-            if (pos > -1)
-            {
-                Log_Dir = dir.substr(0, pos) + "/log";
-            }
-            else
-            {
-                int pos = dir.find_last_of("\\");
-                if (pos > -1)
-                {
-                    Log_Dir = dir.substr(0, pos) + "/log";
-                }
-            }
+            //int pos = dir.find_last_of("/");
+            //if (pos > -1)
+            //{
+            //    Log_Dir = dir.substr(0, pos) + "/log";
+            //}
+            //else
+            //{
+            //    int pos = dir.find_last_of("\\");
+            //    if (pos > -1)
+            //    {
+            //        Log_Dir = dir.substr(0, pos) + "/log";
+            //    }
+            //}
             //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
             g_mySql_IP       = dcmconfig.getSqlServer();
             g_mySql_username = dcmconfig.getSqlusername();
