@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
     if (pos > 0)
     {
         TCPport = argv[2];
-        if (argc == 8)
+        if (argc == 7)
         {
             config.setSqlServer(argv[3]);
             config.setSqldbname(argv[4]);
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        if (argc == 7)
+        if (argc == 6)
         {
             config.setSqlServer(argv[2]);
             config.setSqldbname(argv[3]);
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
     // Initialize object which provides a connection to the data source
     WlmDataSourceFileSystem *dataSource = new WlmDataSourceFileSystem();
     dataSource->SetDcmConfig(&config);
-    char parm[3][128];
+    static char parm[3][128];
     memset(parm[0], 0, 128);
     memset(parm[1], 0, 128);
     memset(parm[2], 0, 128);
