@@ -116,6 +116,8 @@ int main(int argc, char *argv[])
     logfile->setLayout(OFmove(layout));
     //log.removeAllAppenders();
     log.addAppender(logfile);
+    //WARN_LOG_LEVEL    = 30000;
+    log.setLogLevel(30000);
 
     tempstr = "";
     for (int i = 0; i < argc; i++)
@@ -171,7 +173,7 @@ int main(int argc, char *argv[])
     // Initialize object which provides a connection to the data source
     WlmDataSourceFileSystem *dataSource = new WlmDataSourceFileSystem();
     dataSource->SetDcmConfig(&config);
-    static char parm[3][128];
+    static char parm[4][128];
     memset(parm[0], 0, 128);
     memset(parm[1], 0, 128);
     memset(parm[2], 0, 128);
@@ -180,12 +182,20 @@ int main(int argc, char *argv[])
     memcpy(parm[1], TCPport.c_str(), TCPport.length());
     strtemp = "--fork";
     memcpy(parm[2], strtemp.c_str(), strtemp.length());
+    //OFString sqlusername = config.getSqlusername();
+    //OFString sqlpwd = config.getSqlpwd();
+    //memcpy(parm[3], mysqlserver.c_str(), mysqlserver.length());
+    //memcpy(parm[4], mysqlserver.c_str(), mysqlserver.length());
+    //memcpy(parm[5], mysqlserver.c_str(), mysqlserver.length());
+    //memcpy(parm[6], mysqlserver.c_str(), mysqlserver.length());
     // Initialize and provide service. After having terminated free memory.
     WlmConsoleEngineFileSystem *consoleEngine;
-    if (argc >= 6)
+    if (argc == 7)
     {
-        int count = 3;
-        char *new_argv[3];// = new char*[count]; WlmFileSystemInteractionManager
+        OFString temp = "AppStart";// qt start this app fail£¬ so ......
+        memcpy(parm[3], temp.c_str(), temp.length());
+        int count = 4;
+        char *new_argv[4];// = new char*[count]; WlmFileSystemInteractionManager
         for (int i = 0; i < count; i++)
         {
             new_argv[i] = parm[i];

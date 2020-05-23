@@ -231,10 +231,10 @@ void HMainWindow::on_WLMSCP_clicked()
         QMessageBox::information(this,m_WLMScpName, tr("No WLMSCP program Exist!"));
         return;
     }
-    m_MysqlServer = ui->mysqlServerValue->text();
-    m_MysqlDbName = ui->mysqldbNameValue->text();
+    m_MysqlServer   = ui->mysqlServerValue->text();
+    m_MysqlDbName   = ui->mysqldbNameValue->text();
     m_MysqlUserName = ui->mysqlUserNameValue->text();
-    m_MysqlPWD = ui->mysqlPWDValue->text();
+    m_MysqlPWD      = ui->mysqlPWDValue->text();
 
     QStringList arg;
     arg.append(ui->port_wlm->text());
@@ -242,7 +242,7 @@ void HMainWindow::on_WLMSCP_clicked()
     arg.append(m_MysqlDbName);
     arg.append(m_MysqlUserName);
     arg.append(m_MysqlPWD);
-    //arg.append("AppStart");// start sigle string
+    arg.append("AppStart");// start sigle string
     if (!m_bstorescp[WLMSCPQ] && m_pQProcess[WLMSCPQ]==nullptr)
     {
         m_pQProcess[WLMSCPQ] =  new QProcess(this);
