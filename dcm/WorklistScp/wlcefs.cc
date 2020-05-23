@@ -140,10 +140,10 @@ command_argv(argv), dataSource(dataSourcev)
     int pos = str.find("APPSTART");
     if (pos > 0 )
     {
+        //qt start this app fail£¬so start it here£¡
         WlmConsoleMySqlSystem(argc, argv, applicationName, dataSourcev);
         return;
     }
-     
     //WlmDataSourceFileSystem* WlmDataSourceFile = (WlmDataSourceFileSystem*)dataSourcev;
     //DcmConfigFile config = WlmDataSourceFile->GetDcmConfig();
     // Initialize application identification string.
@@ -253,7 +253,6 @@ command_argv(argv), dataSource(dataSourcev)
     opt4 += ")";
     cmd->addOption("--max-pdu", "-pdu", 1, opt4.c_str(), opt3.c_str());
     cmd->addOption("--disable-host-lookup", "-dhl", "disable hostname lookup");
-
 
     prepareCmdLineArgs(argc, argv, applicationName);
     //opt_port = config.getWorklistScpPort();
