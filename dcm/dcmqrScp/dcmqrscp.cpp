@@ -305,7 +305,14 @@ int RunQRSCP(int argc, char *argv[])
     logfile->setLayout(OFmove(layout));
     log.removeAllAppenders();
     log.addAppender(logfile);
-    log.setLogLevel(30000);//WARN_LOG_LEVEL
+    if (g_argc > 10)//qt set (argc[10])
+    {
+        log.setLogLevel(atoi(argv[10]));
+    }
+    else
+    {
+        log.setLogLevel(30000);
+    }
 
     temps = "";
     for (int i = 0; i < argc; i++)
@@ -535,18 +542,18 @@ unsigned __stdcall QueryThread(void *argv)
             sql.SqlPWD = g_argv[9];
             scp.SetMysql(&sql);
         }
-        if (g_argc > 10)
+        if (g_argc > 11)
         {
             //other query client info
-            int size = atoi(g_argv[10]);
+            int size = atoi(g_argv[11]);
             scp.SetQueryClientSize(size+1);
             for (int i = 0; i < size; i++)
             {
                 QueryClientInfo qc;
                 int delt = i * 3;
-                qc.AEtitle = g_argv[11 + delt];
-                qc.port = atoi(g_argv[12 + delt]);
-                qc.IpAddress = g_argv[13 + delt];
+                qc.AEtitle = g_argv[12 + delt];
+                qc.port = atoi(g_argv[13 + delt]);
+                qc.IpAddress = g_argv[14 + delt];
                 scp.SetQueryClient(&qc, i+1);
             }
         }

@@ -74,6 +74,10 @@ HMainWindow::HMainWindow(QWidget *parent) :
         ui->port_store->setText(configini.value("/dicom/stroe_port").toString());
         ui->port_qr->setText(configini.value("/dicom/query_port").toString());
         ui->Dir_Store->setText(configini.value("/dicom/image_dir").toString());
+        ui->comLevel_Store->setCurrentText(configini.value("/dicom/log_Store").toString());
+        ui->comLevel_worklist->setCurrentText(configini.value("/dicom/log_worklist").toString());
+        ui->comLevel_Query->setCurrentText(configini.value("/dicom/log_Query").toString());
+        ui->comLevel_SaveInfo->setCurrentText(configini.value("/dicom/log_SaveInfo").toString());
 
         //client //configini.setValue("/client/count",count);
         int count = configini.value("/client/count").toInt();
@@ -106,7 +110,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
         //web
         ui->Dir_Pagefile->setText(configini.value("/web/pagefile_dir").toString());
         ui->port_webserver->setText(configini.value("/web/port").toString());
-        ui->comLevel->setCurrentText(configini.value("/web/log").toString());
+        ui->comLevel_web->setCurrentText(configini.value("/web/log_web").toString());
 
         //mariadb
         ui->mysqlServerValue->setText(configini.value("/mariadb/server").toString());
@@ -141,6 +145,10 @@ HMainWindow::~HMainWindow()
         configini.setValue("/dicom/query_port",ui->port_qr->text());
         configini.setValue("/dicom/image_dir",ui->Dir_Store->text());
 
+        configini.setValue("/dicom/log_Store",ui->comLevel_Store->currentText());
+        configini.setValue("/dicom/log_worklist",ui->comLevel_worklist->currentText());
+        configini.setValue("/dicom/log_Query",ui->comLevel_Query->currentText());
+        configini.setValue("/dicom/log_SaveInfo",ui->comLevel_SaveInfo->currentText());
         //client
         //        configini.setValue("/client/aetitle1",ui->AEtitle->text());
         //        configini.setValue("/client/port1",ui->clientPortValue->text());
@@ -163,7 +171,7 @@ HMainWindow::~HMainWindow()
         //web
         configini.setValue("/web/pagefile_dir",ui->Dir_Pagefile->text());
         configini.setValue("/web/port",ui->port_webserver->text());
-        configini.setValue("/web/log",ui->comLevel->currentText());
+        configini.setValue("/web/log_web",ui->comLevel_web->currentText());
 
         //mariadb
         configini.setValue("/mariadb/server",ui->mysqlServerValue->text());
@@ -202,7 +210,8 @@ void HMainWindow::on_StoreSCP_clicked()
     //#ifdef defined(Q_OS_WIN32) || defined(Q_OS_WIN32)
     //    arg.append("AppStart");// start sigle string
     //#endif
-
+    QString log_lev = QString::number(ui->comLevel_Store->currentIndex()*10000);
+    arg.append(log_lev);
     if (!m_bstorescp[STORESCPQ] && m_pQProcess[STORESCPQ]==nullptr)
     {
         m_pQProcess[STORESCPQ] =  new QProcess(this);
@@ -243,6 +252,8 @@ void HMainWindow::on_WLMSCP_clicked()
     arg.append(m_MysqlUserName);
     arg.append(m_MysqlPWD);
     arg.append("AppStart");// start sigle string
+    QString log_lev = QString::number(ui->comLevel_worklist->currentIndex()*10000);
+    arg.append(log_lev);
     if (!m_bstorescp[WLMSCPQ] && m_pQProcess[WLMSCPQ]==nullptr)
     {
         m_pQProcess[WLMSCPQ] =  new QProcess(this);
@@ -283,6 +294,8 @@ void HMainWindow::on_QRSCP_clicked()
     arg.append(m_MysqlDbName);
     arg.append(m_MysqlUserName);
     arg.append(m_MysqlPWD);
+    QString log_lev = QString::number(ui->comLevel_Query->currentIndex()*10000);
+    arg.append(log_lev);
     int count = m_model->rowCount();
     if (count > 1)
     {
@@ -335,6 +348,8 @@ void HMainWindow::on_Dcm2DB_clicked()
     arg.append(m_MysqlDbName);
     arg.append(m_MysqlUserName);
     arg.append(m_MysqlPWD);
+    QString log_lev = QString::number(ui->comLevel_SaveInfo->currentIndex()*10000);
+    arg.append(log_lev);
     if (!m_bstorescp[DCM2DBQ] && m_pQProcess[DCM2DBQ]==nullptr)
     {
         m_pQProcess[DCM2DBQ] =  new QProcess(this);
@@ -372,10 +387,10 @@ void HMainWindow::on_WebServer_clicked()
         //5 page web / 6 port
         //7 studyimage dir
         //8 level
-        m_MysqlServer = ui->mysqlServerValue->text();
-        m_MysqlDbName = ui->mysqldbNameValue->text();
+        m_MysqlServer   = ui->mysqlServerValue->text();
+        m_MysqlDbName   = ui->mysqldbNameValue->text();
         m_MysqlUserName = ui->mysqlUserNameValue->text();
-        m_MysqlPWD = ui->mysqlPWDValue->text();
+        m_MysqlPWD      = ui->mysqlPWDValue->text();
 
         m_WebSerPort = ui->port_webserver->text();
         QString program = goWebServer;
@@ -391,7 +406,7 @@ void HMainWindow::on_WebServer_clicked()
         //image dir
         arg.append(ui->Dir_Store->text()+"/Images");
         //Level
-        arg.append(ui->comLevel->currentText());
+        arg.append(ui->comLevel_web->currentText());
 
         if (!m_bstorescp[WEBSER] && m_pQProcess[WEBSER]==nullptr)
         {
@@ -439,7 +454,7 @@ void HMainWindow::on_WebServer_clicked()
         arg.append(ui->Dir_Store->text()+"/Images");
         arg.append(ui->Dir_Pagefile->text());
         arg.append(m_Log4j2Config);
-        arg.append(ui->comLevel->currentText());
+        arg.append(ui->comLevel_web->currentText());
         if (!m_bstorescp[WEBSER] && m_pQProcess[WEBSER]==nullptr)
         {
             m_pQProcess[WEBSER] =  new QProcess(this);

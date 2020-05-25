@@ -806,6 +806,14 @@ int main(int argc, char *argv[])
     logfile->setLayout(OFmove(layout));
     //log.removeAllAppenders();
     log.addAppender(logfile);
+    if (argc > 6)//qt set (argc[10])
+    {
+        log.setLogLevel(atoi(argv[6]));
+    }
+    else
+    {
+        log.setLogLevel(30000);
+    }
     tempstr = "";
     for (int i = 0; i < argc; i++)
     {

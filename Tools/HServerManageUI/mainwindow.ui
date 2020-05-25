@@ -51,7 +51,7 @@
      <rect>
       <x>270</x>
       <y>139</y>
-      <width>75</width>
+      <width>66</width>
       <height>31</height>
      </rect>
     </property>
@@ -92,7 +92,7 @@
      <rect>
       <x>270</x>
       <y>61</y>
-      <width>75</width>
+      <width>66</width>
       <height>31</height>
      </rect>
     </property>
@@ -133,7 +133,7 @@
      <rect>
       <x>270</x>
       <y>25</y>
-      <width>75</width>
+      <width>66</width>
       <height>31</height>
      </rect>
     </property>
@@ -239,7 +239,7 @@
      <rect>
       <x>270</x>
       <y>99</y>
-      <width>75</width>
+      <width>66</width>
       <height>31</height>
      </rect>
     </property>
@@ -579,7 +579,7 @@
      <rect>
       <x>270</x>
       <y>523</y>
-      <width>75</width>
+      <width>66</width>
       <height>31</height>
      </rect>
     </property>
@@ -756,12 +756,12 @@
     <property name="title">
      <string>HealthWebServer</string>
     </property>
-    <widget class="QComboBox" name="comLevel">
+    <widget class="QComboBox" name="comLevel_web">
      <property name="geometry">
       <rect>
-       <x>198</x>
+       <x>199</x>
        <y>25</y>
-       <width>61</width>
+       <width>55</width>
        <height>22</height>
       </rect>
      </property>
@@ -771,6 +771,16 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <item>
+      <property name="text">
+       <string>TRACE</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>DEBUG</string>
+      </property>
+     </item>
      <item>
       <property name="text">
        <string>INFO</string>
@@ -859,6 +869,210 @@
      <string>Save Dcm info in index file</string>
     </property>
    </widget>
+   <widget class="QComboBox" name="comLevel_worklist">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>30</y>
+      <width>55</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>TRACE</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DEBUG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>INFO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>WARN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ERROR</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FATAL</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OFF</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="comLevel_Store">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>65</y>
+      <width>55</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>TRACE</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DEBUG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>INFO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>WARN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ERROR</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FATAL</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OFF</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="comLevel_Query">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>104</y>
+      <width>55</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>TRACE</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DEBUG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>INFO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>WARN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ERROR</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FATAL</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OFF</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="comLevel_SaveInfo">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>143</y>
+      <width>55</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>TRACE</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DEBUG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>INFO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>WARN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ERROR</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FATAL</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OFF</string>
+     </property>
+    </item>
+   </widget>
    <zorder>groupBox_2</zorder>
    <zorder>groupBox_3</zorder>
    <zorder>groupBox</zorder>
@@ -899,6 +1113,10 @@
    <zorder>line_3</zorder>
    <zorder>query_clientinfo</zorder>
    <zorder>label_Dcm2Db_2</zorder>
+   <zorder>comLevel_worklist</zorder>
+   <zorder>comLevel_Store</zorder>
+   <zorder>comLevel_Query</zorder>
+   <zorder>comLevel_SaveInfo</zorder>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
