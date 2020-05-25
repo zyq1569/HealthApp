@@ -52,7 +52,7 @@
       <x>270</x>
       <y>139</y>
       <width>66</width>
-      <height>31</height>
+      <height>28</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -93,7 +93,7 @@
       <x>270</x>
       <y>61</y>
       <width>66</width>
-      <height>31</height>
+      <height>28</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -134,7 +134,7 @@
       <x>270</x>
       <y>25</y>
       <width>66</width>
-      <height>31</height>
+      <height>28</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -240,7 +240,7 @@
       <x>270</x>
       <y>99</y>
       <width>66</width>
-      <height>31</height>
+      <height>28</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -580,7 +580,7 @@
       <x>270</x>
       <y>523</y>
       <width>66</width>
-      <height>31</height>
+      <height>28</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -671,7 +671,7 @@
        <x>269</x>
        <y>49</y>
        <width>51</width>
-       <height>31</height>
+       <height>28</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -696,7 +696,7 @@
        <x>205</x>
        <y>49</y>
        <width>51</width>
-       <height>31</height>
+       <height>28</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -721,7 +721,7 @@
        <x>330</x>
        <y>49</y>
        <width>51</width>
-       <height>31</height>
+       <height>28</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -760,7 +760,7 @@
      <property name="geometry">
       <rect>
        <x>199</x>
-       <y>25</y>
+       <y>24</y>
        <width>55</width>
        <height>22</height>
       </rect>
@@ -872,8 +872,8 @@
    <widget class="QComboBox" name="comLevel_worklist">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>30</y>
+      <x>347</x>
+      <y>29</y>
       <width>55</width>
       <height>22</height>
      </rect>
@@ -923,8 +923,8 @@
    <widget class="QComboBox" name="comLevel_Store">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>65</y>
+      <x>347</x>
+      <y>64</y>
       <width>55</width>
       <height>22</height>
      </rect>
@@ -974,8 +974,8 @@
    <widget class="QComboBox" name="comLevel_Query">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>104</y>
+      <x>347</x>
+      <y>103</y>
       <width>55</width>
       <height>22</height>
      </rect>
@@ -1025,8 +1025,8 @@
    <widget class="QComboBox" name="comLevel_SaveInfo">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>143</y>
+      <x>347</x>
+      <y>142</y>
       <width>55</width>
       <height>22</height>
      </rect>
