@@ -117,7 +117,16 @@ int main(int argc, char *argv[])
     //log.removeAllAppenders();
     log.addAppender(logfile);
     //WARN_LOG_LEVEL    = 30000;
-    log.setLogLevel(30000);
+    if (argc == 8)
+    {
+        log.setLogLevel(atoi(argv[7]));
+        DCM_dcmwlmLogger.setLogLevel(atoi(argv[7]));
+    }
+    else
+    {
+        log.setLogLevel(30000);
+        DCM_dcmwlmLogger.setLogLevel(3000);
+    }
 
     tempstr = "";
     for (int i = 0; i < argc; i++)
@@ -184,10 +193,6 @@ int main(int argc, char *argv[])
     memcpy(parm[2], strtemp.c_str(), strtemp.length());
     //OFString sqlusername = config.getSqlusername();
     //OFString sqlpwd = config.getSqlpwd();
-    //memcpy(parm[3], mysqlserver.c_str(), mysqlserver.length());
-    //memcpy(parm[4], mysqlserver.c_str(), mysqlserver.length());
-    //memcpy(parm[5], mysqlserver.c_str(), mysqlserver.length());
-    //memcpy(parm[6], mysqlserver.c_str(), mysqlserver.length());
     // Initialize and provide service. After having terminated free memory.
     WlmConsoleEngineFileSystem *consoleEngine;
     if (argc == 7)
