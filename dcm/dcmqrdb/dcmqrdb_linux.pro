@@ -60,3 +60,5 @@ INCLUDEPATH +=../../include/dcm/win32/oflog/include
 INCLUDEPATH +=../../include/dcm/win32/dcmnet/include
 INCLUDEPATH +=../../include/dcm/win32/dcmdata/include
 INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
+INCLUDEPATH +=../../include/dcm/win32/dcmjpeg/include
+INCLUDEPATH +=../../include/dcm/win32/dcmimgle/include
