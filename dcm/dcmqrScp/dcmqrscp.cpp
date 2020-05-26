@@ -305,7 +305,7 @@ int RunQRSCP(int argc, char *argv[])
     logfile->setLayout(OFmove(layout));
     log.removeAllAppenders();
     log.addAppender(logfile);
-    if (g_argc > 10)//qt set (argc[10])
+    if (argc > 10)//qt set (argc[10])
     {
         log.setLogLevel(atoi(argv[10]));
     }

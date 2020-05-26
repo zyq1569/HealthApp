@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>413</width>
-    <height>615</height>
+    <height>630</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -543,7 +543,7 @@
     <property name="geometry">
      <rect>
       <x>13</x>
-      <y>529</y>
+      <y>534</y>
       <width>71</width>
       <height>20</height>
      </rect>
@@ -559,7 +559,7 @@
     <property name="geometry">
      <rect>
       <x>87</x>
-      <y>528</y>
+      <y>533</y>
       <width>100</width>
       <height>21</height>
      </rect>
@@ -578,7 +578,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>523</y>
+      <y>529</y>
       <width>66</width>
       <height>28</height>
      </rect>
@@ -760,10 +760,15 @@
      <property name="geometry">
       <rect>
        <x>199</x>
-       <y>24</y>
+       <y>29</y>
        <width>55</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
      </property>
      <property name="locale">
       <locale language="Chinese" country="China"/>
@@ -846,9 +851,9 @@
    <widget class="QTableView" name="query_clientinfo">
     <property name="geometry">
      <rect>
-      <x>7</x>
+      <x>5</x>
       <y>388</y>
-      <width>381</width>
+      <width>390</width>
       <height>110</height>
      </rect>
     </property>
@@ -856,11 +861,16 @@
    <widget class="QLabel" name="label_Dcm2Db_2">
     <property name="geometry">
      <rect>
-      <x>107</x>
+      <x>108</x>
       <y>146</y>
-      <width>161</width>
+      <width>160</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
     </property>
     <property name="locale">
      <locale language="Chinese" country="China"/>
@@ -877,6 +887,11 @@
       <width>55</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
     </property>
     <property name="locale">
      <locale language="Chinese" country="China"/>
@@ -929,6 +944,11 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
     <property name="locale">
      <locale language="Chinese" country="China"/>
     </property>
@@ -980,6 +1000,11 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
     <property name="locale">
      <locale language="Chinese" country="China"/>
     </property>
@@ -1030,6 +1055,11 @@
       <width>55</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
     </property>
     <property name="locale">
      <locale language="Chinese" country="China"/>

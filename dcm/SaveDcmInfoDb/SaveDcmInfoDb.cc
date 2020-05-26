@@ -95,7 +95,7 @@ END_EXTERN_C
 static OFLogger SaveDcmInfoDbLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
-        OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 static OFBool opt_recurse = OFTrue;
 static const char *opt_scanPattern = "";
@@ -136,7 +136,7 @@ void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, c
 
     while (folderfirst != NULL)
     {
-//        printf("folderfirst->path: dir=%s\n", folderfirst->path);
+        //        printf("folderfirst->path: dir=%s\n", folderfirst->path);
         if ((dir = opendir(folderfirst->path)) != NULL)
         {
             while ((ptr = readdir(dir)) != NULL)
@@ -182,14 +182,14 @@ void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, c
                             closedir(dir);
                             return;
                         }
-//                        printf("folderfirst->path : %s\n", folderfirst->path);
-//                        printf("------********ptr->d_name : %s\n", ptr->d_name);
+                        //                        printf("folderfirst->path : %s\n", folderfirst->path);
+                        //                        printf("------********ptr->d_name : %s\n", ptr->d_name);
                     }
-//                    else
-//                    {
-//                        printf("folderfirst->path : %s\n", folderfirst->path);
-//                        printf("------#########ptr->d_name : %s\n", ptr->d_name);
-//                    }
+                    //                    else
+                    //                    {
+                    //                        printf("folderfirst->path : %s\n", folderfirst->path);
+                    //                        printf("------#########ptr->d_name : %s\n", ptr->d_name);
+                    //                    }
                 }
                 else if (ptr->d_type == DT_DIR)
                 { /* dir */
@@ -197,7 +197,7 @@ void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, c
                     bzero(folderpath, sizeof(folderpath));
                     strncpy(foldername, ptr->d_name, sizeof(foldername));
                     snprintf(folderpath, sizeof(folderpath), "%s/%s", folderfirst->path, foldername);
-//                    printf("folderpath: %s\n", folderpath);
+                    //                    printf("folderpath: %s\n", folderpath);
 
                     //增加新的目录节点,并释放空间
                     foldernode *foldernew;
@@ -258,7 +258,7 @@ OFBool CjsonSaveFile(HStudyInfo dcminfo, OFString filename)
         }
         jsonfile.fclose();
         CJSON::CJsonObject Json(strjson.c_str());
-        int numImages=0;
+        int numImages = 0;
         if (Json.Get("numImages", numImages))
         {
             numImages++;
@@ -274,7 +274,7 @@ OFBool CjsonSaveFile(HStudyInfo dcminfo, OFString filename)
                 if (suid == dcminfo.Seriesuid)
                 {
                     int asize = Json["seriesList"][i]["instanceList"].GetArraySize();
-                    for (int j = 0;  j < asize;  j++)
+                    for (int j = 0; j < asize; j++)
                     {
                         if (Json["seriesList"][i]["instanceList"][j].Get("imageId", strValue))
                         {
@@ -314,12 +314,12 @@ OFBool CjsonSaveFile(HStudyInfo dcminfo, OFString filename)
         CJSON::CJsonObject Json;
         int numImages = 1;
         Json.Add("patientName", dcminfo.StudyPatientName.c_str());
-        Json.Add("patientId",dcminfo.StudyPatientId.c_str());
-        Json.Add("modality",dcminfo.StudyModality.c_str());
-        Json.Add("studyDescription",dcminfo.studydescription.c_str());
-        Json.Add("numImages",numImages);
-        Json.Add("studyId",dcminfo.StudyID.c_str());
-        Json.Add("studyuid",dcminfo.StudyInstanceUID.c_str());
+        Json.Add("patientId", dcminfo.StudyPatientId.c_str());
+        Json.Add("modality", dcminfo.StudyModality.c_str());
+        Json.Add("studyDescription", dcminfo.studydescription.c_str());
+        Json.Add("numImages", numImages);
+        Json.Add("studyId", dcminfo.StudyID.c_str());
+        Json.Add("studyuid", dcminfo.StudyInstanceUID.c_str());
 
         Json.AddEmptySubArray("seriesList");
         CJSON::CJsonObject Series;
@@ -342,7 +342,7 @@ OFBool CjsonSaveFile(HStudyInfo dcminfo, OFString filename)
 }
 OFBool SaveDcmInfoJsonFile(HStudyInfo dcminfo, OFString filename)
 {
-    return CjsonSaveFile(dcminfo,filename);
+    return CjsonSaveFile(dcminfo, filename);
 }
 
 OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
@@ -383,7 +383,7 @@ OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
                         inifile.fgets(line, maxline);//"[image]"
                         str = line;
                         StudyInfo.push_back(str);
-                        str = imageinfo+"\n";
+                        str = imageinfo + "\n";
                         StudyInfo.push_back(str);
                         flag = OFTrue;
                     }
@@ -436,7 +436,7 @@ OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
 
         inifile.fputs("[SERIES]\n");
         str = dcminfo.Seriesnumber + "|";
-        str += dcminfo.Seriesdescription + "|" + dcminfo.Seriesuid+"\n";
+        str += dcminfo.Seriesdescription + "|" + dcminfo.Seriesuid + "\n";
         str += "[image]\n";
         str += dcminfo.instanceNumber + "|" + dcminfo.Sopinstanceuid;
         inifile.fputs(str.c_str());
@@ -592,10 +592,10 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 {
 #ifdef _UNICODE
                     g_pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
-                                              W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+                        W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 #else
                     g_pMariaDb = new HMariaDb(g_mySql_IP.c_str(), g_mySql_username.c_str(), \
-                                              g_mySql_pwd.c_str(), g_mySql_dbname.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+                        g_mySql_pwd.c_str(), g_mySql_dbname.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 
 #endif
                 }
@@ -610,9 +610,9 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                     sprintf(uuid, "%llu", CreateGUID());
                     PatientIdentity = uuid;
                     querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
-                            PatientSex,PatientBirthday) value(";
-                                                              querysql += PatientIdentity;
-                            querysql += ",'";
+                                                           PatientSex,PatientBirthday) value(";
+                    querysql += PatientIdentity;
+                    querysql += ",'";
                     querysql += StudyInfo.StudyPatientId;
                     querysql += "','";
                     querysql += StudyInfo.StudyPatientName;
@@ -701,7 +701,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
 int main(int argc, char *argv[])
 {
     static DcmConfigFile dcmconfig;
-    OFString Task_Dir, Log_Dir,Error_Dir;
+    OFString Task_Dir, Log_Dir, Error_Dir;
     //OFString ini_dir, ini_error_dir;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM file Info 2 DB", rcsid);
@@ -726,8 +726,8 @@ int main(int argc, char *argv[])
         //travel_files((char*)dir.c_str(),"ini",list_file_ini_test);
         if (OFStandard::dirExists(dir))
         {
-            Task_Dir   = dir + "/Task/1";
-            Error_Dir  = dir + "/Task/error";
+            Task_Dir = dir + "/Task/1";
+            Error_Dir = dir + "/Task/error";
             //Log_Dir    = dir + "/log";
             g_ImageDir = dir + "/Images";
             //int pos = dir.find_last_of("/");
@@ -746,10 +746,10 @@ int main(int argc, char *argv[])
         }
         if (argc > 5)
         {
-            g_mySql_IP       = argv[2];
-            g_mySql_dbname   = argv[3];
+            g_mySql_IP = argv[2];
+            g_mySql_dbname = argv[3];
             g_mySql_username = argv[4];
-            g_mySql_pwd      = argv[5];
+            g_mySql_pwd = argv[5];
         }
     }
     else
@@ -757,8 +757,8 @@ int main(int argc, char *argv[])
         if (dcmconfig.init((currentAppPath + "/config/DcmServerConfig.cfg").c_str()))
         {
             OFString dir = dcmconfig.getStoreDir()->front();
-            Task_Dir   = dir + "/Task/1";
-            Error_Dir  = dir + "/Task/error";
+            Task_Dir = dir + "/Task/1";
+            Error_Dir = dir + "/Task/error";
             //Log_Dir    = dir + "/log";
             g_ImageDir = dir + "/Images";
             //int pos = dir.find_last_of("/");
@@ -775,17 +775,17 @@ int main(int argc, char *argv[])
             //    }
             //}
             //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
-            g_mySql_IP       = dcmconfig.getSqlServer();
+            g_mySql_IP = dcmconfig.getSqlServer();
             g_mySql_username = dcmconfig.getSqlusername();
-            g_mySql_pwd      = dcmconfig.getSqlpwd();
-            g_mySql_dbname   = dcmconfig.getSqldbname();
+            g_mySql_pwd = dcmconfig.getSqlpwd();
+            g_mySql_dbname = dcmconfig.getSqldbname();
         }
         else
         {
-            Task_Dir   = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
-            Error_Dir  = currentAppPath + "/DCM_SAVE/Task/error";
+            Task_Dir = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
+            Error_Dir = currentAppPath + "/DCM_SAVE/Task/error";
             g_ImageDir = currentAppPath + "/DCM_SAVE/Images";
-            Log_Dir    = currentAppPath + "/log";
+            Log_Dir = currentAppPath + "/log";
         }
     }
 
