@@ -19,7 +19,7 @@
      <rect>
       <x>9</x>
       <y>33</y>
-      <width>160</width>
+      <width>71</width>
       <height>20</height>
      </rect>
     </property>
@@ -27,7 +27,7 @@
      <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
-     <string>WorklistSCP        port</string>
+     <string>WorklistSCP</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_store">
@@ -35,7 +35,7 @@
      <rect>
       <x>9</x>
       <y>68</y>
-      <width>160</width>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -43,7 +43,7 @@
      <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
-     <string>DicomStoreSCP      port</string>
+     <string>DicomStoreSCP</string>
     </property>
    </widget>
    <widget class="QPushButton" name="Dcm2DB">
@@ -91,7 +91,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>61</y>
+      <y>63</y>
       <width>66</width>
       <height>28</height>
      </rect>
@@ -116,7 +116,7 @@
     <property name="geometry">
      <rect>
       <x>9</x>
-      <y>147</y>
+      <y>145</y>
       <width>91</width>
       <height>20</height>
      </rect>
@@ -132,7 +132,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>25</y>
+      <y>27</y>
       <width>66</width>
       <height>28</height>
      </rect>
@@ -238,7 +238,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>99</y>
+      <y>101</y>
       <width>66</width>
       <height>28</height>
      </rect>
@@ -264,7 +264,7 @@
      <rect>
       <x>9</x>
       <y>106</y>
-      <width>160</width>
+      <width>101</width>
       <height>20</height>
      </rect>
     </property>
@@ -272,7 +272,7 @@
      <locale language="Chinese" country="China"/>
     </property>
     <property name="text">
-     <string>QueryRetrieveSCP   port</string>
+     <string>QueryRetrieveSCP</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="Dir_Store">
@@ -862,7 +862,7 @@
     <property name="geometry">
      <rect>
       <x>108</x>
-      <y>146</y>
+      <y>144</y>
       <width>160</width>
       <height>20</height>
      </rect>
@@ -1103,6 +1103,54 @@
      </property>
     </item>
    </widget>
+   <widget class="QLabel" name="label_wlm_2">
+    <property name="geometry">
+     <rect>
+      <x>131</x>
+      <y>30</y>
+      <width>31</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>port</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_wlm_3">
+    <property name="geometry">
+     <rect>
+      <x>131</x>
+      <y>67</y>
+      <width>31</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>port</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_wlm_4">
+    <property name="geometry">
+     <rect>
+      <x>131</x>
+      <y>106</y>
+      <width>31</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>port</string>
+    </property>
+   </widget>
    <zorder>groupBox_2</zorder>
    <zorder>groupBox_3</zorder>
    <zorder>groupBox</zorder>
@@ -1147,6 +1195,9 @@
    <zorder>comLevel_Store</zorder>
    <zorder>comLevel_Query</zorder>
    <zorder>comLevel_SaveInfo</zorder>
+   <zorder>label_wlm_2</zorder>
+   <zorder>label_wlm_3</zorder>
+   <zorder>label_wlm_4</zorder>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
