@@ -4,6 +4,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include"units.h"
+#include "easylogging++.h"
 
 HMainWindow::HMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -124,6 +125,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
 
 HMainWindow::~HMainWindow()
 {
+    LOG(INFO) << "HMainWindow::~HMainWindow";
     QString Dir = QDir::currentPath();
     QString iniDir = Dir+"/config";
     if (!isDirExist( iniDir))
