@@ -28,6 +28,10 @@ public:
 
 int main(int argc, char *argv[])
 {
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+    defaultConf.set(el::Level::Info,el::ConfigurationType::Filename, "HServerManageUI.log");
+    el::Loggers::reconfigureLogger("default", defaultConf);
     START_EASYLOGGINGPP(argc, argv);
 
     el::Loggers::removeFlag(el::LoggingFlag::NewLineForContainer);
