@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        easylogging++.cc \
         main.cpp \
         mainwindow.cpp \
         units.cpp
 
 HEADERS += \
+        easylogging++.h \
         mainwindow.h \
         units.h
 
