@@ -376,8 +376,7 @@ void Configurations::setToDefault(void) {
   setGlobally(ConfigurationType::LogFlushThreshold, std::string("0"), true);
 
   setGlobally(ConfigurationType::Format, std::string("%datetime %level [%logger] %msg"), true);
-  set(Level::Debug, ConfigurationType::Format,
-      std::string("%datetime %level [%logger] [%user@%host] [%func] [%loc] %msg"));
+  set(Level::Debug, ConfigurationType::Format,std::string("%datetime %level [%logger] [%user@%host] [%func] [%loc] %msg"));
   // INFO and WARNING are set to default by Level::Global
   set(Level::Error, ConfigurationType::Format, std::string("%datetime %level [%logger] %msg"));
   set(Level::Fatal, ConfigurationType::Format, std::string("%datetime %level [%logger] %msg"));

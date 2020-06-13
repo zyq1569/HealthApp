@@ -4,20 +4,35 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "units.h"
+//log file
 #include "easylogging++.h"
+INITIALIZE_EASYLOGGINGPP
 
 HMainWindow::HMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::HMainWindow)
 {
     ui->setupUi(this);
+    QString Dir     = QDir::currentPath();
     //----------
+    QString logDir = Dir+"/log";
+    if (!isDirExist(logDir))
+    {
+        CreatDir(logDir);
+    }
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+    QString logDirFilename = logDir+"/HServerManageUI.log";
+    defaultConf.set(el::Level::Info,el::ConfigurationType::Filename, logDirFilename.toStdString());
+    el::Loggers::reconfigureLogger("default", defaultConf);
+    LOG(INFO) << "First log test";
+    //--------------------
     for (int i=0; i<QPROCESSSIZE; i++)
     {
         m_pQProcess[i] = nullptr;
         m_bstorescp[i] = false;
     }
-    QString Dir     = QDir::currentPath();
+    //QString Dir   = QDir::currentPath();
     m_ExeDir        = Dir;
     m_ImageDir      = m_ExeDir;
     m_ExeDir        = m_ExeDir.remove("/debug");
