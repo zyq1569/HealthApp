@@ -1,0 +1,87 @@
+1.MD->MT
+2.
+
+set INCLUDE=%INCLUDE%C:\Qt\QtVS5.5.1\5.5\icu\include;C:\Qt\QtVS5.5.1\5.5\openssl\include64
+set PATH=%PATH%;C:\Qt\QtVS5.5.1\5.5\Src\gnuwin32\bin;
+set LIB=%LIB%C:\Qt\QtVS5.5.1\5.5\openssl\lib64;C:\Qt\QtVS5.5.1\5.5\icu\lib64
+
+
+set PATH=%PATH%;C:\Qt\qtsrc5.4.1\gnuwin32\bin;
+
+20200508:
+configure.bat -prefix C:\Qt\QtStaticVS5.5.1 -confirm-license -debug-and-release -opensource -platform win32-msvc2013 -static -static-runtime -nomake examples -nomake tests -make libs -make tools -openvg  -plugin-sql-sqlite -sse4.2 -plugin-sql-odbc -qt-zlib -qt-libpng -qt-libjpeg -no-avx -no-avx2 -icu -openssl-linked -opengl desktop -angle -qt-freetype  -qmake -audio-backend -qml-debug -directwrite -direct2d -l gdi32 -mp
+
+qt5.4.1
+configure.bat -prefix C:\Qt\qtStatic5.4.1\ -confirm-license -debug-and-release -opensource -platform win32-msvc2013 -static  -nomake examples -nomake tests -make libs -make tools -openvg  -plugin-sql-sqlite -sse4.2 -plugin-sql-odbc -qt-zlib -qt-libpng -qt-libjpeg -no-avx -no-avx2 -icu -openssl-linked -opengl desktop -angle -qt-freetype  -qmake -audio-backend -qml-debug -directwrite -direct2d -l gdi32 -mp
+
+
+3.
+nmake
+4.
+nmake install
+
+5.build webkit
+
+set INCLUDE=%INCLUDE%C:\Qt\QtVS5.5.1\5.5\icu\include;C:\Qt\QtVS5.5.1\5.5\openssl\include64
+set PATH=%PATH%;C:\Qt\QtVS5.5.1\5.5\Src\gnuwin32\bin;
+set LIB=%LIB%C:\Qt\QtVS5.5.1\5.5\openssl\lib64;C:\Qt\QtVS5.5.1\5.5\icu\lib64
+set PATH=%PATH%;C:\Qt\QtVS5.5.1\5.5\Src\gnuwin32\bin；C:\Qt\QtStaticVS5.5.1\bin
+ET _CD=%CD%
+SET QT_PREFIX=C:\Qt\QtStaticVS5.5.1
+SET QT_SOURCE=C:\Qt\QtVS5.5.1\5.5\Src
+SET QTWEBKIT_PREFIX=C:\Qt\QtStaticVS5.5.1\Qtwebkit
+perl %QT_SOURCE%\qtwebkit\Tools\Scripts\build-webkit --qt  --release --prefix=%QTWEBKIT_PREFIX%
+perl %QT_SOURCE%\qtwebkit\Tools\Scripts\build-webkit --qt --video --web-audio --workers --web-sockets --release --prefix=%QTWEBKIT_PREFIX%
+CD /D %QT_SOURCE%\qtwebkit\WebKitBuild\%BUILD_MODE%
+nmake install
+
+
+
+[qt.5.4.1]
+set INCLUDE=%INCLUDE%C:\Qt\QtVS5.5.1\5.5\icu\include;C:\Qt\QtVS5.5.1\5.5\openssl\include64
+set PATH=%PATH%;C:\Qt\qtsrc5.4.1\gnuwin32\bin;C:\Qt\qtStatic5.4.1\bin
+set LIB=%LIB%C:\Qt\QtVS5.5.1\5.5\openssl\lib64;C:\Qt\QtVS5.5.1\5.5\icu\lib64
+set LIB=%LIB%C:\Qt\qtStatic5.4.1\lib;C:\Qt\qtStatic5.4.1\plugins;C:\Qt\qtStatic5.4.1\plugins\audio;C:\Qt\qtStatic5.4.1\plugins\bearer;C:\Qt\qtStatic5.4.1\plugins\designer;C:\Qt\qtStatic5.4.1\plugins\geoservices;C:\Qt\qtStatic5.4.1\plugins\iconengines;C:\Qt\qtStatic5.4.1\plugins\imageformats;C:\Qt\qtStatic5.4.1\plugins\mediaservice;C:\Qt\qtStatic5.4.1\plugins\platforms;C:\Qt\qtStatic5.4.1\plugins\playlistformats;C:\Qt\qtStatic5.4.1\plugins\position;C:\Qt\qtStatic5.4.1\plugins\printsupport;C:\Qt\qtStatic5.4.1\plugins\qml1tooling;C:\Qt\qtStatic5.4.1\plugins\qmltooling;C:\Qt\qtStatic5.4.1\plugins\sensorgestures;C:\Qt\qtStatic5.4.1\plugins\sensors;
+
+SET QT_PREFIX=C:\Qt\qtStatic5.4.1
+SET QT_SOURCE=C:\Qt\qtsrc5.4.1
+SET QTWEBKIT_PREFIX=C:\Qt\qtStatic5.4.1\Qtwebkit
+perl %QT_SOURCE%\qtwebkit\Tools\Scripts\build-webkit --qt  --release --prefix=%QT_PREFIX%
+perl %QT_SOURCE%\qtwebkit\Tools\Scripts\build-webkit --qt --video --web-audio --workers --web-sockets --release --prefix=%QTWEBKIT_PREFIX%
+CD /D %QT_SOURCE%\qtwebkit\WebKitBuild\%BUILD_MODE%
+nmake install
+
+
+DESKTOP-1CSD242
+shinhwa1998
+
+
+
+
+
+
+dell
+{
+D:\Dev\Qt\QT5.5.1VcStaticWeb
+
+set INCLUDE=%INCLUDE%;C:\Program Files (x86)\Windows Kits\8.0\Include
+configure.bat -prefix D:\Dev\Qt\QT5.5.1VcStaticWeb -confirm-license -debug-and-release -opensource -static -nomake examples -no-compile-examples -openvg -platform win32-msvc2013 -target xp -plugin-sql-sqlite -sse4.2 -plugin-sql-odbc -qt-zlib -qt-libpng -qt-libjpeg  -icu -opengl desktop -openssl-linked -l Gdi32 -mp
+
+
+
+
+set PATH=%PATH%;C:\Qt\QtVS5.5.1\5.5\Src\gnuwin32\bin；C:\Qt\QtStaticVS5.5.1\bin
+ET _CD=%CD%
+SET QT_PREFIX=C:\Qt\QtStaticVS5.5.1
+SET QT_SOURCE=C:\Qt\QtVS5.5.1\5.5\Src
+SET QTWEBKIT_PREFIX=C:\Qt\QtStaticVS5.5.1\Qtwebkit
+
+set LIB=%LIB%;%QT_PREFIX%\lib;%QT_PREFIX%\plugins;%QT_PREFIX%\plugins\audio;%QT_PREFIX%\plugins\bearer; %QT_PREFIX%\plugins\designer;%QT_PREFIX%\plugins\geoservices;%QT_PREFIX%\plugins\iconengines;   %QT_PREFIX%\plugins\imageformats;%QT_PREFIX%\plugins\mediaservice;%QT_PREFIX%\plugins\platforms;  %QT_PREFIX%\plugins\playlistformats;%QT_PREFIX%\plugins\position;%QT_PREFIX%\plugins\printsupport;   %QT_PREFIX%\plugins\qml1tooling;%QT_PREFIX%\plugins\qmltooling;%QT_PREFIX%\plugins\sensorgestures;%QT_PREFIX%\plugins\sensors;
+
+perl %QT_SOURCE%\qtwebkit\Tools\Scripts\build-webkit --qt  --release --prefix=%QTWEBKIT_PREFIX%
+perl C:\Qt\QtVS5.5.1\5.5\Src\qtwebkit\Tools\Scripts\build-webkit --qt --video --web-audio --workers --web-sockets --release --prefix=%QTWEBKIT_PREFIX%
+CD /D %QT_SOURCE%\qtwebkit\WebKitBuild\%BUILD_MODE%
+nmake install
+
+
+perl %QT_SOURCE%\qtwebkit\Tools\Scripts\build-webkit --qt CONFIG+=debug CONFIG+=release --prefix=%QTWEBKIT_PREFIX%

@@ -1,0 +1,188 @@
+win10如何安装mariadb
+一、下载、安装
+1、下载mariadb（https://downloads.mariadb.org/），解压
+
+
+2、进入bin目录下执行（管理员模型-powershell）
+
+.\mysqld.exe --install mariadb
+显示：
+Service successfully installed.
+成功
+
+
+3、执行
+
+net start mariadb
+显示：
+mariadb 服务正在启动 ...
+mariadb 服务无法启动。
+
+系统出错。
+
+发生系统错误 1067。
+
+进程意外终止。
+
+ 
+
+4、加参数再次执行
+
+.\mysql_install_db --user=mysql -d D:\develop\mariadb-10.4.7-winx64\data
+ 
+
+显示：
+D:\develop\mariadb-10.4.7-winx64\bin\mysql_install_db.exe: unknown variable 'user=mysql'
+
+ 
+
+5、去除user=mysql，再次执行
+
+.\mysql_install_db -d D:\develop\mariadb-10.4.7-winx64\data
+ 
+
+显示：
+Running bootstrap
+2019-08-15 21:37:52 0 [Note] D:\develop\mariadb-10.4.7-winx64\bin\mysqld.exe (mysqld 10.4.7-MariaDB) starting as process 6240 ...
+Removing default user
+Creating my.ini file
+Creation of the database was successful
+成功
+
+二、启动、修改编码
+6、启动服务
+
+net start mariadb
+net stop mariadb --关闭
+ 
+
+
+7、登录数据库
+
+.\mysql.exe -uroot
+ 
+
+
+8、查看编码
+
+show variables like 'character%';
+ 
+
+显示：
++--------------------------+--------------------------------------------------+
+| Variable_name | Value |
++--------------------------+--------------------------------------------------+
+| character_set_client | gbk |
+| character_set_connection | gbk |
+| character_set_database | latin1 |
+| character_set_filesystem | binary |
+| character_set_results | gbk |
+| character_set_server | latin1 |
+| character_set_system | utf8 |
+| character_sets_dir | D:\develop\mariadb-10.4.7-winx64\share\charsets\ |
++--------------------------+--------------------------------------------------+
+
+ 
+
+9、修改编码为utf8
+
+set character_set_client=utf8;
+set character_set_connection=utf8;
+set character_set_database=utf8;
+set character_set_results=utf8;
+set character_set_server=utf8;
+ 
+
+
+10、查看编码修改结果
+执行：
+
+show variables like 'character%';
+ 
+
+显示：
++--------------------------+--------------------------------------------------+
+| Variable_name | Value |
++--------------------------+--------------------------------------------------+
+| character_set_client | utf8 |
+| character_set_connection | utf8 |
+| character_set_database | utf8 |
+| character_set_filesystem | binary |
+| character_set_results | utf8 |
+| character_set_server | utf8 |
+| character_set_system | utf8 |
+| character_sets_dir | D:\develop\mariadb-10.4.7-winx64\share\charsets\ |
++--------------------------+--------------------------------------------------+
+
+三、建库、建用户、加权限
+11、建库simple
+
+create database simple default charset utf8 collate utf8_general_ci;
+ 
+
+
+12、创建用户simple
+
+create user 'simple'@'localhost' identified by '123456';
+ 
+
+创建localhost登录的用户simple，密码是123456
+
+
+13、赋予权限
+
+grant all on simple.* to 'simple'@'localhost' with grant option;
+ 
+
+将库simple的所有权限赋予用户simple，且有操作的权限。
+
+
+14、登录验证
+
+mysql -usimple -p123456
+ 
+
+四、发现编码问题，修改
+15、修改之后，重启登录，发现编码还原了
+网上搜索，说上面的设置是临时的，需要加global设置。
+
+set global character_set_client=utf8;
+ 
+
+一番操作之后，发现还是不起作用。
+
+
+16、尝试修改配置文件来解决
+再次搜索，有教改配置文件的，win10的是my.ini
+D:\develop\mariadb-10.4.7-winx64\data\my.ini
+修改如下：
+
+复制代码
+[mysqld]
+character_set_server = utf8
+datadir=D:/develop/mariadb-10.4.7-winx64/data
+
+[mysql]
+default-character-set = utf8
+
+[mysql.server]
+default-character-set = utf8
+[client]
+default-character-set = utf8
+plugin-dir=D:/develop/mariadb-10.4.7-winx64/lib/plugin
+复制代码
+ 
+
+ 
+
+17、修改之后，发现还是不行，删库，重新建，删表，重新建，还是不行。
+变化的是之前的?变成乱码了。
+网上搜了一个遍，没有思路。因为我是通过powershell连接的，心想，装个navicat看看吧，到底啥原因。
+装了之后，发现很正常，没有乱码，于是矛头指向了powershell。
+
+ 
+
+18、修改powershell乱码
+参考：https://blog.csdn.net/weixin_43426860/article/details/83348284
+控制面板-区域-管理-更改系统区域设置，勾选使用utf-8。
+重启之后，显示正常。
