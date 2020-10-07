@@ -15,7 +15,10 @@ HMainWindow::HMainWindow(QWidget *parent) :
     ui->setupUi(this);
     QString Dir     = QDir::currentPath();
     //----------
-    QString logDir = Dir+"/log";
+    QString logDir = Dir+"/win32/log";
+#if defined(Q_OS_LINUX)
+    logDir = iniDir+"/linux/log";
+#endif
     if (!isDirExist(logDir))
     {
         CreatDir(logDir);
