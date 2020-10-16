@@ -147,8 +147,9 @@ func main() {
 	// WebServer.GET("/Login/*", Login)
 	WebServer.GET("/login/*", Login)
 
-	//ris
+	//ris study order info
 	WebServer.GET("/healthsystem/ris/studydata/", GetDBStudyData)
+	//ris study image info
 	WebServer.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
 
 	//ris//update ->studydata
@@ -517,6 +518,8 @@ func GetReportdata(c echo.Context) error {
 }
 
 func GetDBStudyImage(c echo.Context) error {
+	///'http://127.0.0.1:8080/healthsystem/ris/stduyimage/?' + searchImageTime
+
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
@@ -718,6 +721,7 @@ func UpdateDBStudyData(c echo.Context) error {
 }
 
 func GetDBStudyData(c echo.Context) error {
+	//'http://127.0.0.1:8080/healthsystem/ris/studydata/?' + searchStudyTime
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
