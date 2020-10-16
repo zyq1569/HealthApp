@@ -604,7 +604,7 @@
      <rect>
       <x>0</x>
       <y>168</y>
-      <width>391</width>
+      <width>411</width>
       <height>16</height>
      </rect>
     </property>
@@ -1151,6 +1151,38 @@
      <string>port</string>
     </property>
    </widget>
+   <widget class="Line" name="line_4">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>126</y>
+      <width>411</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_5">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>200</y>
+      <width>411</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
    <zorder>groupBox_2</zorder>
    <zorder>groupBox_3</zorder>
    <zorder>groupBox</zorder>
@@ -1198,6 +1230,8 @@
    <zorder>label_wlm_2</zorder>
    <zorder>label_wlm_3</zorder>
    <zorder>label_wlm_4</zorder>
+   <zorder>line_4</zorder>
+   <zorder>line_5</zorder>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
