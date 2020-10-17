@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>597</width>
-    <height>612</height>
+    <width>507</width>
+    <height>613</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="m_getHttpData">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>10</y>
+      <x>420</x>
+      <y>50</y>
       <width>80</width>
       <height>22</height>
      </rect>
@@ -70,7 +70,7 @@
       </datetime>
      </property>
      <property name="currentSection">
-      <enum>QDateTimeEdit::DaySection</enum>
+      <enum>QDateTimeEdit::YearSection</enum>
      </property>
      <property name="displayFormat">
       <string>yyyyMMdd</string>
@@ -94,13 +94,13 @@
        <hour>0</hour>
        <minute>0</minute>
        <second>0</second>
-       <year>2000</year>
+       <year>2021</year>
        <month>2</month>
        <day>1</day>
       </datetime>
      </property>
      <property name="currentSection">
-      <enum>QDateTimeEdit::DaySection</enum>
+      <enum>QDateTimeEdit::YearSection</enum>
      </property>
      <property name="displayFormat">
       <string>yyyyMMdd</string>
@@ -177,7 +177,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>491</width>
+      <width>361</width>
       <height>108</height>
      </rect>
     </property>
