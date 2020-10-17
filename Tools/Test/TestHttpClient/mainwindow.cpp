@@ -16,6 +16,10 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
     ui->m_progressBar->hide();
     m_httpclient = NULL;
 
+    QDateTime curDateTime=QDateTime::currentDateTime();
+
+    ui->m_endDate->setDate(curDateTime.date());
+
 }
 
 MainWindow::~MainWindow()
@@ -55,6 +59,11 @@ void MainWindow::on_m_getStudyImages_clicked()
     QString endDate = ui->m_endDate->text();
     QString mod = ui->m_StudyModality->currentText();
     QUrl url = ui->m_URL->text();
+    if (!m_httpclient)
+    {
+        m_httpclient = new HttpClient(NULL,"F:\\log\\down");
+    }
+    m_httpclient->getStudyDBinfo(url,startDate,endDate,"1","100");
 
 }
 
