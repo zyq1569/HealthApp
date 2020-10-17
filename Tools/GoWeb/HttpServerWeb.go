@@ -518,8 +518,9 @@ func GetReportdata(c echo.Context) error {
 }
 
 func GetDBStudyImage(c echo.Context) error {
+	log4go.Info(c.Request().URL)
 	///'http://127.0.0.1:8080/healthsystem/ris/stduyimage/?' + searchImageTime
-
+	///http://127.0.0.1:8080/healthsystem/ris/stduydata/?start=20190101&end=20191219&page=1&limit=1
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
