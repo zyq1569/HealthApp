@@ -15,9 +15,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
 
     ui->m_progressBar->hide();
     m_httpclient = NULL;
-
     QDateTime curDateTime=QDateTime::currentDateTime();
-
     ui->m_endDate->setDate(curDateTime.date());
 
     //    QString patientIdentity,patientName,patientId,patientSex,patientBirthday,patientTelNumber;
