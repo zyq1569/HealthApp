@@ -25,16 +25,16 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
     //    QString scheduledDateTime,ScheduledDate,orderDateTime,studyDescription,studyModality,aETitle;
     //    QString studyType,studyCode,studyState,studyCost,studyDate,studyDepart,sStudyModality,costType;
     QStringList strs = {"patientId", "patientName", "patientSex", "studyModality", "patientBirthday", "studyDescription","studyuid"};
-    ui->m_tableView->setColumnCount(strs.count());
+    ui->m_tableWidget->setColumnCount(strs.count());
     //ui->m_tableView->setRowCount(200);
-    ui->m_tableView->setHorizontalHeaderLabels(strs);
-    ui->m_tableView->horizontalHeader()->setStretchLastSection(true);
+    ui->m_tableWidget->setHorizontalHeaderLabels(strs);
+    ui->m_tableWidget->horizontalHeader()->setStretchLastSection(true);
     //ui->m_tableView->verticalHeader()//setResizeMode(QHeaderView::Strtch);
-    ui->m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);//select rows
-    ui->m_tableView->setSelectionMode(QAbstractItemView::SingleSelection);///single rows
-    ui->m_tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
-    ui->m_tableView->show();
-    connect(ui->m_tableView,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
+    ui->m_tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);//select rows
+    ui->m_tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);///single rows
+    ui->m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
+    ui->m_tableWidget->show();
+    connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
 
 }
 
@@ -70,7 +70,7 @@ void MainWindow::onDownloadProgress(qint64 bytesRead, qint64 totalBytes)
 void MainWindow::getItem(int row, int col)
 {
     //QString studyuid = item
-    QString studyuid = ui->m_tableView->item(row,ui->m_tableView->columnCount()-1)->text();
+    QString studyuid = ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-1)->text();
     ui->m_studyuid->setText(studyuid);
     ui->m_seruid->setText("");
     ui->m_imageuid->setText("");
@@ -83,42 +83,42 @@ void MainWindow::updateStudyImageTable()
     if (m_httpclient)
     {
         ///------------?????? memory??---------------------------------------
-        int oldrow = ui->m_tableView->rowCount();
-        int oldcol = ui->m_tableView->columnCount();
+        int oldrow = ui->m_tableWidget->rowCount();
+        int oldcol = ui->m_tableWidget->columnCount();
         for (int i = 0;i < oldrow;i++)
         {
             for (int j = 0;j < oldcol;j++)
             {
-                QTableWidgetItem *item = ui->m_tableView->item(i,j);
+                QTableWidgetItem *item = ui->m_tableWidget->item(i,j);
                 if (item)
                 {
                     delete item;
                 }
             }
         }
-        ui->m_tableView->setRowCount(0);
+        ui->m_tableWidget->setRowCount(0);
         ///------------?????? memory??------------------------------------------
         PatientStudyDB *StudyDB = m_httpclient->getPatientStudyDB();
         int rowcount = StudyDB->count;
-        int colcount = ui->m_tableView->columnCount();
-        ui->m_tableView->setRowCount(rowcount);
+        int colcount = ui->m_tableWidget->columnCount();
+        ui->m_tableWidget->setRowCount(rowcount);
         for (int row=0; row<rowcount; row++)
         {
             ///for (int col=0; col<colcount; col++)
             ///{
             ///ui->m_tableView->item(row,col)->setData(col,StudyDB->rowinfo[row][col]);
-            ///}
+            ///}m_tableWidget
             /// {"index", "patientId", "patientName", "patientSex",
             ///  "studyModality", "patientBirthday", "studyDescription","studyuid"};
-            ui->m_tableView->setItem(row,0,new QTableWidgetItem(StudyDB->rowinfo[row].patientId));
-            ui->m_tableView->setItem(row,1,new QTableWidgetItem(StudyDB->rowinfo[row].patientName));
-            ui->m_tableView->setItem(row,2,new QTableWidgetItem(StudyDB->rowinfo[row].patientSex));
-            ui->m_tableView->setItem(row,3,new QTableWidgetItem(StudyDB->rowinfo[row].studyModality));
-            ui->m_tableView->setItem(row,4,new QTableWidgetItem(StudyDB->rowinfo[row].patientBirthday));
-            ui->m_tableView->setItem(row,5,new QTableWidgetItem(StudyDB->rowinfo[row].studyDescription));
-            ui->m_tableView->setItem(row,6,new QTableWidgetItem(StudyDB->rowinfo[row].studyuid));
+            ui->m_tableWidget->setItem(row,0,new QTableWidgetItem(StudyDB->rowinfo[row].patientId));
+            ui->m_tableWidget->setItem(row,1,new QTableWidgetItem(StudyDB->rowinfo[row].patientName));
+            ui->m_tableWidget->setItem(row,2,new QTableWidgetItem(StudyDB->rowinfo[row].patientSex));
+            ui->m_tableWidget->setItem(row,3,new QTableWidgetItem(StudyDB->rowinfo[row].studyModality));
+            ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(StudyDB->rowinfo[row].patientBirthday));
+            ui->m_tableWidget->setItem(row,5,new QTableWidgetItem(StudyDB->rowinfo[row].studyDescription));
+            ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyDB->rowinfo[row].studyuid));
         }
-        ui->m_tableView->setColumnHidden(ui->m_tableView->columnCount()-1,true);
+        ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-1,true);
     }
 }
 
