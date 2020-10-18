@@ -202,7 +202,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTableWidget" name="m_tableView">
+   <widget class="QTableWidget" name="m_tableWidget">
     <property name="geometry">
      <rect>
       <x>3</x>
