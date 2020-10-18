@@ -80,6 +80,11 @@ void HttpClient::startRequest(const QUrl &requestedUrl)
     //    progressDialog->show();
 }
 
+PatientStudyDB* HttpClient::getPatientStudyDB()
+{
+    return  &m_patientstudydb;
+}
+
 void HttpClient::ParseDwonData()
 {
     m_patientstudydb.count = 0;
@@ -127,7 +132,9 @@ void HttpClient::ParseDwonData()
                 }
             }
         }
+        emit parseDataFinished();
     }
+
 }
 
 void HttpClient::setPatientDBinfo(QJsonValue &JsonValue, StudyRowInfo &Rowinfo)
@@ -391,13 +398,15 @@ void HttpClient::cancelDownload()
 void HttpClient::httpFinished()
 {
     QFileInfo fileinfo;
-    if (m_file)
+    if (m_file )
     {
-        fileinfo.setFile(m_file->fileName());
-        m_file->close();
-        m_file->reset();
-        delete  m_file;
-        m_file = NULL;
+        if (m_file->isOpen())
+        {
+            fileinfo.setFile(m_file->fileName());
+            m_file->close();
+            delete  m_file;
+            m_file = NULL;
+        }
     }
 
     if (m_httpRequestAborted)
