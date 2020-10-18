@@ -196,7 +196,7 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>webserver:</string>
+          <string>Webserver:</string>
          </property>
         </widget>
        </item>
