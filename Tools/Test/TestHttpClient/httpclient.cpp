@@ -134,6 +134,10 @@ void HttpClient::ParseDwonData()
         }
         emit parseDataFinished();
     }
+    else if (m_currentfiletype == DownFileType::studyini && m_currentDownData.size() > 1)
+    {
+
+    }
 
 }
 
