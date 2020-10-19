@@ -126,8 +126,6 @@ class HttpClient : public QObject
     Q_OBJECT
 public:
     explicit HttpClient(QObject *parent = nullptr, QString dir = "");
-
-
 public:
     void setPatientDBinfo(QJsonValue &JsonValue,StudyRowInfo &Rowinfo);
     void setDwonloadDir(QString dir);
