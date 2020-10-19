@@ -91,15 +91,15 @@ struct StudyInfo
     QList<SeriesInfo> seriesInfoList;
 };
 
-struct Series
+struct HSeries
 {
     QString SeriesUID;
     QList <QString> ImageSOPUI;
 };
-struct Study
+struct HStudy
 {
     QString StudyUID;
-    QList <Series> Serieslist;
+    QList <HSeries> Serieslist;
 };
 
 ///----------------------------------------------------------------------------------------

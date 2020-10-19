@@ -136,7 +136,15 @@ void HttpClient::ParseDwonData()
     }
     else if (m_currentfiletype == DownFileType::studyini && m_currentDownData.size() > 1)
     {
+        HStudy study;
+        study.StudyUID = m_file->fileName();
+        HSeries series;
+        QJsonParseError jsonError;
+        QJsonDocument paserDoc = QJsonDocument::fromJson(m_currentDownData, &jsonError);
+        if (jsonError.error == QJsonParseError::NoError)
+        {
 
+        }
     }
 
 }
