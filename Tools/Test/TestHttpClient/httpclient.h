@@ -126,14 +126,17 @@ class HttpClient : public QObject
     Q_OBJECT
 public:
     explicit HttpClient(QObject *parent = nullptr, QString dir = "");
+
 public:
     void setPatientDBinfo(QJsonValue &JsonValue,StudyRowInfo &Rowinfo);
     void setDwonloadDir(QString dir);
     void getStudyDBinfo(QUrl url,QString start,QString end,QString page,QString limit);//start=19700101&end=20191230&page=1&limit=10
     void getStudyImageFile(QUrl url,QString studyuid="",QString seruid = "", QString imguid = "");
     PatientStudyDB* getPatientStudyDB();
+
 signals:
-void parseDataFinished();
+    void parseDataFinished();
+
 private slots:
     void cancelDownload();
     void httpFinished();
@@ -148,6 +151,7 @@ private:
     void downFileFromWeb(QUrl httpUrl,QString savefilename,QString downDir);
     void startRequest(const QUrl &requestedUrl);
     void ParseDwonData();
+
 private:
     QUrl m_url;
     QNetworkAccessManager m_networkmanager;
