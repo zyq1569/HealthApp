@@ -99,6 +99,7 @@ struct HSeries
 struct HStudy
 {
     QString StudyUID;
+    int imageCount;
     QList <HSeries> Serieslist;
 };
 

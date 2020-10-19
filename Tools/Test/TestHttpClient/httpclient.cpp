@@ -137,33 +137,48 @@ void HttpClient::ParseDwonData()
     else if (m_currentfiletype == DownFileType::studyini && m_currentDownData.size() > 1)
     {
         HStudy study;
-        study.StudyUID = m_file->fileName();
-        HSeries series;
         QJsonParseError jsonError;
         QJsonDocument paserDoc = QJsonDocument::fromJson(m_currentDownData, &jsonError);
         if (jsonError.error == QJsonParseError::NoError)
         {
-
+            QJsonObject paserObj = paserDoc.object();
+            study.StudyUID = paserObj.take("studyuid").toString();
+            study.imageCount = paserObj.take("numImages").toInt();
+            QJsonArray array = paserObj.take("seriesList").toArray();
+            int size = array.size();
+            for (int i=0; i<size; i++)
+            {
+                HSeries series;
+                QJsonObject Obj = array.at(i).toObject();
+                series.SeriesUID = Obj.take("seriesUid").toString();
+                QJsonArray iarray = Obj.take("instanceList").toArray();
+                int isize = iarray.size();
+                for (int j=0; j<isize; j++)
+                {
+                    QString imageuid = iarray.at(j).toObject().take("imageId").toString();
+                    series.ImageSOPUI.push_back(imageuid);
+                }
+                study.Serieslist.push_back(series);
+            }
         }
     }
-
 }
 
 void HttpClient::setPatientDBinfo(QJsonValue &JsonValue, StudyRowInfo &Rowinfo)
 {
     QJsonObject paserObj = JsonValue.toObject();
-//    QString Name;
-//    QJsonObject::Iterator it;
-//    QString keyString="";
-//    QString valueString="";
-//    int i=0;
-//    for(it=paserObj.begin();it!=paserObj.end();it++)
-//    {
-//        QString value=it.value().toString();
-//        keyString=it.key()+","+keyString;
-//        valueString="'"+value+"',"+valueString;
-//        i++;
-//    }
+    //    QString Name;
+    //    QJsonObject::Iterator it;
+    //    QString keyString="";
+    //    QString valueString="";
+    //    int i=0;
+    //    for(it=paserObj.begin();it!=paserObj.end();it++)
+    //    {
+    //        QString value=it.value().toString();
+    //        keyString=it.key()+","+keyString;
+    //        valueString="'"+value+"',"+valueString;
+    //        i++;
+    //    }
     if (paserObj.contains("patientIdentity"))
     {
         Rowinfo.patientIdentity = paserObj["patientIdentity"].toString();
@@ -350,22 +365,25 @@ void HttpClient::getStudyImageFile(QUrl url,QString studyuid,QString seruid, QSt
     ///http://127.0.0.1:8080/WADO?
     ///studyuid=1.2.826.1.1.3680043.2.461.20090916105245.168977.200909160196&type=json
     ///-------------------------------------------------------------------------
-    m_currentfiletype = DownFileType::other;
-    if (studyuid != "")
+    if (url.toString() == "" || studyuid == "")
     {
-        if (seruid != "" && imguid != "")
-        {
-            QString strURL = url.toString()+"/WADO?studyuid="+studyuid+"&seriesuid="+seruid+"&sopinstanceuid="+imguid;
-            url = strURL;
-            m_currentfiletype = DownFileType::dcm;
-        }
-        else
-        {
-            QString strURL = url.toString()+"/WADO?studyuid="+studyuid+"&type=json";
-            url = QUrl(strURL);
-            m_currentfiletype = DownFileType::studyini;
-        }
+        return;
     }
+    m_currentfiletype = DownFileType::other;
+
+    if (seruid != "" && imguid != "")
+    {
+        QString strURL = url.toString()+"/WADO?studyuid="+studyuid+"&seriesuid="+seruid+"&sopinstanceuid="+imguid;
+        url = strURL;
+        m_currentfiletype = DownFileType::dcm;
+    }
+    else
+    {
+        QString strURL = url.toString()+"/WADO?studyuid="+studyuid+"&type=json";
+        url = QUrl(strURL);
+        m_currentfiletype = DownFileType::studyini;
+    }
+
     m_url = url;
     const QString urlSpec = m_url.toString().trimmed();
     if (urlSpec.isEmpty())
@@ -490,18 +508,26 @@ void HttpClient::httpReadyRead()
     // We read all of its new data and write it into the file.
     // That way we use less RAM than when reading it at the finished()
     // signal of the QNetworkReply
-    if  (m_currentfiletype == DownFileType::dbinfo)
+    m_currentDownData.clear();
+    if (m_currentfiletype == DownFileType::dbinfo)
     {
         m_currentDownData = m_networkreply->readAll();
     }
     else
     {
-        if (m_file)
+        if (m_currentfiletype == DownFileType::studyini)
+        {
+            m_currentDownData = m_networkreply->readAll();
+            if (m_file)
+            {
+                m_file->write(m_currentDownData);
+            }
+        }
+        else if (m_file)
         {
             m_file->write(m_networkreply->readAll());
         }
     }
-
 }
 
 void HttpClient::slotAuthenticationRequired(QNetworkReply *, QAuthenticator *authenticator)
