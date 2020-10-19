@@ -300,7 +300,6 @@ void HttpClient::setPatientDBinfo(QJsonValue &JsonValue, StudyRowInfo &Rowinfo)
 
 }
 
-
 void HttpClient::getStudyDBinfo(QUrl url,QString start,QString end,QString page,QString limit)
 {
     ///http://127.0.0.1:8080/healthsystem/ris/stduyimage/?start=19700101&end=20191230&page=1&limit=10
