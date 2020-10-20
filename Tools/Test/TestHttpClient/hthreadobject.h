@@ -7,8 +7,8 @@
 #include <QUrl>
 #include <QNetworkAccessManager>
 #include <QList>
-
 class QFile;
+class QNetworkReply;
 
 class HThreadObject : public QObject
 {
@@ -16,22 +16,20 @@ class HThreadObject : public QObject
 public:
     explicit HThreadObject(QObject *parent = nullptr);
     ~HThreadObject();
+
 public slots:
-    void work(const QString &parameter)
-    {
-        QString result;
-        /* here is the expensive or blocking operation */
-        emit notifyResult(result);
-    }
+    void work(const QUrl url, QString fullpathfilename);
+    void ReadyRead();
+    void Finished();
 signals:
-    void notifyResult(const QString &result);
+    void notifyResult(const int &state);
 private:
-    QUrl m_url;
     QNetworkAccessManager m_networkmanager;
     QNetworkReply *m_networkreply;
     QFile *m_file;
 };
 
+///--------------------------------------------------------------------------------------------
 class HManageThread : public QObject
 {
     Q_OBJECT
@@ -52,12 +50,12 @@ public:
         workerThread.wait();
     }
 public slots:
-    void handleResults(const QString &)
+    void handleResults(const int &)
     {
 
     }
 signals:
-    void operate(const QString &);
+    void operate(const QUrl url, QString fullpathfilename);
 };
 
 #endif // HTHREADOBJECT_H
