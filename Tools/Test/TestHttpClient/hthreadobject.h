@@ -4,6 +4,11 @@
 #include <QObject>
 #include <QMutex>
 #include <QThread>
+#include <QUrl>
+#include <QNetworkAccessManager>
+#include <QList>
+
+class QFile;
 
 class HThreadObject : public QObject
 {
@@ -20,6 +25,11 @@ public slots:
     }
 signals:
     void notifyResult(const QString &result);
+private:
+    QUrl m_url;
+    QNetworkAccessManager m_networkmanager;
+    QNetworkReply *m_networkreply;
+    QFile *m_file;
 };
 
 class HManageThread : public QObject
