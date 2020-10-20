@@ -13,15 +13,17 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
 {
     ui->setupUi(this);
 
+
+    ui->m_getHttpData->hide();// hide: down studyimage file by this button
     ui->m_progressBar->hide();
     m_httpclient = NULL;
     QDateTime curDateTime=QDateTime::currentDateTime();
     ui->m_endDate->setDate(curDateTime.date());
 
-    //    QString patientIdentity,patientName,patientId,patientSex,patientBirthday,patientTelNumber;
-    //    QString patientAddr,patientCarID,patientType,patientEmail,studyOrderIdentity,studyId,studyuid;
-    //    QString scheduledDateTime,ScheduledDate,orderDateTime,studyDescription,studyModality,aETitle;
-    //    QString studyType,studyCode,studyState,studyCost,studyDate,studyDepart,sStudyModality,costType;
+    //QString patientIdentity,patientName,patientId,patientSex,patientBirthday,patientTelNumber;
+    //QString patientAddr,patientCarID,patientType,patientEmail,studyOrderIdentity,studyId,studyuid;
+    //QString scheduledDateTime,ScheduledDate,orderDateTime,studyDescription,studyModality,aETitle;
+    //QString studyType,studyCode,studyState,studyCost,studyDate,studyDepart,sStudyModality,costType;
     QStringList strs = {"patientId", "patientName", "patientSex", "studyModality", "patientBirthday", "studyDescription","studyuid"};
     ui->m_tableWidget->setColumnCount(strs.count());
     //ui->m_tableView->setRowCount(200);
