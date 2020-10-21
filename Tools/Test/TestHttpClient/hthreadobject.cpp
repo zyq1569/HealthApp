@@ -35,6 +35,8 @@ void HThreadObject::Finished()
         }
     }
     emit notifyResult(1);
+    m_networkreply->deleteLater();
+    m_networkreply = nullptr;
 }
 
 void HThreadObject::work(const QUrl url, QString fullpathfilename)
