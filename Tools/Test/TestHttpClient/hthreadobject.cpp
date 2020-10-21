@@ -4,15 +4,20 @@
 #include <QFile>
 #include <QFileInfo>
 
+#define  WAIT_HTTP 0
+#define  DOWN_HTTP 1
+
+
 HThreadObject::HThreadObject(QObject *parent) : QObject(parent)
 {
     m_file = nullptr;
 }
+
+
 HThreadObject::~HThreadObject()
 {
 
 }
-
 
 void HThreadObject::ReadyRead()
 {
@@ -34,23 +39,56 @@ void HThreadObject::Finished()
             m_file = NULL;
         }
     }
-    emit notifyResult(1);
+    emit notifyResult(SaveFile_Ok);
     m_networkreply->deleteLater();
     m_networkreply = nullptr;
+    startNework();
 }
 
-void HThreadObject::work(const QUrl url, QString fullpathfilename)
+void HThreadObject::setState(int state)
 {
-    m_file = new QFile(fullpathfilename);
+
+}
+
+void HThreadObject::setInput(QList<HttpInfo> httpInfo)
+{
+    m_httpInfo.clear();
+    m_httpInfo.append(httpInfo);
+}
+
+void HThreadObject::startNework()
+{
+    int size = m_httpInfo.size();
+    if (m_index >= size)
+    {
+        return;
+    }
+
+    QString filename = m_httpInfo[m_index].fullpathfilename;
+    m_file = new QFile(filename);
+    //qDebug() <<filename;
     if (!m_file->open(QFile::WriteOnly | QIODevice::Truncate))
     {
         m_file->close();
         delete m_file;
         m_file = nullptr;
-        notifyResult(-1);
+        notifyResult(OpenFile_Fail);
         return ;
     }
-    m_networkreply = m_networkmanager.get(QNetworkRequest(url));
+    QUrl url = m_httpInfo[m_index].url;
+    m_networkreply = m_networkmanager->get(QNetworkRequest(url));
     connect(m_networkreply, &QIODevice::readyRead, this, &HThreadObject::ReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &HThreadObject::Finished);
+
+    m_index++;
+}
+
+void HThreadObject::work()
+{
+    m_index = 0;
+    m_networkmanager = new QNetworkAccessManager(this);
+    if (m_networkmanager)
+    {
+        startNework();
+    }
 }

@@ -2,6 +2,7 @@
 
 #include "ui_authenticationdialog.h"
 
+#include "hthreadobject.h"
 
 #include <QNetworkReply>
 #include <QFileInfo>
@@ -53,6 +54,7 @@ HttpClient::HttpClient(QObject *parent, QString dir) : QObject(parent),m_httpReq
         m_downDir = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)+"\\";
     }
     m_currentfiletype = DownFileType::other;
+    m_managethread = nullptr;
 }
 
 void HttpClient::setDwonloadDir(QString dir)
@@ -72,12 +74,6 @@ void HttpClient::startRequest(const QUrl &requestedUrl)
     connect(m_networkreply, &QIODevice::readyRead, this, &HttpClient::httpReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &HttpClient::httpFinished);
 
-    //    ProgressDialog *progressDialog = new ProgressDialog(m_url, NULL);
-    //    progressDialog->setAttribute(Qt::WA_DeleteOnClose);
-    //    connect(progressDialog, &QProgressDialog::canceled, this, &HttpClient::cancelDownload);
-    //    connect(m_networkreply, &QNetworkReply::downloadProgress, progressDialog, &ProgressDialog::networkReplyProgress);
-    //    connect(m_networkreply, &QNetworkReply::finished, progressDialog, &ProgressDialog::hide);
-    //    progressDialog->show();
 }
 
 PatientStudyDB* HttpClient::getPatientStudyDB()
@@ -145,6 +141,8 @@ void HttpClient::ParseDwonData()
             study.StudyUID = paserObj.take("studyuid").toString();
             study.imageCount = paserObj.take("numImages").toInt();
             QJsonArray array = paserObj.take("seriesList").toArray();
+            CreatDir(m_downDir+"/"+study.StudyUID);
+            QList<HttpInfo> httpinfo;
             int size = array.size();
             for (int i=0; i<size; i++)
             {
@@ -152,14 +150,27 @@ void HttpClient::ParseDwonData()
                 QJsonObject Obj = array.at(i).toObject();
                 series.SeriesUID = Obj.take("seriesUid").toString();
                 QJsonArray iarray = Obj.take("instanceList").toArray();
+                CreatDir(m_downDir+"/"+study.StudyUID+"/"+series.SeriesUID);
                 int isize = iarray.size();
                 for (int j=0; j<isize; j++)
                 {
                     QString imageuid = iarray.at(j).toObject().take("imageId").toString();
                     series.ImageSOPUI.push_back(imageuid);
+                    QString newurl = m_host+"/WADO?studyuid="+study.StudyUID+"&seriesuid="+series.SeriesUID+"&sopinstanceuid="+imageuid;
+                    HttpInfo info;
+                    info.url = QUrl(newurl);
+                    info.fullpathfilename = m_downDir + "/"+study.StudyUID+"/"+series.SeriesUID+"/"+imageuid+".dcm";
+                    httpinfo.push_back(info);
                 }
                 study.Serieslist.push_back(series);
             }
+            if (m_managethread)
+            {
+                delete  m_managethread;
+                m_managethread = nullptr;
+            }
+            m_managethread = new HManageThread();
+            m_managethread->start(httpinfo);
         }
     }
 }

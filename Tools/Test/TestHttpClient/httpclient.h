@@ -7,10 +7,12 @@
 #include <QSslError>
 #include <QNetworkAccessManager>
 #include <QList>
+#include <QDir>
 
 class QNetworkReply;
 class QAuthenticator;
 class QFile;
+class HManageThread;
 
 //class QNetworkAccessManager;
 
@@ -133,6 +135,22 @@ public:
     void getStudyDBinfo(QUrl url,QString start,QString end,QString page,QString limit);//start=19700101&end=20191230&page=1&limit=10
     void getStudyImageFile(QUrl url,QString studyuid="",QString seruid = "", QString imguid = "");
     PatientStudyDB* getPatientStudyDB();
+    bool CreatDir(QString fullPath)
+    {
+        QDir dir(fullPath); // 注意
+        if(dir.exists())
+        {
+            return true;
+        }else{
+            dir.setPath("");
+            bool ok = dir.mkpath(fullPath);
+            return ok;
+        }
+    }
+    void setHost(QString host)
+    {
+        m_host = host;
+    }
 
 signals:
     void parseDataFinished();
@@ -154,6 +172,7 @@ private:
 
 private:
     QUrl m_url;
+    QString m_host;
     QNetworkAccessManager m_networkmanager;
     QNetworkReply *m_networkreply;
     QFile *m_file;
@@ -162,6 +181,7 @@ private:
     DownFileType m_currentfiletype;
     QByteArray m_currentDownData;
     PatientStudyDB m_patientstudydb;
+    HManageThread *m_managethread;
 
 };
 
