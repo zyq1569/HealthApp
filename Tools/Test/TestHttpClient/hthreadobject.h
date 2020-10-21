@@ -7,6 +7,8 @@
 #include <QUrl>
 #include <QNetworkAccessManager>
 #include <QList>
+#include <QMessageBox>
+
 class QFile;
 class QNetworkReply;
 
@@ -71,11 +73,12 @@ public:
             workerThread[i].quit();
             workerThread[i].wait();
         }
-
     }
     void start(QList<HttpInfo> httpInfo)
     {
         int size = httpInfo.size();
+        m_total = size;
+        m_fileinfo = "Total "+ QString("%1").arg(m_total) + " files save ok!";
         int averg = size/Max_thread_size;
         int mod = size%Max_thread_size;
         int index = 0;
@@ -104,10 +107,17 @@ public:
 public slots:
     void handleResults(const int &)
     {
-
+        m_total--;
+        if (m_total <1)
+        {
+            QMessageBox::question(NULL, tr("Down All file"),m_fileinfo,QMessageBox::Ok );
+        }
     }
 signals:
     void operate();
+private:
+    int m_total;
+    QString m_fileinfo;
 };
 
 #endif // HTHREADOBJECT_H
