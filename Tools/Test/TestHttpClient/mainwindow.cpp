@@ -124,6 +124,7 @@ void MainWindow::updateStudyImageTable()
 
 void MainWindow::on_m_getStudyImages_clicked()
 {
+
     ///http://127.0.0.1:8080/healthsystem/ris/stduyimage/?start=19700101&end=20191230&page=1&limit=10
     QString startDate = ui->m_startDate->text();
     QString endDate = ui->m_endDate->text();
@@ -132,6 +133,7 @@ void MainWindow::on_m_getStudyImages_clicked()
     if (!m_httpclient)
     {
         m_httpclient = new HttpClient(NULL,"F:\\log\\down");
+        m_httpclient->setHost(ui->m_URL->text());
     }
     connect(m_httpclient,&HttpClient::parseDataFinished,this,&MainWindow::updateStudyImageTable);
     m_httpclient->getStudyDBinfo(url,startDate,endDate,"1","100");
