@@ -192,29 +192,21 @@ void HManageThread::start(QList<HttpInfo> httpInfo)
         }
         worker[i]->setInput(temp);
     }
-    emit operate();
-
     QUrl url = httpInfo[0].url;
     QString host = url.host();
     QString  port = ":"+QString("%1").arg(url.port());
-
-    static ProgressDialog progressDialog(QUrl(host+port), NULL);
-    progressDialog.inIt(QUrl(host+port));
-    progressDialog.setMaximum(m_total);
-    progressDialog.setAttribute(Qt::WA_DeleteOnClose);
-    connect(&progressDialog, &QProgressDialog::canceled, this, &HManageThread::cancelDownload);
-    connect(this, &HManageThread::downloadProgress, &progressDialog, &ProgressDialog::networkReplyProgress);
-    connect(this, &HManageThread::finished, &progressDialog, &ProgressDialog::hide);
-    progressDialog.setCancelButton(0);
+    static QProgressDialog progressDialog(NULL);
     progressDialog.setModal(true);
+    progressDialog.setRange(1, size);
+    progressDialog.setMinimumDuration(1);
+    progressDialog.setWindowTitle("Down Files...");
+    //progressDialog.setLabelText("Downloading "+host+port);
+    progressDialog.setCancelButton(0);
+    connect(this, &HManageThread::ProgressInfo, &progressDialog, &QProgressDialog::setLabelText);
+   // connect(this, &HManageThread::readfiles, &progressDialog, &QProgressDialog::setValue);
+    connect(this, &HManageThread::finished, &progressDialog, &ProgressDialog::hide);
     progressDialog.show();
-//    ProgressDialog *progressDialog = new ProgressDialog(QUrl(host+port), NULL);
-//    progressDialog->inIt(QUrl(host+port));
-//    progressDialog->setAttribute(Qt::WA_DeleteOnClose);
-//    connect(progressDialog, &QProgressDialog::canceled, this, &HManageThread::cancelDownload);
-//    connect(this, &HManageThread::downloadProgress, progressDialog, &ProgressDialog::networkReplyProgress);
-//    connect(this, &HManageThread::finished, progressDialog, &ProgressDialog::hide);
-//    progressDialog->show();
+    emit operate();
 }
 
 
@@ -231,5 +223,7 @@ void HManageThread::handleResults(const int &msg)
         emit finished();
         //QMessageBox::question(NULL, tr("Down All file"),m_fileinfo,QMessageBox::Ok );
     }
-    emit downloadProgress(m_total-m_remainder,m_total);
+    //emit readfiles(m_total-m_remainder);
+    emit ProgressInfo(tr("Downloading %1 / %2   ...").arg(m_total-m_remainder).arg(m_total));
 }
+
