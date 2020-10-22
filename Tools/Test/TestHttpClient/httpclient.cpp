@@ -21,6 +21,7 @@
 //-----------------------------------------HttpClient------------------------------------------------------------
 HttpClient::HttpClient(QObject *parent, QString dir) : QObject(parent),m_httpRequestAborted(false)
 {
+    m_parent = parent;
     m_file = nullptr;
     if (dir != "")
     {

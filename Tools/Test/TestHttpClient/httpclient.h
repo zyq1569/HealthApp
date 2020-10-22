@@ -146,6 +146,7 @@ private:
     QByteArray m_currentDownData;
     PatientStudyDB m_patientstudydb;
     HManageThread *m_managethread;
+    QObject *m_parent;
 
 };
 
