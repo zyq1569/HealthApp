@@ -4,7 +4,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QNetworkAccessManager>
-
+#include <QWidget>
 
 ProgressDialog::ProgressDialog(const QUrl &url, QWidget *parent):QProgressDialog(parent)
 {
@@ -196,14 +196,22 @@ void HManageThread::start(QList<HttpInfo> httpInfo)
     QString host = url.host();
     QString  port = ":"+QString("%1").arg(url.port());
     static QProgressDialog progressDialog(NULL);
-    progressDialog.setModal(true);
-    progressDialog.setRange(1, 100);
-    progressDialog.setValue(100);
-    progressDialog.setMinimumDuration(0);
-    progressDialog.setWindowTitle("Down Files...");
+    static bool setok = false;
+    if (!setok)
+    {
+        setok = true;
+        progressDialog.setModal(true);
+        progressDialog.setRange(1, 100);
+        progressDialog.setValue(100);
+        progressDialog.setMinimumDuration(0);
+        progressDialog.setWindowTitle("Down Files...");
+        //progressDialog.setWindowFlags();
+        progressDialog.setMinimumSize(QSize(300, 75));
+        //progressDialog.setLabelText("Downloading "+host+port);
+        progressDialog.setCancelButton(0);
+    }
     progressDialog.setLabelText("Start Downloading...");
-    //progressDialog.setLabelText("Downloading "+host+port);
-    progressDialog.setCancelButton(0);
+
     connect(this, &HManageThread::ProgressInfo, &progressDialog, &QProgressDialog::setLabelText);
     //connect(this, &HManageThread::readfiles, &progressDialog, &QProgressDialog::setValue);
     connect(this, &HManageThread::finished, &progressDialog, &ProgressDialog::hide);
