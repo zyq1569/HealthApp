@@ -88,6 +88,8 @@ public slots:
 signals:
     void operate();
     void downloadProgress(qint64 bytesRead, qint64 totalBytes);
+    void ProgressInfo(QString text);
+    void readfiles(qint64 bytesRead);
     void finished();
 private:
     int m_total,m_remainder;
