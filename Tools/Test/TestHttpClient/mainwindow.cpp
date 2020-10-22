@@ -132,7 +132,7 @@ void MainWindow::on_m_getStudyImages_clicked()
     QUrl url = ui->m_URL->text();
     if (!m_httpclient)
     {
-        m_httpclient = new HttpClient(NULL,"F:\\log\\down");
+        m_httpclient = new HttpClient(this,"F:\\log\\down");
         m_httpclient->setHost(ui->m_URL->text());
     }
     connect(m_httpclient,&HttpClient::parseDataFinished,this,&MainWindow::updateStudyImageTable);

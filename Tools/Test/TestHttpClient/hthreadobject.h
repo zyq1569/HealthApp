@@ -92,6 +92,7 @@ signals:
 private:
     int m_total,m_remainder;
     QString m_fileinfo;
+    QObject *m_parent;
 };
 
 #endif // HTHREADOBJECT_H

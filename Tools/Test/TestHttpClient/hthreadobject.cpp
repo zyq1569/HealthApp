@@ -8,20 +8,14 @@
 
 ProgressDialog::ProgressDialog(const QUrl &url, QWidget *parent):QProgressDialog(parent)
 {
-    setWindowTitle(tr("Download Progress"));
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setLabelText(tr("Downloading %1.").arg(url.toDisplayString()));
-    setMinimum(0);
-    setValue(0);
-    setMinimumDuration(0);
-    setMinimumSize(QSize(400, 75));
+    inIt(url);
 }
 
 void ProgressDialog::inIt(QUrl url)
 {
-    setWindowTitle(tr("Download Progress"));
+    setWindowTitle(tr("Downloading http://%1.").arg(url.path()));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setLabelText(tr("Downloading %1.").arg(url.toDisplayString()));
+    setLabelText(tr("Downloading http://%1.").arg(url.path()));
     setMinimum(0);
     setValue(0);
     setMinimumDuration(0);
@@ -37,6 +31,7 @@ void ProgressDialog::networkReplyProgress(qint64 bytesRead, qint64 totalBytes)
 {
     setMaximum(totalBytes);
     setValue(bytesRead);
+    setLabelText(tr("Downloading %1/%2.").arg(bytesRead).arg(totalBytes));
 }
 
 
@@ -210,6 +205,8 @@ void HManageThread::start(QList<HttpInfo> httpInfo)
     connect(&progressDialog, &QProgressDialog::canceled, this, &HManageThread::cancelDownload);
     connect(this, &HManageThread::downloadProgress, &progressDialog, &ProgressDialog::networkReplyProgress);
     connect(this, &HManageThread::finished, &progressDialog, &ProgressDialog::hide);
+    progressDialog.setCancelButton(0);
+    progressDialog.setModal(true);
     progressDialog.show();
 //    ProgressDialog *progressDialog = new ProgressDialog(QUrl(host+port), NULL);
 //    progressDialog->inIt(QUrl(host+port));
