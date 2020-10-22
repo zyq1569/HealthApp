@@ -197,13 +197,15 @@ void HManageThread::start(QList<HttpInfo> httpInfo)
     QString  port = ":"+QString("%1").arg(url.port());
     static QProgressDialog progressDialog(NULL);
     progressDialog.setModal(true);
-    progressDialog.setRange(1, size);
-    progressDialog.setMinimumDuration(1);
+    progressDialog.setRange(1, 100);
+    progressDialog.setValue(100);
+    progressDialog.setMinimumDuration(0);
     progressDialog.setWindowTitle("Down Files...");
+    progressDialog.setLabelText("Start Downloading...");
     //progressDialog.setLabelText("Downloading "+host+port);
     progressDialog.setCancelButton(0);
     connect(this, &HManageThread::ProgressInfo, &progressDialog, &QProgressDialog::setLabelText);
-   // connect(this, &HManageThread::readfiles, &progressDialog, &QProgressDialog::setValue);
+    //connect(this, &HManageThread::readfiles, &progressDialog, &QProgressDialog::setValue);
     connect(this, &HManageThread::finished, &progressDialog, &ProgressDialog::hide);
     progressDialog.show();
     emit operate();
@@ -222,7 +224,10 @@ void HManageThread::handleResults(const int &msg)
     {
         emit finished();
     }
+    //else
+    //{
     //emit readfiles(m_total-m_remainder);
     emit ProgressInfo(tr("Downloading %1 / %2   ...").arg(m_total-m_remainder).arg(m_total));
+    //}
 }
 

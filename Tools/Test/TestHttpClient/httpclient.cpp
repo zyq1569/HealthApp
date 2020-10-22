@@ -142,12 +142,10 @@ void HttpClient::ParseDwonData()
                 }
                 study.Serieslist.push_back(series);
             }
-            if (m_managethread)
+            if (!m_managethread)
             {
-                delete  m_managethread;
-                m_managethread = nullptr;
+                m_managethread = new HManageThread();
             }
-            m_managethread = new HManageThread();
             m_managethread->start(httpinfo);
         }
     }
