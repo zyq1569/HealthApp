@@ -139,4 +139,3 @@ void MainWindow::on_m_getStudyImages_clicked()
     m_httpclient->getStudyDBinfo(url,startDate,endDate,"1","100");
 
 }
-

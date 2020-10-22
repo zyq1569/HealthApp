@@ -32,6 +32,7 @@ public slots:
     void getItem(int row, int col);
 private slots:
     void on_m_getStudyImages_clicked();
+
 private:
     QFile *m_file;
     HttpClient *m_httpclient;
