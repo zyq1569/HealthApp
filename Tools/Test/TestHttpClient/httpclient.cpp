@@ -18,29 +18,6 @@
 #include <QJsonArray>
 
 
-ProgressDialog::ProgressDialog(const QUrl &url, QWidget *parent):QProgressDialog(parent)
-{
-    setWindowTitle(tr("Download Progress"));
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setLabelText(tr("Downloading %1.").arg(url.toDisplayString()));
-    setMinimum(0);
-    setValue(0);
-    setMinimumDuration(0);
-    setMinimumSize(QSize(400, 75));
-}
-
-ProgressDialog::~ProgressDialog()
-{
-
-}
-
-void ProgressDialog::networkReplyProgress(qint64 bytesRead, qint64 totalBytes)
-{
-    setMaximum(totalBytes);
-    setValue(bytesRead);
-}
-
-
 //-----------------------------------------HttpClient------------------------------------------------------------
 HttpClient::HttpClient(QObject *parent, QString dir) : QObject(parent),m_httpRequestAborted(false)
 {

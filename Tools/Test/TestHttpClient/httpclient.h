@@ -2,9 +2,8 @@
 #define HTTPCLIENT_H
 
 #include <QObject>
-#include <QProgressDialog>
 #include <QUrl>
-#include <QSslError>
+//#include <QSslError>
 #include <QNetworkAccessManager>
 #include <QList>
 #include <QDir>
@@ -14,18 +13,6 @@ class QAuthenticator;
 class QFile;
 class HManageThread;
 
-//class QNetworkAccessManager;
-
-class ProgressDialog : public QProgressDialog
-{
-    Q_OBJECT
-public:
-    explicit ProgressDialog(const QUrl &url, QWidget *parent = nullptr);
-    ~ProgressDialog();
-
-public slots:
-    void networkReplyProgress(qint64 bytesRead, qint64 totalBytes);
-};
 
 ///-----------------------------------------------------------------------------------------------------------------------
 enum DownFileType
@@ -39,29 +26,11 @@ enum DownFileType
 typedef  QString  OFString;
 struct DicomFileInfo
 {
-    OFString patientName;
-    OFString patientSex;
-    OFString patientAge;
-    OFString patientBirthDate;
-    OFString patientBirthTime;
-    OFString patientId;
-
-    OFString modality;
-    OFString manufacturer;
-    OFString institutionName;
-
-    OFString studyId;
-    OFString studyUID;
-    OFString studyDescription;
-    OFString studyDate;
-    OFString studyTime;
-
-    OFString seriesUID;
-    OFString seriesDescription;
-    OFString seriesNumber;
-
-    OFString imageSOPInstanceUID;
-    OFString instanceNumber;
+    OFString patientName,patientSex, patientAge,patientBirthDate, patientBirthTime,  patientId;
+    OFString modality, manufacturer, institutionName;
+    OFString studyId, studyUID,studyDescription,studyDate, studyTime;
+    OFString seriesUID, seriesDescription, seriesNumber;
+    OFString imageSOPInstanceUID, instanceNumber;
 };
 
 struct ImageInfo
@@ -83,13 +52,7 @@ struct SeriesInfo
 
 struct StudyInfo
 {
-    OFString patientName;
-    OFString patientId;
-    OFString modality;
-    OFString studyId;
-    OFString studyUID;
-    OFString studyDate;
-    OFString studyDescription;
+    OFString patientName, patientId, modality, studyId, studyUID, studyDate, studyDescription;
     QList<SeriesInfo> seriesInfoList;
 };
 
@@ -98,6 +61,7 @@ struct HSeries
     QString SeriesUID;
     QList <QString> ImageSOPUI;
 };
+
 struct HStudy
 {
     QString StudyUID;

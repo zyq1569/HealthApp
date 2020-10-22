@@ -1,16 +1,18 @@
 #ifndef HTHREADOBJECT_H
 #define HTHREADOBJECT_H
 
+#include <QProgressDialog>
 #include <QObject>
 #include <QMutex>
 #include <QThread>
 #include <QUrl>
-#include <QNetworkAccessManager>
 #include <QList>
 #include <QMessageBox>
+#include <QSslError>
 
 class QFile;
 class QNetworkReply;
+class QNetworkAccessManager;
 
 #define  OpenFile_Fail -1
 #define  SaveFile_Ok 1
@@ -21,22 +23,44 @@ struct HttpInfo
     QUrl url;
     QString fullpathfilename;
 };
+
+///-----------------
+class ProgressDialog : public QProgressDialog
+{
+    Q_OBJECT
+public:
+    explicit ProgressDialog(const QUrl &url, QWidget *parent = nullptr);
+    ~ProgressDialog();
+    void inIt(QUrl ur);
+
+public slots:
+    void networkReplyProgress(qint64 bytesRead, qint64 totalBytes);
+};
+
+///--------------------------
 class HThreadObject : public QObject
 {
     Q_OBJECT
 public:
     explicit HThreadObject(QObject *parent = nullptr);
     ~HThreadObject();
-    void setState(int state);
     void setInput(QList<HttpInfo> httpInfo);
+
 public slots:
     void work();
     void ReadyRead();
     void Finished();
+
+#ifndef QT_NO_SSL
+    void sslErrors(QNetworkReply *, const QList<QSslError> &errors);
+#endif
+
 signals:
     void notifyResult(const int &state);
+
 private:
     void startNework();
+
 private:
     QNetworkReply *m_networkreply;
     QNetworkAccessManager *m_networkmanager;
@@ -46,6 +70,7 @@ private:
 };
 
 ///--------------------------------------------------------------------------------------------
+
 #define  Max_thread_size 3
 class HManageThread : public QObject
 {
@@ -54,69 +79,18 @@ class HManageThread : public QObject
     HThreadObject *worker[Max_thread_size];
     int number[Max_thread_size];
 public:
-    HManageThread()
-    {
-        for (int i=0; i<Max_thread_size; i++)
-        {
-            worker[i] = new HThreadObject;
-            worker[i]->moveToThread(&workerThread[i]);
-            connect(&workerThread[i], &QThread::finished, worker[i], &QObject::deleteLater);
-            connect(this, &HManageThread::operate, worker[i], &HThreadObject::work);
-            connect(worker[i], &HThreadObject::notifyResult, this, &HManageThread::handleResults);
-            workerThread[i].start();
-        }
-    }
-    ~HManageThread()
-    {
-        for (int i=0; i<Max_thread_size; i++)
-        {
-            workerThread[i].quit();
-            workerThread[i].wait();
-        }
-    }
-    void start(QList<HttpInfo> httpInfo)
-    {
-        int size = httpInfo.size();
-        m_total = size;
-        m_fileinfo = "Total "+ QString("%1").arg(m_total) + " files save ok!";
-        int averg = size/Max_thread_size;
-        int mod = size%Max_thread_size;
-        int index = 0;
-        for (int i=0; i<Max_thread_size; i++)
-        {
-            number[i] = averg;
-            if(mod>0)
-            {
-                number[i]++;
-                mod --;
-            }
-            QList<HttpInfo> temp;
-            int max = averg*(i+1);
-            if (max > size)
-            {
-                max = size;
-            }
-            for (; number[i]>0&&index<size; number[i]--)
-            {
-                temp.push_back(httpInfo[index++]);
-            }
-            worker[i]->setInput(temp);
-        }
-        emit operate();
-    }
+    HManageThread();
+    ~HManageThread();
+    void start(QList<HttpInfo> httpInfo);
 public slots:
-    void handleResults(const int &)
-    {
-        m_total--;
-        if (m_total <1)
-        {
-            QMessageBox::question(NULL, tr("Down All file"),m_fileinfo,QMessageBox::Ok );
-        }
-    }
+    void handleResults(const int &msg);
+    void cancelDownload();
 signals:
     void operate();
+    void downloadProgress(qint64 bytesRead, qint64 totalBytes);
+    void finished();
 private:
-    int m_total;
+    int m_total,m_remainder;
     QString m_fileinfo;
 };
 
