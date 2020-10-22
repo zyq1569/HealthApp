@@ -221,7 +221,6 @@ void HManageThread::handleResults(const int &msg)
     if (m_remainder <1)
     {
         emit finished();
-        //QMessageBox::question(NULL, tr("Down All file"),m_fileinfo,QMessageBox::Ok );
     }
     //emit readfiles(m_total-m_remainder);
     emit ProgressInfo(tr("Downloading %1 / %2   ...").arg(m_total-m_remainder).arg(m_total));
