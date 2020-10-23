@@ -120,6 +120,7 @@ void HttpClient::ParseDwonData()
             study.imageCount = paserObj.take("numImages").toInt();
             QJsonArray array = paserObj.take("seriesList").toArray();
             CreatDir(m_downDir+"/"+study.StudyUID);
+            qDebug() <<"parse dcm studyuid: " <<study.StudyUID;
             QList<HttpInfo> httpinfo;
             int size = array.size();
             for (int i=0; i<size; i++)
@@ -142,6 +143,7 @@ void HttpClient::ParseDwonData()
                 }
                 study.Serieslist.push_back(series);
             }
+            qDebug() <<"start to down all dcm files : size = " << size;
             if (!m_managethread)
             {
                 m_managethread = new HManageThread();
