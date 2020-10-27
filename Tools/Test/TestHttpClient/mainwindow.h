@@ -22,17 +22,18 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
 public:
     void updateStudyImageTable();
 public:
     QUrl m_httpurl;
+
 public slots:
     void on_m_getHttpData_clicked();
-    void onDownloadProgress(qint64 bytesRead, qint64 totalBytes);
     void getItem(int row, int col);
+
 private slots:
     void on_m_getStudyImages_clicked();
-
     void on_m_tableWidget_cellClicked(int row, int column);
 
 private:

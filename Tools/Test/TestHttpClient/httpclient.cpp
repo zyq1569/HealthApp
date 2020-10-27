@@ -167,6 +167,8 @@ void HttpClient::ParseDwonData()
         else
         {
             qDebug() <<"---error---->parse json fail: "<< m_url.query()<<jsonError.errorString();
+            QMessageBox::question(NULL, tr("Down error"),
+                                  tr("parse json fail: %1 %2?").arg(m_url.query(),jsonError.errorString()), QMessageBox::Ok);
         }
     }
 }
