@@ -6,35 +6,6 @@
 #include <QNetworkAccessManager>
 #include <QWidget>
 
-ProgressDialog::ProgressDialog(const QUrl &url, QWidget *parent):QProgressDialog(parent)
-{
-    inIt(url);
-}
-
-void ProgressDialog::inIt(QUrl url)
-{
-    setWindowTitle(tr("Downloading http://%1.").arg(url.path()));
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setLabelText(tr("Downloading http://%1.").arg(url.path()));
-    setMinimum(0);
-    setValue(0);
-    setMinimumDuration(0);
-    setMinimumSize(QSize(400, 75));
-}
-
-ProgressDialog::~ProgressDialog()
-{
-
-}
-
-void ProgressDialog::networkReplyProgress(qint64 bytesRead, qint64 totalBytes)
-{
-    setMaximum(totalBytes);
-    setValue(bytesRead);
-    setLabelText(tr("Downloading %1/%2.").arg(bytesRead).arg(totalBytes));
-}
-
-
 ///--------------------------------------------------------------
 HThreadObject::HThreadObject(QObject *parent) : QObject(parent)
 {
@@ -89,7 +60,7 @@ void HThreadObject::Finished()
     emit notifyResult(SaveFile_Ok);
     m_networkreply->deleteLater();
     m_networkreply = nullptr;
-    startNework();
+    startNetwork();
 }
 
 void HThreadObject::setInput(QList<HttpInfo> httpInfo)
@@ -98,15 +69,15 @@ void HThreadObject::setInput(QList<HttpInfo> httpInfo)
     m_httpInfo.append(httpInfo);
 }
 
-void HThreadObject::startNework()
+void HThreadObject::startNetwork()
 {
     int size = m_httpInfo.size();
-    if (m_index >= size)
+    if (m_taskIndex >= size)
     {
         return;
     }
 
-    QString filename = m_httpInfo[m_index].fullpathfilename;
+    QString filename = m_httpInfo[m_taskIndex].fullpathfilename;
     m_file = new QFile(filename);
     //qDebug() <<filename;
     if (!m_file->open(QFile::WriteOnly | QIODevice::Truncate))
@@ -117,26 +88,26 @@ void HThreadObject::startNework()
         notifyResult(OpenFile_Fail);
         return ;
     }
-    m_networkreply = m_networkmanager->get(QNetworkRequest(m_httpInfo[m_index].url));
+    m_networkreply = m_networkmanager->get(QNetworkRequest(m_httpInfo[m_taskIndex].url));
     connect(m_networkreply, &QIODevice::readyRead, this, &HThreadObject::ReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &HThreadObject::Finished);
 #ifndef QT_NO_SSL
     connect(m_networkmanager, &QNetworkAccessManager::sslErrors, this, &HThreadObject::sslErrors);
 #endif
 
-    m_index++;
+    m_taskIndex++;
 }
 
 void HThreadObject::work()
 {
-    m_index = 0;
+    m_taskIndex = 0;
     if (!m_networkmanager)
     {
         m_networkmanager = new QNetworkAccessManager(this);
     }
     if (m_networkmanager)
     {
-        startNework();
+        startNetwork();
     }
 }
 
@@ -213,8 +184,6 @@ void HManageThread::start(QList<HttpInfo> httpInfo)
     progressDialog.setLabelText("Start Downloading...");
 
     connect(this, &HManageThread::ProgressInfo, &progressDialog, &QProgressDialog::setLabelText);
-    //connect(this, &HManageThread::readfiles, &progressDialog, &QProgressDialog::setValue);
-    connect(this, &HManageThread::finished, &progressDialog, &ProgressDialog::hide);
     progressDialog.show();
     emit operate();
 }
