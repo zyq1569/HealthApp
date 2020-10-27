@@ -3,6 +3,7 @@
 #include "ui_authenticationdialog.h"
 
 #include "hthreadobject.h"
+#include "hmanagethread.h"
 
 #include <QNetworkReply>
 #include <QFileInfo>
@@ -153,7 +154,7 @@ void HttpClient::ParseDwonData()
         }
         else
         {
-            qDebug() <<"---error---->parse json fail: "<< m_url.query();
+            qDebug() <<"---error---->parse json fail: "<< m_url.query()<<jsonError.errorString();
         }
     }
 }
