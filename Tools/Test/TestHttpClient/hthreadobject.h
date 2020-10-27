@@ -24,19 +24,6 @@ struct HttpInfo
     QString fullpathfilename;
 };
 
-///-----------------
-class ProgressDialog : public QProgressDialog
-{
-    Q_OBJECT
-public:
-    explicit ProgressDialog(const QUrl &url, QWidget *parent = nullptr);
-    ~ProgressDialog();
-    void inIt(QUrl ur);
-
-public slots:
-    void networkReplyProgress(qint64 bytesRead, qint64 totalBytes);
-};
-
 ///--------------------------
 class HThreadObject : public QObject
 {
@@ -59,13 +46,13 @@ signals:
     void notifyResult(const int &state);
 
 private:
-    void startNework();
+    void startNetwork();
 
 private:
     QNetworkReply *m_networkreply;
     QNetworkAccessManager *m_networkmanager;
     QFile *m_file;
-    int m_index;
+    int m_taskIndex;
     QList<HttpInfo> m_httpInfo;
 };
 
