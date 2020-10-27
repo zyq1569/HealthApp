@@ -139,3 +139,11 @@ void MainWindow::on_m_getStudyImages_clicked()
     m_httpclient->getStudyDBinfo(url,startDate,endDate,"1","100");
 
 }
+
+void MainWindow::on_m_tableWidget_cellClicked(int row, int column)
+{
+    QString studyuid = ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-1)->text();
+    ui->m_studyuid->setText(studyuid);
+    ui->m_seruid->setText("");
+    ui->m_imageuid->setText("");
+}

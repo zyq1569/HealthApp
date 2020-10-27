@@ -33,6 +33,8 @@ public slots:
 private slots:
     void on_m_getStudyImages_clicked();
 
+    void on_m_tableWidget_cellClicked(int row, int column);
+
 private:
     QFile *m_file;
     HttpClient *m_httpclient;

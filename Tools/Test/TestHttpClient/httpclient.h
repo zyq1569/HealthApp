@@ -105,7 +105,9 @@ public:
         if(dir.exists())
         {
             return true;
-        }else{
+        }
+        else
+        {
             dir.setPath("");
             bool ok = dir.mkpath(fullPath);
             return ok;
@@ -151,4 +153,3 @@ private:
 };
 
 #endif // HTTPCLIENT_H
-///https://blog.csdn.net/zong596568821xp/article/details/78893360
