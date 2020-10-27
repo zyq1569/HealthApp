@@ -17,27 +17,14 @@
    <widget class="QPushButton" name="m_getHttpData">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>40</y>
+      <x>580</x>
+      <y>10</y>
       <width>80</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
      <string>DownFiles</string>
-    </property>
-   </widget>
-   <widget class="QProgressBar" name="m_progressBar">
-    <property name="geometry">
-     <rect>
-      <x>570</x>
-      <y>10</y>
-      <width>131</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>24</number>
     </property>
    </widget>
    <widget class="QSplitter" name="splitter">
@@ -64,7 +51,7 @@
        <hour>0</hour>
        <minute>0</minute>
        <second>0</second>
-       <year>1995</year>
+       <year>1969</year>
        <month>2</month>
        <day>1</day>
       </datetime>
@@ -80,6 +67,13 @@
      </property>
      <property name="timeSpec">
       <enum>Qt::LocalTime</enum>
+     </property>
+     <property name="date">
+      <date>
+       <year>1969</year>
+       <month>2</month>
+       <day>1</day>
+      </date>
      </property>
     </widget>
     <widget class="QDateEdit" name="m_endDate">
@@ -181,7 +175,7 @@
      <bool>true</bool>
     </attribute>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>

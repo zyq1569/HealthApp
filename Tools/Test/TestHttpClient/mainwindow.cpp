@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
 
 
     ui->m_getHttpData->hide();// hide: down studyimage file by this button
-    ui->m_progressBar->hide();
     m_httpclient = NULL;
     QDateTime curDateTime=QDateTime::currentDateTime();
     ui->m_endDate->setDate(curDateTime.date());
@@ -60,12 +59,6 @@ void MainWindow::on_m_getHttpData_clicked()
     return;
 }
 
-
-void MainWindow::onDownloadProgress(qint64 bytesRead, qint64 totalBytes)
-{
-    ui->m_progressBar->setMaximum(totalBytes); //最大值
-    ui->m_progressBar->setValue(bytesRead);  //当前值
-}
 
 void MainWindow::getItem(int row, int col)
 {
