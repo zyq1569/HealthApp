@@ -140,3 +140,15 @@ void MainWindow::on_m_tableWidget_cellClicked(int row, int column)
     ui->m_seruid->setText("");
     ui->m_imageuid->setText("");
 }
+
+
+void MainWindow::readFromServer(int fd)
+{
+//    QFile filein;
+//    if(fd != filein.handle() )
+//    return;
+
+//    char buffer[256];
+//    //int count = read(filein.handle(), buffer, 256);
+//    ui->m_imageuid->setText("FROM SERVER:" + QString(buffer).left(count));
+}
