@@ -18,6 +18,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+#include <QProcess>
+QProcess *process;
 ///// -------------------------------------------------------------------------
 /// eg..
 /// dcm/
