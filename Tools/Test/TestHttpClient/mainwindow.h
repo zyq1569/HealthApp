@@ -31,6 +31,7 @@ public:
 public slots:
     void on_m_getHttpData_clicked();
     void getItem(int row, int col);
+    void readFromServer(int fd);
 
 private slots:
     void on_m_getStudyImages_clicked();
