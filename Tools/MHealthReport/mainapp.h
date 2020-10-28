@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+
+class QProcess;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApp; }
 QT_END_NAMESPACE
@@ -15,6 +18,13 @@ public:
     MainApp(QWidget *parent = nullptr);
     ~MainApp();
 
+private slots:
+    void on_m_RunApp_clicked();
+
+    void on_m_SendData_clicked();
+
+private:
+    QProcess *m_QProcess;
 private:
     Ui::MainApp *ui;
 };
