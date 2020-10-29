@@ -8,6 +8,7 @@
 #include "QFile"
 #include "QFileInfo"
 
+#include <QSocketNotifier>
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -144,11 +145,16 @@ void MainWindow::on_m_tableWidget_cellClicked(int row, int column)
 
 void MainWindow::readFromServer(int fd)
 {
-//    QFile filein;
-//    if(fd != filein.handle() )
-//    return;
+    QFile filein;
+    filein.open(stdin, QIODevice::ReadOnly);
+    QSocketNotifier* sn = new QSocketNotifier(filein.handle(), QSocketNotifier::Read, this);
+    connect(sn, SIGNAL(activated(int)), this, SLOT(readFromServer(int)));
+    //    QFile filein;
+    //    if(fd != filein.handle() )
+    //    return;
 
-//    char buffer[256];
-//    //int count = read(filein.handle(), buffer, 256);
-//    ui->m_imageuid->setText("FROM SERVER:" + QString(buffer).left(count));
+    //    char buffer[256];
+    //    //int count = read(filein.handle(), buffer, 256);
+    //    ui->m_imageuid->setText("FROM SERVER:" + QString(buffer).left(count));
+    //http://blog.chinaunix.net/uid-13830775-id-97753.html
 }
