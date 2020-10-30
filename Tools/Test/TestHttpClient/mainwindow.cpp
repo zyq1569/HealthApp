@@ -14,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
 {
     ui->setupUi(this);
 
-
     ui->m_getHttpData->hide();// hide: down studyimage file by this button
     m_httpclient = NULL;
     QDateTime curDateTime=QDateTime::currentDateTime();
