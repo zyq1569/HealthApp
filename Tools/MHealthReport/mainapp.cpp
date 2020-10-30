@@ -7,7 +7,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 {
     ui->setupUi(this);
     m_QProcess = new QProcess(parent);
-
 }
 
 MainApp::~MainApp()
@@ -18,7 +17,7 @@ MainApp::~MainApp()
 
 void MainApp::on_m_RunApp_clicked()
 {
-    m_QProcess->start("E:\\Tool\\pacs工具\\Starviewer\\starviewer.exe");
+    m_QProcess->start("F:/temp/HealthApp/Tools/Test/TestHttpClient/release/TestHttpClient.exe");
 }
 
 void MainApp::on_m_SendData_clicked()
