@@ -26,6 +26,7 @@ void MainApp::on_m_SendData_clicked()
     {
         QString message;
         message = "MainApp";
+        //m_QProcess->connect("");
         m_QProcess->write(message.toLocal8Bit());
     }
 }
