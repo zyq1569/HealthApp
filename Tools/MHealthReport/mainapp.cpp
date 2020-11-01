@@ -7,6 +7,10 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 {
     ui->setupUi(this);
     m_QProcess = new QProcess(parent);
+
+
+    //QLocalSocket *socket;
+    //server = new QLocalServer(this);
 }
 
 MainApp::~MainApp()
