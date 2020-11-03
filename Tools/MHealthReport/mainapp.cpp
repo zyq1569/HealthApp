@@ -2,6 +2,7 @@
 #include "ui_mainapp.h"
 
 #include <QProcess>
+#include <QLocalSocket>
 
 MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 {
@@ -11,6 +12,8 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 
     //QLocalSocket *socket;
     //server = new QLocalServer(this);
+
+    m_localSocket = new QLocalSocket(this);
 }
 
 MainApp::~MainApp()
@@ -36,7 +39,14 @@ void MainApp::on_m_SendData_clicked()
 }
 void  MainApp::connectImageApp()
 {
-
+    m_localSocket->connectToServer(ImageAppName);
+    if(m_localSocket->waitForConnected(1000)){
+        //setOutputText("Connected");
+        //qDebug() << "Connect to " + serverName + " succeed.";
+    }else{
+        //setOutputText("Connect failed");
+        //qDebug() << "Connect to " + serverName + " failed";
+    }
 }
 void  MainApp::sendToImageAppMsg()
 {
