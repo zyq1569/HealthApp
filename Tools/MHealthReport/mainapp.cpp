@@ -34,3 +34,24 @@ void MainApp::on_m_SendData_clicked()
         m_QProcess->write(message.toLocal8Bit());
     }
 }
+void  MainApp::connectImageApp()
+{
+
+}
+void  MainApp::sendToImageAppMsg()
+{
+
+}
+void  MainApp::disconnectImageApp()
+{
+
+}
+void  MainApp::ReadImageApp()
+{
+
+}
+void  MainApp::connectImageAppCrash()
+{
+
+}
+

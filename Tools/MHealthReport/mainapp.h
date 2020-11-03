@@ -18,6 +18,13 @@ public:
     MainApp(QWidget *parent = nullptr);
     ~MainApp();
 
+public slots:
+    void connectImageApp();
+    void sendToImageAppMsg();
+    void disconnectImageApp();
+    void ReadImageApp();
+    void connectImageAppCrash();
+
 private slots:
     void on_m_RunApp_clicked();
 
