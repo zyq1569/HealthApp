@@ -4,8 +4,13 @@
 #include <QMainWindow>
 
 
+#define ImageAppName  "StarViewer"
+
+
 class QProcess;
 class QLocalServer;
+class QLocalSocket;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApp; }
 QT_END_NAMESPACE
@@ -33,6 +38,7 @@ private slots:
 private:
     QProcess *m_QProcess;
     QLocalServer *m_ocalServer;
+    QLocalSocket *m_localSocket;
 
 private:
     Ui::MainApp *ui;
