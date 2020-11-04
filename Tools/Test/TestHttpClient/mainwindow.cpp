@@ -40,6 +40,16 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
     m_localserver =  new QLocalServer(this);
     connect(m_localserver, SIGNAL(newConnection()), this, SLOT(newclientConnection()));
 
+    QLocalServer::removeServer(ImageAppName);
+    if(m_localserver->listen(ImageAppName))
+    {
+        qDebug() << "Listen succeed";
+    }
+    else
+    {
+        qDebug() << "Listen failed";
+    }
+
 }
 
 MainWindow::~MainWindow()
@@ -171,8 +181,6 @@ void MainWindow::getClientData()
     QString msg;
     msg = m_clientSocket->readAll();
     qDebug() << msg;
-    //setMsgText(msg);
-    //logText->setText("receive:"+msg);
 
     QString receive = "receive";
 
@@ -199,9 +207,6 @@ void MainWindow::socketStateChanged(QLocalSocket::LocalSocketState socketState)
 {
     qDebug() << socketState;
 }
-
-
-
 
 
 void MainWindow::readFromServer(int fd)
