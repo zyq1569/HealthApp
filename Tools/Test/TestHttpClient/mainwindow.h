@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QUrl>
-
+#include <QLocalSocket>
 #define ImageAppName  "StarViewer"
 
 class QNetworkAccessManager;
@@ -13,7 +13,7 @@ class QNetworkReply;
 class HttpClient;
 class QTableWidgetItem;
 class QLocalServer;
-class QLocalSocket;
+//class QLocalSocket;
 
 
 QT_BEGIN_NAMESPACE
@@ -38,6 +38,11 @@ public slots:
     void getItem(int row, int col);
     void readFromServer(int fd);
     void newclientConnection();
+    void getClientData();
+    void socketConnect();
+    void socketDisconnect();
+    void socketError(QLocalSocket::LocalSocketError socketError);
+    void socketStateChanged(QLocalSocket::LocalSocketState socketState);
 
 private slots:
     void on_m_getStudyImages_clicked();

@@ -10,7 +10,7 @@
 
 #include <QSocketNotifier>
 #include <QLocalServer>
-#include <QLocalSocket>
+//#include <QLocalSocket>
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -149,16 +149,60 @@ void MainWindow::on_m_tableWidget_cellClicked(int row, int column)
 void  MainWindow::newclientConnection()
 {
     m_clientSocket = m_localserver->nextPendingConnection();
+
     qDebug() << m_localserver;
     qDebug() << "sl_newConnection" << m_clientSocket->state();
-    //logText->setText("sl_newConnection");
-    connect(m_localserver, SIGNAL(readyRead()), this, SLOT(sl_readyRead()));
-    connect(m_localserver, SIGNAL(connected()), this, SLOT(sl_connect()));
-    connect(m_localserver, SIGNAL(disconnected()), this, SLOT(sl_disconnect()));
-    connect(m_localserver, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(sl_error(QLocalSocket::LocalSocketError)));
-    connect(m_localserver, SIGNAL(stateChanged(QLocalSocket::LocalSocketState)), this, SLOT(sl_stateChanged(QLocalSocket::LocalSocketState)));
+
+    connect(m_clientSocket, SIGNAL(readyRead()), this, SLOT(getClientData()));
+    connect(m_clientSocket, SIGNAL(connected()), this, SLOT(socketConnect()));
+    connect(m_clientSocket, SIGNAL(disconnected()), this, SLOT(socketDisconnect()));
+    connect(m_clientSocket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(socketError(QLocalSocket::LocalSocketError)));
+    connect(m_clientSocket, SIGNAL(stateChanged(QLocalSocket::LocalSocketState)), this, SLOT(socketStateChanged(QLocalSocket::LocalSocketState)));
 
 }
+
+void MainWindow::getClientData()
+{
+    qDebug() << m_clientSocket;
+    if(!m_clientSocket)
+    {
+        return;
+    }
+    QString msg;
+    msg = m_clientSocket->readAll();
+    qDebug() << msg;
+    //setMsgText(msg);
+    //logText->setText("receive:"+msg);
+
+    QString receive = "receive";
+
+    m_clientSocket->write(receive.toUtf8());
+    m_clientSocket->flush();
+}
+
+void MainWindow::socketConnect()
+{
+    qDebug() << "A new connection";
+}
+
+void MainWindow::socketDisconnect()
+{
+    qDebug() << "Disconnected";
+}
+
+void MainWindow::socketError(QLocalSocket::LocalSocketError socketError)
+{
+    qDebug() << socketError;
+}
+
+void MainWindow::socketStateChanged(QLocalSocket::LocalSocketState socketState)
+{
+    qDebug() << socketState;
+}
+
+
+
+
 
 void MainWindow::readFromServer(int fd)
 {
