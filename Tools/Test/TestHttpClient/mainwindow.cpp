@@ -9,6 +9,8 @@
 #include "QFileInfo"
 
 #include <QSocketNotifier>
+#include <QLocalServer>
+#include <QLocalSocket>
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -34,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
     ui->m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
     ui->m_tableWidget->show();
     connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
+
+    m_localserver =  new QLocalServer(this);
+    connect(m_localserver, SIGNAL(newConnection()), this, SLOT(newclientConnection()));
 
 }
 
@@ -141,6 +146,19 @@ void MainWindow::on_m_tableWidget_cellClicked(int row, int column)
     ui->m_imageuid->setText("");
 }
 
+void  MainWindow::newclientConnection()
+{
+    m_clientSocket = m_localserver->nextPendingConnection();
+    qDebug() << m_localserver;
+    qDebug() << "sl_newConnection" << m_clientSocket->state();
+    //logText->setText("sl_newConnection");
+    connect(m_localserver, SIGNAL(readyRead()), this, SLOT(sl_readyRead()));
+    connect(m_localserver, SIGNAL(connected()), this, SLOT(sl_connect()));
+    connect(m_localserver, SIGNAL(disconnected()), this, SLOT(sl_disconnect()));
+    connect(m_localserver, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(sl_error(QLocalSocket::LocalSocketError)));
+    connect(m_localserver, SIGNAL(stateChanged(QLocalSocket::LocalSocketState)), this, SLOT(sl_stateChanged(QLocalSocket::LocalSocketState)));
+
+}
 
 void MainWindow::readFromServer(int fd)
 {
