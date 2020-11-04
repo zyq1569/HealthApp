@@ -4,12 +4,17 @@
 #include <QMainWindow>
 #include <QUrl>
 
+#define ImageAppName  "StarViewer"
+
 class QNetworkAccessManager;
 class QNetworkReply;
 class QFile;
 class QNetworkReply;
 class HttpClient;
 class QTableWidgetItem;
+class QLocalServer;
+class QLocalSocket;
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -32,6 +37,7 @@ public slots:
     void on_m_getHttpData_clicked();
     void getItem(int row, int col);
     void readFromServer(int fd);
+    void newclientConnection();
 
 private slots:
     void on_m_getStudyImages_clicked();
@@ -39,6 +45,8 @@ private slots:
 
 private:
     QFile *m_file;
+    QLocalServer *m_localserver;
+    QLocalSocket *m_clientSocket;
     HttpClient *m_httpclient;
 private:
     Ui::MainWindow *ui;

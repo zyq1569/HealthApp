@@ -37,7 +37,6 @@ private slots:
 
 private:
     QProcess *m_QProcess;
-//    QLocalServer *m_ocalServer;
     QLocalSocket *m_localSocket;
 
 private:
