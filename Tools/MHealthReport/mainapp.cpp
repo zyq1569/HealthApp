@@ -10,9 +10,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     m_QProcess = new QProcess(parent);
 
 
-    //QLocalSocket *socket;
-    //server = new QLocalServer(this);
-
     m_localSocket = new QLocalSocket(this);
 }
 
@@ -33,10 +30,10 @@ void MainApp::on_m_SendData_clicked()
     {
         QString message;
         message = "MainApp";
-        //m_QProcess->connect("");
         m_QProcess->write(message.toLocal8Bit());
     }
 }
+
 void  MainApp::connectImageApp()
 {
     m_localSocket->connectToServer(ImageAppName);
@@ -44,17 +41,18 @@ void  MainApp::connectImageApp()
     {
         //setOutputText("Connected");
         //qDebug() << "Connect to " + serverName + " succeed.";
-    }else
+    }
+    else
     {
         //setOutputText("Connect failed");
         //qDebug() << "Connect to " + serverName + " failed";
     }
 }
+
 void  MainApp::sendToImageAppMsg()
 {
     if(m_localSocket->isValid())
     {
-
         QString msg = "getMsgText()" ;// + QString::number(val);
         if(m_localSocket->write(msg.toUtf8()) == -1)
         {
@@ -72,14 +70,17 @@ void  MainApp::sendToImageAppMsg()
         qDebug() << "Does not connect to any Servers";
     }
 }
+
 void  MainApp::disconnectImageApp()
 {
 
 }
+
 void  MainApp::ReadImageApp()
 {
 
 }
+
 void  MainApp::connectImageAppCrash()
 {
 
