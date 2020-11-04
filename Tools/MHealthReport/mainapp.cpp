@@ -9,7 +9,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ui->setupUi(this);
     m_QProcess = new QProcess(parent);
 
-
     m_localSocket = new QLocalSocket(this);
 }
 
