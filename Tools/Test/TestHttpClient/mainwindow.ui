@@ -251,6 +251,16 @@
      </item>
     </layout>
    </widget>
+   <widget class="QTextEdit" name="m_getMsg">
+    <property name="geometry">
+     <rect>
+      <x>583</x>
+      <y>40</y>
+      <width>121</width>
+      <height>81</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
