@@ -25,7 +25,7 @@ public:
 
 public slots:
     void connectImageApp();
-    void sendToImageAppMsg();
+    void sendToImageAppMsg(QString data);
     void disconnectImageApp();
     void ReadImageApp();
     void connectImageAppCrash();
@@ -34,6 +34,9 @@ private slots:
     void on_m_RunApp_clicked();
 
     void on_m_SendData_clicked();
+
+signals:
+    void sendClientMsg(QString data);
 
 private:
     QProcess *m_QProcess;
