@@ -10,6 +10,8 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     m_QProcess = new QProcess(parent);
 
     m_localSocket = new QLocalSocket(this);
+    //connect(m_clientSocket, SIGNAL(readyRead()), this, SLOT(getClientData()));
+    connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
 }
 
 MainApp::~MainApp()
@@ -25,12 +27,15 @@ void MainApp::on_m_RunApp_clicked()
 
 void MainApp::on_m_SendData_clicked()
 {
-    if (m_QProcess)
-    {
-        QString message;
-        message = "MainApp";
-        m_QProcess->write(message.toLocal8Bit());
-    }
+//    if (m_QProcess)
+//    {
+//        QString message;
+//        message = "MainApp";
+//        m_QProcess->write(message.toLocal8Bit());
+//    }
+    QString data = ui->m_SendAppMsg->text();
+    connectImageApp();
+    emit sendClientMsg(data);
 }
 
 void  MainApp::connectImageApp()
@@ -48,11 +53,12 @@ void  MainApp::connectImageApp()
     }
 }
 
-void  MainApp::sendToImageAppMsg()
+void  MainApp::sendToImageAppMsg(QString data)
 {
+
     if(m_localSocket->isValid())
     {
-        QString msg = "getMsgText()" ;// + QString::number(val);
+        QString msg = data;//"getMsgText()" ;// + QString::number(val);
         if(m_localSocket->write(msg.toUtf8()) == -1)
         {
             qDebug() << "An error occurred.Send message failed.";
@@ -77,7 +83,7 @@ void  MainApp::disconnectImageApp()
 
 void  MainApp::ReadImageApp()
 {
-
+    qDebug() << "localSocket1 : " << m_localSocket->readAll();
 }
 
 void  MainApp::connectImageAppCrash()
