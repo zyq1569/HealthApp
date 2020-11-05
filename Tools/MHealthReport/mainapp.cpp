@@ -22,7 +22,8 @@ MainApp::~MainApp()
 
 void MainApp::on_m_RunApp_clicked()
 {
-    m_QProcess->start("F:/temp/HealthApp/Tools/Test/TestHttpClient/release/TestHttpClient.exe");
+    QString appPath = ui->m_AppDir->text();
+    m_QProcess->start(appPath);
 }
 
 void MainApp::on_m_SendData_clicked()
