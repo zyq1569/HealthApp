@@ -25,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
     //QString patientAddr,patientCarID,patientType,patientEmail,studyOrderIdentity,studyId,studyuid;
     //QString scheduledDateTime,ScheduledDate,orderDateTime,studyDescription,studyModality,aETitle;
     //QString studyType,studyCode,studyState,studyCost,studyDate,studyDepart,sStudyModality,costType;
-    QStringList strs = {"patientId", "patientName", "patientSex", "studyModality", "patientBirthday", "studyDescription","studyuid"};
+    QStringList strs = {"patientId", "patientName", "patientSex", "studyModality", "patientBirthday",
+                        "studyDescription","studyuid"};
     ui->m_tableWidget->setColumnCount(strs.count());
     //ui->m_tableView->setRowCount(200);
     ui->m_tableWidget->setHorizontalHeaderLabels(strs);
@@ -49,6 +50,9 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
     {
         qDebug() << "Listen failed";
     }
+
+    ui->m_getMsg->show();
+    ui->m_getMsg->setText("Get Server Text!");
 
 }
 
@@ -181,6 +185,7 @@ void MainWindow::getClientData()
     QString msg;
     msg = m_clientSocket->readAll();
     qDebug() << msg;
+    ui->m_getMsg->setText(msg);
 
     QString receive = "receive";
 
