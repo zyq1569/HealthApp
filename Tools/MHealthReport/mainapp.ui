@@ -64,7 +64,11 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QLineEdit" name="m_AppDir"/>
+      <widget class="QLineEdit" name="m_AppDir">
+       <property name="text">
+        <string>F:/temp/HealthApp/Tools/Test/TestHttpClient/release/TestHttpClient.exe</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="m_SendAppMsg"/>
