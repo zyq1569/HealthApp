@@ -71,7 +71,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="m_SendAppMsg"/>
+      <widget class="QLineEdit" name="m_SendAppMsg">
+       <property name="text">
+        <string>---test---send ----message</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
