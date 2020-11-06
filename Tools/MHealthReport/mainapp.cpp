@@ -28,14 +28,14 @@ void MainApp::on_m_RunApp_clicked()
 
 void MainApp::on_m_SendData_clicked()
 {
-//    if (m_QProcess)
-//    {
-//        QString message;
-//        message = "MainApp";
-//        m_QProcess->write(message.toLocal8Bit());
-//    }
+    //    if (m_QProcess)
+    //    {
+    //        QString message;
+    //        message = "MainApp";
+    //        m_QProcess->write(message.toLocal8Bit());
+    //    }
     QString data = ui->m_SendAppMsg->text();
-    connectImageApp();
+    //connectImageApp();
     emit sendClientMsg(data);
 }
 
@@ -45,36 +45,47 @@ void  MainApp::connectImageApp()
     if(m_localSocket->waitForConnected(1000))
     {
         //setOutputText("Connected");
-        //qDebug() << "Connect to " + serverName + " succeed.";
+        qDebug() << "Connect to " + QString(ImageAppName) + " succeed.";
     }
     else
     {
         //setOutputText("Connect failed");
-        //qDebug() << "Connect to " + serverName + " failed";
+        qDebug() << "Connect to " + QString(ImageAppName) + " failed";
     }
 }
 
 void  MainApp::sendToImageAppMsg(QString data)
 {
-
-    if(m_localSocket->isValid())
+    if (QLocalSocket::UnconnectedState == m_localSocket->state() ||
+            QLocalSocket::ClosingState == m_localSocket->state())
     {
-        QString msg = data;//"getMsgText()" ;// + QString::number(val);
-        if(m_localSocket->write(msg.toUtf8()) == -1)
+        connectImageApp();
+    }
+    if (QLocalSocket::ConnectedState == m_localSocket->state())
+    {
+        if(m_localSocket->isValid())
         {
-            qDebug() << "An error occurred.Send message failed.";
+            QString msg = data;
+            if(m_localSocket->write(msg.toUtf8()) == -1)
+            {
+                qDebug() << "An error occurred.Send message failed.";
+            }
+            else
+            {
+                qDebug() << "Send message succeed " << msg;
+            }
+            m_localSocket->flush();
         }
         else
         {
-            qDebug() << "Send message succeed " << msg;
+            qDebug() << "Does not connect to any Servers";
         }
-        m_localSocket->flush();
-
     }
     else
     {
-        qDebug() << "Does not connect to any Servers";
+        qDebug() << "m_localSocket->state()---> QLocalSocket::ConnectingState ";
     }
+
 }
 
 void  MainApp::disconnectImageApp()
