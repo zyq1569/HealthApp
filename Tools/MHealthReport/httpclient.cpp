@@ -118,56 +118,6 @@ void HttpClient::ParseDwonData()
         }
         emit parseDataFinished();
     }
-    else if (m_currentfiletype == DownFileType::studyini && m_currentDownData.size() > 1)
-    {
-        qDebug() <<"---step 1/3---: start parse jsonfile : "<< m_url.query();
-        HStudy study;
-        QJsonParseError jsonError;
-        QJsonDocument paserDoc = QJsonDocument::fromJson(m_currentDownData, &jsonError);
-        if (jsonError.error == QJsonParseError::NoError)
-        {
-            QJsonObject paserObj = paserDoc.object();
-            study.StudyUID = paserObj.take("studyuid").toString();
-            study.imageCount = paserObj.take("numImages").toInt();
-            QJsonArray array = paserObj.take("seriesList").toArray();
-            CreatDir(m_downDir+"/"+study.StudyUID);
-            qDebug() <<"---step 2/3---:  parse dcm studyuid: " <<study.StudyUID;
-            QList<HttpInfo> httpinfo;
-            int size = array.size();
-            for (int i=0; i<size; i++)
-            {
-                HSeries series;
-                QJsonObject Obj = array.at(i).toObject();
-                series.SeriesUID = Obj.take("seriesUid").toString();
-                QJsonArray iarray = Obj.take("instanceList").toArray();
-                CreatDir(m_downDir+"/"+study.StudyUID+"/"+series.SeriesUID);
-                int isize = iarray.size();
-                for (int j=0; j<isize; j++)
-                {
-                    QString imageuid = iarray.at(j).toObject().take("imageId").toString();
-                    series.ImageSOPUI.push_back(imageuid);
-                    QString newurl = m_host+"/WADO?studyuid="+study.StudyUID+"&seriesuid="+series.SeriesUID+"&sopinstanceuid="+imageuid;
-                    HttpInfo info;
-                    info.url = QUrl(newurl);
-                    info.fullpathfilename = m_downDir + "/"+study.StudyUID+"/"+series.SeriesUID+"/"+imageuid+".dcm";
-                    httpinfo.push_back(info);
-                }
-                study.Serieslist.push_back(series);
-            }
-            qDebug() <<"---step 3/3---:  start to down all dcm files : series size = " << size << " | image filse : count =" <<httpinfo.size();
-            if (!m_managethread)
-            {
-                m_managethread = new HManageThread();
-            }
-            m_managethread->start(httpinfo);
-        }
-        else
-        {
-            qDebug() <<"---error---->parse json fail: "<< m_url.query()<<jsonError.errorString();
-            QMessageBox::question(NULL, tr("Down error"),
-                                  tr("parse json fail: %1 %2?").arg(m_url.query(),jsonError.errorString()), QMessageBox::Ok);
-        }
-    }
 }
 
 void HttpClient::setPatientDBinfo(QJsonValue &JsonValue, StudyRowInfo &Rowinfo)
@@ -523,25 +473,7 @@ void HttpClient::httpReadyRead()
     }
 }
 
-void HttpClient::slotAuthenticationRequired(QNetworkReply *, QAuthenticator *authenticator)
-{
-    QDialog authenticationDialog;
-    Ui::Dialog ui;
-    ui.setupUi(&authenticationDialog);
-    authenticationDialog.adjustSize();
-    ui.siteDescription->setText(tr("%1 at %2").arg(authenticator->realm(), m_url.host()));
 
-    // Did the URL have information? Fill the UI
-    // This is only relevant if the URL-supplied credentials were wrong
-    ui.userEdit->setText(m_url.userName());
-    ui.passwordEdit->setText(m_url.password());
-
-    if (authenticationDialog.exec() == QDialog::Accepted)
-    {
-        authenticator->setUser(ui.userEdit->text());
-        authenticator->setPassword(ui.passwordEdit->text());
-    }
-}
 
 #ifndef QT_NO_SSL
 void HttpClient::sslErrors(QNetworkReply *, const QList<QSslError> &errors)
