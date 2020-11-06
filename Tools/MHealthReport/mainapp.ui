@@ -132,7 +132,7 @@
      <rect>
       <x>10</x>
       <y>128</y>
-      <width>721</width>
+      <width>771</width>
       <height>471</height>
      </rect>
     </property>
@@ -201,7 +201,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QPushButton" name="m_getStudyImages">
+   <widget class="QPushButton" name="m_getStudyDbImages">
     <property name="geometry">
      <rect>
       <x>351</x>
@@ -211,7 +211,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>StudyImage</string>
+     <string>Study</string>
     </property>
    </widget>
    <widget class="QDateEdit" name="m_startDate">
@@ -257,6 +257,19 @@
       <month>2</month>
       <day>1</day>
      </date>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="m_URL">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>24</y>
+      <width>261</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>http://127.0.0.1:8080</string>
     </property>
    </widget>
   </widget>

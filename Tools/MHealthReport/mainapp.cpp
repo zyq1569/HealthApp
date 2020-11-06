@@ -1,8 +1,11 @@
 #include "mainapp.h"
 #include "ui_mainapp.h"
 
+#include "httpclient.h"
+
 #include <QProcess>
 #include <QLocalSocket>
+
 
 MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 {
@@ -35,7 +38,7 @@ void MainApp::on_m_SendData_clicked()
     //        m_QProcess->write(message.toLocal8Bit());
     //    }
     QString data = ui->m_SendAppMsg->text();
-    //connectImageApp();
+
     emit sendClientMsg(data);
 }
 
