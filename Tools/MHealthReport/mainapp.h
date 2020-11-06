@@ -10,6 +10,7 @@
 class QProcess;
 class QLocalServer;
 class QLocalSocket;
+class HttpClient;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApp; }
@@ -41,6 +42,7 @@ signals:
 private:
     QProcess *m_QProcess;
     QLocalSocket *m_localSocket;
+    HttpClient *m_httpclient;
 
 private:
     Ui::MainApp *ui;
