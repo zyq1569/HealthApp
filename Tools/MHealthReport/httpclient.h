@@ -125,7 +125,7 @@ private slots:
     void cancelDownload();
     void httpFinished();
     void httpReadyRead();
-    void slotAuthenticationRequired(QNetworkReply *, QAuthenticator *authenticator);
+//    void slotAuthenticationRequired(QNetworkReply *, QAuthenticator *authenticator);
 #ifndef QT_NO_SSL
     void sslErrors(QNetworkReply *, const QList<QSslError> &errors);
 #endif
