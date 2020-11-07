@@ -36,6 +36,12 @@ private slots:
 
     void on_m_SendData_clicked();
 
+    void on_m_getStudyDbImages_clicked();
+
+    void updateStudyImageTable();
+
+    void ParseDwonData();
+
 signals:
     void sendClientMsg(QString data);
 
