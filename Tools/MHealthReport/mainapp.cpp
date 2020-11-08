@@ -43,6 +43,8 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 //    QHBoxLayout *windowLayout = new QHBoxLayout;
 //    windowLayout->addWidget(ui->m_tableWidget);
 
+    m_url = "http://127.0.0.1:8080";
+
 }
 
 MainApp::~MainApp()
@@ -121,7 +123,7 @@ void MainApp::on_m_getStudyDbImages_clicked()
     QString startDate = ui->m_startDate->text();
     QString endDate = ui->m_endDate->text();
     QString mod = ui->m_StudyModality->currentText();
-    QString url = "http://127.0.0.1:8080";//ui->m_URL->text();
+    QString url = m_url;
     if (!m_httpclient)
     {
         m_httpclient = new HttpClient(this,"F:\\log\\down");
