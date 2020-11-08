@@ -43,6 +43,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 //    QHBoxLayout *windowLayout = new QHBoxLayout;
 //    windowLayout->addWidget(ui->m_tableWidget);
 
+    ///temp value
     m_url = "http://127.0.0.1:8080";
 
 }
@@ -58,12 +59,10 @@ void  MainApp::connectImageApp()
     m_localSocket->connectToServer(ImageAppName);
     if(m_localSocket->waitForConnected(1000))
     {
-        //setOutputText("Connected");
         qDebug() << "Connect to " + QString(ImageAppName) + " succeed.";
     }
     else
     {
-        //setOutputText("Connect failed");
         qDebug() << "Connect to " + QString(ImageAppName) + " failed";
     }
 }
