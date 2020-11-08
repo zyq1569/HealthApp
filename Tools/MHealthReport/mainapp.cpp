@@ -10,11 +10,30 @@
 MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 {
     ui->setupUi(this);
+    m_httpclient = NULL;
+
     m_QProcess = new QProcess(parent);
 
     m_localSocket = new QLocalSocket(this);
     //connect(m_clientSocket, SIGNAL(readyRead()), this, SLOT(getClientData()));
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
+
+    //QString patientIdentity,patientName,patientId,patientSex,patientBirthday,patientTelNumber;
+    //QString patientAddr,patientCarID,patientType,patientEmail,studyOrderIdentity,studyId,studyuid;
+    //QString scheduledDateTime,ScheduledDate,orderDateTime,studyDescription,studyModality,aETitle;
+    //QString studyType,studyCode,studyState,studyCost,studyDate,studyDepart,sStudyModality,costType;
+    QStringList strs = {"patientId", "patientName", "patientSex", "studyModality", "patientBirthday",
+                        "studyDescription","studyuid"};
+    ui->m_tableWidget->setColumnCount(strs.count());
+    //ui->m_tableView->setRowCount(200);
+    ui->m_tableWidget->setHorizontalHeaderLabels(strs);
+    ui->m_tableWidget->horizontalHeader()->setStretchLastSection(true);
+    //ui->m_tableView->verticalHeader()//setResizeMode(QHeaderView::Strtch);
+    ui->m_tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);//select rows
+    ui->m_tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);///single rows
+    ui->m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
+    ui->m_tableWidget->show();
+    connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
 }
 
 MainApp::~MainApp()
@@ -165,56 +184,5 @@ void MainApp::updateStudyImageTable()
             ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyDB->rowinfo[row].studyuid));
         }
         ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-1,true);
-    }
-}
-
-void MainApp::ParseDwonData()
-{
-    m_patientstudydb.count = 0;
-    m_patientstudydb.rowinfo.clear();
-    if (m_currentfiletype == DownFileType::dbinfo && m_currentDownData.size() > 1)
-    {
-        QJsonParseError jsonError;
-        QJsonDocument paserDoc = QJsonDocument::fromJson(m_currentDownData, &jsonError);
-        if (jsonError.error == QJsonParseError::NoError)
-        {
-            QJsonObject paserObj = paserDoc.object();
-            if (paserObj.contains("code"))
-            {
-                QJsonValue codeValue = paserObj.take("code");
-                if (codeValue.isDouble())
-                {
-                    m_patientstudydb.code = codeValue.toInt();
-                }
-            }
-            if (paserObj.contains("msg"))
-            {
-                QJsonValue msgValue = paserObj["msg"];
-                if (msgValue.isString())
-                    m_patientstudydb.msg = msgValue.toString();
-            }
-            if (paserObj.contains("count"))
-            {
-                QJsonValue countValue = paserObj["count"];
-                if (countValue.isDouble())
-                    m_patientstudydb.count = countValue.toInt();
-            }
-            if (paserObj.contains("data"))
-            {
-                QJsonValue dataValue = paserObj.take("data");
-                if (dataValue.isArray())
-                {
-                    QJsonArray array = dataValue.toArray();
-                    for(int i = 0; i < array.size(); ++i)
-                    {
-                        StudyRowInfo rowinfo;
-                        QJsonValue tmp = array.at(i);
-                        setPatientDBinfo(tmp,rowinfo);
-                        m_patientstudydb.rowinfo.push_back(rowinfo);
-                    }
-                }
-            }
-        }
-        emit parseDataFinished();
     }
 }
