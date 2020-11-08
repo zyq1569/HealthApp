@@ -20,10 +20,13 @@
       <x>10</x>
       <y>38</y>
       <width>831</width>
-      <height>541</height>
+      <height>551</height>
      </rect>
     </property>
     <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="sortingEnabled">
      <bool>true</bool>
     </property>
     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
