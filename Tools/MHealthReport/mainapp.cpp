@@ -40,8 +40,8 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     m_QProcess->start(appPath);
 
 
-    QHBoxLayout *windowLayout = new QHBoxLayout;
-    windowLayout->addWidget(ui->m_tableWidget);
+//    QHBoxLayout *windowLayout = new QHBoxLayout;
+//    windowLayout->addWidget(ui->m_tableWidget);
 
 }
 
