@@ -107,7 +107,7 @@ void  MainApp::disconnectImageApp()
 
 void  MainApp::ReadImageApp()
 {
-    qDebug() << "localSocket1 : " << m_localSocket->readAll();
+    qDebug() << "localSocket : " << m_localSocket->readAll();
 }
 
 void  MainApp::connectImageAppCrash()
