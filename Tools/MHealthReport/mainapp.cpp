@@ -168,3 +168,9 @@ void MainApp::updateStudyImageTable()
         ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-1,true);
     }
 }
+
+void MainApp::on_m_tableWidget_cellDoubleClicked(int row, int column)
+{
+    QString studyuid = ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-1)->text();
+    emit sendClientMsg(studyuid);
+}

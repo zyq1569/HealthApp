@@ -39,6 +39,8 @@ private slots:
 
     void updateStudyImageTable();
 
+    void on_m_tableWidget_cellDoubleClicked(int row, int column);
+
 signals:
     void sendClientMsg(QString data);
 
