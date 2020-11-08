@@ -34,6 +34,14 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ui->m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
     ui->m_tableWidget->show();
     connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
+
+    //start exe
+    QString appPath = "F:/temp/HealthApp/Tools/Test/TestHttpClient/release/TestHttpClient.exe";//ui->m_AppDir->text();
+    m_QProcess->start(appPath);
+
+
+    //QString data = ui->m_SendAppMsg->text();
+    //emit sendClientMsg("data");
 }
 
 MainApp::~MainApp()
@@ -41,25 +49,6 @@ MainApp::~MainApp()
     delete ui;
 }
 
-
-void MainApp::on_m_RunApp_clicked()
-{
-    QString appPath = ui->m_AppDir->text();
-    m_QProcess->start(appPath);
-}
-
-void MainApp::on_m_SendData_clicked()
-{
-    //    if (m_QProcess)
-    //    {
-    //        QString message;
-    //        message = "MainApp";
-    //        m_QProcess->write(message.toLocal8Bit());
-    //    }
-    QString data = ui->m_SendAppMsg->text();
-
-    emit sendClientMsg(data);
-}
 
 void  MainApp::connectImageApp()
 {
@@ -128,15 +117,14 @@ void  MainApp::connectImageAppCrash()
 
 void MainApp::on_m_getStudyDbImages_clicked()
 {
-    ///http://127.0.0.1:8080/healthsystem/ris/stduyimage/?start=19700101&end=20191230&page=1&limit=10
     QString startDate = ui->m_startDate->text();
     QString endDate = ui->m_endDate->text();
     QString mod = ui->m_StudyModality->currentText();
-    QUrl url = ui->m_URL->text();
+    QString url = "http://127.0.0.1:8080";//ui->m_URL->text();
     if (!m_httpclient)
     {
         m_httpclient = new HttpClient(this,"F:\\log\\down");
-        m_httpclient->setHost(ui->m_URL->text());
+        m_httpclient->setHost(url);
     }
     connect(m_httpclient,&HttpClient::parseDataFinished,this,&MainApp::updateStudyImageTable);
     m_httpclient->getStudyDBinfo(url,startDate,endDate,"1","100");
@@ -162,19 +150,13 @@ void MainApp::updateStudyImageTable()
             }
         }
         ui->m_tableWidget->setRowCount(0);
-        ///------------?????? memory??------------------------------------------
+
         PatientStudyDB *StudyDB = m_httpclient->getPatientStudyDB();
         int rowcount = StudyDB->count;
         int colcount = ui->m_tableWidget->columnCount();
         ui->m_tableWidget->setRowCount(rowcount);
         for (int row=0; row<rowcount; row++)
         {
-            ///for (int col=0; col<colcount; col++)
-            ///{
-            ///ui->m_tableView->item(row,col)->setData(col,StudyDB->rowinfo[row][col]);
-            ///}m_tableWidget
-            /// {"index", "patientId", "patientName", "patientSex",
-            ///  "studyModality", "patientBirthday", "studyDescription","studyuid"};
             ui->m_tableWidget->setItem(row,0,new QTableWidgetItem(StudyDB->rowinfo[row].patientId));
             ui->m_tableWidget->setItem(row,1,new QTableWidgetItem(StudyDB->rowinfo[row].patientName));
             ui->m_tableWidget->setItem(row,2,new QTableWidgetItem(StudyDB->rowinfo[row].patientSex));

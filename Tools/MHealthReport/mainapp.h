@@ -32,10 +32,6 @@ public slots:
     void ReadImageApp();
     void connectImageAppCrash();
 
-private slots:
-    void on_m_RunApp_clicked();
-
-    void on_m_SendData_clicked();
 
 private slots:
     /// StudyDB info
