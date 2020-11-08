@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainApp</string>
+   <string>HealthReprot</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTableWidget" name="m_tableWidget">

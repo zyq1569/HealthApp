@@ -180,7 +180,7 @@
      <rect>
       <x>0</x>
       <y>10</y>
-      <width>571</width>
+      <width>541</width>
       <height>110</height>
      </rect>
     </property>
@@ -254,9 +254,9 @@
    <widget class="QTextEdit" name="m_getMsg">
     <property name="geometry">
      <rect>
-      <x>583</x>
+      <x>543</x>
       <y>40</y>
-      <width>121</width>
+      <width>161</width>
       <height>81</height>
      </rect>
     </property>
