@@ -48,6 +48,7 @@ private:
     QProcess *m_QProcess;
     QLocalSocket *m_localSocket;
     HttpClient *m_httpclient;
+    QString m_url;
 
 private:
     Ui::MainApp *ui;
