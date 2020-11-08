@@ -14,126 +14,13 @@
    <string>MainApp</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="m_RunApp">
-    <property name="geometry">
-     <rect>
-      <x>470</x>
-      <y>26</y>
-      <width>80</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Run</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>81</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QLabel" name="m_AppDirName">
-       <property name="text">
-        <string>AppDirName</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="m_SendAppMSG">
-       <property name="text">
-        <string>AppArguments</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>20</y>
-      <width>351</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QLineEdit" name="m_AppDir">
-       <property name="text">
-        <string>F:/temp/HealthApp/Tools/Test/TestHttpClient/release/TestHttpClient.exe</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="m_SendAppMsg">
-       <property name="text">
-        <string>---test---send ----message</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QPushButton" name="m_SendData">
-    <property name="geometry">
-     <rect>
-      <x>470</x>
-      <y>60</y>
-      <width>80</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Send data</string>
-    </property>
-   </widget>
-   <widget class="QDateEdit" name="m_endDate">
-    <property name="geometry">
-     <rect>
-      <x>132</x>
-      <y>100</y>
-      <width>119</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="wrapping">
-     <bool>false</bool>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-    <property name="dateTime">
-     <datetime>
-      <hour>0</hour>
-      <minute>0</minute>
-      <second>0</second>
-      <year>2021</year>
-      <month>2</month>
-      <day>1</day>
-     </datetime>
-    </property>
-    <property name="currentSection">
-     <enum>QDateTimeEdit::YearSection</enum>
-    </property>
-    <property name="displayFormat">
-     <string>yyyyMMdd</string>
-    </property>
-    <property name="calendarPopup">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QTableWidget" name="m_tableWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>128</y>
-      <width>771</width>
-      <height>471</height>
+      <y>38</y>
+      <width>831</width>
+      <height>541</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -146,131 +33,141 @@
      <bool>true</bool>
     </attribute>
    </widget>
-   <widget class="QComboBox" name="m_StudyModality">
-    <property name="geometry">
-     <rect>
-      <x>255</x>
-      <y>100</y>
-      <width>92</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>ALL</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CT</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>MR</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>CR</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>DR</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>RF</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>ES</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>US</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Other</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QPushButton" name="m_getStudyDbImages">
-    <property name="geometry">
-     <rect>
-      <x>351</x>
-      <y>100</y>
-      <width>130</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Study</string>
-    </property>
-   </widget>
-   <widget class="QDateEdit" name="m_startDate">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>100</y>
-      <width>118</width>
-      <height>23</height>
+      <y>10</y>
+      <width>551</width>
+      <height>25</height>
      </rect>
     </property>
-    <property name="wrapping">
-     <bool>false</bool>
-    </property>
-    <property name="readOnly">
-     <bool>false</bool>
-    </property>
-    <property name="dateTime">
-     <datetime>
-      <hour>0</hour>
-      <minute>0</minute>
-      <second>0</second>
-      <year>1969</year>
-      <month>2</month>
-      <day>1</day>
-     </datetime>
-    </property>
-    <property name="currentSection">
-     <enum>QDateTimeEdit::YearSection</enum>
-    </property>
-    <property name="displayFormat">
-     <string>yyyyMMdd</string>
-    </property>
-    <property name="calendarPopup">
-     <bool>true</bool>
-    </property>
-    <property name="timeSpec">
-     <enum>Qt::LocalTime</enum>
-    </property>
-    <property name="date">
-     <date>
-      <year>1969</year>
-      <month>2</month>
-      <day>1</day>
-     </date>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="m_URL">
-    <property name="geometry">
-     <rect>
-      <x>560</x>
-      <y>24</y>
-      <width>261</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>http://127.0.0.1:8080</string>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QDateEdit" name="m_startDate">
+       <property name="wrapping">
+        <bool>false</bool>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+       <property name="dateTime">
+        <datetime>
+         <hour>0</hour>
+         <minute>0</minute>
+         <second>0</second>
+         <year>1969</year>
+         <month>2</month>
+         <day>1</day>
+        </datetime>
+       </property>
+       <property name="currentSection">
+        <enum>QDateTimeEdit::YearSection</enum>
+       </property>
+       <property name="displayFormat">
+        <string>yyyyMMdd</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+       <property name="timeSpec">
+        <enum>Qt::LocalTime</enum>
+       </property>
+       <property name="date">
+        <date>
+         <year>1969</year>
+         <month>2</month>
+         <day>1</day>
+        </date>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateEdit" name="m_endDate">
+       <property name="wrapping">
+        <bool>false</bool>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+       <property name="dateTime">
+        <datetime>
+         <hour>0</hour>
+         <minute>0</minute>
+         <second>0</second>
+         <year>2021</year>
+         <month>2</month>
+         <day>1</day>
+        </datetime>
+       </property>
+       <property name="currentSection">
+        <enum>QDateTimeEdit::YearSection</enum>
+       </property>
+       <property name="displayFormat">
+        <string>yyyyMMdd</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="m_StudyModality">
+       <item>
+        <property name="text">
+         <string>ALL</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CT</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>MR</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CR</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>DR</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>RF</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ES</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>US</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Other</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_getStudyDbImages">
+       <property name="text">
+        <string>Study</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
