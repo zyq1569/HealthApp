@@ -6,7 +6,7 @@
 #include <QProcess>
 #include <QLocalSocket>
 
-
+/// UI https://www.cnblogs.com/swarmbees/p/11160996.html#--%E9%81%AE%E7%BD%A9%E6%8E%A7%E4%BB%B6
 MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 {
     ui->setupUi(this);
@@ -137,7 +137,7 @@ void MainApp::updateStudyImageTable()
     disconnect(m_httpclient,&HttpClient::parseDataFinished,this,&MainApp::updateStudyImageTable);
     if (m_httpclient)
     {
-        ///------------?????? memory??---------------------------------------
+        ///------------ to do :: memory??---------------------------------------
         int oldrow = ui->m_tableWidget->rowCount();
         int oldcol = ui->m_tableWidget->columnCount();
         for (int i = 0;i < oldrow;i++)
