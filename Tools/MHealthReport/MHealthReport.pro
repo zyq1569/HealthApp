@@ -19,15 +19,18 @@ SOURCES += \
     httpclient.cpp \
     main.cpp \
     mainapp.cpp \
+    patientstudyregister.cpp \
     studyimage.cpp
 
 HEADERS += \
     httpclient.h \
     mainapp.h \
+    patientstudyregister.h \
     studyimage.h
 
 FORMS += \
     mainapp.ui \
+    patientstudyregister.ui \
     studyimage.ui
 
 # Default rules for deployment.
