@@ -36,8 +36,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ui->m_tabWidgetTotal->addTab(m_StudyImage,    "StudyImage");
     ui->m_tabWidgetTotal->setCurrentIndex(2);
 
-
-
     //connect(m_StudyImage, SIGNAL(sendNumber(QString, QString)), this, SLOT(receiveNumber(QString, QString)));
 
 }
