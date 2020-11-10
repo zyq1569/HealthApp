@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>508</width>
     <height>366</height>
    </rect>
   </property>
@@ -53,6 +53,13 @@
           <month>2</month>
           <day>1</day>
          </date>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="m_To">
+        <property name="text">
+         <string>:至</string>
         </property>
        </widget>
       </item>
@@ -150,7 +157,11 @@
       <item>
        <widget class="QPushButton" name="m_getStudyDbImages">
         <property name="text">
-         <string>Study</string>
+         <string>Check Study</string>
+        </property>
+        <property name="icon">
+         <iconset resource="res.qrc">
+          <normaloff>:/image/image/serch.png</normaloff>:/image/image/serch.png</iconset>
         </property>
        </widget>
       </item>
@@ -179,13 +190,15 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>508</width>
      <height>21</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>
