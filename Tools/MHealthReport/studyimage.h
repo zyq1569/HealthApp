@@ -31,6 +31,7 @@ public slots:
     void connectImageAppCrash();
 
 
+
 private slots:
     /// StudyDB info
     void on_m_getStudyDbImages_clicked();
@@ -41,6 +42,9 @@ private slots:
 
 signals:
     void sendClientMsg(QString data);
+
+signals:
+    void sendNumber(QString, QString);
 
 private:
     QLocalSocket *m_localSocket;
