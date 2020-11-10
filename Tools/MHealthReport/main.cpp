@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     w.show();
 
     LOADQSS(":/qss/qss/style.qss");
-    a.setFont(QFont("ZYSong", 10));
+    //a.setFont(QFont("ZYSong", 10));
 
 
     return a.exec();
