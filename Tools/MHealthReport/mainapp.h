@@ -4,13 +4,8 @@
 #include <QMainWindow>
 
 
-#define ImageAppName  "StarViewer"
-
-
 class QProcess;
-class QLocalServer;
-class QLocalSocket;
-class HttpClient;
+class StudyImage;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApp; }
@@ -24,31 +19,10 @@ public:
     MainApp(QWidget *parent = nullptr);
     ~MainApp();
 
-public slots:
-    /// socket IPC
-    void connectImageApp();
-    void sendToImageAppMsg(QString data);
-    void disconnectImageApp();
-    void ReadImageApp();
-    void connectImageAppCrash();
-
-
-private slots:
-    /// StudyDB info
-    void on_m_getStudyDbImages_clicked();
-
-    void updateStudyImageTable();
-
-    void on_m_tableWidget_cellDoubleClicked(int row, int column);
-
-signals:
-    void sendClientMsg(QString data);
 
 private:
     QProcess *m_QProcess;
-    QLocalSocket *m_localSocket;
-    HttpClient *m_httpclient;
-    QString m_url;
+    StudyImage *m_StudyImage;
 
 private:
     Ui::MainApp *ui;
