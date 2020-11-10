@@ -6,6 +6,7 @@
 
 class QProcess;
 class StudyImage;
+class PatientStudyRegister;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApp; }
@@ -23,6 +24,7 @@ public:
 private:
     QProcess *m_QProcess;
     StudyImage *m_StudyImage;
+    PatientStudyRegister *m_PatientStudyRegister;
 
 private:
     Ui::MainApp *ui;
