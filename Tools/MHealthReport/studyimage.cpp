@@ -28,7 +28,11 @@ StudyImage::StudyImage(QWidget *parent) :
     ui->m_tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);//select rows
     ui->m_tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);///single rows
     ui->m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
+    ui->m_tableWidget->resizeColumnsToContents(); //根据内容调整列宽
     ui->m_tableWidget->show();
+
+
+
     connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
 
 
