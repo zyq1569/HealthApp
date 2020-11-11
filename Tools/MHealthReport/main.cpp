@@ -18,12 +18,15 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainApp w;
-    w.show();
+    MainApp MainWindow;
+
+    //MainWindow.setWindowFlags(w.windowFlags()& ~Qt::WindowMaximizeButtonHint& ~Qt::WindowMinimizeButtonHint);
+    //MainWindow.show();
+    MainWindow.showMaximized();// Max size show
+    //MainWindow.showFullScreen();
 
     LOADQSS(":/qss/qss/style.qss");
     //a.setFont(QFont("ZYSong", 10));
-
 
     return a.exec();
 }
