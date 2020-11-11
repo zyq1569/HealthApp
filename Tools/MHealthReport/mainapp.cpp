@@ -27,6 +27,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     //m_QProcess->start(appPath);
     this->setCentralWidget(ui->m_tabWidgetTotal);
 
+
     m_PatientStudyRegister     = new PatientStudyRegister(this);
     ui->m_tabWidgetTotal->addTab(m_PatientStudyRegister,    "StudyRegister");
     ui->m_tabWidgetTotal->setCurrentIndex(1);
@@ -35,6 +36,8 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     m_StudyImage     = new StudyImage(this);
     ui->m_tabWidgetTotal->addTab(m_StudyImage,    "StudyImage");
     ui->m_tabWidgetTotal->setCurrentIndex(2);
+
+
 
     //connect(m_StudyImage, SIGNAL(sendNumber(QString, QString)), this, SLOT(receiveNumber(QString, QString)));
 

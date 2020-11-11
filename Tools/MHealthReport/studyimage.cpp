@@ -29,6 +29,9 @@ StudyImage::StudyImage(QWidget *parent) :
     ui->m_tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);///single rows
     ui->m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
     ui->m_tableWidget->resizeColumnsToContents(); //根据内容调整列宽
+    ui->m_tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分列bai
+    ui->m_tableWidget->verticalHeader()->setFixedWidth(30);
+    ui->m_tableWidget->horizontalHeader()->setHighlightSections(false);
     ui->m_tableWidget->show();
 
 
