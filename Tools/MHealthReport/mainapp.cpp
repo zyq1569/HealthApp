@@ -27,11 +27,11 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     this->setCentralWidget(ui->m_tabWidgetTotal);
 
     m_PatientStudyRegister     = new PatientStudyRegister(this);
-    ui->m_tabWidgetTotal->addTab(m_PatientStudyRegister,    "StudyRegister");
+    ui->m_tabWidgetTotal->addTab(m_PatientStudyRegister,    "登记检查");
     ui->m_tabWidgetTotal->setCurrentIndex(1);
 
     m_StudyImage     = new StudyImage(this);
-    ui->m_tabWidgetTotal->addTab(m_StudyImage,    "StudyImage");
+    ui->m_tabWidgetTotal->addTab(m_StudyImage,    "检查报告");
     ui->m_tabWidgetTotal->setCurrentIndex(2);
 
 
