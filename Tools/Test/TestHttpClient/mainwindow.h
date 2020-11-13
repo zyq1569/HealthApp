@@ -30,6 +30,7 @@ public:
 
 public:
     void updateStudyImageTable();
+    void downImagesFromHttp(QString studyuid, QString seruid, QString imageuid);
 public:
     QUrl m_httpurl;
 

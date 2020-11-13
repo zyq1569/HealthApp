@@ -10,6 +10,7 @@
 
 #include <QSocketNotifier>
 #include <QLocalServer>
+#include <QMessageBox>
 //#include <QLocalSocket>
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWindow)
@@ -61,19 +62,25 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-void MainWindow::on_m_getHttpData_clicked()
+void MainWindow::downImagesFromHttp(QString studyuid, QString seruid, QString imageuid)
 {
-    m_httpurl = ui->m_URL->text();///"http://127.0.0.1:8080/login/login.html"
-    QString studyuid = ui->m_studyuid->text();
-    QString seruid = ui->m_seruid->text();
-    QString imageuid = ui->m_imageuid->text();
     if (!m_httpclient)
     {
         m_httpclient = new HttpClient(NULL,"F:\\log\\down");
+        m_httpclient->setHost(ui->m_URL->text());
     }
+    connect(m_httpclient,&HttpClient::parseDataFinished,this,&MainWindow::updateStudyImageTable);
     m_httpclient->getStudyImageFile(m_httpurl,studyuid,seruid,imageuid);
 
+}
+void MainWindow::on_m_getHttpData_clicked()
+{
+    m_httpurl = ui->m_URL->text();
+    QString studyuid = ui->m_studyuid->text();
+    QString seruid = ui->m_seruid->text();
+    QString imageuid = ui->m_imageuid->text();
+
+    downImagesFromHttp(studyuid,seruid,imageuid);
 
     return;
 }
@@ -81,7 +88,6 @@ void MainWindow::on_m_getHttpData_clicked()
 
 void MainWindow::getItem(int row, int col)
 {
-    //QString studyuid = item
     QString studyuid = ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-1)->text();
     ui->m_studyuid->setText(studyuid);
     ui->m_seruid->setText("");
@@ -136,7 +142,6 @@ void MainWindow::updateStudyImageTable()
 
 void MainWindow::on_m_getStudyImages_clicked()
 {
-
     ///http://127.0.0.1:8080/healthsystem/ris/stduyimage/?start=19700101&end=20191230&page=1&limit=10
     QString startDate = ui->m_startDate->text();
     QString endDate = ui->m_endDate->text();
@@ -177,6 +182,7 @@ void  MainWindow::newclientConnection()
 
 void MainWindow::getClientData()
 {
+    m_httpurl = ui->m_URL->text();
     qDebug() << m_clientSocket;
     if(!m_clientSocket)
     {
@@ -186,6 +192,7 @@ void MainWindow::getClientData()
     msg = m_clientSocket->readAll();
     qDebug() << msg;
     ui->m_getMsg->setText(msg);
+    downImagesFromHttp(msg,"","");
 
     QString receive = "receive";
 
@@ -229,3 +236,5 @@ void MainWindow::readFromServer(int fd)
     //    ui->m_imageuid->setText("FROM SERVER:" + QString(buffer).left(count));
     //http://blog.chinaunix.net/uid-13830775-id-97753.html
 }
+
+
