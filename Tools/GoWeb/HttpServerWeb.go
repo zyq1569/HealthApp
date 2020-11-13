@@ -537,7 +537,7 @@ func GetDBStudyImage(c echo.Context) error {
 		var sqlstr string
 		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
 			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyIdentity,s.StudyDateTime," +
-			" s.StudyDescription, s.StudyModality from " +
+			" s.StudyDescription, s.StudyModality, s.StudyState from " +
 			" h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
 			" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
 			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
@@ -555,7 +555,7 @@ func GetDBStudyImage(c echo.Context) error {
 					&data.PatientID, &data.PatientBirthday,
 					&data.PatientSex, &data.StudyUID, &data.StudyID,
 					&data.StudyOrderIdentity, &data.StudyDateTime,
-					&data.StudyDescription, &data.StudyModality)
+					&data.StudyDescription, &data.StudyModality, &data.StudyState)
 				studyjson.Data = append(studyjson.Data, data)
 			}
 			sqlstr = "select count(*) count from " +
