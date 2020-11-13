@@ -34,10 +34,7 @@ StudyImage::StudyImage(QWidget *parent) :
     ui->m_tableWidget->horizontalHeader()->setHighlightSections(false);
     ui->m_tableWidget->show();
 
-
-
     connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
-
 
     ///temp value
     m_url = "http://127.0.0.1:8080";
@@ -114,8 +111,9 @@ void  StudyImage::connectImageAppCrash()
 
 void StudyImage::on_m_getStudyDbImages_clicked()
 {
-    QString startDate = ui->m_startDate->text();
-    QString endDate = ui->m_endDate->text();
+
+    QString startDate = ui->m_startDate->dateTime().toString("yyyyMMdd");
+    QString endDate   = ui->m_endDate->dateTime().toString("yyyyMMdd");
     QString mod = ui->m_StudyModality->currentText();
     QString url = m_url;
     if (!m_httpclient)
