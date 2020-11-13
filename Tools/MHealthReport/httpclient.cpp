@@ -229,7 +229,11 @@ void HttpClient::setPatientDBinfo(QJsonValue &JsonValue, StudyRowInfo &Rowinfo)
     }
     if (paserObj.contains("studyState"))
     {
-        Rowinfo.studyState = paserObj["studyState"].toString();
+        QString state = paserObj["studyState"].toString();
+        if (state == "dcm")
+        {
+            Rowinfo.studyState = "已检查";
+        }
     }
 
     if (paserObj.contains("studyCost"))

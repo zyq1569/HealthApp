@@ -18,7 +18,7 @@ StudyImage::StudyImage(QWidget *parent) :
     //connect(m_clientSocket, SIGNAL(readyRead()), this, SLOT(getClientData()));
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
 
-    QStringList strs = {"patientId", "patientName", "patientSex", "studyModality", "patientBirthday",
+    QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
                         "studyDescription","studyuid"};
     ui->m_tableWidget->setColumnCount(strs.count());
 
@@ -155,10 +155,11 @@ void StudyImage::updateStudyImageTable()
             ui->m_tableWidget->setItem(row,0,new QTableWidgetItem(StudyDB->rowinfo[row].patientId));
             ui->m_tableWidget->setItem(row,1,new QTableWidgetItem(StudyDB->rowinfo[row].patientName));
             ui->m_tableWidget->setItem(row,2,new QTableWidgetItem(StudyDB->rowinfo[row].patientSex));
-            ui->m_tableWidget->setItem(row,3,new QTableWidgetItem(StudyDB->rowinfo[row].studyModality));
-            ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(StudyDB->rowinfo[row].patientBirthday));
-            ui->m_tableWidget->setItem(row,5,new QTableWidgetItem(StudyDB->rowinfo[row].studyDescription));
-            ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyDB->rowinfo[row].studyuid));
+            ui->m_tableWidget->setItem(row,3,new QTableWidgetItem(StudyDB->rowinfo[row].patientBirthday));
+            ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(StudyDB->rowinfo[row].studyState));
+            ui->m_tableWidget->setItem(row,5,new QTableWidgetItem(StudyDB->rowinfo[row].studyModality));
+            ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyDB->rowinfo[row].studyDescription));
+            ui->m_tableWidget->setItem(row,7,new QTableWidgetItem(StudyDB->rowinfo[row].studyuid));
         }
         ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-1,true);
     }
