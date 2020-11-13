@@ -14,6 +14,7 @@
     pointer = NULL;         \
     }
 
+
 /// UI https://www.cnblogs.com/swarmbees/p/11160996.html#--%E9%81%AE%E7%BD%A9%E6%8E%A7%E4%BB%B6
 MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 {
@@ -46,6 +47,7 @@ MainApp::~MainApp()
     //        m_StudyImage = NULL;
     //    }
     SAFEDELETE(m_StudyImage)
+
             delete ui;
 }
 
