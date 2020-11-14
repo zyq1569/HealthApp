@@ -415,7 +415,7 @@ void HttpClient::getStudyImageFile(QUrl url,QString studyuid,QString seruid, QSt
     {
         fileName = "temp.tmp";
     }
-
+//    QMessageBox::information(NULL, "Title", fileName);
     downFileFromWeb(newUrl,fileName,m_downDir);
 
 }
