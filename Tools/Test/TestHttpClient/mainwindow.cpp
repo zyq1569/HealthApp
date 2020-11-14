@@ -73,6 +73,7 @@ void MainWindow::downImagesFromHttp(QString studyuid, QString seruid, QString im
     m_httpclient->getStudyImageFile(m_httpurl,studyuid,seruid,imageuid);
 
 }
+
 void MainWindow::on_m_getHttpData_clicked()
 {
     m_httpurl = ui->m_URL->text();

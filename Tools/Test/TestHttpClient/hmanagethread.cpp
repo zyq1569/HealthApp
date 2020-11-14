@@ -60,6 +60,9 @@ void HManageThread::start(QList<HttpInfo> httpInfo)
     if (!setok)
     {
         setok = true;
+        Qt::WindowFlags flags = progressDialog.windowFlags();
+        flags |= Qt::WindowStaysOnTopHint;
+        progressDialog.setWindowFlags(flags);
         progressDialog.setModal(true);
         progressDialog.setRange(1, 100);
         progressDialog.setValue(100);
