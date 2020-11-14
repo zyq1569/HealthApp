@@ -55,6 +55,7 @@ void HManageThread::start(QList<HttpInfo> httpInfo)
     QUrl url = httpInfo[0].url;
     QString host = url.host();
     QString  port = ":"+QString("%1").arg(url.port());
+
     static QProgressDialog progressDialog(NULL);
     static bool setok = false;
     if (!setok)
@@ -77,6 +78,7 @@ void HManageThread::start(QList<HttpInfo> httpInfo)
     }
     progressDialog.setLabelText("Start Downloading...");
     progressDialog.show();
+
     emit operate();
 }
 
