@@ -80,3 +80,100 @@ void PatientStudyRegister::initControl()
     ui->dateTimeEditSongJian->setDisplayFormat("yyyy-MM-dd HH:mm:ss");
     ui->dateTimeEditSongJian->setDateTime(QDateTime::currentDateTime());
 }
+
+/********************       录入数据           ***********************/
+void PatientStudyRegister::on_actionSavePatientInfo_triggered()
+{
+    DataPaint data;
+
+    //    data.regID               = regId;
+    //    data.patientID           = paintId;
+    data.hisId               = ui->lineEditID->text();
+    data.name                = ui->lineEditName->text();
+    data.sex                 = ui->comboBoxSex->currentText();
+    data.age                 = ui->lineEditAge->text();
+    data.tel                 = ui->lineEditPhone->text();
+    data.address             = ui->lineEditAddress->text();
+    data.nationality         = ui->comboBoxNation->currentText();
+    data.birthplace          = ui->lineEditNative->text();
+    data.marriage            = ui->comboBoxMarry->currentText();
+    data.job                 = ui->lineEditWork->text();
+    data.feeType             = ui->comboBoxMoneyType->currentText();
+    data.idCard              = ui->lineEditIDCard->text();
+    data.familyHistory       = ui->lineEditFimilyHistory->text();
+    data.infectiousHistory   = ui->lineEditCHuanRan->text();
+    data.pastHistory         = ui->lineEditAgo->text();
+    data.menarche            = ui->lineEditChuCao->text();
+    data.lastMenstruation    = ui->lineEditLast->text();
+    data.reproductiveHistory = ui->lineEditBornHistory->text();
+    data.outPatientNo        = ui->lineEditMenZhen->text();
+    data.hospitalizedNo      = ui->lineEditZhuYuan->text();
+    //    data.inpatientArea       = ui->lineEditBingQu->text();
+    //    data.bedNo               = ui->lineEditBedNumber->text();
+    data.fromOffices         = ui->lineEditJianKe->text();
+    data.fromDoctor          = ui->lineEditJianDoctor->text();
+    data.sendTime            = ui->dateTimeEditSongJian->text();
+    data.receiveTime         = ui->dateTimeEditJieShou->text();
+    data.receiver            = ui->lineEditJieShouPeople->text();
+    data.site                = ui->lineEditQuCaiBuWei->text();
+    data.specimenQt          = ui->lineEditBiaoBenNumber->text();
+    data.fixedMode           = ui->lineEditGuDing->text();
+    data.chiefComplaint      = ui->lineEditZhuSu->text();
+    data.currentHistory      = ui->lineEditNow->text();
+    data.clinical            = ui->textEditTiZheng->toPlainText();
+
+}
+
+/********************       清除患者信息        ***********************/
+void PatientStudyRegister::on_actionClearPatientInfo_triggered()
+{
+    clearInfo();
+}
+
+/********************       清除信息            ***********************/
+void PatientStudyRegister::clearInfo()
+{
+    ui->lineEditID->clear();
+    ui->lineEditName->clear();
+    ui->comboBoxSex->setCurrentIndex(0);
+    ui->lineEditAge->clear();
+    ui->lineEditPhone->clear();
+    ui->lineEditAddress->clear();
+    ui->comboBoxNation->setCurrentIndex(0);
+    ui->lineEditNative->clear();
+    ui->comboBoxMarry->setCurrentIndex(0);
+    ui->lineEditWork->clear();
+    ui->comboBoxMoneyType->setCurrentIndex(0);
+    ui->lineEditIDCard->clear();
+    ui->lineEditFimilyHistory->clear();
+    ui->lineEditCHuanRan->clear();
+    ui->lineEditAgo->clear();
+    ui->lineEditChuCao->clear();
+    ui->lineEditLast->clear();
+    ui->lineEditBornHistory->clear();
+    ui->lineEditMenZhen->clear();
+    ui->lineEditZhuYuan->clear();
+    //    ui->lineEditBingQu->clear();
+    //    ui->lineEditBedNumber->clear();
+    ui->lineEditJianKe->clear();
+    ui->lineEditJianDoctor->clear();
+    ui->lineEditJieShouPeople->clear();
+    ui->lineEditQuCaiBuWei->clear();
+    ui->lineEditBiaoBenNumber->clear();
+    ui->lineEditGuDing->clear();
+    ui->lineEditZhuSu->clear();
+    ui->lineEditNow->clear();
+    ui->textEditTiZheng->clear();
+
+    ui->dateTimeEditJieShou->setDisplayFormat("yyyy-MM-dd HH:mm:ss");
+    ui->dateTimeEditJieShou->setDateTime(QDateTime::currentDateTime());
+
+    ui->dateTimeEditSongJian->setDisplayFormat("yyyy-MM-dd HH:mm:ss");
+    ui->dateTimeEditSongJian->setDateTime(QDateTime::currentDateTime());
+}
+
+
+//bool PatientStudyRegister::getIsAutoSaveFlage() const
+//{
+//    return isAutoSaveFlage;
+//}
