@@ -289,14 +289,14 @@
            <item>
             <widget class="QLabel" name="label_2">
              <property name="text">
-              <string>姓名:</string>
+              <string>PatientIdentity:</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QLabel" name="label_20">
              <property name="text">
-              <string>PatientIdentity:</string>
+              <string>姓名:</string>
              </property>
             </widget>
            </item>
@@ -482,7 +482,7 @@
          <rect>
           <x>15</x>
           <y>262</y>
-          <width>51</width>
+          <width>52</width>
           <height>81</height>
          </rect>
         </property>
@@ -775,7 +775,7 @@
          <rect>
           <x>10</x>
           <y>406</y>
-          <width>61</width>
+          <width>63</width>
           <height>81</height>
          </rect>
         </property>
@@ -868,7 +868,7 @@
          <rect>
           <x>305</x>
           <y>410</y>
-          <width>51</width>
+          <width>52</width>
           <height>81</height>
          </rect>
         </property>
