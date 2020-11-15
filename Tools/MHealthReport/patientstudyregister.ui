@@ -52,7 +52,7 @@
            <item>
             <widget class="QLabel" name="label_19">
              <property name="text">
-              <string>PatientID：</string>
+              <string>姓名:</string>
              </property>
             </widget>
            </item>
@@ -87,7 +87,7 @@
            <item>
             <widget class="QLabel" name="label_8">
              <property name="text">
-              <string>婚姻 ：</string>
+              <string>婚姻：</string>
              </property>
             </widget>
            </item>
@@ -296,7 +296,7 @@
            <item>
             <widget class="QLabel" name="label_20">
              <property name="text">
-              <string>姓名:</string>
+              <string>PatientID：</string>
              </property>
             </widget>
            </item>
