@@ -40,6 +40,38 @@ type StudyData struct {
 	CostType string `json:"costType"`
 }
 
+type OrderStudyData struct {
+	PatientIdentity    string `json:"patientIdentity"`
+	PatientName        string `json:"patientName"`
+	PatientNameEnglish string `json:"patientNameEnglish"`
+	PatientID          string `json:"patientId"`
+	PatientSex         string `json:"patientSex"`
+	PatientBirthday    string `json:"patientBirthday"`
+	PatientTelNumber   string `json:"patientTelNumber"`
+	PatientAddr        string `json:"patientAddr"`
+	PatientCarID       string `json:"patientCarID"`
+	PatientType        string `json:"patientType"`
+	PatientEmail       string `json:"patientEmail"`
+	StudyOrderIdentity string `json:"studyOrderIdentity"`
+	StudyID            string `json:"studyId"`
+	StudyUID           string `json:"studyuid"`
+	ScheduledDateTime  string `json:"scheduledDateTime"`
+	ScheduledDate      string `json:"ScheduledDate"`
+	OrderDateTime      string `json:"orderDateTime"`
+	StudyDescription   string `json:"studyDescription"`
+	StudyModality      string `json:"studyModality"`
+	AETitle            string `json:"aETitle"`
+	StudyType          string `json:"studyType"`
+	StudyCode          string `json:"studyCode"`
+	StudyState         string `json:"studyState"`
+	StudyCost          string `json:"studyCost"`
+	StudyDateTime      string `json:"studyDate"`
+	StudyAge           string `json:"StudyAge"`
+	StudyDepart        string `json:"studyDepart"`
+	SstudyModality     string `json:"sStudyModality"`
+	CostType           string `json:"costType"`
+}
+
 type ReportData struct {
 	ReportIdentity     string `json:"ReportIdentity"`
 	StudyOrderIdentity string `json:"StudyOrderIdentity"`
