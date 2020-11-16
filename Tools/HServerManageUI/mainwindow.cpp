@@ -561,7 +561,10 @@ void HMainWindow::on_query_modify_clicked()
     //int curRow=ui->query_clientinfo->currentIndex().row();//选中行
 }
 
-
+void HMainWindow::closeEvent(QCloseEvent *event)
+{
+    QCoreApplication::quit();
+}
 void HMainWindow::changeEvent(QEvent *event)
 {
     if(event->type()!=QEvent::WindowStateChange)
