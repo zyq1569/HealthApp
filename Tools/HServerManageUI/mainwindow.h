@@ -51,6 +51,7 @@ private:
 protected:
     void changeEvent(QEvent * event);
     void createTrayIcon();
+    void closeEvent(QCloseEvent *event);
 
 #ifndef QT_NO_SYSTEMTRAYICON
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
