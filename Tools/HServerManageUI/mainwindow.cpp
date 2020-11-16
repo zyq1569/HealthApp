@@ -8,13 +8,22 @@
 #include "easylogging++.h"
 INITIALIZE_EASYLOGGINGPP
 
+
 HMainWindow::HMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::HMainWindow)
 {
     ui->setupUi(this);
     QString Dir     = QDir::currentPath();
-    //----------
+    ///----------------------
+    ///--Systray-icon---windows
+#ifndef QT_NO_SYSTEMTRAYICON
+    createTrayIcon();
+    connect(m_TrayIcon, &QSystemTrayIcon::activated, this, &HMainWindow::iconActivated);
+#endif
+    ///------------------------------------------------------
+
+    ///------------------------------------------------------
     QString logDir = Dir+"/win32/log";
 #if defined(Q_OS_LINUX)
     logDir = iniDir+"/linux/log";
@@ -29,13 +38,14 @@ HMainWindow::HMainWindow(QWidget *parent) :
     defaultConf.set(el::Level::Info,el::ConfigurationType::Filename, logDirFilename.toStdString());
     el::Loggers::reconfigureLogger("default", defaultConf);
     LOG(INFO) << "First log test";
-    //--------------------
+    //-------------------------------------------------------
     for (int i=0; i<QPROCESSSIZE; i++)
     {
         m_pQProcess[i] = nullptr;
         m_bstorescp[i] = false;
     }
     //QString Dir   = QDir::currentPath();
+
     m_ExeDir        = Dir;
     m_ImageDir      = m_ExeDir;
     m_ExeDir        = m_ExeDir.remove("/debug");
@@ -84,7 +94,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
     m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
     m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
     m_model->setHeaderData(3,Qt::Horizontal,QString::fromLocal8Bit("Comment"));
-    //----------------------------------------------------
+    //---------------------------------------------------------------------------
     QSettings configini(configfilename,QSettings::IniFormat);
     if (isFileExist(configfilename))
     {
@@ -550,3 +560,69 @@ void HMainWindow::on_query_modify_clicked()
 {
     //int curRow=ui->query_clientinfo->currentIndex().row();//选中行
 }
+
+
+void HMainWindow::changeEvent(QEvent *event)
+{
+    if(event->type()!=QEvent::WindowStateChange)
+        return;
+    if(this->windowState()==Qt::WindowMinimized)
+    {
+#ifndef QT_NO_SYSTEMTRAYICON
+        if (m_TrayIcon->isVisible())
+        {
+            //            QMessageBox::information(this, tr("Systray"),
+            //                                     tr("The program will keep running in the "
+            //                                        "system tray. To terminate the program, "
+            //                                        "choose <b>close</b> in the context menu "
+            //                                        "of the system tray entry."));
+            hide();
+            event->ignore();
+        }
+#endif
+    }
+}
+
+void HMainWindow::createTrayIcon()
+{
+    m_RestoreAction = new QAction(tr("&Restore"), this);
+    connect(m_RestoreAction, &QAction::triggered, this, &QWidget::showNormal);
+
+    m_QuitAction = new QAction(tr("&Quit"), this);
+    connect(m_QuitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+
+    m_TrayIconMenu = new QMenu(this);
+    m_TrayIconMenu->addAction(m_RestoreAction);
+    m_TrayIconMenu->addSeparator();
+    m_TrayIconMenu->addAction(m_QuitAction);
+
+    m_Icon = QIcon(":/images/server.png"), tr("Server");
+    m_TrayIcon = new QSystemTrayIcon(this);
+    m_TrayIcon->setIcon(m_Icon);
+    setWindowIcon(m_Icon);
+    m_TrayIcon->setToolTip("HServerManageUI");
+    m_TrayIcon->setContextMenu(m_TrayIconMenu);
+    m_TrayIcon->show();
+}
+
+#ifndef QT_NO_SYSTEMTRAYICON
+void HMainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    switch (reason)
+    {
+    case QSystemTrayIcon::Trigger:
+    case QSystemTrayIcon::DoubleClick:
+        this->showNormal();
+        break;
+    case QSystemTrayIcon::MiddleClick:
+    {
+        QSystemTrayIcon::MessageIcon msgIcon = QSystemTrayIcon::MessageIcon(1/*MessageIcon::Information*/);
+        m_TrayIcon->showMessage("HServerManageUI", "This is a HServerManageUI(PACS&RIS) App!", msgIcon,500);
+        break;
+    }
+
+    default:
+        ;
+    }
+}
+#endif

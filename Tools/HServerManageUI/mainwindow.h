@@ -9,12 +9,21 @@
 #define DCM2DBQ 3
 #define WEBSER 4
 
+///----only windows
+#ifndef QT_NO_SYSTEMTRAYICON
+#include <QSystemTrayIcon>
+#else
+class QSystemTrayIcon;
+#endif
+///
+
 #include <QMainWindow>
 #include<QStandardItemModel>
 namespace Ui {
 class HMainWindow;
 }
 class QProcess;
+class QSystemTrayIcon;
 class HMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -31,6 +40,22 @@ public:
     QString m_MysqlServer,m_WebServerName,m_WebServerGoName,m_MysqlDbName,m_MysqlUserName,m_MysqlPWD;
     QString m_WebSerPort;
     QString m_Log4j2Config;
+
+private:
+    QSystemTrayIcon *m_TrayIcon;
+    QMenu *m_TrayIconMenu;
+    QAction *m_RestoreAction;
+    QAction *m_QuitAction;
+    QIcon m_Icon;
+
+protected:
+    void changeEvent(QEvent * event);
+    void createTrayIcon();
+
+#ifndef QT_NO_SYSTEMTRAYICON
+    void iconActivated(QSystemTrayIcon::ActivationReason reason);
+#endif
+
 private slots:
     void on_StoreSCP_clicked();
 
