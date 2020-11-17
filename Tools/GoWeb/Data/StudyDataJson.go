@@ -56,6 +56,12 @@ type ReportData struct {
 }
 
 /// 2020-11-17 add :
+type StudyOrderDataJson struct {
+	Code  int              `json:"code"`
+	Msg   string           `json:"msg"`
+	Count int              `json:"count"`
+	Data  []StudyOrderData `json:"data"`
+}
 type StudyOrderData struct {
 	/// patient table
 	PatientIdentity    string
@@ -71,8 +77,8 @@ type StudyOrderData struct {
 	PatientType        string
 	PatientState       string
 	/// order table
-	StudyOrderIdentity     string
-	PatientIdentity        string
+	StudyOrderIdentity string
+	///PatientIdentity        string
 	StudyID                string
 	StudyUID               string
 	StudyModality          string

@@ -45,6 +45,7 @@ import (
 	// "encoding/json"
 	"io/ioutil"
 
+	"./Data"
 	"./Units"
 
 	// "fmt"
@@ -832,7 +833,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 	endTime := c.FormValue("end")
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
-	var studyjson Study.StudyOrderData
+	var studyjson Study.StudyOrderDataJson
 	if maridb_db != nil {
 		var count int
 		p, err := strconv.Atoi(page)
