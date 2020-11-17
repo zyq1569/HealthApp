@@ -45,7 +45,6 @@ import (
 	// "encoding/json"
 	"io/ioutil"
 
-	"./Data"
 	"./Units"
 
 	// "fmt"
@@ -788,71 +787,6 @@ func GetDBStudyData(c echo.Context) error {
 	return c.String(http.StatusOK, string(js))
 }
 
-///2020-1117:add{ 从新order表（增加字段）：查询检查信息（json data）}
-func GetStudyOrderFromDB(c echo.Context) error {
-	//'http://127.0.0.1:8080/healthsystem/ris/StudyOrder/?' + searchStudyTime
-	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
-	startTime := c.FormValue("start")
-	endTime := c.FormValue("end")
-	page := c.FormValue("page")
-	limit := c.FormValue("limit")
-	var studyjson Study.StudyDataJson
-	if maridb_db != nil {
-		var count int
-		p, err := strconv.Atoi(page)
-		checkErr(err)
-		lim, err := strconv.Atoi(limit)
-		checkErr(err)
-		count = (p - 1) * lim
-		var sqlstr string
-		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
-			" p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
-			" s.StudyOrderIdentity,s.ScheduledDateTime,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
-			" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
-			" s.ScheduledDateTime>=" + startTime + " and  s.ScheduledDateTime<=" + endTime + " order by s.StudyOrderIdentity " +
-			" limit " + strconv.Itoa(count) + "," + limit
-		// println(sqlstr)
-		rows, err := maridb_db.Query(sqlstr)
-		if err != nil {
-			println(err)
-		} else {
-			studyjson.Code = 0
-			studyjson.Msg = ""
-			studyjson.Count = 21
-			for rows.Next() {
-				var data Study.StudyData
-				err = rows.Scan(&data.PatientIdentity, &data.PatientName,
-					&data.PatientID, &data.PatientBirthday,
-					&data.PatientSex, &data.PatientTelNumber,
-					&data.PatientAddr, &data.PatientEmail,
-					&data.PatientCarID, &data.StudyID,
-					&data.StudyUID, &data.StudyDepart,
-					&data.CostType, &data.StudyOrderIdentity,
-					&data.ScheduledDateTime, &data.StudyDateTime, &data.StudyDescription,
-					&data.StudyModality, &data.StudyCost,
-					&data.StudyState)
-				studyjson.Data = append(studyjson.Data, data)
-			}
-			sqlstr = "select count(*) count from " +
-				" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and" +
-				"  s.ScheduledDateTime>= " + startTime + " and  s.ScheduledDateTime <= " + endTime
-			rows, err := maridb_db.Query(sqlstr)
-			if err == nil {
-				for rows.Next() {
-					rows.Scan(&studyjson.Count)
-				}
-			}
-		}
-	}
-	js, err := json.Marshal(studyjson)
-	if err != nil {
-		println(err)
-		return c.String(http.StatusOK, "null")
-	}
-	// println(string(js))
-	return c.String(http.StatusOK, string(js))
-}
-
 func checkErr(err error) {
 	if err != nil {
 		panic(err)
@@ -888,6 +822,81 @@ func OpenDB() (success bool, db *sql.DB) {
 	checkErr(err)
 	return isOpen, db
 }
+
+///----------------2020-1117 add fun-------------------------------------------------------------------------------------
+///2020-1117:add{ 从新order表（增加字段）：查询检查信息（json data）}
+func GetStudyOrderFromDB(c echo.Context) error {
+	//'http://127.0.0.1:8080/healthsystem/ris/StudyOrder/?' + searchStudyTime
+	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
+	startTime := c.FormValue("start")
+	endTime := c.FormValue("end")
+	page := c.FormValue("page")
+	limit := c.FormValue("limit")
+	var studyjson Study.StudyOrderData
+	if maridb_db != nil {
+		var count int
+		p, err := strconv.Atoi(page)
+		checkErr(err)
+		lim, err := strconv.Atoi(limit)
+		checkErr(err)
+		count = (p - 1) * lim
+		var sqlstr string
+		sqlstr = "select p.PatientIdentity , p.PatientID, p.PatientName, p.PatientNameEnglish ," +
+			"p.PatientSex , p.PatientBirthday , p.PatientAddr , p.PatientEmail , p.PatientCarID ," +
+			"p.PatientTelNumber , p.PatientType , p.PatientState ,o.StudyOrderIdentity ," +
+			"o.StudyID , o.StudyUID,  o.StudyModality, o.StudyAge ," +
+			"o.ScheduledDateTime , o.AETitle , o.OrderDateTime, o.StudyDescription, " +
+			"o.StudyDepart, o.StudyCode, o.StudyCost, o.CostType, o.StudyType, " +
+			"o.StudyState, o.StudyDateTime, o.InstitutionName, o.ProcedureStepStartDate," +
+			"o.StudyModalityIdentity, o.StudyManufacturer , o.RegisterID" +
+			"from  h_patient p, h_order o  " +
+			"where p.PatientIdentity = o.PatientIdentity and StudyState > 0 and " +
+			"o.ScheduledDateTime>=" + startTime + "and  o.ScheduledDateTime<=" + endTime +
+			"order by o.StudyOrderIdentity " +
+			"limit " + strconv.Itoa(count) + "," + limit
+		// println(sqlstr)
+		rows, err := maridb_db.Query(sqlstr)
+		if err != nil {
+			println(err)
+		} else {
+			studyjson.Code = 0
+			studyjson.Msg = ""
+			studyjson.Count = 21
+			for rows.Next() {
+				var data Study.StudyOrderData
+				err = rows.Scan(&data.PatientIdentity, &data.PatientID, &data.PatientName,
+					&data.PatientNameEnglish, &data.PatientSex, &data.PatientBirthday,
+					&data.PatientAddr, &data.PatientEmail, &data.PatientCarID,
+					&data.PatientTelNumber, &data.PatientType, &data.PatientState,
+					&data.StudyOrderIdentity, &data.StudyID, &data.StudyUID, &data.StudyModality,
+					&data.StudyAge, &data.ScheduledDateTime, &data.AETitle, &data.OrderDateTime,
+					&data.StudyDescription, &data.StudyDepart, &data.StudyCode, &data.StudyCost, &data.CostType,
+					&data.StudyType, &data.StudyState, &data.StudyDateTime, &data.InstitutionName,
+					&data.ProcedureStepStartDate, &data.StudyModalityIdentity,
+					&data.StudyManufacturer, &data.RegisterID)
+				studyjson.Data = append(studyjson.Data, data)
+			}
+			sqlstr = "select count(*) count from " +
+				" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and" +
+				"  s.ScheduledDateTime>= " + startTime + " and  s.ScheduledDateTime <= " + endTime
+			rows, err := maridb_db.Query(sqlstr)
+			if err == nil {
+				for rows.Next() {
+					rows.Scan(&studyjson.Count)
+				}
+			}
+		}
+	}
+	js, err := json.Marshal(studyjson)
+	if err != nil {
+		println(err)
+		return c.String(http.StatusOK, "null")
+	}
+	// println(string(js))
+	return c.String(http.StatusOK, string(js))
+}
+
+///--------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------
 // for idx, args := range os.Args {
