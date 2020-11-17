@@ -86,6 +86,50 @@ struct PatientStudyDB
     QList<StudyRowInfo> rowinfo;
 };
 
+///------2020-11-17-------------new study order data struct
+struct DateNameValue
+{
+    QString Name;
+    QString Value;
+};
+const QString g_StudyOrder[] =
+{
+    "PatientIdentity","PatientID",  "PatientName" ,  "PatientNameEnglish" ,  "PatientSex",   "PatientBirthday",
+    "PatientAddr", "PatientEmail", "PatientCarID", "PatientTelNumber", "PatientType" ,
+    "PatientState",  "StudyOrderIdentity", "StudyID", "StudyUID", "StudyModality" ,
+    "StudyAge" , "ScheduledDateTime" , "AETitle" , "OrderDateTime" , "StudyDescription" ,
+    "StudyDepart" , "StudyCode" ,  "StudyCost" ,  "CostType"  , "StudyType" ,  "StudyState",
+    "StudyDateTime" , "InstitutionName" , "ProcedureStepStartDate"  , "StudyModalityIdentity" ,
+    "StudyManufacturer" , "RegisterID"
+};
+class StudyOrderDate
+{
+public:
+    StudyOrderDate()
+    {
+        for (int i=0; i<33; i++)
+        {
+            studyorder[i].Name = g_StudyOrder[i];
+            studyorder[i].Value = "";
+        }
+    }
+public:
+    DateNameValue studyorder[33];
+};
+
+enum eStudyOrderIndex
+{
+    PatientIdentity, PatientID ,  PatientName,  PatientNameEnglish ,  PatientSex,   PatientBirthday,
+    PatientAddr, PatientEmail, PatientCarID, PatientTelNumber, PatientType ,
+    PatientState,  StudyOrderIdentity, StudyID, StudyUID, StudyModality ,
+    StudyAge , ScheduledDateTime , AETitle , OrderDateTime , StudyDescription ,
+    StudyDepart , StudyCode ,  StudyCost ,  CostType  , StudyType ,  StudyState,
+    StudyDateTime , InstitutionName , ProcedureStepStartDate  , StudyModalityIdentity ,
+    StudyManufacturer , RegisterID
+};
+///------2020-11-17-------------new study order data struct
+///
+///
 ///----------------------------------------------------------------------------------------
 class HttpClient : public QObject
 {
@@ -126,7 +170,7 @@ private slots:
     void cancelDownload();
     void httpFinished();
     void httpReadyRead();
-//    void slotAuthenticationRequired(QNetworkReply *, QAuthenticator *authenticator);
+    //    void slotAuthenticationRequired(QNetworkReply *, QAuthenticator *authenticator);
 #ifndef QT_NO_SSL
     void sslErrors(QNetworkReply *, const QList<QSslError> &errors);
 #endif
