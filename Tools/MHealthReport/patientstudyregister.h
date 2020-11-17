@@ -8,8 +8,8 @@ class PatientStudyRegister;
 }
 
 typedef struct StudyData  {
-    QString PatientIdentity
-    PatientName
+    QString PatientIdentity   ,
+    PatientName    ,
     PatientID      ,
     PatientSex      ,
     PatientBirthday  ,
@@ -32,11 +32,11 @@ typedef struct StudyData  {
     StudyState        ,
     StudyCost          ,
     StudyDateTime     ,
-    // SstudyID           ,
+    SstudyID           ,
     StudyDepart    ,
     SstudyModality ,
-    // SstudyUID
-    CostType `
+    SstudyUID,
+    CostType;
 }StudyData;
 
 typedef struct DataPaint
