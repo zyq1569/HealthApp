@@ -87,36 +87,8 @@ struct PatientStudyDB
 };
 
 ///------2020-11-17-------------new study order data struct
-struct DateNameValue
-{
-    QString Name;
-    QString Value;
-};
-const QString g_StudyOrder[] =
-{
-    "PatientIdentity","PatientID",  "PatientName" ,  "PatientNameEnglish" ,  "PatientSex",   "PatientBirthday",
-    "PatientAddr", "PatientEmail", "PatientCarID", "PatientTelNumber", "PatientType" ,
-    "PatientState",  "StudyOrderIdentity", "StudyID", "StudyUID", "StudyModality" ,
-    "StudyAge" , "ScheduledDateTime" , "AETitle" , "OrderDateTime" , "StudyDescription" ,
-    "StudyDepart" , "StudyCode" ,  "StudyCost" ,  "CostType"  , "StudyType" ,  "StudyState",
-    "StudyDateTime" , "InstitutionName" , "ProcedureStepStartDate"  , "StudyModalityIdentity" ,
-    "StudyManufacturer" , "RegisterID"
-};
-class StudyOrderDate
-{
-public:
-    StudyOrderDate()
-    {
-        for (int i=0; i<33; i++)
-        {
-            studyorder[i].Name = g_StudyOrder[i];
-            studyorder[i].Value = "";
-        }
-    }
-public:
-    DateNameValue studyorder[33];
-};
-
+///
+const int g_OrderCount = 33;
 enum eStudyOrderIndex
 {
     PatientIdentity, PatientID ,  PatientName,  PatientNameEnglish ,  PatientSex,   PatientBirthday,
@@ -127,6 +99,39 @@ enum eStudyOrderIndex
     StudyDateTime , InstitutionName , ProcedureStepStartDate  , StudyModalityIdentity ,
     StudyManufacturer , RegisterID
 };
+
+const QString g_StudyOrder[] =
+{
+    "PatientIdentity","PatientID",  "PatientName" ,  "PatientNameEnglish" ,  "PatientSex",   "PatientBirthday",
+    "PatientAddr", "PatientEmail", "PatientCarID", "PatientTelNumber", "PatientType" ,
+    "PatientState",  "StudyOrderIdentity", "StudyID", "StudyUID", "StudyModality" ,
+    "StudyAge" , "ScheduledDateTime" , "AETitle" , "OrderDateTime" , "StudyDescription" ,
+    "StudyDepart" , "StudyCode" ,  "StudyCost" ,  "CostType"  , "StudyType" ,  "StudyState",
+    "StudyDateTime" , "InstitutionName" , "ProcedureStepStartDate"  , "StudyModalityIdentity" ,
+    "StudyManufacturer" , "RegisterID"
+};
+
+struct DateNameValue
+{
+    QString Name;
+    QString Value;
+};
+
+class StudyOrderData
+{
+public:
+    StudyOrderData()
+    {
+        for (int i=0; i<g_OrderCount; i++)
+        {
+            studyorder[i].Name = g_StudyOrder[i];
+            studyorder[i].Value = "";
+        }
+    }
+public:
+    DateNameValue studyorder[33];
+};
+
 ///------2020-11-17-------------new study order data struct
 ///
 ///
@@ -138,6 +143,7 @@ public:
     explicit HttpClient(QObject *parent = nullptr, QString dir = "");
 
 public:
+    void setStudyOrder(QJsonValue &JsonValue,StudyOrderData &OrderData);
     void setPatientDBinfo(QJsonValue &JsonValue,StudyRowInfo &Rowinfo);
     void setDwonloadDir(QString dir);
     //start=19700101&end=20191230&page=1&limit=10

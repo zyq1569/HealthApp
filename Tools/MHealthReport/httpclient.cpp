@@ -120,6 +120,19 @@ void HttpClient::ParseDwonData()
     }
 }
 
+void HttpClient::setStudyOrder(QJsonValue &JsonValue, StudyOrderData &OrderData)
+{
+    QJsonObject paserObj = JsonValue.toObject();
+    for (int i=0; i<g_OrderCount; i++)
+    {
+        QString name = OrderData.studyorder[i].Name;
+        if (paserObj.contains(name))
+        {
+            OrderData.studyorder[i].Value =  paserObj[name].toString();
+        }
+    }
+}
+
 void HttpClient::setPatientDBinfo(QJsonValue &JsonValue, StudyRowInfo &Rowinfo)
 {
     QJsonObject paserObj = JsonValue.toObject();

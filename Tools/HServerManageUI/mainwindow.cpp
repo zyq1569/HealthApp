@@ -4,10 +4,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "units.h"
-//log file
+
+///---------log file
 #include "easylogging++.h"
 INITIALIZE_EASYLOGGINGPP
-
+///---------log file-----------
 
 HMainWindow::HMainWindow(QWidget *parent) :
     QMainWindow(parent),
