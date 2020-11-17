@@ -148,7 +148,6 @@ HMainWindow::HMainWindow(QWidget *parent) :
         ui->mysqlPWDValue->setText(configini.value("/mariadb/sqlpwd").toString());
     }
 
-
 }
 
 HMainWindow::~HMainWindow()
