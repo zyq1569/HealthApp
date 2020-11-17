@@ -149,8 +149,11 @@ func main() {
 
 	//ris study order info
 	WebServer.GET("/healthsystem/ris/studydata/", GetDBStudyData)
+	//2020-1117 update--->ris study order info [save old fun up]
+	WebServer.GET("/healthsystem/ris/StudyOrder/", GetStudyOrderFromDB)
 	//ris study image info
 	WebServer.GET("/healthsystem/ris/stduyimage/", GetDBStudyImage)
+	//
 
 	//ris//update ->studydata
 	WebServer.POST("/healthsystem/ris/updata/", UpdateDBStudyData)
@@ -723,6 +726,71 @@ func UpdateDBStudyData(c echo.Context) error {
 
 func GetDBStudyData(c echo.Context) error {
 	//'http://127.0.0.1:8080/healthsystem/ris/studydata/?' + searchStudyTime
+	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
+	startTime := c.FormValue("start")
+	endTime := c.FormValue("end")
+	page := c.FormValue("page")
+	limit := c.FormValue("limit")
+	var studyjson Study.StudyDataJson
+	if maridb_db != nil {
+		var count int
+		p, err := strconv.Atoi(page)
+		checkErr(err)
+		lim, err := strconv.Atoi(limit)
+		checkErr(err)
+		count = (p - 1) * lim
+		var sqlstr string
+		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
+			" p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
+			" s.StudyOrderIdentity,s.ScheduledDateTime,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
+			" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
+			" s.ScheduledDateTime>=" + startTime + " and  s.ScheduledDateTime<=" + endTime + " order by s.StudyOrderIdentity " +
+			" limit " + strconv.Itoa(count) + "," + limit
+		// println(sqlstr)
+		rows, err := maridb_db.Query(sqlstr)
+		if err != nil {
+			println(err)
+		} else {
+			studyjson.Code = 0
+			studyjson.Msg = ""
+			studyjson.Count = 21
+			for rows.Next() {
+				var data Study.StudyData
+				err = rows.Scan(&data.PatientIdentity, &data.PatientName,
+					&data.PatientID, &data.PatientBirthday,
+					&data.PatientSex, &data.PatientTelNumber,
+					&data.PatientAddr, &data.PatientEmail,
+					&data.PatientCarID, &data.StudyID,
+					&data.StudyUID, &data.StudyDepart,
+					&data.CostType, &data.StudyOrderIdentity,
+					&data.ScheduledDateTime, &data.StudyDateTime, &data.StudyDescription,
+					&data.StudyModality, &data.StudyCost,
+					&data.StudyState)
+				studyjson.Data = append(studyjson.Data, data)
+			}
+			sqlstr = "select count(*) count from " +
+				" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and" +
+				"  s.ScheduledDateTime>= " + startTime + " and  s.ScheduledDateTime <= " + endTime
+			rows, err := maridb_db.Query(sqlstr)
+			if err == nil {
+				for rows.Next() {
+					rows.Scan(&studyjson.Count)
+				}
+			}
+		}
+	}
+	js, err := json.Marshal(studyjson)
+	if err != nil {
+		println(err)
+		return c.String(http.StatusOK, "null")
+	}
+	// println(string(js))
+	return c.String(http.StatusOK, string(js))
+}
+
+///2020-1117:add{ 从新order表（增加字段）：查询检查信息（json data）}
+func GetStudyOrderFromDB(c echo.Context) error {
+	//'http://127.0.0.1:8080/healthsystem/ris/StudyOrder/?' + searchStudyTime
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
