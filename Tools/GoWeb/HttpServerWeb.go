@@ -827,7 +827,7 @@ func OpenDB() (success bool, db *sql.DB) {
 ///----------------2020-1117 add fun-------------------------------------------------------------------------------------
 ///2020-1117:add{ 从新order表（增加字段）：查询检查信息（json data）}
 func GetStudyOrderFromDB(c echo.Context) error {
-	log4go.Info(c.Request().URL)
+	//log4go.Debug(c.Request().URL)
 	//'http://127.0.0.1:8080/healthsystem/ris/StudyOrder/?' + searchStudyTime
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
@@ -843,27 +843,27 @@ func GetStudyOrderFromDB(c echo.Context) error {
 		checkErr(err)
 		count = (p - 1) * lim
 		var sqlstr string
-		sqlstr = "select p.PatientIdentity , p.PatientID, p.PatientName, p.PatientNameEnglish ," +
-			"p.PatientSex , p.PatientBirthday , p.PatientAddr , p.PatientEmail , p.PatientCarID ," +
-			"p.PatientTelNumber , p.PatientType , p.PatientState ,o.StudyOrderIdentity ," +
+		sqlstr = "select p.PatientIdentity , p.PatientID, p.PatientName, p.PatientNameEnglish," +
+			"p.PatientSex , p.PatientBirthday , p.PatientAddr , p.PatientEmail , p.PatientCarID," +
+			"p.PatientTelNumber , p.PatientType , p.PatientState ,o.StudyOrderIdentity," +
 			"o.StudyID , o.StudyUID,  o.StudyModality, o.StudyAge ," +
-			"o.ScheduledDateTime , o.AETitle , o.OrderDateTime, o.StudyDescription, " +
-			"o.StudyDepart, o.StudyCode, o.StudyCost, o.CostType, o.StudyType, " +
+			"o.ScheduledDateTime , o.AETitle , o.OrderDateTime, o.StudyDescription," +
+			"o.StudyDepart, o.StudyCode, o.StudyCost, o.CostType, o.StudyType," +
 			"o.StudyState, o.StudyDateTime, o.InstitutionName, o.ProcedureStepStartDate," +
-			"o.StudyModalityIdentity, o.StudyManufacturer , o.RegisterID" +
-			"from  h_patient p, h_order o  " +
+			"o.StudyModalityIdentity, o.StudyManufacturer , o.RegisterID " +
+			"from h_patient p, h_order o  " +
 			"where p.PatientIdentity = o.PatientIdentity and StudyState > 0 and " +
-			"o.ScheduledDateTime>=" + startTime + "and  o.ScheduledDateTime<=" + endTime +
+			"o.ScheduledDateTime>=" + startTime + " and  o.ScheduledDateTime<=" + endTime + " " +
 			"order by o.StudyOrderIdentity " +
 			"limit " + strconv.Itoa(count) + "," + limit
-		log4go.Info(sqlstr)
+		//log4go.Info(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
 		} else {
 			studyjson.Code = 0
 			studyjson.Msg = ""
-			studyjson.Count = 21
+			studyjson.Count = 0
 			for rows.Next() {
 				var data Study.StudyOrderData
 				err = rows.Scan(&data.PatientIdentity, &data.PatientID, &data.PatientName,
@@ -894,7 +894,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 		println(err)
 		return c.String(http.StatusOK, "null")
 	}
-	log4go.Debug(string(js))
+	//log4go.Debug(string(js))
 	return c.String(http.StatusOK, string(js))
 }
 
