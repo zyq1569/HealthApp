@@ -13,7 +13,6 @@ StudyImage::StudyImage(QWidget *parent) :
 
 
     m_httpclient = NULL;
-
     m_localSocket = new QLocalSocket(this);
     //connect(m_clientSocket, SIGNAL(readyRead()), this, SLOT(getClientData()));
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
