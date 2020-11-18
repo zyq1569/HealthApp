@@ -1,5 +1,5 @@
 -- --------------------------------------------------------
--- Host:                         127.0.0.1
+-- Host:                         127.0.0.1(2020-11-18)
 -- Server version:               10.5.5-MariaDB - mariadb.org binary distribution
 -- Server OS:                    Win64
 -- HeidiSQL Version:             10.3.0.5771
@@ -19,10 +19,10 @@ USE `hit`;
 -- Dumping structure for table hit.h_modality
 CREATE TABLE IF NOT EXISTS `h_modality` (
   `ModalityIdentity` int(11) NOT NULL,
-  `ModalityAET` char(50) DEFAULT NULL,
-  `ModalityManufacturer` char(50) DEFAULT NULL,
-  `ModalityIPAddr` char(50) DEFAULT NULL,
-  `ModalityType` char(50) DEFAULT NULL
+  `ModalityAET` char(50) DEFAULT '',
+  `ModalityManufacturer` char(50) DEFAULT '',
+  `ModalityIPAddr` char(50) DEFAULT '',
+  `ModalityType` char(50) DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='设备基本信息维护表';
 
 -- Data exporting was unselected.
@@ -31,19 +31,26 @@ CREATE TABLE IF NOT EXISTS `h_modality` (
 CREATE TABLE IF NOT EXISTS `h_order` (
   `StudyOrderIdentity` bigint(64) NOT NULL COMMENT '预约检查主索引',
   `PatientIdentity` bigint(64) NOT NULL COMMENT '患者唯一ID',
-  `StudyID` char(50) DEFAULT NULL COMMENT '检查号ID',
-  `StudyUID` char(50) DEFAULT NULL COMMENT '检查UID',
-  `StudyModality` char(50) DEFAULT NULL COMMENT '检查设备',
-  `ScheduledDateTime` datetime DEFAULT NULL COMMENT '预约设备检查时间',
-  `AETitle` char(50) DEFAULT NULL COMMENT '设备AE',
+  `StudyID` char(50) DEFAULT '0' COMMENT '检查号ID',
+  `StudyUID` char(50) NOT NULL DEFAULT '0' COMMENT '检查UID',
+  `StudyModality` char(50) DEFAULT '' COMMENT '检查设备',
+  `StudyAge` int(11) DEFAULT -1 COMMENT '检查年龄',
+  `ScheduledDateTime` datetime DEFAULT '1900-01-01 00:00:00' COMMENT '预约设备检查时间',
+  `AETitle` char(50) DEFAULT '' COMMENT '设备 AE( 设备的唯一名称)',
   `OrderDateTime` datetime DEFAULT current_timestamp() COMMENT '登记预约的时间',
-  `StudyDescription` longtext DEFAULT NULL COMMENT '检查描述',
-  `StudyDepart` char(50) DEFAULT NULL COMMENT '检查的科室',
+  `StudyDescription` longtext DEFAULT '' COMMENT '检查描述',
+  `StudyDepart` char(50) DEFAULT '' COMMENT '检查的科室',
   `StudyCode` char(128) DEFAULT '0000' COMMENT '用于对应设备的检查部位编码使用',
   `StudyCost` varchar(50) DEFAULT '0' COMMENT '检查费用',
-  `CostType` char(50) DEFAULT NULL COMMENT '检查的费用类型(eg. 公费)',
+  `CostType` char(50) DEFAULT '' COMMENT '检查的费用类型(eg. 公费)',
   `StudyType` int(11) DEFAULT 0 COMMENT '0影像设备检查',
   `StudyState` int(11) DEFAULT 1 COMMENT '检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核',
+  `StudyDateTime` datetime DEFAULT '1900-01-01 00:00:00',
+  `InstitutionName` char(128) DEFAULT '' COMMENT '医疗机构信息(eg.XXX医院)',
+  `ProcedureStepStartDate` datetime DEFAULT '1900-01-01 00:00:00',
+  `StudyModalityIdentity` int(11) DEFAULT -1,
+  `StudyManufacturer` char(50) DEFAULT '' COMMENT '设备厂商(eg. GE)',
+  `RegisterID` int(11) DEFAULT -1 COMMENT '信息登记员ID',
   PRIMARY KEY (`StudyOrderIdentity`),
   KEY `PatientIdentity` (`PatientIdentity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=gbk COMMENT='设备检查预约表';
@@ -55,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `h_patient` (
   `PatientIdentity` bigint(64) unsigned NOT NULL,
   `PatientID` char(50) NOT NULL,
   `PatientName` char(50) DEFAULT 'unknow',
-  `PatientNameEnglish` char(50) DEFAULT NULL,
+  `PatientNameEnglish` char(50) DEFAULT '""' COMMENT '姓名拼音(提供给设备-设备几乎都不支持汉字)',
   `PatientSex` char(10) DEFAULT 'O' COMMENT 'O :为待补充',
   `PatientBirthday` char(22) DEFAULT '19000101',
   `PatientAddr` varchar(120) DEFAULT '""',
@@ -80,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `h_report` (
   `ReportWriterID` char(50) DEFAULT '' COMMENT '报告医生ID',
   `ReportCheckID` char(50) DEFAULT '' COMMENT '审核医生ID',
   `ReportCheckDate` datetime DEFAULT current_timestamp() COMMENT '审核时间',
-  `ReportContent` longtext DEFAULT NULL COMMENT '报告内容',
+  `ReportContent` longtext DEFAULT '' COMMENT '报告内容',
   `ReportOther` longtext DEFAULT '' COMMENT '报告扩展字符',
   PRIMARY KEY (`ReportIdentity`),
   KEY `StudyOrderIdentity` (`StudyOrderIdentity`)
@@ -92,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `h_report` (
 CREATE TABLE IF NOT EXISTS `h_study` (
   `StudyIdentity` bigint(64) unsigned NOT NULL COMMENT '检查影像主索引',
   `PatientIdentity` bigint(64) unsigned NOT NULL COMMENT '患者ID',
-  `StudyDcmPatientName` char(50) DEFAULT NULL COMMENT 'dcm患者姓名',
+  `StudyDcmPatientName` char(50) DEFAULT '' COMMENT 'dcm患者姓名',
   `StudyDescription` char(50) DEFAULT '""' COMMENT 'dcm检查描述',
   `StudyID` char(50) DEFAULT '""',
   `StudyUID` char(129) NOT NULL COMMENT '检查UID 唯一性',
