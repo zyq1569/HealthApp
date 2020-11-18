@@ -827,6 +827,7 @@ func OpenDB() (success bool, db *sql.DB) {
 ///----------------2020-1117 add fun-------------------------------------------------------------------------------------
 ///2020-1117:add{ 从新order表（增加字段）：查询检查信息（json data）}
 func GetStudyOrderFromDB(c echo.Context) error {
+	log4go.Info(c.Request().URL)
 	//'http://127.0.0.1:8080/healthsystem/ris/StudyOrder/?' + searchStudyTime
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
@@ -855,7 +856,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 			"o.ScheduledDateTime>=" + startTime + "and  o.ScheduledDateTime<=" + endTime +
 			"order by o.StudyOrderIdentity " +
 			"limit " + strconv.Itoa(count) + "," + limit
-		// println(sqlstr)
+		log4go.Info(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
@@ -893,7 +894,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 		println(err)
 		return c.String(http.StatusOK, "null")
 	}
-	// println(string(js))
+	log4go.Debug(string(js))
 	return c.String(http.StatusOK, string(js))
 }
 
