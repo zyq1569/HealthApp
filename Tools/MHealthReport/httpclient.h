@@ -69,23 +69,6 @@ struct HStudy
     QList <HSeries> Serieslist;
 };
 
-///----------------------------------------------------------------------------------------
-struct StudyRowInfo
-{
-    QString patientIdentity,patientName,patientId,patientSex,patientBirthday,patientTelNumber;
-    QString patientAddr,patientCarID,patientType,patientEmail,studyOrderIdentity,studyId,studyuid;
-    QString scheduledDateTime,ScheduledDate,orderDateTime,studyDescription,studyModality,aETitle;
-    QString studyType,studyCode,studyState,studyCost,studyDate,studyDepart,sStudyModality,costType;
-};
-
-struct PatientStudyDB
-{
-    int code;
-    QString msg,ver;
-    int count;
-    QList<StudyRowInfo> rowinfo;
-};
-
 ///------2020-11-17-------------new study order data struct
 ///
 const int g_OrderCount = 33;
@@ -153,13 +136,11 @@ public:
 public:
     void setStudyOrder(QJsonValue &JsonValue,StudyOrderData &OrderData);
     PatientStudyOder* getPatientStudyOder();
-
-    void setPatientDBinfo(QJsonValue &JsonValue,StudyRowInfo &Rowinfo);
     void setDwonloadDir(QString dir);
     //start=19700101&end=20191230&page=1&limit=10
     void getStudyDBinfo(QUrl url,QString start,QString end,QString page,QString limit);
     void getStudyImageFile(QUrl url,QString studyuid="",QString seruid = "", QString imguid = "");
-    PatientStudyDB* getPatientStudyDB();
+
     bool CreatDir(QString fullPath)
     {
         QDir dir(fullPath); // 注意
@@ -208,7 +189,6 @@ private:
     QString m_downDir;
     DownFileType m_currentfiletype;
     QByteArray m_currentDownData;
-    PatientStudyDB m_patientstudydb;
     PatientStudyOder m_patientstudyorder;
     HManageThread *m_managethread;
     QObject *m_parent;
