@@ -132,6 +132,14 @@ public:
     DateNameValue studyorder[33];
 };
 
+struct PatientStudyOder
+{
+    int code;
+    QString msg,ver;
+    int count;
+    QList<StudyOrderData> orderdata;
+};
+
 ///------2020-11-17-------------new study order data struct
 ///
 ///
@@ -144,6 +152,8 @@ public:
 
 public:
     void setStudyOrder(QJsonValue &JsonValue,StudyOrderData &OrderData);
+    PatientStudyOder* getPatientStudyOder();
+
     void setPatientDBinfo(QJsonValue &JsonValue,StudyRowInfo &Rowinfo);
     void setDwonloadDir(QString dir);
     //start=19700101&end=20191230&page=1&limit=10
@@ -186,6 +196,7 @@ private:
     void downFileFromWeb(QUrl httpUrl,QString savefilename,QString downDir);
     void startRequest(const QUrl &requestedUrl);
     void ParseDwonData();
+    void ParseStudyOderData();
 
 private:
     QUrl m_url;
@@ -198,6 +209,7 @@ private:
     DownFileType m_currentfiletype;
     QByteArray m_currentDownData;
     PatientStudyDB m_patientstudydb;
+    PatientStudyOder m_patientstudyorder;
     HManageThread *m_managethread;
     QObject *m_parent;
 

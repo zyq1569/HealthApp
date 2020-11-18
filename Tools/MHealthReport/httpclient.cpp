@@ -61,7 +61,11 @@ void HttpClient::startRequest(const QUrl &requestedUrl)
     m_networkreply = m_networkmanager.get(QNetworkRequest(m_url));
     connect(m_networkreply, &QIODevice::readyRead, this, &HttpClient::httpReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &HttpClient::httpFinished);
+}
 
+PatientStudyOder* HttpClient::getPatientStudyOder()
+{
+    return &m_patientstudyorder;
 }
 
 PatientStudyDB* HttpClient::getPatientStudyDB()
@@ -69,6 +73,56 @@ PatientStudyDB* HttpClient::getPatientStudyDB()
     return  &m_patientstudydb;
 }
 
+void HttpClient::ParseStudyOderData()
+{
+    m_patientstudyorder.count = 0;
+    m_patientstudyorder.orderdata.clear();
+    if (m_currentfiletype == DownFileType::dbinfo && m_currentDownData.size() > 1)
+    {
+        QJsonParseError jsonError;
+        QJsonDocument paserDoc = QJsonDocument::fromJson(m_currentDownData, &jsonError);
+        if (jsonError.error == QJsonParseError::NoError)
+        {
+            QJsonObject paserObj = paserDoc.object();
+            if (paserObj.contains("code"))
+            {
+                QJsonValue codeValue = paserObj.take("code");
+                if (codeValue.isDouble())
+                {
+                    m_patientstudyorder.code = codeValue.toInt();
+                }
+            }
+            if (paserObj.contains("msg"))
+            {
+                QJsonValue msgValue = paserObj["msg"];
+                if (msgValue.isString())
+                    m_patientstudyorder.msg = msgValue.toString();
+            }
+            if (paserObj.contains("count"))
+            {
+                QJsonValue countValue = paserObj["count"];
+                if (countValue.isDouble())
+                    m_patientstudyorder.count = countValue.toInt();
+            }
+            if (paserObj.contains("data"))
+            {
+                QJsonValue dataValue = paserObj.take("data");
+                if (dataValue.isArray())
+                {
+                    QJsonArray array = dataValue.toArray();
+                    for(int i = 0; i < array.size(); ++i)
+                    {
+                        StudyOrderData orderdata;
+                        QJsonValue tmp = array.at(i);
+                        setStudyOrder(tmp,orderdata);
+                        m_patientstudyorder.orderdata.push_back(orderdata);
+                    }
+                }
+            }
+        }
+        emit parseDataFinished();
+    }
+}
 void HttpClient::ParseDwonData()
 {
     m_patientstudydb.count = 0;
@@ -280,7 +334,7 @@ void HttpClient::getStudyDBinfo(QUrl url,QString start,QString end,QString page,
     //QString endDate = ui->m_endDate->text();
     //QString mod = ui->m_StudyModality->currentText();
     //QUrl url = ui->m_URL->text();
-    QString newUrlStr = url.toString() + "/healthsystem/ris/stduyimage/?start=";
+    QString newUrlStr = url.toString() + "/healthsystem/ris/StudyOrder/?start=";
     newUrlStr += start+"&end="+end+"&page="+page+"&limit="+limit;
     m_currentfiletype = DownFileType::dbinfo;
 
@@ -439,7 +493,8 @@ void HttpClient::httpFinished()
         startRequest(redirectedUrl);
         return;
     }
-    ParseDwonData();
+    //ParseDwonData();
+    ParseStudyOderData();
 }
 
 bool HttpClient::openFileForWrite(const QString &fileName)

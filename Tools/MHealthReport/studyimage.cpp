@@ -146,20 +146,29 @@ void StudyImage::updateStudyImageTable()
         }
         ui->m_tableWidget->setRowCount(0);
 
-        PatientStudyDB *StudyDB = m_httpclient->getPatientStudyDB();
-        int rowcount = StudyDB->count;
+        PatientStudyOder *StudyOder = m_httpclient->getPatientStudyOder();
+        int rowcount = StudyOder->count;
         int colcount = ui->m_tableWidget->columnCount();
         ui->m_tableWidget->setRowCount(rowcount);
         for (int row=0; row<rowcount; row++)
         {
-            ui->m_tableWidget->setItem(row,0,new QTableWidgetItem(StudyDB->rowinfo[row].patientId));
-            ui->m_tableWidget->setItem(row,1,new QTableWidgetItem(StudyDB->rowinfo[row].patientName));
-            ui->m_tableWidget->setItem(row,2,new QTableWidgetItem(StudyDB->rowinfo[row].patientSex));
-            ui->m_tableWidget->setItem(row,3,new QTableWidgetItem(StudyDB->rowinfo[row].patientBirthday));
-            ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(StudyDB->rowinfo[row].studyState));
-            ui->m_tableWidget->setItem(row,5,new QTableWidgetItem(StudyDB->rowinfo[row].studyModality));
-            ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyDB->rowinfo[row].studyDescription));
-            ui->m_tableWidget->setItem(row,7,new QTableWidgetItem(StudyDB->rowinfo[row].studyuid));
+            ui->m_tableWidget->setItem(row,0,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
+            ui->m_tableWidget->setItem(row,1,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientName].Value));
+            ui->m_tableWidget->setItem(row,2,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientSex].Value));
+            ui->m_tableWidget->setItem(row,3,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientBirthday].Value));
+            ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyState].Value));
+            ui->m_tableWidget->setItem(row,5,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyModality].Value));
+            ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDescription].Value));
+            ui->m_tableWidget->setItem(row,7,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyUID].Value));
+
+//            ui->m_tableWidget->setItem(row,0,new QTableWidgetItem(StudyOder->rowinfo[row].patientId));
+//            ui->m_tableWidget->setItem(row,1,new QTableWidgetItem(StudyOder->rowinfo[row].patientName));
+//            ui->m_tableWidget->setItem(row,2,new QTableWidgetItem(StudyOder->rowinfo[row].patientSex));
+//            ui->m_tableWidget->setItem(row,3,new QTableWidgetItem(StudyOder->rowinfo[row].patientBirthday));
+//            ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(StudyOder->rowinfo[row].studyState));
+//            ui->m_tableWidget->setItem(row,5,new QTableWidgetItem(StudyOder->rowinfo[row].studyModality));
+//            ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyOder->rowinfo[row].studyDescription));
+//            ui->m_tableWidget->setItem(row,7,new QTableWidgetItem(StudyOder->rowinfo[row].studyuid));
         }
         ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-1,true);
     }
