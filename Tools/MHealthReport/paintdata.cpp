@@ -17,14 +17,13 @@ PaintData *PaintData::getInstance()
 
 
 PaintData::PaintData()
-{   
+{
 
 }
 
 
 bool PaintData::dataCnn()
 {
-
 
     return true;
 }
