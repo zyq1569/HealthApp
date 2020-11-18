@@ -148,7 +148,6 @@ void StudyImage::updateStudyImageTable()
 
         PatientStudyOder *StudyOder = m_httpclient->getPatientStudyOder();
         int rowcount = StudyOder->count;
-        int colcount = ui->m_tableWidget->columnCount();
         ui->m_tableWidget->setRowCount(rowcount);
         for (int row=0; row<rowcount; row++)
         {
