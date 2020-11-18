@@ -7,41 +7,42 @@
 
 typedef struct DataPaint
 {
-    QString regID;
-    QString patientID;
-    QString hisId;
-    QString name;
-    QString sex;
-    QString age;
-    QString nationality;
-    QString tel;
-    QString address;
-    QString marriage;
-    QString birthplace;
-    QString job;
-    QString feeType;
-    QString idCard;
-    QString familyHistory;
-    QString infectiousHistory;
-    QString pastHistory;
-    QString menarche;
-    QString lastMenstruation;
-    QString reproductiveHistory;
-    QString outPatientNo;
-    QString hospitalizedNo;
-    QString inpatientArea;
-    QString bedNo;
-    QString fromOffices;
-    QString fromDoctor;
-    QString sendTime;
-    QString receiveTime;
-    QString receiver;
-    QString site;
-    QString specimenQt;
-    QString fixedMode;
-    QString chiefComplaint;
-    QString currentHistory;
-    QString clinical;
+    /// patient table
+    QString       PatientIdentity;
+    QString       PatientID;
+    QString       PatientName;
+    QString       PatientNameEnglish;
+    QString       PatientSex;
+    QString       PatientBirthday;
+    QString       PatientAddr;
+    QString       PatientEmail;
+    QString       PatientCarID;
+    QString       PatientTelNumber;
+    QString       PatientType;
+    QString       PatientState;
+    /// order table
+    QString       StudyOrderIdentity;
+    ///PatientIdentity
+    QString       StudyID;
+    QString       StudyUID;
+    QString       StudyModality;
+    QString       StudyAge;
+    QString       ScheduledDateTime;
+    QString       AETitle;
+    QString       OrderDateTime;
+    QString       StudyDescription;
+    QString       StudyDepart;
+    QString       StudyCode;
+    QString       StudyCost;
+    QString       CostType;
+    QString       StudyType;
+    QString       StudyState;
+    QString       StudyDateTime;
+    QString       InstitutionName;
+    QString       ProcedureStepStartDate;
+    QString       StudyModalityIdentity;
+    QString       StudyManufacturer;
+    QString       RegisterID;
 }DataPaint;
 
 class PaintData
