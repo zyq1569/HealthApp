@@ -1,17 +1,17 @@
 ﻿#include "paintdata.h"
 
-PaintData * PaintData::instance = NULL;
+PaintData * PaintData::s_instance = NULL;
 
 
 PaintData *PaintData::getInstance()
 {
     {
-        if(NULL == instance)
+        if(NULL == s_instance)
         {
-            instance = new PaintData();
+            s_instance = new PaintData();
         }
 
-        return instance;
+        return s_instance;
     }
 }
 
@@ -29,7 +29,7 @@ bool PaintData::dataCnn()
 }
 
 
-bool PaintData::insertData(DataPaint data)
+bool PaintData::insertData(PatientStudyData data)
 {
 
     return true;
@@ -46,7 +46,7 @@ int PaintData::selectData(QString regId, QString patientID)
 }
 
 
-bool PaintData::updateData(DataPaint data)
+bool PaintData::updateData(PatientStudyData data)
 {
     bool success = true;
 
@@ -62,9 +62,9 @@ bool PaintData::deleteData(QString regId, QString patientID)
 }
 
 
-DataPaint PaintData::getDataPaint() const
+PatientStudyData PaintData::getDataPaint() const
 {
-    return dataPaint;
+    return pStudyData;
 }
 
 

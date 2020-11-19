@@ -5,7 +5,7 @@
 
 #define PAINTDATA  PaintData::getInstance()
 
-typedef struct DataPaint
+typedef struct PatientStudyData
 {
     /// patient table
     QString       PatientIdentity;
@@ -43,7 +43,7 @@ typedef struct DataPaint
     QString       StudyModalityIdentity;
     QString       StudyManufacturer;
     QString       RegisterID;
-}DataPaint;
+}PatientStudyData;
 
 class PaintData
 {
@@ -59,24 +59,24 @@ public:
     bool dataCnn();
 
 
-    bool insertData(DataPaint data);
+    bool insertData(PatientStudyData data);
 
 
     int selectData(QString regId, QString patientID);
 
 
-    bool updateData(DataPaint data);
+    bool updateData(PatientStudyData data);
 
 
     bool deleteData(QString regId, QString patientID);
 
 
-    DataPaint getDataPaint() const;
+    PatientStudyData getDataPaint() const;
 
 private:
 
-    static PaintData * instance;
-    DataPaint dataPaint;
+    static PaintData * s_instance;
+    PatientStudyData pStudyData;
 };
 
 #endif // DATABASE_H
