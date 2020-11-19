@@ -613,16 +613,15 @@ void HMainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason)
     {
+
     case QSystemTrayIcon::Trigger:
     case QSystemTrayIcon::DoubleClick:
-    {
         /// 1. set Window TOPMOST 2. set Window NOTOPMOST
         this->showNormal();
         ::SetWindowPos(HWND(this->winId()), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
         ::SetWindowPos(HWND(this->winId()), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
         this->show();
         break;
-    }
     case QSystemTrayIcon::MiddleClick:
     {
         QSystemTrayIcon::MessageIcon msgIcon = QSystemTrayIcon::MessageIcon(1/*MessageIcon::Information*/);
