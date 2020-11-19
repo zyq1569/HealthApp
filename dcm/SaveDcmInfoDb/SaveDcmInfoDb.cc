@@ -607,7 +607,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 {
                     //int rows = rs->countRows();
                     char uuid[64];
-                    sprintf(uuid, "%llu", CreateGUID());
+                    sprintf(uuid, "%llu", (CreateGUID() >> 1));
                     PatientIdentity = uuid;
                     querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
                                                            PatientSex,PatientBirthday) value(";
@@ -642,7 +642,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 if (rs == NULL)
                 {
                     char uuid[64];
-                    sprintf(uuid, "%llu", CreateGUID());
+                    sprintf(uuid, "%llu", (CreateGUID() >> 1));
                     OFString StudyIdentity = uuid;
                     strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,";
                     strsql += " StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDcmPatientName,StudyDescription) value(";
@@ -691,7 +691,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 if (rs == NULL)
                 {
                     char uuid[64];
-                    sprintf(uuid, "%llu", CreateGUID());
+                    sprintf(uuid, "%llu", (CreateGUID()>>1));
                     OFString StudyIdentity = uuid;
                     strsql = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,";
                     strsql += " StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) value(";
@@ -743,6 +743,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
 
 int main(int argc, char *argv[])
 {
+    //uint64 uid = CreateGUID();
     static DcmConfigFile dcmconfig;
     OFString Task_Dir, Log_Dir, Error_Dir;
     //OFString ini_dir, ini_error_dir;
