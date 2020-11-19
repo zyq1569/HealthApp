@@ -449,6 +449,8 @@ OFString StringGUID()
     OFString s = uuid;
     return s;
 }
+/// 2020-11-19: set len == 10
+const int g_GUID_len = 10;
 #ifdef _WIN32
 UINT64 CreateGUID()
 #else
@@ -504,7 +506,7 @@ uint64_t CreateGUID()
 //    printf("Start time: %ld us", t_start.tv_usec);
 #endif // _WIN32
 
-    uid[1] = delt_ma << 11;
+    uid[1] = delt_ma << g_GUID_len;
     uid[1] += delt_mi;
     //----------
 #ifdef HAVE_WINDOWS_H
@@ -517,7 +519,7 @@ uint64_t CreateGUID()
     }
     while (result != S_OK);
 
-    return *((UINT64*)uid);
+    return (*((UINT64*)uid)>>1);
 #else
     //to do add! :centos yum install uuid-dev
     GUID guid;
