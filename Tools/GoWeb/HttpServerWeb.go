@@ -853,10 +853,10 @@ func GetStudyOrderFromDB(c echo.Context) error {
 			"o.StudyModalityIdentity, o.StudyManufacturer , o.RegisterID " +
 			"from h_patient p, h_order o  " +
 			"where p.PatientIdentity = o.PatientIdentity and StudyState > 0 and " +
-			"o.ScheduledDateTime>=" + startTime + " and  o.ScheduledDateTime<=" + endTime + " " +
+			"o.StudyDateTime>=" + startTime + " and  o.StudyDateTime<=" + endTime + " " +
 			"order by o.StudyOrderIdentity " +
 			"limit " + strconv.Itoa(count) + "," + limit
-		//log4go.Info(sqlstr)
+		log4go.Debug(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
@@ -880,7 +880,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 			}
 			sqlstr = "select count(*) count from " +
 				" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and" +
-				"  s.ScheduledDateTime>= " + startTime + " and  s.ScheduledDateTime <= " + endTime
+				"  s.StudyDateTime>= " + startTime + " and  s.StudyDateTime <= " + endTime
 			rows, err := maridb_db.Query(sqlstr)
 			if err == nil {
 				for rows.Next() {
