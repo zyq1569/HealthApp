@@ -635,6 +635,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                     }
                 }
 
+                ///-----------------old h_study table--------------------------------------------------
                 querysql = "select * from H_study where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
                 g_pMariaDb->query(querysql.c_str());
                 rs = g_pMariaDb->QueryResult();
@@ -675,11 +676,53 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 OFLOG_INFO(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
 
                 //-------------------------------------------------------------------------------
-                //更新预约表检查状态
-                querysql = "update H_order set StudyState = 3 where StudyUID = '" + StudyInfo.StudyInstanceUID + "';";
-                g_pMariaDb->execute(querysql.c_str());
-                OFLOG_INFO(SaveDcmInfoDbLogger, "update table H_order:" + StudyInfo.StudyInstanceUID);
+                //更新预约表检查状态 // modify 2020-11-19
+                //querysql = "update H_order set StudyState = 3 where StudyUID = '" + StudyInfo.StudyInstanceUID + "';";
+                //g_pMariaDb->execute(querysql.c_str());
+                //OFLOG_INFO(SaveDcmInfoDbLogger, "update table H_order:" + StudyInfo.StudyInstanceUID);
                 //-------------------------------------------------------------------------------
+                ///---------------UP  old h_study table------------------------------------------
+
+
+                ///------------------ - 2020 - 11 - 19 - add-------------------------- -
+                querysql = "select * from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
+                g_pMariaDb->query(querysql.c_str());
+                rs = g_pMariaDb->QueryResult();
+                if (rs == NULL)
+                {
+                    char uuid[64];
+                    sprintf(uuid, "%llu", CreateGUID());
+                    OFString StudyIdentity = uuid;
+                    strsql = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,";
+                    strsql += " StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) value(";
+                    strsql += StudyIdentity;
+                    strsql += ",'";
+                    strsql += StudyInfo.StudyID;
+                    strsql += "','";
+                    strsql += StudyInfo.StudyInstanceUID;
+                    strsql += "',";
+                    strsql += PatientIdentity;
+                    strsql += ",'";
+                    if (StudyInfo.StudyDateTime.empty())
+                    {
+                        StudyInfo.StudyDateTime = "1800-01-01 00:00:01.000000";
+                    }
+                    strsql += StudyInfo.StudyDateTime;
+                    strsql += "','";
+                    strsql += StudyInfo.StudyModality;
+                    strsql += "','";
+                    strsql += StudyInfo.StudyInstitutionName;
+                    strsql += "','";
+                    strsql += StudyInfo.StudyManufacturer;
+                    strsql += "','3','";///检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核
+                    //strsql += StudyInfo.StudyPatientName;
+                    //strsql += "','";//StudyDescription
+                    strsql += StudyInfo.studydescription;
+                    strsql += "');";
+                    g_pMariaDb->execute(strsql.c_str());
+                }
+                ///-------------------2020-11-19-add--------------------------- 
+
             }
             if (SaveDcmInfoFile(StudyInfo, studyinifile) && CjsonSaveFile(StudyInfo, studyjsonfile))
             {
