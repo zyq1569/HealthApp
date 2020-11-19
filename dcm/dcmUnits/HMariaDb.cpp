@@ -87,9 +87,9 @@ int HMariaDb::reconnection()
             try_times++;
         }
 #ifdef _win32
-        Sleep(10);
-#else
         sleep(10);
+#else
+        Sleep(10);
 #endif
     }
     return -1;
