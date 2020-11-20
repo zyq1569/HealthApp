@@ -1,5 +1,5 @@
 -- --------------------------------------------------------
--- Host:                         127.0.0.1(2020-11-18)
+-- Host:                         127.0.0.1
 -- Server version:               10.5.5-MariaDB - mariadb.org binary distribution
 -- Server OS:                    Win64
 -- HeidiSQL Version:             10.3.0.5771
@@ -29,10 +29,10 @@ CREATE TABLE IF NOT EXISTS `h_modality` (
 
 -- Dumping structure for table hit.h_order
 CREATE TABLE IF NOT EXISTS `h_order` (
-  `StudyOrderIdentity` bigint(64) NOT NULL COMMENT '预约检查主索引',
-  `PatientIdentity` bigint(64) NOT NULL COMMENT '患者唯一ID',
+  `StudyOrderIdentity` bigint(66) NOT NULL COMMENT '预约检查主索引',
+  `PatientIdentity` bigint(66) NOT NULL COMMENT '患者唯一ID',
   `StudyID` char(50) DEFAULT '0' COMMENT '检查号ID',
-  `StudyUID` char(50) NOT NULL DEFAULT '0' COMMENT '检查UID',
+  `StudyUID` char(129) NOT NULL DEFAULT '0' COMMENT '检查UID',
   `StudyModality` char(50) DEFAULT '' COMMENT '检查设备',
   `StudyAge` int(11) DEFAULT -1 COMMENT '检查年龄',
   `ScheduledDateTime` datetime DEFAULT '1900-01-01 00:00:00' COMMENT '预约设备检查时间',
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `h_order` (
   `OrderDateTime` datetime DEFAULT current_timestamp() COMMENT '登记预约的时间',
   `StudyDescription` longtext DEFAULT '' COMMENT '检查描述',
   `StudyDepart` char(50) DEFAULT '' COMMENT '检查的科室',
-  `StudyCode` char(128) DEFAULT '0000' COMMENT '用于对应设备的检查部位编码使用',
+  `StudyCode` char(30) DEFAULT '0000' COMMENT '用于对应设备的检查部位编码使用',
   `StudyCost` varchar(50) DEFAULT '0' COMMENT '检查费用',
   `CostType` char(50) DEFAULT '' COMMENT '检查的费用类型(eg. 公费)',
   `StudyType` int(11) DEFAULT 0 COMMENT '0影像设备检查',
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `h_order` (
   `ProcedureStepStartDate` datetime DEFAULT '1900-01-01 00:00:00',
   `StudyModalityIdentity` int(11) DEFAULT -1,
   `StudyManufacturer` char(50) DEFAULT '' COMMENT '设备厂商(eg. GE)',
-  `RegisterID` int(11) DEFAULT -1 COMMENT '信息登记员ID',
+  `RegisterID` int(11) DEFAULT -1 COMMENT '信息登记员ID:-1: dcm 文件自动登记信息 0: 其它系统登记信息 1：前台登记',
   PRIMARY KEY (`StudyOrderIdentity`),
   KEY `PatientIdentity` (`PatientIdentity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=gbk COMMENT='设备检查预约表';
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `h_order` (
 
 -- Dumping structure for table hit.h_patient
 CREATE TABLE IF NOT EXISTS `h_patient` (
-  `PatientIdentity` bigint(64) unsigned NOT NULL,
+  `PatientIdentity` bigint(66) unsigned NOT NULL,
   `PatientID` char(50) NOT NULL,
   `PatientName` char(50) DEFAULT 'unknow',
   `PatientNameEnglish` char(50) DEFAULT '""' COMMENT '姓名拼音(提供给设备-设备几乎都不支持汉字)',

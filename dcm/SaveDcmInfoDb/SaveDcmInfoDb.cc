@@ -636,6 +636,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 }
 
                 ///-----------------old h_study table--------------------------------------------------
+                //to do : delete code /
                 querysql = "select * from H_study where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
                 g_pMariaDb->query(querysql.c_str());
                 rs = g_pMariaDb->QueryResult();
