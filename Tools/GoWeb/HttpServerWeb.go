@@ -744,7 +744,7 @@ func GetDBStudyData(c echo.Context) error {
 			" p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
 			" s.StudyOrderIdentity,s.ScheduledDateTime,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
 			" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
-			" s.ScheduledDateTime>=" + startTime + " and  s.ScheduledDateTime<=" + endTime + " order by s.StudyOrderIdentity " +
+			" s.StudyDateTime>=" + startTime + " and  s.StudyDateTime<=" + endTime + " order by s.StudyOrderIdentity " +
 			" limit " + strconv.Itoa(count) + "," + limit
 		// println(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
@@ -770,7 +770,7 @@ func GetDBStudyData(c echo.Context) error {
 			}
 			sqlstr = "select count(*) count from " +
 				" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and" +
-				"  s.ScheduledDateTime>= " + startTime + " and  s.ScheduledDateTime <= " + endTime
+				"  s.StudyDateTime>= " + startTime + " and  s.StudyDateTime <= " + endTime
 			rows, err := maridb_db.Query(sqlstr)
 			if err == nil {
 				for rows.Next() {
