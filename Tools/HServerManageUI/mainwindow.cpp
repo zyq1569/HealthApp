@@ -436,7 +436,7 @@ void HMainWindow::on_WebServer_clicked()
         //image dir
         arg.append(ui->Dir_Store->text()+"/Images");
         //Level
-        arg.append(ui->comLevel_web->currentText());
+        arg.append(QString("%1").arg(ui->comLevel_web->currentIndex()));
 
         if (!m_bstorescp[WEBSER] && m_pQProcess[WEBSER]==nullptr)
         {
