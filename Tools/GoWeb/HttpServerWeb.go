@@ -84,6 +84,7 @@ const (
 
 var CONFIG [CONGIG_SIZE]string
 var DB_Driver string
+var Go_Level int
 
 // var name string
 var maridb_db *sql.DB
@@ -93,19 +94,33 @@ func main() {
 	CONFIG[IMAGE_Dir] = "F:/temp/HealthApp/DCM_SAVE/DCM_SAVE/Images"
 	CONFIG[PAGE_Dir] = "F:/temp/HealthApp/PageWeb/PageWeb"
 	CONFIG[Web_Port] = "9090"
-	log4go.LoadConfiguration("./logConfig.json") // to do set ?
+	log4go.LoadConfiguration("./config/goWebConfig.json") // to do set ?
 	//1 mysql: 1 ip 2 name 3 user  4pwd	//5 page web / 6 port//7 studyimage dir	//8 level
 	//var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name string
 	if len(os.Args) > 8 {
 		// for idx, args := range os.Args {		// 	//println("参数"+strconv.Itoa(idx)+":", args)		// }
 		// MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name
-		for i := 1; i < 9; i++ {
+		for i := 1; i < CONGIG_SIZE; i++ {
 			CONFIG[i] = os.Args[i]
-			log4go.Info(CONFIG[i])
+			log4go.Info(os.Args[i])
+		}
+		Go_Level, err := strconv.Atoi(CONFIG[LOG_Level])
+		if err != nil {
+			Go_Level = 2
+			log4go.Error("set default Go_Level::2")
+			log4go.Info(Go_Level)
+		} else {
+			log4go.Info("Get Go_Level::" + CONFIG[LOG_Level])
 		}
 		//DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
 		DB_Driver = CONFIG[MySQL_User] + ":" + CONFIG[MySQL_PWD] + "@tcp(" + CONFIG[MySQL_IP] + ":3306)/" + CONFIG[MySQL_DBName] + "?charset=utf8"
 	}
+	///-set log4go--
+	log4go.AddFilter("stdout", l4g.DEBUG, l4g.NewConsoleLogWriter())                    //输出到控制台,级别为DEBUG
+	log4go.AddFilter("file", l4g.DEBUG, l4g.NewFileLogWriter("./log/GoWeb.log", false)) //输出到文件,级别为DEBUG,文件名为test.log,每次追加该原文件
+
+	//log4go.Debug("the time is now :%s -- %s", "213", "sad")
+	///------------------------------------------------------------
 	exepath, err := GetCurrentPath()
 	if err != nil {
 		// log.Fatal(err)
@@ -747,9 +762,13 @@ func GetDBStudyData(c echo.Context) error {
 			" s.StudyDateTime>=" + startTime + " and  s.StudyDateTime<=" + endTime + " order by s.StudyOrderIdentity " +
 			" limit " + strconv.Itoa(count) + "," + limit
 		// println(sqlstr)
+		if Go_Level < 2 {
+			log4go.Debug(sqlstr)
+		}
 		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
+			log4go.Error(err)
 		} else {
 			studyjson.Code = 0
 			studyjson.Msg = ""
@@ -782,9 +801,13 @@ func GetDBStudyData(c echo.Context) error {
 	js, err := json.Marshal(studyjson)
 	if err != nil {
 		println(err)
+		log4go.Error(err)
 		return c.String(http.StatusOK, "null")
 	}
 	// println(string(js))
+	if Go_Level < 2 {
+		log4go.Debug(string(js))
+	}
 	return c.String(http.StatusOK, string(js))
 }
 
@@ -856,7 +879,10 @@ func GetStudyOrderFromDB(c echo.Context) error {
 			"o.StudyDateTime>=" + startTime + " and  o.StudyDateTime<=" + endTime + " " +
 			"order by o.StudyOrderIdentity " +
 			"limit " + strconv.Itoa(count) + "," + limit
-		log4go.Debug(sqlstr)
+		if Go_Level < 2 {
+			log4go.Info(sqlstr)
+		}
+
 		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
 			println(err)
@@ -895,6 +921,9 @@ func GetStudyOrderFromDB(c echo.Context) error {
 		return c.String(http.StatusOK, "null")
 	}
 	//log4go.Debug(string(js))
+	if Go_Level < 2 {
+		log4go.Info(string(js))
+	}
 	return c.String(http.StatusOK, string(js))
 }
 
