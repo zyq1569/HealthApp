@@ -619,7 +619,14 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                     querysql += "','";
                     querysql += StudyInfo.PatientNameEnglish;
                     querysql += "','";
-                    querysql += StudyInfo.StudySex;
+                    if (StudyInfo.StudySex == "")
+                    {
+                        querysql += "O";
+                    }
+                    else
+                    {
+                        querysql += StudyInfo.StudySex;
+                    }
                     querysql += "','";
                     querysql += StudyInfo.PatientBirth;
                     querysql += "');";
