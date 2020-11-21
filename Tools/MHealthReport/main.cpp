@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainApp MainWindow;
 
-    MainWindow.setWindowFlags(MainWindow.windowFlags()& ~Qt::WindowMaximizeButtonHint& ~Qt::WindowMinimizeButtonHint);
-    //MainWindow.show();
+    MainWindow.setWindowFlags(MainWindow.windowFlags()&  ~Qt::WindowMinimizeButtonHint);
+    //MainWindow.show();///~Qt::WindowMaximizeButtonHint&
     MainWindow.showMaximized();// Max size show
     //MainWindow.showFullScreen();
 
