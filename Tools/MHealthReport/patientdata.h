@@ -3,7 +3,7 @@
 #include<QString>
 
 
-//#define PatientData  PatientData::getInstance()
+#define PATIENTDATA  PatientData::getInstance()
 
 typedef struct PatientStudyData
 {
