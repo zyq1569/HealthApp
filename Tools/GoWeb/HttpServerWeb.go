@@ -129,8 +129,8 @@ func main() {
 		Level, err := strconv.Atoi(CONFIG[LOG_Level])
 		if err != nil {
 			Go_Level = 1
-			log4go.Error("set default Go_Level::2")
-			log4go.Info(Go_Level)
+			log4go.Error("set default Go_Level::1")
+			// log4go.Info(Go_Level)
 		} else {
 			Go_Level = Level
 			log4go.Info("Get Go_Level::" + CONFIG[LOG_Level])
@@ -145,7 +145,6 @@ func main() {
 		//输出到文件,级别为DEBUG,文件名为test.log,每次追加该原文件
 		log4go.AddFilter("file", log4go.DEBUG, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
 		log4go.Info("----------DEBUG---------------")
-
 	} else if Go_Level == 2 {
 		log4go.AddFilter("stdout", log4go.INFO, log4go.NewConsoleLogWriter())
 		log4go.AddFilter("file", log4go.INFO, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
@@ -163,12 +162,9 @@ func main() {
 		log4go.AddFilter("file", log4go.CRITICAL, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
 		log4go.Info("---------------ERROR---------------")
 	}
-
-	//log4go.Debug("the time is now :%s -- %s", "213", "sad")
 	///------------------------------------------------------------
 	exepath, err := GetCurrentPath()
 	if err != nil {
-		// log.Fatal(err)
 		log4go.Error(err)
 		os.Exit(1)
 	} else {
