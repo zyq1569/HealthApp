@@ -158,6 +158,10 @@ func main() {
 		log4go.AddFilter("stdout", log4go.ERROR, log4go.NewConsoleLogWriter())
 		log4go.AddFilter("file", log4go.ERROR, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
 		log4go.Info("---------------ERROR---------------")
+	} else if Go_Level > 4 {
+		log4go.AddFilter("stdout", log4go.CRITICAL, log4go.NewConsoleLogWriter())
+		log4go.AddFilter("file", log4go.CRITICAL, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
+		log4go.Info("---------------ERROR---------------")
 	}
 
 	//log4go.Debug("the time is now :%s -- %s", "213", "sad")
