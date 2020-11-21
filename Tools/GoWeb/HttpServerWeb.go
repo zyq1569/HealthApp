@@ -143,24 +143,24 @@ func main() {
 		//输出到控制台,级别为DEBUG
 		log4go.AddFilter("stdout", log4go.DEBUG, log4go.NewConsoleLogWriter())
 		//输出到文件,级别为DEBUG,文件名为test.log,每次追加该原文件
-		log4go.AddFilter("file", log4go.DEBUG, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
-		log4go.Info("----------DEBUG---------------")
+		log4go.AddFilter("file", log4go.DEBUG, log4go.NewFileLogWriter("./win32/log/GoWebServer.log", false, true))
+		log4go.Info("----------Level:DEBUG---------------")
 	} else if Go_Level == 2 {
 		log4go.AddFilter("stdout", log4go.INFO, log4go.NewConsoleLogWriter())
-		log4go.AddFilter("file", log4go.INFO, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
-		log4go.Info("-------------INFO---------------")
+		log4go.AddFilter("file", log4go.INFO, log4go.NewFileLogWriter("./win32/log/GoWebServer.log", false, true))
+		log4go.Info("----------Level:INFO---------------")
 	} else if Go_Level == 3 {
 		log4go.AddFilter("stdout", log4go.WARNING, log4go.NewConsoleLogWriter())
-		log4go.AddFilter("file", log4go.WARNING, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
-		log4go.Info("------------WARNING---------------")
+		log4go.AddFilter("file", log4go.WARNING, log4go.NewFileLogWriter("./win32/log/GoWebServer.log", false, true))
+		log4go.Info("----------Level:WARNING---------------")
 	} else if Go_Level == 4 {
 		log4go.AddFilter("stdout", log4go.ERROR, log4go.NewConsoleLogWriter())
-		log4go.AddFilter("file", log4go.ERROR, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
-		log4go.Info("---------------ERROR---------------")
+		log4go.AddFilter("file", log4go.ERROR, log4go.NewFileLogWriter("./win32/log/GoWebServer.log", false, true))
+		log4go.Info("----------Level:ERROR---------------")
 	} else if Go_Level > 4 {
 		log4go.AddFilter("stdout", log4go.CRITICAL, log4go.NewConsoleLogWriter())
-		log4go.AddFilter("file", log4go.CRITICAL, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
-		log4go.Info("---------------ERROR---------------")
+		log4go.AddFilter("file", log4go.CRITICAL, log4go.NewFileLogWriter("./win32/log/GoWebServer.log", false, true))
+		log4go.Info("----------Level:CRITICAL---------------")
 	}
 	///------------------------------------------------------------
 	exepath, err := GetCurrentPath()
