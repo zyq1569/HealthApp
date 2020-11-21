@@ -1101,9 +1101,13 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				log4go.Error(perr)
 				os.Exit(1)
 			}
-			affect_count, err := stmt.Exec(studyData.ScheduledDateTime, studyData.StudyDescription,
-				studyData.StudyModality, studyData.StudyCost, studyData.StudyCode,
-				studyData.StudyDepart, studyData.CostType, studyData.StudyOrderIdentity)
+			affect_count, err := stmt.Exec(studyData.PatientIdentity,
+				studyData.StudyID, studyData.StudyUID, studyData.StudyModality,
+				studyData.StudyAge, studyData.ScheduledDateTime, studyData.AETitle,
+				studyData.OrderDateTime, studyData.StudyDescription, studyData.StudyDepart, studyData.StudyCode,
+				studyData.StudyCost, studyData.CostType, studyData.StudyType, studyData.StudyState,
+				studyData.StudyDateTime, studyData.InstitutionName, studyData.ProcedureStepStartDate,
+				studyData.StudyModalityIdentity, studyData.StudyManufacturer, studyData.RegisterID, StudyOrderIdentity)
 			if err != nil {
 				println("studyData.ScheduledDate" + studyData.ScheduledDateTime)
 				println(affect_count)
