@@ -19,14 +19,14 @@ SOURCES += \
     httpclient.cpp \
     main.cpp \
     mainapp.cpp \
-    paintdata.cpp \
+    patientdata.cpp \
     patientstudyregister.cpp \
     studyimage.cpp
 
 HEADERS += \
     httpclient.h \
     mainapp.h \
-    paintdata.h \
+    patientdata.h \
     patientstudyregister.h \
     studyimage.h
 

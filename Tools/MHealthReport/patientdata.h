@@ -1,9 +1,9 @@
-﻿#ifndef PAINTDATA_H
-#define PAINTDATA_H
+﻿#ifndef PatientData_H
+#define PatientData_H
 #include<QString>
 
 
-#define PAINTDATA  PaintData::getInstance()
+//#define PatientData  PatientData::getInstance()
 
 typedef struct PatientStudyData
 {
@@ -45,15 +45,15 @@ typedef struct PatientStudyData
     QString       RegisterID;
 }PatientStudyData;
 
-class PaintData
+class PatientData
 {
 public:
 
 
-    static PaintData * getInstance();
+    static PatientData * getInstance();
 
 
-    PaintData();
+    PatientData();
 
 
     bool dataCnn();
@@ -75,7 +75,7 @@ public:
 
 private:
 
-    static PaintData * s_instance;
+    static PatientData * s_instance;
     PatientStudyData pStudyData;
 };
 
