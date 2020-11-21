@@ -89,14 +89,36 @@ var Go_Level int
 // var name string
 var maridb_db *sql.DB
 
+///https://www.itread01.com/content/1494477725.html
+// func initLogger() {
+// 	var filenameOnly string
+// 	filenameOnly = GetCurFilename()
+// 	var logFilename string = filenameOnly + ".log"
+// 	//gLogger = log4go.NewLogger()
+// 	gLogger = make(log4go.Logger)
+// 	//for console
+// 	//gLogger.AddFilter("stdout", log4go.INFO, log4go.NewConsoleLogWriter())
+// 	gLogger.AddFilter("stdout", log4go.INFO, log4go.NewConsoleLogWriter())
+// 	//for log file
+// 	if _, err := os.Stat(logFilename); err == nil {
+// 		//fmt.Printf("found old log file %s, now remove it\n", logFilename)
+// 		os.Remove(logFilename)
+// 	}
+// 	//gLogger.AddFilter("logfile", log4go.FINEST, log4go.NewFileLogWriter(logFilename, true))
+// 	gLogger.AddFilter("logfile", log4go.FINEST, log4go.NewFileLogWriter(logFilename, false))
+// 	gLogger.Info("Current time is : %s", time.Now().Format("15:04:05 MST 2006/01/02"))
+// 	return
+// }
+
 func main() {
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
 	CONFIG[IMAGE_Dir] = "F:/temp/HealthApp/DCM_SAVE/DCM_SAVE/Images"
 	CONFIG[PAGE_Dir] = "F:/temp/HealthApp/PageWeb/PageWeb"
 	CONFIG[Web_Port] = "9090"
-	log4go.LoadConfiguration("./config/goWebConfig.json") // to do set ?
+	//log4go.LoadConfiguration("./config/goWebConfig.json") // to do set ?
 	//1 mysql: 1 ip 2 name 3 user  4pwd	//5 page web / 6 port//7 studyimage dir	//8 level
 	//var PAGE_Dir, Web_Port, IMAGE_Dir, MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name string
+	Go_Level = -1
 	if len(os.Args) > 8 {
 		// for idx, args := range os.Args {		// 	//println("参数"+strconv.Itoa(idx)+":", args)		// }
 		// MySQL_IP, MySQL_User, MySQL_PWD, MySQL_Name
@@ -104,20 +126,39 @@ func main() {
 			CONFIG[i] = os.Args[i]
 			log4go.Info(os.Args[i])
 		}
-		Go_Level, err := strconv.Atoi(CONFIG[LOG_Level])
+		Level, err := strconv.Atoi(CONFIG[LOG_Level])
 		if err != nil {
-			Go_Level = 2
+			Go_Level = 1
 			log4go.Error("set default Go_Level::2")
 			log4go.Info(Go_Level)
 		} else {
+			Go_Level = Level
 			log4go.Info("Get Go_Level::" + CONFIG[LOG_Level])
 		}
 		//DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
 		DB_Driver = CONFIG[MySQL_User] + ":" + CONFIG[MySQL_PWD] + "@tcp(" + CONFIG[MySQL_IP] + ":3306)/" + CONFIG[MySQL_DBName] + "?charset=utf8"
 	}
 	///-set log4go--
-	log4go.AddFilter("stdout", l4g.DEBUG, l4g.NewConsoleLogWriter())                    //输出到控制台,级别为DEBUG
-	log4go.AddFilter("file", l4g.DEBUG, l4g.NewFileLogWriter("./log/GoWeb.log", false)) //输出到文件,级别为DEBUG,文件名为test.log,每次追加该原文件
+	if Go_Level < 2 {
+		//输出到控制台,级别为DEBUG
+		log4go.AddFilter("stdout", log4go.DEBUG, log4go.NewConsoleLogWriter())
+		//输出到文件,级别为DEBUG,文件名为test.log,每次追加该原文件
+		log4go.AddFilter("file", log4go.DEBUG, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
+		log4go.Info("----------DEBUG---------------")
+
+	} else if Go_Level == 2 {
+		log4go.AddFilter("stdout", log4go.INFO, log4go.NewConsoleLogWriter())
+		log4go.AddFilter("file", log4go.INFO, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
+		log4go.Info("-------------INFO---------------")
+	} else if Go_Level == 3 {
+		log4go.AddFilter("stdout", log4go.WARNING, log4go.NewConsoleLogWriter())
+		log4go.AddFilter("file", log4go.WARNING, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
+		log4go.Info("------------WARNING---------------")
+	} else if Go_Level == 4 {
+		log4go.AddFilter("stdout", log4go.ERROR, log4go.NewConsoleLogWriter())
+		log4go.AddFilter("file", log4go.ERROR, log4go.NewFileLogWriter("./win32/log/GoWeb.log", false, true))
+		log4go.Info("---------------ERROR---------------")
+	}
 
 	//log4go.Debug("the time is now :%s -- %s", "213", "sad")
 	///------------------------------------------------------------
@@ -879,9 +920,8 @@ func GetStudyOrderFromDB(c echo.Context) error {
 			"o.StudyDateTime>=" + startTime + " and  o.StudyDateTime<=" + endTime + " " +
 			"order by o.StudyOrderIdentity " +
 			"limit " + strconv.Itoa(count) + "," + limit
-		if Go_Level < 2 {
-			log4go.Info(sqlstr)
-		}
+
+		log4go.Debug(sqlstr)
 
 		rows, err := maridb_db.Query(sqlstr)
 		if err != nil {
@@ -921,9 +961,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 		return c.String(http.StatusOK, "null")
 	}
 	//log4go.Debug(string(js))
-	if Go_Level < 2 {
-		log4go.Info(string(js))
-	}
+	log4go.Debug(string(js))
 	return c.String(http.StatusOK, string(js))
 }
 
