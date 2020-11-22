@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `h_patient` (
   `PatientBirthday` char(22) DEFAULT '19000101',
   `PatientAddr` varchar(120) DEFAULT '""',
   `PatientEmail` varchar(50) DEFAULT '""',
-  `PatientCarID` varchar(50) DEFAULT '""',
+  `PatientCarID` varchar(50) DEFAULT '""' COMMENT '患者身份ID:身份证',
   `PatientTelNumber` varchar(50) DEFAULT '""',
   `PatientType` int(11) DEFAULT 0,
   `PatientState` int(11) DEFAULT 0 COMMENT '定义患者状态 小于0为标记删除',
