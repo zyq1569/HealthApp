@@ -701,8 +701,8 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                     char uuid[64];
                     sprintf(uuid, "%llu", (CreateGUID()>>1));
                     OFString StudyIdentity = uuid;
-                    strsql = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,";
-                    strsql += " StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) value(";
+                    strsql = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,";
+                    strsql += "StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) value(";
                     strsql += StudyIdentity;
                     strsql += ",'";
                     strsql += StudyInfo.StudyID;
