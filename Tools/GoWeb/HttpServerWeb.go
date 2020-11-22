@@ -1093,6 +1093,7 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 		} else {
 			sqlstr = "update h_order set `ScheduledDateTime`=?, `StudyDescription`=?,`StudyModality`=?," +
 				"`StudyCost`=?,`StudyCode`=?  ,`StudyDepart`=?,`CostType`=? where StudyOrderIdentity=?"
+				///需要修改sql语句为update
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
 				println(sqlstr)
@@ -1104,10 +1105,11 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 			affect_count, err := stmt.Exec(studyData.PatientIdentity,
 				studyData.StudyID, studyData.StudyUID, studyData.StudyModality,
 				studyData.StudyAge, studyData.ScheduledDateTime, studyData.AETitle,
-				studyData.OrderDateTime, studyData.StudyDescription, studyData.StudyDepart, studyData.StudyCode,
-				studyData.StudyCost, studyData.CostType, studyData.StudyType, studyData.StudyState,
-				studyData.StudyDateTime, studyData.InstitutionName, studyData.ProcedureStepStartDate,
-				studyData.StudyModalityIdentity, studyData.StudyManufacturer, studyData.RegisterID, StudyOrderIdentity)
+				studyData.OrderDateTime, studyData.StudyDescription, studyData.StudyDepart,
+				studyData.StudyCode, studyData.StudyCost, studyData.CostType,
+				studyData.StudyType, studyData.StudyState, studyData.StudyDateTime,
+				studyData.InstitutionName, studyData.ProcedureStepStartDate, studyData.StudyModalityIdentity,
+				studyData.StudyManufacturer, studyData.RegisterID, StudyOrderIdentity)
 			if err != nil {
 				println("studyData.ScheduledDate" + studyData.ScheduledDateTime)
 				println(affect_count)
