@@ -106,7 +106,7 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     data.menarche            = ui->lineEditChuCao->text();
     data.lastMenstruation    = ui->lineEditLast->text();
     data.reproductiveHistory = ui->lineEditBornHistory->text();
-    data.outPatientNo        = ui->lineEditMenZhen->text();
+    //data.outPatientNo        = ui->lineEditMenZhen->text();
     data.hospitalizedNo      = ui->lineEditZhuYuan->text();
     //    data.inpatientArea       = ui->lineEditBingQu->text();
     //    data.bedNo               = ui->lineEditBedNumber->text();
@@ -151,7 +151,7 @@ void PatientStudyRegister::clearInfo()
     ui->lineEditChuCao->clear();
     ui->lineEditLast->clear();
     ui->lineEditBornHistory->clear();
-    ui->lineEditMenZhen->clear();
+    //ui->lineEditMenZhen->clear();
     ui->lineEditZhuYuan->clear();
     //    ui->lineEditBingQu->clear();
     //    ui->lineEditBedNumber->clear();
