@@ -84,43 +84,8 @@ void PatientStudyRegister::initControl()
 /********************       录入数据           ***********************/
 void PatientStudyRegister::on_actionSavePatientInfo_triggered()
 {
-    DataPaint data;
+    StudyData studyorderdata;
 
-    //    data.regID               = regId;
-    //    data.patientID           = paintId;
-    data.hisId               = ui->lineEditID->text();
-    data.name                = ui->lineEditName->text();
-    data.sex                 = ui->comboBoxSex->currentText();
-    data.age                 = ui->lineEditAge->text();
-    data.tel                 = ui->lineEditPhone->text();
-    data.address             = ui->lineEditAddress->text();
-    data.nationality         = ui->comboBoxNation->currentText();
-    data.birthplace          = ui->lineEditNative->text();
-    data.marriage            = ui->comboBoxMarry->currentText();
-    data.job                 = ui->lineEditWork->text();
-    data.feeType             = ui->comboBoxMoneyType->currentText();
-    data.idCard              = ui->lineEditIDCard->text();
-    data.familyHistory       = ui->lineEditFimilyHistory->text();
-    data.infectiousHistory   = ui->lineEditCHuanRan->text();
-    data.pastHistory         = ui->lineEditAgo->text();
-    data.menarche            = ui->lineEditChuCao->text();
-    data.lastMenstruation    = ui->lineEditLast->text();
-    data.reproductiveHistory = ui->lineEditBornHistory->text();
-    //data.outPatientNo        = ui->lineEditMenZhen->text();
-    data.hospitalizedNo      = ui->lineEditZhuYuan->text();
-    //    data.inpatientArea       = ui->lineEditBingQu->text();
-    //    data.bedNo               = ui->lineEditBedNumber->text();
-    data.fromOffices         = ui->lineEditJianKe->text();
-    data.fromDoctor          = ui->lineEditJianDoctor->text();
-    data.sendTime            = ui->dateTimeEditSongJian->text();
-    data.receiveTime         = ui->dateTimeEditJieShou->text();
-    data.receiver            = ui->lineEditJieShouPeople->text();
-    data.site                = ui->lineEditQuCaiBuWei->text();
-    data.specimenQt          = ui->lineEditBiaoBenNumber->text();
-    data.fixedMode           = ui->lineEditGuDing->text();
-    data.chiefComplaint      = ui->lineEditZhuSu->text();
-    data.currentHistory      = ui->lineEditNow->text();
-    data.clinical            = ui->textEditTiZheng->toPlainText();
 
 }
 

@@ -39,44 +39,6 @@ typedef struct StudyData  {
     CostType;
 }StudyData;
 
-typedef struct DataPaint
-{
-    QString regID;
-    QString patientID;
-    QString hisId;
-    QString name;
-    QString sex;
-    QString age;
-    QString nationality;
-    QString tel;
-    QString address;
-    QString marriage;
-    QString birthplace;
-    QString job;
-    QString feeType;
-    QString idCard;
-    QString familyHistory;
-    QString infectiousHistory;
-    QString pastHistory;
-    QString menarche;
-    QString lastMenstruation;
-    QString reproductiveHistory;
-    QString outPatientNo;
-    QString hospitalizedNo;
-    QString inpatientArea;
-    QString bedNo;
-    QString fromOffices;
-    QString fromDoctor;
-    QString sendTime;
-    QString receiveTime;
-    QString receiver;
-    QString site;
-    QString specimenQt;
-    QString fixedMode;
-    QString chiefComplaint;
-    QString currentHistory;
-    QString clinical;
-}DataPaint;
 
 class PatientStudyRegister : public QMainWindow
 {
