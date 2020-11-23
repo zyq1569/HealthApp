@@ -75,6 +75,8 @@ CREATE TABLE IF NOT EXISTS `h_patient` (
   `PatientNation` char(100) DEFAULT '汉族' COMMENT '民族：汉族、',
   `PatientMarriage` char(50) DEFAULT '未知' COMMENT '婚姻情况:未婚、已婚、未知',
   `PatientHometown` char(50) DEFAULT '广东' COMMENT '籍贯:广州、深圳',
+  `PatientHisID` char(50) DEFAULT '-1' COMMENT 'HIS号',
+  `PatientHistoryTell` varchar(200) DEFAULT '无' COMMENT '家族病史/传染病史/既往病史/备注/主诉/现病史',
   PRIMARY KEY (`PatientIdentity`),
   KEY `PatientID` (`PatientID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='患者基本信息(对应多个 h_order，定义患者信息唯一信息，检查为1-n个，to do .....增加患者信息变动过程历史)';
@@ -129,16 +131,6 @@ CREATE TABLE IF NOT EXISTS `h_user` (
   `password` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='用户登录账号信息';
-
--- Data exporting was unselected.
-
--- Dumping structure for table hit.user
-CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(4) NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) NOT NULL,
-  `password` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 

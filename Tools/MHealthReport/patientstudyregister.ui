@@ -30,431 +30,6 @@
        <attribute name="title">
         <string>检查登记</string>
        </attribute>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>11</x>
-          <y>10</y>
-          <width>541</width>
-          <height>221</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>ID(HIS)：</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_19">
-             <property name="text">
-              <string>姓名:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>性别:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>电话:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>民族:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_11">
-             <property name="text">
-              <string>费别：</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>婚姻：</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QLineEdit" name="lineEditID">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEditJianKe">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBoxSex">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-             <item>
-              <property name="text">
-               <string>Man</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Female</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Other</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEditPhone">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBoxNation">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBoxMarry">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-             <item>
-              <property name="text">
-               <string>未婚</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>已婚</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>离异</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBoxMoneyType">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-             <item>
-              <property name="text">
-               <string>自费</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>公费</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>半公费</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>社保</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <item>
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>PatientIdentity:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_20">
-             <property name="text">
-              <string>PatientID：</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>出生日期:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>地址:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>籍贯：</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>职业：</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_12">
-             <property name="text">
-              <string>身份证：</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_7">
-           <item>
-            <widget class="QLineEdit" name="lineEditName">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEditJianDoctor">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEditAge">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEditAddress">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEditNative">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEditWork">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEditIDCard">
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>160</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
        <widget class="Line" name="lineFirst">
         <property name="geometry">
          <rect>
@@ -477,484 +52,1106 @@
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QLineEdit" name="lineEditPhone_2">
         <property name="geometry">
          <rect>
-          <x>15</x>
-          <y>262</y>
-          <width>52</width>
-          <height>81</height>
+          <x>390</x>
+          <y>190</y>
+          <width>160</width>
+          <height>22</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_8">
-         <item>
-          <widget class="QLabel" name="label_23">
-           <property name="text">
-            <string>检查号:   </string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>门诊号：</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_15">
-           <property name="text">
-            <string>检查科室：</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>71</x>
-          <y>262</y>
-          <width>162</width>
-          <height>80</height>
-         </rect>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_9">
-         <item>
-          <widget class="QLineEdit" name="lineEditJieShouPeople">
-           <property name="minimumSize">
-            <size>
-             <width>140</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEditMenZhen">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="comboBoxMoneyType_2">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-           <property name="currentText">
-            <string>放射：</string>
-           </property>
-           <item>
-            <property name="text">
-             <string>放射：</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>          普放科</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>          核医学</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>超声：</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>          心脏科</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>           彩超科</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>内窥镜：</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>          肠镜科</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>          胃镜科</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>306</x>
-          <y>262</y>
-          <width>81</width>
-          <height>81</height>
-         </rect>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_11">
-         <item>
-          <widget class="QLabel" name="label_24">
-           <property name="text">
-            <string>其它号:        </string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_14">
-           <property name="text">
-            <string>住院号：</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_16">
-           <property name="text">
-            <string>检查设备：</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QLabel" name="label_36">
         <property name="geometry">
          <rect>
-          <x>392</x>
-          <y>262</y>
-          <width>162</width>
-          <height>80</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_10">
-         <item>
-          <widget class="QLineEdit" name="lineEditQuCaiBuWei">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEditZhuYuan">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="comboBoxMoneyType_3">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-           <item>
-            <property name="text">
-             <string>CT</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>MR</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>DR</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>CR</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>US</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>ES</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>RF</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>DX</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="Line" name="lineSecond">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>360</y>
-          <width>541</width>
+          <x>330</x>
+          <y>190</y>
+          <width>48</width>
           <height>16</height>
          </rect>
         </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+        <property name="text">
+         <string>     电邮：</string>
         </property>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QLabel" name="label_13">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>406</y>
-          <width>63</width>
-          <height>81</height>
+          <x>16</x>
+          <y>291</y>
+          <width>39</width>
+          <height>16</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_12">
-         <item>
-          <widget class="QLabel" name="label_17">
-           <property name="text">
-            <string>预约时间：</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_31">
-           <property name="text">
-            <string>检查费（元）：</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_21">
-           <property name="text">
-            <string>备注信息：</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <property name="text">
+         <string>门诊号：</string>
+        </property>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>16</x>
+          <y>320</y>
+          <width>50</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>检查科室：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_23">
+        <property name="geometry">
+         <rect>
+          <x>16</x>
+          <y>263</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>检查号:   </string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditJieShouPeople">
+        <property name="geometry">
+         <rect>
+          <x>72</x>
+          <y>263</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditMenZhen">
+        <property name="geometry">
+         <rect>
+          <x>72</x>
+          <y>291</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBoxMoneyType_2">
+        <property name="geometry">
+         <rect>
+          <x>72</x>
+          <y>319</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <property name="currentText">
+         <string>放射：</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>放射：</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>          普放科</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>          核医学</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>超声：</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>          心脏科</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>           彩超科</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>内窥镜：</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>          肠镜科</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>          胃镜科</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QLabel" name="label_14">
+        <property name="geometry">
+         <rect>
+          <x>307</x>
+          <y>291</y>
+          <width>39</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>住院号：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_24">
+        <property name="geometry">
+         <rect>
+          <x>307</x>
+          <y>263</y>
+          <width>65</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>其它号:        </string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_16">
+        <property name="geometry">
+         <rect>
+          <x>307</x>
+          <y>320</y>
+          <width>50</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>检查设备：</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditQuCaiBuWei">
+        <property name="geometry">
+         <rect>
+          <x>393</x>
+          <y>263</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditZhuYuan">
+        <property name="geometry">
+         <rect>
+          <x>393</x>
+          <y>291</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBoxMoneyType_3">
+        <property name="geometry">
+         <rect>
+          <x>393</x>
+          <y>319</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>CT</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>MR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>DR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>CR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>US</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ES</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>RF</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>DX</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QDateTimeEdit" name="dateTimeEditSongJian">
+        <property name="geometry">
+         <rect>
+          <x>71</x>
+          <y>407</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditBiaoBenNumber_2">
+        <property name="geometry">
+         <rect>
+          <x>71</x>
+          <y>436</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditBiaoBenNumber">
+        <property name="geometry">
+         <rect>
+          <x>71</x>
+          <y>464</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_18">
+        <property name="geometry">
+         <rect>
+          <x>306</x>
+          <y>411</y>
+          <width>50</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>登记时间：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_35">
+        <property name="geometry">
+         <rect>
+          <x>306</x>
+          <y>439</y>
+          <width>50</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>紧急电话：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_22">
+        <property name="geometry">
+         <rect>
+          <x>306</x>
+          <y>468</y>
+          <width>50</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>备注信息：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_21">
+        <property name="geometry">
+         <rect>
+          <x>11</x>
+          <y>464</y>
+          <width>50</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>登记员：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_31">
+        <property name="geometry">
+         <rect>
+          <x>11</x>
+          <y>435</y>
+          <width>61</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>检查费（元）：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_17">
+        <property name="geometry">
+         <rect>
+          <x>11</x>
+          <y>407</y>
+          <width>50</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>预约时间：</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditGuDing_2">
+        <property name="geometry">
+         <rect>
+          <x>389</x>
+          <y>437</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QDateTimeEdit" name="dateTimeEditJieShou">
+        <property name="geometry">
+         <rect>
+          <x>389</x>
+          <y>406</y>
+          <width>160</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditGuDing">
+        <property name="geometry">
+         <rect>
+          <x>389</x>
+          <y>467</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBoxMoneyType">
         <property name="geometry">
          <rect>
           <x>70</x>
-          <y>406</y>
-          <width>162</width>
-          <height>81</height>
+          <y>360</y>
+          <width>160</width>
+          <height>22</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_13">
-         <item>
-          <widget class="QDateTimeEdit" name="dateTimeEditSongJian">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEditBiaoBenNumber_2">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEditBiaoBenNumber">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>自费</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>公费</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>半公费</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>社保</string>
+         </property>
+        </item>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QLineEdit" name="lineEditID">
         <property name="geometry">
          <rect>
-          <x>305</x>
-          <y>410</y>
-          <width>52</width>
-          <height>81</height>
+          <x>72</x>
+          <y>12</y>
+          <width>160</width>
+          <height>22</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_14">
-         <item>
-          <widget class="QLabel" name="label_18">
-           <property name="text">
-            <string>登记时间：</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_35">
-           <property name="text">
-            <string>紧急电话：</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_22">
-           <property name="text">
-            <string>备注信息：</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QLineEdit" name="lineEditJianKe">
         <property name="geometry">
          <rect>
-          <x>388</x>
-          <y>403</y>
-          <width>162</width>
-          <height>91</height>
+          <x>72</x>
+          <y>40</y>
+          <width>160</width>
+          <height>22</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_15">
-         <item>
-          <widget class="QDateTimeEdit" name="dateTimeEditJieShou">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEditGuDing_2">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEditGuDing">
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>160</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBoxSex">
+        <property name="geometry">
+         <rect>
+          <x>72</x>
+          <y>68</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Man</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Female</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QComboBox" name="comboBoxNation">
+        <property name="geometry">
+         <rect>
+          <x>72</x>
+          <y>124</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditPhone">
+        <property name="geometry">
+         <rect>
+          <x>72</x>
+          <y>96</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBoxMarry">
+        <property name="geometry">
+         <rect>
+          <x>72</x>
+          <y>152</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>未婚</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>已婚</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>离异</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QLineEdit" name="lineEditName">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>12</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditJianDoctor">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>40</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditNative">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>124</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditAddress">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>96</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditAge">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>68</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditIDCard">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>160</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditWork">
+        <property name="geometry">
+         <rect>
+          <x>70</x>
+          <y>190</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>160</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_20">
+        <property name="geometry">
+         <rect>
+          <x>330</x>
+          <y>40</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>      年龄：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>334</x>
+          <y>12</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>ID(HIS)：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_4">
+        <property name="geometry">
+         <rect>
+          <x>330</x>
+          <y>70</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>出生日期:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>330</x>
+          <y>100</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>      地址:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_9">
+        <property name="geometry">
+         <rect>
+          <x>340</x>
+          <y>130</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>     籍贯：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_10">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>190</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>     职业：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_12">
+        <property name="geometry">
+         <rect>
+          <x>340</x>
+          <y>160</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>  身份证：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>13</x>
+          <y>12</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>PatientID：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>70</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>     性别:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_19">
+        <property name="geometry">
+         <rect>
+          <x>13</x>
+          <y>32</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>     姓名:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>160</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>     婚姻：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_7">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>130</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>     民族:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>110</y>
+          <width>48</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>     电话:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_8">
+        <property name="geometry">
+         <rect>
+          <x>18</x>
+          <y>370</y>
+          <width>28</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>费别：</string>
+        </property>
        </widget>
       </widget>
       <widget class="QWidget" name="tabIllnessHistory">
