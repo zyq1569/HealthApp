@@ -261,6 +261,9 @@
         <property name="text">
          <string>123451</string>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QComboBox" name="m_comStudyDepart">
         <property name="geometry">
@@ -816,6 +819,9 @@
         <property name="text">
          <string>002</string>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QLineEdit" name="m_PatientName">
         <property name="geometry">
@@ -1025,7 +1031,7 @@
           <x>321</x>
           <y>17</y>
           <width>61</width>
-          <height>20</height>
+          <height>16</height>
          </rect>
         </property>
         <property name="minimumSize">

@@ -141,11 +141,27 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     json.insert("StudyDepart",orderdata.StudyDepart);
     json.insert("StudyModality",orderdata.StudyModality);
 
+    json.insert("StudyCode","001");///?
+    json.insert("StudyType","0");///?
+    json.insert("StudyState","1");///?
+
+    json.insert("PatientHistoryTell","HistoryTell");
+
+
     json.insert("CostType",orderdata.CostType);
     json.insert("StudyCost",orderdata.StudyCost);
     json.insert("OrderDateTime",orderdata.OrderDateTime);
+
+    json.insert("StudyDateTime",orderdata.OrderDateTime);///?
+    json.insert("ProcedureStepStartDate",orderdata.OrderDateTime);///?
+
     json.insert("ScheduledDateTime",orderdata.ScheduledDateTime);
     json.insert("StudyManufacturer",orderdata.StudyManufacturer);
+
+    json.insert("AETitle",orderdata.StudyManufacturer);///?
+    json.insert("InstitutionName",orderdata.StudyManufacturer);///?
+    json.insert("StudyModalityIdentity","007");///?
+
     json.insert("RegisterID",orderdata.RegisterID);
     json.insert("StudyDescription",orderdata.StudyDescription);
 
