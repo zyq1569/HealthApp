@@ -976,13 +976,11 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 		}
 	}
 	log4go.Debug(string(bodyBytes))
-	return c.String(http.StatusOK, "OK")
 
 	PatientIdentity := studyData.PatientIdentity
 	PatientID := studyData.PatientID
-	// println(string(bodyBytes))
-	// println("PatientID:" + PatientID)
-	// println("PatientIdentity:" + PatientIdentity)
+	log4go.Debug("PatientID:" + PatientID)
+	log4go.Debug("PatientIdentity:" + PatientIdentity)
 	if maridb_db != nil {
 		var sqlstr string
 		if PatientID == "" { //create a study
@@ -1058,10 +1056,10 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 		StudyOrderIdentity := studyData.StudyOrderIdentity
 		if StudyOrderIdentity == "" {
 			StudyOrderIdentity = Units.GetRandUID()
-			if studyData.StudyID == "" {
-				studyData.StudyID = Units.GetCurrentTime()
-				studyData.StudyUID = Units.GetNewStudyUID()
-			}
+			//if studyData.StudyID == "" {
+			studyData.StudyID = Units.GetCurrentTime()
+			studyData.StudyUID = Units.GetNewStudyUID()
+			//}
 			sqlstr = "insert into h_order (`StudyOrderIdentity`,`PatientIdentity`, `StudyID`,`StudyUID`, " +
 				"`StudyModality`, `StudyAge`,`ScheduledDateTime`, " +
 				"`AETitle`, `OrderDateTime`,`StudyDescription`, " +
@@ -1084,6 +1082,7 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				studyData.StudyDateTime, studyData.InstitutionName, studyData.ProcedureStepStartDate,
 				studyData.StudyModalityIdentity, studyData.StudyManufacturer, studyData.RegisterID)
 			if err != nil {
+				log4go.Error(sqlstr)
 				log4go.Error(affect_count)
 				log4go.Error(err)
 				os.Exit(1)
