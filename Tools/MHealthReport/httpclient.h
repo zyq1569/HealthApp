@@ -142,7 +142,7 @@ public:
     void getStudyImageFile(QUrl url,QString studyuid="",QString seruid = "", QString imguid = "");
 
     // updateStudyOrder
-    void updateStudyOrder(QString strJson);
+    void updateStudyOrder(QByteArray Json);
 
     bool CreatDir(QString fullPath)
     {
