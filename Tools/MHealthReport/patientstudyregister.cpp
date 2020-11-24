@@ -17,6 +17,8 @@ PatientStudyRegister::PatientStudyRegister(QWidget *parent) :
 
     initControl();
 
+    m_questType = nothing;
+
     m_url ="http://127.0.0.1:8080";
 
 }
@@ -151,11 +153,9 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     document.setObject(json);
     QByteArray byteArray = document.toJson(QJsonDocument::Compact);
 
-    //    if (m_httpclient)
-    //    {
-    //        m_httpclient->updateStudyOrder(byteArray);
-    //    }
-    m_networkreply = m_networkmanager.post(QNetworkRequest(m_url),byteArray); //m_networkmanager.get(QNetworkRequest(m_url));
+    m_httpSuccess = false;
+    m_questType = updateStudyOder;
+    m_networkreply = m_networkmanager.post(QNetworkRequest(m_url+"/healthsystem/ris/SaveStudyOrde/"),byteArray); //m_networkmanager.get(QNetworkRequest(m_url));
     connect(m_networkreply, &QIODevice::readyRead, this, &PatientStudyRegister::httpReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &PatientStudyRegister::httpFinished);
 
@@ -167,6 +167,7 @@ void PatientStudyRegister::httpFinished()
     {
         m_networkreply->deleteLater();
         m_networkreply = nullptr;
+        m_httpSuccess = false;
         return;
     }
 
@@ -177,6 +178,20 @@ void PatientStudyRegister::httpFinished()
 void PatientStudyRegister::httpReadyRead()
 {
     QByteArray byteArray = m_networkreply->readAll();
+    switch (m_questType)
+    {
+    case queryStudyOder:
+        break;
+    case updateStudyOder:
+        QString state = byteArray;
+        if (state.toUpper() == "OK")
+        {
+            m_httpSuccess = true;
+        }
+        break;
+
+    }
+    QString state = byteArray;
 }
 
 /********************       清除患者信息        ***********************/

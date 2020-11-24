@@ -198,6 +198,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>15</string>
+        </property>
        </widget>
        <widget class="QLabel" name="label_15">
         <property name="geometry">
@@ -254,6 +257,9 @@
           <width>160</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="text">
+         <string>123451</string>
         </property>
        </widget>
        <widget class="QComboBox" name="m_comStudyDepart">
@@ -398,6 +404,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>12345123</string>
+        </property>
        </widget>
        <widget class="QLineEdit" name="m_HospitalID">
         <property name="geometry">
@@ -419,6 +428,9 @@
           <width>160</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="text">
+         <string>1234</string>
         </property>
        </widget>
        <widget class="QComboBox" name="m_comModality">
@@ -529,6 +541,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>GE</string>
+        </property>
        </widget>
        <widget class="QLineEdit" name="m_RegUser">
         <property name="geometry">
@@ -550,6 +565,9 @@
           <width>160</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="text">
+         <string>007</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_18">
@@ -678,6 +696,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>18921322345</string>
+        </property>
        </widget>
        <widget class="QDateTimeEdit" name="m_RegDate">
         <property name="geometry">
@@ -721,6 +742,9 @@
           <width>160</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="text">
+         <string>测试部位</string>
         </property>
        </widget>
        <widget class="QComboBox" name="m_comCostType">
@@ -789,6 +813,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>002</string>
+        </property>
        </widget>
        <widget class="QLineEdit" name="m_PatientName">
         <property name="geometry">
@@ -810,6 +837,9 @@
           <width>160</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="text">
+         <string>Name</string>
         </property>
        </widget>
        <widget class="QComboBox" name="m_comSex">
@@ -898,6 +928,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>13045678999</string>
+        </property>
        </widget>
        <widget class="QComboBox" name="m_comMarry">
         <property name="geometry">
@@ -959,6 +992,9 @@
           <width>160</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="text">
+         <string>总统</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_20">
@@ -1245,6 +1281,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>H001</string>
+        </property>
        </widget>
        <widget class="QLineEdit" name="m_Age">
         <property name="geometry">
@@ -1266,6 +1305,9 @@
           <width>160</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="text">
+         <string>200</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="m_Address">
@@ -1289,6 +1331,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>广东深圳南山</string>
+        </property>
        </widget>
        <widget class="QLineEdit" name="m_BirthDay">
         <property name="geometry">
@@ -1310,6 +1355,9 @@
           <width>160</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="text">
+         <string>1820/0202</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="m_IDCard">
@@ -1333,6 +1381,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>40001123112221234</string>
+        </property>
        </widget>
        <widget class="QLineEdit" name="m_Email">
         <property name="geometry">
@@ -1355,6 +1406,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="text">
+         <string>test@test.com</string>
+        </property>
        </widget>
        <widget class="QLineEdit" name="m_HomeTown">
         <property name="geometry">
@@ -1376,6 +1430,9 @@
           <width>160</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="text">
+         <string>8</string>
         </property>
        </widget>
       </widget>

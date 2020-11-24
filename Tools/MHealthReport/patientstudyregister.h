@@ -75,6 +75,11 @@ typedef struct StudyData  {
 ;
 }StudyData;
 
+enum QuestType{
+    nothing,
+    queryStudyOder,
+    updateStudyOder
+};
 
 class PatientStudyRegister : public QMainWindow
 {
@@ -97,6 +102,9 @@ private:
     QNetworkAccessManager m_networkmanager;
     QNetworkReply *m_networkreply;
     QString m_url;
+    QuestType m_questType;
+    bool m_httpSuccess;
+
 
 private slots:
     void httpFinished();
