@@ -508,7 +508,7 @@
          </size>
         </property>
        </widget>
-       <widget class="QLineEdit" name="m_study">
+       <widget class="QLineEdit" name="m_StudyManufacturer">
         <property name="geometry">
          <rect>
           <x>71</x>
@@ -530,7 +530,7 @@
          </size>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEditBiaoBenNumber">
+       <widget class="QLineEdit" name="m_RegUser">
         <property name="geometry">
          <rect>
           <x>71</x>
@@ -600,7 +600,7 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="m_RegUser">
+       <widget class="QLabel" name="m_LableRegUser">
         <property name="geometry">
          <rect>
           <x>6</x>
@@ -632,7 +632,7 @@
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>检查费（元）：</string>
+         <string>设备厂商名：</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -657,7 +657,7 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEditGuDing_2">
+       <widget class="QLineEdit" name="m_ImportantTel">
         <property name="geometry">
          <rect>
           <x>385</x>
@@ -701,7 +701,7 @@
          </size>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEditGuDing">
+       <widget class="QLineEdit" name="m_StudyDescription">
         <property name="geometry">
          <rect>
           <x>385</x>
@@ -723,7 +723,7 @@
          </size>
         </property>
        </widget>
-       <widget class="QComboBox" name="m_comStudyType">
+       <widget class="QComboBox" name="m_comCostType">
         <property name="geometry">
          <rect>
           <x>71</x>
@@ -1711,14 +1711,14 @@
   <tabstop>m_HospitalID</tabstop>
   <tabstop>m_comStudyContent</tabstop>
   <tabstop>m_comModality</tabstop>
-  <tabstop>m_comStudyType</tabstop>
+  <tabstop>m_comCostType</tabstop>
   <tabstop>m_StudyCost</tabstop>
   <tabstop>m_StudyOrderDate</tabstop>
   <tabstop>m_RegDate</tabstop>
-  <tabstop>m_study</tabstop>
-  <tabstop>lineEditGuDing_2</tabstop>
-  <tabstop>lineEditBiaoBenNumber</tabstop>
-  <tabstop>lineEditGuDing</tabstop>
+  <tabstop>m_StudyManufacturer</tabstop>
+  <tabstop>m_ImportantTel</tabstop>
+  <tabstop>m_RegUser</tabstop>
+  <tabstop>m_StudyDescription</tabstop>
   <tabstop>lineEditFimilyHistory</tabstop>
   <tabstop>lineEditCHuanRan</tabstop>
   <tabstop>lineEditAgo</tabstop>
