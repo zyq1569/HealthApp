@@ -53,6 +53,7 @@ void HttpClient::setDwonloadDir(QString dir)
         m_downDir = QDir::currentPath();
     }
 }
+
 void HttpClient::startRequest(const QUrl &requestedUrl)
 {
     m_url = requestedUrl;
@@ -62,6 +63,7 @@ void HttpClient::startRequest(const QUrl &requestedUrl)
     connect(m_networkreply, &QIODevice::readyRead, this, &HttpClient::httpReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &HttpClient::httpFinished);
 }
+
 PatientStudyOder* HttpClient::getPatientStudyOder()
 {
     return &m_patientstudyorder;
@@ -130,6 +132,11 @@ void HttpClient::setStudyOrder(QJsonValue &JsonValue, StudyOrderData &OrderData)
             OrderData.studyorder[i].Value =  paserObj[name].toString();
         }
     }
+}
+
+void HttpClient::updateStudyOrder(QByteArray Json)
+{
+
 }
 
 void HttpClient::getStudyDBinfo(QUrl url,QString start,QString end,QString page,QString limit)

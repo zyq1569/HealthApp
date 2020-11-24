@@ -7,6 +7,7 @@
 #include <QJsonParseError>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QNetworkReply>
 
 
 PatientStudyRegister::PatientStudyRegister(QWidget *parent) :
@@ -15,11 +16,9 @@ PatientStudyRegister::PatientStudyRegister(QWidget *parent) :
     ui->setupUi(this);
 
     initControl();
-    if (!m_httpclient)
-    {
-        m_httpclient = new HttpClient(this,"F:\\log\\down");
-        m_httpclient->setHost("http://127.0.0.1:8080");
-    }
+
+    m_url ="http://127.0.0.1:8080";
+
 }
 
 PatientStudyRegister::~PatientStudyRegister()
@@ -151,13 +150,33 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     QJsonDocument document;
     document.setObject(json);
     QByteArray byteArray = document.toJson(QJsonDocument::Compact);
-    QString stringJson(byteArray);
 
-    if (m_httpclient)
+    //    if (m_httpclient)
+    //    {
+    //        m_httpclient->updateStudyOrder(byteArray);
+    //    }
+    m_networkreply = m_networkmanager.post(QNetworkRequest(m_url),byteArray); //m_networkmanager.get(QNetworkRequest(m_url));
+    connect(m_networkreply, &QIODevice::readyRead, this, &PatientStudyRegister::httpReadyRead);
+    connect(m_networkreply, &QNetworkReply::finished, this, &PatientStudyRegister::httpFinished);
+
+}
+
+void PatientStudyRegister::httpFinished()
+{
+    if (m_networkreply->error())
     {
-        m_httpclient->updateStudyOrder(stringJson);
+        m_networkreply->deleteLater();
+        m_networkreply = nullptr;
+        return;
     }
 
+    m_networkreply->deleteLater();
+    m_networkreply = nullptr;
+}
+
+void PatientStudyRegister::httpReadyRead()
+{
+    QByteArray byteArray = m_networkreply->readAll();
 }
 
 /********************       清除患者信息        ***********************/

@@ -2,6 +2,8 @@
 #define PATIENTSTUDYREGISTER_H
 
 #include <QMainWindow>
+#include <QNetworkAccessManager>
+
 
 namespace Ui {
 class PatientStudyRegister;
@@ -90,8 +92,15 @@ public slots:
     //    void flageChange();                           //内容改变
     void on_actionSavePatientInfo_triggered();    //保存患者信息
     void on_actionClearPatientInfo_triggered();   //清除患者信息
+
 private:
-    HttpClient *m_httpclient;
+    QNetworkAccessManager m_networkmanager;
+    QNetworkReply *m_networkreply;
+    QString m_url;
+
+private slots:
+    void httpFinished();
+    void httpReadyRead();
 
 private:
     Ui::PatientStudyRegister *ui;
