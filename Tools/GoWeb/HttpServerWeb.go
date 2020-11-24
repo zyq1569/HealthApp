@@ -213,7 +213,7 @@ func main() {
 
 	//ris//update ->studydata
 	WebServer.POST("/healthsystem/ris/updata/", UpdateDBStudyData)
-	WebServer.POST("/healthsystem/ris/update/", UpdateDBStudyData)
+	WebServer.POST("/healthsystem/ris/SaveStudyOrde/", UpdateStudyOrderToDB)
 
 	//ris/report
 	WebServer.POST("/healthsystem/ris/getreportdata", GetReportdata)
@@ -975,6 +975,9 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 			println(err)
 		}
 	}
+	log4go.Debug(string(bodyBytes))
+	return c.String(http.StatusOK, "OK")
+
 	PatientIdentity := studyData.PatientIdentity
 	PatientID := studyData.PatientID
 	// println(string(bodyBytes))
@@ -986,67 +989,70 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 			PatientID = Units.GetRandUID()
 			PatientIdentity = Units.GetRandUID()
 			studyData.PatientIdentity = PatientIdentity
-			sqlstr = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`," +
-				"`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?,?)"
+			sqlstr = "insert into h_patient(`PatientIdentity`,`PatientID,`PatientName`,`PatientSex`,`PatientBirthday`," +
+				"`PatientAddr`,`PatientEmail,`PatientCarID`, `PatientTelNumber`,`PatientType`,`PatientJob`)" +
+				"`PatientNation`,`PatientMarriage,`PatientHometown`, `PatientHisID`,`PatientHistoryTell`)" +
+				"values(?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
 			if err != nil {
-				println("------fail insert into h_patient maridb_db.Prepare--------")
-				println("PatientID:" + PatientID)
-				println("PatientIdentity:" + PatientIdentity)
+				log4go.Debug("------fail insert into h_patient maridb_db.Prepare--------")
+				log4go.Debug("PatientID:" + PatientID)
+				log4go.Debug("PatientIdentity:" + PatientIdentity)
 				log4go.Error(err)
 				os.Exit(1)
 			} else {
-				println("PatientID:" + PatientID)
-				println("PatientIdentity:" + PatientIdentity)
+				log4go.Debug("PatientID:" + PatientID)
+				log4go.Debug("PatientIdentity:" + PatientIdentity)
 			}
 			if studyData.PatientType == "" {
 				studyData.PatientType = "0"
 			}
-			affect_count, err := stmt.Exec(PatientIdentity, studyData.PatientName, studyData.PatientBirthday, studyData.PatientSex,
-				PatientID, studyData.PatientTelNumber, studyData.PatientAddr, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail)
+			affect_count, err := stmt.Exec(PatientIdentity, PatientID, studyData.PatientName, studyData.PatientSex,
+				studyData.PatientBirthday, studyData.PatientAddr, studyData.PatientEmail,
+				studyData.PatientCarID, studyData.PatientTelNumber, studyData.PatientType,
+				studyData.PatientJob, studyData.PatientNation, studyData.PatientMarriage,
+				studyData.PatientHometown, studyData.PatientHisID, studyData.PatientHistoryTell)
+
 			if err != nil {
-				println("fail to  insert into h_patient affect_count:")
-				log4go.Info(affect_count)
+				log4go.Error("fail to  insert into h_patient affect_count:")
+				log4go.Error(affect_count)
 				log4go.Error(err)
 				os.Exit(1)
 			} else {
 				lastInsertId, err := affect_count.RowsAffected()
 				if err != nil {
-					println("lastInsertId:")
-					println(lastInsertId)
+					log4go.Error("lastInsertId:")
+					log4go.Error(lastInsertId)
 					log4go.Error(err)
 					os.Exit(1)
-				} /*else {
-					println("--insert into h_patient--lastInsertId:")
-					println(lastInsertId)
-				}*/
+				}
 			}
 		} else {
-			sqlstr = "update  h_patient set `PatientAddr`=?,`PatientName`=?,`PatientBirthday`=?,`PatientSex`=?," +
-				" `patientTelNumber`=?,`PatientCarID`=?,`PatientType`=? ,`PatientEmail`=? where `PatientID`=?"
+			sqlstr = "update  h_patient set `PatientName`=?,`PatientSex`=?,`PatientBirthday`=?,`PatientAddr`=?," +
+				"`PatientEmail`=?,`PatientCarID`=?,`PatientTelNumber`=?,`PatientType`=?," +
+				"`PatientJob`=?,`PatientNation`=?,`PatientMarriage`=?,`PatientHometown`=?," +
+				"`PatientHisID`=?,`PatientHistoryTell`=? where `PatientIdentity`=?"
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
-				println("------fail update PatientID:--------")
-				println(PatientID)
+				log4go.Error("------fail update PatientID:--------")
+				log4go.Error(PatientID)
 				log4go.Error(perr)
 				os.Exit(1)
-			} /*else {
-				println("------ok maridb_db.Prepare: --------" + sqlstr)
-			}*/
+			}
 			if studyData.PatientType == "" {
 				studyData.PatientType = "0"
 			}
-			affect_count, err := stmt.Exec(studyData.PatientAddr, studyData.PatientName, studyData.PatientBirthday,
-				studyData.PatientSex, studyData.PatientTelNumber, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail, studyData.PatientID)
+			affect_count, err := stmt.Exec(studyData.PatientName, studyData.PatientSex,
+				studyData.PatientBirthday, studyData.PatientAddr, studyData.PatientEmail,
+				studyData.PatientCarID, studyData.PatientTelNumber, studyData.PatientType,
+				studyData.PatientJob, studyData.PatientNation, studyData.PatientMarriage,
+				studyData.PatientHometown, studyData.PatientHisID, studyData.PatientHistoryTell, PatientIdentity)
 			if err != nil {
-				println("fail to  update PatientI affect_count:")
-				log4go.Info(affect_count)
+				log4go.Error("fail to  update PatientI affect_count:")
+				log4go.Error(affect_count)
 				log4go.Error(err)
 				os.Exit(1)
-			} /* else {
-				println("ok update PatientI affect_count:")
-				log.Print(affect_count)
-			}*/
+			}
 		}
 		//update order table
 		StudyOrderIdentity := studyData.StudyOrderIdentity
@@ -1062,11 +1068,11 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				"`StudyDepart`,`StudyCode`, `StudyCost`,`CostType`, " +
 				"`StudyType`, `StudyState`,`StudyDateTime`, `InstitutionName`," +
 				"`ProcedureStepStartDate`,`StudyModalityIdentity`,`StudyManufacturer`,`RegisterID`)" +
-				"value(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+				"value(?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
 			if err != nil {
-				println("------fail  maridb_db.Prepare(sqlstr) insert into h_order:--------")
-				println(StudyOrderIdentity)
+				log4go.Error("------fail  maridb_db.Prepare(sqlstr) insert into h_order:--------")
+				log4go.Error(StudyOrderIdentity)
 				log4go.Error(err)
 				os.Exit(1)
 			}
@@ -1078,47 +1084,43 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				studyData.StudyDateTime, studyData.InstitutionName, studyData.ProcedureStepStartDate,
 				studyData.StudyModalityIdentity, studyData.StudyManufacturer, studyData.RegisterID)
 			if err != nil {
-				println(affect_count)
+				log4go.Error(affect_count)
 				log4go.Error(err)
 				os.Exit(1)
-			} /*else {
-				lastInsertId, err := affect_count.RowsAffected()
-				if err != nil {
-					log.Fatal(err)
-				} else {
-					println("--UpdateDBStudyData--lastInsertId:")
-					println(lastInsertId)
-				}
-			}*/
+			}
 		} else {
-			sqlstr = "update h_order set `ScheduledDateTime`=?, `StudyDescription`=?,`StudyModality`=?," +
-				"`StudyCost`=?,`StudyCode`=?  ,`StudyDepart`=?,`CostType`=? where StudyOrderIdentity=?"
+			// sqlstr = "insert into h_order (`StudyOrderIdentity`,`PatientIdentity`, `StudyID`,`StudyUID`, " +
+			// 	"`StudyModality`, `StudyAge`,`ScheduledDateTime`, " +
+			// 	"`AETitle`, `OrderDateTime`,`StudyDescription`, " +
+			// 	"`StudyDepart`,`StudyCode`, `StudyCost`,`CostType`, " +
+			// 	"`StudyType`, `StudyState`,`StudyDateTime`, `InstitutionName`," +
+			// 	"`ProcedureStepStartDate`,`StudyModalityIdentity`,`StudyManufacturer`,`RegisterID`)" +
+			// 	"value(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+			sqlstr = "update h_order set `StudyModality`=?, `StudyAge`=?,`ScheduledDateTime`=?," +
+				"`AETitle`=?, `OrderDateTime`=?,`StudyDescription`=?," +
+				"`StudyDepart`=?, `StudyCode`=?,`StudyCost`=?,`CostType`=?," +
+				"`StudyType`=?, `StudyState`=?,`StudyDateTime`=?,`InstitutionName`=?,`ProcedureStepStartDate`=?," +
+				"`StudyModalityIdentity`=?  ,`StudyManufacturer`=?,`RegisterID`=? where StudyOrderIdentity=?"
 				///需要修改sql语句为update
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
-				println(sqlstr)
-				println("StudyOrderIdentity:")
-				println(StudyOrderIdentity)
+				log4go.Error(sqlstr)
+				log4go.Error("StudyOrderIdentity:" + StudyOrderIdentity)
 				log4go.Error(perr)
 				os.Exit(1)
 			}
-			affect_count, err := stmt.Exec(studyData.PatientIdentity,
-				studyData.StudyID, studyData.StudyUID, studyData.StudyModality,
-				studyData.StudyAge, studyData.ScheduledDateTime, studyData.AETitle,
-				studyData.OrderDateTime, studyData.StudyDescription, studyData.StudyDepart,
-				studyData.StudyCode, studyData.StudyCost, studyData.CostType,
-				studyData.StudyType, studyData.StudyState, studyData.StudyDateTime,
-				studyData.InstitutionName, studyData.ProcedureStepStartDate, studyData.StudyModalityIdentity,
+			affect_count, err := stmt.Exec(studyData.StudyModality, studyData.StudyAge, studyData.ScheduledDateTime,
+				studyData.AETitle, studyData.OrderDateTime, studyData.StudyDescription,
+				studyData.StudyDepart, studyData.StudyCode, studyData.StudyCost, studyData.CostType,
+				studyData.StudyType, studyData.StudyState, studyData.StudyDateTime, studyData.InstitutionName,
+				studyData.ProcedureStepStartDate, studyData.StudyModalityIdentity,
 				studyData.StudyManufacturer, studyData.RegisterID, StudyOrderIdentity)
 			if err != nil {
-				println("studyData.ScheduledDate" + studyData.ScheduledDateTime)
-				println(affect_count)
+				log4go.Error("studyData.ScheduledDate" + studyData.ScheduledDateTime)
+				log4go.Error(affect_count)
 				log4go.Error(err)
 				os.Exit(1)
-			} /*else {
-				println("affect_count:")
-				println(affect_count)
-			}*/
+			}
 		}
 	}
 	return c.String(http.StatusOK, "OK")
