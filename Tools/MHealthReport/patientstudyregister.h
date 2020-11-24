@@ -6,7 +6,9 @@
 namespace Ui {
 class PatientStudyRegister;
 }
-///
+
+class HttpClient;
+///-------------------------------------------------------------------
 //`PatientIdentity` BIGINT(66) UNSIGNED NOT NULL,
 //`PatientID` CHAR(50) NOT NULL,
 //`PatientName` CHAR(50) NULL DEFAULT 'unknow',
@@ -25,7 +27,7 @@ class PatientStudyRegister;
 //`PatientHometown` CHAR(50) NULL DEFAULT '广东' COMMENT '籍贯:广州、深圳',
 //`PatientHisID` CHAR(50) NULL DEFAULT '-1' COMMENT 'HIS号',
 //`PatientHistoryTell` VARCHAR(200) NULL DEFAULT '无' COMMENT '家族病史/传染病史/既往病史/备注/主诉/现病史',
-///
+///--------------------------------------------------------------------
 typedef struct StudyData  {
     QString
     PatientIdentity       ,
@@ -88,6 +90,8 @@ public slots:
     //    void flageChange();                           //内容改变
     void on_actionSavePatientInfo_triggered();    //保存患者信息
     void on_actionClearPatientInfo_triggered();   //清除患者信息
+private:
+    HttpClient *m_httpclient;
 
 private:
     Ui::PatientStudyRegister *ui;

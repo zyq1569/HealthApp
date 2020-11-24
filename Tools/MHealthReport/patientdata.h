@@ -71,7 +71,7 @@ public:
     bool deleteData(QString regId, QString patientID);
 
 
-    PatientStudyData getDataPaint() const;
+    PatientStudyData getDataPatient() const;
 
 private:
 
