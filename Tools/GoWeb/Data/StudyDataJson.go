@@ -63,7 +63,7 @@ type StudyOrderDataJson struct {
 	Data  []StudyOrderData `json:"data"`
 }
 type StudyOrderData struct {
-	/// patient table
+	// /// patient table
 	PatientIdentity    string
 	PatientID          string
 	PatientName        string
@@ -76,6 +76,12 @@ type StudyOrderData struct {
 	PatientTelNumber   string
 	PatientType        string
 	PatientState       string
+	PatientJob         string
+	PatientNation      string
+	PatientMarriage    string
+	PatientHometown    string
+	PatientHisID       string
+	PatientHistoryTell string
 	/// order table
 	StudyOrderIdentity string
 	///PatientIdentity        string
