@@ -1,12 +1,25 @@
 #include "patientstudyregister.h"
 #include "ui_patientstudyregister.h"
 
+
+#include "httpclient.h"
+///-------Json-------------
+#include <QJsonParseError>
+#include <QJsonObject>
+#include <QJsonArray>
+
+
 PatientStudyRegister::PatientStudyRegister(QWidget *parent) :
     QMainWindow(parent),  ui(new Ui::PatientStudyRegister)
 {
     ui->setupUi(this);
 
     initControl();
+    if (!m_httpclient)
+    {
+        m_httpclient = new HttpClient(this,"F:\\log\\down");
+        m_httpclient->setHost("http://127.0.0.1:8080");
+    }
 }
 
 PatientStudyRegister::~PatientStudyRegister()
@@ -112,6 +125,39 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     studyescription = studyescription + "/Important tel:"+ui->m_ImportantTel->text();
     orderdata.StudyDescription = studyescription;
 
+    QJsonObject json;
+    json.insert("PatientID",orderdata.PatientID);
+    json.insert("PatientHisID",orderdata.PatientHisID);
+    json.insert("PatientName",orderdata.PatientName);
+    json.insert("StudyAge",orderdata.StudyAge);
+    json.insert("PatientSex",orderdata.PatientSex);
+    json.insert("PatientTelNumber",orderdata.PatientTelNumber);
+    json.insert("PatientNation",orderdata.PatientNation);
+    json.insert("PatientHometown",orderdata.PatientHometown);
+    json.insert("PatientJob",orderdata.PatientJob);
+    json.insert("PatientEmail",orderdata.PatientEmail);
+    json.insert("StudyID",orderdata.StudyID);
+    json.insert("StudyDepart",orderdata.StudyDepart);
+    json.insert("StudyModality",orderdata.StudyModality);
+
+    json.insert("CostType",orderdata.CostType);
+    json.insert("StudyCost",orderdata.StudyCost);
+    json.insert("OrderDateTime",orderdata.OrderDateTime);
+    json.insert("ScheduledDateTime",orderdata.ScheduledDateTime);
+    json.insert("StudyManufacturer",orderdata.StudyManufacturer);
+    json.insert("RegisterID",orderdata.RegisterID);
+    json.insert("StudyDescription",orderdata.StudyDescription);
+
+    QJsonDocument document;
+    document.setObject(json);
+    QByteArray byteArray = document.toJson(QJsonDocument::Compact);
+    QString stringJson(byteArray);
+
+    if (m_httpclient)
+    {
+        m_httpclient->updateStudyOrder(stringJson);
+    }
+
 }
 
 /********************       清除患者信息        ***********************/
@@ -145,6 +191,9 @@ void PatientStudyRegister::clearInfo()
     ui->m_comStudyContent->setCurrentIndex(0);
     ui->m_StudyDescription->clear();
     ui->m_ImportantTel->clear();
+
+
+
 }
 
 

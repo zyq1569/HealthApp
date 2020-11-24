@@ -62,7 +62,7 @@ bool PatientData::deleteData(QString regId, QString patientID)
 }
 
 
-PatientStudyData PatientData::getDataPaint() const
+PatientStudyData PatientData::getDataPatient() const
 {
     return pStudyData;
 }

@@ -141,6 +141,9 @@ public:
     void getStudyDBinfo(QUrl url,QString start,QString end,QString page,QString limit);
     void getStudyImageFile(QUrl url,QString studyuid="",QString seruid = "", QString imguid = "");
 
+    // updateStudyOrder
+    void updateStudyOrder(QString strJson);
+
     bool CreatDir(QString fullPath)
     {
         QDir dir(fullPath); // 注意
