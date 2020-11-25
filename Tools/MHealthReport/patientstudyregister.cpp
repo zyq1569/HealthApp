@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QNetworkReply>
+#include <QMessageBox>
 
 
 PatientStudyRegister::PatientStudyRegister(QWidget *parent) :
@@ -195,11 +196,21 @@ void PatientStudyRegister::httpFinished()
         m_networkreply->deleteLater();
         m_networkreply = nullptr;
         m_httpSuccess = false;
+        if (QMessageBox::question(NULL,
+                                  tr("Save New Patient"), tr("Save New Patient To Server Fail!. try again?"),
+                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+        {
+                on_actionSavePatientInfo_triggered();
+        }
         return;
     }
 
     m_networkreply->deleteLater();
     m_networkreply = nullptr;
+    if (m_httpSuccess)
+    {
+        QMessageBox::information(NULL, tr("Save New Patient"),tr("Save OK!"));
+    }
 }
 
 void PatientStudyRegister::httpReadyRead()
@@ -209,6 +220,7 @@ void PatientStudyRegister::httpReadyRead()
     {
     case queryStudyOder:
         break;
+
     case updateStudyOder:
         QString state = byteArray;
         if (state.toUpper() == "OK")
@@ -216,7 +228,6 @@ void PatientStudyRegister::httpReadyRead()
             m_httpSuccess = true;
         }
         break;
-
     }
     QString state = byteArray;
 }
