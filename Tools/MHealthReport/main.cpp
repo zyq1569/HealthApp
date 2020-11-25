@@ -2,6 +2,7 @@
 
 #include <QApplication>
 #include <QFile>
+
 #define LOADQSS(qssFile)                      \
 {                                             \
     QString strQss;                           \
@@ -14,6 +15,7 @@
     file.close();                         \
     }                                         \
     }
+
 
 int main(int argc, char *argv[])
 {
