@@ -45,21 +45,30 @@ StudyImage::StudyImage(QWidget *parent) :
     m_menu->addAction(action);
 
     action = new QAction("编辑信息",this);
-    connect(action,SIGNAL(triggered()),this,SLOT(EditReport()));
+    connect(action,SIGNAL(triggered()),this,SLOT(EditPatientInfo()));
+    m_menu->addAction(action);
+
+    action = new QAction("检查图像",this);
+    connect(action,SIGNAL(triggered()),this,SLOT(ViewImage()));
     m_menu->addAction(action);
 
     ///temp value
     m_url = "http://127.0.0.1:8080";
 }
 
+void StudyImage::ViewImage()
+{
+    QMessageBox::information(NULL, tr("检查"),tr("查看图像!"));
+}
+
 void StudyImage::EditReport()
 {
-
+    QMessageBox::information(NULL, tr("检查"),tr("查看报告!"));
 }
 
 void StudyImage::EditPatientInfo()
 {
-
+    QMessageBox::information(NULL, tr("检查"),tr("编辑患者信息!"));
 }
 
 StudyImage::~StudyImage()
@@ -229,7 +238,7 @@ void StudyImage::on_m_tableWidget_cellDoubleClicked(int row, int column)
 
 void StudyImage::on_m_tableWidget_customContextMenuRequested(const QPoint &pos)
 {
-    if (ui->m_tableWidget->currentIndex().row()>0)
+    if (ui->m_tableWidget->currentIndex().row()>=0)
     {
         m_menu->exec(QCursor::pos());
     }

@@ -29,8 +29,10 @@ public slots:
     void disconnectImageApp();
     void ReadImageApp();
     void connectImageAppCrash();
+
     void EditReport();
     void EditPatientInfo();
+    void ViewImage();
 
 
 
