@@ -817,7 +817,7 @@
          </size>
         </property>
         <property name="text">
-         <string>00002</string>
+         <string/>
         </property>
         <property name="readOnly">
          <bool>true</bool>
@@ -1439,6 +1439,19 @@
         </property>
         <property name="text">
          <string>8</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton">
+        <property name="geometry">
+         <rect>
+          <x>231</x>
+          <y>14</y>
+          <width>21</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>...</string>
         </property>
        </widget>
       </widget>
