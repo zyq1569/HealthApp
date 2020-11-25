@@ -4,7 +4,7 @@
 #include "httpclient.h"
 
 #include <QLocalSocket>
-
+#include <QMessageBox>
 StudyImage::StudyImage(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::StudyImage)
@@ -154,7 +154,29 @@ void StudyImage::updateStudyImageTable()
             ui->m_tableWidget->setItem(row,1,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientName].Value));
             ui->m_tableWidget->setItem(row,2,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientSex].Value));
             ui->m_tableWidget->setItem(row,3,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientBirthday].Value));
-            ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyState].Value));
+            //ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyState].Value));
+            QString state = StudyOder->orderdata[row].studyorder[StudyState].Value;
+            if (state == "1")
+            {
+                state = "已预约";
+            }
+            else if (state == "2")
+            {
+                state = "待检查";
+            }
+            else if (state == "3")
+            {
+                state = "已检查";
+            }
+            else if (state == "4")
+            {
+                state = "诊断";
+            }
+            else if (state == "5")
+            {
+                state = "报告审核";
+            }
+            ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(state));
             ui->m_tableWidget->setItem(row,5,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyModality].Value));
             ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDescription].Value));
             ui->m_tableWidget->setItem(row,7,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyUID].Value));
@@ -167,5 +189,11 @@ void StudyImage::updateStudyImageTable()
 void StudyImage::on_m_tableWidget_cellDoubleClicked(int row, int column)
 {
     QString studyuid = ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-1)->text();
+    int studystate =  ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-4)->text().toInt();
+    if (studystate < 3)
+    {
+        QMessageBox::information(NULL, tr("未检查"),tr("目前无图像!"));
+        return;
+    }
     emit sendClientMsg(studyuid);
 }

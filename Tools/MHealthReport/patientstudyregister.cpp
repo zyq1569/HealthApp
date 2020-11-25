@@ -27,7 +27,6 @@ PatientStudyRegister::PatientStudyRegister(QWidget *parent) :
 PatientStudyRegister::~PatientStudyRegister()
 {
     delete ui;
-
 }
 
 void PatientStudyRegister::initControl()
@@ -264,12 +263,6 @@ void PatientStudyRegister::clearInfo()
     ui->m_StudyDescription->clear();
     ui->m_ImportantTel->clear();
 
-
-
 }
 
 
-//bool PatientStudyRegister::getIsAutoSaveFlage() const
-//{
-//    return isAutoSaveFlage;
-//}
