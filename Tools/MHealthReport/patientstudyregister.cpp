@@ -22,6 +22,8 @@ PatientStudyRegister::PatientStudyRegister(QWidget *parent) :
 
     m_url ="http://127.0.0.1:8080";
 
+    connect(ui->addNewStudy,SIGNAL(clicked()),this,SLOT(on_clearStudyInfo()));
+
 }
 
 PatientStudyRegister::~PatientStudyRegister()
@@ -93,6 +95,11 @@ void PatientStudyRegister::initControl()
 
     ui->m_RegDate->setDisplayFormat("yyyy-MM-dd HH:mm:ss");
     ui->m_RegDate->setDateTime(QDateTime::currentDateTime());
+}
+
+void PatientStudyRegister::on_clearStudyInfo()
+{
+    QMessageBox::information(NULL, tr("检查"),tr("add study!"));
 }
 
 /********************       录入数据           ***********************/
