@@ -35,8 +35,31 @@ StudyImage::StudyImage(QWidget *parent) :
 
     connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
 
+    ///
+    ui->m_tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    ///
+    m_menu = new QMenu(ui->m_tableWidget);
+
+    QAction *action = new QAction("患者报告",this);
+    connect(action,SIGNAL(triggered()),this,SLOT(EditReport()));
+    m_menu->addAction(action);
+
+    action = new QAction("编辑信息",this);
+    connect(action,SIGNAL(triggered()),this,SLOT(EditReport()));
+    m_menu->addAction(action);
+
     ///temp value
     m_url = "http://127.0.0.1:8080";
+}
+
+void StudyImage::EditReport()
+{
+
+}
+
+void StudyImage::EditPatientInfo()
+{
+
 }
 
 StudyImage::~StudyImage()
@@ -154,7 +177,6 @@ void StudyImage::updateStudyImageTable()
             ui->m_tableWidget->setItem(row,1,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientName].Value));
             ui->m_tableWidget->setItem(row,2,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientSex].Value));
             ui->m_tableWidget->setItem(row,3,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientBirthday].Value));
-            //ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyState].Value));
             QString state = StudyOder->orderdata[row].studyorder[StudyState].Value;
             if (state == "1")
             {
@@ -176,6 +198,10 @@ void StudyImage::updateStudyImageTable()
             {
                 state = "报告审核";
             }
+            else
+            {
+                state = "未知";
+            }
             ui->m_tableWidget->setItem(row,4,new QTableWidgetItem(state));
             ui->m_tableWidget->setItem(row,5,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyModality].Value));
             ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDescription].Value));
@@ -189,11 +215,22 @@ void StudyImage::updateStudyImageTable()
 void StudyImage::on_m_tableWidget_cellDoubleClicked(int row, int column)
 {
     QString studyuid = ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-1)->text();
-    int studystate =  ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-4)->text().toInt();
-    if (studystate < 3)
+    QString studystate =  ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-4)->text();
+    if (studystate == "已检查" || studystate == "诊断" || studystate == "报告审核")
+    {
+        emit sendClientMsg(studyuid);
+    }
+    else
     {
         QMessageBox::information(NULL, tr("未检查"),tr("目前无图像!"));
         return;
     }
-    emit sendClientMsg(studyuid);
+}
+
+void StudyImage::on_m_tableWidget_customContextMenuRequested(const QPoint &pos)
+{
+    if (ui->m_tableWidget->currentIndex().row()>0)
+    {
+        m_menu->exec(QCursor::pos());
+    }
 }

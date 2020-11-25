@@ -8,7 +8,7 @@
 class QLocalServer;
 class QLocalSocket;
 class HttpClient;
-
+class QMenu;
 
 namespace Ui {
 class StudyImage;
@@ -29,6 +29,8 @@ public slots:
     void disconnectImageApp();
     void ReadImageApp();
     void connectImageAppCrash();
+    void EditReport();
+    void EditPatientInfo();
 
 
 
@@ -40,6 +42,8 @@ private slots:
 
     void on_m_tableWidget_cellDoubleClicked(int row, int column);
 
+    void on_m_tableWidget_customContextMenuRequested(const QPoint &pos);
+
 signals:
     void sendClientMsg(QString data);
 
@@ -50,6 +54,7 @@ private:
     QLocalSocket *m_localSocket;
     HttpClient *m_httpclient;
     QString m_url;
+    QMenu *m_menu;
 
 private:
     Ui::StudyImage *ui;
