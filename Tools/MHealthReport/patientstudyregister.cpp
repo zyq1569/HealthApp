@@ -103,10 +103,14 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     orderdata.PatientHisID = ui->m_HisID->text();
     orderdata.PatientName = ui->m_PatientName->text();
     orderdata.StudyAge = ui->m_Age->text();
-    orderdata.PatientSex = ui->m_BirthDay->text();
+    orderdata.PatientBirthday = ui->m_BirthDay->text();
+    orderdata.PatientSex = ui->m_comSex->currentText();
+    orderdata.PatientMarriage = ui->m_comMarry->currentText();
+    orderdata.PatientCarID = ui->m_IDCard->text();
     orderdata.PatientTelNumber = ui->m_Address->text();
     orderdata.PatientNation = ui->m_comNation->currentText();
     orderdata.PatientHometown = ui->m_HomeTown->text();
+    orderdata.PatientAddr = ui->m_Address->text();
     orderdata.PatientJob = ui->m_Job->text();
     orderdata.PatientEmail = ui->m_Email->text();
 
@@ -131,10 +135,17 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     json.insert("PatientHisID",orderdata.PatientHisID);
     json.insert("PatientName",orderdata.PatientName);
     json.insert("StudyAge",orderdata.StudyAge);
+    json.insert("PatientBirthday",orderdata.PatientBirthday);
     json.insert("PatientSex",orderdata.PatientSex);
+    json.insert("PatientMarriage",orderdata.PatientMarriage);
+    json.insert("PatientCarID",orderdata.PatientCarID);
+
+
     json.insert("PatientTelNumber",orderdata.PatientTelNumber);
     json.insert("PatientNation",orderdata.PatientNation);
     json.insert("PatientHometown",orderdata.PatientHometown);
+    json.insert("PatientAddr",orderdata.PatientAddr);
+
     json.insert("PatientJob",orderdata.PatientJob);
     json.insert("PatientEmail",orderdata.PatientEmail);
     json.insert("StudyID",orderdata.StudyID);
