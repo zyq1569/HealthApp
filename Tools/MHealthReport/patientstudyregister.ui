@@ -817,7 +817,7 @@
          </size>
         </property>
         <property name="text">
-         <string>002</string>
+         <string>00002</string>
         </property>
         <property name="readOnly">
          <bool>true</bool>
@@ -845,7 +845,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Name</string>
+         <string>Name-QT-Creator</string>
         </property>
        </widget>
        <widget class="QComboBox" name="m_comSex">
@@ -874,17 +874,17 @@
         </property>
         <item>
          <property name="text">
-          <string>man</string>
+          <string>M</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Female</string>
+          <string>F</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Other</string>
+          <string>O</string>
          </property>
         </item>
        </widget>
