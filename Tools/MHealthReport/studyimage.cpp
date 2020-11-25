@@ -27,7 +27,7 @@ StudyImage::StudyImage(QWidget *parent) :
     ui->m_tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);//select rows
     ui->m_tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);///single rows
     ui->m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
-    ui->m_tableWidget->resizeColumnsToContents(); //根据内容调整列宽
+    //ui->m_tableWidget->resizeColumnsToContents(); //根据内容调整列宽
     ui->m_tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分列bai
     ui->m_tableWidget->verticalHeader()->setFixedWidth(30);
     ui->m_tableWidget->horizontalHeader()->setHighlightSections(false);
@@ -68,9 +68,6 @@ void StudyImage::EditReport()
 
 void StudyImage::EditPatientInfo()
 {
-//    ui->m_tableWidget->setItem(row,8,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientIdentity].Value));
-//    ui->m_tableWidget->setItem(row,9,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
-//    ui->m_tableWidget->setItem(row,10,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyOrderIdentity].Value));
     QString Info = "PatientIdentity:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-3)->text();
     Info = Info + "-PatientID:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-2)->text();
     Info = Info + "-StudyOrderIdentity:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
@@ -233,6 +230,7 @@ void StudyImage::updateStudyImageTable()
         ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-2,true);
         ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-3,true);
         ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-4,true);
+        //ui->m_tableWidget->resizeColumnsToContents();
     }
 }
 
