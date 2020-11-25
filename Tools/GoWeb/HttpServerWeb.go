@@ -649,9 +649,6 @@ func UpdateDBStudyData(c echo.Context) error {
 	}
 	PatientIdentity := studyData.PatientIdentity
 	PatientID := studyData.PatientID
-	// println(string(bodyBytes))
-	// println("PatientID:" + PatientID)
-	// println("PatientIdentity:" + PatientIdentity)
 	if maridb_db != nil {
 		var sqlstr string
 		if PatientID == "" { //create a study
@@ -688,10 +685,7 @@ func UpdateDBStudyData(c echo.Context) error {
 					println(lastInsertId)
 					log4go.Error(err)
 					os.Exit(1)
-				} /*else {
-					println("--insert into h_patient--lastInsertId:")
-					println(lastInsertId)
-				}*/
+				}
 			}
 		} else {
 			sqlstr = "update  h_patient set `PatientAddr`=?,`PatientName`=?,`PatientBirthday`=?,`PatientSex`=?," +
@@ -702,9 +696,7 @@ func UpdateDBStudyData(c echo.Context) error {
 				println(PatientID)
 				log4go.Error(perr)
 				os.Exit(1)
-			} /*else {
-				println("------ok maridb_db.Prepare: --------" + sqlstr)
-			}*/
+			}
 			if studyData.PatientType == "" {
 				studyData.PatientType = "0"
 			}
@@ -715,10 +707,7 @@ func UpdateDBStudyData(c echo.Context) error {
 				log4go.Info(affect_count)
 				log4go.Error(err)
 				os.Exit(1)
-			} /* else {
-				println("ok update PatientI affect_count:")
-				log.Print(affect_count)
-			}*/
+			}
 		}
 		//update order table
 		StudyOrderIdentity := studyData.StudyOrderIdentity
@@ -771,10 +760,7 @@ func UpdateDBStudyData(c echo.Context) error {
 				println(affect_count)
 				log4go.Error(err)
 				os.Exit(1)
-			} /*else {
-				println("affect_count:")
-				println(affect_count)
-			}*/
+			}
 		}
 	}
 	return c.String(http.StatusOK, "OK")
@@ -1093,7 +1079,6 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				"`StudyDepart`=?, `StudyCode`=?,`StudyCost`=?,`CostType`=?," +
 				"`StudyType`=?, `StudyState`=?,`StudyDateTime`=?,`InstitutionName`=?,`ProcedureStepStartDate`=?," +
 				"`StudyModalityIdentity`=?  ,`StudyManufacturer`=?,`RegisterID`=? where StudyOrderIdentity=?"
-				///需要修改sql语句为update
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
 				log4go.Error(sqlstr)
