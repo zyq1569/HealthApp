@@ -57,6 +57,7 @@ private:
     HttpClient *m_httpclient;
     QString m_url;
     QMenu *m_menu;
+    int m_currentRow;
 
 private:
     Ui::StudyImage *ui;
