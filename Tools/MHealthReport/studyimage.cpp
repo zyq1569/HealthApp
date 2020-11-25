@@ -18,7 +18,7 @@ StudyImage::StudyImage(QWidget *parent) :
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
 
     QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
-                        "studyDescription","studyuid"};
+                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"};
     ui->m_tableWidget->setColumnCount(strs.count());
 
     ui->m_tableWidget->setHorizontalHeaderLabels(strs);
@@ -68,7 +68,13 @@ void StudyImage::EditReport()
 
 void StudyImage::EditPatientInfo()
 {
-    QMessageBox::information(NULL, tr("检查"),tr("编辑患者信息!"));
+//    ui->m_tableWidget->setItem(row,8,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientIdentity].Value));
+//    ui->m_tableWidget->setItem(row,9,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
+//    ui->m_tableWidget->setItem(row,10,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyOrderIdentity].Value));
+    QString Info = "PatientIdentity:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-3)->text();
+    Info = Info + "-PatientID:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-2)->text();
+    Info = Info + "-StudyOrderIdentity:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
+    QMessageBox::information(NULL, tr("检查"),("编辑患者信息!"+Info));
 }
 
 StudyImage::~StudyImage()
@@ -177,6 +183,8 @@ void StudyImage::updateStudyImageTable()
         }
         ui->m_tableWidget->setRowCount(0);
 
+//        QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
+//                            "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"};
         PatientStudyOder *StudyOder = m_httpclient->getPatientStudyOder();
         int rowcount = StudyOder->count;
         ui->m_tableWidget->setRowCount(rowcount);
@@ -215,16 +223,24 @@ void StudyImage::updateStudyImageTable()
             ui->m_tableWidget->setItem(row,5,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyModality].Value));
             ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDescription].Value));
             ui->m_tableWidget->setItem(row,7,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyUID].Value));
+
+            ui->m_tableWidget->setItem(row,8,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientIdentity].Value));
+            ui->m_tableWidget->setItem(row,9,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
+            ui->m_tableWidget->setItem(row,10,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyOrderIdentity].Value));
+
         }
         ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-1,true);
+        ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-2,true);
+        ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-3,true);
+        ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-4,true);
     }
 }
 
 
 void StudyImage::on_m_tableWidget_cellDoubleClicked(int row, int column)
 {
-    QString studyuid = ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-1)->text();
-    QString studystate =  ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-4)->text();
+    QString studyuid = ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-4)->text();
+    QString studystate =  ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-7)->text();
     if (studystate == "已检查" || studystate == "诊断" || studystate == "报告审核")
     {
         emit sendClientMsg(studyuid);
@@ -238,7 +254,8 @@ void StudyImage::on_m_tableWidget_cellDoubleClicked(int row, int column)
 
 void StudyImage::on_m_tableWidget_customContextMenuRequested(const QPoint &pos)
 {
-    if (ui->m_tableWidget->currentIndex().row()>=0)
+    m_currentRow = ui->m_tableWidget->currentIndex().row();
+    if (m_currentRow >= 0)
     {
         m_menu->exec(QCursor::pos());
     }
