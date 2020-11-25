@@ -983,22 +983,22 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 	log4go.Debug("PatientIdentity:" + PatientIdentity)
 	if maridb_db != nil {
 		var sqlstr string
-		if PatientID == "" { //create a study
+		if PatientIdentity == "" { //create a study
 			PatientID = Units.GetRandUID()
 			PatientIdentity = Units.GetRandUID()
 			studyData.PatientIdentity = PatientIdentity
-			sqlstr = "insert into h_patient(`PatientIdentity`,`PatientID,`PatientName`,`PatientSex`,`PatientBirthday`," +
-				"`PatientAddr`,`PatientEmail,`PatientCarID`, `PatientTelNumber`,`PatientType`,`PatientJob`)" +
-				"`PatientNation`,`PatientMarriage,`PatientHometown`, `PatientHisID`,`PatientHistoryTell`)" +
-				"values(?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?)"
+			sqlstr = "insert into h_patient(`PatientIdentity`,`PatientID`,`PatientName`,`PatientSex`,`PatientBirthday`," +
+				"`PatientAddr`,`PatientEmail`,`PatientCarID`, `PatientTelNumber`,`PatientType`,`PatientJob`," +
+				"`PatientNation`,`PatientMarriage`,`PatientHometown`,`PatientHisID`,`PatientHistoryTell`) " +
+				" values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
 			if err != nil {
+				log4go.Debug("sqlstr:" + sqlstr)
 				log4go.Debug("------fail insert into h_patient maridb_db.Prepare--------")
-				log4go.Debug("PatientID:" + PatientID)
-				log4go.Debug("PatientIdentity:" + PatientIdentity)
-				log4go.Error(err)
-				os.Exit(1)
+				log4go.Debug(err)
+				//os.Exit(1)
 			} else {
+				log4go.Debug("sqlstr:" + sqlstr)
 				log4go.Debug("PatientID:" + PatientID)
 				log4go.Debug("PatientIdentity:" + PatientIdentity)
 			}
@@ -1088,13 +1088,6 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				os.Exit(1)
 			}
 		} else {
-			// sqlstr = "insert into h_order (`StudyOrderIdentity`,`PatientIdentity`, `StudyID`,`StudyUID`, " +
-			// 	"`StudyModality`, `StudyAge`,`ScheduledDateTime`, " +
-			// 	"`AETitle`, `OrderDateTime`,`StudyDescription`, " +
-			// 	"`StudyDepart`,`StudyCode`, `StudyCost`,`CostType`, " +
-			// 	"`StudyType`, `StudyState`,`StudyDateTime`, `InstitutionName`," +
-			// 	"`ProcedureStepStartDate`,`StudyModalityIdentity`,`StudyManufacturer`,`RegisterID`)" +
-			// 	"value(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 			sqlstr = "update h_order set `StudyModality`=?, `StudyAge`=?,`ScheduledDateTime`=?," +
 				"`AETitle`=?, `OrderDateTime`=?,`StudyDescription`=?," +
 				"`StudyDepart`=?, `StudyCode`=?,`StudyCost`=?,`CostType`=?," +
@@ -1121,6 +1114,8 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				os.Exit(1)
 			}
 		}
+	} else {
+		log4go.Error("maridb_db == nil ")
 	}
 	return c.String(http.StatusOK, "OK")
 }
