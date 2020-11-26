@@ -1,6 +1,8 @@
 #ifndef PATIENTSTUDYREGISTER_H
 #define PATIENTSTUDYREGISTER_H
 
+#include "patientsform.h"
+
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
@@ -105,6 +107,7 @@ private:
     QString m_url;
     QuestType m_questType;
     bool m_httpSuccess;
+    PatientsForm m_PatientsForm;
 
 
 private slots:

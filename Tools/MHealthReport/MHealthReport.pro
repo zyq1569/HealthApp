@@ -20,6 +20,7 @@ SOURCES += \
     main.cpp \
     mainapp.cpp \
     patientdata.cpp \
+    patientsform.cpp \
     patientstudyregister.cpp \
     studyimage.cpp
 
@@ -27,11 +28,13 @@ HEADERS += \
     httpclient.h \
     mainapp.h \
     patientdata.h \
+    patientsform.h \
     patientstudyregister.h \
     studyimage.h
 
 FORMS += \
     mainapp.ui \
+    patientsform.ui \
     patientstudyregister.ui \
     studyimage.ui
 
