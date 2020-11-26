@@ -12,7 +12,7 @@ PatientsForm::PatientsForm(QWidget *parent) :
 
 
     QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
-                        "Birthday","PatientCarID","StudyCode","OrderTime",
+                        "Birthday","PatientCarID","StudyState","StudyCode","OrderTime",
                         "StudyID","ClinicID","RegisterID","Description",
                         "PatientTelNumber","PatientAddr","PatientNation","PatientHometown",
                         "PatientMarriage","PatientEmail",
@@ -31,7 +31,7 @@ PatientsForm::PatientsForm(QWidget *parent) :
     ui->m_PatientsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分列
     ui->m_PatientsTable->verticalHeader()->setFixedWidth(20);
     ui->m_PatientsTable->horizontalHeader()->setHighlightSections(false);
-    for (int i = 13, c=ui->m_PatientsTable->columnCount(); i<c ; i++)
+    for (int i = 14, c=ui->m_PatientsTable->columnCount(); i<c ; i++)
     {
         ui->m_PatientsTable->setColumnHidden(i,true);
     }
@@ -78,8 +78,15 @@ void  PatientsForm::showPatients()
         }
         ui->m_PatientsTable->setRowCount(0);
 
-        //        QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
-        //                            "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"};
+//        QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
+//                            "Birthday","PatientCarID","StudyState","StudyCode","OrderTime",
+//                            "StudyID","ClinicID","RegisterID","Description",
+//
+//                            "PatientTelNumber","PatientAddr","PatientNation","PatientHometown",
+//                            "PatientMarriage","PatientEmail",
+//                            "StudyDepart","StudyModality","CostType",
+//                            "StudyCost","ProcedureStepStartDate",
+//                            "StudyManufacturer"};
         PatientStudyOder *StudyOder = m_httpclient->getPatientStudyOder();
         int rowcount = StudyOder->count;
         ui->m_PatientsTable->setRowCount(rowcount);
