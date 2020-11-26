@@ -99,7 +99,24 @@ void PatientStudyRegister::initControl()
 
 void PatientStudyRegister::on_clearStudyInfo()
 {
-    QMessageBox::information(NULL, tr("检查"),tr("add study!"));
+    //QMessageBox::information(NULL, tr("检查"),tr("add study!"));
+
+    ui->m_StudyID->clear();
+    ui->m_OtherID->clear();
+
+    ui->m_HospitalID->clear();
+    ui->m_StudyCost->clear();
+
+    ui->m_StudyManufacturer->clear();
+    ui->m_ImportantTel->clear();
+    ui->m_RegUser->clear();
+    ui->m_StudyDescription->clear();
+
+    ui->m_comStudyDepart->setEditText("");
+    ui->m_comStudyContent->setEditText("");
+    ui->m_comModality->setEditText("");
+    ui->m_comCostType->setEditText("");
+
 }
 
 /********************       录入数据           ***********************/
@@ -203,16 +220,17 @@ void PatientStudyRegister::httpFinished()
         m_networkreply = nullptr;
         m_httpSuccess = false;
         if (QMessageBox::question(NULL,
-                                  tr("Save New Patient"), tr("Save New Patient To Server Fail!. try again?"),
-                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+                                  "Save New Patient", "Save New Patient To Server Fail!. try again?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
         {
-                on_actionSavePatientInfo_triggered();
+            on_actionSavePatientInfo_triggered();
         }
         return;
     }
 
     m_networkreply->deleteLater();
     m_networkreply = nullptr;
+
     if (m_httpSuccess)
     {
         QMessageBox::information(NULL, tr("Save New Patient"),tr("Save OK!"));
@@ -247,7 +265,12 @@ void PatientStudyRegister::on_actionClearPatientInfo_triggered()
 /********************       清除信息            ***********************/
 void PatientStudyRegister::clearInfo()
 {
+    ui->m_PatientName->clear();
     ui->m_PatientID->clear();
+    ui->m_BirthDay->clear();
+    ui->m_TelNumber->clear();
+    ui->m_IDCard->clear();
+
     ui->m_HisID->clear();
     ui->m_Age->clear();
     ui->m_Address->clear();
@@ -259,16 +282,8 @@ void PatientStudyRegister::clearInfo()
     ui->m_comStudyDepart->setCurrentIndex(0);
     ui->m_comModality->setCurrentIndex(0);
 
-    ui->m_comCostType->setCurrentIndex(0);
-    ui->m_StudyCost->clear();
-    ui->m_StudyOrderDate->clear();
-    ui->m_RegDate->clear();
-    ui->m_StudyManufacturer->clear();
-    ui->m_RegUser->clear();
-
-    ui->m_comStudyContent->setCurrentIndex(0);
-    ui->m_StudyDescription->clear();
-    ui->m_ImportantTel->clear();
+    ///
+    on_clearStudyInfo();
 
 }
 
