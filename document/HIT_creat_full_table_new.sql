@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `h_order` (
   `StudyOrderIdentity` bigint(66) NOT NULL COMMENT '预约检查主索引',
   `PatientIdentity` bigint(66) NOT NULL COMMENT '患者唯一ID',
   `StudyID` char(50) DEFAULT '0' COMMENT '检查号ID',
+  `ClinicID` char(50) DEFAULT '0' COMMENT '门诊号',
   `StudyUID` char(129) NOT NULL DEFAULT '0' COMMENT '检查UID',
   `StudyModality` char(50) DEFAULT '' COMMENT '检查设备',
   `StudyAge` int(11) DEFAULT -1 COMMENT '检查年龄',
