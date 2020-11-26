@@ -9,8 +9,8 @@ PatientsForm::PatientsForm(QWidget *parent) :
 
 
     QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
-                        "Birthday","PatientCarID","StudyCode","OrderDateTime",
-                        "RegisterID","StudyDescription","StudyID","ClinicID",
+                        "Birthday","PatientCarID","StudyCode","OrderTime",
+                        "StudyID","ClinicID","RegisterID","Description",
                         "PatientTelNumber","PatientAddr","PatientNation","PatientHometown",
                         "PatientMarriage","PatientEmail",
                         "StudyDepart","StudyModality","CostType",
