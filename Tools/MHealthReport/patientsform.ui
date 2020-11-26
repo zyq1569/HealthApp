@@ -45,7 +45,7 @@
        </size>
       </property>
       <property name="text">
-       <string>             至</string>
+       <string>              至</string>
       </property>
      </widget>
      <widget class="QDateTimeEdit" name="dateTimeEdit_2">

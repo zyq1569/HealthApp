@@ -33,7 +33,7 @@ StudyImage::StudyImage(QWidget *parent) :
     ui->m_tableWidget->horizontalHeader()->setHighlightSections(false);
     ui->m_tableWidget->show();
 
-    connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
+    //connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));=on_m_tableWidget_cellDoubleClicked
 
     ///
     ui->m_tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
