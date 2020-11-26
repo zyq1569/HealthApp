@@ -19,17 +19,94 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>TextLabel</string>
+     <widget class="QDateTimeEdit" name="dateTimeEdit">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="time">
+       <time>
+        <hour>1</hour>
+        <minute>0</minute>
+        <second>0</second>
+       </time>
+      </property>
+      <property name="displayFormat">
+       <string>yyyy-M-d h:mm</string>
       </property>
      </widget>
-     <widget class="QDateTimeEdit" name="dateTimeEdit"/>
-     <widget class="QDateTimeEdit" name="dateTimeEdit_2"/>
-     <widget class="QComboBox" name="comboBox"/>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QLabel" name="label">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>23</height>
+       </size>
+      </property>
       <property name="text">
-       <string>PushButton</string>
+       <string>             至</string>
+      </property>
+     </widget>
+     <widget class="QDateTimeEdit" name="dateTimeEdit_2">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="time">
+       <time>
+        <hour>1</hour>
+        <minute>0</minute>
+        <second>0</second>
+       </time>
+      </property>
+      <property name="displayFormat">
+       <string>yyyy-M-d h:mm</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>23</height>
+       </size>
+      </property>
+      <item>
+       <property name="text">
+        <string>CT</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>MR</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>DR</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CR</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="res.qrc">
+        <normaloff>:/image/image/serch.png</normaloff>:/image/image/serch.png</iconset>
       </property>
      </widget>
     </widget>
@@ -39,6 +116,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>
