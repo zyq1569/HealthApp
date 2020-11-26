@@ -117,6 +117,7 @@ void PatientStudyRegister::on_clearStudyInfo()
     ui->m_comModality->setEditText("");
     ui->m_comCostType->setEditText("");
     m_PatientsForm.setAttribute(Qt::WA_ShowModal, true);
+    m_PatientsForm.setWindowFlags(m_PatientsForm.windowFlags()&  ~Qt::WindowMinimizeButtonHint);
     m_PatientsForm.show();
 
 }
