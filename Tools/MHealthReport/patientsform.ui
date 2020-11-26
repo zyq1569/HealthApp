@@ -19,7 +19,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QDateTimeEdit" name="dateTimeEdit">
+     <widget class="QDateTimeEdit" name="dateTimeStart">
       <property name="maximumSize">
        <size>
         <width>100</width>
@@ -48,7 +48,7 @@
        <string>              至</string>
       </property>
      </widget>
-     <widget class="QDateTimeEdit" name="dateTimeEdit_2">
+     <widget class="QDateTimeEdit" name="dateTimeEnd">
       <property name="maximumSize">
        <size>
         <width>100</width>
@@ -66,7 +66,7 @@
        <string>yyyy-M-d h:mm</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox">
+     <widget class="QComboBox" name="comModality">
       <property name="maximumSize">
        <size>
         <width>100</width>
@@ -94,7 +94,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="lookupPatient">
       <property name="maximumSize">
        <size>
         <width>100</width>
