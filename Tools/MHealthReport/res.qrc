@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/image">
         <file>image/header.png</file>
-        <file>image/login.png</file>
         <file>image/background.png</file>
         <file>image/color.png</file>
         <file>image/fail.png</file>
@@ -16,7 +15,6 @@
         <file>image/exit.png</file>
         <file>image/filenew.png</file>
         <file>image/information.png</file>
-        <file>image/newmore.png</file>
         <file>image/open.png</file>
         <file>image/question.png</file>
         <file>image/save.png</file>
