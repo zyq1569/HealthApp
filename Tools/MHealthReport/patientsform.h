@@ -23,6 +23,15 @@ public:
     ~PatientsForm();
 
 private:
+    HttpClient *m_httpclient;
+
+
+public slots:
+    void editPatient(int row, int column);
+    void getPatients();
+    void showPatients();
+
+private:
     Ui::PatientsForm *ui;
 };
 

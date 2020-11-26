@@ -2,7 +2,7 @@
 #include "ui_studyimage.h"
 
 #include "httpclient.h"
-
+#include "patientdata.h"
 #include <QLocalSocket>
 #include <QMessageBox>
 StudyImage::StudyImage(QWidget *parent) :
@@ -32,6 +32,11 @@ StudyImage::StudyImage(QWidget *parent) :
     ui->m_tableWidget->verticalHeader()->setFixedWidth(30);
     ui->m_tableWidget->horizontalHeader()->setHighlightSections(false);
     ui->m_tableWidget->show();
+    int column = ui->m_tableWidget->columnCount();
+    ui->m_tableWidget->setColumnHidden(column-1,true);
+    ui->m_tableWidget->setColumnHidden(column-2,true);
+    ui->m_tableWidget->setColumnHidden(column-3,true);
+    ui->m_tableWidget->setColumnHidden(column-4,true);
 
     //connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));=on_m_tableWidget_cellDoubleClicked
 
@@ -54,7 +59,7 @@ StudyImage::StudyImage(QWidget *parent) :
     ///------------CustomContextMenu---------------------------------
 
     ///temp value
-    m_url = "http://127.0.0.1:8080";
+    //m_url = "http://127.0.0.1:8080";
 }
 
 void StudyImage::ViewImage()
@@ -150,14 +155,14 @@ void StudyImage::on_m_getStudyDbImages_clicked()
     QString startDate = ui->m_startDate->dateTime().toString("yyyyMMdd");
     QString endDate   = ui->m_endDate->dateTime().toString("yyyyMMdd");
     QString mod = ui->m_StudyModality->currentText();
-    QString url = m_url;
+
     if (!m_httpclient)
     {
-        m_httpclient = new HttpClient(this,"F:\\log\\down");
-        m_httpclient->setHost(url);
+        m_httpclient = new HttpClient(this,getDownDir());
+        m_httpclient->setHost(getServerHttpUrl());
     }
     connect(m_httpclient,&HttpClient::parseDataFinished,this,&StudyImage::updateStudyImageTable);
-    m_httpclient->getStudyDBinfo(url,startDate,endDate,"1","100");
+    m_httpclient->getStudyDBinfo(getServerHttpUrl(),startDate,endDate,"1","100");
 }
 
 void StudyImage::updateStudyImageTable()
@@ -221,16 +226,11 @@ void StudyImage::updateStudyImageTable()
             ui->m_tableWidget->setItem(row,5,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyModality].Value));
             ui->m_tableWidget->setItem(row,6,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDescription].Value));
             ui->m_tableWidget->setItem(row,7,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyUID].Value));
-
             ui->m_tableWidget->setItem(row,8,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientIdentity].Value));
             ui->m_tableWidget->setItem(row,9,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
             ui->m_tableWidget->setItem(row,10,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyOrderIdentity].Value));
 
         }
-        ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-1,true);
-        ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-2,true);
-        ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-3,true);
-        ui->m_tableWidget->setColumnHidden(ui->m_tableWidget->columnCount()-4,true);
         //ui->m_tableWidget->resizeColumnsToContents();
     }
 }

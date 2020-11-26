@@ -111,6 +111,12 @@ typedef struct StudyData  {
 ;
 }StudyData;
 
+const QString getServerHttpUrl();
+const QString getDownDir();
+
+void setServerHttpUrl(QString url);
+void setDownDir(QString dir);
+
 enum QuestType{
     nothing,
     queryStudyOder,

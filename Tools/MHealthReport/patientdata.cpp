@@ -2,6 +2,28 @@
 
 PatientData * PatientData::s_instance = NULL;
 
+static QString g_serverHttpUrl = "http://127.0.0.1:8080";
+static QString g_downDir ="F:/log/down";
+
+const QString getServerHttpUrl()
+{
+    return  g_serverHttpUrl;
+}
+
+const QString getDownDir()
+{
+    return  g_downDir;
+}
+
+void setServerHttpUrl(QString url)
+{
+    g_serverHttpUrl = url;
+}
+void setDownDir(QString dir)
+{
+    g_downDir = dir;
+}
+
 
 PatientData *PatientData::getInstance()
 {

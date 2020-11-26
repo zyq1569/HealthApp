@@ -55,7 +55,7 @@ signals:
 private:
     QLocalSocket *m_localSocket;
     HttpClient *m_httpclient;
-    QString m_url;
+
     QMenu *m_menu;
     int m_currentRow;
 
