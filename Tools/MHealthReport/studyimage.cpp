@@ -35,9 +35,9 @@ StudyImage::StudyImage(QWidget *parent) :
 
     //connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));=on_m_tableWidget_cellDoubleClicked
 
-    ///
+    ///------------CustomContextMenu---------------------------------
     ui->m_tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-    ///
+
     m_menu = new QMenu(ui->m_tableWidget);
 
     QAction *action = new QAction("患者报告",this);
@@ -51,6 +51,7 @@ StudyImage::StudyImage(QWidget *parent) :
     action = new QAction("检查图像",this);
     connect(action,SIGNAL(triggered()),this,SLOT(ViewImage()));
     m_menu->addAction(action);
+    ///------------CustomContextMenu---------------------------------
 
     ///temp value
     m_url = "http://127.0.0.1:8080";

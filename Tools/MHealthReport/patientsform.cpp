@@ -8,12 +8,14 @@ PatientsForm::PatientsForm(QWidget *parent) :
     ui->setupUi(this);
 
 
-    QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex", "patientBirthday",
-                        "PatientTelNumber","PatientAddr","PatientNation","PatientHometown","PatientMarriage",
-                        "PatientCarID","PatientEmail","StudyID","ClinicID",
-                        "StudyDepart","StudyCode","StudyModality","CostType",
-                        "StudyCost","OrderDateTime","ProcedureStepStartDate","StudyManufacturer",
-                        "RegisterID","StudyDescription"};
+    QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
+                        "Birthday","PatientCarID","StudyCode","OrderDateTime",
+                        "RegisterID","StudyDescription","StudyID","ClinicID",
+                        "PatientTelNumber","PatientAddr","PatientNation","PatientHometown",
+                        "PatientMarriage","PatientEmail",
+                        "StudyDepart","StudyModality","CostType",
+                        "StudyCost","ProcedureStepStartDate",
+                        "StudyManufacturer"};
 
     ui->m_PatientsTable->setColumnCount(strs.count());
 
@@ -26,6 +28,12 @@ PatientsForm::PatientsForm(QWidget *parent) :
     ui->m_PatientsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分列
     ui->m_PatientsTable->verticalHeader()->setFixedWidth(20);
     ui->m_PatientsTable->horizontalHeader()->setHighlightSections(false);
+    for (int i = 13, c=ui->m_PatientsTable->columnCount(); i<c ; i++)
+    {
+        ui->m_PatientsTable->setColumnHidden(i,true);
+    }
+    //ui->m_PatientsTable->setColumnHidden(0,false);11 12 13 14 15 19 22
+
     ui->m_PatientsTable->show();
 }
 
