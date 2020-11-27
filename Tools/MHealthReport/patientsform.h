@@ -23,7 +23,7 @@ public:
     ~PatientsForm();
 
 signals:
-    void editPatientStudyData(PatientStudyOder data, QString id);
+    void editPatientStudyData(PatientStudyOder data, QString StudyOrderIdentity);
 
 private:
     HttpClient *m_httpclient;

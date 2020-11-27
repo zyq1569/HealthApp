@@ -138,8 +138,8 @@ void  PatientsForm::showPatients()
 
 void PatientsForm::editPatient(int row, int column)
 {
-    QString id = ui->m_PatientsTable->item(row,ui->m_PatientsTable->columnCount()-1)->text();
-    emit editPatientStudyData(m_currentData,id);
+    QString StudyOrderIdentity = ui->m_PatientsTable->item(row,ui->m_PatientsTable->columnCount()-1)->text();
+    emit editPatientStudyData(m_currentData,StudyOrderIdentity);
     this->hide();
 }
 

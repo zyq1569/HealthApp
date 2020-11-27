@@ -20,7 +20,6 @@ PatientStudyRegister::PatientStudyRegister(QWidget *parent) :
 
     m_questType = nothing;
 
-    m_url ="http://127.0.0.1:8080";
 
     connect(ui->addNewStudy,SIGNAL(clicked()),this,SLOT(on_clearStudyInfo()));
 
@@ -97,19 +96,56 @@ void PatientStudyRegister::initControl()
     ui->m_RegDate->setDateTime(QDateTime::currentDateTime());
 }
 
-void PatientStudyRegister::editPatientStudyInfo(PatientStudyOder data, QString ID)
+void PatientStudyRegister::editPatientStudyInfo(PatientStudyOder data, QString studyOrderIdentity)
 {
     disconnect(&m_PatientsForm,SIGNAL(editPatientStudyData(PatientStudyOder , QString )),
                this,SLOT(editPatientStudyInfo(PatientStudyOder , QString )));
 
-    QMessageBox::information(NULL, "Save New Patient",ID);
+    const QString id = studyOrderIdentity;
+    int rows = data.count;
+    for (int i=0; i<rows; i++)
+    {
+        if (id == data.orderdata[i].studyorder[StudyOrderIdentity].Value)
+        {
+            m_PatientIdentity =  data.orderdata[i].studyorder[PatientIdentity].Value;
+            ui->m_PatientID->setText(data.orderdata[i].studyorder[PatientID].Value);
+            ui->m_HisID->setText(data.orderdata[i].studyorder[PatientHisID].Value);
+            ui->m_PatientName->setText(data.orderdata[i].studyorder[PatientName].Value);
+            ui->m_Age->setText(data.orderdata[i].studyorder[StudyAge].Value);
+            ui->m_BirthDay->setText(data.orderdata[i].studyorder[PatientBirthday].Value);
+            ui->m_comSex->setCurrentText(data.orderdata[i].studyorder[PatientSex].Value);
+            ui->m_comMarry->setCurrentText(data.orderdata[i].studyorder[PatientMarriage].Value);
+            ui->m_IDCard->setText(data.orderdata[i].studyorder[PatientCarID].Value);
+            ui->m_Address->setText(data.orderdata[i].studyorder[PatientAddr].Value);
 
+            ui->m_comMarry->setCurrentText(data.orderdata[i].studyorder[PatientNation].Value);
+            ui->m_HomeTown->setText(data.orderdata[i].studyorder[PatientHometown].Value);
+            ui->m_Job->setText(data.orderdata[i].studyorder[PatientJob].Value);
+            ui->m_Email->setText(data.orderdata[i].studyorder[PatientEmail].Value);
+            ui->m_StudyID->setText(data.orderdata[i].studyorder[StudyID].Value);
+            ui->m_comStudyDepart->setCurrentText(data.orderdata[i].studyorder[StudyDepart].Value);
+
+            ui->m_comModality->setCurrentText(data.orderdata[i].studyorder[StudyModality].Value);
+            ui->m_comCostType->setCurrentText(data.orderdata[i].studyorder[CostType].Value);
+            ui->m_StudyCost->setText(data.orderdata[i].studyorder[StudyCost].Value);
+            ui->m_StudyOrderDate->setDateTime(QDateTime::fromString(
+                                                  data.orderdata[i].studyorder[OrderDateTime].Value, "yyyy-MM-dd hh:mm:ss"));
+            ui->m_RegDate->setDateTime(QDateTime::fromString(
+                                           data.orderdata[i].studyorder[ScheduledDateTime].Value, "yyyy-MM-dd hh:mm:ss"));
+            ui->m_StudyManufacturer->setText(data.orderdata[i].studyorder[StudyManufacturer].Value);
+            ui->m_RegUser->setText(data.orderdata[i].studyorder[RegisterID].Value);
+            ui->m_comStudyContent->setCurrentText(data.orderdata[i].studyorder[StudyDescription].Value);
+            //            QString studyescription = ui->m_comStudyContent->currentText();
+            //            studyescription = studyescription + ui->m_StudyDescription->text();
+        }
+    }
 }
 
 void PatientStudyRegister::on_clearStudyInfo()
 {
     //QMessageBox::information(NULL, tr("检查"),tr("add study!"));
 
+    m_StudyOrderIdentity = "";
     ui->m_StudyID->clear();
     ui->m_OtherID->clear();
 
@@ -137,6 +173,8 @@ void PatientStudyRegister::on_clearStudyInfo()
 void PatientStudyRegister::on_actionSavePatientInfo_triggered()
 {
     StudyData orderdata;
+    orderdata.PatientIdentity = m_PatientIdentity;
+    orderdata.StudyOrderIdentity = m_StudyOrderIdentity;
     orderdata.PatientID = ui->m_PatientID->text();
     orderdata.PatientHisID = ui->m_HisID->text();
     orderdata.PatientName = ui->m_PatientName->text();
@@ -220,7 +258,9 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
 
     m_httpSuccess = false;
     m_questType = updateStudyOder;
-    m_networkreply = m_networkmanager.post(QNetworkRequest(m_url+"/healthsystem/ris/SaveStudyOrde/"),byteArray); //m_networkmanager.get(QNetworkRequest(m_url));
+    m_networkreply = m_networkmanager.post(QNetworkRequest(getServerHttpUrl()+"/healthsystem/ris/SaveStudyOrde/"),byteArray);
+    //m_networkmanager.get(QNetworkRequest(m_url));
+
     connect(m_networkreply, &QIODevice::readyRead, this, &PatientStudyRegister::httpReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &PatientStudyRegister::httpFinished);
 
@@ -295,6 +335,7 @@ void PatientStudyRegister::clearInfo()
     ui->m_StudyID->clear();
     ui->m_comStudyDepart->setCurrentIndex(0);
     ui->m_comModality->setCurrentIndex(0);
+    m_PatientIdentity = "";
 
     ///
     on_clearStudyInfo();
