@@ -895,7 +895,9 @@ func GetStudyOrderFromDB(c echo.Context) error {
 		var sqlstr string
 		sqlstr = "select p.PatientIdentity , p.PatientID, p.PatientName, p.PatientNameEnglish," +
 			"p.PatientSex , p.PatientBirthday , p.PatientAddr , p.PatientEmail , p.PatientCarID," +
-			"p.PatientTelNumber , p.PatientType , p.PatientState ,o.StudyOrderIdentity," +
+			"p.PatientTelNumber , p.PatientType , p.PatientState ,p.PatientJob," +
+			"p.PatientNation , p.PatientMarriage , p.PatientHometown ,p.PatientHisID," +
+			"p.PatientHistoryTell ,o.StudyOrderIdentity," +
 			"o.StudyID , o.StudyUID,  o.StudyModality, o.StudyAge ," +
 			"o.ScheduledDateTime , o.AETitle , o.OrderDateTime, o.StudyDescription," +
 			"o.StudyDepart, o.StudyCode, o.StudyCost, o.CostType, o.StudyType," +
@@ -922,6 +924,8 @@ func GetStudyOrderFromDB(c echo.Context) error {
 					&data.PatientNameEnglish, &data.PatientSex, &data.PatientBirthday,
 					&data.PatientAddr, &data.PatientEmail, &data.PatientCarID,
 					&data.PatientTelNumber, &data.PatientType, &data.PatientState,
+					&data.PatientJob, &data.PatientNation, &data.PatientMarriage,
+					&data.PatientHometown, &data.PatientHisID, &data.PatientHistoryTell,
 					&data.StudyOrderIdentity, &data.StudyID, &data.StudyUID, &data.StudyModality,
 					&data.StudyAge, &data.ScheduledDateTime, &data.AETitle, &data.OrderDateTime,
 					&data.StudyDescription, &data.StudyDepart, &data.StudyCode, &data.StudyCost, &data.CostType,
