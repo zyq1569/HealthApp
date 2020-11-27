@@ -2,15 +2,12 @@
 #include "ui_patientsform.h"
 
 
-#include "httpclient.h"
-
 PatientsForm::PatientsForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PatientsForm)
 {
     ui->setupUi(this);
     m_httpclient = nullptr;
-
 
     QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
                         "Birthday","PatientCarID","StudyState","StudyCode","OrderTime",
@@ -19,13 +16,11 @@ PatientsForm::PatientsForm(QWidget *parent) :
                         "PatientMarriage","PatientEmail",
                         "StudyDepart","StudyModality","CostType",
                         "StudyCost","ProcedureStepStartDate",
-                        "StudyManufacturer"};
+                        "StudyManufacturer","StudyOrderIdentity"};
 
     ui->m_PatientsTable->setColumnCount(strs.count());
-
     ui->m_PatientsTable->setHorizontalHeaderLabels(strs);
     ui->m_PatientsTable->horizontalHeader()->setStretchLastSection(true);
-
     ui->m_PatientsTable->setSelectionBehavior(QAbstractItemView::SelectRows);//select rows
     ui->m_PatientsTable->setSelectionMode(QAbstractItemView::SingleSelection);///single rows
     ui->m_PatientsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
@@ -37,7 +32,6 @@ PatientsForm::PatientsForm(QWidget *parent) :
         ui->m_PatientsTable->setColumnHidden(i,true);
     }
     ui->m_PatientsTable->show();
-
     connect(ui->m_PatientsTable,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(editPatient(int,int)));
     connect(ui->lookupPatient,SIGNAL(clicked()),this,SLOT(getPatients()));
 
@@ -58,7 +52,6 @@ void PatientsForm::getPatients()
     m_httpclient->getStudyDBinfo(getServerHttpUrl(),startDate,endDate,"1","100");
 
 }
-
 //QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
 //"Birthday","PatientCarID","StudyState","StudyCode","OrderTime",
 //"StudyID","ClinicID","RegisterID","Description",
@@ -107,7 +100,6 @@ void  PatientsForm::showPatients()
             else if (state == "5") {                state = "报告审核";}
             else                   {                state = "未知";    }
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(state));
-//            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientTelNumber].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyCode].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[OrderDateTime].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyID].Value));
@@ -119,7 +111,7 @@ void  PatientsForm::showPatients()
             //"PatientMarriage","PatientEmail",
             //"StudyDepart","StudyModality","CostType",
             //"StudyCost","ProcedureStepStartDate",
-            //"StudyManufacturer"};
+            //"StudyManufacturer","StudyOrderIdentity"};
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientTelNumber].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientAddr].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientNation].Value));
@@ -132,6 +124,7 @@ void  PatientsForm::showPatients()
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyCost].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[ProcedureStepStartDate].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyManufacturer].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyOrderIdentity].Value));
         }
 
     }
@@ -139,7 +132,8 @@ void  PatientsForm::showPatients()
 
 void PatientsForm::editPatient(int row, int column)
 {
-
+    QString id = ui->m_PatientsTable->item(row,ui->m_PatientsTable->columnCount()-1)->text();
+    emit editPatientStudyData(m_currentData,"1");
 }
 
 
