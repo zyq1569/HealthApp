@@ -28,19 +28,18 @@ public:
     void clearInfo();
 
 public slots:
-    //void flageChange();                             //内容改变
     void on_actionSavePatientInfo_triggered();    //保存患者信息
     void on_actionClearPatientInfo_triggered();   //清除患者信息
     void on_clearStudyInfo();
-    void editPatientStudyInfo(PatientStudyOder data, QString ID);
+    void editPatientStudyInfo(PatientStudyOder data, QString studyOrderIdentity);
 
 private:
     QNetworkAccessManager m_networkmanager;
     QNetworkReply *m_networkreply;
-    QString m_url;
     QuestType m_questType;
     bool m_httpSuccess;
     PatientsForm m_PatientsForm;
+    QString m_PatientIdentity,m_StudyOrderIdentity;
 
 private slots:
     void httpFinished();
