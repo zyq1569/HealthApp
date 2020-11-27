@@ -118,7 +118,7 @@ void PatientStudyRegister::editPatientStudyInfo(PatientStudyOder data, QString s
             ui->m_IDCard->setText(data.orderdata[i].studyorder[PatientCarID].Value);
             ui->m_Address->setText(data.orderdata[i].studyorder[PatientAddr].Value);
 
-            ui->m_comMarry->setCurrentText(data.orderdata[i].studyorder[PatientNation].Value);
+            ui->m_comNation->setCurrentText(data.orderdata[i].studyorder[PatientNation].Value);
             ui->m_HomeTown->setText(data.orderdata[i].studyorder[PatientHometown].Value);
             ui->m_Job->setText(data.orderdata[i].studyorder[PatientJob].Value);
             ui->m_Email->setText(data.orderdata[i].studyorder[PatientEmail].Value);
@@ -137,6 +137,7 @@ void PatientStudyRegister::editPatientStudyInfo(PatientStudyOder data, QString s
             ui->m_comStudyContent->setCurrentText(data.orderdata[i].studyorder[StudyDescription].Value);
             //            QString studyescription = ui->m_comStudyContent->currentText();
             //            studyescription = studyescription + ui->m_StudyDescription->text();
+            break;
         }
     }
 }
