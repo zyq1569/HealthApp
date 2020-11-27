@@ -141,11 +141,8 @@ void PatientStudyRegister::editPatientStudyInfo(PatientStudyOder data, QString s
         }
     }
 }
-
-void PatientStudyRegister::on_clearStudyInfo()
+void PatientStudyRegister::resetStudy()
 {
-    //QMessageBox::information(NULL, tr("检查"),tr("add study!"));
-
     m_StudyOrderIdentity = "";
     ui->m_StudyID->clear();
     ui->m_OtherID->clear();
@@ -162,6 +159,10 @@ void PatientStudyRegister::on_clearStudyInfo()
     ui->m_comStudyContent->setEditText("");
     ui->m_comModality->setEditText("");
     ui->m_comCostType->setEditText("");
+}
+void PatientStudyRegister::on_clearStudyInfo()
+{
+    resetStudy();
     m_PatientsForm.setAttribute(Qt::WA_ShowModal, true);
     m_PatientsForm.setWindowFlags(m_PatientsForm.windowFlags()&  ~Qt::WindowMinimizeButtonHint);
     connect(&m_PatientsForm,SIGNAL(editPatientStudyData(PatientStudyOder , QString )),
@@ -338,8 +339,7 @@ void PatientStudyRegister::clearInfo()
     ui->m_comModality->setCurrentIndex(0);
     m_PatientIdentity = "";
 
-    ///
-    on_clearStudyInfo();
+    resetStudy();
 
 }
 

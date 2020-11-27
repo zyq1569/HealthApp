@@ -26,6 +26,7 @@ public:
 public:
     void initControl();
     void clearInfo();
+    void resetStudy();
 
 public slots:
     void on_actionSavePatientInfo_triggered();    //保存患者信息
