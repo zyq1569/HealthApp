@@ -79,11 +79,18 @@ void  PatientsForm::showPatients()
             }
         }
         ui->m_PatientsTable->setRowCount(0);
+        m_currentData.orderdata.clear();
         PatientStudyOder *StudyOder = m_httpclient->getPatientStudyOder();
+        m_currentData.msg = StudyOder->msg;
+        m_currentData.ver = StudyOder->ver;
+        m_currentData.code = StudyOder->code;
+
         int rowcount = StudyOder->count;
+        m_currentData.count = rowcount;
         ui->m_PatientsTable->setRowCount(rowcount);
         for (int row=0; row<rowcount; row++)
         {
+            m_currentData.orderdata.push_back(StudyOder->orderdata[row]);
             int column=0;
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientHisID].Value));
@@ -126,14 +133,13 @@ void  PatientsForm::showPatients()
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyManufacturer].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyOrderIdentity].Value));
         }
-
     }
 }
 
 void PatientsForm::editPatient(int row, int column)
 {
     QString id = ui->m_PatientsTable->item(row,ui->m_PatientsTable->columnCount()-1)->text();
-    emit editPatientStudyData(m_currentData,"1");
+    emit editPatientStudyData(m_currentData,id);
 }
 
 
