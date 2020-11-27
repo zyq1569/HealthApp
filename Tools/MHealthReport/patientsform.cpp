@@ -107,7 +107,7 @@ void  PatientsForm::showPatients()
             else if (state == "5") {                state = "报告审核";}
             else                   {                state = "未知";    }
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(state));
-            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientTelNumber].Value));
+//            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientTelNumber].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyCode].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[OrderDateTime].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyID].Value));
