@@ -9,6 +9,7 @@ PatientsForm::PatientsForm(QWidget *parent) :
     ui(new Ui::PatientsForm)
 {
     ui->setupUi(this);
+    m_httpclient = nullptr;
 
 
     QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
@@ -29,7 +30,7 @@ PatientsForm::PatientsForm(QWidget *parent) :
     ui->m_PatientsTable->setSelectionMode(QAbstractItemView::SingleSelection);///single rows
     ui->m_PatientsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
     ui->m_PatientsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分列
-    ui->m_PatientsTable->verticalHeader()->setFixedWidth(20);
+    ui->m_PatientsTable->verticalHeader()->setFixedWidth(27);
     ui->m_PatientsTable->horizontalHeader()->setHighlightSections(false);
     for (int i = 14, c=ui->m_PatientsTable->columnCount(); i<c ; i++)
     {
@@ -58,6 +59,14 @@ void PatientsForm::getPatients()
 
 }
 
+//QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
+//"Birthday","PatientCarID","StudyState","StudyCode","OrderTime",
+//"StudyID","ClinicID","RegisterID","Description",
+//"PatientTelNumber","PatientAddr","PatientNation","PatientHometown",
+//"PatientMarriage","PatientEmail",
+//"StudyDepart","StudyModality","CostType",
+//"StudyCost","ProcedureStepStartDate",
+//"StudyManufacturer"};
 void  PatientsForm::showPatients()
 {
     disconnect(m_httpclient,&HttpClient::parseDataFinished,this,&PatientsForm::showPatients);
@@ -77,64 +86,54 @@ void  PatientsForm::showPatients()
             }
         }
         ui->m_PatientsTable->setRowCount(0);
-
-//        QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
-//                            "Birthday","PatientCarID","StudyState","StudyCode","OrderTime",
-//                            "StudyID","ClinicID","RegisterID","Description",
-//
-//                            "PatientTelNumber","PatientAddr","PatientNation","PatientHometown",
-//                            "PatientMarriage","PatientEmail",
-//                            "StudyDepart","StudyModality","CostType",
-//                            "StudyCost","ProcedureStepStartDate",
-//                            "StudyManufacturer"};
         PatientStudyOder *StudyOder = m_httpclient->getPatientStudyOder();
         int rowcount = StudyOder->count;
         ui->m_PatientsTable->setRowCount(rowcount);
         for (int row=0; row<rowcount; row++)
         {
-            ui->m_PatientsTable->setItem(row,0,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
-            ui->m_PatientsTable->setItem(row,1,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientName].Value));
-            ui->m_PatientsTable->setItem(row,2,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientSex].Value));
-            ui->m_PatientsTable->setItem(row,3,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientBirthday].Value));
+            int column=0;
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientHisID].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientName].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyAge].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientSex].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientBirthday].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientCarID].Value));
             QString state = StudyOder->orderdata[row].studyorder[StudyState].Value;
-            if (state == "1")
-            {
-                state = "已预约";
-            }
-            else if (state == "2")
-            {
-                state = "待检查";
-            }
-            else if (state == "3")
-            {
-                state = "已检查";
-            }
-            else if (state == "4")
-            {
-                state = "诊断";
-            }
-            else if (state == "5")
-            {
-                state = "报告审核";
-            }
-            else
-            {
-                state = "未知";
-            }
-            ui->m_PatientsTable->setItem(row,4,new QTableWidgetItem(state));
-            ui->m_PatientsTable->setItem(row,5,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyModality].Value));
-            ui->m_PatientsTable->setItem(row,6,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDescription].Value));
-            ui->m_PatientsTable->setItem(row,7,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyUID].Value));
+            if (state == "1")      {                state = "已预约";  }
+            else if (state == "2") {                state = "待检查";  }
+            else if (state == "3") {                state = "已检查";  }
+            else if (state == "4") {                state = "诊断";    }
+            else if (state == "5") {                state = "报告审核";}
+            else                   {                state = "未知";    }
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(state));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientTelNumber].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyCode].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[OrderDateTime].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyID].Value));
 
-            ui->m_PatientsTable->setItem(row,8,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientIdentity].Value));
-            ui->m_PatientsTable->setItem(row,9,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
-            ui->m_PatientsTable->setItem(row,10,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyOrderIdentity].Value));
-
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[ClinicID].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[RegisterID].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDescription].Value));
+            //"PatientTelNumber","PatientAddr","PatientNation","PatientHometown",
+            //"PatientMarriage","PatientEmail",
+            //"StudyDepart","StudyModality","CostType",
+            //"StudyCost","ProcedureStepStartDate",
+            //"StudyManufacturer"};
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientTelNumber].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientAddr].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientNation].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientHometown].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientMarriage].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientEmail].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDepart].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyModality].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[CostType].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyCost].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[ProcedureStepStartDate].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyManufacturer].Value));
         }
-        ui->m_PatientsTable->setColumnHidden(ui->m_PatientsTable->columnCount()-1,true);
-        ui->m_PatientsTable->setColumnHidden(ui->m_PatientsTable->columnCount()-2,true);
-        ui->m_PatientsTable->setColumnHidden(ui->m_PatientsTable->columnCount()-3,true);
-        ui->m_PatientsTable->setColumnHidden(ui->m_PatientsTable->columnCount()-4,true);
+
     }
 }
 

@@ -71,27 +71,29 @@ struct HStudy
 
 ///------2020-11-17-------------new study order data struct
 ///
-const int g_OrderCount = 33;
+const int g_OrderCount = 39;
 enum eStudyOrderIndex
 {
     PatientIdentity, PatientID ,  PatientName,  PatientNameEnglish ,  PatientSex,   PatientBirthday,
     PatientAddr, PatientEmail, PatientCarID, PatientTelNumber, PatientType ,
-    PatientState,  StudyOrderIdentity, StudyID, StudyUID, StudyModality ,
+    PatientState,  StudyOrderIdentity, StudyID, ClinicID,StudyUID, StudyModality ,
     StudyAge , ScheduledDateTime , AETitle , OrderDateTime , StudyDescription ,
     StudyDepart , StudyCode ,  StudyCost ,  CostType  , StudyType ,  StudyState,
     StudyDateTime , InstitutionName , ProcedureStepStartDate  , StudyModalityIdentity ,
-    StudyManufacturer , RegisterID
+    StudyManufacturer , RegisterID, PatientJob, PatientNation, PatientMarriage, PatientHometown,
+    PatientHisID, PatientHistoryTell
 };
 
 const QString g_StudyOrder[] =
 {
     "PatientIdentity","PatientID",  "PatientName" ,  "PatientNameEnglish" ,  "PatientSex",   "PatientBirthday",
     "PatientAddr", "PatientEmail", "PatientCarID", "PatientTelNumber", "PatientType" ,
-    "PatientState",  "StudyOrderIdentity", "StudyID", "StudyUID", "StudyModality" ,
+    "PatientState",  "StudyOrderIdentity", "StudyID", "ClinicID","StudyUID", "StudyModality" ,
     "StudyAge" , "ScheduledDateTime" , "AETitle" , "OrderDateTime" , "StudyDescription" ,
     "StudyDepart" , "StudyCode" ,  "StudyCost" ,  "CostType"  , "StudyType" ,  "StudyState",
     "StudyDateTime" , "InstitutionName" , "ProcedureStepStartDate"  , "StudyModalityIdentity" ,
-    "StudyManufacturer" , "RegisterID"
+    "StudyManufacturer" , "RegisterID", "PatientJob", "PatientNation", "PatientMarriage", "PatientHometown",
+    "PatientHisID", "PatientHistoryTell"
 };
 
 struct DateNameValue
