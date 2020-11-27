@@ -3,6 +3,7 @@
 
 #include "patientsform.h"
 #include "patientdata.h"
+#include "httpclient.h"
 
 #include <QMainWindow>
 #include <QNetworkAccessManager>
@@ -27,10 +28,11 @@ public:
     void clearInfo();
 
 public slots:
-    //    void flageChange();                           //内容改变
+    //void flageChange();                             //内容改变
     void on_actionSavePatientInfo_triggered();    //保存患者信息
     void on_actionClearPatientInfo_triggered();   //清除患者信息
     void on_clearStudyInfo();
+    void editPatientStudyInfo(PatientStudyOder data, QString ID);
 
 private:
     QNetworkAccessManager m_networkmanager;
@@ -39,7 +41,6 @@ private:
     QuestType m_questType;
     bool m_httpSuccess;
     PatientsForm m_PatientsForm;
-
 
 private slots:
     void httpFinished();

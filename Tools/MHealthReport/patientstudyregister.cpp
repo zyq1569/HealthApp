@@ -97,6 +97,15 @@ void PatientStudyRegister::initControl()
     ui->m_RegDate->setDateTime(QDateTime::currentDateTime());
 }
 
+void PatientStudyRegister::editPatientStudyInfo(PatientStudyOder data, QString ID)
+{
+    disconnect(&m_PatientsForm,SIGNAL(editPatientStudyData(PatientStudyOder , QString )),
+               this,SLOT(editPatientStudyInfo(PatientStudyOder , QString )));
+
+    QMessageBox::information(NULL, "Save New Patient",ID);
+
+}
+
 void PatientStudyRegister::on_clearStudyInfo()
 {
     //QMessageBox::information(NULL, tr("检查"),tr("add study!"));
@@ -118,6 +127,8 @@ void PatientStudyRegister::on_clearStudyInfo()
     ui->m_comCostType->setEditText("");
     m_PatientsForm.setAttribute(Qt::WA_ShowModal, true);
     m_PatientsForm.setWindowFlags(m_PatientsForm.windowFlags()&  ~Qt::WindowMinimizeButtonHint);
+    connect(&m_PatientsForm,SIGNAL(editPatientStudyData(PatientStudyOder , QString )),
+            this,SLOT(editPatientStudyInfo(PatientStudyOder , QString )));
     m_PatientsForm.show();
 
 }
