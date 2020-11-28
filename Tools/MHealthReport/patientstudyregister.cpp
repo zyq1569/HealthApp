@@ -340,7 +340,6 @@ void PatientStudyRegister::clearInfo()
     m_PatientIdentity = "";
 
     resetStudy();
-
 }
 
 
