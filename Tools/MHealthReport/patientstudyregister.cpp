@@ -198,15 +198,14 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     orderdata.StudyModality = ui->m_comModality->currentText();
     orderdata.CostType = ui->m_comCostType->currentText();
     orderdata.StudyCost = ui->m_StudyCost->text();
+    orderdata.StudyCode = ui->m_StudyContent->text();
     orderdata.OrderDateTime = ui->m_StudyOrderDate->text();
     orderdata.ScheduledDateTime = ui->m_RegDate->text();
     orderdata.StudyManufacturer = ui->m_StudyManufacturer->text();
     orderdata.RegisterID = ui->m_RegUser->text();
 
-    QString studyescription = ui->m_comStudyContent->currentText();
-    studyescription = studyescription + ui->m_StudyDescription->text();
-    studyescription = studyescription + "/Important tel:"+ui->m_ImportantTel->text();
-    orderdata.StudyDescription = studyescription;
+    //QString studyescription = studyescription + "/Important tel:"+ui->m_ImportantTel->text();
+    orderdata.StudyDescription = ui->m_comStudyContent->currentText();
 
     QJsonObject json;
     json.insert("PatientID",orderdata.PatientID);
@@ -230,9 +229,9 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     json.insert("StudyDepart",orderdata.StudyDepart);
     json.insert("StudyModality",orderdata.StudyModality);
 
-    json.insert("StudyCode","001");///?
-    json.insert("StudyType","0");///?
-    json.insert("StudyState","1");///?
+    json.insert("StudyCode",orderdata.StudyCode);///?用于对应设备的检查部位编码使用
+    json.insert("StudyType","0");///?0影像设备检查
+    json.insert("StudyState","1");///?检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核
 
     json.insert("PatientHistoryTell","HistoryTell");
 
@@ -261,7 +260,6 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     m_httpSuccess = false;
     m_questType = updateStudyOder;
     m_networkreply = m_networkmanager.post(QNetworkRequest(getServerHttpUrl()+"/healthsystem/ris/SaveStudyOrde/"),byteArray);
-    //m_networkmanager.get(QNetworkRequest(m_url));
 
     connect(m_networkreply, &QIODevice::readyRead, this, &PatientStudyRegister::httpReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &PatientStudyRegister::httpFinished);
