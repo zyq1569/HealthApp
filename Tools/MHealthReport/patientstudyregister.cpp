@@ -235,7 +235,6 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
 
     json.insert("PatientHistoryTell","HistoryTell");
 
-
     json.insert("CostType",orderdata.CostType);
     json.insert("StudyCost",orderdata.StudyCost);
     json.insert("OrderDateTime",orderdata.OrderDateTime);
