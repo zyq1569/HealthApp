@@ -1,6 +1,8 @@
 #include "patientsform.h"
 #include "ui_patientsform.h"
 
+const int g_start_column = 14;
+const int g_fixedWidth_column = 27;
 
 PatientsForm::PatientsForm(QWidget *parent) :
     QWidget(parent),
@@ -25,9 +27,9 @@ PatientsForm::PatientsForm(QWidget *parent) :
     ui->m_PatientsTable->setSelectionMode(QAbstractItemView::SingleSelection);///single rows
     ui->m_PatientsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);// no edit
     ui->m_PatientsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分列
-    ui->m_PatientsTable->verticalHeader()->setFixedWidth(27);
+    ui->m_PatientsTable->verticalHeader()->setFixedWidth(g_fixedWidth_column);
     ui->m_PatientsTable->horizontalHeader()->setHighlightSections(false);
-    for (int i = 14, c=ui->m_PatientsTable->columnCount(); i<c ; i++)
+    for (int i = g_start_column, c=ui->m_PatientsTable->columnCount(); i<c ; i++)
     {
         ui->m_PatientsTable->setColumnHidden(i,true);
     }
