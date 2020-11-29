@@ -27,6 +27,7 @@ public:
     void initControl();
     void clearAllInfo();
     void resetStudy();
+    void showMessage(QString str);
 
 public slots:
     void on_actionSavePatientInfo_triggered();    //保存患者信息
