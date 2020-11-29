@@ -314,6 +314,9 @@
         </item>
        </widget>
        <widget class="QLabel" name="label_14">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>321</x>
@@ -385,8 +388,14 @@
         <property name="text">
          <string>12345123</string>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QLineEdit" name="m_HospitalID">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>385</x>
@@ -408,7 +417,10 @@
          </size>
         </property>
         <property name="text">
-         <string>1234</string>
+         <string/>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="QComboBox" name="m_comModality">
@@ -568,6 +580,9 @@
         </property>
        </widget>
        <widget class="QLabel" name="m_newTelNumber">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>321</x>
@@ -657,6 +672,9 @@
         </property>
        </widget>
        <widget class="QLineEdit" name="m_ImportantTel">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>385</x>
@@ -678,7 +696,7 @@
          </size>
         </property>
         <property name="text">
-         <string>18921322345</string>
+         <string/>
         </property>
        </widget>
        <widget class="QDateTimeEdit" name="m_RegDate">

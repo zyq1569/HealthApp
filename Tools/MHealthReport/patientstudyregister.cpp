@@ -24,6 +24,7 @@ PatientStudyRegister::PatientStudyRegister(QWidget *parent) :
 
 
     connect(ui->addNewStudy,SIGNAL(clicked()),this,SLOT(on_clearStudyInfo()));
+    connect(ui->lookupPatients,SIGNAL(clicked()),this,SLOT(on_showStudyInfo()));
 
 }
 
@@ -168,15 +169,19 @@ void PatientStudyRegister::resetStudy()
     ui->m_comModality->setEditText("");
     ui->m_comCostType->setEditText("");
 }
-void PatientStudyRegister::on_clearStudyInfo()
+
+void PatientStudyRegister::on_showStudyInfo()
 {
-    resetStudy();
     m_PatientsForm.setAttribute(Qt::WA_ShowModal, true);
     m_PatientsForm.setWindowFlags(m_PatientsForm.windowFlags()&  ~Qt::WindowMinimizeButtonHint);
     connect(&m_PatientsForm,SIGNAL(editPatientStudyData(PatientStudyOder , QString )),
             this,SLOT(editPatientStudyInfo(PatientStudyOder , QString )));
     m_PatientsForm.show();
+}
 
+void PatientStudyRegister::on_clearStudyInfo()
+{
+    resetStudy();
 }
 
 /********************       录入数据           ***********************/
