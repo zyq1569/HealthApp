@@ -31,6 +31,7 @@ public:
 public slots:
     void on_actionSavePatientInfo_triggered();    //保存患者信息
     void on_actionClearPatientInfo_triggered();   //清除患者信息
+    void on_showStudyInfo();
     void on_clearStudyInfo();
     void editPatientStudyInfo(PatientStudyOder data, QString studyOrderIdentity);
 
