@@ -1,5 +1,8 @@
 #include "mainapp.h"
 
+#include "patientdata.h"
+
+
 #include <QApplication>
 #include <QFile>
 
@@ -23,6 +26,13 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainApp MainWindow;
+
+    QString HttpUrl = "http://127.0.0.1:8080";
+    QString Dir ="F:/log/down";
+    setServerHttpUrl(HttpUrl);
+
+    setDownDir(Dir);
+
 
     MainWindow.setWindowFlags(MainWindow.windowFlags()&  ~Qt::WindowMinimizeButtonHint);
     //MainWindow.show();///~Qt::WindowMaximizeButtonHint&
