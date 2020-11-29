@@ -361,7 +361,7 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLineEdit" name="m_OtherID">
+       <widget class="QLineEdit" name="m_ClinicID">
         <property name="geometry">
          <rect>
           <x>385</x>
@@ -1780,7 +1780,7 @@
   <tabstop>m_Job</tabstop>
   <tabstop>m_Email</tabstop>
   <tabstop>m_StudyID</tabstop>
-  <tabstop>m_OtherID</tabstop>
+  <tabstop>m_ClinicID</tabstop>
   <tabstop>m_comStudyDepart</tabstop>
   <tabstop>m_HospitalID</tabstop>
   <tabstop>m_comStudyContent</tabstop>

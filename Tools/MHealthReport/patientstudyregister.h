@@ -25,7 +25,7 @@ public:
 
 public:
     void initControl();
-    void clearInfo();
+    void clearAllInfo();
     void resetStudy();
 
 public slots:
