@@ -86,6 +86,7 @@ type StudyOrderData struct {
 	StudyOrderIdentity string
 	///PatientIdentity        string
 	StudyID                string
+	ClinicID               string
 	StudyUID               string
 	StudyModality          string
 	StudyAge               string

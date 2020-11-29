@@ -898,7 +898,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 			"p.PatientTelNumber , p.PatientType , p.PatientState ,p.PatientJob," +
 			"p.PatientNation , p.PatientMarriage , p.PatientHometown ,p.PatientHisID," +
 			"p.PatientHistoryTell ,o.StudyOrderIdentity," +
-			"o.StudyID , o.StudyUID,  o.StudyModality, o.StudyAge ," +
+			"o.StudyID ,o.ClinicID , o.StudyUID,  o.StudyModality, o.StudyAge ," +
 			"o.ScheduledDateTime , o.AETitle , o.OrderDateTime, o.StudyDescription," +
 			"o.StudyDepart, o.StudyCode, o.StudyCost, o.CostType, o.StudyType," +
 			"o.StudyState, o.StudyDateTime, o.InstitutionName, o.ProcedureStepStartDate," +
@@ -926,7 +926,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 					&data.PatientTelNumber, &data.PatientType, &data.PatientState,
 					&data.PatientJob, &data.PatientNation, &data.PatientMarriage,
 					&data.PatientHometown, &data.PatientHisID, &data.PatientHistoryTell,
-					&data.StudyOrderIdentity, &data.StudyID, &data.StudyUID, &data.StudyModality,
+					&data.StudyOrderIdentity, &data.StudyID, &data.ClinicID, &data.StudyUID, &data.StudyModality,
 					&data.StudyAge, &data.ScheduledDateTime, &data.AETitle, &data.OrderDateTime,
 					&data.StudyDescription, &data.StudyDepart, &data.StudyCode, &data.StudyCost, &data.CostType,
 					&data.StudyType, &data.StudyState, &data.StudyDateTime, &data.InstitutionName,
