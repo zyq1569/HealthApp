@@ -126,6 +126,7 @@ void PatientStudyRegister::editPatientStudyInfo(PatientStudyOder data, QString s
             ui->m_IDCard->setText(data.orderdata[i].studyorder[PatientCarID].Value);
             ui->m_Job->setText(data.orderdata[i].studyorder[PatientJob].Value);
             ui->m_Email->setText(data.orderdata[i].studyorder[PatientEmail].Value);
+            ui->m_FimilyHistory->setText(data.orderdata[i].studyorder[PatientHistoryTell].Value);
 
             ///-------------Study--------------------------------------------------
             ui->m_StudyID->setText(data.orderdata[i].studyorder[StudyID].Value);
@@ -160,7 +161,7 @@ void PatientStudyRegister::resetStudy()
     ui->m_StudyCost->clear();
 
     ui->m_StudyManufacturer->clear();
-    ui->m_ImportantTel->clear();
+    ui->m_AETitle->clear();
     ui->m_RegUser->clear();
     ui->m_StudyDescription->clear();
 
@@ -204,6 +205,7 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     orderdata.PatientAddr = ui->m_Address->text();
     orderdata.PatientJob = ui->m_Job->text();
     orderdata.PatientEmail = ui->m_Email->text();
+    orderdata.PatientHistoryTell = ui->m_FimilyHistory->text();
 
     orderdata.StudyID = ui->m_StudyID->text();
     orderdata.StudyDepart = ui->m_comStudyDepart->currentText();
@@ -347,6 +349,7 @@ void PatientStudyRegister::clearAllInfo()
     ui->m_StudyID->clear();
     ui->m_comStudyDepart->setCurrentIndex(0);
     ui->m_comModality->setCurrentIndex(0);
+    ui->m_FimilyHistory->clear();
     m_PatientIdentity = "";
 
     resetStudy();

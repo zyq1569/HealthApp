@@ -71,7 +71,7 @@ struct HStudy
 
 ///------2020-11-17-------------new study order data struct
 ///
-const int g_OrderCount = 39;
+const int g_OrderCount = 40;
 enum eStudyOrderIndex
 {
     PatientIdentity, PatientID ,  PatientName,  PatientNameEnglish ,  PatientSex,   PatientBirthday,
