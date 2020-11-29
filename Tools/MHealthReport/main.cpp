@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
 
     QString HttpUrl = "http://127.0.0.1:8080";
     QString Dir ="F:/log/down";
-    setServerHttpUrl(HttpUrl);
 
+    setServerHttpUrl(HttpUrl);
     setDownDir(Dir);
 
 
