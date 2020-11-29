@@ -3,10 +3,12 @@
 
 
 #include "httpclient.h"
+
 ///-------Json-------------
 #include <QJsonParseError>
 #include <QJsonObject>
 #include <QJsonArray>
+
 #include <QNetworkReply>
 #include <QMessageBox>
 
@@ -107,24 +109,29 @@ void PatientStudyRegister::editPatientStudyInfo(PatientStudyOder data, QString s
     {
         if (id == data.orderdata[i].studyorder[StudyOrderIdentity].Value)
         {
+            ///-------------Patient--------------------------------------------------
             m_PatientIdentity =  data.orderdata[i].studyorder[PatientIdentity].Value;
             ui->m_PatientID->setText(data.orderdata[i].studyorder[PatientID].Value);
             ui->m_HisID->setText(data.orderdata[i].studyorder[PatientHisID].Value);
             ui->m_PatientName->setText(data.orderdata[i].studyorder[PatientName].Value);
             ui->m_Age->setText(data.orderdata[i].studyorder[StudyAge].Value);
-            ui->m_BirthDay->setText(data.orderdata[i].studyorder[PatientBirthday].Value);
             ui->m_comSex->setCurrentText(data.orderdata[i].studyorder[PatientSex].Value);
-            ui->m_comMarry->setCurrentText(data.orderdata[i].studyorder[PatientMarriage].Value);
-            ui->m_IDCard->setText(data.orderdata[i].studyorder[PatientCarID].Value);
+            ui->m_BirthDay->setText(data.orderdata[i].studyorder[PatientBirthday].Value);
+            ui->m_TelNumber->setText(data.orderdata[i].studyorder[PatientTelNumber].Value);
             ui->m_Address->setText(data.orderdata[i].studyorder[PatientAddr].Value);
-
             ui->m_comNation->setCurrentText(data.orderdata[i].studyorder[PatientNation].Value);
             ui->m_HomeTown->setText(data.orderdata[i].studyorder[PatientHometown].Value);
+            ui->m_comMarry->setCurrentText(data.orderdata[i].studyorder[PatientMarriage].Value);
+            ui->m_IDCard->setText(data.orderdata[i].studyorder[PatientCarID].Value);
             ui->m_Job->setText(data.orderdata[i].studyorder[PatientJob].Value);
             ui->m_Email->setText(data.orderdata[i].studyorder[PatientEmail].Value);
-            ui->m_StudyID->setText(data.orderdata[i].studyorder[StudyID].Value);
-            ui->m_comStudyDepart->setCurrentText(data.orderdata[i].studyorder[StudyDepart].Value);
 
+            ///-------------Study--------------------------------------------------
+            ui->m_StudyID->setText(data.orderdata[i].studyorder[StudyID].Value);
+            ui->m_ClinicID->setText(data.orderdata[i].studyorder[ClinicID].Value);
+            ui->m_comStudyDepart->setCurrentText(data.orderdata[i].studyorder[StudyDepart].Value);
+            //ui->m_ClinicID->setText(
+            ui->m_comStudyContent->setCurrentText(data.orderdata[i].studyorder[StudyCode].Value);
             ui->m_comModality->setCurrentText(data.orderdata[i].studyorder[StudyModality].Value);
             ui->m_comCostType->setCurrentText(data.orderdata[i].studyorder[CostType].Value);
             ui->m_StudyCost->setText(data.orderdata[i].studyorder[StudyCost].Value);
@@ -133,10 +140,11 @@ void PatientStudyRegister::editPatientStudyInfo(PatientStudyOder data, QString s
             ui->m_RegDate->setDateTime(QDateTime::fromString(
                                            data.orderdata[i].studyorder[ScheduledDateTime].Value, "yyyy-MM-dd hh:mm:ss"));
             ui->m_StudyManufacturer->setText(data.orderdata[i].studyorder[StudyManufacturer].Value);
+            //ui->m_ImportantTel
             ui->m_RegUser->setText(data.orderdata[i].studyorder[RegisterID].Value);
-            ui->m_comStudyContent->setCurrentText(data.orderdata[i].studyorder[StudyDescription].Value);
-            //            QString studyescription = ui->m_comStudyContent->currentText();
-            //            studyescription = studyescription + ui->m_StudyDescription->text();
+
+            ui->m_StudyDescription->setText(data.orderdata[i].studyorder[StudyDescription].Value);
+
             break;
         }
     }
@@ -145,7 +153,7 @@ void PatientStudyRegister::resetStudy()
 {
     m_StudyOrderIdentity = "";
     ui->m_StudyID->clear();
-    ui->m_OtherID->clear();
+    ui->m_ClinicID->clear();
 
     ui->m_HospitalID->clear();
     ui->m_StudyCost->clear();
@@ -312,11 +320,11 @@ void PatientStudyRegister::httpReadyRead()
 /********************       清除患者信息        ***********************/
 void PatientStudyRegister::on_actionClearPatientInfo_triggered()
 {
-    clearInfo();
+    clearAllInfo();
 }
 
 /********************       清除信息            ***********************/
-void PatientStudyRegister::clearInfo()
+void PatientStudyRegister::clearAllInfo()
 {
     ui->m_PatientName->clear();
     ui->m_PatientID->clear();
