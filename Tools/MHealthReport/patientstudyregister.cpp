@@ -185,9 +185,30 @@ void PatientStudyRegister::on_clearStudyInfo()
     resetStudy();
 }
 
+void PatientStudyRegister::showMessage(QString str)
+{
+    QMessageBox::information(NULL, ("Save Patient"),str+"->NULL!");
+}
+
 /********************       录入数据           ***********************/
 void PatientStudyRegister::on_actionSavePatientInfo_triggered()
 {
+    if (ui->m_PatientName->text() == "")    {      showMessage("PatientName");  return;     }
+    if (ui->m_Age->text() == "")            {        showMessage("PatientAge"); return;     }
+    if (ui->m_BirthDay->text() == "")       {        showMessage("PatientName"); return;    }
+    if (ui->m_TelNumber->text() == "")      {        showMessage("TelNumber"); return;      }
+    if (ui->m_Address->text() == "")        {        showMessage("Address"); return;        }
+    if (ui->m_HomeTown->text() == "")       {        showMessage("HomeTown"); return;       }
+    if (ui->m_IDCard->text() == "")         {        showMessage("IDCard"); return;         }
+    if (ui->m_Job->text() == "")            {        showMessage("PatientJob"); return;     }
+    if (ui->m_Email->text() == "")          {        showMessage("PatientEmail"); return;   }
+    if (ui->m_StudyCost->text() == "")      {        showMessage("StudyCost"); return;      }
+    if (ui->m_StudyManufacturer->text() == "")    {        showMessage("StudyManufacturer"); return;    }
+    if (ui->m_RegUser->text() == "")              {        showMessage("RegUser"); return;     }
+    if (ui->m_StudyDescription->text() == "")     {        showMessage("StudyDescription"); return;    }
+
+    if (ui->m_FimilyHistory->text() == "")        {        showMessage("FimilyHistory"); return;    }
+
     StudyData orderdata;
     orderdata.PatientIdentity = m_PatientIdentity;
     orderdata.StudyOrderIdentity = m_StudyOrderIdentity;
