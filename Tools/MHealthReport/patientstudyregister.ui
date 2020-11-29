@@ -135,6 +135,16 @@
           <string>手臂</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>上肢</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>下肢</string>
+         </property>
+        </item>
        </widget>
        <widget class="QLabel" name="label_38">
         <property name="geometry">
@@ -579,7 +589,7 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="m_newTelNumber">
+       <widget class="QLabel" name="AETitle">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -592,7 +602,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>紧急电话：</string>
+         <string>AETitle：</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -671,7 +681,7 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLineEdit" name="m_ImportantTel">
+       <widget class="QLineEdit" name="m_AETitle">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -1478,7 +1488,7 @@
        <widget class="QLabel" name="label_30">
         <property name="geometry">
          <rect>
-          <x>10</x>
+          <x>15</x>
           <y>420</y>
           <width>83</width>
           <height>16</height>
@@ -1489,6 +1499,9 @@
         </property>
        </widget>
        <widget class="QTextEdit" name="textEditTiZheng">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>120</x>
@@ -1508,7 +1521,7 @@
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>3</y>
+          <y>16</y>
           <width>53</width>
           <height>16</height>
          </rect>
@@ -1521,7 +1534,7 @@
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>117</y>
+          <y>129</y>
           <width>28</width>
           <height>16</height>
          </rect>
@@ -1534,7 +1547,7 @@
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>79</y>
+          <y>91</y>
           <width>53</width>
           <height>16</height>
          </rect>
@@ -1547,7 +1560,7 @@
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>41</y>
+          <y>54</y>
           <width>50</width>
           <height>16</height>
          </rect>
@@ -1560,7 +1573,7 @@
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>232</y>
+          <y>244</y>
           <width>28</width>
           <height>16</height>
          </rect>
@@ -1573,7 +1586,7 @@
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>194</y>
+          <y>206</y>
           <width>39</width>
           <height>16</height>
          </rect>
@@ -1586,7 +1599,7 @@
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>156</y>
+          <y>167</y>
           <width>50</width>
           <height>16</height>
          </rect>
@@ -1599,7 +1612,7 @@
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>270</y>
+          <y>280</y>
           <width>39</width>
           <height>16</height>
          </rect>
@@ -1608,7 +1621,7 @@
          <string>现病史：</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEditFimilyHistory">
+       <widget class="QLineEdit" name="m_FimilyHistory">
         <property name="geometry">
          <rect>
           <x>120</x>
@@ -1625,6 +1638,9 @@
         </property>
        </widget>
        <widget class="QLineEdit" name="lineEditAgo">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>120</x>
@@ -1639,8 +1655,14 @@
           <height>0</height>
          </size>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QLineEdit" name="lineEditCHuanRan">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>120</x>
@@ -1655,8 +1677,14 @@
           <height>0</height>
          </size>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QLineEdit" name="lineEditChuCao">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>120</x>
@@ -1671,8 +1699,14 @@
           <height>0</height>
          </size>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QLineEdit" name="lineEditLast">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>120</x>
@@ -1687,8 +1721,14 @@
           <height>0</height>
          </size>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QLineEdit" name="lineEditBornHistory">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>120</x>
@@ -1703,8 +1743,14 @@
           <height>0</height>
          </size>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QLineEdit" name="lineEditZhuSu">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>120</x>
@@ -1719,8 +1765,14 @@
           <height>0</height>
          </size>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QLineEdit" name="lineEditNow">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>120</x>
@@ -1734,6 +1786,9 @@
           <width>300</width>
           <height>0</height>
          </size>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
        </widget>
       </widget>
@@ -1808,10 +1863,10 @@
   <tabstop>m_StudyOrderDate</tabstop>
   <tabstop>m_RegDate</tabstop>
   <tabstop>m_StudyManufacturer</tabstop>
-  <tabstop>m_ImportantTel</tabstop>
+  <tabstop>m_AETitle</tabstop>
   <tabstop>m_RegUser</tabstop>
   <tabstop>m_StudyDescription</tabstop>
-  <tabstop>lineEditFimilyHistory</tabstop>
+  <tabstop>m_FimilyHistory</tabstop>
   <tabstop>lineEditCHuanRan</tabstop>
   <tabstop>lineEditAgo</tabstop>
   <tabstop>lineEditChuCao</tabstop>
