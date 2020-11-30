@@ -311,6 +311,40 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
 
 }
 
+
+
+/********************       清除患者信息        ***********************/
+void PatientStudyRegister::on_actionClearPatientInfo_triggered()
+{
+    clearAllInfo();
+}
+
+/********************       清除信息            ***********************/
+void PatientStudyRegister::clearAllInfo()
+{
+    ui->m_PatientName->clear();
+    ui->m_PatientID->clear();
+    ui->m_BirthDay->clear();
+    ui->m_TelNumber->clear();
+    ui->m_IDCard->clear();
+
+    ui->m_HisID->clear();
+    ui->m_Age->clear();
+    ui->m_Address->clear();
+    ui->m_comNation->setCurrentIndex(0);
+    ui->m_HomeTown->clear();
+    ui->m_Job->clear();
+    ui->m_Email->clear();
+    ui->m_StudyID->clear();
+    ui->m_comStudyDepart->setCurrentIndex(0);
+    ui->m_comModality->setCurrentIndex(0);
+    ui->m_FimilyHistory->clear();
+    m_PatientIdentity = "";
+
+    resetStudy();
+}
+
+///////--------------------------server---------http-------------------------------------------
 void PatientStudyRegister::httpFinished()
 {
     if (m_networkreply->error())
@@ -356,38 +390,5 @@ void PatientStudyRegister::httpReadyRead()
         break;
 
     }
-    QString state = byteArray;
+    //QString state = byteArray;
 }
-
-/********************       清除患者信息        ***********************/
-void PatientStudyRegister::on_actionClearPatientInfo_triggered()
-{
-    clearAllInfo();
-}
-
-/********************       清除信息            ***********************/
-void PatientStudyRegister::clearAllInfo()
-{
-    ui->m_PatientName->clear();
-    ui->m_PatientID->clear();
-    ui->m_BirthDay->clear();
-    ui->m_TelNumber->clear();
-    ui->m_IDCard->clear();
-
-    ui->m_HisID->clear();
-    ui->m_Age->clear();
-    ui->m_Address->clear();
-    ui->m_comNation->setCurrentIndex(0);
-    ui->m_HomeTown->clear();
-    ui->m_Job->clear();
-    ui->m_Email->clear();
-    ui->m_StudyID->clear();
-    ui->m_comStudyDepart->setCurrentIndex(0);
-    ui->m_comModality->setCurrentIndex(0);
-    ui->m_FimilyHistory->clear();
-    m_PatientIdentity = "";
-
-    resetStudy();
-}
-
-
