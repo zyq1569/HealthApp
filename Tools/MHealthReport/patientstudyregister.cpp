@@ -112,6 +112,8 @@ void PatientStudyRegister::editPatientStudyInfo(PatientStudyOder data, QString s
         {
             ///-------------Patient--------------------------------------------------
             m_PatientIdentity =  data.orderdata[i].studyorder[PatientIdentity].Value;
+            m_StudyOrderIdentity  =  data.orderdata[i].studyorder[StudyOrderIdentity].Value;
+
             ui->m_PatientID->setText(data.orderdata[i].studyorder[PatientID].Value);
             ui->m_HisID->setText(data.orderdata[i].studyorder[PatientHisID].Value);
             ui->m_PatientName->setText(data.orderdata[i].studyorder[PatientName].Value);
@@ -203,6 +205,7 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     if (ui->m_IDCard->text() == "")         {        showMessage("IDCard"); return;         }
     if (ui->m_Job->text() == "")            {        showMessage("PatientJob"); return;     }
     if (ui->m_Email->text() == "")          {        showMessage("PatientEmail"); return;   }
+
     ///------------------------------------Study--------------------------------------------
     if (ui->m_StudyCost->text() == "")      {        showMessage("StudyCost"); return;      }
     if (ui->m_StudyManufacturer->text() == "")    {        showMessage("StudyManufacturer"); return;    }
@@ -247,6 +250,7 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     orderdata.StudyDescription = ui->m_comStudyContent->currentText();
 
     QJsonObject json;
+    json.insert("PatientIdentity",orderdata.PatientIdentity);
     json.insert("PatientID",orderdata.PatientID);
     json.insert("PatientHisID",orderdata.PatientHisID);
     json.insert("PatientName",orderdata.PatientName);
@@ -264,6 +268,9 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
 
     json.insert("PatientJob",orderdata.PatientJob);
     json.insert("PatientEmail",orderdata.PatientEmail);
+
+
+    json.insert("StudyOrderIdentity",orderdata.StudyOrderIdentity);
     json.insert("StudyID",orderdata.StudyID);
     json.insert("StudyDepart",orderdata.StudyDepart);
     json.insert("StudyModality",orderdata.StudyModality);
@@ -272,7 +279,7 @@ void PatientStudyRegister::on_actionSavePatientInfo_triggered()
     json.insert("StudyType","0");///?0影像设备检查
     json.insert("StudyState","1");///?检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核
 
-    json.insert("PatientHistoryTell","HistoryTell");
+    json.insert("PatientHistoryTell",ui->m_FimilyHistory->text());
 
     json.insert("CostType",orderdata.CostType);
     json.insert("StudyCost",orderdata.StudyCost);
@@ -337,6 +344,9 @@ void PatientStudyRegister::httpReadyRead()
     case queryStudyOder:
         break;
 
+    case nothing:
+        break;
+
     case updateStudyOder:
         QString state = byteArray;
         if (state.toUpper() == "OK")
@@ -344,6 +354,7 @@ void PatientStudyRegister::httpReadyRead()
             m_httpSuccess = true;
         }
         break;
+
     }
     QString state = byteArray;
 }
