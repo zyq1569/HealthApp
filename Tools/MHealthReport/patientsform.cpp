@@ -1,6 +1,7 @@
 #include "patientsform.h"
 #include "ui_patientsform.h"
 
+#include <QDateTime>
 const int g_start_column = 14;
 const int g_fixedWidth_column = 27;
 
@@ -10,6 +11,8 @@ PatientsForm::PatientsForm(QWidget *parent) :
 {
     ui->setupUi(this);
     m_httpclient = nullptr;
+
+    ui->dateTimeEnd->setDateTime(QDateTime::currentDateTime());
 
     QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
                         "Birthday","PatientCarID","StudyState","StudyCode","OrderTime",
@@ -54,6 +57,7 @@ void PatientsForm::getPatients()
     m_httpclient->getStudyDBinfo(getServerHttpUrl(),startDate,endDate,"1","100");
 
 }
+
 //QStringList strs = {"patientId", "PatientHisID","patientName","StudyAge", "patientSex",
 //"Birthday","PatientCarID","StudyState","StudyCode","OrderTime",
 //"StudyID","ClinicID","RegisterID","Description",
