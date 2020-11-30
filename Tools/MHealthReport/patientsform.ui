@@ -87,12 +87,20 @@
       </property>
      </widget>
      <widget class="QComboBox" name="comModality">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="maximumSize">
        <size>
         <width>100</width>
         <height>23</height>
        </size>
       </property>
+      <item>
+       <property name="text">
+        <string>ALL</string>
+       </property>
+      </item>
       <item>
        <property name="text">
         <string>CT</string>
