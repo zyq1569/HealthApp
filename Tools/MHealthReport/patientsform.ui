@@ -46,6 +46,9 @@
       <property name="displayFormat">
        <string>yyyy-MM-dd</string>
       </property>
+      <property name="currentSectionIndex">
+       <number>2</number>
+      </property>
      </widget>
      <widget class="QLabel" name="label">
       <property name="maximumSize">
@@ -84,6 +87,9 @@
       </property>
       <property name="displayFormat">
        <string>yyyy-MM-dd</string>
+      </property>
+      <property name="currentSectionIndex">
+       <number>2</number>
       </property>
      </widget>
      <widget class="QComboBox" name="comModality">
