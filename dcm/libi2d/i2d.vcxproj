@@ -249,26 +249,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\ZERO_CHECK.vcxproj">
-      <Project>{BF4B90E5-671B-3201-BA83-511B6CC4376F}</Project>
-      <Name>ZERO_CHECK</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ProjectReference>
-    <ProjectReference Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\dcmdata\libsrc\dcmdata.vcxproj">
-      <Project>{4E01E3D2-48C3-33E5-9313-73C67A89BFFA}</Project>
-      <Name>dcmdata</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\oflog\libsrc\oflog.vcxproj">
-      <Project>{1B6E88A8-0318-3586-AC6B-2CB6CA137422}</Project>
-      <Name>oflog</Name>
-    </ProjectReference>
-    <ProjectReference Include="E:\Tool\Downloads\DCMTK\dcmtk-3.6.5-vc\ofstd\libsrc\ofstd.vcxproj">
-      <Project>{B7AD1AAB-559C-31FB-B55C-DDB1202DAE22}</Project>
-      <Name>ofstd</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="i2d.cc" />
     <ClCompile Include="i2dbmps.cc" />
     <ClCompile Include="i2djpgs.cc" />
