@@ -254,32 +254,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\code\C++\HealthApp\dcmtk_2013\ZERO_CHECK.vcxproj">
-      <Project>{2A77BC14-96A9-3BE0-A7EB-7EDF2AFD37C5}</Project>
-      <Name>ZERO_CHECK</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ProjectReference>
-    <ProjectReference Include="D:\code\C++\HealthApp\dcmtk_2013\dcmnet\libsrc\dcmnet.vcxproj">
-      <Project>{71EC838D-C248-3F8D-9343-D38F5F11B536}</Project>
-      <Name>dcmnet</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ProjectReference>
-    <ProjectReference Include="D:\code\C++\HealthApp\dcmtk_2013\oflog\libsrc\oflog.vcxproj">
-      <Project>{C6408061-D85E-37B3-927F-A2260DB6C7FA}</Project>
-      <Name>oflog</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ProjectReference>
-    <ProjectReference Include="D:\code\C++\HealthApp\dcmtk_2013\ofstd\libsrc\ofstd.vcxproj">
-      <Project>{F03B9DB0-61B7-3AB9-BAA8-625F6F953CE5}</Project>
-      <Name>ofstd</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="tlscond.cc" />
     <ClCompile Include="tlslayer.cc" />
     <ClCompile Include="tlsopt.cc" />

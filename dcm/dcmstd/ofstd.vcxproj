@@ -252,14 +252,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\code\C++\HealthApp\dcmtk\ZERO_CHECK.vcxproj">
-      <Project>{710A3820-5FF6-3DD1-89D4-F2EFA1916CC2}</Project>
-      <Name>ZERO_CHECK</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="math.cc" />
     <ClCompile Include="ofchrenc.cc" />
     <ClCompile Include="ofcmdln.cc" />

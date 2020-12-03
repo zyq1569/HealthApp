@@ -310,12 +310,6 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\code\C++\fmjpeg2koj-master-static\fmjpeg2k.vcxproj">
-      <Project>{BF443773-11D0-356F-B4EF-4BE741C34C56}</Project>
-      <Name>fmjpeg2k</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="dcmcjp2k.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
