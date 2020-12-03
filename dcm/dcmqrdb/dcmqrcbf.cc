@@ -1039,19 +1039,20 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     }
     //int count;//数据库查询的记录条数
     OFString sql = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,";
-    sql += "s.StudyID, s.StudyUID, s.StudyDateTime,s.InstitutionName,";
-    sql += "s.StudyModality, s.AETitle from h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity ";
+    sql += "o.StudyID, o.StudyUID, o.StudyDateTime,o.InstitutionName,";
+    sql += "o.StudyModality, o.AETitle from h_patient p, h_order o where o.StudyType = 0 and StudyState > 2 ";
+    sql += "and p.PatientIdentity = o.PatientIdentity";
     if (!Modality.empty())
     {
-        sql = sql + " and s.StudyModality = '" + Modality + "'";
+        sql = sql + " and o.StudyModality = '" + Modality + "'";
     }
     if (StudyDateStart.length() > 3)
     {
-        sql = sql + " and s.StudyDateTime >= " + StudyDateStart;
+        sql = sql + " and o.StudyDateTime >= " + StudyDateStart;
     }
     if (StudyDateEnd.length() > 3)
     {
-        sql = sql + " and s.StudyDateTime <= " + StudyDateEnd;
+        sql = sql + " and o.StudyDateTime <= " + StudyDateEnd;
     }
     if (PatientName.length() > 1)
     {
@@ -1082,7 +1083,8 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
         {
             IdxRecord dbRecod;
             InitRecord(&dbRecod);
-            std::string patienName, StudyDateTime, StudyInstanceUID, PatientID, StudyID, PatientBirthDate, StudyDescription;
+            std::string patienName, StudyDateTime, StudyInstanceUID, PatientID,
+                StudyID, PatientBirthDate, StudyDescription, InstitutionName;
             std::string StudyModality; //
             //DcmDataset dataset;
             if (rs->getValue(row_index, "StudyModality", StudyModality))
@@ -1110,10 +1112,13 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
                 strcpy(dbRecod.PatientBirthDate, PatientBirthDate.c_str());
             }
             //PatientSex
-            if (rs->getValue(row_index, "InstitutionName", StudyDescription))
+            if (rs->getValue(row_index, "InstitutionName", InstitutionName))
+            {
+                strcpy(dbRecod.InstitutionName, InstitutionName.c_str());
+            }//
+            if (rs->getValue(row_index, "StudyDescription", StudyDescription))
             {
                 strcpy(dbRecod.StudyDescription, StudyDescription.c_str());
-                strcpy(dbRecod.InstitutionName, StudyDescription.c_str());
             }
             if (rs->getValue(row_index, "StudyDateTime", StudyDateTime))
             {
