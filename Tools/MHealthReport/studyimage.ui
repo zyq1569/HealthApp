@@ -90,6 +90,9 @@
        </property>
       </widget>
       <widget class="QComboBox" name="m_StudyModality">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <item>
         <property name="text">
          <string>ALL</string>

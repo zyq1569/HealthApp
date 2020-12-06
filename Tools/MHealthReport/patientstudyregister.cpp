@@ -176,7 +176,7 @@ void PatientStudyRegister::resetStudy()
 void PatientStudyRegister::on_showStudyInfo()
 {
     m_PatientsForm.setAttribute(Qt::WA_ShowModal, true);
-    m_PatientsForm.setWindowFlags(m_PatientsForm.windowFlags()&  ~Qt::WindowMinimizeButtonHint);
+    m_PatientsForm.setWindowFlags(m_PatientsForm.windowFlags()& ~Qt::WindowMinimizeButtonHint &~Qt::WindowCloseButtonHint);
     connect(&m_PatientsForm,SIGNAL(editPatientStudyData(PatientStudyOder , QString )),
             this,SLOT(editPatientStudyInfo(PatientStudyOder , QString )));
     m_PatientsForm.show();
