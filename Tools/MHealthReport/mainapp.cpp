@@ -24,7 +24,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 
     //start exe
     QString appPath = "F:/temp/HealthApp/Tools/Test/TestHttpClient/release/TestHttpClient.exe";//ui->m_AppDir->text();
-    m_QProcess->start(appPath);
+    //m_QProcess->start(appPath);
     this->setCentralWidget(ui->m_tabWidgetTotal);
 
     m_PatientStudyRegister     = new PatientStudyRegister(this);

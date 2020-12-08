@@ -64,7 +64,9 @@ StudyImage::StudyImage(QWidget *parent) :
 
 void StudyImage::ViewImage()
 {
-    QMessageBox::information(NULL, tr("检查"),tr("查看图像!"));
+    //QMessageBox::information(NULL, tr("检查"),tr("查看图像!"));
+    QString studyuid = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
+    emit sendClientMsg(studyuid);
 }
 
 void StudyImage::EditReport()
@@ -131,6 +133,13 @@ void  StudyImage::sendToImageAppMsg(QString data)
         qDebug() << "m_localSocket->state()---> QLocalSocket::ConnectingState ";
     }
 
+    if (!m_localSocket->bytesAvailable())
+        m_localSocket->waitForReadyRead();
+
+    QTextStream stream(m_localSocket);
+    QString respond = stream.readAll();
+    //QMessageBox::information(NULL, tr("ReadImageApp"),respond);
+    qDebug() <<"ReadImageApp"<<respond;
 }
 
 void  StudyImage::disconnectImageApp()
