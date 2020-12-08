@@ -10,7 +10,7 @@ StudyImage::StudyImage(QWidget *parent) :
     ui(new Ui::StudyImage)
 {
     ui->setupUi(this);
-
+    ///---------------
 
     m_httpclient = NULL;
     m_localSocket = new QLocalSocket(this);
@@ -57,9 +57,6 @@ StudyImage::StudyImage(QWidget *parent) :
     connect(action,SIGNAL(triggered()),this,SLOT(ViewImage()));
     m_menu->addAction(action);
     ///------------CustomContextMenu---------------------------------
-
-    ///temp value
-    //m_url = "http://127.0.0.1:8080";
 }
 
 void StudyImage::ViewImage()
@@ -195,8 +192,8 @@ void StudyImage::updateStudyImageTable()
         }
         ui->m_tableWidget->setRowCount(0);
 
-        //        QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
-        //                            "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"};
+        //QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
+        // "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"};
         PatientStudyOder *StudyOder = m_httpclient->getPatientStudyOder();
         int rowcount = StudyOder->count;
         ui->m_tableWidget->setRowCount(rowcount);
