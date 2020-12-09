@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>HServerManageUI</string>
+   <string>HServerUI</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="label_qrscp_2">
@@ -223,7 +223,7 @@
       <rect>
        <x>208</x>
        <y>54</y>
-       <width>181</width>
+       <width>254</width>
        <height>24</height>
       </rect>
      </property>
@@ -1005,12 +1005,12 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>270</x>
       <y>25</y>
-      <width>71</width>
+      <width>82</width>
       <height>151</height>
      </rect>
     </property>
@@ -1104,7 +1104,6 @@
    <zorder>groupBox_2</zorder>
    <zorder>groupBox_3</zorder>
    <zorder>groupBox</zorder>
-   <zorder>Dcm2DB</zorder>
    <zorder>label_qrscp_2</zorder>
    <zorder>label_Dcm2Db</zorder>
    <zorder>label_UI</zorder>
