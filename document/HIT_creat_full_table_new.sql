@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `h_study` (
   `StudyDateTime` datetime(6) DEFAULT '1900-01-01 00:00:00.000000',
   `InstitutionName` char(128) DEFAULT '""' COMMENT '医疗机构信息(eg.XXX医院)',
   `ProcedureStepStartDate` datetime(6) DEFAULT current_timestamp(6),
-  `StudyDept` char(50) DEFAULT '""',
+  `StudyDept` char(50) DEFAULT '""' COMMENT '检查科室',
   `StudyModality` char(10) DEFAULT '""' COMMENT 'eg. CT',
   `StudyModalityIdentity` int(11) DEFAULT -1,
   `StudyState` char(50) DEFAULT 'order',
