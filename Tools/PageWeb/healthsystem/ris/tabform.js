@@ -81,7 +81,7 @@ function ChangeTab(table, item) {
 var searchImageTime = 'start=19700101&end=20191230';
 var searchStudyTime = 'start=19700101&end=20191230';
 
-layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
+layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     var laypage = layui.laypage, //分页
         table = layui.table, //表格
         element = layui.element, //元素操作
@@ -90,14 +90,14 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     layer.msg('show patients study datas');
 
     //监听Tab切换
-    element.on('tab(TabBrief)', function(data) {
+    element.on('tab(TabBrief)', function (data) {
         // layer.tips('切换了 ' + data.index + '：' + this.innerHTML, this, {
         //     tips: 1
         // });
     });
     var $ = layui.$,
         active = {
-            reload: function() {
+            reload: function () {
                 var demoReload = $('#searchReload');
                 //执行重载
                 table.reload('testReload', {
@@ -113,7 +113,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
             }
         };
 
-    $('.SerarchTable .layui-btn').on('click', function() {
+    $('.SerarchTable .layui-btn').on('click', function () {
         searchStudyTime = 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val();
         tablePatient.reload({
             //window.location.host + '/healthsystem/ris/stduydata/?start=20190101&end=20191219'
@@ -122,7 +122,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         // var type = $(this).data('type');
         // active[type] ? active[type].call(this) : '';
     });
-    $('.SerarchImageTable .layui-btn').on('click', function() {
+    $('.SerarchImageTable .layui-btn').on('click', function () {
         searchImageTime = 'start=' + $('#imagestduystart').val() + '&end=' + $('#imagestduyend').val();
         tableStudyImage.reload({
             url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime
@@ -132,7 +132,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     });
 
     //监听头工具栏事件
-    table.on('toolbar(studytabledatas)', function(obj) {
+    table.on('toolbar(studytabledatas)', function (obj) {
         var checkStatus = table.checkStatus(obj.config.id),
             data = checkStatus.data; //获取选中的数据
         switch (obj.event) {
@@ -168,7 +168,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                 break;
         }
     });
-    table.on('toolbar(studyimagedatas)', function(obj) {
+    table.on('toolbar(studyimagedatas)', function (obj) {
         var checkStatus = table.checkStatus(obj.config.id),
             data = checkStatus.data; //获取选中的数据
         switch (obj.event) {
@@ -180,7 +180,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     });
 
     //监听行工具事件 row event
-    table.on('tool(studytabledatas)', function(obj) {
+    table.on('tool(studytabledatas)', function (obj) {
         var data = obj.data, //获得当前行数据
             layEvent = obj.event; //获得 lay-event 对应的值
         switch (layEvent) {
@@ -207,6 +207,12 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                     //layer.msg('编辑操作');
                     break;
                 }
+            case 'image':
+                {
+
+                    layer.msg('image操作');
+                    break;
+                }
         }
     });
     // table.on('radio(studytabledatas)', function(obj) {
@@ -230,7 +236,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     // layer.alert('row rowIndex:'+ obj.tr[0].rowIndex +' 选中数据:'+JSON.stringify(obj.data));
     // });
     //监听表格行双击
-    table.on('rowDouble(studytabledatas)', function(obj) {
+    table.on('rowDouble(studytabledatas)', function (obj) {
         //var patient = JSON.stringify(obj.data);
         var json = obj.data; // JSON.parse(patient);
         if (json.studyOrderIdentity == g_currentReportOrderIdentity) {
@@ -258,7 +264,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
             async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
             data: postdata, //JSON.stringify(reportdata), //请求save处理数据
             // dataType: "json",
-            success: function(result) {
+            success: function (result) {
                 try {
                     if (typeof result == 'string') {
                         var jsondata;
@@ -282,7 +288,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                     element.tabChange('TabBrief', 'layid_report');
                 }
             },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
                 setStudyReportContent(reportdata);
                 layer.alert('Get report error! no report data!');
                 element.tabChange('TabBrief', 'layid_report');
@@ -300,7 +306,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
     //studyimage
     var host = window.location.host;
     var imageview_url = "http://" + host + "/view/view.html?";
-    table.on('rowDouble(studyimagedatas)', function(obj) {
+    table.on('rowDouble(studyimagedatas)', function (obj) {
         //var patient = JSON.stringify(obj.data);
         var json = obj.data; // JSON.parse(patient);
         // layer.alert(JSON.stringify(obj.data));
@@ -308,7 +314,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
         // layer.alert(json.studyuid);
     });
     //submit patientform
-    form.on('submit(patientform)', function(data) {
+    form.on('submit(patientform)', function (data) {
         var postdata = JSON.stringify(data.field);
         var host = window.location.host;
         $.ajax({
@@ -316,7 +322,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
             url: 'http://' + host + '/healthsystem/ris/updata/',
             async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
             data: postdata, //请求save处理数据
-            success: function(mess) {
+            success: function (mess) {
                 if (mess == "OK") { //根据返回值进行跳转
                     // layer.alert(mess + '--save ok!' + postdata);
                     tablePatient.reload(); //重载表格
@@ -542,6 +548,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                 }, {
                     field: 'studyDate',
                     title: 'StudyDateTime',
+                    width: 100,
                     sort: true,
                     event: 'setSign',
                     totalRow: false
@@ -568,11 +575,13 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                     field: 'patientBirthday',
                     title: 'PatientBirthday',
                     event: 'setSign',
-                    sort: true
+                    sort: true,
+                    width: 100
                 }, {
                     field: 'studyDescription',
                     event: 'setSign',
-                    title: 'StudyDescription'
+                    title: 'StudyDescription',
+                    width: 100
                 }, {
                     field: 'studyuid',
                     title: 'Studyuid',
@@ -609,11 +618,12 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function() {
                     hide: true,
                     totalRow: false
                 }
-                // , {
-                //     fixed: 'right',
-                //     align: 'center',
-                //     toolbar: '#table_row_btns'
-                // }
+                , {
+                    fixed: 'right',
+                    width: 360,
+                    align: 'center',
+                    toolbar: '#toolbarDemo'
+                }
             ]
         ]
     });
