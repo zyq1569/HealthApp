@@ -31,21 +31,21 @@ function AddOrderStudyOfPatient(jsonstring) {
     //layer.alert(data);
     //给表单赋值
     layui.form.val("formpatient", {
-        "PatientName": data.patientName,
-        "PatientSex": data.patientSex,
-        "PatientBirthday": data.patientBirthday,
-        "PatientTelNumber": data.patientTelNumber,
-        "PatientEmail": data.patientEmail,
-        "PatientCarID": data.patientCarID,
-        "PatientAddr": data.patientAddr,
+        "PatientName": data.PatientName,
+        "PatientSex": data.PatientSex,
+        "PatientBirthday": data.PatientBirthday,
+        "PatientTelNumber": data.PatientTelNumber,
+        "PatientEmail": data.PatientEmail,
+        "PatientCarID": data.PatientCarID,
+        "PatientAddr": data.PatientAddr,
         // "StudyCost": data.studyCost,
         // "StudyDepart": data.studyDepart,
         // "StudyModality": data.studyModality,
         // "ScheduledDate": data.scheduledDateTime,
         // "CostType": data.costType,
         // "StudyDescription": data.studyDescription,
-        "PatientID": data.patientId,
-        "PatientIdentity": data.patientIdentity,
+        "PatientID": data.PatientId,
+        "PatientIdentity": data.PatientIdentity,
         // "StudyOrderIdentity": data.studyOrderIdentity
     });
 }
