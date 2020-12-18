@@ -255,7 +255,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     table.on('rowDouble(studytabledatas)', function (obj) {
         //var patient = JSON.stringify(obj.data);
         var json = obj.data; // JSON.parse(patient);
-        if (json.studyOrderIdentity == g_currentReportOrderIdentity) {
+        if (json.StudyOrderIdentity == g_currentReportOrderIdentity) {
             element.tabChange('TabBrief', 'layid_report');
             return;
         } else if (g_currentReportOrderIdentity.length > 0) {
@@ -266,8 +266,8 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
             }
         }
         var reportdata = g_reportData; //temp_report
-        reportdata.StudyOrderIdentity = json.studyOrderIdentity;
-        reportdata.ReportIdentity = json.studyOrderIdentity;
+        reportdata.StudyOrderIdentity = json.StudyOrderIdentity;
+        reportdata.ReportIdentity = json.StudyOrderIdentity;
         reportdata.ReportContent = ''; // to do ... next
         //set title content
         // document.getElementById("reporpatientname").innerText = "Name:" + json.patientName;
