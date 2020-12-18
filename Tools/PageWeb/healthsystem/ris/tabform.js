@@ -216,16 +216,14 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     //var patient = JSON.stringify(obj.data);
                     var json = obj.data; // JSON.parse(patient);
                     // layer.alert(JSON.stringify(obj.data));
-                    layer.msg(JSON.stringify(obj.data));
+                    //layer.msg(JSON.stringify(obj.data));
                     //if (json.studystate > 2 && json.studytype == 0) {
-                    if (Number(json.studystate) >= 2)
-                     {
+                    if (parseInt(json.studyState) >= 2) {
                         window.open(imageview_url + json.studyuid);
                     }
-                    else 
-                    {
+                    else {
                         //layer.msg(json.studystate);
-                        //layer.msg('没有图像或者还未图像检查');
+                        layer.msg('没有图像或者还未图像检查');
                     }
 
                     // layer.alert(json.studyuid);
