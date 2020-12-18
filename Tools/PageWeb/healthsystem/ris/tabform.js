@@ -179,6 +179,10 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
         }
     });
 
+
+    //-----------studyimage-------------------------------------
+    var host = window.location.host;
+    var imageview_url = "http://" + host + "/view/view.html?";
     //监听行工具事件 row event
     table.on('tool(studytabledatas)', function (obj) {
         var data = obj.data, //获得当前行数据
@@ -208,9 +212,20 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     break;
                 }
             case 'image':
-                {
-
-                    layer.msg('image操作');
+                {                   
+                    //var patient = JSON.stringify(obj.data);
+                    var json = obj.data; // JSON.parse(patient);
+                    // layer.alert(JSON.stringify(obj.data));
+                    if (json.studystate > 2 && json.studytype == 0)
+                    {
+                        window.open(imageview_url + json.studyuid);
+                    }
+                    else
+                    {
+                        layer.msg('没有图像或者还未图像检查');
+                    }
+                    
+                    // layer.alert(json.studyuid);
                     break;
                 }
         }
@@ -304,15 +319,15 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     //     }
     // });
     //studyimage
-    var host = window.location.host;
-    var imageview_url = "http://" + host + "/view/view.html?";
-    table.on('rowDouble(studyimagedatas)', function (obj) {
-        //var patient = JSON.stringify(obj.data);
-        var json = obj.data; // JSON.parse(patient);
-        // layer.alert(JSON.stringify(obj.data));
-        window.open(imageview_url + json.studyuid);
-        // layer.alert(json.studyuid);
-    });
+    // var host = window.location.host;
+    // var imageview_url = "http://" + host + "/view/view.html?";
+    // table.on('rowDouble(studyimagedatas)', function (obj) {
+    //     //var patient = JSON.stringify(obj.data);
+    //     var json = obj.data; // JSON.parse(patient);
+    //     // layer.alert(JSON.stringify(obj.data));
+    //     window.open(imageview_url + json.studyuid);
+    //     // layer.alert(json.studyuid);
+    // });
     //submit patientform
     form.on('submit(patientform)', function (data) {
         var postdata = JSON.stringify(data.field);
