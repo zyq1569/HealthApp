@@ -385,7 +385,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     fixed: 'left'
                 }, {
                     field: 'PatientID',
-                    title: 'PatientId',
+                    title: 'PatientID',
                     width: 100,
                     sort: true,
                     fixed: 'left',
@@ -393,46 +393,47 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     totalRowText: '合计：'
                 }, {
                     field: 'PatientName',
-                    width: 120,
+                    width: 100,
                     event: 'setSign',
-                    title: 'PatientName'
+                    title: 'Name'
                 }, {
                     field: 'StudyDateTime',
-                    title: 'StudyDateTime',
+                    title: 'StudyTime',
                     sort: true,
                     event: 'setSign',
                     totalRow: false
                 }, {
                     field: 'PatientSex',
-                    title: 'PatientSex',
-                    width: 100,
+                    title: 'Sex',
+                    width: 60,
                     event: 'setSign',
                     sort: false
                 }, {
                     field: 'StudyModality',
-                    title: 'StudyModality',
+                    title: 'Modality',
                     event: 'setSign',
                     width: 100
                 }, {
                     field: 'StudyID',
                     title: 'StudyId',
-                    width: 120,
+                    width: 100,
                     sort: true,
                     hide: true,
                     event: 'setSign',
                     totalRow: false
                 }, {
                     field: 'PatientBirthday',
-                    title: 'PatientBirthday',
+                    title: 'Birthday',
+                    width: 100,
                     event: 'setSign',
                     sort: true
                 }, {
                     field: 'StudyDescription',
                     event: 'setSign',
-                    title: 'StudyDescription'
+                    title: 'Description'
                 }, {
                     field: 'ScheduledDateTime',
-                    title: 'ScheduledDateTime',
+                    title: 'ScheduledTime',
                     event: 'setSign',
                     sort: true,
                     totalRow: false
@@ -445,11 +446,24 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     totalRow: false
                 }, {
                     field: 'StudyState',
-                    title: 'Studystate',
+                    title: 'State',
                     event: 'setSign',
                     sort: true,
-                    hide: true,
-                    totalRow: false
+                    hide: false,
+                    totalRow: false,
+                    templet: function (data) {
+                        if (parseInt(data.StudyState) == 1) {
+                            return '预约'
+                        } else if (parseInt(data.StudyState) == 1) {
+                            return '待检查'
+                        } else if (parseInt(data.StudyState) == 2) {
+                            return '已检查'
+                        } else if (parseInt(data.StudyState) == 3) {
+                            return '已诊断'
+                        } else if (parseInt(data.StudyState) > 3) {
+                            return '已审核'
+                        }
+                    }
                 }, {
                     field: 'StudyType',
                     title: 'StudyType',
@@ -523,6 +537,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                 }, {
                     fixed: 'right',
                     align: 'center',
+                    width: 240,
                     toolbar: '#table_row_btns'
                 }
             ]
