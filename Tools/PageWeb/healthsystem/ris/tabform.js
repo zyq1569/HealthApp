@@ -117,19 +117,20 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
         searchStudyTime = 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val();
         tablePatient.reload({
             //window.location.host + '/healthsystem/ris/stduydata/?start=20190101&end=20191219'
-            url: 'http://' + window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime
+            //url: 'http://' + window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime//abandon
+            url: 'http://' + window.location.host + '/healthsystem/ris/StudyOrder/?' + searchStudyTime
         });
         // var type = $(this).data('type');
         // active[type] ? active[type].call(this) : '';
     });
-    $('.SerarchImageTable .layui-btn').on('click', function () {
-        searchImageTime = 'start=' + $('#imagestduystart').val() + '&end=' + $('#imagestduyend').val();
-        tableStudyImage.reload({
-            url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime
-        });
-        // var type = $(this).data('type');
-        // active[type] ? active[type].call(this) : '';
-    });
+    // $('.SerarchImageTable .layui-btn').on('click', function () {
+    //     searchImageTime = 'start=' + $('#imagestduystart').val() + '&end=' + $('#imagestduyend').val();
+    //     tableStudyImage.reload({
+    //         url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime
+    //     });
+    //     // var type = $(this).data('type');
+    //     // active[type] ? active[type].call(this) : '';
+    // });
 
     //监听头工具栏事件
     table.on('toolbar(studytabledatas)', function (obj) {
@@ -396,13 +397,13 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     width: 100,
                     event: 'setSign',
                     title: 'Name'
-                },{
+                }, {
                     field: 'PatientSex',
                     title: 'Sex',
                     width: 60,
                     event: 'setSign',
                     sort: false
-                },  {
+                }, {
                     field: 'StudyDateTime',
                     title: 'StudyTime',
                     sort: true,
