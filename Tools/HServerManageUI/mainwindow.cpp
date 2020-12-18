@@ -603,7 +603,7 @@ void HMainWindow::createTrayIcon()
     m_TrayIcon = new QSystemTrayIcon(this);
     m_TrayIcon->setIcon(m_Icon);
     setWindowIcon(m_Icon);
-    m_TrayIcon->setToolTip("HServerManageUI");
+    m_TrayIcon->setToolTip("Healthsystem ServerManage UI");
     m_TrayIcon->setContextMenu(m_TrayIconMenu);
     m_TrayIcon->show();
 }
