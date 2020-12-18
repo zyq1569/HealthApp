@@ -396,18 +396,18 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     width: 100,
                     event: 'setSign',
                     title: 'Name'
-                }, {
-                    field: 'StudyDateTime',
-                    title: 'StudyTime',
-                    sort: true,
-                    event: 'setSign',
-                    totalRow: false
-                }, {
+                },{
                     field: 'PatientSex',
                     title: 'Sex',
                     width: 60,
                     event: 'setSign',
                     sort: false
+                },  {
+                    field: 'StudyDateTime',
+                    title: 'StudyTime',
+                    sort: true,
+                    event: 'setSign',
+                    totalRow: false
                 }, {
                     field: 'StudyModality',
                     title: 'Modality',
