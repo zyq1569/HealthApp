@@ -478,14 +478,16 @@ func SaveReportdata(c echo.Context) error {
 			if perr != nil {
 				println(sqlstr)
 				log4go.Error(perr)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 			affect_count, err := stmt.Exec(reportdata.ReportState, reportdata.ReportTemplate, reportdata.ReportCheckID, reportdata.ReportCheckDate, reportdata.ReportContent, reportdata.ReportOther, reportdata.ReportIdentity)
 			if err != nil {
 				println("affect_count")
 				println(affect_count)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			} /*else {
 				println("affect_count")
 				println(affect_count)
@@ -503,7 +505,8 @@ func SaveReportdata(c echo.Context) error {
 			if perr != nil {
 				println(sqlstr)
 				log4go.Error(perr)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			} /* else {
 				println(sqlstr)
 			}*/
@@ -513,7 +516,8 @@ func SaveReportdata(c echo.Context) error {
 			if err != nil {
 				println(err)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			} /*else {
 				println("affect_count:")
 				println(affect_count)
@@ -524,7 +528,8 @@ func SaveReportdata(c echo.Context) error {
 				println(lastInsertId)
 				println(err)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			} /*else {
 				println("lastInsertId:")
 				println(lastInsertId)
@@ -663,7 +668,8 @@ func UpdateDBStudyData(c echo.Context) error {
 				println("PatientID:" + PatientID)
 				println("PatientIdentity:" + PatientIdentity)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			} else {
 				println("PatientID:" + PatientID)
 				println("PatientIdentity:" + PatientIdentity)
@@ -677,14 +683,16 @@ func UpdateDBStudyData(c echo.Context) error {
 				println("fail to  insert into h_patient affect_count:")
 				log4go.Info(affect_count)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			} else {
 				lastInsertId, err := affect_count.RowsAffected()
 				if err != nil {
 					println("lastInsertId:")
 					println(lastInsertId)
 					log4go.Error(err)
-					os.Exit(1)
+					//os.Exit(1)
+					return c.String(http.StatusBadRequest, "error")
 				}
 			}
 		} else {
@@ -695,7 +703,8 @@ func UpdateDBStudyData(c echo.Context) error {
 				println("------fail update PatientID:--------")
 				println(PatientID)
 				log4go.Error(perr)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 			if studyData.PatientType == "" {
 				studyData.PatientType = "0"
@@ -706,7 +715,8 @@ func UpdateDBStudyData(c echo.Context) error {
 				println("fail to  update PatientI affect_count:")
 				log4go.Info(affect_count)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 		}
 		//update order table
@@ -724,7 +734,8 @@ func UpdateDBStudyData(c echo.Context) error {
 				println("------fail  maridb_db.Prepare(sqlstr) insert into h_order:--------")
 				println(StudyOrderIdentity)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 			affect_count, err := stmt.Exec(StudyOrderIdentity, studyData.StudyID, studyData.StudyUID, studyData.PatientIdentity,
 				studyData.ScheduledDate, studyData.StudyDescription, studyData.StudyModality,
@@ -732,7 +743,8 @@ func UpdateDBStudyData(c echo.Context) error {
 			if err != nil {
 				println(affect_count)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			} /*else {
 				lastInsertId, err := affect_count.RowsAffected()
 				if err != nil {
@@ -751,7 +763,8 @@ func UpdateDBStudyData(c echo.Context) error {
 				println("StudyOrderIdentity:")
 				println(StudyOrderIdentity)
 				log4go.Error(perr)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 			affect_count, err := stmt.Exec(studyData.ScheduledDate, studyData.StudyDescription, studyData.StudyModality,
 				studyData.StudyCost, studyData.StudyCode, studyData.StudyDepart, studyData.CostType, studyData.StudyOrderIdentity)
@@ -759,7 +772,8 @@ func UpdateDBStudyData(c echo.Context) error {
 				println("studyData.ScheduledDate" + studyData.ScheduledDate)
 				println(affect_count)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 		}
 	}
@@ -866,7 +880,8 @@ func OpenDB() (success bool, db *sql.DB) {
 		isOpen = false
 		log4go.Error("Exit 0. Open db fail!")
 		log4go.Error(err)
-		os.Exit(1)
+		//os.Exit(1)
+		//????
 	} else {
 		isOpen = true
 	}
@@ -987,6 +1002,7 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				log4go.Debug("------fail insert into h_patient maridb_db.Prepare--------")
 				log4go.Debug(err)
 				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			} else {
 				log4go.Debug("sqlstr:" + sqlstr)
 				log4go.Debug("PatientID:" + PatientID)
@@ -1005,14 +1021,16 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				log4go.Error("fail to  insert into h_patient affect_count:")
 				log4go.Error(affect_count)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			} else {
 				lastInsertId, err := affect_count.RowsAffected()
 				if err != nil {
 					log4go.Error("lastInsertId:")
 					log4go.Error(lastInsertId)
 					log4go.Error(err)
-					os.Exit(1)
+					//os.Exit(1)
+					return c.String(http.StatusBadRequest, "error")
 				}
 			}
 		} else {
@@ -1025,7 +1043,8 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				log4go.Error("------fail update PatientID:--------")
 				log4go.Error(PatientID)
 				log4go.Error(perr)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 			if studyData.PatientType == "" {
 				studyData.PatientType = "0"
@@ -1039,7 +1058,8 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				log4go.Error("fail to  update PatientI affect_count:")
 				log4go.Error(affect_count)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 		}
 		//update order table
@@ -1062,7 +1082,8 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				log4go.Error("------fail  maridb_db.Prepare(sqlstr) insert into h_order:--------")
 				log4go.Error(StudyOrderIdentity)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 			affect_count, err := stmt.Exec(StudyOrderIdentity, studyData.PatientIdentity,
 				studyData.StudyID, studyData.StudyUID, studyData.StudyModality,
@@ -1075,7 +1096,8 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				log4go.Error(sqlstr)
 				log4go.Error(affect_count)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 		} else {
 			sqlstr = "update h_order set `StudyModality`=?, `StudyAge`=?,`ScheduledDateTime`=?," +
@@ -1088,7 +1110,8 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				log4go.Error(sqlstr)
 				log4go.Error("StudyOrderIdentity:" + StudyOrderIdentity)
 				log4go.Error(perr)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 			affect_count, err := stmt.Exec(studyData.StudyModality, studyData.StudyAge, studyData.ScheduledDateTime,
 				studyData.AETitle, studyData.OrderDateTime, studyData.StudyDescription,
@@ -1100,7 +1123,8 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				log4go.Error("studyData.ScheduledDate" + studyData.ScheduledDateTime)
 				log4go.Error(affect_count)
 				log4go.Error(err)
-				os.Exit(1)
+				//os.Exit(1)
+				return c.String(http.StatusBadRequest, "error")
 			}
 		}
 	} else {
