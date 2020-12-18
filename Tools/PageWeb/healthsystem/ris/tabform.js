@@ -7,22 +7,22 @@ function SetFormValue(jsonstring) {
     //layer.alert(data);
     //给表单赋值
     layui.form.val("formpatient", {
-        "PatientName": data.patientName,
-        "PatientSex": data.patientSex,
-        "PatientBirthday": data.patientBirthday,
-        "PatientTelNumber": data.patientTelNumber,
-        "PatientEmail": data.patientEmail,
-        "PatientCarID": data.patientCarID,
-        "PatientAddr": data.patientAddr,
-        "StudyCost": data.studyCost,
-        "StudyDepart": data.studyDepart,
-        "StudyModality": data.studyModality,
-        "ScheduledDate": data.scheduledDateTime,
-        "CostType": data.costType,
-        "StudyDescription": data.studyDescription,
-        "PatientID": data.patientId,
-        "PatientIdentity": data.patientIdentity,
-        "StudyOrderIdentity": data.studyOrderIdentity
+        "PatientName": data.PatientName,
+        "PatientSex": data.PatientSex,
+        "PatientBirthday": data.PatientBirthday,
+        "PatientTelNumber": data.PatientTelNumber,
+        "PatientEmail": data.PatientEmail,
+        "PatientCarID": data.PatientCarID,
+        "PatientAddr": data.PatientAddr,
+        "StudyCost": data.StudyCost,
+        "StudyDepart": data.StudyDepart,
+        "StudyModality": data.StudyModality,
+        "ScheduledDate": data.ScheduledDateTime,
+        "CostType": data.CostType,
+        "StudyDescription": data.StudyDescription,
+        "PatientID": data.PatientId,
+        "PatientIdentity": data.PatientIdentity,
+        "StudyOrderIdentity": data.StudyOrderIdentity
     });
 }
 
@@ -217,13 +217,13 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     var json = obj.data; // JSON.parse(patient);
                     // layer.alert(JSON.stringify(obj.data));
                     //layer.msg(JSON.stringify(obj.data));
-                    //if (json.studystate > 2 && json.studytype == 0) {
-                    if (parseInt(json.studyState) >= 2) {
-                        window.open(imageview_url + json.studyuid);
+                    if (parseInt(json.StudyState) > 2 && parseInt(json.StudyType) == 0) {
+                        //if (parseInt(json.studyState) >= 2) {
+                        window.open(imageview_url + json.StudyUID);
                     }
                     else {
                         //layer.msg(json.studystate);
-                        layer.msg('没有图像或者还未图像检查');
+                        layer.msg('没有检查图像');
                     }
 
                     // layer.alert(json.studyuid);
@@ -355,16 +355,17 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     // var myDate = new Date();
     // var mytime = myDate.toLocaleTimeString();
     // layer.msg('mytime:' + mytime);
+    // url: window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime, //数据接口 http://127.0.0.1:80/
+    // url: window.location.host + '/healthsystem/ris/studydata/?' + 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val(), //数据接口 http://127.0.0.1:80/
+    //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
     //执行一个 table 实例
-    var posturl = 'http://' + window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime;
+    //var posturl = 'http://' + window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime;//abandon
+    var posturl = 'http://' + window.location.host + '/healthsystem/ris/StudyOrder/?' + searchStudyTime;//20201218
     // console.log("posturl-" + posturl);
     var tablePatient = table.render({
         elem: '#studytable',
         height: 'full-200',
         url: posturl,
-        // url: window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime, //数据接口 http://127.0.0.1:80/
-        // url: window.location.host + '/healthsystem/ris/studydata/?' + 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val(), //数据接口 http://127.0.0.1:80/
-        //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
         title: 'patients',
         page: true, //开启分页
         toolbar: 'default', //开启工具栏，此处显示默认图标
@@ -383,7 +384,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     type: 'radio', //'checkbox',
                     fixed: 'left'
                 }, {
-                    field: 'patientId',
+                    field: 'PatientID',
                     title: 'PatientId',
                     width: 100,
                     sort: true,
@@ -391,29 +392,29 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     event: 'setSign',
                     totalRowText: '合计：'
                 }, {
-                    field: 'patientName',
+                    field: 'PatientName',
                     width: 120,
                     event: 'setSign',
                     title: 'PatientName'
                 }, {
-                    field: 'studyDate',
+                    field: 'StudyDateTime',
                     title: 'StudyDateTime',
                     sort: true,
                     event: 'setSign',
                     totalRow: false
                 }, {
-                    field: 'patientSex',
+                    field: 'PatientSex',
                     title: 'PatientSex',
                     width: 100,
                     event: 'setSign',
                     sort: false
                 }, {
-                    field: 'studyModality',
+                    field: 'StudyModality',
                     title: 'StudyModality',
                     event: 'setSign',
                     width: 100
                 }, {
-                    field: 'studyId',
+                    field: 'StudyID',
                     title: 'StudyId',
                     width: 120,
                     sort: true,
@@ -421,92 +422,99 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     event: 'setSign',
                     totalRow: false
                 }, {
-                    field: 'patientBirthday',
+                    field: 'PatientBirthday',
                     title: 'PatientBirthday',
                     event: 'setSign',
                     sort: true
                 }, {
-                    field: 'studyDescription',
+                    field: 'StudyDescription',
                     event: 'setSign',
                     title: 'StudyDescription'
                 }, {
-                    field: 'scheduledDateTime',
+                    field: 'ScheduledDateTime',
                     title: 'ScheduledDateTime',
                     event: 'setSign',
                     sort: true,
                     totalRow: false
                 }, {
-                    field: 'studyuid',
+                    field: 'StudyUID',
                     title: 'Studyuid',
                     event: 'setSign',
                     sort: true,
                     hide: true,
                     totalRow: false
                 }, {
-                    field: 'studystate',
+                    field: 'StudyState',
                     title: 'Studystate',
                     event: 'setSign',
                     sort: true,
                     hide: true,
                     totalRow: false
                 }, {
-                    field: 'patientIdentity',
+                    field: 'StudyType',
+                    title: 'StudyType',
+                    event: 'setSign',
+                    sort: true,
+                    hide: true,
+                    totalRow: false
+                }, {
+                    field: 'PatientIdentity',
                     title: 'PatientIdentity',
                     event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
-                    field: 'studyOrderIdentity',
+                    field: 'StudyOrderIdentity',
                     title: 'StudyOrderIdentity',
                     event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
-                    field: 'patientAddr',
+                    field: 'PatientAddr',
                     title: 'PatientAddr',
                     event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
-                    field: 'patientEmail',
+                    field: 'PatientEmail',
                     title: 'PatientEmail',
                     event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
-                    field: 'patientCarID',
+                    field: 'PatientCarID',
                     title: 'PatientCarID',
                     event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
-                    field: 'patientTelNumber',
+                    field: 'PatientTelNumber',
                     title: 'TelNumber',
                     event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
-                    field: 'studyDepart',
+                    field: 'StudyDepart',
                     title: 'StudyDepart',
                     event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: false
                 }, {
-                    field: 'studyCost',
+                    field: 'StudyCost',
                     title: 'StudyCost',
                     event: 'setSign',
                     sort: false,
                     hide: true,
                     totalRow: true
                 }, {
-                    field: 'costType',
+                    field: 'CostType',
                     title: 'CostType',
                     event: 'setSign',
                     sort: false,
@@ -520,134 +528,136 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
             ]
         ]
     });
+    ///------------20201218-------------------------
+    //----------------abandon-----------------
     //执行一个 table 实例
-    var tableStudyImage = table.render({
-        elem: '#studyimage',
-        height: 'full-200',
-        url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime, //数据接口 http://127.0.0.1:80/
-        //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
-        title: 'studyimages',
-        page: true, //开启分页
-        toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
-        defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
-            title: '提示',
-            layEvent: 'LAYTABLE_TIPS',
-            icon: 'layui-icon-tips'
-        }],
-        totalRow: true, //开启合计行
-        loading: true,
-        //skin: 'row' ,
-        limits: [10, 20, 40, 60, 80, 100, 150, 200, 300],
-        limit: 20,
-        patientId: "testReload",
-        size: 'sm',
-        // type: 'radio',
-        // even: true, //开启隔行背景
-        cols: [
-            [ //表头
-                {
-                    type: 'radio', //'checkbox',
-                    fixed: 'left'
-                }, {
-                    field: 'patientId',
-                    title: 'PatientId',
-                    width: 100,
-                    sort: true,
-                    fixed: 'left',
-                    event: 'setSign',
-                    totalRowText: '合计：'
-                }, {
-                    field: 'patientName',
-                    width: 120,
-                    event: 'setSign',
-                    title: 'PatientName'
-                }, {
-                    field: 'studyDate',
-                    title: 'StudyDateTime',
-                    width: 100,
-                    sort: true,
-                    event: 'setSign',
-                    totalRow: false
-                }, {
-                    field: 'patientSex',
-                    title: 'PatientSex',
-                    width: 100,
-                    event: 'setSign',
-                    sort: false
-                }, {
-                    field: 'studyModality',
-                    title: 'StudyModality',
-                    event: 'setSign',
-                    width: 100
-                }, {
-                    field: 'studyId',
-                    title: 'StudyId',
-                    width: 120,
-                    sort: true,
-                    hide: true,
-                    event: 'setSign',
-                    totalRow: false
-                }, {
-                    field: 'patientBirthday',
-                    title: 'PatientBirthday',
-                    event: 'setSign',
-                    sort: true,
-                    width: 100
-                }, {
-                    field: 'studyDescription',
-                    event: 'setSign',
-                    title: 'StudyDescription',
-                    width: 100
-                }, {
-                    field: 'studyuid',
-                    title: 'Studyuid',
-                    event: 'setSign',
-                    sort: true,
-                    hide: false,
-                    totalRow: false
-                }, {
-                    field: 'studystate',
-                    title: 'Studystate',
-                    event: 'setSign',
-                    sort: true,
-                    hide: true,
-                    totalRow: false
-                }, {
-                    field: 'studytype',
-                    title: 'StudyType',
-                    event: 'setSign',
-                    sort: true,
-                    hide: true,
-                    totalRow: false
-                }, {
-                    field: 'patientIdentity',
-                    title: 'PatientIdentity',
-                    event: 'setSign',
-                    sort: false,
-                    hide: true,
-                    totalRow: false
-                }, {
-                    field: 'studyOrderIdentity',
-                    title: 'StudyOrderIdentity',
-                    event: 'setSign',
-                    sort: false,
-                    hide: true,
-                    totalRow: false
-                }, {
-                    field: 'studyDepart',
-                    title: 'StudyDepart',
-                    event: 'setSign',
-                    sort: false,
-                    hide: true,
-                    totalRow: false
-                }
-                , {
-                    fixed: 'right',
-                    width: 360,
-                    align: 'center',
-                    toolbar: '#toolbarDemo'
-                }
-            ]
-        ]
-    });
+    // var tableStudyImage = table.render({
+    //     elem: '#studyimage',
+    //     height: 'full-200',
+    //     url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime, //数据接口 http://127.0.0.1:80/
+    //     //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
+    //     title: 'studyimages',
+    //     page: true, //开启分页
+    //     toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
+    //     defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+    //         title: '提示',
+    //         layEvent: 'LAYTABLE_TIPS',
+    //         icon: 'layui-icon-tips'
+    //     }],
+    //     totalRow: true, //开启合计行
+    //     loading: true,
+    //     //skin: 'row' ,
+    //     limits: [10, 20, 40, 60, 80, 100, 150, 200, 300],
+    //     limit: 20,
+    //     patientId: "testReload",
+    //     size: 'sm',
+    //     // type: 'radio',
+    //     // even: true, //开启隔行背景
+    //     cols: [
+    //         [ //表头
+    //             {
+    //                 type: 'radio', //'checkbox',
+    //                 fixed: 'left'
+    //             }, {
+    //                 field: 'patientId',
+    //                 title: 'PatientId',
+    //                 width: 100,
+    //                 sort: true,
+    //                 fixed: 'left',
+    //                 event: 'setSign',
+    //                 totalRowText: '合计：'
+    //             }, {
+    //                 field: 'patientName',
+    //                 width: 120,
+    //                 event: 'setSign',
+    //                 title: 'PatientName'
+    //             }, {
+    //                 field: 'studyDate',
+    //                 title: 'StudyDateTime',
+    //                 width: 100,
+    //                 sort: true,
+    //                 event: 'setSign',
+    //                 totalRow: false
+    //             }, {
+    //                 field: 'patientSex',
+    //                 title: 'PatientSex',
+    //                 width: 100,
+    //                 event: 'setSign',
+    //                 sort: false
+    //             }, {
+    //                 field: 'studyModality',
+    //                 title: 'StudyModality',
+    //                 event: 'setSign',
+    //                 width: 100
+    //             }, {
+    //                 field: 'studyId',
+    //                 title: 'StudyId',
+    //                 width: 120,
+    //                 sort: true,
+    //                 hide: true,
+    //                 event: 'setSign',
+    //                 totalRow: false
+    //             }, {
+    //                 field: 'patientBirthday',
+    //                 title: 'PatientBirthday',
+    //                 event: 'setSign',
+    //                 sort: true,
+    //                 width: 100
+    //             }, {
+    //                 field: 'studyDescription',
+    //                 event: 'setSign',
+    //                 title: 'StudyDescription',
+    //                 width: 100
+    //             }, {
+    //                 field: 'studyuid',
+    //                 title: 'Studyuid',
+    //                 event: 'setSign',
+    //                 sort: true,
+    //                 hide: false,
+    //                 totalRow: false
+    //             }, {
+    //                 field: 'studystate',
+    //                 title: 'Studystate',
+    //                 event: 'setSign',
+    //                 sort: true,
+    //                 hide: true,
+    //                 totalRow: false
+    //             }, {
+    //                 field: 'studytype',
+    //                 title: 'StudyType',
+    //                 event: 'setSign',
+    //                 sort: true,
+    //                 hide: true,
+    //                 totalRow: false
+    //             }, {
+    //                 field: 'patientIdentity',
+    //                 title: 'PatientIdentity',
+    //                 event: 'setSign',
+    //                 sort: false,
+    //                 hide: true,
+    //                 totalRow: false
+    //             }, {
+    //                 field: 'studyOrderIdentity',
+    //                 title: 'StudyOrderIdentity',
+    //                 event: 'setSign',
+    //                 sort: false,
+    //                 hide: true,
+    //                 totalRow: false
+    //             }, {
+    //                 field: 'studyDepart',
+    //                 title: 'StudyDepart',
+    //                 event: 'setSign',
+    //                 sort: false,
+    //                 hide: true,
+    //                 totalRow: false
+    //             }
+    //             , {
+    //                 fixed: 'right',
+    //                 width: 360,
+    //                 align: 'center',
+    //                 toolbar: '#toolbarDemo'
+    //             }
+    //         ]
+    //     ]
+    // });
 });
