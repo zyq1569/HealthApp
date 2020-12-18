@@ -8,6 +8,7 @@ type StudyDataJson struct {
 	Data  []StudyData `json:"data"`
 }
 
+///----abandon 20201218-----------
 type StudyData struct {
 	PatientIdentity    string `json:"patientIdentity"`
 	PatientName        string `json:"patientName"`
@@ -55,7 +56,9 @@ type ReportData struct {
 	ReportOther        string `json:"ReportOther"`
 }
 
-/// 2020-11-17 add :
+///////-------------------------------------------------------------------------
+
+///-------------2020-11-17 add :------------------------------------------------
 type StudyOrderDataJson struct {
 	Code  int              `json:"code"`
 	Msg   string           `json:"msg"`
@@ -63,49 +66,49 @@ type StudyOrderDataJson struct {
 	Data  []StudyOrderData `json:"data"`
 }
 type StudyOrderData struct {
-	// /// patient table
-	PatientIdentity    string
-	PatientID          string
-	PatientName        string
-	PatientNameEnglish string
-	PatientSex         string
-	PatientBirthday    string
-	PatientAddr        string
-	PatientEmail       string
-	PatientCarID       string
-	PatientTelNumber   string
-	PatientType        string
-	PatientState       string
-	PatientJob         string
-	PatientNation      string
-	PatientMarriage    string
-	PatientHometown    string
-	PatientHisID       string
-	PatientHistoryTell string
-	/// order table
-	StudyOrderIdentity string
-	///PatientIdentity        string
-	StudyID                string
-	ClinicID               string
-	StudyUID               string
-	StudyModality          string
-	StudyAge               string
-	ScheduledDateTime      string
-	AETitle                string
-	OrderDateTime          string
-	StudyDescription       string
-	StudyDepart            string
-	StudyCode              string
-	StudyCost              string
-	CostType               string
-	StudyType              string
-	StudyState             string
-	StudyDateTime          string
-	InstitutionName        string
-	ProcedureStepStartDate string
-	StudyModalityIdentity  string
-	StudyManufacturer      string
-	RegisterID             string
+	///-----------patient table------------------------
+	PatientIdentity    string ///`json:"patientIdentity"`
+	PatientID          string ///`json:"patientID"`
+	PatientName        string ///`json:"patientName"`
+	PatientNameEnglish string ///`json:"patientNameEnglish"`
+	PatientSex         string ///`json:"patientSex"`
+	PatientBirthday    string ///`json:"patientBirthday"`
+	PatientAddr        string ///`json:"patientAddr"`
+	PatientEmail       string ///`json:"patientEmail"`
+	PatientCarID       string ///`json:"patientCarID"`
+	PatientTelNumber   string ///`json:"patientTelNumber"`
+	PatientType        string ///`json:"patientType"`
+	PatientState       string ///`json:"patientState"`
+	PatientJob         string ///`json:"patientJob"`
+	PatientNation      string ///`json:"patientNation"`
+	PatientMarriage    string ///`json:"patientMarriage"`
+	PatientHometown    string ///`json:"patientHometown"`
+	PatientHisID       string ///`json:"patientHisID"`
+	PatientHistoryTell string ///`json:"patientHistoryTell"`
+	///--------order table--------------
+	StudyOrderIdentity string ///`json:"studyOrderIdentity"`
+	///--PatientIdentity ----------
+	StudyID                string ///`json:"studyID"`
+	ClinicID               string ///`json:"clinicID"`
+	StudyUID               string ///`json:"studyUID"`
+	StudyModality          string ///`json:"studyModality"`
+	StudyAge               string ///`json:"studyAge"`
+	ScheduledDateTime      string ///`json:"scheduledDateTime"`
+	AETitle                string ///`json:"aETitle"`
+	OrderDateTime          string ///`json:"orderDateTime"`
+	StudyDescription       string ///`json:"studyDescription"`
+	StudyDepart            string ///`json:"studyDepart"`
+	StudyCode              string ///`json:"studyCode"`
+	StudyCost              string ///`json:"studyCost"`
+	CostType               string ///`json:"costType"`
+	StudyType              string ///`json:"studyType"`
+	StudyState             string ///`json:"studyState"`
+	StudyDateTime          string ///`json:"studyDateTime"`
+	InstitutionName        string ///`json:"institutionName"`
+	ProcedureStepStartDate string ///`json:"procedureStepStartDate"`
+	StudyModalityIdentity  string ///`json:"studyModalityIdentity"`
+	StudyManufacturer      string ///`json:"studyManufacturer"`
+	RegisterID             string ///`json:"registerID"`
 }
 
 type JsonCode struct {
