@@ -353,13 +353,10 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
         });
         return false;
     });
-    // var myDate = new Date();
-    // var mytime = myDate.toLocaleTimeString();
-    // layer.msg('mytime:' + mytime);
+
     // url: window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime, //数据接口 http://127.0.0.1:80/
     // url: window.location.host + '/healthsystem/ris/studydata/?' + 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val(), //数据接口 http://127.0.0.1:80/
     //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
-    //执行一个 table 实例
     //var posturl = 'http://' + window.location.host + '/healthsystem/ris/studydata/?' + searchStudyTime;//abandon
     var posturl = 'http://' + window.location.host + '/healthsystem/ris/StudyOrder/?' + searchStudyTime;//20201218
     // console.log("posturl-" + posturl);
@@ -394,7 +391,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     totalRowText: '合计：'
                 }, {
                     field: 'PatientName',
-                    width: 100,
+                    width: 120,
                     event: 'setSign',
                     title: 'Name'
                 }, {
