@@ -25,22 +25,22 @@ tinymce.init({
     autosave_restore_when_empty: true,
     save_enablewhendirty: true,
     autosave_interval: "10s",
-    save_onsavecallback: function() {
+    save_onsavecallback: function () {
         if (saveReport2ServerContent() > 1) {
             layer.msg('save ok!');
         }
     },
-    init_instance_callback: function(editor) {
+    init_instance_callback: function (editor) {
         // editor.notificationManager.open({
         //     text: 'report ready ok!',
         // });
         clearReportContent();
         //tinyMCE.editor[g_tinyID].setContent("");
     },
-    setup: function(editor) {
+    setup: function (editor) {
         editor.ui.registry.addButton('SaveReport', {
             text: 'SaveReport',
-            onAction: function(_) {
+            onAction: function (_) {
                 if (saveReport2ServerContent() > 1) {
                     layer.msg('save ok!');
                 }
@@ -49,19 +49,19 @@ tinymce.init({
         });
         editor.ui.registry.addButton('ReturnPatient', {
             text: 'ReturnPatient',
-            onAction: function(_) {
+            onAction: function (_) {
                 ChangeTab('TabBrief', 'layid_patients');
             }
         });
         editor.ui.registry.addButton('ClearContent', {
             text: 'ClearContent',
-            onAction: function(_) {
+            onAction: function (_) {
                 clearReportContent();
             }
         });
         editor.ui.registry.addButton('GetContent', {
             text: 'GetContent',
-            onAction: function(_) {
+            onAction: function (_) {
                 getReportContent();
             }
         });
@@ -142,7 +142,7 @@ function saveReport2ServerContent() {
         url: 'http://' + host + '/healthsystem/ris/savereportdata/',
         async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
         data: postdata, //请求save处理数据
-        success: function(mess) {
+        success: function (mess) {
             if (mess.toUpperCase() == "OK") { //根据返回值进行跳转
                 g_currentReportData.ReportSave = true;
                 layer.msg('--save ok!--'); //+ postdata
@@ -152,7 +152,7 @@ function saveReport2ServerContent() {
                 return -1;
             }
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
             layer.alert("--save fail:" + XMLHttpRequest + textStatus + postdata);
             return -1;
         }
@@ -189,7 +189,7 @@ function saveReport2ServerOfChange() {
         url: 'http://' + host + '/healthsystem/ris/savereportdata/',
         async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
         data: postdata, //请求save处理数据
-        success: function(mess) {
+        success: function (mess) {
             if (mess.toUpperCase() == "OK") { //根据返回值进行跳转
                 g_currentReportData.ReportSave = true;
                 layer.msg('--save ok!--'); //+ postdata
@@ -199,7 +199,7 @@ function saveReport2ServerOfChange() {
                 return -1;
             }
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
             layer.alert("--save fail:" + XMLHttpRequest + textStatus + postdata);
             return -1;
         }
