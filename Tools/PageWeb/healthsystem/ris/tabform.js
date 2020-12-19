@@ -4,7 +4,6 @@
 
 function SetFormValue(jsonstring) {
     var data = JSON.parse(jsonstring);
-    //layer.alert(data);
     //给表单赋值
     layui.form.val("formpatient", {
         "PatientName": data.PatientName,
@@ -15,15 +14,44 @@ function SetFormValue(jsonstring) {
         "PatientCarID": data.PatientCarID,
         "PatientAddr": data.PatientAddr,
         "StudyCost": data.StudyCost,
-        "StudyDepart": data.StudyDepart,
+        "StudyDepart": function () {
+            if (data.StudyDepart.indexOf("普放") != -1) {
+                return 10
+            } else if (data.StudyDepart.indexOf("核医") != -1) {
+                return 11
+            } else if (data.StudyDepart.indexOf("心脏") != -1) {
+                return 20
+            } else if (data.StudyDepart.indexOf("彩超") != -1) {
+                return 21
+            } else if (data.StudyDepart.indexOf("肠镜") != -1) {
+                return 30
+            } else if (data.StudyDepart.indexOf("胃镜") != -1) {
+                return 31
+            } else {
+                return 10
+            }
+        },
         "StudyModality": data.StudyModality,
         "ScheduledDate": data.ScheduledDateTime,
-        "CostType": data.CostType,
+        "CostType": function () {//data.CostType,
+            if (data.CostType.indexOf("自费") != -1) {
+                return data.CostType
+            } else if (data.CostType.indexOf("公费") != -1) {
+                return data.CostType
+            } else if (data.CostType.indexOf("其它") != -1) {
+                return data.CostType
+            } else if (data.CostType.indexOf("半公费") != -1) {
+                return data.CostType
+            } else {
+                return "自费"
+            }
+        },
         "StudyDescription": data.StudyDescription,
-        "PatientID": data.PatientId,
+        "PatientID": data.PatientID,
         "PatientIdentity": data.PatientIdentity,
         "StudyOrderIdentity": data.StudyOrderIdentity
     });
+    //layer.msg(data);
 }
 
 function AddOrderStudyOfPatient(jsonstring) {
@@ -44,7 +72,7 @@ function AddOrderStudyOfPatient(jsonstring) {
         // "ScheduledDate": data.scheduledDateTime,
         // "CostType": data.costType,
         // "StudyDescription": data.studyDescription,
-        "PatientID": data.PatientId,
+        "PatientID": data.PatientID,
         "PatientIdentity": data.PatientIdentity,
         // "StudyOrderIdentity": data.studyOrderIdentity
     });
@@ -169,16 +197,16 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                 break;
         }
     });
-    table.on('toolbar(studyimagedatas)', function (obj) {
-        var checkStatus = table.checkStatus(obj.config.id),
-            data = checkStatus.data; //获取选中的数据
-        switch (obj.event) {
-            //自定义头工具栏右侧图标 - 提示
-            case 'LAYTABLE_TIPS':
-                layer.alert('检查图像表,不一定在预约表中');
-                break;
-        }
-    });
+    // table.on('toolbar(studyimagedatas)', function (obj) {
+    //     var checkStatus = table.checkStatus(obj.config.id),
+    //         data = checkStatus.data; //获取选中的数据
+    //     switch (obj.event) {
+    //         //自定义头工具栏右侧图标 - 提示
+    //         case 'LAYTABLE_TIPS':
+    //             layer.alert('检查图像表,不一定在预约表中');
+    //             break;
+    //     }
+    // });
 
 
     //-----------studyimage-------------------------------------
@@ -534,7 +562,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     totalRow: false
                 }, {
                     fixed: 'right',
-                    align: 'center',
+                    align: 'center',//align: 'left',
                     width: 240,
                     toolbar: '#table_row_btns'
                 }
