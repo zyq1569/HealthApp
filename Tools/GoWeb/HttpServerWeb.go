@@ -2,12 +2,12 @@
 //go get -u github.com/labstack/echo/...
 /*
 DSN数据源名称
-  [username[:password]@][protocol[(address)]]/dbname[?param1=value1¶mN=valueN]
-  user@unix(/path/to/socket)/dbname
-  user:password@tcp(localhost:5555)/dbname?charset=utf8&autocommit=true
-  user:password@tcp([de:ad:be:ef::ca:fe]:80)/dbname?charset=utf8mb4,utf8
-  user:password@/dbname
-  无数据库: user:password@/
+[username[:password]@][protocol[(address)]]/dbname[?param1=value1¶mN=valueN]
+user@unix(/path/to/socket)/dbname
+user:password@tcp(localhost:5555)/dbname?charset=utf8&autocommit=true
+user:password@tcp([de:ad:be:ef::ca:fe]:80)/dbname?charset=utf8mb4,utf8
+user:password@/dbname
+无数据库: user:password@/
 
 echo web 参考例子
 https://blog.csdn.net/Noob_coder_JZ/article/details/83410095
