@@ -89,27 +89,6 @@ var Go_Level int
 // var name string
 var maridb_db *sql.DB
 
-///https://www.itread01.com/content/1494477725.html
-// func initLogger() {
-// 	var filenameOnly string
-// 	filenameOnly = GetCurFilename()
-// 	var logFilename string = filenameOnly + ".log"
-// 	//gLogger = log4go.NewLogger()
-// 	gLogger = make(log4go.Logger)
-// 	//for console
-// 	//gLogger.AddFilter("stdout", log4go.INFO, log4go.NewConsoleLogWriter())
-// 	gLogger.AddFilter("stdout", log4go.INFO, log4go.NewConsoleLogWriter())
-// 	//for log file
-// 	if _, err := os.Stat(logFilename); err == nil {
-// 		//fmt.Printf("found old log file %s, now remove it\n", logFilename)
-// 		os.Remove(logFilename)
-// 	}
-// 	//gLogger.AddFilter("logfile", log4go.FINEST, log4go.NewFileLogWriter(logFilename, true))
-// 	gLogger.AddFilter("logfile", log4go.FINEST, log4go.NewFileLogWriter(logFilename, false))
-// 	gLogger.Info("Current time is : %s", time.Now().Format("15:04:05 MST 2006/01/02"))
-// 	return
-// }
-
 func main() {
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
 	CONFIG[IMAGE_Dir] = "F:/temp/HealthApp/DCM_SAVE/DCM_SAVE/Images"
@@ -1197,4 +1176,25 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 // }
 // func init() {
 // 	flag.StringVar(&name, "name", "default", "log in user")
+// }
+
+///https://www.itread01.com/content/1494477725.html
+// func initLogger() {
+// 	var filenameOnly string
+// 	filenameOnly = GetCurFilename()
+// 	var logFilename string = filenameOnly + ".log"
+// 	//gLogger = log4go.NewLogger()
+// 	gLogger = make(log4go.Logger)
+// 	//for console
+// 	//gLogger.AddFilter("stdout", log4go.INFO, log4go.NewConsoleLogWriter())
+// 	gLogger.AddFilter("stdout", log4go.INFO, log4go.NewConsoleLogWriter())
+// 	//for log file
+// 	if _, err := os.Stat(logFilename); err == nil {
+// 		//fmt.Printf("found old log file %s, now remove it\n", logFilename)
+// 		os.Remove(logFilename)
+// 	}
+// 	//gLogger.AddFilter("logfile", log4go.FINEST, log4go.NewFileLogWriter(logFilename, true))
+// 	gLogger.AddFilter("logfile", log4go.FINEST, log4go.NewFileLogWriter(logFilename, false))
+// 	gLogger.Info("Current time is : %s", time.Now().Format("15:04:05 MST 2006/01/02"))
+// 	return
 // }
