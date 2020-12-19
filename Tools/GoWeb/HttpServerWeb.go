@@ -621,6 +621,7 @@ func GetDBStudyImage(c echo.Context) error {
 	return c.String(http.StatusOK, string(js))
 }
 
+/// web->>html Update---->DBStudyData
 func UpdateDBStudyData(c echo.Context) error {
 	var studyData Study.StudyData
 	var bodyBytes []byte
@@ -639,8 +640,8 @@ func UpdateDBStudyData(c echo.Context) error {
 			PatientID = Units.GetRandUID()
 			PatientIdentity = Units.GetRandUID()
 			studyData.PatientIdentity = PatientIdentity
-			sqlstr = "insert into h_patient(`PatientIdentity`,`PatientName`,`PatientBirthday`,`PatientSex`,`PatientID`," +
-				"`patientTelNumber`,`PatientAddr`,`PatientCarID`,`PatientType`,`PatientEmail`) values(?,?,?,?,?,?,?,?,?,?)"
+			sqlstr = "insert into h_patient(`PatientIdentity`,`PatientID`,`PatientName`,`PatientSex`,`PatientBirthday`," +
+				"`PatientAddr`,`PatientEmail`,`PatientCarID`,`PatientTelNumber`,`PatientType`) values(?,?,?,?,?,?,?,?,?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
 			if err != nil {
 				println("------fail insert into h_patient maridb_db.Prepare--------")
@@ -656,8 +657,9 @@ func UpdateDBStudyData(c echo.Context) error {
 			if studyData.PatientType == "" {
 				studyData.PatientType = "0"
 			}
-			affect_count, err := stmt.Exec(PatientIdentity, studyData.PatientName, studyData.PatientBirthday, studyData.PatientSex,
-				PatientID, studyData.PatientTelNumber, studyData.PatientAddr, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail)
+			affect_count, err := stmt.Exec(PatientIdentity, PatientID, studyData.PatientName, studyData.PatientSex,
+				studyData.PatientBirthday, studyData.PatientAddr, studyData.PatientEmail,
+				studyData.PatientCarID, studyData.PatientTelNumber, studyData.PatientType)
 			if err != nil {
 				println("fail to  insert into h_patient affect_count:")
 				log4go.Info(affect_count)
@@ -675,8 +677,8 @@ func UpdateDBStudyData(c echo.Context) error {
 				}
 			}
 		} else {
-			sqlstr = "update  h_patient set `PatientAddr`=?,`PatientName`=?,`PatientBirthday`=?,`PatientSex`=?," +
-				" `patientTelNumber`=?,`PatientCarID`=?,`PatientType`=? ,`PatientEmail`=? where `PatientID`=?"
+			sqlstr = "update  h_patient set `PatientName`=?,`PatientSex`=?,`PatientBirthday`=?,`PatientAddr`=?," +
+				"`PatientEmail`=?, `PatientCarID`=?,`patientTelNumber`=?,`PatientType`=?  where `PatientID`=?"
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
 				println("------fail update PatientID:--------")
@@ -688,8 +690,9 @@ func UpdateDBStudyData(c echo.Context) error {
 			if studyData.PatientType == "" {
 				studyData.PatientType = "0"
 			}
-			affect_count, err := stmt.Exec(studyData.PatientAddr, studyData.PatientName, studyData.PatientBirthday,
-				studyData.PatientSex, studyData.PatientTelNumber, studyData.PatientCarID, studyData.PatientType, studyData.PatientEmail, studyData.PatientID)
+			affect_count, err := stmt.Exec(studyData.PatientName, studyData.PatientSex, studyData.PatientBirthday,
+				studyData.PatientAddr, studyData.PatientEmail, studyData.PatientCarID,
+				studyData.PatientTelNumber, studyData.PatientType, studyData.PatientID)
 			if err != nil {
 				println("fail to  update PatientI affect_count:")
 				log4go.Info(affect_count)
@@ -706,8 +709,9 @@ func UpdateDBStudyData(c echo.Context) error {
 				studyData.StudyID = Units.GetCurrentTime()
 				studyData.StudyUID = Units.GetNewStudyUID()
 			}
-			sqlstr = "insert into h_order (`StudyOrderIdentity`,`StudyID`, `StudyUID`,`PatientIdentity`,`ScheduledDateTime`, `StudyDescription`,`StudyModality`, " +
-				" `StudyCost`,`StudyCode`,`StudyDepart`,`CostType`) value(?,?,?,?,?,?,?,?,?,?,?)"
+			sqlstr = "insert into h_order (`StudyOrderIdentity`,`PatientIdentity`,`StudyID`, `StudyUID`,`StudyModality`," +
+				"`ScheduledDateTime`,`StudyDescription`,`StudyDepart`,`StudyCode`,`StudyCost`,`CostType`)" +
+				" value(?,?,?,?,?,?,?,?,?,?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
 			if err != nil {
 				println("------fail  maridb_db.Prepare(sqlstr) insert into h_order:--------")
@@ -716,9 +720,9 @@ func UpdateDBStudyData(c echo.Context) error {
 				//os.Exit(1)
 				return c.String(http.StatusBadRequest, "error")
 			}
-			affect_count, err := stmt.Exec(StudyOrderIdentity, studyData.StudyID, studyData.StudyUID, studyData.PatientIdentity,
-				studyData.ScheduledDate, studyData.StudyDescription, studyData.StudyModality,
-				studyData.StudyCost, studyData.StudyCode, studyData.StudyDepart, studyData.CostType)
+			affect_count, err := stmt.Exec(StudyOrderIdentity, studyData.PatientIdentity, studyData.StudyID,
+				studyData.StudyUID, studyData.StudyModality, studyData.ScheduledDate, studyData.StudyDescription,
+				studyData.StudyDepart, studyData.StudyCode, studyData.StudyCost, studyData.CostType)
 			if err != nil {
 				println(affect_count)
 				log4go.Error(err)
@@ -734,8 +738,8 @@ func UpdateDBStudyData(c echo.Context) error {
 				}
 			}*/
 		} else {
-			sqlstr = "update h_order set `ScheduledDateTime`=?, `StudyDescription`=?,`StudyModality`=?,`StudyCost`=?,`StudyCode`=? " +
-				" ,`StudyDepart`=?,`CostType`=? where StudyOrderIdentity=?"
+			sqlstr = "update h_order set `StudyModality`=?, `ScheduledDateTime`=?, `StudyDescription`=?, `StudyDepart`=?," +
+				"`StudyCode`=?, `StudyCost`=? ,  `CostType`=?  where StudyOrderIdentity=?"
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
 				println(sqlstr)
@@ -745,8 +749,8 @@ func UpdateDBStudyData(c echo.Context) error {
 				//os.Exit(1)
 				return c.String(http.StatusBadRequest, "error")
 			}
-			affect_count, err := stmt.Exec(studyData.ScheduledDate, studyData.StudyDescription, studyData.StudyModality,
-				studyData.StudyCost, studyData.StudyCode, studyData.StudyDepart, studyData.CostType, studyData.StudyOrderIdentity)
+			affect_count, err := stmt.Exec(studyData.StudyModality, studyData.ScheduledDate, studyData.StudyDescription,
+				studyData.StudyDepart, studyData.StudyCode, studyData.StudyCost, studyData.CostType, studyData.StudyOrderIdentity)
 			if err != nil {
 				println("studyData.ScheduledDate" + studyData.ScheduledDate)
 				println(affect_count)
