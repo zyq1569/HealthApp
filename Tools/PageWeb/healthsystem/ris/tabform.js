@@ -1,7 +1,6 @@
 //表格设置
 // console.log(window.location.host);
 // console.log(window.location.port);
-
 function SetFormValue(jsonstring) {
     var data = JSON.parse(jsonstring);
     //给表单赋值
@@ -151,14 +150,6 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
         // var type = $(this).data('type');
         // active[type] ? active[type].call(this) : '';
     });
-    // $('.SerarchImageTable .layui-btn').on('click', function () {
-    //     searchImageTime = 'start=' + $('#imagestduystart').val() + '&end=' + $('#imagestduyend').val();
-    //     tableStudyImage.reload({
-    //         url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime
-    //     });
-    //     // var type = $(this).data('type');
-    //     // active[type] ? active[type].call(this) : '';
-    // });
 
     //监听头工具栏事件
     table.on('toolbar(studytabledatas)', function (obj) {
@@ -197,17 +188,6 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                 break;
         }
     });
-    // table.on('toolbar(studyimagedatas)', function (obj) {
-    //     var checkStatus = table.checkStatus(obj.config.id),
-    //         data = checkStatus.data; //获取选中的数据
-    //     switch (obj.event) {
-    //         //自定义头工具栏右侧图标 - 提示
-    //         case 'LAYTABLE_TIPS':
-    //             layer.alert('检查图像表,不一定在预约表中');
-    //             break;
-    //     }
-    // });
-
 
     //-----------studyimage-------------------------------------
     var host = window.location.host;
@@ -260,26 +240,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                 }
         }
     });
-    // table.on('radio(studytabledatas)', function(obj) {
-    //     layer.alert('---' + obj.tr.data('isChecked'));
-    //     if (obj.tr.data('isChecked')) {
-    //         obj.checked = false;
-    //         obj.tr.find(':radio[lay-type="layTableRadio"]').prop('checked', false);
-    //         layui.form.render();
-    //     }
-    // });
-    //监听表格行点击
-    // table.on('row(studytabledatas)', function(obj) {
-    // if (obj.checked) {
-    //     obj.checked = false;
-    //     // obj.tr.find(':radio[lay-type="layTableRadio"]').prop('checked', false);
-    //     layui.form.render();
-    // }
-    // $('input:radio[name=sex]')[0].checked = false;
-    // form.render('radio');
-    // console.log(obj);
-    // layer.alert('row rowIndex:'+ obj.tr[0].rowIndex +' 选中数据:'+JSON.stringify(obj.data));
-    // });
+
     //监听表格行双击
     table.on('rowDouble(studytabledatas)', function (obj) {
         //var patient = JSON.stringify(obj.data);
@@ -340,24 +301,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
             }
         });
     });
-    //上传
-    // upload.render({
-    //     elem: '#uploadDemo',
-    //     url: '', //上传接口
-    //     done: function(res) {
-    //         console.log(res);
-    //     }
-    // });
-    //studyimage
-    // var host = window.location.host;
-    // var imageview_url = "http://" + host + "/view/view.html?";
-    // table.on('rowDouble(studyimagedatas)', function (obj) {
-    //     //var patient = JSON.stringify(obj.data);
-    //     var json = obj.data; // JSON.parse(patient);
-    //     // layer.alert(JSON.stringify(obj.data));
-    //     window.open(imageview_url + json.studyuid);
-    //     // layer.alert(json.studyuid);
-    // });
+
     //submit patientform
     form.on('submit(patientform)', function (data) {
         var postdata = JSON.stringify(data.field);
@@ -700,5 +644,61 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     //             }
     //         ]
     //     ]
+    // });
+    //上传
+    // upload.render({
+    //     elem: '#uploadDemo',
+    //     url: '', //上传接口
+    //     done: function(res) {
+    //         console.log(res);
+    //     }
+    // });
+    //studyimage
+    // var host = window.location.host;
+    // var imageview_url = "http://" + host + "/view/view.html?";
+    // table.on('rowDouble(studyimagedatas)', function (obj) {
+    //     //var patient = JSON.stringify(obj.data);
+    //     var json = obj.data; // JSON.parse(patient);
+    //     // layer.alert(JSON.stringify(obj.data));
+    //     window.open(imageview_url + json.studyuid);
+    //     // layer.alert(json.studyuid);
+    // });
+    // table.on('radio(studytabledatas)', function(obj) {
+    //     layer.alert('---' + obj.tr.data('isChecked'));
+    //     if (obj.tr.data('isChecked')) {
+    //         obj.checked = false;
+    //         obj.tr.find(':radio[lay-type="layTableRadio"]').prop('checked', false);
+    //         layui.form.render();
+    //     }
+    // });
+    //监听表格行点击
+    // table.on('row(studytabledatas)', function(obj) {
+    // if (obj.checked) {
+    //     obj.checked = false;
+    //     // obj.tr.find(':radio[lay-type="layTableRadio"]').prop('checked', false);
+    //     layui.form.render();
+    // }
+    // $('input:radio[name=sex]')[0].checked = false;
+    // form.render('radio');
+    // console.log(obj);
+    // layer.alert('row rowIndex:'+ obj.tr[0].rowIndex +' 选中数据:'+JSON.stringify(obj.data));
+    // });
+    // table.on('toolbar(studyimagedatas)', function (obj) {
+    //     var checkStatus = table.checkStatus(obj.config.id),
+    //         data = checkStatus.data; //获取选中的数据
+    //     switch (obj.event) {
+    //         //自定义头工具栏右侧图标 - 提示
+    //         case 'LAYTABLE_TIPS':
+    //             layer.alert('检查图像表,不一定在预约表中');
+    //             break;
+    //     }
+    // });
+    // $('.SerarchImageTable .layui-btn').on('click', function () {
+    //     searchImageTime = 'start=' + $('#imagestduystart').val() + '&end=' + $('#imagestduyend').val();
+    //     tableStudyImage.reload({
+    //         url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime
+    //     });
+    //     // var type = $(this).data('type');
+    //     // active[type] ? active[type].call(this) : '';
     // });
 });
