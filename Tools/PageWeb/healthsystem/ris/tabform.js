@@ -139,7 +139,6 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                 }, 'data');
             }
         };
-
     $('.SerarchTable .layui-btn').on('click', function () {
         searchStudyTime = 'start=' + $('#stduystart').val() + '&end=' + $('#stduyend').val();
         tablePatient.reload({
@@ -150,7 +149,6 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
         // var type = $(this).data('type');
         // active[type] ? active[type].call(this) : '';
     });
-
     //监听头工具栏事件
     table.on('toolbar(studytabledatas)', function (obj) {
         var checkStatus = table.checkStatus(obj.config.id),
@@ -188,7 +186,6 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                 break;
         }
     });
-
     //-----------studyimage-------------------------------------
     var host = window.location.host;
     var imageview_url = "http://" + host + "/view/view.html?";
@@ -234,13 +231,11 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                         //layer.msg(json.studystate);
                         layer.msg('没有检查图像');
                     }
-
                     // layer.alert(json.studyuid);
                     break;
                 }
         }
     });
-
     //监听表格行双击
     table.on('rowDouble(studytabledatas)', function (obj) {
         //var patient = JSON.stringify(obj.data);
