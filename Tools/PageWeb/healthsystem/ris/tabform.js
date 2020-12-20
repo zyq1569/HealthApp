@@ -149,6 +149,10 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
         // var type = $(this).data('type');
         // active[type] ? active[type].call(this) : '';
     });
+    //testWebDOF
+    $('.testWebDOF .layui-btn').on('click', function () {
+        window.open('http://' + window.location.host + '/healthsystem/ris/StudyReport.html');
+    });
     //监听头工具栏事件
     table.on('toolbar(studytabledatas)', function (obj) {
         var checkStatus = table.checkStatus(obj.config.id),
