@@ -23,6 +23,7 @@ public:
 
 public slots:
     void TabBarClicked(int index);
+    void lookStudyReport(QString StudyOrderIdentity);
     void slog_cookieAdded(const QNetworkCookie &cookie);
 private:
     QProcess *m_QProcess;

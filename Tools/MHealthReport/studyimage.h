@@ -48,6 +48,7 @@ private slots:
 
 signals:
     void sendClientMsg(QString data);
+    void lookReport(QString data);
 
 signals:
     void sendNumber(QString, QString);

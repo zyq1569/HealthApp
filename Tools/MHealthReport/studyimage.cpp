@@ -68,7 +68,9 @@ void StudyImage::ViewImage()
 
 void StudyImage::EditReport()
 {
-    QMessageBox::information(NULL, tr("检查"),tr("查看报告!"));
+    //QMessageBox::information(NULL, tr("检查"),tr("查看报告!"));
+    QString StudyOrderIdentity = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
+    emit lookReport(StudyOrderIdentity);
 }
 
 void StudyImage::EditPatientInfo()
