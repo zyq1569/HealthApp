@@ -151,8 +151,8 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     });
     //testWebDOF
     $('.testWebDOF .layui-btn').on('click', function () {
-        //window.open('http://' + window.location.host + '/healthsystem/ris/StudyReport.html');
-        window.location.replace('http://' + window.location.host + '/login/StudyReport.html')
+        window.open('http://' + window.location.host + '/login/TestReport.html');
+        //window.location.replace('http://' + window.location.host + '/healthsystem/ris/StudyReport.html')
     });
     //监听头工具栏事件
     table.on('toolbar(studytabledatas)', function (obj) {
