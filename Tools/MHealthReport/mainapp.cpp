@@ -38,8 +38,9 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ui->m_tabWidgetTotal->setCurrentIndex(1);
 
     m_view = new QWebEngineView(this);
-
+    m_view->setUrl(QUrl("http://127.0.0.1:8080/healthsystem/ris/StudyReport.html"));
     ui->m_tabWidgetTotal->addTab(m_view, "Report");
+    m_view->show();
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
     connect(ui->m_tabWidgetTotal,SIGNAL(tabBarClicked(int)),this,SLOT(TabBarClicked(int)));
     //connect(m_StudyImage, SIGNAL(sendNumber(QString, QString)), this, SLOT(receiveNumber(QString, QString)));
@@ -49,12 +50,12 @@ void MainApp::TabBarClicked(int index)
 {
     if (index == 2)
     {
-        m_view->setUrl(QUrl("http://127.0.0.1:8080/healthsystem/ris/StudyReport.html"));
-        m_view->show();
+        //m_view->setUrl(QUrl("http://127.0.0.1:8080/healthsystem/ris/StudyReport.html"));
+        //m_view->show();
     }
     else
     {
-        m_view->hide();
+        //m_view->hide();
     }
 }
 
