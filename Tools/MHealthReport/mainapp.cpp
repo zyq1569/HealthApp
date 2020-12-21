@@ -7,6 +7,7 @@
 #include <QWebEngineView>
 #include <QWebEngineCookieStore>
 #include <QWebEngineProfile>
+#include <QNetworkProxyFactory>
 
 #define SAFEDELETE(pointer) \
 {                           \
@@ -39,6 +40,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ui->m_tabWidgetTotal->setCurrentIndex(1);
 
     m_view = new QWebEngineView(this);
+    QNetworkProxyFactory::setUseSystemConfiguration(false);//关掉使用系统代理
     m_view->setUrl(QUrl("http://127.0.0.1:8080/login/TestReport.html"));
     ui->m_tabWidgetTotal->addTab(m_view, "Report");
     //m_view->show();
