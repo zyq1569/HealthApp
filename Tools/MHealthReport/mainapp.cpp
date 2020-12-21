@@ -31,16 +31,16 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 
     m_PatientStudyRegister     = new PatientStudyRegister(this);
     ui->m_tabWidgetTotal->addTab(m_PatientStudyRegister,    "登记检查");
-    ui->m_tabWidgetTotal->setCurrentIndex(1);
+    //ui->m_tabWidgetTotal->setCurrentIndex(0);
 
     m_StudyImage     = new StudyImage(this);
     ui->m_tabWidgetTotal->addTab(m_StudyImage,    "检查列表");
-    ui->m_tabWidgetTotal->setCurrentIndex(2);
+    ui->m_tabWidgetTotal->setCurrentIndex(1);
 
     m_view = new QWebEngineView(this);
-    //m_view->setUrl(QUrl("http://127.0.0.1:8080/healthsystem/ris/StudyReport.html"));
+
     ui->m_tabWidgetTotal->addTab(m_view, "Report");
-    ui->m_tabWidgetTotal->setCurrentIndex(3);
+    //ui->m_tabWidgetTotal->setCurrentIndex(2);
     connect(ui->m_tabWidgetTotal,SIGNAL(tabBarClicked(int)),this,SLOT(TabBarClicked(int)));
     //connect(m_StudyImage, SIGNAL(sendNumber(QString, QString)), this, SLOT(receiveNumber(QString, QString)));
 }
