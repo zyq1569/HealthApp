@@ -8,6 +8,8 @@
 #include <QWebEngineCookieStore>
 #include <QWebEngineProfile>
 #include <QNetworkProxyFactory>
+#include <QMessageBox>
+
 
 #define SAFEDELETE(pointer) \
 {                           \
@@ -38,6 +40,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     m_StudyImage     = new StudyImage(this);
     ui->m_tabWidgetTotal->addTab(m_StudyImage,    "检查列表");
     ui->m_tabWidgetTotal->setCurrentIndex(1);
+    connect(m_StudyImage,SIGNAL(lookReport(QString)),this,SLOT(lookStudyReport(QString)));
 
     m_view = new QWebEngineView(this);
     QNetworkProxyFactory::setUseSystemConfiguration(false);//关掉使用系统代理
@@ -50,6 +53,13 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     connect(m_view->page()->profile()->cookieStore(), &QWebEngineCookieStore::cookieAdded,this,&MainApp::slog_cookieAdded);
 }
 
+void MainApp::lookStudyReport(QString StudyOrderIdentity)
+{
+    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/TestReport.html"));
+    m_view->show();
+    //QMessageBox::information(NULL, tr("检查"),StudyOrderIdentity);
+    ui->m_tabWidgetTotal->setCurrentIndex(2);
+}
 void MainApp::slog_cookieAdded(const QNetworkCookie &cookie)
 {
     qDebug()<<"Cookie Added-->"<< cookie.domain()<<cookie.name()<<cookie.value()<< endl;
