@@ -44,7 +44,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 
     m_view = new QWebEngineView(this);
     QNetworkProxyFactory::setUseSystemConfiguration(false);//关掉使用系统代理
-    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/TestReport.html"));
+    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/testReport.html"));
     ui->m_tabWidgetTotal->addTab(m_view, "Report");
     //m_view->show();
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
@@ -55,7 +55,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 
 void MainApp::lookStudyReport(QString StudyOrderIdentity)
 {
-    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/TestReport.html"));
+    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/testReport.html"));
     m_view->show();
     //QMessageBox::information(NULL, tr("检查"),StudyOrderIdentity);
     ui->m_tabWidgetTotal->setCurrentIndex(2);
