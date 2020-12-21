@@ -2,7 +2,7 @@
 #define MAINAPP_H
 
 #include <QMainWindow>
-
+#include <QNetworkCookie>
 
 class QProcess;
 class StudyImage;
@@ -23,7 +23,7 @@ public:
 
 public slots:
     void TabBarClicked(int index);
-
+    void slog_cookieAdded(const QNetworkCookie &cookie);
 private:
     QProcess *m_QProcess;
     StudyImage *m_StudyImage;
