@@ -5,7 +5,8 @@
 #include "patientstudyregister.h"
 #include <QProcess>
 #include <QWebEngineView>
-
+#include <QWebEngineCookieStore>
+#include <QWebEngineProfile>
 
 #define SAFEDELETE(pointer) \
 {                           \
@@ -38,24 +39,30 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ui->m_tabWidgetTotal->setCurrentIndex(1);
 
     m_view = new QWebEngineView(this);
-    m_view->setUrl(QUrl("http://127.0.0.1:8080/healthsystem/ris/StudyReport.html"));
+    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/TestReport.html"));
     ui->m_tabWidgetTotal->addTab(m_view, "Report");
-    m_view->show();
+    //m_view->show();
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
     connect(ui->m_tabWidgetTotal,SIGNAL(tabBarClicked(int)),this,SLOT(TabBarClicked(int)));
     //connect(m_StudyImage, SIGNAL(sendNumber(QString, QString)), this, SLOT(receiveNumber(QString, QString)));
+    connect(m_view->page()->profile()->cookieStore(), &QWebEngineCookieStore::cookieAdded,this,&MainApp::slog_cookieAdded);
+}
+
+void MainApp::slog_cookieAdded(const QNetworkCookie &cookie)
+{
+    qDebug()<<"Cookie Added-->"<< cookie.domain()<<cookie.name()<<cookie.value()<< endl;
 }
 
 void MainApp::TabBarClicked(int index)
 {
     if (index == 2)
     {
-        //m_view->setUrl(QUrl("http://127.0.0.1:8080/healthsystem/ris/StudyReport.html"));
-        //m_view->show();
+        //m_view->setUrl(QUrl("http://127.0.0.1:8080/login/TestReport.html"));
+        m_view->show();
     }
     else
     {
-        //m_view->hide();
+        m_view->hide();
     }
 }
 
