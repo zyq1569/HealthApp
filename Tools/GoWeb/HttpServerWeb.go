@@ -179,6 +179,7 @@ func main() {
 
 	//login
 	WebServer.POST("/login/checkuser", CheckLogin)
+	WebServer.GET("/login/checkuser", CheckLogin)
 	// WebServer.GET("/Login/*", Login)
 	WebServer.GET("/login/*", Login)
 
@@ -293,30 +294,34 @@ func GetCurrentPath() (string, error) {
 func Healthsystem(c echo.Context) error {
 	cookie_Auth_OK := false
 	for _, cookie := range c.Cookies() {
-		if cookie.Name == "user" {
+		if cookie.Name == "user" || cookie.Name == "admin" {
 			cookie_Auth_OK = true
 			break
+		} else {
+			log4go.Error("Healthsystem cookie.Name:" + cookie.Name)
 		}
+
 	}
 	if cookie_Auth_OK {
 		req := c.Request()
 		filepath := CONFIG[PAGE_Dir] + req.URL.Path
 		return c.File(filepath)
 	} else {
-		log4go.Info("No cookie ---->Redirect:" + c.Scheme() + "://" + c.Request().Host + "/login/login.html")
+		log4go.Info("No cookie|" + c.Request().URL.Path + "---->Redirect:" + c.Scheme() + "://" + c.Request().Host + "/login/login.html")
 		//StatusMovedPermanently 301
 		return c.Redirect(http.StatusMovedPermanently, c.Scheme()+"://"+c.Request().Host+"/login/login.html")
 	}
 }
 
+///https://github.com/authelia/authelia
 func Login(c echo.Context) error {
-	// log4go.Info("-------Login:" + c.Request().URL.Path)
-	// log4go.Info(c.Request().URL.Path)
+	log4go.Info("-------Login:" + c.Request().URL.Path)
+	log4go.Info(c.Request().URL.Path)
 	req := c.Request()
 	// println("req.URL.Path:" + req.URL.Path)
 	// println(PAGE_Dir + req.URL.Path)
 	filepath := CONFIG[PAGE_Dir] + req.URL.Path
-	// log4go.Info("filepath:" + filepath)
+	log4go.Info("filepath:" + filepath)
 	return c.File(filepath)
 }
 
@@ -387,14 +392,16 @@ func getCookieHandler(w http.ResponseWriter, r *http.Request) {
 	log4go.Info(w, h)
 }
 
-func AuthLogin(c echo.Context) bool {
-	for _, cookie := range c.Cookies() {
-		if cookie.Name == "user" || cookie.Name == "admin" {
-			return true
-		}
-	}
-	return false
-}
+// func AuthLogin(c echo.Context) bool {
+// 	for _, cookie := range c.Cookies() {
+// 		if cookie.Name == "user" || cookie.Name == "admin" {
+// 			return true
+// 		} else {
+// 			log4go.Error("AuthLogin:" + cookie.Name)
+// 		}
+// 	}
+// 	return false
+// }
 
 func CheckLogin(c echo.Context) error {
 	username := c.FormValue("user")
