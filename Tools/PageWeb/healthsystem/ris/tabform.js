@@ -151,7 +151,8 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     });
     //testWebDOF
     $('.testWebDOF .layui-btn').on('click', function () {
-        window.open('http://' + window.location.host + '/healthsystem/ris/StudyReport.html');
+        //window.open('http://' + window.location.host + '/healthsystem/ris/StudyReport.html');
+        window.location.replace('http://' + window.location.host + '/login/StudyReport.html')
     });
     //监听头工具栏事件
     table.on('toolbar(studytabledatas)', function (obj) {
@@ -506,12 +507,13 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                 }, {
                     fixed: 'right',
                     align: 'center',//align: 'left',
-                    width: 240,
+                    width: 210, ///min width210
                     toolbar: '#table_row_btns'
                 }
             ]
         ]
     });
+});
     ///------------20201218-------------------------
     //----------------abandon-----------------
     //执行一个 table 实例
@@ -700,4 +702,3 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     //     // var type = $(this).data('type');
     //     // active[type] ? active[type].call(this) : '';
     // });
-});
