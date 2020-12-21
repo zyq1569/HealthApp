@@ -7,6 +7,7 @@
 class QProcess;
 class StudyImage;
 class PatientStudyRegister;
+class QWebEngineView;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApp; }
@@ -20,10 +21,13 @@ public:
     MainApp(QWidget *parent = nullptr);
     ~MainApp();
 
+public slots:
+    void TabBarClicked(int index);
 
 private:
     QProcess *m_QProcess;
     StudyImage *m_StudyImage;
+    QWebEngineView *m_view;
     PatientStudyRegister *m_PatientStudyRegister;
 
 private:

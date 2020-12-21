@@ -4,6 +4,8 @@
 #include "studyimage.h"
 #include "patientstudyregister.h"
 #include <QProcess>
+#include <QWebEngineView>
+
 
 #define SAFEDELETE(pointer) \
 {                           \
@@ -35,8 +37,25 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ui->m_tabWidgetTotal->addTab(m_StudyImage,    "检查列表");
     ui->m_tabWidgetTotal->setCurrentIndex(2);
 
-
+    m_view = new QWebEngineView(this);
+    //m_view->setUrl(QUrl("http://127.0.0.1:8080/healthsystem/ris/StudyReport.html"));
+    ui->m_tabWidgetTotal->addTab(m_view, "Report");
+    ui->m_tabWidgetTotal->setCurrentIndex(3);
+    connect(ui->m_tabWidgetTotal,SIGNAL(tabBarClicked(int)),this,SLOT(TabBarClicked(int)));
     //connect(m_StudyImage, SIGNAL(sendNumber(QString, QString)), this, SLOT(receiveNumber(QString, QString)));
+}
+
+void MainApp::TabBarClicked(int index)
+{
+    if (index == 2)
+    {
+        m_view->setUrl(QUrl("http://127.0.0.1:8080/healthsystem/ris/StudyReport.html"));
+        m_view->show();
+    }
+    else
+    {
+        m_view->hide();
+    }
 }
 
 MainApp::~MainApp()
