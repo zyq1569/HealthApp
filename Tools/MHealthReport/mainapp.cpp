@@ -51,23 +51,24 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     connect(ui->m_tabWidgetTotal,SIGNAL(tabBarClicked(int)),this,SLOT(TabBarClicked(int)));
     //connect(m_StudyImage, SIGNAL(sendNumber(QString, QString)), this, SLOT(receiveNumber(QString, QString)));
     connect(m_view->page()->profile()->cookieStore(), &QWebEngineCookieStore::cookieAdded,this,&MainApp::slog_cookieAdded);
+    ///clearHttpCache
+    QWebEngineProfile * engineProfile = m_view->page()->profile();
+    engineProfile->clearHttpCache();
+    engineProfile->clearAllVisitedLinks();
+//    QString cachePath = engineProfile->cachePath();
+//    QDir cachePathDir(cachePath);
+//    if (cachePathDir.exists())
+//    {
+//        bool rlt = cachePathDir.rmdir(cachePath); //删除缓存目录
+//        if (!rlt)
+//        {
+//            qDebug() << "cachePathDir fail!";
+//        }
+//    }
 }
 
 void MainApp::lookStudyReport(QString StudyOrderIdentity)
 {
-    //QWebEngineProfile * engineProfile = m_view->page()->profile();
-    //engineProfile->clearHttpCache();
-    //engineProfile->clearAllVisitedLinks();
-    //QString cachePath = engineProfile->cachePath();
-    //QDir cachePathDir(cachePath);
-    //if (cachePathDir.exists())
-    //{
-    //    bool rlt = cachePathDir.rmdir(cachePath); //删除缓存目录
-    //    if (!rlt)
-    //    {
-    //        qDebug() << QStringLiteral("删除缓存目录失败!");
-    //    }
-    //}
     static bool flag = true;
     if (flag)
     {
