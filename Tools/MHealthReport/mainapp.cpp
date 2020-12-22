@@ -43,7 +43,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     connect(m_StudyImage,SIGNAL(lookReport(QString)),this,SLOT(lookStudyReport(QString)));
 
     m_view = new QWebEngineView(this);
-    QNetworkProxyFactory::setUseSystemConfiguration(false);//关掉使用系统代理
+    QNetworkProxyFactory::setUseSystemConfiguration(false);//off SystemConfiguration
     m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/testReport.html#wodotexteditor/studyTemp.odt"));
     ui->m_tabWidgetTotal->addTab(m_view, "Report");
     //m_view->show();
