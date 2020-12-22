@@ -44,7 +44,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 
     m_view = new QWebEngineView(this);
     QNetworkProxyFactory::setUseSystemConfiguration(false);//关掉使用系统代理
-    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/testReport.html"));
+    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/testReport.html#wodotexteditor/studyTemp.odt"));
     ui->m_tabWidgetTotal->addTab(m_view, "Report");
     //m_view->show();
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
@@ -55,8 +55,30 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 
 void MainApp::lookStudyReport(QString StudyOrderIdentity)
 {
-    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/testReport.html"));
+    //QWebEngineProfile * engineProfile = m_view->page()->profile();
+    //engineProfile->clearHttpCache();
+    //engineProfile->clearAllVisitedLinks();
+    //QString cachePath = engineProfile->cachePath();
+    //QDir cachePathDir(cachePath);
+    //if (cachePathDir.exists())
+    //{
+    //    bool rlt = cachePathDir.rmdir(cachePath); //删除缓存目录
+    //    if (!rlt)
+    //    {
+    //        qDebug() << QStringLiteral("删除缓存目录失败!");
+    //    }
+    //}
+    static bool flag = true;
+    if (flag)
+    {
+        m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/studyReport.html#wodotexteditor/A.odt"));
+    }
+    else
+    {
+        m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/oderReport.html#wodotexteditor/B.odt"));
+    }
     m_view->show();
+    flag = !flag;
     //QMessageBox::information(NULL, tr("检查"),StudyOrderIdentity);
     ui->m_tabWidgetTotal->setCurrentIndex(2);
 }
@@ -69,7 +91,6 @@ void MainApp::TabBarClicked(int index)
 {
     if (index == 2)
     {
-        //m_view->setUrl(QUrl("http://127.0.0.1:8080/login/TestReport.html"));
         m_view->show();
     }
     else
