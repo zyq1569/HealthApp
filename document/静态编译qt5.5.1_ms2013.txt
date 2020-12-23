@@ -1,3 +1,4 @@
+已经编译好的QT，参考第三方 https://build-qt.fsu0413.me/?file=005-5.15%20Series/001-5.15.2%20for%20Windows
 1.MD->MT
 2.
 
