@@ -80,7 +80,7 @@ void MainApp::lookStudyReport(QString StudyOrderIdentity)
     }
     m_view->show();
     flag = !flag;
-    //QMessageBox::information(NULL, tr("检查"),StudyOrderIdentity);
+    //QMessageBox::information(NULL, tr("studyReport"),StudyOrderIdentity);
     ui->m_tabWidgetTotal->setCurrentIndex(2);
 }
 void MainApp::slog_cookieAdded(const QNetworkCookie &cookie)
