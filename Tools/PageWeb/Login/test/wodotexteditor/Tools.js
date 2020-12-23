@@ -42,7 +42,10 @@ define("webodf/editor/Tools", [
     "webodf/editor/widgets/zoomSlider",
     "webodf/editor/widgets/aboutDialog",
     "webodf/editor/EditorSession"],
-    function (ready, MenuItem, DropDownMenu, Button, DropDownButton, Toolbar, ParagraphAlignment, SimpleStyles, UndoRedoMenu, CurrentStyle, AnnotationControl, EditHyperlinks, ImageInserter, ParagraphStylesDialog, ZoomSlider, AboutDialog, EditorSession) {
+    function (ready, MenuItem, DropDownMenu, Button, DropDownButton, Toolbar,
+        ParagraphAlignment, SimpleStyles, UndoRedoMenu, CurrentStyle,
+        AnnotationControl, EditHyperlinks, ImageInserter,
+        ParagraphStylesDialog, ZoomSlider, AboutDialog, EditorSession) {
         "use strict";
 
         return function Tools(toolbarElementId, args) {
@@ -137,7 +140,7 @@ define("webodf/editor/Tools", [
                 // so this works for now. Perhaps will be obsoleted
                 // once we move to a better widget toolkit
                 var widgets = dijit.findWidgets(document.body);
-                dojo.forEach(widgets, function(w) {
+                dojo.forEach(widgets, function (w) {
                     w.destroyRecursive(false);
                 });
                 callback();
@@ -301,9 +304,9 @@ define("webodf/editor/Tools", [
                 // You have been warned.
                 if (window.wodo_plugins) {
                     window.wodo_plugins.forEach(function (plugin) {
-                        runtime.log("Creating plugin: "+plugin.id);
+                        runtime.log("Creating plugin: " + plugin.id);
                         require([plugin.id], function (Plugin) {
-                            runtime.log("Creating as tool now: "+plugin.id);
+                            runtime.log("Creating as tool now: " + plugin.id);
                             createTool(Plugin, true, plugin.config);
                         });
                     });
