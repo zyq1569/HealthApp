@@ -478,7 +478,8 @@ window.Wodo = window.Wodo || (function () {
         /**
          * @name TextEditor#getDocumentAsByteArray
          * @function
-         * @param {!function(err:?Error, file:!Uint8Array=):undefined} callback Called with the current document as ODT file as bytearray, passes an error object in case of error
+         * @param {!function(err:?Error, file:!Uint8Array=):undefined} 
+         * callback Called with the current document as ODT file as bytearray, passes an error object in case of error
          * @return {undefined}
          */
         this.getDocumentAsByteArray = function (callback) {
