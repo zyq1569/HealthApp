@@ -16,11 +16,6 @@ void Config::setConfig(QString serverip, QString serverport)
     ui->m_serverPort->setText(serverport);
 }
 
-//void Config::getConfig(QString &serverip, QString &serverport)
-//{
-//    serverip = ui->m_serverIP->text();
-//    serverport = ui->m_serverPort->text();
-//}
 
 void Config::saveServerconfig()
 {

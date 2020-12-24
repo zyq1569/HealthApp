@@ -17,12 +17,12 @@ public:
 
 signals:
     void saveConfig(QString , QString);
+
 private slots:
     void saveServerconfig();
+
 public:
     void setConfig(QString serverip, QString serverport);
-//    void getConfig(QString &serverip, QString &serverport);
-
 
 private:
     Ui::Config *ui;
