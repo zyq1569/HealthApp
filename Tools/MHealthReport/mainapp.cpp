@@ -60,7 +60,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     m_config          = new Config(this);
     ui->m_tabWidgetTotal->addTab(m_config,"维护配置");
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
-    //connect(m_StudyImage,SIGNAL(lookReport(QString)),this,SLOT(lookStudyReport(QString)));
+    connect(m_config,SIGNAL(saveConfig(QString,QString)),this,SLOT(saveServerConfig(QString,QString)));
 
     ///----------------------------------------------------------------------------------------------------------------------
 
@@ -83,6 +83,13 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 //    }
 }
 
+void MainApp::saveServerConfig(QString serverIP, QString serverPort)
+{
+    m_serverIP = serverIP;
+    m_serverPort = serverPort;
+}
+
+
 void MainApp::lookStudyReport(QString StudyOrderIdentity)
 {
     static bool flag = true;
@@ -99,6 +106,7 @@ void MainApp::lookStudyReport(QString StudyOrderIdentity)
     //QMessageBox::information(NULL, tr("studyReport"),StudyOrderIdentity);
     ui->m_tabWidgetTotal->setCurrentIndex(2);
 }
+
 void MainApp::slog_cookieAdded(const QNetworkCookie &cookie)
 {
     //qDebug()<<"Cookie Added-->"<< cookie.domain()<<cookie.name()<<cookie.value()<< endl;
