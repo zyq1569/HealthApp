@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    config.cpp \
     httpclient.cpp \
     main.cpp \
     mainapp.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
     studyimage.cpp
 
 HEADERS += \
+    config.h \
     httpclient.h \
     mainapp.h \
     patientdata.h \
@@ -33,6 +35,7 @@ HEADERS += \
     studyimage.h
 
 FORMS += \
+    config.ui \
     mainapp.ui \
     patientsform.ui \
     patientstudyregister.ui \

@@ -8,6 +8,7 @@ class QProcess;
 class StudyImage;
 class PatientStudyRegister;
 class QWebEngineView;
+class Config;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApp; }
@@ -29,6 +30,7 @@ private:
     QProcess *m_QProcess;
     StudyImage *m_StudyImage;
     QWebEngineView *m_view;
+    Config *m_config;
     PatientStudyRegister *m_PatientStudyRegister;
 
 private:
