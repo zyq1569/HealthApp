@@ -363,6 +363,7 @@ func LoadImageFile(c echo.Context) error {
 			return c.File(odtpath)
 		} else if IsFileExists(patientReport) {
 			log4go.Warn("use deault Report filepath:" + patientReport)
+			log4go.Error("No filepath:" + odtpath)
 			return c.File(patientReport)
 		} else {
 			log4go.Error("No filepath:" + odtpath)
