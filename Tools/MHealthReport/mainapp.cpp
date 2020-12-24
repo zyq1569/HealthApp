@@ -44,7 +44,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 
     m_view = new QWebEngineView(this);
     QNetworkProxyFactory::setUseSystemConfiguration(false);//off SystemConfiguration
-    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/testReport.html#wodotexteditor/studyTemp.odt"));
+    m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/testReport.html#Temple"));
     ui->m_tabWidgetTotal->addTab(m_view, "Report");
     //m_view->show();
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
