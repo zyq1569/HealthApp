@@ -335,7 +335,7 @@ func LoadImageFile(c echo.Context) error {
 	///http://127.0.0.1:8080/WADO?
 	///studyuid=1.2.826.1.1.3680043.2.461.20090916105245.168977.200909160196&type=json
 	///-------------------------------------------------------------------------
-	// log4go.Info("-------" + c.Request().URL.Path)
+	log4go.Debug("----LoadImageFile-------" + c.Request().URL.Path)
 	studyuid := c.FormValue("studyuid")
 	image_hash_dir := Units.GetStudyHashDir(studyuid)
 	filepath := CONFIG[IMAGE_Dir] + image_hash_dir
@@ -347,10 +347,25 @@ func LoadImageFile(c echo.Context) error {
 		filepath += "/"
 		filepath += studyuid
 		filepath += ".json"
+		log4go.Debug("type == json filepath:" + filepath)
 		if IsFileExists(filepath) {
 			return c.File(filepath)
 		} else {
 			log4go.Error("No filepath:" + filepath)
+		}
+	} else if filetype == "odt" {
+		odtpath := CONFIG[IMAGE_Dir] + "/Report/"
+		odtpath += studyuid
+		odtpath += ".odt"
+		patientReport := CONFIG[IMAGE_Dir] + "/Report/patient.odt"
+		log4go.Debug("type == odt filepath:" + odtpath) //patient.odt
+		if IsFileExists(odtpath) {
+			return c.File(odtpath)
+		} else if IsFileExists(patientReport) {
+			log4go.Warn("use deault Report filepath:" + patientReport)
+			return c.File(patientReport)
+		} else {
+			log4go.Error("No filepath:" + odtpath)
 		}
 	} else {
 		seriesuid := c.FormValue("seriesuid")
