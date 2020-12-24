@@ -72,11 +72,11 @@ void MainApp::lookStudyReport(QString StudyOrderIdentity)
     static bool flag = true;
     if (flag)
     {
-        m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/studyReport.html#wodotexteditor/A.odt"));
+        m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/studyReport.html#"+StudyOrderIdentity));
     }
     else
     {
-        m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/oderReport.html#wodotexteditor/B.odt"));
+        m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/oderReport.html#"+StudyOrderIdentity));
     }
     m_view->show();
     flag = !flag;
