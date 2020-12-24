@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QPushButton" name="saveBt">
+  <widget class="QPushButton" name="m_saveBt">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -26,7 +26,7 @@
     <string>Save</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="resetBt">
+  <widget class="QPushButton" name="m_resetBt">
    <property name="geometry">
     <rect>
      <x>130</x>
@@ -57,7 +57,11 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="m_serverIP"/>
+     <widget class="QLineEdit" name="m_serverIP">
+      <property name="text">
+       <string>127.0.0.1</string>
+      </property>
+     </widget>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_2">
@@ -67,7 +71,11 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="m_serverPort"/>
+     <widget class="QLineEdit" name="m_serverPort">
+      <property name="text">
+       <string>8080</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
