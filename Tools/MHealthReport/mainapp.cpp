@@ -36,15 +36,18 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     //m_QProcess->start(appPath);
     this->setCentralWidget(ui->m_tabWidgetTotal);
 
+    ///PatientStudyRegister
     m_PatientStudyRegister     = new PatientStudyRegister(this);
     ui->m_tabWidgetTotal->addTab(m_PatientStudyRegister,    "登记检查");
     //ui->m_tabWidgetTotal->setCurrentIndex(0);
 
+    ///StudyImage
     m_StudyImage     = new StudyImage(this);
     ui->m_tabWidgetTotal->addTab(m_StudyImage,    "检查列表");
     ui->m_tabWidgetTotal->setCurrentIndex(1);
     connect(m_StudyImage,SIGNAL(lookReport(QString)),this,SLOT(lookStudyReport(QString)));
 
+    ///QWebEngineView
     m_view = new QWebEngineView(this);
     QNetworkProxyFactory::setUseSystemConfiguration(false);//off SystemConfiguration
     m_view->setUrl(QUrl("http://127.0.0.1:8080/login/test/testReport.html#Temple"));
@@ -53,11 +56,13 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
 
 
+    ///Config
     m_config          = new Config(this);
     ui->m_tabWidgetTotal->addTab(m_config,"维护配置");
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
     //connect(m_StudyImage,SIGNAL(lookReport(QString)),this,SLOT(lookStudyReport(QString)));
 
+    ///----------------------------------------------------------------------------------------------------------------------
 
     connect(ui->m_tabWidgetTotal,SIGNAL(tabBarClicked(int)),this,SLOT(TabBarClicked(int)));
     //connect(m_StudyImage, SIGNAL(sendNumber(QString, QString)), this, SLOT(receiveNumber(QString, QString)));
