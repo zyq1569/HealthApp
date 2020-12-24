@@ -55,6 +55,48 @@ function createEditor() {
         }
         return docUrl || null;
     }
+    /**
+     * extract document url from the url-fragment server data
+     *
+     * @return {?string}
+    */
+    function guessDocServerUrl( editor ) {
+        var pos, orderid = "", docUrl = String(document.location), serverHost = String(document.location.host);
+        // If the URL has a fragment (#...), try to load the file it represents
+        pos = docUrl.indexOf('#');
+        if (pos !== -1) {
+            orderid = docUrl.substr(pos + 1);
+        } else {
+            docUrl = "wodotexteditor/patient.odt";
+            return myUrl || null;
+        }
+        var mimetype = "application/vnd.oasis.opendocument.text";
+        var myServerOdtUrl = "", serverODTurl = "http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt";
+        var xmlRequest = new XMLHttpRequest();
+        xmlRequest.open("GET", serverODTurl, true);// true:asynchronous   false :synchronous 
+        xmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlRequest.responseType = "blob";
+        xmlRequest.onload = function (oEvent) {
+            if ((xmlRequest.status >= 200 && xmlRequest.status < 300) || xmlRequest.status === 304) {
+                var blob = new Blob([this.response]);
+                blob.fileName = this.fileName;
+                myServerOdtUrl = URL.createObjectURL(blob);
+                editor.openDocumentFromUrl(myServerOdtUrl, startEditing);
+                URL.revokeObjectURL(myServerOdtUrl);
+            } else {
+                Dialogs.showWarn('下载失败');
+            }
+        };
+        try {
+            //send params 
+            //xmlRequest.send(urlParams.join('&'));
+            xmlRequest.send();//no params
+        } catch (e) {
+            Dialogs.showWarn('发送下载请求失败');
+            console.error('发送失败', e);
+        }
+        return myServerOdtUrl || null;
+    }
 
     function fileSelectHandler(evt) {
         var file, files, reader;
@@ -153,8 +195,8 @@ function createEditor() {
     };
 
     function onEditorCreated(err, e) {
-        var docUrl = guessDocUrl();
-
+        // var docUrl = guessDocUrl();
+        var docUrl = guessDocServerUrl(e);
         if (err) {
             // something failed unexpectedly
             alert(err);
@@ -178,7 +220,7 @@ function createEditor() {
             }
         });
 
-        if (docUrl) {
+        if (!docUrl === null) {
             loadedFilename = docUrl;
             editor.openDocumentFromUrl(docUrl, startEditing);
         }
