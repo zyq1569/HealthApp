@@ -32,6 +32,8 @@ private:
     QWebEngineView *m_view;
     Config *m_config;
     PatientStudyRegister *m_PatientStudyRegister;
+    QString m_serverIP;
+    QString m_serverPort;
 
 private:
     Ui::MainApp *ui;
