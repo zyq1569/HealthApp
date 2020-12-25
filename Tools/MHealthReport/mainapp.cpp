@@ -37,35 +37,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     m_serverPort = "8080";
 
 
-    ///---------------------------------------------------------------------------------
-    ///
-    QString Dir     = QDir::currentPath();
-    QString iniDir = Dir+"/config";
-    QDir dir(iniDir);
-    if(!dir.exists())
-    {
-        QDir dir(iniDir); // 注意
-        dir.setPath("");
-        if (!dir.mkpath(iniDir))
-        {
-            // error!
-        }
-    }
-    QString configfilename = iniDir+"/MHealthReport.ini";
-#if defined(Q_OS_LINUX)
-    configfilename = iniDir+"/MHealthReport_linux.ini";
-#endif
-    QSettings configini(configfilename,QSettings::IniFormat);
-    QFileInfo fileInfo(configfilename);
-    if(fileInfo.exists())
-    {
-        m_serverIP   = configini.value("/webserver/server_IP","127.0.0.1").toString();
-        m_serverPort = configini.value("/webserver/server_Port","8080").toString();
-        m_imageViewerEnable = configini.value("/imageviewer/viewer_state",0).toInt();
-        m_config->setConfig(m_serverIP,m_serverPort,m_imageViewerEnable);
-    }
-    ///------------------------------------------------------------------------------------
-
     this->setCentralWidget(ui->m_tabWidgetTotal);
 
     ///PatientStudyRegister
@@ -80,10 +51,10 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     connect(m_StudyImage,SIGNAL(lookReport(QString)),this,SLOT(lookStudyReport(QString)));
 
     ///QWebEngineView
-    m_url = "http://"+m_serverIP+":"+m_serverPort;
+    //m_url = "http://"+m_serverIP+":"+m_serverPort;
     m_view = new QWebEngineView(this);
     QNetworkProxyFactory::setUseSystemConfiguration(false);//off SystemConfiguration
-    m_view->setUrl(QUrl(m_url+"/login/test/testReport.html#Temple"));
+    //m_view->setUrl(QUrl(m_url+"/login/test/testReport.html#Temple"));
     ui->m_tabWidgetTotal->addTab(m_view, "检查报告");
     //m_view->show();
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
@@ -93,10 +64,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     QNetworkProxyFactory::setUseSystemConfiguration(false);//off SystemConfiguration
     //m_imageView->setUrl(QUrl(m_url+"/view/view.html?1.2.826.0.1.3680043.9.7606.48.1214245415.1267414711.906286"));
     ui->m_tabWidgetTotal->addTab(m_imageView, "图像浏览");
-    if (m_imageViewerEnable < 2)
-    {
-        ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_imageView) );
-    }
+
 
     ///Config
     m_config          = new Config(this);
@@ -123,7 +91,44 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     //            qDebug() << "cachePathDir fail!";
     //        }
     //    }
-
+    ///---------------------------------------------------------------------------------
+    ///
+    QString Dir     = QDir::currentPath();
+    QString iniDir = Dir+"/config";
+    QDir dir(iniDir);
+    if(!dir.exists())
+    {
+        QDir dir(iniDir); // 注意
+        dir.setPath("");
+        if (!dir.mkpath(iniDir))
+        {
+            // error!
+        }
+    }
+    m_imageViewerEnable = 0;
+    QString configfilename = iniDir+"/MHealthReport.ini";
+#if defined(Q_OS_LINUX)
+    configfilename = iniDir+"/MHealthReport_linux.ini";
+#endif
+    QSettings configini(configfilename,QSettings::IniFormat);
+    QFileInfo fileInfo(configfilename);
+    if(fileInfo.exists())
+    {
+        m_serverIP   = configini.value("/webserver/server_IP","127.0.0.1").toString();
+        m_serverPort = configini.value("/webserver/server_Port","8080").toString();
+        m_imageViewerEnable = configini.value("/imageviewer/viewer_state",0).toInt();
+    }
+    if(fileInfo.exists())
+    {
+        m_config->setConfig(m_serverIP,m_serverPort,m_imageViewerEnable);
+    }
+    m_url = "http://"+m_serverIP+":"+m_serverPort;
+    m_view->setUrl(QUrl(m_url+"/login/test/testReport.html#Temple"));
+    if (m_imageViewerEnable < 2)
+    {
+        ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_imageView) );
+    }
+    ///------------------------------------------------------------------------------------
 }
 
 void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer)
