@@ -62,7 +62,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ///根据配置来设置
     m_imageView = new QWebEngineView(this);
     QNetworkProxyFactory::setUseSystemConfiguration(false);//off SystemConfiguration
-    m_imageView->setUrl(QUrl(m_url+"/login/test/testReport.html#Temple"));
+    m_imageView->setUrl(QUrl(m_url+"/view/view.html?1.2.826.0.1.3680043.9.7606.48.1214245415.1267414711.906286"));
     ui->m_tabWidgetTotal->addTab(m_imageView, "图像浏览");
 
     ///Config
@@ -110,14 +110,13 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     configfilename = iniDir+"/MHealthReport_linux.ini";
 #endif
     QSettings configini(configfilename,QSettings::IniFormat);
-    QDir confDir(configfilename);
-    if (confDir.exists())
+    QFileInfo fileInfo(configfilename);
+    if(fileInfo.exists())
     {
         m_serverIP   = configini.value("/webserver/server_IP").toString();
         m_serverPort = configini.value("/webserver/server_Port").toString();
         m_config->setConfig(m_serverIP,m_serverPort);
     }
-
 }
 
 void MainApp::saveServerConfig(QString serverIP, QString serverPort)
@@ -164,6 +163,28 @@ void MainApp::TabBarClicked(int index)
 
 MainApp::~MainApp()
 {
+    QString Dir     = QDir::currentPath();
+    QString iniDir = Dir+"/config";
+    QDir dir(iniDir);
+    if(!dir.exists())
+    {
+        QDir dir(iniDir); // 注意
+        dir.setPath("");
+        if (!dir.mkpath(iniDir))
+        {
+            // error!
+        }
+    }
+    QString configfilename = iniDir+"/MHealthReport.ini";
+#if defined(Q_OS_LINUX)
+    configfilename = iniDir+"/MHealthReport_linux.ini";
+#endif
+    QSettings configini(configfilename,QSettings::IniFormat);
+    //if (isFileExist(configfilename))
+    {
+        configini.setValue("/webserver/server_IP",m_serverIP);
+        configini.setValue("/webserver/server_Port",m_serverPort);
+    }
     //    if (m_StudyImage)
     //    {
     //        delete  m_StudyImage;
