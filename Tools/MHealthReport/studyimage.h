@@ -21,6 +21,8 @@ class StudyImage : public QMainWindow
 public:
     explicit StudyImage(QWidget *parent = nullptr);
     ~StudyImage();
+public:
+    void setUrlImage(bool flag);
 
 public slots:
     /// socket IPC
@@ -58,6 +60,7 @@ private:
 
     QMenu *m_menu;
     int m_currentRow;
+    bool m_urlImage;
 
 private:
     Ui::StudyImage *ui;
