@@ -198,7 +198,7 @@ func main() {
 	//ris/report
 	WebServer.POST("/healthsystem/ris/getreportdata", GetReportdata)
 	WebServer.POST("/healthsystem/ris/savereportdata/", SaveReportdata)
-
+	WebServer.POST("/healthsystem/ris/saveodtreport/", SaveOdtReport)
 	WebServer.GET("/healthsystem/*", Healthsystem)
 
 	// view dicom
@@ -455,6 +455,32 @@ func CheckLogin(c echo.Context) error {
 	}
 	log4go.Info("username:" + username + "/userpwd:" + userpwd)
 	return c.String(http.StatusOK, "username or userpwd error! fail")
+}
+
+func SaveOdtReport(c echo.Context) error {
+	var reportdata Study.ReportData
+	reportdata.ReportIdentity = ""
+	var bodyBytes []byte
+	if c.Request().Body != nil {
+		bodyBytes, _ = ioutil.ReadAll(c.Request().Body)
+		reportdata.ReportIdentity = c.FormValue("StudyOrderIdentity")
+		if reportdata.ReportIdentity == "" {
+			log4go.Error("reportdata.ReportIdentity == 0 ")
+			return c.String(http.StatusBadRequest, "error")
+		}
+		reportIdentity := reportdata.ReportIdentity
+		fileName := CONFIG[IMAGE_Dir] + "/Report/" + reportIdentity + ".odt"
+		f, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0)
+		defer f.Close()
+		if err != nil {
+			log4go.Error(err.Error())
+			return c.String(http.StatusBadRequest, "error")
+		} else {
+			_, err = f.Write(bodyBytes)
+			checkErr(err)
+		}
+	}
+	return c.String(http.StatusOK, "ok")
 }
 
 func SaveReportdata(c echo.Context) error {
