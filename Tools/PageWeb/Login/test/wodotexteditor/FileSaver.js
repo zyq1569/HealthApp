@@ -187,10 +187,38 @@ var saveAs = saveAs
 						}));
 					}), fs_error);
 				}), fs_error);
+			}, FileToServerSaver = function (blob, name) {
+				// First try a.download, then web filesystem, then object URLs
+				var blob_changed = false;
+				var pos, orderid = "", docUrl = String(document.location), serverHost = String(document.location.host);
+				var serverODTurl = "http://" + serverHost + "/healthsystem/ris/saveodtreport/?StudyOrderIdentity=" + orderid ;
+				pos = docUrl.indexOf('#');
+				if (pos !== -1) {
+					orderid = docUrl.substr(pos + 1);
+					var xmlRequest = new XMLHttpRequest();
+					xmlRequest.open("POST", serverODTurl, true);// true:asynchronous   false :synchronous 
+					xmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					xmlRequest.onload = function (oEvent) {
+						if ((xmlRequest.status >= 200 && xmlRequest.status < 300) || xmlRequest.status === 304) {
+							Dialogs.showWarn('save report ok!');
+						} else {
+							Dialogs.showWarn('save report fail!');
+						}
+					};
+					try {
+						//send blob 
+						xmlRequest.send(blob);
+					} catch (e) {
+						Dialogs.showWarn('发送下载请求失败');
+						console.error('发送失败', e);
+					}
+				}
 			}
 			, FS_proto = FileSaver.prototype
 			, saveAs = function (blob, name) {
 				return new FileSaver(blob, name);
+			}, saveToServer = function (blob, name) {
+				return new FileToServerSaver(blob, name);
 			}
 			;
 		FS_proto.abort = function () {
@@ -212,5 +240,5 @@ var saveAs = saveAs
 			null;
 
 		view.addEventListener("unload", process_deletion_queue, false);
-		return saveAs;
+		return saveToServer;//saveAs;
 	}(self));
