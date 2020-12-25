@@ -57,13 +57,23 @@ StudyImage::StudyImage(QWidget *parent) :
     connect(action,SIGNAL(triggered()),this,SLOT(ViewImage()));
     m_menu->addAction(action);
     ///------------CustomContextMenu---------------------------------
+    ///
+    ///
+    m_urlImage = false;
 }
 
 void StudyImage::ViewImage()
 {
     //QMessageBox::information(NULL, tr("检查"),tr("查看图像!"));
     QString studyuid = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
-    emit sendClientMsg(studyuid);
+    if (m_urlImage)
+    {
+        emit lookImage(studyuid);
+    }
+    else
+    {
+        emit sendClientMsg(studyuid);
+    }
 }
 
 void StudyImage::EditReport()
@@ -86,6 +96,10 @@ StudyImage::~StudyImage()
     delete ui;
 }
 
+void StudyImage::setUrlImage(bool flag)
+{
+    m_urlImage = flag;
+}
 
 void  StudyImage::connectImageApp()
 {
