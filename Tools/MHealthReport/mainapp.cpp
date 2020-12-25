@@ -163,7 +163,7 @@ void MainApp::lookStudyImage(QString studyuid)
     static bool flag = true;
     if (flag)
     {
-        m_imageView->setUrl(QUrl(m_url+"/view/view.html?"+studyuid));
+        m_imageView->setUrl(QUrl(m_url+"/view/appview.html?"+studyuid));
     }
     else
     {

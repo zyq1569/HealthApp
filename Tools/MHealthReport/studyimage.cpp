@@ -66,13 +66,23 @@ void StudyImage::ViewImage()
 {
     //QMessageBox::information(NULL, tr("检查"),tr("查看图像!"));
     QString studyuid = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
-    if (m_urlImage)
+    QString studystate =  ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-7)->text();
+    if (studystate == "已检查" || studystate == "诊断" || studystate == "报告审核")
     {
-        emit lookImage(studyuid);
+        //emit sendClientMsg(studyuid);
+        if (m_urlImage)
+        {
+            emit lookImage(studyuid);
+        }
+        else
+        {
+            emit sendClientMsg(studyuid);
+        }
     }
     else
     {
-        emit sendClientMsg(studyuid);
+        QMessageBox::information(NULL, tr("未检查"),tr("目前无图像!"));
+        return;
     }
 }
 
@@ -247,7 +257,15 @@ void StudyImage::on_m_tableWidget_cellDoubleClicked(int row, int column)
     QString studystate =  ui->m_tableWidget->item(row,ui->m_tableWidget->columnCount()-7)->text();
     if (studystate == "已检查" || studystate == "诊断" || studystate == "报告审核")
     {
-        emit sendClientMsg(studyuid);
+        //emit sendClientMsg(studyuid);
+        if (m_urlImage)
+        {
+            emit lookImage(studyuid);
+        }
+        else
+        {
+            emit sendClientMsg(studyuid);
+        }
     }
     else
     {
