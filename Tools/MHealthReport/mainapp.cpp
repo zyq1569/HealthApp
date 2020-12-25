@@ -82,16 +82,16 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     QWebEngineProfile * engineProfile = m_view->page()->profile();
     engineProfile->clearHttpCache();
     engineProfile->clearAllVisitedLinks();
-    //    QString cachePath = engineProfile->cachePath();
-    //    QDir cachePathDir(cachePath);
-    //    if (cachePathDir.exists())
-    //    {
-    //        bool rlt = cachePathDir.rmdir(cachePath); //删除缓存目录
-    //        if (!rlt)
-    //        {
-    //            qDebug() << "cachePathDir fail!";
-    //        }
-    //    }
+    //QString cachePath = engineProfile->cachePath();
+    //QDir cachePathDir(cachePath);
+    //if (cachePathDir.exists())
+    //{
+    //bool rlt = cachePathDir.rmdir(cachePath); //删除缓存目录
+    //if (!rlt)
+    //{
+    //    qDebug() << "cachePathDir fail!";
+    //}
+    //}
     ///---------------------------------------------------------------------------------
     ///
     QString Dir     = QDir::currentPath();
