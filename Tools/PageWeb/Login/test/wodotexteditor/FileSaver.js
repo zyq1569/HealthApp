@@ -209,8 +209,8 @@ var saveAs = saveAs
 						//send blob 
 						xmlRequest.send(blob);
 					} catch (e) {
-						alert('发送下载请求失败');
-						alert('发送失败', e);
+						alert('xmlRequest.send(blob) fail!');
+						alert('xmlRequest.send(blob)', e);
 					}
 				}
 			}
