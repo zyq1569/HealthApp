@@ -12,7 +12,7 @@
 #include <QWebEngineProfile>
 #include <QNetworkProxyFactory>
 #include <QMessageBox>
-
+#include <QSettings>
 
 #define SAFEDELETE(pointer) \
 {                           \
@@ -33,6 +33,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 
     m_serverIP = "127.0.0.1";
     m_serverPort = "8080";
+
     //start test  exe
     //QString appPath = "F:/temp/HealthApp/Tools/Test/TestHttpClient/release/TestHttpClient.exe";//ui->m_AppDir->text();
     //m_QProcess->start(appPath);
@@ -50,13 +51,19 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     connect(m_StudyImage,SIGNAL(lookReport(QString)),this,SLOT(lookStudyReport(QString)));
 
     ///QWebEngineView
+    m_url = "http://"+m_serverIP+":"+m_serverPort;
     m_view = new QWebEngineView(this);
     QNetworkProxyFactory::setUseSystemConfiguration(false);//off SystemConfiguration
-    m_view->setUrl(QUrl("http://"+m_serverIP+":"+m_serverPort+"/login/test/testReport.html#Temple"));
+    m_view->setUrl(QUrl(m_url+"/login/test/testReport.html#Temple"));
     ui->m_tabWidgetTotal->addTab(m_view, "检查报告");
     //m_view->show();
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
 
+    ///根据配置来设置
+    m_imageView = new QWebEngineView(this);
+    QNetworkProxyFactory::setUseSystemConfiguration(false);//off SystemConfiguration
+    m_imageView->setUrl(QUrl(m_url+"/login/test/testReport.html#Temple"));
+    ui->m_tabWidgetTotal->addTab(m_imageView, "图像浏览");
 
     ///Config
     m_config          = new Config(this);
@@ -83,6 +90,34 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     //            qDebug() << "cachePathDir fail!";
     //        }
     //    }
+
+    ///---------------------------------------------------------------------------------
+    ///
+    QString Dir     = QDir::currentPath();
+    QString iniDir = Dir+"/config";
+    QDir dir(iniDir);
+    if(!dir.exists())
+    {
+        QDir dir(iniDir); // 注意
+        dir.setPath("");
+        if (!dir.mkpath(iniDir))
+        {
+            // error!
+        }
+    }
+    QString configfilename = iniDir+"/MHealthReport.ini";
+#if defined(Q_OS_LINUX)
+    configfilename = iniDir+"/MHealthReport_linux.ini";
+#endif
+    QSettings configini(configfilename,QSettings::IniFormat);
+    QDir confDir(configfilename);
+    if (confDir.exists())
+    {
+        m_serverIP   = configini.value("/webserver/server_IP").toString();
+        m_serverPort = configini.value("/webserver/server_Port").toString();
+        m_config->setConfig(m_serverIP,m_serverPort);
+    }
+
 }
 
 void MainApp::saveServerConfig(QString serverIP, QString serverPort)
@@ -94,14 +129,15 @@ void MainApp::saveServerConfig(QString serverIP, QString serverPort)
 
 void MainApp::lookStudyReport(QString StudyOrderIdentity)
 {
+    m_url = "http://"+m_serverIP+":"+m_serverPort;
     static bool flag = true;
     if (flag)
     {
-        m_view->setUrl(QUrl("http://"+m_serverIP+":"+m_serverPort+"/login/test/studyReport.html#"+StudyOrderIdentity));
+        m_view->setUrl(QUrl(m_url+"/login/test/studyReport.html#"+StudyOrderIdentity));
     }
     else
     {
-        m_view->setUrl(QUrl("http://"+m_serverIP+":"+m_serverPort+"/login/test/oderReport.html#"+StudyOrderIdentity));
+        m_view->setUrl(QUrl(m_url+"/login/test/oderReport.html#"+StudyOrderIdentity));
     }
     m_view->show();
     flag = !flag;

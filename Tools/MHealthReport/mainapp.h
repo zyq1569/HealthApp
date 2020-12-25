@@ -31,11 +31,12 @@ public slots:
 private:
     QProcess *m_QProcess;
     StudyImage *m_StudyImage;
-    QWebEngineView *m_view;
+    QWebEngineView *m_view,*m_imageView;
     Config *m_config;
     PatientStudyRegister *m_PatientStudyRegister;
     QString m_serverIP;
     QString m_serverPort;
+    QString m_url;
 
 private:
     Ui::MainApp *ui;
