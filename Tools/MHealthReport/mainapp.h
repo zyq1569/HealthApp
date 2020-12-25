@@ -26,7 +26,7 @@ public slots:
     void TabBarClicked(int index);
     void lookStudyReport(QString StudyOrderIdentity);
     void slog_cookieAdded(const QNetworkCookie &cookie);
-    void saveServerConfig(QString serverIP, QString serverPort);
+    void saveServerConfig(QString serverIP, QString serverPort, int viewer);
 
 private:
     QProcess *m_QProcess;
@@ -37,7 +37,7 @@ private:
     QString m_serverIP;
     QString m_serverPort;
     QString m_url;
-    int m_imageViewer;
+    int m_imageViewerEnable;
 
 private:
     Ui::MainApp *ui;

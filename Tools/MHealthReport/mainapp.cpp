@@ -30,13 +30,42 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ui->setupUi(this);
 
     m_QProcess = new QProcess(parent);
-
-    m_serverIP = "127.0.0.1";
-    m_serverPort = "8080";
-
     //start test  exe
     //QString appPath = "F:/temp/HealthApp/Tools/Test/TestHttpClient/release/TestHttpClient.exe";//ui->m_AppDir->text();
     //m_QProcess->start(appPath);
+    m_serverIP = "127.0.0.1";
+    m_serverPort = "8080";
+
+
+    ///---------------------------------------------------------------------------------
+    ///
+    QString Dir     = QDir::currentPath();
+    QString iniDir = Dir+"/config";
+    QDir dir(iniDir);
+    if(!dir.exists())
+    {
+        QDir dir(iniDir); // 注意
+        dir.setPath("");
+        if (!dir.mkpath(iniDir))
+        {
+            // error!
+        }
+    }
+    QString configfilename = iniDir+"/MHealthReport.ini";
+#if defined(Q_OS_LINUX)
+    configfilename = iniDir+"/MHealthReport_linux.ini";
+#endif
+    QSettings configini(configfilename,QSettings::IniFormat);
+    QFileInfo fileInfo(configfilename);
+    if(fileInfo.exists())
+    {
+        m_serverIP   = configini.value("/webserver/server_IP","127.0.0.1").toString();
+        m_serverPort = configini.value("/webserver/server_Port","8080").toString();
+        m_imageViewerEnable = configini.value("/imageviewer/viewer_state",0).toInt();
+        m_config->setConfig(m_serverIP,m_serverPort,m_imageViewerEnable);
+    }
+    ///------------------------------------------------------------------------------------
+
     this->setCentralWidget(ui->m_tabWidgetTotal);
 
     ///PatientStudyRegister
@@ -64,13 +93,16 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     QNetworkProxyFactory::setUseSystemConfiguration(false);//off SystemConfiguration
     //m_imageView->setUrl(QUrl(m_url+"/view/view.html?1.2.826.0.1.3680043.9.7606.48.1214245415.1267414711.906286"));
     ui->m_tabWidgetTotal->addTab(m_imageView, "图像浏览");
-    ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_imageView));
+    if (m_imageViewerEnable < 2)
+    {
+        ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_imageView) );
+    }
 
     ///Config
     m_config          = new Config(this);
     ui->m_tabWidgetTotal->addTab(m_config,"维护配置");
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
-    connect(m_config,SIGNAL(saveConfig(QString,QString)),this,SLOT(saveServerConfig(QString,QString)));
+    connect(m_config,SIGNAL(saveConfig(QString,QString,int)),this,SLOT(saveServerConfig(QString,QString,int)));
 
     ///----------------------------------------------------------------------------------------------------------------------
 
@@ -92,39 +124,13 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     //        }
     //    }
 
-    ///---------------------------------------------------------------------------------
-    ///
-    QString Dir     = QDir::currentPath();
-    QString iniDir = Dir+"/config";
-    QDir dir(iniDir);
-    if(!dir.exists())
-    {
-        QDir dir(iniDir); // 注意
-        dir.setPath("");
-        if (!dir.mkpath(iniDir))
-        {
-            // error!
-        }
-    }
-    QString configfilename = iniDir+"/MHealthReport.ini";
-#if defined(Q_OS_LINUX)
-    configfilename = iniDir+"/MHealthReport_linux.ini";
-#endif
-    QSettings configini(configfilename,QSettings::IniFormat);
-    QFileInfo fileInfo(configfilename);
-    if(fileInfo.exists())
-    {
-        m_serverIP   = configini.value("/webserver/server_IP","127.0.0.1").toString();
-        m_serverPort = configini.value("/webserver/server_Port","8080").toString();
-        m_imageViewer = configini.value("/imageviewer/viewer_state",0).toInt();
-        m_config->setConfig(m_serverIP,m_serverPort,m_imageViewer);
-    }
 }
 
-void MainApp::saveServerConfig(QString serverIP, QString serverPort)
+void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer)
 {
     m_serverIP = serverIP;
     m_serverPort = serverPort;
+    m_imageViewerEnable = viewer;
 }
 
 
@@ -186,7 +192,7 @@ MainApp::~MainApp()
     {
         configini.setValue("/webserver/server_IP",m_serverIP);
         configini.setValue("/webserver/server_Port",m_serverPort);
-        configini.setValue("/imageviewer/viewer_state",m_imageViewer);
+        configini.setValue("/imageviewer/viewer_state",m_imageViewerEnable);
     }
     //    if (m_StudyImage)
     //    {
