@@ -49,6 +49,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ui->m_tabWidgetTotal->addTab(m_StudyImage,    "检查列表");
     ui->m_tabWidgetTotal->setCurrentIndex(1);
     connect(m_StudyImage,SIGNAL(lookReport(QString)),this,SLOT(lookStudyReport(QString)));
+    connect(m_StudyImage,SIGNAL(lookImage(QString)),this,SLOT(lookStudyImage(QString)));
 
     ///QWebEngineView
     //m_url = "http://"+m_serverIP+":"+m_serverPort;
@@ -65,7 +66,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     //m_imageView->setUrl(QUrl(m_url+"/view/view.html?1.2.826.0.1.3680043.9.7606.48.1214245415.1267414711.906286"));
     ui->m_tabWidgetTotal->addTab(m_imageView, "图像浏览");
 
-
     ///Config
     m_config          = new Config(this);
     ui->m_tabWidgetTotal->addTab(m_config,"维护配置");
@@ -77,6 +77,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     connect(ui->m_tabWidgetTotal,SIGNAL(tabBarClicked(int)),this,SLOT(TabBarClicked(int)));
     //connect(m_StudyImage, SIGNAL(sendNumber(QString, QString)), this, SLOT(receiveNumber(QString, QString)));
     connect(m_view->page()->profile()->cookieStore(), &QWebEngineCookieStore::cookieAdded,this,&MainApp::slog_cookieAdded);
+
     ///clearHttpCache
     QWebEngineProfile * engineProfile = m_view->page()->profile();
     engineProfile->clearHttpCache();
@@ -127,6 +128,11 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     if (m_imageViewerEnable < 2)
     {
         ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_imageView) );
+
+    }
+    else
+    {
+        m_StudyImage->setUrlImage(true);
     }
     ///------------------------------------------------------------------------------------
 }
@@ -138,6 +144,23 @@ void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer)
     m_imageViewerEnable = viewer;
 }
 
+void MainApp::lookStudyImage(QString studyuid)
+{
+    m_url = "http://"+m_serverIP+":"+m_serverPort;
+    static bool flag = true;
+    if (flag)
+    {
+        m_imageView->setUrl(QUrl(m_url+"/view/view.html?"+studyuid));
+    }
+    else
+    {
+        m_imageView->setUrl(QUrl(m_url+"/view/view.html?"+studyuid));
+    }
+    m_imageView->show();
+    flag = !flag;
+    //QMessageBox::information(NULL, tr("studyReport"),StudyOrderIdentity);
+    ui->m_tabWidgetTotal->setCurrentIndex(3);
+}
 
 void MainApp::lookStudyReport(QString StudyOrderIdentity)
 {
