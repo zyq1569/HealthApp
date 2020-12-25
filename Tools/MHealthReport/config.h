@@ -16,13 +16,13 @@ public:
     ~Config();
 
 signals:
-    void saveConfig(QString , QString);
+    void saveConfig(QString , QString, int);
 
 private slots:
     void saveServerconfig();
 
 public:
-    void setConfig(QString serverip, QString serverport);
+    void setConfig(QString serverip, QString serverport, int viewer);
 
 private:
     Ui::Config *ui;
