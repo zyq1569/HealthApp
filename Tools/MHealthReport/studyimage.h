@@ -34,8 +34,6 @@ public slots:
     void EditPatientInfo();
     void ViewImage();
 
-
-
 private slots:
     /// StudyDB info
     void on_m_getStudyDbImages_clicked();
@@ -49,6 +47,7 @@ private slots:
 signals:
     void sendClientMsg(QString data);
     void lookReport(QString data);
+    void lookImage(QString data);
 
 signals:
     void sendNumber(QString, QString);
