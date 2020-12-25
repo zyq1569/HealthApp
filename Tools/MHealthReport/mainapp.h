@@ -37,6 +37,7 @@ private:
     QString m_serverIP;
     QString m_serverPort;
     QString m_url;
+    int m_imageViewer;
 
 private:
     Ui::MainApp *ui;

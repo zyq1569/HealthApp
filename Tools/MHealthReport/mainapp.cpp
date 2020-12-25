@@ -114,9 +114,10 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     QFileInfo fileInfo(configfilename);
     if(fileInfo.exists())
     {
-        m_serverIP   = configini.value("/webserver/server_IP").toString();
-        m_serverPort = configini.value("/webserver/server_Port").toString();
-        m_config->setConfig(m_serverIP,m_serverPort);
+        m_serverIP   = configini.value("/webserver/server_IP","127.0.0.1").toString();
+        m_serverPort = configini.value("/webserver/server_Port","8080").toString();
+        m_imageViewer = configini.value("/imageviewer/viewer_state",0).toInt();
+        m_config->setConfig(m_serverIP,m_serverPort,m_imageViewer);
     }
 }
 
@@ -185,6 +186,7 @@ MainApp::~MainApp()
     {
         configini.setValue("/webserver/server_IP",m_serverIP);
         configini.setValue("/webserver/server_Port",m_serverPort);
+        configini.setValue("/imageviewer/viewer_state",m_imageViewer);
     }
     //    if (m_StudyImage)
     //    {
