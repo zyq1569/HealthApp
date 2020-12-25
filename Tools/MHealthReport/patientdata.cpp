@@ -19,6 +19,7 @@ void setServerHttpUrl(QString url)
 {
     g_serverHttpUrl = url;
 }
+
 void setDownDir(QString dir)
 {
     g_downDir = dir;

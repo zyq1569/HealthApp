@@ -3,7 +3,7 @@
 
 #include "studyimage.h"
 #include "patientstudyregister.h"
-
+#include "patientdata.h"
 #include "config.h"
 
 #include <QProcess>
@@ -106,6 +106,17 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
             // error!
         }
     }
+    QString cacheDir = Dir+"/cache";
+    QDir downdir(cacheDir);
+    if(!dir.exists())
+    {
+        QDir downdir(cacheDir); // 注意
+        downdir.setPath("");
+        if (!downdir.mkpath(cacheDir))
+        {
+            // error!
+        }
+    }
     m_imageViewerEnable = 0;
     QString configfilename = iniDir+"/MHealthReport.ini";
 #if defined(Q_OS_LINUX)
@@ -128,12 +139,14 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     if (m_imageViewerEnable < 2)
     {
         ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_imageView) );
-
     }
     else
     {
         m_StudyImage->setUrlImage(true);
     }
+    QString HttpUrl = "http://"+m_serverIP+":"+m_serverPort;
+    setServerHttpUrl(HttpUrl);
+    setDownDir(cacheDir);
     ///------------------------------------------------------------------------------------
 }
 
