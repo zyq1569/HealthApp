@@ -144,7 +144,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     {
         m_StudyImage->setUrlImage(true);
     }
-    QString HttpUrl = "http://"+m_serverIP+":"+m_serverPort;
+    QString HttpUrl = "http://" + m_serverIP + ":" + m_serverPort;
     setServerHttpUrl(HttpUrl);
     setDownDir(cacheDir);
     ///------------------------------------------------------------------------------------
