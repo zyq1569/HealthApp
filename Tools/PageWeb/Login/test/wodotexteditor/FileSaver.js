@@ -194,7 +194,7 @@ var saveAs = saveAs
 				pos = docUrl.indexOf('#');
 				if (pos !== -1) {
 					orderid = docUrl.substr(pos + 1);
-					var serverODTurl = "http://" + serverHost + "/healthsystem/ris/saveodtreport/?StudyOrderIdentity=" + orderid ;
+					var serverODTurl = "http://" + serverHost + "/healthsystem/ris/saveodtreport/?StudyOrderIdentity=" + orderid;
 					var xmlRequest = new XMLHttpRequest();
 					xmlRequest.open("POST", serverODTurl, true);// true:asynchronous   false :synchronous 
 					xmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

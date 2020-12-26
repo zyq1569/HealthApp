@@ -71,7 +71,7 @@ function createEditor() {
             return myUrl || null;
         }
         var mimetype = "application/vnd.oasis.opendocument.text";
-        var myServerOdtUrl = "", serverODTurl = "http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt";
+        var myServerOdtUrl = "", serverODTurl = "http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt&random="+Math.random();
         var xmlRequest = new XMLHttpRequest();
         xmlRequest.open("GET", serverODTurl, true);// true:asynchronous   false :synchronous 
         xmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
