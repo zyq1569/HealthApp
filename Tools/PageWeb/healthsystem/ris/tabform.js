@@ -107,7 +107,7 @@ function ChangeTab(table, item) {
 
 var searchImageTime = 'start=19700101&end=20191230';
 var searchStudyTime = 'start=19700101&end=20191230';
-
+var flag = true;
 layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     var laypage = layui.laypage, //分页
         table = layui.table, //表格
@@ -203,7 +203,15 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
             case 'detail':
                 {
                     //layer.msg('查看操作');  
-                    layer.alert('detail： rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(obj.data));
+                    //layer.alert('detail： rowIndex:' + obj.tr[0].rowIndex + ' 选中数据:' + JSON.stringify(obj.data));
+                    var json = obj.data;
+                    //var reportview_url ='http://' + window.location.host + '/login/test/testReport.html#'+json.StudyOrderIdentity;
+                    if (flag) {
+                        window.open('http://' + window.location.host + '/login/test/studyReport.html?'+Math.random()+'#'+json.StudyOrderIdentity);   
+                    } else {
+                        window.open('http://' + window.location.host + '/login/test/testReport.html?'+Math.random()+'#'+json.StudyOrderIdentity);
+                    }
+                    flag = !flag;
                     break;
                 }
             case 'del ':
