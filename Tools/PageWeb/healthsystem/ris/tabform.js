@@ -151,7 +151,6 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     });
     //testWebDOF
     $('.testWebDOF .layui-btn').on('click', function () {
-        //window.open('http://' + window.location.host + '/login/test/testReport.html#wodotexteditor/welcome.odt');
         window.open('http://' + window.location.host + '/login/test/testReport.html#A');
         //window.location.replace('http://' + window.location.host + '/healthsystem/ris/StudyReport.html')
     });
