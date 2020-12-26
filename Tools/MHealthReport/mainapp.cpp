@@ -36,7 +36,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     m_serverIP = "127.0.0.1";
     m_serverPort = "8080";
 
-
     this->setCentralWidget(ui->m_tabWidgetTotal);
 
     ///PatientStudyRegister
@@ -93,7 +92,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     //}
     //}
     ///---------------------------------------------------------------------------------
-    ///
     QString Dir     = QDir::currentPath();
     QString iniDir = Dir+"/config";
     QDir dir(iniDir);
