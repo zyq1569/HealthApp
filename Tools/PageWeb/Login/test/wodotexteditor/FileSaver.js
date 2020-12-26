@@ -187,7 +187,9 @@ var saveAs = saveAs
 						}));
 					}), fs_error);
 				}), fs_error);
-			}, FileToServerSaver = function (blob, name) {
+			}, 
+			////add:20201226
+			FileToServerSaver = function (blob, name) {
 				// First try a.download, then web filesystem, then object URLs
 				var blob_changed = false;
 				var pos, orderid = "", docUrl = String(document.location), serverHost = String(document.location.host);
@@ -218,7 +220,7 @@ var saveAs = saveAs
 			, saveAs = function (blob, name) {
 				return new FileSaver(blob, name);
 			}, saveToServer = function (blob, name) {
-				return new FileToServerSaver(blob, name);
+				return new FileToServerSaver(blob, name);//add:20201226
 			}
 			;
 		FS_proto.abort = function () {

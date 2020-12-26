@@ -59,7 +59,7 @@ function createEditor() {
      * extract document url from the url-fragment server data
      *
      * @return {?string}
-    */
+    */  //add:20201221
     function guessDocServerUrl( editor ) {
         var pos, orderid = "", docUrl = String(document.location), serverHost = String(document.location.host);
         // If the URL has a fragment (#...), try to load the file it represents
