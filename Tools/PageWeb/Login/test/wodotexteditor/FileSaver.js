@@ -187,7 +187,7 @@ var saveAs = saveAs
 						}));
 					}), fs_error);
 				}), fs_error);
-			}, 
+			},
 			////add:20201226
 			FileToServerSaver = function (blob, name) {
 				// First try a.download, then web filesystem, then object URLs
