@@ -155,6 +155,8 @@ void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer)
     m_serverIP = serverIP;
     m_serverPort = serverPort;
     m_imageViewerEnable = viewer;
+    QString HttpUrl = "http://" + m_serverIP + ":" + m_serverPort;
+    setServerHttpUrl(HttpUrl);
 }
 
 void MainApp::lookStudyImage(QString studyuid)
