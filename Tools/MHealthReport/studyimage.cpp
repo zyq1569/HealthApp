@@ -76,7 +76,9 @@ void StudyImage::ViewImage()
         }
         else
         {
-            emit sendClientMsg(studyuid);
+            //emit sendClientMsg(studyuid);
+            QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+studyuid;
+            emit sendClientMsg(info/*studyuid*/);
         }
     }
     else
