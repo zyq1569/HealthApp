@@ -264,7 +264,8 @@ void StudyImage::on_m_tableWidget_cellDoubleClicked(int row, int column)
         }
         else
         {
-            emit sendClientMsg(studyuid);
+            QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+studyuid;
+            emit sendClientMsg(info/*studyuid*/);
         }
     }
     else
