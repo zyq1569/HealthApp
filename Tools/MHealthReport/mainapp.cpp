@@ -97,20 +97,20 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     QDir dir(iniDir);
     if(!dir.exists())
     {
-        QDir dir(iniDir); // 注意
-        dir.setPath("");
-        if (!dir.mkpath(iniDir))
+        QDir createDir(iniDir); // 注意
+        createDir.setPath("");
+        if (!createDir.mkpath(iniDir))
         {
             // error!
         }
     }
     QString cacheDir = Dir+"/cache";
     QDir downdir(cacheDir);
-    if(!dir.exists())
+    if(!downdir.exists())
     {
-        QDir downdir(cacheDir); // 注意
-        downdir.setPath("");
-        if (!downdir.mkpath(cacheDir))
+        QDir createDir(cacheDir); // 注意
+        createDir.setPath("");
+        if (!createDir.mkpath(cacheDir))
         {
             // error!
         }
