@@ -13,7 +13,7 @@ Config::Config(QWidget *parent) :
     ui->m_imageViewer->setTristate(false);
     QString dir = QDir::currentPath();
     int  i = dir.lastIndexOf("/");
-    QString viewerdir =  dir.left(i-1);
+    QString viewerdir =  dir.left(i);
     dir = viewerdir + "/Starviewer/starviewer.exe";
     ui->m_viewerDir->setText(dir);
 }

@@ -133,6 +133,20 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     if (m_imageViewerEnable < 2)
     {
         ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_imageView) );
+
+        ///---begin starviewer.exe
+        QString currentdir = QDir::currentPath();
+        int  pos = currentdir.lastIndexOf("/");
+        QString viewerdir =  currentdir.left(pos);
+        viewerdir = viewerdir + "/starviewer/starviewer.exe";
+        //QMessageBox::information(NULL, tr("viewerdir"),viewerdir);
+        QFileInfo fileExe(viewerdir);
+        if(fileExe.exists())
+        {
+            m_QProcess = new QProcess(parent);
+            m_QProcess->start(viewerdir);
+        }
+        ///----end starviewer.exe
     }
     else
     {
@@ -142,17 +156,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     setServerHttpUrl(HttpUrl);
     setDownDir(cacheDir);
     ///------------------------------------------------------------------------------------
-    QString currentdir = QDir::currentPath();
-    int  i = currentdir.lastIndexOf("/");
-    QString viewerdir =  currentdir.left(i-1);
-    viewerdir = viewerdir + "/Starviewer/starviewer.exe";
-    QFileInfo fileExe(viewerdir);
-    if(fileExe.exists())
-    {
-        m_QProcess = new QProcess(parent);
-        //start starviewer.exe
-        m_QProcess->start(viewerdir);
-    }
 }
 
 void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer)
