@@ -242,5 +242,6 @@ var saveAs = saveAs
 			null;
 
 		view.addEventListener("unload", process_deletion_queue, false);
-		return saveToServer;//saveAs;
+		// return saveAs;// del
+		return saveToServer;//add : save to server
 	}(self));

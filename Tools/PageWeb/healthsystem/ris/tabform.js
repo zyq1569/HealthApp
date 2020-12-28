@@ -262,7 +262,6 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
         flag = !flag;
         //<!-- end 20201218 add:new report -->
 
-
         /// <!-- abandon 2020-1229: old report & load -->
         // if (json.StudyOrderIdentity == g_currentReportOrderIdentity) {
         //     element.tabChange('TabBrief', 'layid_report');
