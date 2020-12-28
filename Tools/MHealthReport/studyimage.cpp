@@ -49,9 +49,10 @@ StudyImage::StudyImage(QWidget *parent) :
     connect(action,SIGNAL(triggered()),this,SLOT(EditReport()));
     m_menu->addAction(action);
 
-    action = new QAction("编辑信息",this);
-    connect(action,SIGNAL(triggered()),this,SLOT(EditPatientInfo()));
-    m_menu->addAction(action);
+    //temp del
+    //action = new QAction("编辑信息",this);
+    //connect(action,SIGNAL(triggered()),this,SLOT(EditPatientInfo()));
+    //m_menu->addAction(action);
 
     action = new QAction("检查图像",this);
     connect(action,SIGNAL(triggered()),this,SLOT(ViewImage()));
