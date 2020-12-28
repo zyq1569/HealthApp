@@ -29,10 +29,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 {
     ui->setupUi(this);
 
-    m_QProcess = new QProcess(parent);
-    //start test  exe
-    //QString appPath = "F:/temp/HealthApp/Tools/Test/TestHttpClient/release/TestHttpClient.exe";//ui->m_AppDir->text();
-    //m_QProcess->start(appPath);
     m_serverIP = "127.0.0.1";
     m_serverPort = "8080";
 
@@ -146,6 +142,17 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     setServerHttpUrl(HttpUrl);
     setDownDir(cacheDir);
     ///------------------------------------------------------------------------------------
+    QString currentdir = QDir::currentPath();
+    int  i = currentdir.lastIndexOf("/");
+    QString viewerdir =  currentdir.left(i-1);
+    viewerdir = viewerdir + "/Starviewer/starviewer.exe";
+    QFileInfo fileExe(viewerdir);
+    if(fileExe.exists())
+    {
+        m_QProcess = new QProcess(parent);
+        //start starviewer.exe
+        m_QProcess->start(viewerdir);
+    }
 }
 
 void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer)
