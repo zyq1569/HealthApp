@@ -206,9 +206,9 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     var json = obj.data;
                     //var reportview_url ='http://' + window.location.host + '/login/test/testReport.html#'+json.StudyOrderIdentity;
                     if (flag) {
-                        window.open('http://' + window.location.host + '/login/test/studyReport.html?'+Math.random()+'#'+json.StudyOrderIdentity);   
+                        window.open('http://' + window.location.host + '/login/test/studyReport.html?' + Math.random() + '#' + json.StudyOrderIdentity);
                     } else {
-                        window.open('http://' + window.location.host + '/login/test/testReport.html?'+Math.random()+'#'+json.StudyOrderIdentity);
+                        window.open('http://' + window.location.host + '/login/test/testReport.html?' + Math.random() + '#' + json.StudyOrderIdentity);
                     }
                     flag = !flag;
                     break;
@@ -253,61 +253,72 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     table.on('rowDouble(studytabledatas)', function (obj) {
         //var patient = JSON.stringify(obj.data);
         var json = obj.data; // JSON.parse(patient);
-        if (json.StudyOrderIdentity == g_currentReportOrderIdentity) {
-            element.tabChange('TabBrief', 'layid_report');
-            return;
-        } else if (g_currentReportOrderIdentity.length > 0) {
-            if (saveReport2ServerContent() < 0) {
-                layer.alert(g_mess_savereportfail);
-                element.tabChange('TabBrief', 'layid_report');
-                return -1;
-            }
+        //<!-- begin 20201218 add:new report -->
+        if (flag) {
+            window.open('http://' + window.location.host + '/login/test/studyReport.html?' + Math.random() + '#' + json.StudyOrderIdentity);
+        } else {
+            window.open('http://' + window.location.host + '/login/test/testReport.html?' + Math.random() + '#' + json.StudyOrderIdentity);
         }
-        var reportdata = g_reportData; //temp_report
-        reportdata.StudyOrderIdentity = json.StudyOrderIdentity;
-        reportdata.ReportIdentity = json.StudyOrderIdentity;
-        reportdata.ReportContent = ''; // to do ... next
-        //set title content
-        // document.getElementById("reporpatientname").innerText = "Name:" + json.patientName;
-        //document.getElementById("reporpatientid").innerText = "ID:" + json.patientId;
-        var postdata = JSON.stringify(reportdata);
-        //获取数据库检查报告信息
-        $.ajax({
-            type: "POST",
-            url: 'http://' + window.location.host + '/healthsystem/ris/getreportdata',
-            async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
-            data: postdata, //JSON.stringify(reportdata), //请求save处理数据
-            // dataType: "json",
-            success: function (result) {
-                try {
-                    if (typeof result == 'string') {
-                        var jsondata;
-                        jsondata = JSON.parse(result);
-                        // console.log('result == string');
-                        result = jsondata;
-                    }
-                } catch (e) {
-                    console.log('result != string');
-                }
-                if (result.ReportContent.length > 0) {
-                    reportdata = result;
-                    // layer.alert('ok:' + reportdata.ReportContent);
-                    element.tabChange('TabBrief', 'layid_report');
-                    setStudyReportContent(reportdata);
-                    return;
-                } else {
-                    setStudyReportContent(reportdata);
-                    reportdata.ReportIdentity = "";
-                    layer.alert('no report data! to create new empty report!');
-                    element.tabChange('TabBrief', 'layid_report');
-                }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                setStudyReportContent(reportdata);
-                layer.alert('Get report error! no report data!');
-                element.tabChange('TabBrief', 'layid_report');
-            }
-        });
+        flag = !flag;
+        //<!-- end 20201218 add:new report -->
+
+
+        /// <!-- abandon 2020-1229: old report & load -->
+        // if (json.StudyOrderIdentity == g_currentReportOrderIdentity) {
+        //     element.tabChange('TabBrief', 'layid_report');
+        //     return;
+        // } else if (g_currentReportOrderIdentity.length > 0) {
+        //     if (saveReport2ServerContent() < 0) {
+        //         layer.alert(g_mess_savereportfail);
+        //         element.tabChange('TabBrief', 'layid_report');
+        //         return -1;
+        //     }
+        // }
+        // var reportdata = g_reportData; //temp_report
+        // reportdata.StudyOrderIdentity = json.StudyOrderIdentity;
+        // reportdata.ReportIdentity = json.StudyOrderIdentity;
+        // reportdata.ReportContent = ''; // to do ... next
+        // //set title content
+        // // document.getElementById("reporpatientname").innerText = "Name:" + json.patientName;
+        // //document.getElementById("reporpatientid").innerText = "ID:" + json.patientId;
+        // var postdata = JSON.stringify(reportdata);
+        // //获取数据库检查报告信息
+        // $.ajax({
+        //     type: "POST",
+        //     url: 'http://' + window.location.host + '/healthsystem/ris/getreportdata',
+        //     async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
+        //     data: postdata, //JSON.stringify(reportdata), //请求save处理数据
+        //     // dataType: "json",
+        //     success: function (result) {
+        //         try {
+        //             if (typeof result == 'string') {
+        //                 var jsondata;
+        //                 jsondata = JSON.parse(result);
+        //                 // console.log('result == string');
+        //                 result = jsondata;
+        //             }
+        //         } catch (e) {
+        //             console.log('result != string');
+        //         }
+        //         if (result.ReportContent.length > 0) {
+        //             reportdata = result;
+        //             // layer.alert('ok:' + reportdata.ReportContent);
+        //             element.tabChange('TabBrief', 'layid_report');
+        //             setStudyReportContent(reportdata);
+        //             return;
+        //         } else {
+        //             setStudyReportContent(reportdata);
+        //             reportdata.ReportIdentity = "";
+        //             layer.alert('no report data! to create new empty report!');
+        //             element.tabChange('TabBrief', 'layid_report');
+        //         }
+        //     },
+        //     error: function (XMLHttpRequest, textStatus, errorThrown) {
+        //         setStudyReportContent(reportdata);
+        //         layer.alert('Get report error! no report data!');
+        //         element.tabChange('TabBrief', 'layid_report');
+        //     }
+        // });
     });
 
     //submit patientform
