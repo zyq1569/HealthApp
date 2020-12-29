@@ -112,13 +112,13 @@ HMainWindow::HMainWindow(QWidget *parent) :
     {
         CreatDir(logDir);
     }
-//    el::Configurations defaultConf;
-//    defaultConf.setToDefault();
-//    QString logDirFilename = logDir+"/HServerManageUI.log";
-//    defaultConf.set(el::Level::Info,el::ConfigurationType::Filename, logDirFilename.toStdString());
-//    el::Loggers::reconfigureLogger("default", defaultConf);
-    setLogDefault();
-    LOG(INFO) << "First log test";
+    //el::Configurations defaultConf;
+    //defaultConf.setToDefault();
+    //QString logDirFilename = logDir+"/HServerManageUI.log";
+    //defaultConf.set(el::Level::Info,el::ConfigurationType::Filename, logDirFilename.toStdString());
+    //el::Loggers::reconfigureLogger("default", defaultConf);
+    //setLogDefault();
+    //LOG(INFO) << "First log test";
     //-------------------------------------------------------
     for (int i=0; i<QPROCESSSIZE; i++)
     {
@@ -233,7 +233,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
 
 HMainWindow::~HMainWindow()
 {
-    LOG(INFO) << "HMainWindow::~HMainWindow";
+    //LOG(INFO) << "HMainWindow::~HMainWindow";
     QString Dir = QDir::currentPath();
     QString iniDir = Dir+"/config";
     if (!isDirExist( iniDir))
