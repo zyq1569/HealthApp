@@ -886,7 +886,7 @@
         <locale language="Chinese" country="China"/>
        </property>
        <property name="text">
-        <string>root</string>
+        <string>dbuser</string>
        </property>
       </widget>
      </item>
@@ -909,7 +909,7 @@
         <locale language="Chinese" country="China"/>
        </property>
        <property name="text">
-        <string>root</string>
+        <string>dbuser</string>
        </property>
       </widget>
      </item>
