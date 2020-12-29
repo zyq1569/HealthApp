@@ -111,11 +111,11 @@ HMainWindow::HMainWindow(QWidget *parent) :
 
         //client //configini.setValue("/client/count",count);
         int count = configini.value("/client/count").toInt();
-        //        m_model->setColumnCount(3);
+        //m_model->setColumnCount(3);
         m_model->setRowCount(count);
-        //        m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
-        //        m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
-        //        m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
+        //m_model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("AEtitle"));
+        //m_model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Port"));
+        //m_model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("IpAddress"));
         if (0 < count)
         {
             ui->AEtitle->setText(configini.value("/client/aetitle0").toString());
@@ -180,9 +180,9 @@ HMainWindow::~HMainWindow()
         configini.setValue("/dicom/log_Query",ui->comLevel_Query->currentText());
         configini.setValue("/dicom/log_SaveInfo",ui->comLevel_SaveInfo->currentText());
         //client
-        //        configini.setValue("/client/aetitle1",ui->AEtitle->text());
-        //        configini.setValue("/client/port1",ui->clientPortValue->text());
-        //        configini.setValue("/client/ip1",ui->IpAddressValue->text());
+        //configini.setValue("/client/aetitle1",ui->AEtitle->text());
+        //configini.setValue("/client/port1",ui->clientPortValue->text());
+        //configini.setValue("/client/ip1",ui->IpAddressValue->text());
         int count = m_model->rowCount();
         configini.setValue("/client/count",count);
         QString pre = "";
