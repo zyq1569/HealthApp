@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `h_study` (
   `AETitle` char(50) DEFAULT '""' COMMENT '设备 AE( 设备的唯一名称)',
   PRIMARY KEY (`StudyIdentity`),
   KEY `PatientIdentity` (`PatientIdentity`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='患者一次图像检查基本信息(dcm文件中信息，正常情况这些信息都是来至ris登记的信息-worklist，特殊情况下是技师在影像设备上如输入甚至设备默认值)';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='2020-12-29 废弃该表: 患者一次图像检查基本信息(dcm文件中信息，正常情况这些信息都是来至ris登记的信息-worklist，特殊情况下是技师在影像设备上如输入甚至设备默认值)';
 
 -- Data exporting was unselected.
 
