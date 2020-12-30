@@ -218,74 +218,80 @@
     <property name="title">
      <string>QueryClient</string>
     </property>
-    <widget class="QWidget" name="layoutWidget">
+    <widget class="QPushButton" name="query_add">
      <property name="geometry">
       <rect>
-       <x>220</x>
-       <y>53</y>
-       <width>254</width>
-       <height>24</height>
+       <x>211</x>
+       <y>51</y>
+       <width>46</width>
+       <height>22</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QPushButton" name="query_add">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run webserver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="locale">
-         <locale language="Chinese" country="China"/>
-        </property>
-        <property name="text">
-         <string>增加</string>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-        <property name="flat">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="query_delete">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run webserver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="locale">
-         <locale language="Chinese" country="China"/>
-        </property>
-        <property name="text">
-         <string>删除</string>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-        <property name="flat">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="query_modify">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run webserver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="locale">
-         <locale language="Chinese" country="China"/>
-        </property>
-        <property name="text">
-         <string>修改</string>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-        <property name="flat">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run webserver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="locale">
+      <locale language="Chinese" country="China"/>
+     </property>
+     <property name="text">
+      <string>增加</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="query_delete">
+     <property name="geometry">
+      <rect>
+       <x>263</x>
+       <y>51</y>
+       <width>46</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run webserver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="locale">
+      <locale language="Chinese" country="China"/>
+     </property>
+     <property name="text">
+      <string>删除</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="query_modify">
+     <property name="geometry">
+      <rect>
+       <x>315</x>
+       <y>51</y>
+       <width>45</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run webserver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="locale">
+      <locale language="Chinese" country="China"/>
+     </property>
+     <property name="text">
+      <string>修改</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
@@ -308,7 +314,7 @@
       <rect>
        <x>199</x>
        <y>29</y>
-       <width>55</width>
+       <width>61</width>
        <height>22</height>
       </rect>
      </property>
@@ -320,8 +326,11 @@
      <property name="locale">
       <locale language="Chinese" country="China"/>
      </property>
+     <property name="currentText">
+      <string>WARN</string>
+     </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <item>
       <property name="text">
@@ -408,9 +417,9 @@
    <widget class="QLabel" name="label_Dcm2Db_2">
     <property name="geometry">
      <rect>
-      <x>108</x>
+      <x>107</x>
       <y>144</y>
-      <width>160</width>
+      <width>161</width>
       <height>20</height>
      </rect>
     </property>
@@ -430,7 +439,7 @@
     <property name="geometry">
      <rect>
       <x>346</x>
-      <y>142</y>
+      <y>143</y>
       <width>61</width>
       <height>22</height>
      </rect>
@@ -444,7 +453,7 @@
      <locale language="Chinese" country="China"/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <item>
      <property name="text">
@@ -514,596 +523,705 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLineEdit" name="mysqlServerValue">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>176</x>
-      <y>31</y>
-      <width>71</width>
-      <height>101</height>
+      <x>68</x>
+      <y>231</y>
+      <width>91</width>
+      <height>22</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
-     <item>
-      <widget class="QLineEdit" name="port_wlm">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>1666</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="port_store">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>1667</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="port_qr">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>1668</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>127.0.0.1</string>
+    </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLabel" name="mysqlServer">
     <property name="geometry">
      <rect>
-      <x>344</x>
-      <y>27</y>
-      <width>61</width>
-      <height>111</height>
+      <x>12</x>
+      <y>233</y>
+      <width>32</width>
+      <height>16</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_5">
-     <item>
-      <widget class="QComboBox" name="comLevel_worklist">
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-        </font>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>TRACE</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>DEBUG</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>INFO</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>WARN</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>ERROR</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>FATAL</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>OFF</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comLevel_Store">
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-        </font>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>TRACE</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>DEBUG</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>INFO</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>WARN</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>ERROR</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>FATAL</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>OFF</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comLevel_Query">
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-        </font>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>TRACE</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>DEBUG</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>INFO</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>WARN</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>ERROR</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>FATAL</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>OFF</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>Server</string>
+    </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLabel" name="mysqlUserName">
     <property name="geometry">
      <rect>
-      <x>131</x>
-      <y>30</y>
-      <width>22</width>
-      <height>101</height>
+      <x>12</x>
+      <y>263</y>
+      <width>50</width>
+      <height>16</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QLabel" name="label_wlm_2">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>port</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_wlm_3">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>port</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_wlm_4">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>port</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>UserName</string>
+    </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLineEdit" name="mysqldbNameValue">
     <property name="geometry">
      <rect>
-      <x>9</x>
-      <y>33</y>
-      <width>90</width>
-      <height>101</height>
+      <x>257</x>
+      <y>231</y>
+      <width>91</width>
+      <height>22</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QLabel" name="label_wlm">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>WorklistSCP</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_store">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>DicomStoreSCP</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_qrscp">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>QueryRetrieveSCP</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>HIT</string>
+    </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLabel" name="MySqldbName">
     <property name="geometry">
      <rect>
-      <x>11</x>
-      <y>227</y>
-      <width>381</width>
-      <height>61</height>
+      <x>208</x>
+      <y>234</y>
+      <width>43</width>
+      <height>16</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="mysqlServer">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>Server</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="mysqlServerValue">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>127.0.0.1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="MySqldbName">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>SqlName</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QLineEdit" name="mysqldbNameValue">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>HIT</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="mysqlUserName">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>UserName</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="mysqlUserNameValue">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>dbuser</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLabel" name="mysqlPWD">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>SqlPWD</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QLineEdit" name="mysqlPWDValue">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>dbuser</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>SqlName</string>
+    </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLabel" name="mysqlPWD">
     <property name="geometry">
      <rect>
-      <x>13</x>
-      <y>333</y>
-      <width>191</width>
-      <height>52</height>
+      <x>208</x>
+      <y>267</y>
+      <width>39</width>
+      <height>16</height>
      </rect>
     </property>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="mysqlServer_2">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>AEtitle</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="AEtitle">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>RADIANT</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="IpAddress">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>IpAddress</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="IpAddressValue">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>127.0.0.1</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>SqlPWD</string>
+    </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLineEdit" name="mysqlUserNameValue">
     <property name="geometry">
      <rect>
-      <x>13</x>
-      <y>530</y>
-      <width>71</width>
-      <height>51</height>
+      <x>68</x>
+      <y>262</y>
+      <width>91</width>
+      <height>22</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_6">
-     <item>
-      <widget class="QLabel" name="label_webserver">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>port</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_PagefileDir">
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>PagefileDir</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>dbuser</string>
+    </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLineEdit" name="mysqlPWDValue">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>27</y>
-      <width>61</width>
-      <height>151</height>
+      <x>257</x>
+      <y>262</y>
+      <width>91</width>
+      <height>22</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_4">
-     <item>
-      <widget class="QPushButton" name="WLMSCP">
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run worklist scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>启动</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="StoreSCP">
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run store scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>启动</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="QRSCP">
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run queryRe scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>启动</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="Dcm2DB">
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;manage dicom info to mysql&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="locale">
-        <locale language="Chinese" country="China"/>
-       </property>
-       <property name="text">
-        <string>启动</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>dbuser</string>
+    </property>
    </widget>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
+   <widget class="QLabel" name="label_wlm">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>39</y>
+      <width>58</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>WorklistSCP</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_qrscp">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>106</y>
+      <width>88</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>QueryRetrieveSCP</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_store">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>71</y>
+      <width>75</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>DicomStoreSCP</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_wlm_3">
+    <property name="geometry">
+     <rect>
+      <x>132</x>
+      <y>72</y>
+      <width>20</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>port</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_wlm_2">
+    <property name="geometry">
+     <rect>
+      <x>132</x>
+      <y>40</y>
+      <width>20</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>port</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_wlm_4">
+    <property name="geometry">
+     <rect>
+      <x>132</x>
+      <y>108</y>
+      <width>20</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>port</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="port_wlm">
+    <property name="geometry">
+     <rect>
+      <x>177</x>
+      <y>37</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>1666</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="port_qr">
+    <property name="geometry">
+     <rect>
+      <x>177</x>
+      <y>103</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>1668</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="port_store">
+    <property name="geometry">
+     <rect>
+      <x>177</x>
+      <y>70</y>
+      <width>69</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>1667</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="WLMSCP">
+    <property name="geometry">
+     <rect>
+      <x>271</x>
+      <y>36</y>
+      <width>59</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run worklist scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>启动</string>
+    </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="StoreSCP">
+    <property name="geometry">
+     <rect>
+      <x>271</x>
+      <y>72</y>
+      <width>59</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run store scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>启动</string>
+    </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="QRSCP">
+    <property name="geometry">
+     <rect>
+      <x>271</x>
+      <y>108</y>
+      <width>59</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;run queryRe scp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>启动</string>
+    </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Dcm2DB">
+    <property name="geometry">
+     <rect>
+      <x>271</x>
+      <y>144</y>
+      <width>59</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;manage dicom info to mysql&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>启动</string>
+    </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comLevel_worklist">
+    <property name="geometry">
+     <rect>
+      <x>345</x>
+      <y>35</y>
+      <width>65</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="currentIndex">
+     <number>3</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>TRACE</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DEBUG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>INFO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>WARN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ERROR</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FATAL</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OFF</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="comLevel_Store">
+    <property name="geometry">
+     <rect>
+      <x>345</x>
+      <y>70</y>
+      <width>65</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="currentIndex">
+     <number>3</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>TRACE</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DEBUG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>INFO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>WARN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ERROR</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FATAL</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OFF</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="comLevel_Query">
+    <property name="geometry">
+     <rect>
+      <x>345</x>
+      <y>105</y>
+      <width>65</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="currentIndex">
+     <number>3</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>TRACE</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DEBUG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>INFO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>WARN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ERROR</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FATAL</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OFF</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="label_PagefileDir">
+    <property name="geometry">
+     <rect>
+      <x>14</x>
+      <y>560</y>
+      <width>52</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>PagefileDir</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_webserver">
+    <property name="geometry">
+     <rect>
+      <x>14</x>
+      <y>531</y>
+      <width>20</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>port</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="mysqlServer_2">
+    <property name="geometry">
+     <rect>
+      <x>14</x>
+      <y>334</y>
+      <width>31</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>AEtitle</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="AEtitle">
+    <property name="geometry">
+     <rect>
+      <x>69</x>
+      <y>334</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>RADIANT</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="IpAddress">
+    <property name="geometry">
+     <rect>
+      <x>14</x>
+      <y>362</y>
+      <width>49</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>IpAddress</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="IpAddressValue">
+    <property name="geometry">
+     <rect>
+      <x>69</x>
+      <y>362</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="text">
+     <string>127.0.0.1</string>
+    </property>
+   </widget>
    <zorder>groupBox_2</zorder>
+   <zorder>label_wlm</zorder>
+   <zorder>label_qrscp</zorder>
+   <zorder>label_store</zorder>
+   <zorder>label_wlm_3</zorder>
+   <zorder>label_wlm_2</zorder>
+   <zorder>label_wlm_4</zorder>
+   <zorder>port_wlm</zorder>
+   <zorder>port_qr</zorder>
+   <zorder>port_store</zorder>
+   <zorder>WLMSCP</zorder>
+   <zorder>StoreSCP</zorder>
+   <zorder>QRSCP</zorder>
+   <zorder>Dcm2DB</zorder>
+   <zorder>comLevel_worklist</zorder>
+   <zorder>comLevel_Store</zorder>
+   <zorder>comLevel_Query</zorder>
+   <zorder>label_PagefileDir</zorder>
+   <zorder>label_webserver</zorder>
+   <zorder>mysqlServer_2</zorder>
+   <zorder>AEtitle</zorder>
+   <zorder>IpAddress</zorder>
+   <zorder>IpAddressValue</zorder>
    <zorder>groupBox_3</zorder>
    <zorder>groupBox</zorder>
+   <zorder>mysqlServerValue</zorder>
+   <zorder>mysqlServer</zorder>
+   <zorder>mysqlUserName</zorder>
+   <zorder>mysqldbNameValue</zorder>
+   <zorder>MySqldbName</zorder>
+   <zorder>mysqlPWD</zorder>
+   <zorder>mysqlUserNameValue</zorder>
+   <zorder>mysqlPWDValue</zorder>
    <zorder>label_qrscp_2</zorder>
    <zorder>label_Dcm2Db</zorder>
    <zorder>label_UI</zorder>
