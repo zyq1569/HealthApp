@@ -359,12 +359,17 @@ func LoadImageFile(c echo.Context) error {
 		odtpath += ".odt"
 		patientReport := CONFIG[IMAGE_Dir] + "/Report/patient.odt"
 		log4go.Debug("type == odt filepath:" + odtpath) //patient.odt
+		studyTemp := CONFIG[PAGE_Dir] + "/Login/test/studyTemp.odt"
 		if IsFileExists(odtpath) {
 			return c.File(odtpath)
 		} else if IsFileExists(patientReport) {
 			log4go.Warn("use deault Report filepath:" + patientReport)
 			log4go.Error("No filepath:" + odtpath)
 			return c.File(patientReport)
+		}
+		if IsFileExists(studyTemp) {
+			log4go.Warn("use temp deault Report filepath:" + studyTemp)
+			return c.File(studyTemp)
 		} else {
 			log4go.Error("No filepath:" + odtpath)
 		}
