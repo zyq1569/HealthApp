@@ -129,11 +129,10 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
         m_config->setConfig(m_serverIP,m_serverPort,m_imageViewerEnable);
     }
     m_url = "http://"+m_serverIP+":"+m_serverPort;
-    m_view->setUrl(QUrl(m_url+"/login/test/testReport.html#Temple"));
+    m_view->setUrl(QUrl(m_url+"/login/test/testReport.html#studyTemp"));
     if (m_imageViewerEnable < 2)
     {
         ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_imageView) );
-
         ///---begin starviewer.exe
         QString currentdir = QDir::currentPath();
         int  pos = currentdir.lastIndexOf("/");
