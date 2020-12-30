@@ -774,7 +774,7 @@ func UpdateDBStudyData(c echo.Context) error {
 			}
 			sqlstr = "insert into h_order (`StudyOrderIdentity`,`PatientIdentity`,`StudyID`, `StudyUID`,`StudyModality`," +
 				"`ScheduledDateTime`,`StudyDateTime`,`StudyDescription`,`StudyDepart`,`StudyCode`,`StudyCost`,`CostType`)" +
-				" value(?,?,?,?,?,?,?,?,?,?,?)"
+				" value(?,?,?,?,?,?,?,?,?,?,?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
 			if err != nil {
 				println("------fail  maridb_db.Prepare(sqlstr) insert into h_order:--------")
