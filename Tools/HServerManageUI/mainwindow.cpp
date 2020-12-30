@@ -7,83 +7,83 @@
 
 ///---------log file
 #include "easylogging++.h"
-INITIALIZE_EASYLOGGINGPP
+//INITIALIZE_EASYLOGGINGPP
 ///---------log file-----------
-void debugLog(const QString &msg, const QString &file, int line, const QString &function)
-{
-    LOG(DEBUG) << qPrintable(QString("%1 [ %2:%3 %4 ]").arg(msg).arg(file).arg(line).arg(function));
-}
+//void debugLog(const QString &msg, const QString &file, int line, const QString &function)
+//{
+//    LOG(DEBUG) << qPrintable(QString("%1 [ %2:%3 %4 ]").arg(msg).arg(file).arg(line).arg(function));
+//}
 
-void infoLog(const QString &msg, const QString&, int, const QString&)
-{
-    LOG(INFO) << qUtf8Printable(msg);
-}
+//void infoLog(const QString &msg, const QString&, int, const QString&)
+//{
+//    LOG(INFO) << qUtf8Printable(msg);
+//}
 
-void warnLog(const QString &msg, const QString &file, int line, const QString &function)
-{
-    LOG(WARNING) << qUtf8Printable(QString("%1 [ %2:%3 %4 ]").arg(msg).arg(file).arg(line).arg(function));
-}
+//void warnLog(const QString &msg, const QString &file, int line, const QString &function)
+//{
+//    LOG(WARNING) << qUtf8Printable(QString("%1 [ %2:%3 %4 ]").arg(msg).arg(file).arg(line).arg(function));
+//}
 
-void errorLog(const QString &msg, const QString &file, int line, const QString &function)
-{
-    LOG(ERROR) << qUtf8Printable(QString("%1 [ %2:%3 %4 ]").arg(msg).arg(file).arg(line).arg(function));
-}
+//void errorLog(const QString &msg, const QString &file, int line, const QString &function)
+//{
+//    LOG(ERROR) << qUtf8Printable(QString("%1 [ %2:%3 %4 ]").arg(msg).arg(file).arg(line).arg(function));
+//}
 
-void fatalLog(const QString &msg, const QString &file, int line, const QString &function)
-{
-    LOG(FATAL) << qUtf8Printable(QString("%1 [ %2:%3 %4 ]").arg(msg).arg(file).arg(line).arg(function));
-}
+//void fatalLog(const QString &msg, const QString &file, int line, const QString &function)
+//{
+//    LOG(FATAL) << qUtf8Printable(QString("%1 [ %2:%3 %4 ]").arg(msg).arg(file).arg(line).arg(function));
+//}
 
-void verboseLog(int vLevel, const QString &msg, const QString&, int, const QString&)
-{
-    VLOG(vLevel) << qUtf8Printable(msg);
-}
+//void verboseLog(int vLevel, const QString &msg, const QString&, int, const QString&)
+//{
+//    VLOG(vLevel) << qUtf8Printable(msg);
+//}
 
-void traceLog(const QString &msg, const QString&, int, const QString&)
-{
-    LOG(TRACE) << qUtf8Printable(msg);
-}
+//void traceLog(const QString &msg, const QString&, int, const QString&)
+//{
+//    LOG(TRACE) << qUtf8Printable(msg);
+//}
 /////Taken from easylogging++.h
-#if _MSC_VER  // Visual C++
-    #define LOG_FUNC __FUNCSIG__
-#elif __GNUC__  // GCC
-    #define LOG_FUNC __PRETTY_FUNCTION__
-#elif defined(__clang__) && (__clang__ == 1)  // Clang++
-    #define LOG_FUNC __PRETTY_FUNCTION__
-#elif __INTEL_COMPILER  // Intel C++
-    #define LOG_FUNC __PRETTY_FUNCTION__
-#else
-    #if defined(__func__)
-        #define LOG_FUNC __func__
-    #else
-        #define LOG_FUNC ""
-    #endif
-#endif
-#define INFO_LOG(msg) infoLog(msg,__FILE__,__LINE__,LOG_FUNC)
-#define WARN_LOG(msg) warnLog(msg,__FILE__,__LINE__,LOG_FUNC)
-#define ERROR_LOG(msg) errorLog(msg,__FILE__,__LINE__,LOG_FUNC)
-#define FATAL_LOG(msg) fatalLog(msg,__FILE__,__LINE__,LOG_FUNC)
-#define VERBOSE_LOG(vLevel, msg) verboseLog(vLevel, msg,__FILE__,__LINE__,LOG_FUNC)
-#define TRACE_LOG(msg) traceLog(msg,__FILE__,__LINE__,LOG_FUNC)
+//#if _MSC_VER  // Visual C++
+//    #define LOG_FUNC __FUNCSIG__
+//#elif __GNUC__  // GCC
+//    #define LOG_FUNC __PRETTY_FUNCTION__
+//#elif defined(__clang__) && (__clang__ == 1)  // Clang++
+//    #define LOG_FUNC __PRETTY_FUNCTION__
+//#elif __INTEL_COMPILER  // Intel C++
+//    #define LOG_FUNC __PRETTY_FUNCTION__
+//#else
+//    #if defined(__func__)
+//        #define LOG_FUNC __func__
+//    #else
+//        #define LOG_FUNC ""
+//    #endif
+//#endif
+//#define INFO_LOG(msg) infoLog(msg,__FILE__,__LINE__,LOG_FUNC)
+//#define WARN_LOG(msg) warnLog(msg,__FILE__,__LINE__,LOG_FUNC)
+//#define ERROR_LOG(msg) errorLog(msg,__FILE__,__LINE__,LOG_FUNC)
+//#define FATAL_LOG(msg) fatalLog(msg,__FILE__,__LINE__,LOG_FUNC)
+//#define VERBOSE_LOG(vLevel, msg) verboseLog(vLevel, msg,__FILE__,__LINE__,LOG_FUNC)
+//#define TRACE_LOG(msg) traceLog(msg,__FILE__,__LINE__,LOG_FUNC)
 
 
-void setLogDefault()
-{
-    el::Configurations defaultConf;
-    defaultConf.setToDefault();
-    // Values are always std::string
-    //defaultConf.set(el::Level::Info, el::ConfigurationType::Format, "%datetime{%Y-%M-%d %H:%m:%s} %level %msg");
-    defaultConf.set(el::Level::Warning, el::ConfigurationType::Format, "%datetime{%Y-%M-%d %H:%m:%s} %level %msg");
-    // default logger uses default configurations
-    el::Loggers::reconfigureLogger("default", defaultConf);
-    //LOG(INFO) << "Log using default file";
-    // To set GLOBAL configurations you may use
-    QString dir = QDir::currentPath()+"/win32/log/HServerManageUI.log";
-    defaultConf.setGlobally( el::ConfigurationType::Format, "%datetime{%Y-%M-%d %H:%m:%s} %level %msg");
-    defaultConf.setGlobally(el::ConfigurationType::Filename, dir.toStdString());
-    el::Loggers::reconfigureLogger("default", defaultConf);
-    INFO_LOG("--------setLogDefault()-----------");
-}
+//void setLogDefault()
+//{
+//    el::Configurations defaultConf;
+//    defaultConf.setToDefault();
+//    // Values are always std::string
+//    //defaultConf.set(el::Level::Info, el::ConfigurationType::Format, "%datetime{%Y-%M-%d %H:%m:%s} %level %msg");
+//    defaultConf.set(el::Level::Warning, el::ConfigurationType::Format, "%datetime{%Y-%M-%d %H:%m:%s} %level %msg");
+//    // default logger uses default configurations
+//    el::Loggers::reconfigureLogger("default", defaultConf);
+//    //LOG(INFO) << "Log using default file";
+//    // To set GLOBAL configurations you may use
+//    QString dir = QDir::currentPath()+"/win32/log/HServerManageUI.log";
+//    defaultConf.setGlobally( el::ConfigurationType::Format, "%datetime{%Y-%M-%d %H:%m:%s} %level %msg");
+//    defaultConf.setGlobally(el::ConfigurationType::Filename, dir.toStdString());
+//    el::Loggers::reconfigureLogger("default", defaultConf);
+//    INFO_LOG("--------setLogDefault()-----------");
+//}
 ///---------log file-----------
 ///
 ///
@@ -482,17 +482,17 @@ void HMainWindow::on_Dcm2DB_clicked()
 void HMainWindow::on_WebServer_clicked()
 {
     QString goWebServer = QDir::currentPath()+"/"+m_WebServerGoName;
-    QString goLogconfig  =  QDir::currentPath()+"/logConfig.json";
+    //QString goLogconfig  =  QDir::currentPath()+"/config/goWebConfig.json";
     if (!isFileExist(goWebServer))
     {
         goWebServer =  m_ExeDir + m_WebServerGoName;
     }
     if (isFileExist(goWebServer))
     {
-        if (!isFileExist(goLogconfig)){
-            QMessageBox::information(this, tr("No Web logconfig!"), goLogconfig);
-            return;
-        }
+        //if (!isFileExist(goLogconfig)){
+            //QMessageBox::information(this, tr("No Web logconfig!"), goLogconfig);
+            //return;
+        //}
         //1 mysql: 1 ip 2 name 3 user  4pwd
         //5 page web / 6 port
         //7 studyimage dir
