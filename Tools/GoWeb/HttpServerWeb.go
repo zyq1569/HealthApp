@@ -496,7 +496,7 @@ func SaveOdtReport(c echo.Context) error {
 	return c.String(http.StatusOK, "ok")
 }
 
-/// for tinymce report
+/// for tinymce report ：： 目前没有用，web 页面已经屏蔽
 func SaveReportdata(c echo.Context) error {
 	//log4go.Info(c.Request().URL.Path)
 	var reportdata Study.ReportData
