@@ -320,7 +320,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
         // });
     });
 
-    //submit patientform
+    //submit patientform //自动加载表单所有数据 来自 属性：<form class="layui-form layui-form-pane1" action="" lay-filter="formpatient">
     form.on('submit(patientform)', function (data) {
         var postdata = JSON.stringify(data.field);
         var host = window.location.host;
