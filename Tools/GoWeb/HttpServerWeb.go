@@ -473,7 +473,7 @@ func SaveOdtReport(c echo.Context) error {
 			log4go.Error("reportdata.ReportIdentity == 0 ")
 			return c.String(http.StatusBadRequest, "error")
 		}
-		///
+		/// to do : MkdirAll ???? 增加了体积
 		err := os.MkdirAll(CONFIG[IMAGE_Dir]+"/Report", os.ModePerm) //在当前目录下生成md目录
 		if err != nil {
 			log4go.Error(err)
@@ -496,6 +496,7 @@ func SaveOdtReport(c echo.Context) error {
 	return c.String(http.StatusOK, "ok")
 }
 
+/// for tinymce report
 func SaveReportdata(c echo.Context) error {
 	//log4go.Info(c.Request().URL.Path)
 	var reportdata Study.ReportData
