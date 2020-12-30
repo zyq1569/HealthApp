@@ -773,7 +773,7 @@ func UpdateDBStudyData(c echo.Context) error {
 				studyData.StudyUID = Units.GetNewStudyUID()
 			}
 			sqlstr = "insert into h_order (`StudyOrderIdentity`,`PatientIdentity`,`StudyID`, `StudyUID`,`StudyModality`," +
-				"`ScheduledDateTime`,`StudyDescription`,`StudyDepart`,`StudyCode`,`StudyCost`,`CostType`)" +
+				"`ScheduledDateTime`,`StudyDateTime`,`StudyDescription`,`StudyDepart`,`StudyCode`,`StudyCost`,`CostType`)" +
 				" value(?,?,?,?,?,?,?,?,?,?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
 			if err != nil {
@@ -784,7 +784,7 @@ func UpdateDBStudyData(c echo.Context) error {
 				return c.String(http.StatusBadRequest, "error")
 			}
 			affect_count, err := stmt.Exec(StudyOrderIdentity, studyData.PatientIdentity, studyData.StudyID,
-				studyData.StudyUID, studyData.StudyModality, studyData.ScheduledDate, studyData.StudyDescription,
+				studyData.StudyUID, studyData.StudyModality, studyData.ScheduledDate, studyData.ScheduledDate, studyData.StudyDescription,
 				studyData.StudyDepart, studyData.StudyCode, studyData.StudyCost, studyData.CostType)
 			if err != nil {
 				println(affect_count)
