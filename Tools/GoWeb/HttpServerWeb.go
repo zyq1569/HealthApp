@@ -473,6 +473,14 @@ func SaveOdtReport(c echo.Context) error {
 			log4go.Error("reportdata.ReportIdentity == 0 ")
 			return c.String(http.StatusBadRequest, "error")
 		}
+		///
+		err := os.MkdirAll(CONFIG[IMAGE_Dir]+"/Report", os.ModePerm) //在当前目录下生成md目录
+		if err != nil {
+			log4go.Error(err)
+		} else {
+			log4go.Warn("os.Mkdir" + CONFIG[IMAGE_Dir] + "/Report/")
+		}
+		///
 		reportIdentity := reportdata.ReportIdentity
 		fileName := CONFIG[IMAGE_Dir] + "/Report/" + reportIdentity + ".odt"
 		f, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE /*|os.O_TRUNC*/, 0666)
