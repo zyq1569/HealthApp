@@ -184,7 +184,7 @@ define("webodf/editor/Tools", [
                 if (saveOdtFile) {
                     saveButton = new Button({
                         label: tr('Save Report'),
-                        showLabel: false,
+                        showLabel: true,
                         disabled: true,
                         iconClass: 'dijitEditorIcon dijitEditorIconSave',
                         onClick: function () {
