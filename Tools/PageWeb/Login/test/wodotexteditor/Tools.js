@@ -170,7 +170,7 @@ define("webodf/editor/Tools", [
                 // Load
                 if (loadOdtFile) {
                     loadButton = new Button({
-                        label: tr('Open'),
+                        label: tr('Open Report'),
                         showLabel: false,
                         iconClass: 'dijitIcon dijitIconFolderOpen',
                         onClick: function () {
@@ -183,7 +183,7 @@ define("webodf/editor/Tools", [
                 // Save
                 if (saveOdtFile) {
                     saveButton = new Button({
-                        label: tr('Save'),
+                        label: tr('Save Report'),
                         showLabel: false,
                         disabled: true,
                         iconClass: 'dijitEditorIcon dijitEditorIconSave',
