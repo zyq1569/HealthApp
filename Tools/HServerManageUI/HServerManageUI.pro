@@ -6,7 +6,7 @@
 
 QT       += core gui
 #QT       += sql
-QMAKE_CXXFLAGS += /utf-8
+#QMAKE_CXXFLAGS += /utf-8
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = HServerUI
@@ -26,7 +26,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        easylogging++.cc \
         main.cpp \
         mainwindow.cpp \
         units.cpp
