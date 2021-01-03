@@ -643,45 +643,47 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 }
 
                 ///-----------------old h_study table--------------------------------------------------
-                //to do : delete code /
+                //to do : delete code  abandon H_study/
+                /*
                 querysql = "select * from H_study where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
                 g_pMariaDb->query(querysql.c_str());
                 rs = g_pMariaDb->QueryResult();
                 if (rs == NULL)
                 {
-                    char uuid[64];
-                    sprintf(uuid, "%llu", (CreateGUID() >> 1));
-                    OFString StudyIdentity = uuid;
-                    strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,";
-                    strsql += " StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDcmPatientName,StudyDescription) value(";
-                    strsql += StudyIdentity;
-                    strsql += ",'";
-                    strsql += StudyInfo.StudyID;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyInstanceUID;
-                    strsql += "',";
-                    strsql += PatientIdentity;
-                    strsql += ",'";
-                    if (StudyInfo.StudyDateTime.empty())
-                    {
-                        StudyInfo.StudyDateTime = "1970-01-01 00:00:01.000000";
-                    }
-                    strsql += StudyInfo.StudyDateTime;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyModality;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyInstitutionName;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyManufacturer;
-                    strsql += "','dcm','";
-                    strsql += StudyInfo.StudyPatientName;
-                    strsql += "','";//StudyDescription
-                    strsql += StudyInfo.studydescription;
-                    strsql += "');";
-                    g_pMariaDb->execute(strsql.c_str());
+                char uuid[64];
+                sprintf(uuid, "%llu", (CreateGUID() >> 1));
+                OFString StudyIdentity = uuid;
+                strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,";
+                strsql += " StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDcmPatientName,StudyDescription) value(";
+                strsql += StudyIdentity;
+                strsql += ",'";
+                strsql += StudyInfo.StudyID;
+                strsql += "','";
+                strsql += StudyInfo.StudyInstanceUID;
+                strsql += "',";
+                strsql += PatientIdentity;
+                strsql += ",'";
+                if (StudyInfo.StudyDateTime.empty())
+                {
+                StudyInfo.StudyDateTime = "1970-01-01 00:00:01.000000";
+                }
+                strsql += StudyInfo.StudyDateTime;
+                strsql += "','";
+                strsql += StudyInfo.StudyModality;
+                strsql += "','";
+                strsql += StudyInfo.StudyInstitutionName;
+                strsql += "','";
+                strsql += StudyInfo.StudyManufacturer;
+                strsql += "','dcm','";
+                strsql += StudyInfo.StudyPatientName;
+                strsql += "','";//StudyDescription
+                strsql += StudyInfo.studydescription;
+                strsql += "');";
+                g_pMariaDb->execute(strsql.c_str());
                 }
                 //OFStandard::deleteFile(filename);
                 OFLOG_INFO(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
+                */
 
                 //-------------------------------------------------------------------------------
                 //更新预约表检查状态 // modify 2020-11-19
