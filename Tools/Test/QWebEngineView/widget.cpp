@@ -3,6 +3,8 @@
 #include <QUrl>
 #include <QWebEngineHistory>
 #include <QWebEnginePage>
+#include <QWebEngineProfile>
+#include <QNetworkProxyFactory>
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -12,6 +14,7 @@ Widget::Widget(QWidget *parent) :
     ui->view2->hide();
     connect(ui->view, &QWebEngineView::loadFinished, this, &Widget::slotLoadFinished);
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &Widget::on_buttonBrowse_clicked);
+    QNetworkProxyFactory::setUseSystemConfiguration(false);//关掉使用系统代理
 }
 
 Widget::~Widget()
