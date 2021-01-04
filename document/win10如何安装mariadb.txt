@@ -124,7 +124,7 @@ create database simple default charset utf8 collate utf8_general_ci;
 12、创建用户simple
 
 create user 'simple'@'localhost' identified by '123456';
- 
+create user 'dbuser'@'localhost' identified by 'dbuser'; 
 
 创建localhost登录的用户simple，密码是123456
 
@@ -136,7 +136,7 @@ grant all on simple.* to 'simple'@'localhost' with grant option;
 
 将库simple的所有权限赋予用户simple，且有操作的权限。
 
-
+grant all on dbuser.* to 'dbuser'@'localhost' with grant option;
 14、登录验证
 
 mysql -usimple -p123456
