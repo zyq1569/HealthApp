@@ -110,7 +110,7 @@
    <item row="0" column="0" colspan="5">
     <widget class="QLineEdit" name="lineEdit">
      <property name="text">
-      <string>https://www.baidu.com</string>
+      <string>http://127.0.0.1:8080/</string>
      </property>
     </widget>
    </item>
