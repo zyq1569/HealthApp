@@ -3,6 +3,7 @@
 
 #ifndef QT_NO_SYSTEMTRAYICON
 #include <QMessageBox>
+///https://build-qt.fsu0413.me/?file=005-5.15%20Series/001-5.15.2%20for%20Windows
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(systray);
