@@ -320,6 +320,13 @@ OFBool CjsonSaveFile(HStudyInfo dcminfo, OFString filename)
         Json.Add("numImages", numImages);
         Json.Add("studyId", dcminfo.StudyID.c_str());
         Json.Add("studyuid", dcminfo.StudyInstanceUID.c_str());
+        //add 2021-0106
+        Json.Add("studyDate", dcminfo.StudyDateTime.c_str());
+        Json.Add("patientsex", dcminfo.StudySex.c_str());
+        Json.Add("patientage", dcminfo.StudyAge.c_str());
+        Json.Add("patientbirth", dcminfo.PatientBirth.c_str());
+        Json.Add("manufacturer", dcminfo.StudyManufacturer.c_str());
+        Json.Add("institutionname", dcminfo.StudyInstitutionName.c_str());
 
         Json.AddEmptySubArray("seriesList");
         CJSON::CJsonObject Series;
@@ -425,7 +432,7 @@ OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
 
         str += "studyid=" + dcminfo.StudyID + "\n";
         str += "patientage=" + dcminfo.StudyAge + "\n";
-        str += "patientbirthdata=" + dcminfo.PatientBirth + "\n";
+        str += "patientbirth=" + dcminfo.PatientBirth + "\n";
         str += "studydatetime=" + dcminfo.StudyDateTime + "\n";
         str += "modality=" + dcminfo.StudyModality + "\n";
         str += "manufacturer=" + dcminfo.StudyManufacturer + "\n";
