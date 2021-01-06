@@ -1477,6 +1477,8 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                 DicomFileInfo dcminfo;
                 if (!GetStudyInfoFie(imageDataSet, rsp, dcminfo))
                 {
+                    /// to do .... only studyuid ????
+                    OFLOG_ERROR(storescpLogger, " GetStudyInfoFie error imageFileName: " << cbdata->imageFileName );
                     return;
                 }
                 //(*imageDataSet)->putAndInsertString(DCM_PatientName, temp.c_str());
