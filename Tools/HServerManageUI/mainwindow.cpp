@@ -1,9 +1,17 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+#include "units.h"
+#include "logging.h"
+
+#ifndef QT_NO_SYSTEMTRAYICON
+#include <windows.h>
+#endif
+
 #include <QtWidgets>
 #include <QtGlobal>
 #include <QModelIndex>
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "units.h"
+
 
 HMainWindow::HMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,13 +36,8 @@ HMainWindow::HMainWindow(QWidget *parent) :
     {
         CreatDir(logDir);
     }
-    //el::Configurations defaultConf;
-    //defaultConf.setToDefault();
-    //QString logDirFilename = logDir+"/HServerManageUI.log";
-    //defaultConf.set(el::Level::Info,el::ConfigurationType::Filename, logDirFilename.toStdString());
-    //el::Loggers::reconfigureLogger("default", defaultConf);
-    //setLogDefault();
-    //LOG(INFO) << "First log test";
+
+    INFO_LOG("-----------HServerUI  start!-----------------------");
     //-------------------------------------------------------
     for (int i=0; i<QPROCESSSIZE; i++)
     {
@@ -219,6 +222,7 @@ HMainWindow::~HMainWindow()
     }
     //---------------------------------------------------------------------
     delete ui;//last!!
+    INFO_LOG("-----------HServerUI  exit!-----------------------");
 }
 void HMainWindow::on_StoreSCP_clicked()
 {
@@ -246,6 +250,7 @@ void HMainWindow::on_StoreSCP_clicked()
         ui->StoreSCP->setText("运行中!");
         m_bstorescp[STORESCPQ] = true;
         //QMessageBox::information(this, tr("DicomStore Start!"), tr("run ok!"));
+        INFO_LOG("-----------DicomStore Start!-----------------------");
     }
     else if( m_pQProcess[STORESCPQ]!=nullptr)
     {
@@ -255,6 +260,7 @@ void HMainWindow::on_StoreSCP_clicked()
         m_bstorescp[STORESCPQ] = false;
         ui->StoreSCP->setText("启动");
         //QMessageBox::information(this, tr("DicomStore Stop!"), tr("close app ok!"));
+        INFO_LOG("-----------DicomStore Stop!-----------------------");
     }
 }
 
@@ -286,6 +292,7 @@ void HMainWindow::on_WLMSCP_clicked()
         m_pQProcess[WLMSCPQ]->start(program,arg);
         m_bstorescp[WLMSCPQ] = true;
         ui->WLMSCP->setText("运行中!");
+        INFO_LOG("-----------Dicom Worklist Start!-----------------------");
     }
     else if( m_pQProcess[WLMSCPQ]!=nullptr)
     {
@@ -294,6 +301,7 @@ void HMainWindow::on_WLMSCP_clicked()
         m_pQProcess[WLMSCPQ] = nullptr;
         m_bstorescp[WLMSCPQ] = false;
         ui->WLMSCP->setText("启动");
+        INFO_LOG("-----------Dicom Worklist Stop!-----------------------");
     }
 }
 
