@@ -147,6 +147,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
         ui->mysqlUserNameValue->setText(configini.value("/mariadb/username").toString());
         ui->mysqlPWDValue->setText(configini.value("/mariadb/sqlpwd").toString());
     }
+    INFO_LOG("-----------HServerUI  start!-----------------------");
 
 }
 
