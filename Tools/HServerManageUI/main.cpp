@@ -1,8 +1,16 @@
 #include "mainwindow.h"
+
+
+///---------log file inc
+#include "logging.h"
+#include "easylogging++.h"
+INITIALIZE_EASYLOGGINGPP
+
 #include <QApplication>
 
 #ifndef QT_NO_SYSTEMTRAYICON
 #include <QMessageBox>
+
 ///https://build-qt.fsu0413.me/?file=005-5.15%20Series/001-5.15.2%20for%20Windows
 int main(int argc, char *argv[])
 {
@@ -12,6 +20,7 @@ int main(int argc, char *argv[])
     HMainWindow w;
     w.setWindowFlags(w.windowFlags()& ~Qt::WindowMaximizeButtonHint);
     w.show();
+    udg::beginLogging();
 
     if (!QSystemTrayIcon::isSystemTrayAvailable())
     {
