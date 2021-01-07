@@ -351,6 +351,7 @@ void HMainWindow::on_QRSCP_clicked()
         m_bstorescp[QUERSCPQ] = true;
         ui->QRSCP->setText("运行中!");
         //QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
+        INFO_LOG("-----------DcmQR SCPApp Start!-----------------------");
     }
     else if( m_pQProcess[QUERSCPQ]!=nullptr)
     {
@@ -360,6 +361,7 @@ void HMainWindow::on_QRSCP_clicked()
         m_bstorescp[QUERSCPQ] = false;
         ui->QRSCP->setText("启动");
         //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
+        INFO_LOG("-----------DcmQR SCPApp Stop!-----------------------");
     }
 }
 
@@ -391,6 +393,7 @@ void HMainWindow::on_Dcm2DB_clicked()
         m_bstorescp[DCM2DBQ] = true;
         ui->Dcm2DB->setText("运行中!");
         //QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
+        INFO_LOG("-----------DcmInfo2DbApp Start!-----------------------");
     }
     else if( m_pQProcess[DCM2DBQ]!=nullptr)
     {
@@ -400,6 +403,7 @@ void HMainWindow::on_Dcm2DB_clicked()
         m_bstorescp[DCM2DBQ] = false;
         ui->Dcm2DB->setText("启动");
         //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
+        INFO_LOG("-----------DcmInfo2DbApp Stop!-----------------------");
     }
 }
 
