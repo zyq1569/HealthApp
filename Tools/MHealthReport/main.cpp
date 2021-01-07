@@ -1,7 +1,12 @@
 #include "mainapp.h"
+#include "logging.h"
+#include "easylogging++.h"
+INITIALIZE_EASYLOGGINGPP
+
 
 #include <QApplication>
 #include <QFile>
+
 
 #define LOADQSS(qssFile)                      \
 {                                             \
@@ -16,6 +21,7 @@
     }                                         \
     }
 
+
 ///
 /// 红旗office、中标office、一铭office、极速office、泰山office等等
 ///
@@ -24,6 +30,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainApp MainWindow;
 
+    udg::beginLogging();
     MainWindow.setWindowFlags(MainWindow.windowFlags()&  ~Qt::WindowMinimizeButtonHint);
     //MainWindow.show();///~Qt::WindowMaximizeButtonHint&
     MainWindow.showMaximized();// Max size show
