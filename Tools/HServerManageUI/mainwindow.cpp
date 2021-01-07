@@ -419,8 +419,8 @@ void HMainWindow::on_WebServer_clicked()
     if (isFileExist(goWebServer))
     {
         //if (!isFileExist(goLogconfig)){
-            //QMessageBox::information(this, tr("No Web logconfig!"), goLogconfig);
-            //return;
+        //QMessageBox::information(this, tr("No Web logconfig!"), goLogconfig);
+        //return;
         //}
         //1 mysql: 1 ip 2 name 3 user  4pwd
         //5 page web / 6 port
