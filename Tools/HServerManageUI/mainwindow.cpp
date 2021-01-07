@@ -453,6 +453,7 @@ void HMainWindow::on_WebServer_clicked()
             m_bstorescp[WEBSER] = true;
             ui->WebServer->setText("运行中!");
             //QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
+            INFO_LOG("-----------WebServer Start!-----------------------");
         }
         else if( m_pQProcess[WEBSER]!=nullptr)
         {
@@ -462,9 +463,10 @@ void HMainWindow::on_WebServer_clicked()
             m_bstorescp[WEBSER] = false;
             ui->WebServer->setText("启动");
             //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
+            INFO_LOG("-----------WebServer Stop!-----------------------");
         }
     }
-    else
+    else ///Java App
     {
         QString JavaWeb = m_ExeDir + m_WebServerName;
         if (!isFileExist(goWebServer))
