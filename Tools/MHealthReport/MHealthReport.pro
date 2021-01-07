@@ -10,6 +10,9 @@ CONFIG += c++11
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
+# EasyLogging++ is set to be thread safe, to not have a default log file, and to not handle crashes
+DEFINES += ELPP_THREAD_SAFE ELPP_NO_DEFAULT_LOG_FILE ELPP_DISABLE_DEFAULT_CRASH_HANDLING
+
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -17,7 +20,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     config.cpp \
+    easylogging++.cc \
     httpclient.cpp \
+    logging.cpp \
     main.cpp \
     mainapp.cpp \
     patientdata.cpp \
@@ -27,7 +32,9 @@ SOURCES += \
 
 HEADERS += \
     config.h \
+    easylogging++.h \
     httpclient.h \
+    logging.h \
     mainapp.h \
     patientdata.h \
     patientsform.h \
