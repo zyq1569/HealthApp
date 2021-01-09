@@ -221,6 +221,7 @@ HMainWindow::~HMainWindow()
             m_pQProcess[i] = nullptr;
         }
     }
+    INFO_LOG("-----------All App  exit!-----------------------");
     //---------------------------------------------------------------------
     delete ui;//last!!
     INFO_LOG("-----------HServerUI  exit!-----------------------");
