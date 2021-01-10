@@ -5,8 +5,9 @@
 
 #include(src/compilationtype.pri)
 
-SUBDIRS += dcmdata
-!official_release:SUBDIRS += tests
+SUBDIRS += dcmdata dcmjpeg dcmjpls dcmlog dcmnet dcmqrdb dcmqrScp dcmsr dcmstd dcmtls dcmUnits DcmWlm libi2d SaveDcmInfoDb sqlite
+StoreDcmScp StoreDcmScu WorklistScp
+#!official_release:SUBDIRS += tests
 TEMPLATE = subdirs
 CONFIG += warn_on \
           qt \
