@@ -10,7 +10,8 @@ class QLocalSocket;
 class HttpClient;
 class QMenu;
 
-namespace Ui {
+namespace Ui
+{
 class StudyImage;
 }
 
