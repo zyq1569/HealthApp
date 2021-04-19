@@ -12,7 +12,18 @@ function setupViewportOverlays(element, data) {
     $(topLeft[0]).text(data.patientName);
     $(topLeft[1]).text(data.patientId);
     $(topRight[0]).text(data.studyDescription);
-    var studyDate = data.studyDate.substring(0,4)+'-'+data.studyDate.substring(4,6)+'-'+data.studyDate.substring(6,8)+' '+data.studyDate.substring(8,10)+':'+data.studyDate.substring(10,12)+':'+data.studyDate.substring(12);
+    var studyDate =
+      data.studyDate.substring(0, 4) +
+      "-" +
+      data.studyDate.substring(4, 6) +
+      "-" +
+      data.studyDate.substring(6, 8) +
+      " " +
+      data.studyDate.substring(8, 10) +
+      ":" +
+      data.studyDate.substring(10, 12) +
+      ":" +
+      data.studyDate.substring(12);
     $(topRight[1]).text(studyDate);
 
 
