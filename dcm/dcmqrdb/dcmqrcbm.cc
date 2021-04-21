@@ -99,7 +99,7 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
         SeriesInstanceUID.clear();
     }
 
-    OFHashValue path = CreateHashValue(StudyInstanceUID.c_str(), StudyInstanceUID.length());
+    OFHashValue path = CreateHashValue(StudyInstanceUID.c_str());
     OFString hash_dir = longToString(path.first) + "/" + longToString(path.second);
     OFString temp_dir = "/Images/" + hash_dir + "/" + StudyInstanceUID;
     //OFLOG_DEBUG(dcmqrscpLogger, "---------hash_dir:" + hash_dir + " ----------------------");
