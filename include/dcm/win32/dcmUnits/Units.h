@@ -83,7 +83,7 @@ DCMTK_OFSTD_EXPORT struct StudyInfo
     OFList<SeriesInfo> seriesInfoList;
 };
 //!根据字符计算两个Hash数值
-DCMTK_OFSTD_EXPORT OFHashValue CreateHashValue(const char * buffer, unsigned int length);
+DCMTK_OFSTD_EXPORT OFHashValue CreateHashValue(const char * buffer);
 DCMTK_OFSTD_EXPORT OFString GetStudyHashDir(OFString studyuid);
 DCMTK_OFSTD_EXPORT unsigned long studyuid_hash(const char *str);
 

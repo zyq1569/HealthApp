@@ -39,16 +39,18 @@ typedef struct _GUID
 OFString GetStudyHashDir(OFString studyuid)
 {
     OFString dir;
-    OFHashValue vl = CreateHashValue(studyuid.c_str(), studyuid.length());
+    OFHashValue vl = CreateHashValue(studyuid.c_str());
     dir = "/" + longToString(vl.first) + "/" + longToString(vl.second);
     return dir;
 }
 //!根据字符计算两个Hash数值  to do user uint64
-OFHashValue CreateHashValue(const char * buffer, unsigned int length)
+OFHashValue CreateHashValue(const char * buffer)
 {
     //2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
     //101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179
     //181 191 193 197 199
+    OFString str = buffer;
+    unsigned int length = str.length();
     static const int M1 = 71;
     static const int M2 = 79;
 
