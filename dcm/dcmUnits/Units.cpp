@@ -43,6 +43,15 @@ OFString GetStudyHashDir(OFString studyuid)
     dir = "/" + longToString(vl.first) + "/" + longToString(vl.second);
     return dir;
 }
+unsigned int HashValue(int F, int S, const char *str, int len)
+{
+    int value = 0;
+    for (unsigned int i = 0; i < len; i++)
+    {
+        value = value * F + str[i] + i;
+    }
+    return  value %= S;
+}
 ///依据常规的hash 算法方式，目前不考虑使用强加密不可逆方式 
 //参考 https://github.com/Tessil/hopscotch-map 类似很多，注意协议
 //!根据字符计算两个Hash数值  to do user uint64
@@ -53,35 +62,16 @@ OFHashValue CreateHashValue(const char * buffer)
     //181 191 193 197 199
     OFString str = buffer;
     unsigned int length = str.length();
-    static const int M1 = 71;
-    static const int M2 = 79;
+    static const int H1 = 71;
+    static const int H2 = 79;
 
-    static const int D1 = 197;
-    static const int D2 = 199;
-    int value = 0;
+    static const int S1 = 197;
+    static const int S2 = 199;
     OFHashValue hashvalue;
-    for (unsigned int i = 0; i < length; i++)
-    {
-        value = value * M1 + buffer[i];
-    }
-    value %= D1;
-    if (value < 0)
-    {
-        value = value + D1;
-    }
-    hashvalue.first = value;
 
-    value = 0;
-    for (unsigned int i = 0; i < length; i++)
-    {
-        value = value * M2 + buffer[i];
-    }
-    value %= D2;
-    if (value < 0)
-    {
-        value = value + D2;
-    }
-    hashvalue.second = value;
+    hashvalue.first  = HashValue(H1,S1,buffer,length);
+    hashvalue.second = HashValue(H2,S2,buffer,length);
+
     return hashvalue;
 }
 
