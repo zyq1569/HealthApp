@@ -46,13 +46,33 @@ OFString GetStudyHashDir(OFString studyuid)
 
 OFString HashValue(int F, int S, OFString str)
 {
-    int len = str.length();
-    int value = 0;
-    for (unsigned int i = 0; i < len; i++)
+    size_t len = str.length();
+    size_t value = F + S;
+    for (size_t i = 0; i < len; i++)
     {
-        value = value * F + str[i] + i;
+        value = (value + str[i])*F + i*S;
     }
-    value %= S;
+
+#if defined(_WIN32)
+
+#if defined(_MSC_VER)
+    // Windows:  Visual Statuio 
+    char oxstr[256] = {0};
+    sprintf(oxstr,"%04x",value);
+    return oxstr;
+#endif
+
+#if defined(__GNUC__)
+    // Windows平台 GCC编译器特定的代码
+    QString hex = QString("%1").arg(value, 4, 16, QLatinlChar('0')); ///// 保留四位，不足补零
+    return QString.toLatin1().data();
+#endif
+
+#else
+    //---------? now linux QT
+    QString hex = QString("%1").arg(value, 4, 16, QLatinlChar('0'));
+    return QString.toLatin1().data();
+#endif
 
     return longToString(value);
 }
