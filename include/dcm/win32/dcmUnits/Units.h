@@ -89,7 +89,7 @@ DCMTK_OFSTD_EXPORT struct StudyInfo
 };
 
 //!根据字符计算两个Hash数值
-DCMTK_OFSTD_EXPORT OFHashValue CreateHashValue(const char *buffer);
+DCMTK_OFSTD_EXPORT OFHashValue CreateHashValue(OFString str);
 DCMTK_OFSTD_EXPORT OFString GetStudyHashDir(OFString studyuid);
 DCMTK_OFSTD_EXPORT unsigned long studyuid_hash(const char *str);
 
