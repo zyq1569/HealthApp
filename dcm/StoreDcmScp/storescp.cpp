@@ -1567,7 +1567,7 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                         OFHashValue path = CreateHashValue(dcminfo.studyUID.c_str());
                         //unsigned long hash_vaule = studyuid_hash(currentStudyInstanceUID.c_str()) % 100;
                         //OFString hash_dir = longToString(hash_vaule);
-                        OFString hash_dir = longToString(path.first) + "/" + longToString(path.second);
+                        OFString hash_dir = path.first + "/" + path.second;
                         OFString tem_dir = "Images/" + hash_dir + "/" + dcminfo.studyUID + "/" + dcminfo.seriesUID;
                         static OFString save_dir = OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName);
                         static OFString task_dir = save_dir + "/Task";
