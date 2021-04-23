@@ -39,37 +39,38 @@ typedef struct _GUID
 OFString GetStudyHashDir(OFString studyuid)
 {
     OFString dir;
-    OFHashValue vl = CreateHashValue(studyuid.c_str());
+    OFHashValue vl = CreateHashValue(studyuid);
     dir = "/" + vl.first + "/" + vl.second;
     return dir;
 }
 
-OFString HashValue(int F, int S, const char *str, int len)
+OFString HashValue(int F, int S, OFString str)
 {
+    int len = str.length();
     int value = 0;
     for (unsigned int i = 0; i < len; i++)
     {
         value = value * F + str[i] + i;
     }
     value %= S;
+
     return longToString(value);
 }
 
 ///依据常规的hash 算法方式，目前不考虑使用强加密不可逆方式
 //参考 https://github.com/Tessil/hopscotch-map 类似很多，注意协议
 //!根据字符计算两个Hash数值  to do user uint64
-OFHashValue CreateHashValue(const char * buffer)
+OFHashValue CreateHashValue(OFString str)
 {
     //2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
     //101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179
     //181 191 193 197 199
-    OFString str = buffer;
-    unsigned int length = str.length();
+
     OFHashValue hashvalue;
     //71 197
-    hashvalue.first  = HashValue(71,197,buffer,length);
+    hashvalue.first  = HashValue(71, 197, str);
     //79 199
-    hashvalue.second = HashValue(79,199,buffer,length);
+    hashvalue.second = HashValue(79, 199, str);
 
     return hashvalue;
 }
@@ -77,7 +78,7 @@ OFHashValue CreateHashValue(const char * buffer)
 unsigned long studyuid_hash(const char *str)
 {
     unsigned long hash = 32767;
-    unsigned long pid = 65537;
+    unsigned long pid  = 65537;
     int c;
     while (c = *str++)
     {
@@ -472,6 +473,7 @@ UINT64 CreateGUID()
 uint64_t CreateGUID()
 #endif // _WIN32
 {
+
 #ifdef _WIN32
     UINT32 uid[2];
 #else

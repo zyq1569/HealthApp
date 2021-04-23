@@ -1564,7 +1564,7 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                             subdirectoryName += '_';
                         }
                         //add 通过hash值方法，将接收的dcm文件存储-----------------------------------------------
-                        OFHashValue path = CreateHashValue(dcminfo.studyUID.c_str());
+                        OFHashValue path = CreateHashValue(dcminfo.studyUID);
                         //unsigned long hash_vaule = studyuid_hash(currentStudyInstanceUID.c_str()) % 100;
                         //OFString hash_dir = longToString(hash_vaule);
                         OFString hash_dir = path.first + "/" + path.second;
