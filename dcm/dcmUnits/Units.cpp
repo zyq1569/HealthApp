@@ -40,19 +40,22 @@ OFString GetStudyHashDir(OFString studyuid)
 {
     OFString dir;
     OFHashValue vl = CreateHashValue(studyuid.c_str());
-    dir = "/" + longToString(vl.first) + "/" + longToString(vl.second);
+    dir = "/" + vl.first + "/" + vl.second;
     return dir;
 }
-unsigned int HashValue(int F, int S, const char *str, int len)
+
+OFString HashValue(int F, int S, const char *str, int len)
 {
     int value = 0;
     for (unsigned int i = 0; i < len; i++)
     {
         value = value * F + str[i] + i;
     }
-    return  value %= S;
+    value %= S;
+    return longToString(value);
 }
-///依据常规的hash 算法方式，目前不考虑使用强加密不可逆方式 
+
+///依据常规的hash 算法方式，目前不考虑使用强加密不可逆方式
 //参考 https://github.com/Tessil/hopscotch-map 类似很多，注意协议
 //!根据字符计算两个Hash数值  to do user uint64
 OFHashValue CreateHashValue(const char * buffer)
@@ -62,15 +65,11 @@ OFHashValue CreateHashValue(const char * buffer)
     //181 191 193 197 199
     OFString str = buffer;
     unsigned int length = str.length();
-    static const int H1 = 71;
-    static const int H2 = 79;
-
-    static const int S1 = 197;
-    static const int S2 = 199;
     OFHashValue hashvalue;
-
-    hashvalue.first  = HashValue(H1,S1,buffer,length);
-    hashvalue.second = HashValue(H2,S2,buffer,length);
+    //71 197
+    hashvalue.first  = HashValue(71,197,buffer,length);
+    //79 199
+    hashvalue.second = HashValue(79,199,buffer,length);
 
     return hashvalue;
 }
@@ -98,7 +97,9 @@ OFString longToString(unsigned long i)
 bool DirectoryExists(const OFString Dir)
 {
     if (Dir == "")
+    {
         return false;
+    }
     int Code = -3;
 #ifdef _WIN32
     Code = GetFileAttributes(Dir.c_str());
@@ -108,9 +109,13 @@ bool DirectoryExists(const OFString Dir)
     struct stat statbuff;
     Code = stat(Dir.c_str(), &statbuff);
     if(Code == 0)
+    {
         return true;
+    }
     else
+    {
         return false;
+    }
 #endif // _WIN32
 }
 
@@ -140,7 +145,9 @@ bool ForceDirectories(const OFString Dir)
         {
             char  temp = path[path.size() - 1];
             if (path[path.size() - 1] != ':')
+            {
                 ForceDirectories(path);
+            }
         }
     }
     if (DirectoryExists(Dir) != true)
@@ -215,9 +222,13 @@ OFString AdjustDir(const OFString dir)
 #ifdef HAVE_WINDOWS_H
     OFString path = dir;
     if (path == "")
+    {
         return "";
+    }
     if (path[path.length() - 1] != '\\'&& path[path.length() - 1] != '/')
+    {
         path += "\\";
+    }
     return path;
 #else
     //to do add!
@@ -235,7 +246,9 @@ void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> 
 #ifdef HAVE_WINDOWS_H
     OFString dir = AdjustDir(Dir);
     if (dir == "")
+    {
         return;
+    }
     OFString pach = dir + "*.*";
     WIN32_FIND_DATA sr;
     HANDLE h;
@@ -255,11 +268,17 @@ void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> 
             {
                 OFString temp;
                 if (FileExt == "")
+                {
                     datas.push_back(dir + name);
+                }
                 else if (Not == false && OFStandard::toUpper(temp, FileExt) == OFStandard::toUpper(temp, name))
+                {
                     datas.push_back(dir + name);
+                }
                 else if (Not == true && OFStandard::toUpper(temp, FileExt) != OFStandard::toUpper(temp, name))
+                {
                     datas.push_back(dir + name);
+                }
             }
         }
         while (FindNextFile(h, &sr) != 0);
@@ -411,7 +430,9 @@ void SearchDirectory(const OFString Dir, OFList<OFString> &datas)
 #ifdef HAVE_WINDOWS_H
     dir = AdjustDir(Dir);
     if (dir == "")
+    {
         return;
+    }
     OFString pach = dir + "*.*";
     WIN32_FIND_DATA sr;
     HANDLE h;
@@ -661,7 +682,8 @@ OFBool ReadStudyInfo(OFString filename,OFString dir, OFList<OFString> &data)
                 out.getline(buffer, max, '\n');//getline(char *,int,char) 表示该行字符达到256个或遇到换行就结束
                 value = OFString(buffer);
             }
-        } while (!out.eof());
+        }
+        while (!out.eof());
         out.close();
     }
     return OFTrue;
