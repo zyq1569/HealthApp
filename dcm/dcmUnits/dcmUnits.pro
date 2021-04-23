@@ -27,6 +27,7 @@ DEFINES +=USE_NULL_SAFE_OFSTRING
 DEFINES += O3
 DEFINES  -= UNICODE
 
+
 SOURCES += \
     CJsonObject.cpp \
     DcmConfig.cpp \
