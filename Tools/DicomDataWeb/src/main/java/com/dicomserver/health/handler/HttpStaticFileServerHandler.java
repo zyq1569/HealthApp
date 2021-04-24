@@ -66,24 +66,25 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
             final int D1 = 197;
             final int D2 = 199;
-            int value = 0;
+			
+			//size_t value = F + S;
+			//for (size_t i = 0; i < len; i++)
+			//{
+			//	value = (value + str[i])*F + i*S;
+			//}
+	
+            int value = M1 + D1;
             for (int i = 0; i < length; i++) {
-                value = value * M1 + (buffer[i] & 0xFF);
+                value = (value  + buffer[i] )* D1 + i*S;
             }
-            value %= D1;
-            if (value < 0) {
-                value = value + D1;
-            }
+
             this.first = value;
 
-            value = 0;
+            value = M2 + D2;
             for (int i = 0; i < length; i++) {
-                value = value * M2 + (buffer[i] & 0xFF);
+                value = (value  + buffer[i] )* D2 + i*S;
             }
-            value %= D2;
-            if (value < 0) {
-                value = value + D2;
-            }
+
             this.second = value;
             return true;
         }
