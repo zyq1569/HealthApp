@@ -14,7 +14,8 @@
  * Implementation of interface class OrgExampleExamplesCarInterfaceInterface
  */
 
-OrgExampleExamplesCarInterfaceInterface::OrgExampleExamplesCarInterfaceInterface(const QString &service, const QString &path, const QDBusConnection &connection, QObject *parent)
+OrgExampleExamplesCarInterfaceInterface::OrgExampleExamplesCarInterfaceInterface
+(const QString &service, const QString &path, const QDBusConnection &connection, QObject *parent)
     : QDBusAbstractInterface(service, path, staticInterfaceName(), connection, parent)
 {
 }

@@ -28,7 +28,9 @@ class OrgExampleExamplesCarInterfaceInterface: public QDBusAbstractInterface
     Q_OBJECT
 public:
     static inline const char *staticInterfaceName()
-    { return "org.example.Examples.CarInterface"; }
+    {
+        return "org.example.Examples.CarInterface";
+    }
 
 public:
     OrgExampleExamplesCarInterfaceInterface(const QString &service, const QString &path, const QDBusConnection &connection, QObject *parent = nullptr);
@@ -64,11 +66,14 @@ Q_SIGNALS: // SIGNALS
     void crashed();
 };
 
-namespace org {
-  namespace example {
-    namespace Examples {
-      typedef ::OrgExampleExamplesCarInterfaceInterface CarInterface;
-    }
-  }
+namespace org
+{
+namespace example
+{
+namespace Examples
+{
+typedef ::OrgExampleExamplesCarInterfaceInterface CarInterface;
+}
+}
 }
 #endif
