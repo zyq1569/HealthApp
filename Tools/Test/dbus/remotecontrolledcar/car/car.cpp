@@ -67,25 +67,33 @@ Car::Car() : color(Qt::green), wheelsAngle(0), speed(0)
 void Car::accelerate()
 {
     if (speed < 10)
+    {
         ++speed;
+    }
 }
 
 void Car::decelerate()
 {
     if (speed > -10)
+    {
         --speed;
+    }
 }
 
 void Car::turnLeft()
 {
     if (wheelsAngle > -30)
+    {
         wheelsAngle -= 5;
+    }
 }
 
 void Car::turnRight()
 {
     if (wheelsAngle < 30)
-       wheelsAngle += 5;
+    {
+        wheelsAngle += 5;
+    }
 }
 
 void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
