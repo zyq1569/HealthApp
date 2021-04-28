@@ -22,6 +22,7 @@ SOURCES += \
     config.cpp \
     easylogging++.cc \
     httpclient.cpp \
+    ipcinterfaceinterface.cpp \
     logging.cpp \
     main.cpp \
     mainapp.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     config.h \
     easylogging++.h \
     httpclient.h \
+    ipcinterfaceinterface.h \
     logging.h \
     mainapp.h \
     patientdata.h \

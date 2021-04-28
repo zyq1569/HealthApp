@@ -23,7 +23,7 @@ INITIALIZE_EASYLOGGINGPP
 
 
 ///
-/// 红旗office、中标office、一铭office、极速office、泰山office等等
+///need  office:
 ///
 int main(int argc, char *argv[])
 {
