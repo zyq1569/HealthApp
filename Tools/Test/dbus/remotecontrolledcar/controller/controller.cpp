@@ -57,8 +57,18 @@ Controller::Controller(QWidget *parent)
     : QWidget(parent)
 {
     ui.setupUi(this);
+//    QMessageBox::question(this,
+//                          tr("Question"),
+//                          tr("start dbus-daemon.exe file..... ?"),
+//                          QMessageBox::Yes | QMessageBox::No,
+//                          QMessageBox::Yes);
     car = new org::example::Examples::CarInterface("org.example.CarExample", "/Car",
             QDBusConnection::sessionBus(), this);
+//    QMessageBox::question(this,
+//                          tr("Question"),
+//                          tr("dbus-daemon.exe start?"),
+//                          QMessageBox::Yes | QMessageBox::No,
+//                          QMessageBox::Yes);
     startTimer(1000);
 }
 
