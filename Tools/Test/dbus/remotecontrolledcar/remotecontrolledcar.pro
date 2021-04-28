@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = car \
-	  controller
+SUBDIRS  = car \
+           controller

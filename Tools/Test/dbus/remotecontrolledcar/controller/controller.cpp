@@ -58,7 +58,7 @@ Controller::Controller(QWidget *parent)
 {
     ui.setupUi(this);
     car = new org::example::Examples::CarInterface("org.example.CarExample", "/Car",
-                           QDBusConnection::sessionBus(), this);
+            QDBusConnection::sessionBus(), this);
     startTimer(1000);
 }
 
@@ -66,9 +66,13 @@ void Controller::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
     if (car->isValid())
+    {
         ui.label->setText("connected");
+    }
     else
+    {
         ui.label->setText("disconnected");
+    }
 }
 
 void Controller::on_accelerate_clicked()
