@@ -155,6 +155,10 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     setServerHttpUrl(HttpUrl);
     setDownDir(cacheDir);
     ///------------------------------------------------------------------------------------
+    ///
+    ///
+    ///D-BUS: register
+
 }
 
 void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer)
@@ -250,11 +254,11 @@ MainApp::~MainApp()
     //        m_StudyImage = NULL;
     //    }
     SAFEDELETE(m_StudyImage)
-            SAFEDELETE(m_PatientStudyRegister)
-            SAFEDELETE(m_StudyImage)
-            SAFEDELETE(m_view)
+    SAFEDELETE(m_PatientStudyRegister)
+    SAFEDELETE(m_StudyImage)
+    SAFEDELETE(m_view)
 
-            delete ui;
+    delete ui;
 }
 
 
