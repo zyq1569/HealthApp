@@ -9,13 +9,14 @@ class IPCInterfaceInterface : public QDBusAbstractInterface
     Q_OBJECT
 public:
     IPCInterfaceInterface(const QString &service, const QString &path, const QDBusConnection &connection, QObject *parent = nullptr);
+
     ~IPCInterfaceInterface();
 
 public:
-    virtual InterfaceName() = 0;
+    virtual void InterfaceName() = 0;
 
 public:
-    QString InterfaceName;
+    QString IPCInterfaceName;
 };
 
 #endif // IPCINTERFACEINTERFACE_H
