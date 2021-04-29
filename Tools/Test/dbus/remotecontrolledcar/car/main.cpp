@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
     view.show();
 
     new CarInterfaceAdaptor(car);
-    QDBusConnection connection = QDBusConnection::sessionBus();
+    QDBusConnection connection = QDBusConnection::systemBus();
 //    connection.registerObject("/Car", car);
 //    connection.registerService("org.example.CarExample");
     bool flag = connection.registerObject("/Car", car);
