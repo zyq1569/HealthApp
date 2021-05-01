@@ -4,6 +4,9 @@
 #include <QString>
 #include <QtDBus/QtDBus>
 
+
+//---https://blog.csdn.net/lvliang2008/article/details/6304003
+//--DBusProxy DBusClientProxy DBusServer
 class IPCInterfaceInterface : public QDBusAbstractInterface
 {
     Q_OBJECT
