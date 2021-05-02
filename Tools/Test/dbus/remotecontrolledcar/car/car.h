@@ -62,7 +62,7 @@ public:
     QRectF boundingRect() const;
 
 public Q_SLOTS:
-    void accelerate();
+    void accelerate(QList<QVariant> arg);
     void decelerate();
     void turnLeft();
     void turnRight();

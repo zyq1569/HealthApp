@@ -64,7 +64,7 @@ Car::Car() : color(Qt::green), wheelsAngle(0), speed(0)
     setFlag(QGraphicsItem::ItemIsFocusable, true);
 }
 
-void Car::accelerate()
+void Car::accelerate(QList<QVariant> arg)
 {
     if (speed < 10)
     {
