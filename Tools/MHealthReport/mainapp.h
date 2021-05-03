@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QNetworkCookie>
+#include <QSharedMemory>
 
 class QProcess;
 class StudyImage;
@@ -11,7 +12,10 @@ class QWebEngineView;
 class Config;
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainApp; }
+namespace Ui
+{
+class MainApp;
+}
 QT_END_NAMESPACE
 
 class MainApp : public QMainWindow
@@ -39,6 +43,8 @@ private:
     QString m_serverPort;
     QString m_url;
     int m_imageViewerEnable;
+
+    QSharedMemory m_sharedInfo;
 
 private:
     Ui::MainApp *ui;
