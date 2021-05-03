@@ -14,6 +14,8 @@
 #include <QMessageBox>
 #include <QSettings>
 
+#define SHAREDHEALTH "SharedHealth"
+
 #define SAFEDELETE(pointer) \
 {                           \
     if(pointer)             \
@@ -25,12 +27,12 @@
 
 /// Qt + vc 中文编译问题  https://blog.csdn.net/libaineu2004/article/details/19245205
 /// UI https://www.cnblogs.com/swarmbees/p/11160996.html#--%E9%81%AE%E7%BD%A9%E6%8E%A7%E4%BB%B6
-MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
+MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sharedInfo(SHAREDHEALTH)
 {
     ui->setupUi(this);
 
-    m_serverIP = "127.0.0.1";
-    m_serverPort = "8080";
+    m_serverIP    =  "127.0.0.1";
+    m_serverPort  =  "8080";
 
     this->setCentralWidget(ui->m_tabWidgetTotal);
 
@@ -158,6 +160,9 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ///
     ///
     ///D-BUS: register
+    /// ------------------------------------------------------------------------------------
+    ///
+
 
 }
 
