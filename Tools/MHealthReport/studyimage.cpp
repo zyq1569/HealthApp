@@ -18,7 +18,8 @@ StudyImage::StudyImage(QWidget *parent) :
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
 
     QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
-                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"};
+                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"
+                       };
     ui->m_tableWidget->setColumnCount(strs.count());
 
     ui->m_tableWidget->setHorizontalHeaderLabels(strs);
@@ -60,7 +61,8 @@ StudyImage::StudyImage(QWidget *parent) :
     ///------------CustomContextMenu---------------------------------
     ///
     ///
-    m_urlImage = false;
+    m_urlImage  = false;
+    m_urlReport = false;
 }
 
 void StudyImage::ViewImage()
@@ -99,8 +101,8 @@ void StudyImage::EditReport()
 void StudyImage::EditPatientInfo()
 {
     QString Info = "PatientIdentity:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-3)->text();
-    Info = Info + "-PatientID:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-2)->text();
-    Info = Info + "-StudyOrderIdentity:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
+    Info         = Info + "-PatientID:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-2)->text();
+    Info         = Info + "-StudyOrderIdentity:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
     QMessageBox::information(NULL, tr("检查"),("编辑患者信息!"+Info));
 }
 
@@ -112,6 +114,11 @@ StudyImage::~StudyImage()
 void StudyImage::setUrlImage(bool flag)
 {
     m_urlImage = flag;
+}
+
+void StudyImage::setUrlReport(bool flag)
+{
+    m_urlReport = flag;
 }
 
 void  StudyImage::connectImageApp()
@@ -160,7 +167,9 @@ void  StudyImage::sendToImageAppMsg(QString data)
     }
 
     if (!m_localSocket->bytesAvailable())
+    {
         m_localSocket->waitForReadyRead();
+    }
 
     QTextStream stream(m_localSocket);
     QString respond = stream.readAll();
@@ -208,9 +217,9 @@ void StudyImage::updateStudyImageTable()
         ///------------ to do :: memory??---------------------------------------
         int oldrow = ui->m_tableWidget->rowCount();
         int oldcol = ui->m_tableWidget->columnCount();
-        for (int i = 0;i < oldrow;i++)
+        for (int i = 0; i < oldrow; i++)
         {
-            for (int j = 0;j < oldcol;j++)
+            for (int j = 0; j < oldcol; j++)
             {
                 QTableWidgetItem *item = ui->m_tableWidget->item(i,j);
                 if (item)
@@ -234,12 +243,30 @@ void StudyImage::updateStudyImageTable()
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientSex].Value));
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientBirthday].Value));
             QString state = StudyOder->orderdata[row].studyorder[StudyState].Value;
-            if (state == "1")      {                state = "已预约";  }
-            else if (state == "2") {                state = "待检查";  }
-            else if (state == "3") {                state = "已检查";  }
-            else if (state == "4") {                state = "诊断";    }
-            else if (state == "5") {                state = "报告审核";}
-            else                   {                state = "未知";    }
+            if (state == "1")
+            {
+                state = "已预约";
+            }
+            else if (state == "2")
+            {
+                state = "待检查";
+            }
+            else if (state == "3")
+            {
+                state = "已检查";
+            }
+            else if (state == "4")
+            {
+                state = "诊断";
+            }
+            else if (state == "5")
+            {
+                state = "报告审核";
+            }
+            else
+            {
+                state = "未知";
+            }
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(state));
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyModality].Value));
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDescription].Value));
