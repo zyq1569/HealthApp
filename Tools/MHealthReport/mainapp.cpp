@@ -50,11 +50,11 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
 
     ///QWebEngineView
     //m_url = "http://"+m_serverIP+":"+m_serverPort;
-    m_view = new QWebEngineView(this);
+    m_reportview = new QWebEngineView(this);
     QNetworkProxyFactory::setUseSystemConfiguration(false);//off SystemConfiguration
-    //m_view->setUrl(QUrl(m_url+"/login/test/testReport.html#Temple"));
-    ui->m_tabWidgetTotal->addTab(m_view, "检查报告");
-    //m_view->show();
+    //m_reportview->setUrl(QUrl(m_url+"/login/test/testReport.html#Temple"));
+    ui->m_tabWidgetTotal->addTab(m_reportview, "检查报告");
+    //m_reportview->show();
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
 
     ///根据配置来设置
@@ -73,10 +73,10 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
 
     connect(ui->m_tabWidgetTotal,SIGNAL(tabBarClicked(int)),this,SLOT(TabBarClicked(int)));
     //connect(m_StudyImage, SIGNAL(sendNumber(QString, QString)), this, SLOT(receiveNumber(QString, QString)));
-    connect(m_view->page()->profile()->cookieStore(), &QWebEngineCookieStore::cookieAdded,this,&MainApp::slog_cookieAdded);
+    connect(m_reportview->page()->profile()->cookieStore(), &QWebEngineCookieStore::cookieAdded,this,&MainApp::slog_cookieAdded);
 
     ///clearHttpCache
-    QWebEngineProfile * engineProfile = m_view->page()->profile();
+    QWebEngineProfile * engineProfile = m_reportview->page()->profile();
     engineProfile->clearHttpCache();
     engineProfile->clearAllVisitedLinks();
     //QString cachePath = engineProfile->cachePath();
@@ -132,7 +132,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
         m_config->setConfig(m_serverIP,m_serverPort,m_imageViewerEnable);
     }
     m_url = "http://"+m_serverIP+":"+m_serverPort;
-    m_view->setUrl(QUrl(m_url+"/login/test/testReport.html#studyTemp"));
+    m_reportview->setUrl(QUrl(m_url+"/login/test/testReport.html#studyTemp"));
     if (m_imageViewerEnable < 2)
     {
         ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_imageView) );
@@ -154,9 +154,23 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
     {
         m_StudyImage->setUrlImage(true);
     }
+
     if (m_reportViewerEnable < 2)
     {
 
+        ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_reportview) );
+        ///---begin word.exe
+//QString currentdir = QDir::currentPath();
+//int  pos = currentdir.lastIndexOf("/");
+//QString viewerdir =  currentdir.left(pos);
+//viewerdir = viewerdir + "/starviewer/starviewer.exe";
+//QFileInfo fileExe(viewerdir);
+//if(fileExe.exists())
+//{
+//    m_QProcess = new QProcess(parent);
+//    m_QProcess->start(viewerdir);
+//}
+        ///----end word.exe
     }
     else
     {
@@ -208,16 +222,24 @@ void MainApp::lookStudyReport(QString StudyOrderIdentity)
     static bool flag = true;
     if (flag)
     {
-        m_view->setUrl(QUrl(m_url+"/login/test/studyReport.html#"+StudyOrderIdentity));
+        m_reportview->setUrl(QUrl(m_url+"/login/test/studyReport.html#"+StudyOrderIdentity));
     }
     else
     {
-        m_view->setUrl(QUrl(m_url+"/login/test/oderReport.html#"+StudyOrderIdentity));
+        m_reportview->setUrl(QUrl(m_url+"/login/test/oderReport.html#"+StudyOrderIdentity));
     }
-    m_view->show();
+    m_reportview->show();
     flag = !flag;
     //QMessageBox::information(NULL, tr("studyReport"),StudyOrderIdentity);
-    ui->m_tabWidgetTotal->setCurrentIndex(2);
+    /// use openword!
+    if (m_reportViewerEnable > 1)
+    {
+
+    }
+    else
+    {
+        ui->m_tabWidgetTotal->setCurrentIndex(2);
+    }
 }
 
 void MainApp::slog_cookieAdded(const QNetworkCookie &cookie)
@@ -229,11 +251,11 @@ void MainApp::TabBarClicked(int index)
 {
     if (index == 2)
     {
-        m_view->show();
+        m_reportview->show();
     }
     else
     {
-        m_view->hide();
+        m_reportview->hide();
     }
 }
 
@@ -261,6 +283,7 @@ MainApp::~MainApp()
         configini.setValue("/webserver/server_IP",m_serverIP);
         configini.setValue("/webserver/server_Port",m_serverPort);
         configini.setValue("/imageviewer/viewer_state",m_imageViewerEnable);
+        configini.setValue("/imageviewer/report_state",m_reportViewerEnable);
     }
     //    if (m_StudyImage)
     //    {
@@ -270,7 +293,7 @@ MainApp::~MainApp()
     SAFEDELETE(m_StudyImage)
     SAFEDELETE(m_PatientStudyRegister)
     SAFEDELETE(m_StudyImage)
-    SAFEDELETE(m_view)
+    SAFEDELETE(m_reportview)
 
     delete ui;
 }
