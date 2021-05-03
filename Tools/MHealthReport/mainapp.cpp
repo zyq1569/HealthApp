@@ -122,9 +122,10 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
     QFileInfo fileInfo(configfilename);
     if(fileInfo.exists())
     {
-        m_serverIP   = configini.value("/webserver/server_IP","127.0.0.1").toString();
-        m_serverPort = configini.value("/webserver/server_Port","8080").toString();
-        m_imageViewerEnable = configini.value("/imageviewer/viewer_state",0).toInt();
+        m_serverIP             = configini.value("/webserver/server_IP","127.0.0.1").toString();
+        m_serverPort           = configini.value("/webserver/server_Port","8080").toString();
+        m_imageViewerEnable    = configini.value("/imageviewer/viewer_state",0).toInt();
+        m_reportViewerEnable   = configini.value("/reportviewer/report_state",0).toInt();
     }
     if(fileInfo.exists())
     {
@@ -152,6 +153,14 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
     else
     {
         m_StudyImage->setUrlImage(true);
+    }
+    if (m_reportViewerEnable < 2)
+    {
+
+    }
+    else
+    {
+
     }
     QString HttpUrl = "http://" + m_serverIP + ":" + m_serverPort;
     setServerHttpUrl(HttpUrl);

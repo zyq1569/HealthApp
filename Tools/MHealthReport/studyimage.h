@@ -24,6 +24,7 @@ public:
     ~StudyImage();
 public:
     void setUrlImage(bool flag);
+    void setUrlReport(bool flag);
 
 public slots:
     /// socket IPC
@@ -61,7 +62,7 @@ private:
 
     QMenu *m_menu;
     int m_currentRow;
-    bool m_urlImage;
+    bool m_urlImage, m_urlReport;
 
 private:
     Ui::StudyImage *ui;

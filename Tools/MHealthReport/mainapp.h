@@ -42,7 +42,7 @@ private:
     QString m_serverIP;
     QString m_serverPort;
     QString m_url;
-    int m_imageViewerEnable;
+    int m_imageViewerEnable,m_reportViewerEnable;
 
     QSharedMemory m_sharedInfo;
 

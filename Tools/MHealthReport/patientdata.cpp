@@ -28,14 +28,12 @@ void setDownDir(QString dir)
 
 PatientData *PatientData::getInstance()
 {
+    if(NULL == s_instance)
     {
-        if(NULL == s_instance)
-        {
-            s_instance = new PatientData();
-        }
-
-        return s_instance;
+        s_instance = new PatientData();
     }
+
+    return s_instance;
 }
 
 
