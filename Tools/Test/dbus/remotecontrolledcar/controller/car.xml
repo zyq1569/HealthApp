@@ -2,7 +2,10 @@
     "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node name="/com/trollech/examples/car">
     <interface name="org.example.Examples.CarInterface">
-        <method name="accelerate"/>
+        <method name="accelerate">
+        <arg name="parameters" direction="in"  type="s"/>
+        <arg name="response"   direction="out" type="s"/>
+        </method>
         <method name="decelerate"/>
         <method name="turnLeft"/>
         <method name="turnRight"/>
