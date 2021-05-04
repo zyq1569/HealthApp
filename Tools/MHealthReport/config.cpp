@@ -14,10 +14,13 @@ Config::Config(QWidget *parent) :QWidget(parent),ui(new Ui::Config)
     QString otherdir =  dir.left(i);
     dir = otherdir + "/Starviewer/starviewer.exe";
     ui->m_viewerDir->setText(dir);
+    ui->m_viewerDir->setPlaceholderText(dir);
 
     ui->m_reportViewer->setTristate(false);
     dir = otherdir + "/OpenWord/word.exe";
     ui->m_reportrDir->setText(dir);
+
+    ui->m_reportrDir->setPlaceholderText(dir);
 }
 
 void Config::setConfig(QString serverip, QString serverport, int viewer, int report)
@@ -34,7 +37,7 @@ void Config::setConfig(QString serverip, QString serverport, int viewer, int rep
         ui->m_viewerDir->setEnabled(false);
     }
 
-    ui->m_imageViewer->setCheckState((Qt::CheckState)report);
+    ui->m_reportViewer->setCheckState((Qt::CheckState)report);
     if (report > 1)
     {
         ui->m_reportrDir->setEnabled(true);
