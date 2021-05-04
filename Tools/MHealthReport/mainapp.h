@@ -45,6 +45,9 @@ private:
     int m_imageViewerEnable,m_reportViewerEnable;
 
     QSharedMemory m_sharedInfo;
+protected:
+    void timerEvent(QTimerEvent *event);
+
 
 private:
     Ui::MainApp *ui;
