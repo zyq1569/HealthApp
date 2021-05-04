@@ -3,7 +3,8 @@
 
 #include <QWidget>
 
-namespace Ui {
+namespace Ui
+{
 class Config;
 }
 
@@ -16,13 +17,13 @@ public:
     ~Config();
 
 signals:
-    void saveConfig(QString , QString, int);
+    void saveConfig(QString, QString, int);
 
 private slots:
     void saveServerconfig();
 
 public:
-    void setConfig(QString serverip, QString serverport, int viewer);
+    void setConfig(QString serverip, QString serverport, int viewer, int report);
 
 private:
     Ui::Config *ui;
