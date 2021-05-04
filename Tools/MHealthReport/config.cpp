@@ -27,21 +27,21 @@ void Config::setConfig(QString serverip, QString serverport, int viewer, int rep
     ui->m_imageViewer->setCheckState((Qt::CheckState)viewer);
     if (viewer > 1)
     {
-        ui->m_viewerDir->setEnabled(false);
+        ui->m_viewerDir->setEnabled(true);
     }
     else
     {
-        ui->m_viewerDir->setEnabled(true);
+        ui->m_viewerDir->setEnabled(false);
     }
 
     ui->m_imageViewer->setCheckState((Qt::CheckState)report);
     if (report > 1)
     {
-        ui->m_reportrDir->setEnabled(false);
+        ui->m_reportrDir->setEnabled(true);
     }
     else
     {
-        ui->m_reportrDir->setEnabled(true);
+        ui->m_reportrDir->setEnabled(false);
     }
 }
 
@@ -51,25 +51,25 @@ void Config::saveServerconfig()
     int state = ui->m_imageViewer->checkState();
     if (ui->m_serverIP->text().length() > 7 && ui->m_serverPort->text() > 1)
     {
-        emit saveConfig(ui->m_serverIP->text(),ui->m_serverPort->text(),state);
+        emit saveConfig(ui->m_serverIP->text(), ui->m_serverPort->text(), state, ui->m_reportViewer->checkState());
     }
     if (state > 1)
     {
-        ui->m_viewerDir->setEnabled(false);
+        ui->m_viewerDir->setEnabled(true);
     }
     else
     {
-        ui->m_viewerDir->setEnabled(true);
+        ui->m_viewerDir->setEnabled(false);
     }
 
     state = ui->m_reportViewer->checkState();
     if (state > 1)
     {
-        ui->m_reportrDir->setEnabled(false);
+        ui->m_reportrDir->setEnabled(true);
     }
     else
     {
-        ui->m_reportrDir->setEnabled(true);
+        ui->m_reportrDir->setEnabled(false);
     }
 }
 

@@ -17,7 +17,7 @@ public:
     ~Config();
 
 signals:
-    void saveConfig(QString, QString, int);
+    void saveConfig(QString, QString, int, int);
 
 private slots:
     void saveServerconfig();

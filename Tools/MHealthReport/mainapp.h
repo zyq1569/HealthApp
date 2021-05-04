@@ -31,7 +31,7 @@ public slots:
     void lookStudyReport(QString StudyOrderIdentity);
     void lookStudyImage(QString studyuid);
     void slog_cookieAdded(const QNetworkCookie &cookie);
-    void saveServerConfig(QString serverIP, QString serverPort, int viewer);
+    void saveServerConfig(QString serverIP, QString serverPort, int viewer, int report);
 
 private:
     QProcess *m_QProcess, *m_wordProcess;
