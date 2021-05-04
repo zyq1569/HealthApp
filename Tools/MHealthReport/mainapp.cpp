@@ -184,9 +184,33 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
     ///D-BUS: register
     /// ------------------------------------------------------------------------------------
     ///
+    int timerID = startTimer(1000 / 33);///ms
 
 
 }
+void MainApp::timerEvent(QTimerEvent *event)
+{
+    Q_UNUSED(event);
+    switch (event->timerId()-1)
+    {
+//    case timer1 :
+//      qDebug() << "timer1" << endl;
+//      break;
+//    case timer2 :
+//      qDebug() << "timer2" << endl;
+//      break;
+//    case timer3 :
+//      qDebug() << "timer3" << endl;
+            break;
+        default:
+            qDebug() << "no  !!"<<endl;
+            break;
+    }
+//    int timerID = 0;
+//    killTimer(timerID);
+
+}
+
 
 void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer, int report)
 {
