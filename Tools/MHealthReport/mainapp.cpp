@@ -270,7 +270,7 @@ MainApp::~MainApp()
         dir.setPath("");
         if (!dir.mkpath(iniDir))
         {
-            // error!
+            //error!
         }
     }
     QString configfilename = iniDir+"/MHealthReport.ini";
