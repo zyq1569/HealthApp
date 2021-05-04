@@ -69,7 +69,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
     m_config          = new Config(this);
     ui->m_tabWidgetTotal->addTab(m_config,"维护配置");
     //ui->m_tabWidgetTotal->setCurrentIndex(2);
-    connect(m_config,SIGNAL(saveConfig(QString,QString,int)),this,SLOT(saveServerConfig(QString,QString,int)));
+    connect(m_config,SIGNAL(saveConfig(QString,QString,int,int)),this,SLOT(saveServerConfig(QString,QString,int,int)));
 
     ///----------------------------------------------------------------------------------------------------------------------
 
@@ -115,7 +115,8 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
             // error!
         }
     }
-    m_imageViewerEnable = 0;
+    m_imageViewerEnable  = 0;
+    m_reportViewerEnable = 0;
     QString configfilename = iniDir+"/MHealthReport.ini";
 #if defined(Q_OS_LINUX)
     configfilename = iniDir+"/MHealthReport_linux.ini";
@@ -135,7 +136,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
     }
     m_url = "http://"+m_serverIP+":"+m_serverPort;
     m_reportview->setUrl(QUrl(m_url+"/login/test/testReport.html#studyTemp"));
-    if (m_imageViewerEnable < 2)
+    if (m_imageViewerEnable > 1)
     {
         ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_imageView) );
         ///---begin starviewer.exe
@@ -157,7 +158,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
         m_StudyImage->setUrlImage(true);
     }
 
-    if (m_reportViewerEnable < 2)
+    if (m_reportViewerEnable > 1)
     {
         ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_reportview) );
         ///---begin word.exe--------------------
@@ -187,11 +188,12 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
 
 }
 
-void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer)
+void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer, int report)
 {
-    m_serverIP = serverIP;
-    m_serverPort = serverPort;
-    m_imageViewerEnable = viewer;
+    m_serverIP           = serverIP;
+    m_serverPort         = serverPort;
+    m_imageViewerEnable  = viewer;
+    m_reportViewerEnable = report;
     QString HttpUrl = "http://" + m_serverIP + ":" + m_serverPort;
     setServerHttpUrl(HttpUrl);
 }
@@ -278,10 +280,10 @@ MainApp::~MainApp()
     QSettings configini(configfilename,QSettings::IniFormat);
     //if (isFileExist(configfilename))
     {
-        configini.setValue("/webserver/server_IP",m_serverIP);
-        configini.setValue("/webserver/server_Port",m_serverPort);
-        configini.setValue("/imageviewer/viewer_state",m_imageViewerEnable);
-        configini.setValue("/imageviewer/report_state",m_reportViewerEnable);
+        configini.setValue("/webserver/server_IP",      m_serverIP);
+        configini.setValue("/webserver/server_Port",    m_serverPort);
+        configini.setValue("/imageviewer/viewer_state", m_imageViewerEnable);
+        configini.setValue("/reportviewer/report_state",m_reportViewerEnable);
     }
     //    if (m_StudyImage)
     //    {
