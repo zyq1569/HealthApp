@@ -234,7 +234,7 @@ void MainApp::lookStudyReport(QString StudyOrderIdentity)
     /// use openword!
     if (m_reportViewerEnable > 1)
     {
-
+        ///emit showwordreport;
     }
     else
     {
