@@ -2,9 +2,7 @@
 #include "ui_config.h"
 
 #include <QDir>
-Config::Config(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::Config)
+Config::Config(QWidget *parent) :QWidget(parent),ui(new Ui::Config)
 {
     ui->setupUi(this);
 
@@ -13,12 +11,16 @@ Config::Config(QWidget *parent) :
     ui->m_imageViewer->setTristate(false);
     QString dir = QDir::currentPath();
     int  i = dir.lastIndexOf("/");
-    QString viewerdir =  dir.left(i);
-    dir = viewerdir + "/Starviewer/starviewer.exe";
+    QString otherdir =  dir.left(i);
+    dir = otherdir + "/Starviewer/starviewer.exe";
     ui->m_viewerDir->setText(dir);
+
+    ui->m_reportViewer->setTristate(false);
+    dir = otherdir + "/OpenWord/word.exe";
+    ui->m_reportrDir->setText(dir);
 }
 
-void Config::setConfig(QString serverip, QString serverport, int viewer)
+void Config::setConfig(QString serverip, QString serverport, int viewer, int report)
 {
     ui->m_serverIP->setText(serverip);
     ui->m_serverPort->setText(serverport);
@@ -30,6 +32,16 @@ void Config::setConfig(QString serverip, QString serverport, int viewer)
     else
     {
         ui->m_viewerDir->setEnabled(true);
+    }
+
+    ui->m_imageViewer->setCheckState((Qt::CheckState)report);
+    if (report > 1)
+    {
+        ui->m_reportrDir->setEnabled(false);
+    }
+    else
+    {
+        ui->m_reportrDir->setEnabled(true);
     }
 }
 
@@ -48,6 +60,16 @@ void Config::saveServerconfig()
     else
     {
         ui->m_viewerDir->setEnabled(true);
+    }
+
+    state = ui->m_reportViewer->checkState();
+    if (state > 1)
+    {
+        ui->m_reportrDir->setEnabled(false);
+    }
+    else
+    {
+        ui->m_reportrDir->setEnabled(true);
     }
 }
 

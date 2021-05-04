@@ -131,7 +131,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
     }
     if(fileInfo.exists())
     {
-        m_config->setConfig(m_serverIP,m_serverPort,m_imageViewerEnable);
+        m_config->setConfig(m_serverIP,m_serverPort,m_imageViewerEnable,m_reportViewerEnable);
     }
     m_url = "http://"+m_serverIP+":"+m_serverPort;
     m_reportview->setUrl(QUrl(m_url+"/login/test/testReport.html#studyTemp"));
@@ -159,25 +159,21 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
 
     if (m_reportViewerEnable < 2)
     {
-
         ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_reportview) );
-        ///---begin word.exe
-//QString currentdir = QDir::currentPath();
-//int  pos = currentdir.lastIndexOf("/");
-//QString viewerdir =  currentdir.left(pos);
-//viewerdir = viewerdir + "/starviewer/starviewer.exe";
-//QFileInfo fileExe(viewerdir);
-//if(fileExe.exists())
-//{
-//    m_QProcess = new QProcess(parent);
-//    m_QProcess->start(viewerdir);
-//}
-        ///----end word.exe
+        ///---begin word.exe--------------------
+        QString currentdir = QDir::currentPath();
+        int  pos = currentdir.lastIndexOf("/");
+        QString wordDir =  currentdir.left(pos);
+        wordDir = wordDir + "/openword/word.exe";
+        QFileInfo fileExe(wordDir);
+        if(fileExe.exists())
+        {
+            m_wordProcess = new QProcess(parent);
+            m_wordProcess->start(wordDir);
+        }
+        ///----end word.exe--------------------
     }
-    else
-    {
 
-    }
     QString HttpUrl = "http://" + m_serverIP + ":" + m_serverPort;
     setServerHttpUrl(HttpUrl);
     setDownDir(cacheDir);

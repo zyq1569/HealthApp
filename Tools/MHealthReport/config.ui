@@ -121,7 +121,7 @@
     <string>...</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="m_report">
+  <widget class="QCheckBox" name="m_reportViewer">
    <property name="geometry">
     <rect>
      <x>20</x>
