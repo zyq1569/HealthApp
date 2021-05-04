@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
+    <width>548</width>
     <height>230</height>
    </rect>
   </property>
@@ -100,7 +100,7 @@
     <rect>
      <x>110</x>
      <y>87</y>
-     <width>321</width>
+     <width>381</width>
      <height>21</height>
     </rect>
    </property>
@@ -111,7 +111,7 @@
   <widget class="QToolButton" name="m_exeDir">
    <property name="geometry">
     <rect>
-     <x>440</x>
+     <x>510</x>
      <y>87</y>
      <width>24</width>
      <height>21</height>
@@ -137,7 +137,7 @@
   <widget class="QToolButton" name="m_exeDir_2">
    <property name="geometry">
     <rect>
-     <x>440</x>
+     <x>510</x>
      <y>120</y>
      <width>24</width>
      <height>21</height>
@@ -155,12 +155,25 @@
     <rect>
      <x>110</x>
      <y>120</y>
-     <width>321</width>
+     <width>381</width>
      <height>21</height>
     </rect>
    </property>
    <property name="readOnly">
     <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>160</y>
+     <width>211</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>修改配置后必须重启才有效果</string>
    </property>
   </widget>
  </widget>
