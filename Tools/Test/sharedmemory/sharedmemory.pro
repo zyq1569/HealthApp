@@ -1,4 +1,4 @@
-QT += widgets
+QT      += widgets
 requires(qtConfig(filedialog))
 
 SOURCES += main.cpp \
@@ -7,7 +7,7 @@ SOURCES += main.cpp \
 HEADERS += dialog.h
 
 # Forms and resources
-FORMS += dialog.ui
+FORMS   += dialog.ui
 
 EXAMPLE_FILES = *.png
 
