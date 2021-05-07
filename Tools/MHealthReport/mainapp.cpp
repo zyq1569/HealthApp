@@ -188,6 +188,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
 
 
 }
+
 void MainApp::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
