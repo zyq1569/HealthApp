@@ -221,7 +221,6 @@ void Dialog::on_pushButton_clicked()
     {
         return;
     }
-    filename = "file:///" + filename;
     if (shareHealth.isAttached())
     {
         shareHealth.detach();
