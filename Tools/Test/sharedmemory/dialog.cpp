@@ -216,11 +216,13 @@ void Dialog::on_pushButton_clicked()
     QString filename = QFileDialog::getOpenFileName(0, QString(), QString(),
                        tr("Word (*.odt *.doc *.docx)"));
 
+    static QString fileODF = "";
     QFileInfo qfile(filename);
-    if (!qfile.isFile())
+    if (!qfile.isFile() || fileODF == filename)
     {
         return;
     }
+    fileODF = filename;
     if (shareHealth.isAttached())
     {
         shareHealth.detach();
