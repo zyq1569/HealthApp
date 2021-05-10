@@ -197,11 +197,6 @@ void MainApp::timerEvent(QTimerEvent *event)
 //    case timer1 :
 //      qDebug() << "timer1" << endl;
 //      break;
-//    case timer2 :
-//      qDebug() << "timer2" << endl;
-//      break;
-//    case timer3 :
-//      qDebug() << "timer3" << endl;
             break;
         default:
             qDebug() << "no  !!"<<endl;
@@ -219,7 +214,7 @@ void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer,
     m_serverPort         = serverPort;
     m_imageViewerEnable  = viewer;
     m_reportViewerEnable = report;
-    QString HttpUrl = "http://" + m_serverIP + ":" + m_serverPort;
+    QString HttpUrl      = "http://" + m_serverIP + ":" + m_serverPort;
     setServerHttpUrl(HttpUrl);
 }
 
