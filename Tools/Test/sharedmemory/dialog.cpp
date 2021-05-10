@@ -239,6 +239,9 @@ void Dialog::on_pushButton_clicked()
     QBuffer buffer;
     buffer.open(QBuffer::ReadWrite);
     QDataStream out(&buffer);
+    int state = 0;
+    out << state;
+    int i = buffer.size();
     out << filename;
     int size = buffer.size();
 
