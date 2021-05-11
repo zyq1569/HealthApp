@@ -226,7 +226,10 @@ void Dialog::on_pushButton_clicked()
     if (shareHealth.isAttached())
     {
         shareHealth.detach();
+        ui.label->setText(tr("detach from shareHealth memory."));
     }
+    QString tem = "odt file.";
+    ui.label->setText(tem+fileODF);
 
 //    int size = filename.size();
 
@@ -239,7 +242,7 @@ void Dialog::on_pushButton_clicked()
     QBuffer buffer;
     buffer.open(QBuffer::ReadWrite);
     QDataStream out(&buffer);
-    int state = 0;
+    int state = 1;
     out << state;
     int i = buffer.size();
     out << filename;
