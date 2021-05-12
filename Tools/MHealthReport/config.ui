@@ -173,7 +173,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>修改配置后必须重启才有效果</string>
+    <string>修改配置后必须重启生效</string>
    </property>
   </widget>
  </widget>
