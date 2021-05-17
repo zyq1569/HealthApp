@@ -124,8 +124,7 @@ DCMTK_OFSTD_EXPORT void SearchDirFile(const OFString Dir,
                                       const bool Not = false,
                                       const int Count = 200);
 
-DCMTK_OFSTD_EXPORT void SearchDirectory(const OFString Dir,
-                                        OFList<OFString> &datas);
+DCMTK_OFSTD_EXPORT void SearchDirectory(const OFString Dir,  OFList<OFString> &datas);
 
 #ifndef _WIN32
 DCMTK_OFSTD_EXPORT uint64_t CreateGUID();
