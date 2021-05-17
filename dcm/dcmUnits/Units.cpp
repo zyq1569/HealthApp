@@ -237,8 +237,8 @@ OFString GetCurrWorkingDir()
     return strPath;
 }
 
-//!根据字符计算两个Hash数值
-OFString AdjustDir(const OFString dir)
+//!判断目录是否为空
+OFString CheckDirPath(const OFString dir)
 {
 #ifdef HAVE_WINDOWS_H
     OFString path = dir;
@@ -265,7 +265,7 @@ void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> 
         return;
     }
 #ifdef HAVE_WINDOWS_H
-    OFString dir = AdjustDir(Dir);
+    OFString dir = CheckDirPath(Dir);
     if (dir == "")
     {
         return;
@@ -449,7 +449,7 @@ void SearchDirectory(const OFString Dir, OFList<OFString> &datas)
 {
     OFString dir;
 #ifdef HAVE_WINDOWS_H
-    dir = AdjustDir(Dir);
+    dir = CheckDirPath(Dir);
     if (dir == "")
     {
         return;
