@@ -108,20 +108,15 @@ DCMTK_OFSTD_EXPORT OFBool CreatDir(OFString dir);
 
 DCMTK_OFSTD_EXPORT OFString GetCurrWorkingDir();
 
-DCMTK_OFSTD_EXPORT OFString AdjustDir(const OFString dir);
+DCMTK_OFSTD_EXPORT OFString CheckDirPath(const OFString dir);
 
-DCMTK_OFSTD_EXPORT OFString ToSearchDateTimeFormate(OFString datetime,
-        OFString &StartDateTime,
-        OFString &EndDateTime);
+DCMTK_OFSTD_EXPORT OFString ToSearchDateTimeFormate(OFString datetime,  OFString &StartDateTime,   OFString &EndDateTime);
 
-DCMTK_OFSTD_EXPORT OFString ToDateTimeFormate(OFString datetime, OFString &date,
-        OFString &time);
+DCMTK_OFSTD_EXPORT OFString ToDateTimeFormate(OFString datetime, OFString &date,    OFString &time);
 
 DCMTK_OFSTD_EXPORT OFString ToDateFormate(OFString date);
 
-DCMTK_OFSTD_EXPORT OFString DbDateTimeToDateTimeFormate(OFString datetime,
-        OFString &date,
-        OFString &time);
+DCMTK_OFSTD_EXPORT OFString DbDateTimeToDateTimeFormate(OFString datetime,  OFString &date,   OFString &time);
 
 DCMTK_OFSTD_EXPORT void SearchDirFile(const OFString Dir,
                                       const OFString FileExt,
@@ -146,29 +141,7 @@ DCMTK_OFSTD_EXPORT OFString FormatePatienName(OFString name);
 
 DCMTK_OFSTD_EXPORT OFString GetFromFile(OFString filename);
 
-DCMTK_OFSTD_EXPORT OFBool SaveStudy2JsonFile(StudyInfo study,
-        OFString filename);
+DCMTK_OFSTD_EXPORT OFBool SaveStudy2JsonFile(StudyInfo study,  OFString filename);
 DCMTK_OFSTD_EXPORT OFBool SaveString2File(OFString str, OFString filename);
 
-DCMTK_OFSTD_EXPORT OFBool ReadStudyInfo(OFString filename, OFString dir,
-                                        OFList<OFString> &data);
-
-// std::vector  operator[]
-// template<class T> class DVector : public std::vector<T>
-//{
-// public:
-//    DVector()    {    }
-//    DVector(size_type _Count) :std::vector<T>(_Count)    {    }
-//    const_reference operator[](size_type _Pos) const
-//    {
-//        if (size() <= _Pos || _Pos < 0)
-//            _Xran();
-//        return (*(begin() + _Pos));
-//    }
-//    reference operator[](size_type _Pos)
-//    {
-//        if (size() <= _Pos || _Pos < 0)
-//            _Xran();
-//        return (*(begin() + _Pos));
-//    }
-//};
+DCMTK_OFSTD_EXPORT OFBool ReadStudyInfo(OFString filename, OFString dir,   OFList<OFString> &data);
