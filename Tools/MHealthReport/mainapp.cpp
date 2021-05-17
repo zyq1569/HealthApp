@@ -184,7 +184,7 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
     ///D-BUS: register
     /// ------------------------------------------------------------------------------------
     ///
-    int timerID = startTimer(1000 / 33);///ms
+//    int timerID = startTimer(1000 / 33);///ms
 
 
 }
@@ -192,16 +192,16 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
 void MainApp::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
-    switch (event->timerId()-1)
-    {
+//    switch (event->timerId()-1)
+//    {
 //    case timer1 :
 //      qDebug() << "timer1" << endl;
 //      break;
-            break;
-        default:
-            qDebug() << "no  !!"<<endl;
-            break;
-    }
+//            break;
+//        default:
+//            qDebug() << "no  !!"<<endl;
+//            break;
+//    }
 //    int timerID = 0;
 //    killTimer(timerID);
 
