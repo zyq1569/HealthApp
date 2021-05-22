@@ -34,7 +34,7 @@
 #include "dcmtk/dcmjpeg/djdecode.h"      /* for dcmjpeg decoders */
 #include "dcmtk/dcmjpeg/djencode.h"      /* for dcmjpeg decoders */
 
-#include "Units.h"
+#include "unit.h"
 
 BEGIN_EXTERN_C
 

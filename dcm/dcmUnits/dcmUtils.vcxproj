@@ -27,14 +27,14 @@
     <ClCompile Include="CJsonObject.cpp" />
     <ClCompile Include="DcmConfig.cpp" />
     <ClCompile Include="HMariaDb.cpp" />
-    <ClCompile Include="Units.cpp" />
+    <ClCompile Include="unit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\dcm\win32\dcmUnits\cJSON.h" />
     <ClInclude Include="..\..\include\dcm\win32\dcmUnits\CJsonObject.hpp" />
     <ClInclude Include="..\..\include\dcm\win32\dcmUnits\DcmConfig.h" />
     <ClInclude Include="..\..\include\dcm\win32\dcmUnits\HMariaDb.h" />
-    <ClInclude Include="..\..\include\dcm\win32\dcmUnits\Units.h" />
+    <ClInclude Include="..\..\include\dcm\win32\dcmUnits\unit.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>dcmUnits</ProjectName>

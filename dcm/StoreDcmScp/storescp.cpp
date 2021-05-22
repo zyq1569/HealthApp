@@ -65,7 +65,7 @@ END_EXTERN_C
 //-------add add 201806
 #include "dcmtk/oflog/fileap.h"
 
-#include "Units.h"
+#include "unit.h"
 #include "DcmConfig.h"
 //--------------------
 //add json

@@ -34,9 +34,9 @@
 #endif
 //-------add add 201806
 #include "dcmtk/oflog/fileap.h"
-//#include "Units.h"
+//#include "unit.h"
 #include "DcmConfig.h"
-#include "Units.h"
+#include "unit.h"
 
 //--------------------
 #define OFFIS_CONSOLE_APPLICATION "wlmscpfs"

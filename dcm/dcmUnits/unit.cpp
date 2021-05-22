@@ -17,7 +17,7 @@
 
 #include "dcmtk/oflog/fileap.h"
 #include "cJSON.h"
-#include "Units.h"
+#include "unit.h"
 #include "dcmtk/ofstd/ofdatime.h"
 
 #ifndef HAVE_WINDOWS_H

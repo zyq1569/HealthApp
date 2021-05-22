@@ -99,7 +99,7 @@ END_EXTERN_C
 #include <direct.h>      /* for _mkdir() */
 #endif
 
-#include "Units.h"
+#include "unit.h"
 //#include <vld.h>
 //--------------------
 

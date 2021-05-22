@@ -60,7 +60,7 @@ END_EXTERN_C
 
 //add mysql driver  后期需要将数据库的处理独立模块
 #include"HMariaDb.h"
-#include "Units.h"
+#include "unit.h"
 //#include "dcmtk/ofstd/ofdatime.h"
 //#include <objbase.h>
 //////////////
