@@ -1,0 +1,30 @@
+QT---之高效使用QLatin1String，QStringRef，QString::reserve，QString::squeeze，QStringBuilder，QStringMatc
+
+QLatin1String：避免操作符 "==" 中隐含的 malloc
+从C字符串创建一个QString可能会涉及到malloc。举例来说，下面的代码可能会有一个隐式malloc调用的代价。
+
+QString 为C字符串提供了重载的比较函数 QString::operator==(const char *)。而C字符串的编码是使用QTextCodec::setCodecForCStrings()来确定的。Qt 通过提供一个特殊的比较Unicode字符串(fruit)和Latin-1字符串('apple')的函数来执行上述比较操作。该比较操作很快且不需要malloc。
+
+尽管如此，当QTextCodec::setCodecForCString被设置后，"apple" 将通过 QString::fromAscii() 被转换成一个QString。这意味这QString在执行比较之前将为字符串 "apple" 分配内存并创建C字符串的一个深拷贝！
+
+应用程序开发者在main()函数中设置 QTextCodec::setCodecForCString() 却没有意识到对每一个C风格字符串的比较都有一个malloc的副作用。
+
+由于在程序中和Latin-1编码的C字符串的比较非常常见。Qt提供了一个握有Latin-1编码C字符串指针的被称作 QLatin1String 的特殊的类。除此之外，QString 提供了重载的 QString::operator==(const QLatin1String &) 来调用比较Unicode字符串和Latin1字符串的特殊函数。我们通过写成下面这样可以使上面的代码确定无疑地很快(即无论是是否设置了setCodecForCString)，
+
+在Qt自身代码中，所有的C字符串的比较都使用了QLatin1String，这是因为应用程序可以为C字符串选择任意编码。
+
+QStringRef：没有 malloc 的字符串操作
+QString 为字符串操作提供了各种成员比如mid()、left()、right()。它们都创建会一个新的字符串，因此有一个对在已存在QString的malloc和深拷贝。 与此相反，QString::midRef()、QString::leftRef()与QString::rightRef()可以用来获取一个QStringRef。QStringRef 是对QString一部分的一个引用。为了优化，QString 也提供了许多重载比如 QString::operator==(const QStringRef &) 来配合QStringRef。
+
+QString::reserve 与 QString::squeeze
+最好提前调用 QString::reserve 来分配额外的内存，这样每次调用 QString::append() 不会导致一个 malloc。额外的内存可以使用 QString::squeeze 来回收。
+
+QStringBuilder：字符串的快速连接
+下面的代码需要至少两次 malloc。第一次molloc用来存放 "(" + type 的结果。然后另一个malloc用来追加 ")"。随着操作符"+"的增加molloc的书目相应增加。
+
+如果最终字符串的长度提前已知的话，额外的malloc就可以避免。Qt 4.6 引入了一个为单次调用的连接链(concatenation chain)预留内存的名为 QStringBuilder 的内部类。它通过为上面的每个+操作返回一个不同的类(不再是QString)来实现这一点。该类跟踪被追加的每个字符串和每一步需要的内存。在最后一步，当连接操作被转换成一个QString时它将分配一次内存并将所有字符串依次拷贝进来。该特性可以通过QT_USE_FAST_CONCATENATION来启用。有了这个定义，我们可以使用操作符 "%" 而不是 "+"。现在可以这样写，
+
+通过定义 QT_USE_FAST_OPERATOR_PLUS， '+' 而不是 '%' 可以被使用。更多细节详见  快速连接
+
+QStringMatcher：字符串快速匹配
+QStringMatcher 可被用来在许多字符串中迭代查找一个字符串或者在同一个字符串中查找多次。它使用  Boyer-Moore 字符串搜索算法 来实现快速搜索。
