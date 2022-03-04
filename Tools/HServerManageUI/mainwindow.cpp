@@ -12,7 +12,7 @@
 #include <QtGlobal>
 #include <QModelIndex>
 
-
+/// to do: 调整界面的布局 参考http://c.biancheng.net/view/9422.html
 HMainWindow::HMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::HMainWindow)
