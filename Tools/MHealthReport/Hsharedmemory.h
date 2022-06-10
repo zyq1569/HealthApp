@@ -25,11 +25,11 @@ struct PROCESS_CHANNEL
     char data[1024];
 };
 
-class TSharedMemory
+class Hsharedmemory
 {
 public:
-    TSharedMemory(int id);
-    ~TSharedMemory();
+    Hsharedmemory(int id);
+    ~Hsharedmemory();
 
     /**
      * @brief Open shared memory
@@ -56,7 +56,7 @@ public:
     QString read() const;
 
 private:
-    QSharedMemory *mSharedMemory;
+    QSharedMemory *m_SharedMemory;
     int mId;
 };
 
