@@ -1,27 +1,28 @@
-#include "sharedmemory.h"
+#include "Hsharedmemory.h"
 
-TSharedMemory::TSharedMemory(int id) :
-    mSharedMemory(nullptr)
-  , mId(id)
+Hsharedmemory::Hsharedmemory(int id) :
+    m_SharedMemory(nullptr)
+    , mId(id)
 {
 
 }
 
-TSharedMemory::~TSharedMemory()
+Hsharedmemory::~Hsharedmemory()
 {
 
 }
 
-void TSharedMemory::open()
+void Hsharedmemory::open()
 {
-    if(!mSharedMemory) {
-        mSharedMemory = new QSharedMemory(GLOBAL_SHARE_MEMORY_KEY);
-        mSharedMemory->create(sizeof(PROCESS_CHANNEL));
+    if(!m_SharedMemory)
+    {
+        m_SharedMemory = new QSharedMemory(GLOBAL_SHARE_MEMORY_KEY);
+        m_SharedMemory->create(sizeof(PROCESS_CHANNEL));
     }
     mSharedMemory->attach();
 }
 
-void TSharedMemory::close()
+void Hsharedmemory::close()
 {
     if(mSharedMemory)
     {
@@ -31,7 +32,7 @@ void TSharedMemory::close()
     }
 }
 
-void TSharedMemory::write(const QString str)
+void Hsharedmemory::write(const QString str)
 {
     mSharedMemory->lock();
     PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)mSharedMemory->data();
@@ -43,7 +44,7 @@ void TSharedMemory::write(const QString str)
     mSharedMemory->unlock();
 }
 
-void TSharedMemory::write(char *str)
+void Hsharedmemory::write(char *str)
 {
     mSharedMemory->lock();
     PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)mSharedMemory->data();
@@ -54,11 +55,12 @@ void TSharedMemory::write(char *str)
     mSharedMemory->unlock();
 }
 
-QString TSharedMemory::read() const
+QString Hsharedmemory::read() const
 {
     mSharedMemory->lock();
     PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)mSharedMemory->data();
-    if(pc->flag==FLAG_OFF || pc->command!=CMD_TEXT || pc->pid==mId) {
+    if(pc->flag==FLAG_OFF || pc->command!=CMD_TEXT || pc->pid==mId)
+    {
         mSharedMemory->unlock();
         return QString();
     }
