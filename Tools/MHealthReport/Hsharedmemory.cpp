@@ -1,8 +1,7 @@
 #include "Hsharedmemory.h"
 
 Hsharedmemory::Hsharedmemory(int id) :
-    m_SharedMemory(nullptr)
-    , mId(id)
+    m_SharedMemory(nullptr), mId(id)
 {
 
 }
@@ -19,56 +18,56 @@ void Hsharedmemory::open()
         m_SharedMemory = new QSharedMemory(GLOBAL_SHARE_MEMORY_KEY);
         m_SharedMemory->create(sizeof(PROCESS_CHANNEL));
     }
-    mSharedMemory->attach();
+    m_SharedMemory->attach();
 }
 
 void Hsharedmemory::close()
 {
-    if(mSharedMemory)
+    if(m_SharedMemory)
     {
-        mSharedMemory->detach();
-        delete mSharedMemory;
-        mSharedMemory = NULL;
+        m_SharedMemory->detach();
+        delete m_SharedMemory;
+        m_SharedMemory = NULL;
     }
 }
 
 void Hsharedmemory::write(const QString str)
 {
-    mSharedMemory->lock();
-    PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)mSharedMemory->data();
+    m_SharedMemory->lock();
+    PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)m_SharedMemory->data();
     pc->flag = FLAG_ON;
     pc->command = CMD_TEXT;
     pc->pid = mId;
     std::string stdStr = str.toStdString();
     strcpy(pc->data, stdStr.c_str());
-    mSharedMemory->unlock();
+    m_SharedMemory->unlock();
 }
 
 void Hsharedmemory::write(char *str)
 {
-    mSharedMemory->lock();
-    PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)mSharedMemory->data();
+    m_SharedMemory->lock();
+    PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)m_SharedMemory->data();
     pc->flag = FLAG_ON;
     pc->command = CMD_TEXT;
     pc->pid = mId;
     strcpy(pc->data, str);
-    mSharedMemory->unlock();
+    m_SharedMemory->unlock();
 }
 
 QString Hsharedmemory::read() const
 {
-    mSharedMemory->lock();
-    PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)mSharedMemory->data();
+    m_SharedMemory->lock();
+    PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)m_SharedMemory->data();
     if(pc->flag==FLAG_OFF || pc->command!=CMD_TEXT || pc->pid==mId)
     {
-        mSharedMemory->unlock();
+        m_SharedMemory->unlock();
         return QString();
     }
 
     pc->flag = FLAG_OFF;
     pc->command = CMD_NULL;
     QString s = QString::fromLatin1(pc->data);
-    mSharedMemory->unlock();
+    m_SharedMemory->unlock();
 
     return s;
 }
