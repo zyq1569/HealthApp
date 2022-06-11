@@ -12,9 +12,9 @@
 #define CMD_EXIT    0x3
 
 #ifdef QT_DEBUG
-#define GLOBAL_SHARE_MEMORY_KEY     "HealthApp/D"
+#define GLOBAL_SHARE_MEMORY_KEY     "MHealthReport_D"
 #else
-#define GLOBAL_SHARE_MEMORY_KEY     "HealthApp/R"
+#define GLOBAL_SHARE_MEMORY_KEY     "MHealthReport"
 #endif
 
 struct PROCESS_CHANNEL
