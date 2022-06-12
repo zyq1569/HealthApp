@@ -17,12 +17,15 @@
 #define GLOBAL_SHARE_MEMORY_KEY     "MHealthReport"
 #endif
 
+#define SHARE_LEN 2048
+
+
 struct PROCESS_CHANNEL
 {
     char flag;
     char command;
     int pid;
-    char data[1024];
+    char data[SHARE_LEN];
 };
 
 class Hsharedmemory
