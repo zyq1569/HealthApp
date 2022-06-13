@@ -30,7 +30,8 @@ SOURCES += \
            patientdata.cpp \
            patientsform.cpp \
            patientstudyregister.cpp \
-           studyimage.cpp
+           studyimage.cpp\
+           Hsharedmemory.cpp
 
 HEADERS += \
            config.h \
@@ -42,7 +43,8 @@ HEADERS += \
            patientdata.h \
            patientsform.h \
            patientstudyregister.h \
-           studyimage.h
+           studyimage.h \
+           Hsharedmemory.h
 
 FORMS += \
           config.ui \
