@@ -17,7 +17,7 @@ Config::Config(QWidget *parent) :QWidget(parent),ui(new Ui::Config)
     ui->m_viewerDir->setPlaceholderText(dir);
 
     ui->m_reportViewer->setTristate(false);
-    dir = otherdir + "/OpenWord/word.exe";
+    dir = otherdir + "/OpenWord/HEditor.exe";
     ui->m_reportrDir->setText(dir);
 
     ui->m_reportrDir->setPlaceholderText(dir);
