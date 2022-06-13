@@ -1,7 +1,7 @@
 #include "Hsharedmemory.h"
 
 Hsharedmemory::Hsharedmemory(int id) :
-    m_SharedMemory(nullptr), mId(id)
+    m_SharedMemory(nullptr), m_Id(id)
 {
 
 }
@@ -37,7 +37,7 @@ void Hsharedmemory::write(const QString str)
     PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)m_SharedMemory->data();
     pc->flag = FLAG_ON;
     pc->command = CMD_TEXT;
-    pc->pid = mId;
+    pc->pid = m_Id;
     std::string stdStr = str.toStdString();
     strcpy(pc->data, stdStr.c_str());
     m_SharedMemory->unlock();
@@ -49,7 +49,7 @@ void Hsharedmemory::write(char *str)
     PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)m_SharedMemory->data();
     pc->flag = FLAG_ON;
     pc->command = CMD_TEXT;
-    pc->pid = mId;
+    pc->pid = m_Id;
     strcpy(pc->data, str);
     m_SharedMemory->unlock();
 }
@@ -58,7 +58,7 @@ QString Hsharedmemory::read() const
 {
     m_SharedMemory->lock();
     PROCESS_CHANNEL *pc = (PROCESS_CHANNEL*)m_SharedMemory->data();
-    if(pc->flag==FLAG_OFF || pc->command!=CMD_TEXT || pc->pid==mId)
+    if(pc->flag==FLAG_OFF || pc->command!=CMD_TEXT || pc->pid==m_Id)
     {
         m_SharedMemory->unlock();
         return QString();
