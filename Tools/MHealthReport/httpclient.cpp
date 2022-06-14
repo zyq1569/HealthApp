@@ -93,13 +93,17 @@ void HttpClient::ParseStudyOderData()
             {
                 QJsonValue msgValue = paserObj["msg"];
                 if (msgValue.isString())
+                {
                     m_patientstudyorder.msg = msgValue.toString();
+                }
             }
             if (paserObj.contains("count"))
             {
                 QJsonValue countValue = paserObj["count"];
                 if (countValue.isDouble())
+                {
                     m_patientstudyorder.count = countValue.toInt();
+                }
             }
             if (paserObj.contains("data"))
             {
@@ -173,7 +177,7 @@ void HttpClient::downFileFromWeb(QUrl httpUrl, QString savefilename, QString dow
         if (QMessageBox::question(NULL, tr("Overwrite Existing File"),
                                   tr("There already exists a file called %1%2."
                                      " Overwrite?").arg(fileName,
-                                                        useDirectory ? QString() : QStringLiteral(" in the current directory")),
+                                             useDirectory ? QString() : QStringLiteral(" in the current directory")),
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
         {
             return;
@@ -230,14 +234,14 @@ void HttpClient::getStudyImageFile(QUrl url,QString studyuid,QString seruid, QSt
     QString fileName = newUrl.fileName();
     switch (m_currentfiletype)
     {
-    case DownFileType::dcm :
-        fileName = imguid+".dcm";
-        break;
-    case DownFileType::studyini:
-        fileName = studyuid+".json";
-        break;
-    default:
-        break;
+        case DownFileType::dcm :
+            fileName = imguid+".dcm";
+            break;
+        case DownFileType::studyini:
+            fileName = studyuid+".json";
+            break;
+        default:
+            break;
     }
     if (fileName.isEmpty())
     {
@@ -372,8 +376,7 @@ void HttpClient::sslErrors(QNetworkReply *, const QList<QSslError> &errors)
         errorString += error.errorString();
     }
 
-    if (QMessageBox::warning(NULL, tr("SSL Errors"),
-                             tr("One or more SSL errors has occurred:\n%1").arg(errorString),
+    if (QMessageBox::warning(NULL, tr("SSL Errors"),  tr("One or more SSL errors has occurred:\n%1").arg(errorString),
                              QMessageBox::Ignore | QMessageBox::Abort) == QMessageBox::Ignore)
     {
         m_networkreply->ignoreSslErrors();
