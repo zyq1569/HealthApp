@@ -39,7 +39,7 @@ void Hsharedmemory::write(const QString str)
     pc->command = CMD_TEXT;
     pc->pid = m_Id;
     std::string stdStr = str.toStdString();
-    strcpy(pc->data, stdStr.c_str());
+    strcpy_s(pc->data, stdStr.c_str());
     m_SharedMemory->unlock();
 }
 
@@ -50,7 +50,7 @@ void Hsharedmemory::write(char *str)
     pc->flag = FLAG_ON;
     pc->command = CMD_TEXT;
     pc->pid = m_Id;
-    strcpy(pc->data, str);
+    strcpy_s(pc->data, str);
     m_SharedMemory->unlock();
 }
 

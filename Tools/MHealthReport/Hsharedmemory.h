@@ -60,7 +60,7 @@ public:
 
 private:
     QSharedMemory *m_SharedMemory;
-    int mId;
+    int m_Id;
 };
 
 #endif // TSHAREDMEMORY_H
