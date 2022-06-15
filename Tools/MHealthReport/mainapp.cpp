@@ -161,11 +161,11 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
     if (m_reportViewerEnable > 1)
     {
         ui->m_tabWidgetTotal->removeTab( ui->m_tabWidgetTotal->indexOf(m_reportview) );
-        ///---begin word.exe--------------------
+        ///---begin HEditor.exe--------------------
         QString currentdir = QDir::currentPath();
         int  pos = currentdir.lastIndexOf("/");
         QString wordDir =  currentdir.left(pos);
-        wordDir = wordDir + "/openword/word.exe";
+        wordDir = wordDir + "/openword/HEditor.exe";
         QFileInfo fileExe(wordDir);
         if(fileExe.exists())
         {
