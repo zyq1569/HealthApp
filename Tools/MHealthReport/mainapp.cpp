@@ -238,6 +238,15 @@ void MainApp::lookStudyImage(QString studyuid)
 
 void MainApp::lookStudyReport(QString StudyOrderIdentity)
 {
+    if (m_reportViewerEnable > 1)
+    {
+        ///emit showwordreport;
+
+
+
+        return;
+    }
+
     m_url = "http://"+m_serverIP+":"+m_serverPort;
     static bool flag = true;
     if (flag)
