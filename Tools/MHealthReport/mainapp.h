@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 #include <QNetworkCookie>
-#include <QSharedMemory>
-
+//#include <QSharedMemory>
+#include "Hsharedmemory.h"
 class QProcess;
 class StudyImage;
 class PatientStudyRegister;
