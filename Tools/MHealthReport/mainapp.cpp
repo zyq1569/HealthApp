@@ -19,8 +19,8 @@
 #define SAFEDELETE(pointer) \
 {                           \
     if(pointer)             \
-{                       \
-    delete pointer;     \
+    {                       \
+     delete pointer;        \
     }                       \
     pointer = NULL;         \
     }
