@@ -28,7 +28,7 @@
 
 /// Qt + vc 中文编译问题  https://blog.csdn.net/libaineu2004/article/details/19245205
 /// UI https://www.cnblogs.com/swarmbees/p/11160996.html#--%E9%81%AE%E7%BD%A9%E6%8E%A7%E4%BB%B6
-MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sharedInfo(SHAREDHEALTH)
+MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sharedInfo(qApp->applicationPid()/*SHAREDHEALTH*/)
 {
     ui->setupUi(this);
 
