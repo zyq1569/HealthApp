@@ -244,6 +244,7 @@ void MainApp::lookStudyReport(QString StudyOrderIdentity)
     if (m_reportViewerEnable > 1)
     {
         ///emit showwordreport;
+        /// 启动报告编辑器
 
 
 
