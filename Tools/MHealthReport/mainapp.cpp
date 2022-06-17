@@ -20,10 +20,10 @@
 {                           \
     if(pointer)             \
     {                       \
-     delete pointer;        \
+        delete pointer;     \
     }                       \
     pointer = NULL;         \
-    }
+}
 
 
 /// Qt + vc 中文编译问题  https://blog.csdn.net/libaineu2004/article/details/19245205
@@ -187,6 +187,9 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
 //    int timerID = startTimer(1000 / 33);///ms
 
 
+
+    ///启动共享内存
+    m_sharedInfo.open();
 }
 
 void MainApp::timerEvent(QTimerEvent *event)
