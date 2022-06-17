@@ -327,6 +327,7 @@ MainApp::~MainApp()
     SAFEDELETE(m_StudyImage)
     SAFEDELETE(m_reportview)
 
+    m_sharedInfo.close();
     delete ui;
 }
 
