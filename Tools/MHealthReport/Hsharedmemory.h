@@ -28,6 +28,7 @@ struct PROCESS_CHANNEL
     char data[SHARE_LEN];
 };
 
+// 考虑轻量级线程https://github.com/Qthreads/qthreads
 class Hsharedmemory
 {
 public:
