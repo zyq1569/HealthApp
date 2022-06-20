@@ -325,6 +325,7 @@ func Login(c echo.Context) error {
 	return c.File(filepath)
 }
 
+/// get files: image | odt | json|
 func LoadImageFile(c echo.Context) error {
 	/// -------------------------------------------------------------------------
 	///http://127.0.0.1:8080/WADO?
@@ -482,7 +483,7 @@ func SaveOdtReport(c echo.Context) error {
 		}
 		///
 		reportIdentity := reportdata.ReportIdentity
-		fileName := CONFIG[IMAGE_Dir] + "/Report/" + reportIdentity + ".odt"
+		fileName := CONFIG[IMAGE_Dir] + "/Report//Report/" + reportIdentity + ".odt"
 		f, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE /*|os.O_TRUNC*/, 0666)
 		defer f.Close()
 		if err != nil {
