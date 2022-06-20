@@ -5,9 +5,7 @@
 #include "patientdata.h"
 #include <QLocalSocket>
 #include <QMessageBox>
-StudyImage::StudyImage(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::StudyImage)
+StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyImage)
 {
     ui->setupUi(this);
     ///---------------
@@ -87,6 +85,33 @@ void StudyImage::ViewImage()
     else
     {
         QMessageBox::information(NULL, tr("未检查"),tr("目前无图像!"));
+        return;
+    }
+}
+
+void StudyImage:: ViewReport()
+{
+    //QMessageBox::information(NULL, tr("检查"),tr("查看图像!"));
+    QString studyuid = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
+    QString studystate =  ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-7)->text();
+    if (studystate == "已检查" || studystate == "诊断" || studystate == "报告审核")
+    {
+        //emit sendClientMsg(studyuid);
+        if (m_urlImage)
+        {
+            emit lookImage(studyuid);
+        }
+        else
+        {
+            ///"http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt&
+            QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+studyuid;
+            emit sendClientMsg(info);
+        }
+    }
+    else
+    {
+        //QMessageBox::information(NULL, tr("未检查"),tr("目前无图像!"));
+        //未空报告
         return;
     }
 }

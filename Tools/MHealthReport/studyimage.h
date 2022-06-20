@@ -37,6 +37,7 @@ public slots:
     void EditReport();
     void EditPatientInfo();
     void ViewImage();
+    void ViewReport();
 
 private slots:
     /// StudyDB info
