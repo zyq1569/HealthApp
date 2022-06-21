@@ -196,6 +196,7 @@ void HttpClient::downFileFromWeb(QUrl httpUrl, QString savefilename, QString dow
     startRequest(httpUrl);
 }
 
+///[HttpServerWeb.go] func LoadImageFile(c echo.Context) error {
 void HttpClient::getStudyImageFile(QUrl url,QString studyuid,QString seruid, QString imguid)
 {
     if (url.toString() == "" || studyuid == "")
@@ -213,6 +214,55 @@ void HttpClient::getStudyImageFile(QUrl url,QString studyuid,QString seruid, QSt
     else
     {
         QString strURL = url.toString()+"/WADO?studyuid="+studyuid+"&type=json";
+        url = QUrl(strURL);
+        m_currentfiletype = DownFileType::studyini;
+    }
+
+    m_url = url;
+    const QString urlSpec = m_url.toString().trimmed();
+    if (urlSpec.isEmpty())
+    {
+        return;
+    }
+
+    const QUrl newUrl = QUrl::fromUserInput(urlSpec);
+    if (!newUrl.isValid())
+    {
+        QMessageBox::information(NULL, tr("Error"),tr("Invalid URL: %1: %2").arg(urlSpec, newUrl.errorString()));
+        return;
+    }
+
+    QString fileName = newUrl.fileName();
+    switch (m_currentfiletype)
+    {
+        case DownFileType::dcm :
+            fileName = imguid+".dcm";
+            break;
+        case DownFileType::studyini:
+            fileName = studyuid+".json";
+            break;
+        default:
+            break;
+    }
+    if (fileName.isEmpty())
+    {
+        fileName = "temp.tmp";
+    }
+
+    downFileFromWeb(newUrl,fileName,m_downDir);
+
+}
+
+void HttpClient::getStudyReportFile(QUrl url,QString studyuid,QString seruid, QString imguid)
+{
+    if (url.toString() == "" || studyuid == "")
+    {
+        return;
+    }
+    m_currentfiletype = DownFileType::other;
+
+    {
+        QString strURL = url.toString()+"/WADO?studyuid="+studyuid+"&type=odt";
         url = QUrl(strURL);
         m_currentfiletype = DownFileType::studyini;
     }
