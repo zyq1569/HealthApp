@@ -5,9 +5,7 @@
 const int g_start_column = 14;
 const int g_fixedWidth_column = 27;
 
-PatientsForm::PatientsForm(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::PatientsForm)
+PatientsForm::PatientsForm(QWidget *parent) :  QWidget(parent),  ui(new Ui::PatientsForm)
 {
     ui->setupUi(this);
     m_httpclient = nullptr;
