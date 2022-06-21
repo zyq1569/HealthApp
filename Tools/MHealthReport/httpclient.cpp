@@ -259,13 +259,10 @@ void HttpClient::getStudyReportFile(QUrl url,QString studyuid,QString seruid, QS
     {
         return;
     }
-    m_currentfiletype = DownFileType::other;
+    m_currentfiletype = DownFileType::report;
 
-    {
-        QString strURL = url.toString()+"/WADO?studyuid="+studyuid+"&type=odt";
-        url = QUrl(strURL);
-        m_currentfiletype = DownFileType::studyini;
-    }
+    QString strURL = url.toString()+"/WADO?studyuid="+studyuid+"&type=odt";
+    url = QUrl(strURL);
 
     m_url = url;
     const QString urlSpec = m_url.toString().trimmed();
@@ -289,6 +286,9 @@ void HttpClient::getStudyReportFile(QUrl url,QString studyuid,QString seruid, QS
             break;
         case DownFileType::studyini:
             fileName = studyuid+".json";
+            break;
+        case DownFileType::report:
+            fileName = studyuid+".odt";
             break;
         default:
             break;
