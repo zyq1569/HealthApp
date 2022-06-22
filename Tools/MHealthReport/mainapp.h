@@ -34,7 +34,7 @@ public slots:
     void saveServerConfig(QString serverIP, QString serverPort, int viewer, int report);
 
 private:
-    QProcess *m_QProcess, *m_wordProcess;
+    QProcess *m_viewerProcess, *m_wordProcess;
     StudyImage *m_StudyImage;
     QWebEngineView *m_reportview,*m_imageView;
     Config *m_config;

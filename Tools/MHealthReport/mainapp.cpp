@@ -148,8 +148,8 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
         QFileInfo fileExe(viewerdir);
         if(fileExe.exists())
         {
-            m_QProcess = new QProcess(parent);
-            m_QProcess->start(viewerdir);
+            m_viewerProcess = new QProcess(parent);
+            m_viewerProcess->start(viewerdir);
         }
         ///----end starviewer.exe
     }
@@ -327,6 +327,11 @@ MainApp::~MainApp()
     SAFEDELETE(m_PatientStudyRegister)
     SAFEDELETE(m_StudyImage)
     SAFEDELETE(m_reportview)
+
+    if (m_wordProcess)
+    {
+        m_wordProcess->close();
+    }
 
     m_sharedInfo.close();
     delete ui;
