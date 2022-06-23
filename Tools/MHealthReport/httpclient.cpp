@@ -239,6 +239,9 @@ void HttpClient::getStudyImageFile(QUrl url,QString studyuid,QString seruid, QSt
         case DownFileType::studyini:
             fileName = studyuid+".json";
             break;
+        case DownFileType::report:
+            fileName = studyuid+".odt";
+            break;
         default:
             break;
     }
