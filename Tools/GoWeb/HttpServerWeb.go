@@ -227,6 +227,7 @@ func OutRouter(c echo.Context) error {
 	log4go.LOGGER("Test").Info("OutRouter URL:" + c.Request().URL.Path)
 	return c.String(http.StatusOK, "No Page! maybe remove!"+c.Request().URL.Path)
 }
+
 func PathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
