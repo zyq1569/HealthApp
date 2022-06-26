@@ -318,20 +318,20 @@ MainApp::~MainApp()
         configini.setValue("/imageviewer/viewer_state", m_imageViewerEnable);
         configini.setValue("/reportviewer/report_state",m_reportViewerEnable);
     }
-    //    if (m_StudyImage)
-    //    {
-    //        delete  m_StudyImage;
-    //        m_StudyImage = NULL;
-    //    }
+    //if (m_StudyImage)
+    //{
+    //    delete  m_StudyImage;
+    //    m_StudyImage = NULL;
+    //}
     SAFEDELETE(m_StudyImage)
     SAFEDELETE(m_PatientStudyRegister)
     SAFEDELETE(m_StudyImage)
     SAFEDELETE(m_reportview)
-
-    if (m_wordProcess)
-    {
-        m_wordProcess->close();
-    }
+    ///需要确认是否是否使用close()？
+    //if (m_wordProcess)
+    //{
+    //    m_wordProcess->close();
+    //}
 
     m_sharedInfo.close();
     delete ui;
