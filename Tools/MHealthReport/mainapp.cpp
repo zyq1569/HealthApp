@@ -243,6 +243,8 @@ void MainApp::lookStudyReport(QString StudyOrderIdentity)
 {
     if (m_reportViewerEnable > 1)
     {
+        //1. 开始通知下载报告文件
+        //2.下载完后，通知HEditor.exe 打开对应报告
         ///emit showwordreport;
         /// 启动报告编辑器
 
