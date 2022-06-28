@@ -45,7 +45,8 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     m_menu = new QMenu(ui->m_tableWidget);
 
     QAction *action = new QAction("患者报告",this);
-    connect(action,SIGNAL(triggered()),this,SLOT(EditReport()));
+    //connect(action,SIGNAL(triggered()),this,SLOT(EditReport()));
+    connect(action,SIGNAL(triggered()),this,SLOT(ViewReport()));
     m_menu->addAction(action);
 
     //temp del
@@ -92,28 +93,21 @@ void StudyImage::ViewImage()
 void StudyImage:: ViewReport()
 {
     //QMessageBox::information(NULL, tr("检查"),tr("查看图像!"));
-    QString studyuid = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
-    QString studystate =  ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-7)->text();
-    if (studystate == "已检查" || studystate == "诊断" || studystate == "报告审核")
+    QString StudyOrderIdentity = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
+    //QString studyuid = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
+    //QString studystate =  ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-7)->text();
+    //emit sendClientMsg(studyuid);
+    if (m_urlReport)
     {
-        //emit sendClientMsg(studyuid);
-        if (m_urlImage)
-        {
-            emit lookImage(studyuid);
-        }
-        else
-        {
-            ///"http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt&
-            QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+studyuid;
-            emit sendClientMsg(info);
-        }
+        emit lookReport(StudyOrderIdentity);
     }
     else
     {
-        //QMessageBox::information(NULL, tr("未检查"),tr("目前无图像!"));
-        //未空报告
-        return;
+        ///"http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt&
+        QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+StudyOrderIdentity;
+        emit sendClientMsg(info);
     }
+
 }
 
 void StudyImage::EditReport()

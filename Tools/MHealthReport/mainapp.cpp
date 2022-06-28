@@ -249,7 +249,6 @@ void MainApp::lookStudyReport(QString StudyOrderIdentity)
         /// 启动报告编辑器
 
 
-
         return;
     }
 
