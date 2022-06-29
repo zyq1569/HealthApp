@@ -174,6 +174,10 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp),m_sh
         }
         ///----end word.exe--------------------
     }
+    else
+    {
+        m_StudyImage->setUrlReport(true);
+    }
 
     QString HttpUrl = "http://" + m_serverIP + ":" + m_serverPort;
     setServerHttpUrl(HttpUrl);
