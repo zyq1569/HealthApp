@@ -105,7 +105,9 @@ void StudyImage:: ViewReport()
     {
         ///"http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt&
         QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+StudyOrderIdentity;
-        emit sendClientMsg(info);
+        //emit sendClientMsg(info);
+        //启用共享内存通知报告打开
+        //1.openword      Hsharedmemory m_sharedInfo;
     }
 
 }
