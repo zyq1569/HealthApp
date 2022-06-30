@@ -210,7 +210,7 @@ void  StudyImage::connectImageAppCrash()
 
 }
 
-
+///整个检查列表
 void StudyImage::on_m_getStudyDbImages_clicked()
 {
 
