@@ -155,8 +155,7 @@ void  StudyImage::connectImageApp()
 
 void  StudyImage::sendToImageAppMsg(QString data)
 {
-    if (QLocalSocket::UnconnectedState == m_localSocket->state() ||
-            QLocalSocket::ClosingState == m_localSocket->state())
+    if (QLocalSocket::UnconnectedState == m_localSocket->state() || QLocalSocket::ClosingState == m_localSocket->state())
     {
         connectImageApp();
     }
