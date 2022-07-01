@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QNetworkCookie>
 //#include <QSharedMemory>
-#include "Hsharedmemory.h"
 class QProcess;
 class StudyImage;
 class PatientStudyRegister;
@@ -44,7 +43,6 @@ private:
     QString m_url;
     int m_imageViewerEnable,m_reportViewerEnable;
 
-    Hsharedmemory m_sharedInfo;
 protected:
     void timerEvent(QTimerEvent *event);
 
