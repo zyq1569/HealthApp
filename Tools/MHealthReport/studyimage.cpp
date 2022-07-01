@@ -5,7 +5,7 @@
 #include "patientdata.h"
 #include <QLocalSocket>
 #include <QMessageBox>
-StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyImage)
+StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyImage),m_sharedInfo(qApp->applicationPid()/*SHAREDHEALTH*/)
 {
     ui->setupUi(this);
     ///---------------
@@ -62,6 +62,9 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     ///
     m_urlImage  = false;
     m_urlReport = false;
+
+    ///启动共享内存
+    m_sharedInfo.open();
 }
 
 void StudyImage::ViewImage()
@@ -108,6 +111,7 @@ void StudyImage:: ViewReport()
         //emit sendClientMsg(info);
         //启用共享内存通知报告打开
         //1.openword      Hsharedmemory m_sharedInfo;
+
     }
 
 }
@@ -129,6 +133,8 @@ void StudyImage::EditPatientInfo()
 
 StudyImage::~StudyImage()
 {
+    m_sharedInfo.close();
+
     delete ui;
 }
 

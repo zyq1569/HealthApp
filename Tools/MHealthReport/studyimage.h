@@ -5,6 +5,8 @@
 
 #define ImageAppName  "StarViewer"
 
+#include "Hsharedmemory.h"
+
 class QLocalServer;
 class QLocalSocket;
 class HttpClient;
@@ -64,6 +66,7 @@ private:
     QMenu *m_menu;
     int m_currentRow;
     bool m_urlImage, m_urlReport;
+    Hsharedmemory m_sharedInfo;
 
 private:
     Ui::StudyImage *ui;
