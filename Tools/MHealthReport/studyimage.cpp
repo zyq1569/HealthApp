@@ -107,15 +107,19 @@ void StudyImage:: ViewReport()
     }
     else
     {
+        if (!m_httpclient)
+        {
+            m_httpclient = new HttpClient(this,getDownDir());
+            m_httpclient->setHost(getServerHttpUrl());
+        }
+         m_httpclient->getStudyReportFile(getServerHttpUrl(),studyuid);
         ///"http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt&
         QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+studyuid+"&"+ StudyOrderIdentity+".odt";
         //emit sendClientMsg(info);
         //启用共享内存通知报告打开
         //1.openword      Hsharedmemory m_sharedInfo;
         m_sharedInfo.write(info);
-
     }
-
 }
 
 void StudyImage::EditReport()
