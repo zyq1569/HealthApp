@@ -97,6 +97,7 @@ void StudyImage:: ViewReport()
 {
     //QMessageBox::information(NULL, tr("检查"),tr("查看图像!"));
     QString StudyOrderIdentity = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
+    QString studyuid           = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
     //QString studyuid = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
     //QString studystate =  ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-7)->text();
     //emit sendClientMsg(studyuid);
@@ -107,10 +108,11 @@ void StudyImage:: ViewReport()
     else
     {
         ///"http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt&
-        QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+StudyOrderIdentity;
+        QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+studyuid+"&"+ StudyOrderIdentity+".odt";
         //emit sendClientMsg(info);
         //启用共享内存通知报告打开
         //1.openword      Hsharedmemory m_sharedInfo;
+        m_sharedInfo.write(info);
 
     }
 
