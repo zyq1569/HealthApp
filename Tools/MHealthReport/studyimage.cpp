@@ -113,7 +113,7 @@ void StudyImage:: ViewReport()
             m_httpclient->setHost(getServerHttpUrl());
         }
          m_httpclient->getStudyReportFile(getServerHttpUrl(),studyuid);
-        ///"http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt&
+        ///"http://" + serverHost + "/WADO?StudyOrderIdentity=" + StudyOrderIdentity + "&type=odt&
         QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+studyuid+"&"+ StudyOrderIdentity+".odt";
         //emit sendClientMsg(info);
         //启用共享内存通知报告打开
