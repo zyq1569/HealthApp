@@ -334,8 +334,7 @@ void HttpClient::httpFinished()
     if (!redirectionTarget.isNull())
     {
         const QUrl redirectedUrl = m_url.resolved(redirectionTarget.toUrl());
-        if (QMessageBox::question(NULL, tr("Redirect"),tr("Redirect to %1 ?").arg(redirectedUrl.toString()),
-                                  QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+        if (QMessageBox::question(NULL, tr("Redirect"),tr("Redirect to %1 ?").arg(redirectedUrl.toString()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
         {
             QFile::remove(fileinfo.absoluteFilePath());
             return;
