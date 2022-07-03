@@ -280,22 +280,7 @@ void HttpClient::getStudyReportFile(QUrl url,QString studyuid,QString seruid, QS
         QMessageBox::information(NULL, tr("Error"),tr("Invalid URL: %1: %2").arg(urlSpec, newUrl.errorString()));
         return;
     }
-
-    QString fileName = newUrl.fileName();
-    switch (m_currentfiletype)
-    {
-        case DownFileType::dcm :
-            fileName = imguid+".dcm";
-            break;
-        case DownFileType::studyini:
-            fileName = studyuid+".json";
-            break;
-        case DownFileType::report:
-            fileName = studyuid+".odt";
-            break;
-        default:
-            break;
-    }
+    QString fileName = studyuid+".odt";
     if (fileName.isEmpty())
     {
         fileName = "temp.tmp";
