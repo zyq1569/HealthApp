@@ -337,6 +337,11 @@ MainApp::~MainApp()
     //{
     //    m_wordProcess->close();
     //}
+    //m_viewerProcess
+    if (m_viewerProcess)
+    {
+        m_viewerProcess->close();
+    }
 
     //m_sharedInfo.close();
     delete ui;
