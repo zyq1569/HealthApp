@@ -255,6 +255,7 @@ void HttpClient::getStudyImageFile(QUrl url,QString studyuid,QString seruid, QSt
 }
 
 // save path????
+///"http://" + serverHost + "/WADO?StudyOrderIdentity=" + StudyOrderIdentity + "&type=odt&
 //http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt
 ///[HttpServerWeb.go] func LoadImageFile(c echo.Context) error {
 void HttpClient::getStudyReportFile(QUrl url,QString studyuid,QString seruid, QString imguid)
@@ -265,7 +266,7 @@ void HttpClient::getStudyReportFile(QUrl url,QString studyuid,QString seruid, QS
     }
     m_currentfiletype = DownFileType::report;
 
-    QString strURL = url.toString()+"/WADO?studyuid="+studyuid+"&type=odt";
+    QString strURL = url.toString()+"/WADO?StudyOrderIdentity="+studyuid+"&type=odt";
     url = QUrl(strURL);
 
     m_url = url;
