@@ -326,6 +326,9 @@ func Login(c echo.Context) error {
 	return c.File(filepath)
 }
 
+///
+/// 获取odt文档时:如果对应的检查uid的odt文件没有找到，使用patient.odt，如果patient.odt也没有找到
+///在查找HealthApp\Server\PageWeb\Login\test 下面studyTemp.odt
 /// get files: image | odt | json|
 func LoadImageFile(c echo.Context) error {
 	/// -------------------------------------------------------------------------
