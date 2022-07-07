@@ -255,10 +255,11 @@ void HttpClient::getStudyImageFile(QUrl url,QString studyuid,QString seruid, QSt
 }
 
 // save path????
-///"http://" + serverHost + "/WADO?StudyOrderIdentity=" + StudyOrderIdentity + "&type=odt&
+//当前请求字段名使用的studyuid值使用StudyOrderIdentity
+///"http://" + serverHost + "/WADO?studyuid=" + StudyOrderIdentity + "&type=odt&
 //http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt
 ///[HttpServerWeb.go] func LoadImageFile(c echo.Context) error {
-void HttpClient::getStudyReportFile(QUrl url,QString studyuid,QString seruid, QString imguid)
+void HttpClient::getStudyReportFile(QUrl url, QString StudyOrderIdentity, QString studyuid,QString seruid, QString imguid)
 {
     if (url.toString() == "" || studyuid == "")
     {
@@ -266,7 +267,7 @@ void HttpClient::getStudyReportFile(QUrl url,QString studyuid,QString seruid, QS
     }
     m_currentfiletype = DownFileType::report;
 
-    QString strURL = url.toString()+"/WADO?StudyOrderIdentity="+studyuid+"&type=odt";
+    QString strURL = url.toString()+"/WADO?studyuid="+StudyOrderIdentity+"&type=odt";
     url = QUrl(strURL);
 
     m_url = url;
@@ -288,7 +289,7 @@ void HttpClient::getStudyReportFile(QUrl url,QString studyuid,QString seruid, QS
         fileName = "temp.tmp";
     }
 
-    downFileFromWeb(newUrl,fileName,m_downDir);
+    downFileFromWeb(newUrl,fileName,m_downDir+"/"+studyuid+"/");
 
 }
 

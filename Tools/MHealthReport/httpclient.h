@@ -143,7 +143,7 @@ public:
     //start=19700101&end=20191230&page=1&limit=10
     void getStudyDBinfo(QUrl url,QString start,QString end,QString page,QString limit);
     void getStudyImageFile(QUrl url,QString studyuid="",QString seruid = "", QString imguid = "");
-    void getStudyReportFile(QUrl url,QString studyuid="",QString seruid = "", QString imguid = "");
+    void getStudyReportFile(QUrl url, QString StudyOrderIdentity, QString studyuid="",QString seruid = "", QString imguid = "");
 
     // updateStudyOrder
     void updateStudyOrder(QByteArray Json);
