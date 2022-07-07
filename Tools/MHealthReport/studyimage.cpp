@@ -112,7 +112,7 @@ void StudyImage:: ViewReport()
             m_httpclient = new HttpClient(this,getDownDir());
             m_httpclient->setHost(getServerHttpUrl());
         }
-        m_httpclient->getStudyReportFile(getServerHttpUrl(),studyuid);
+        m_httpclient->getStudyReportFile(getServerHttpUrl(),StudyOrderIdentity, studyuid);
         ///"http://" + serverHost + "/WADO?StudyOrderIdentity=" + StudyOrderIdentity + "&type=odt&
         QString info= getServerHttpUrl()+"&"+getDownDir()+"&"+studyuid+"&"+ StudyOrderIdentity+".odt";
         //emit sendClientMsg(info);
