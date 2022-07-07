@@ -288,8 +288,18 @@ void HttpClient::getStudyReportFile(QUrl url, QString StudyOrderIdentity, QStrin
     {
         fileName = "temp.tmp";
     }
-
-    downFileFromWeb(newUrl,fileName,m_downDir+"/"+studyuid+"/");
+    QString iniDir = m_downDir+"/"+studyuid;
+    QDir dir(m_downDir+"/"+studyuid);
+    if(!dir.exists())
+    {
+        QDir createDir(iniDir); // 注意
+        createDir.setPath("");
+        if (!createDir.mkpath(iniDir))
+        {
+            QMessageBox::information(NULL, tr("Error"),tr("Unable to create Dir  %1: %2.").arg( QDir::toNativeSeparators(iniDir),m_file->errorString()));
+        }
+    }
+    downFileFromWeb(newUrl,fileName, iniDir);
 
 }
 
