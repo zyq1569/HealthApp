@@ -95,12 +95,10 @@ void StudyImage::ViewImage()
 
 void StudyImage:: ViewReport()
 {
-    //QMessageBox::information(NULL, tr("检查"),tr("查看图像!"));
+    //QMessageBox::information(NULL, tr("检查"),tr("查看报告!"));
     QString StudyOrderIdentity = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
     QString studyuid           = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
-    //QString studyuid = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
-    //QString studystate =  ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-7)->text();
-    //emit sendClientMsg(studyuid);
+
     if (m_urlReport)
     {
         emit lookReport(StudyOrderIdentity);
