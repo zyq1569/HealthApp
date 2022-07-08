@@ -255,7 +255,7 @@ void HttpClient::getStudyImageFile(QUrl url,QString studyuid,QString seruid, QSt
 }
 
 // save path????
-//当前请求字段名使用的studyuid值使用StudyOrderIdentity
+//当前请求字段名使用的studyuid. 值使用StudyOrderIdentity. 后期调整func LoadImageFile(c echo.Context)
 ///"http://" + serverHost + "/WADO?studyuid=" + StudyOrderIdentity + "&type=odt&
 //http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt
 ///[HttpServerWeb.go] func LoadImageFile(c echo.Context) error {
