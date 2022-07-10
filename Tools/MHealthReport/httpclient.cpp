@@ -287,6 +287,7 @@ void HttpClient::getStudyReportFile(QUrl url, QString StudyOrderIdentity, QStrin
     {
         fileName = "temp.tmp";
     }
+    /// create Dir
     QString iniDir = m_downDir+"/"+studyuid;
     QDir dir(m_downDir+"/"+studyuid);
     if(!dir.exists())
