@@ -9,15 +9,13 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
 {
     ui->setupUi(this);
     ///---------------
-
     m_httpclient = NULL;
     m_localSocket = new QLocalSocket(this);
     //connect(m_clientSocket, SIGNAL(readyRead()), this, SLOT(getClientData()));
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
 
     QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
-                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"
-                       };
+                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity" };
     ui->m_tableWidget->setColumnCount(strs.count());
 
     ui->m_tableWidget->setHorizontalHeaderLabels(strs);
