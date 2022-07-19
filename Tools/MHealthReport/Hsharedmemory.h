@@ -2,6 +2,7 @@
 #define TSHAREDMEMORY_H
 
 #include <QSharedMemory>
+#include <QThread>
 
 #define FLAG_OFF    0x0
 #define FLAG_ON     0x1
@@ -24,7 +25,7 @@ struct PROCESS_CHANNEL
 {
     char flag;
     char command;
-    int pid;
+    qint64 pid;
     char data[SHARE_LEN];
 };
 
@@ -32,7 +33,7 @@ struct PROCESS_CHANNEL
 class Hsharedmemory
 {
 public:
-    Hsharedmemory(int id);
+    Hsharedmemory(qint64 id);
     ~Hsharedmemory();
 
     /**
@@ -61,7 +62,30 @@ public:
 
 private:
     QSharedMemory *m_SharedMemory;
-    int m_Id;
+    qint64 m_Pid;
+};
+
+
+class HreadThread : public QThread
+{
+    Q_OBJECT
+public:
+    HreadThread(Hsharedmemory *sharedMemory, QObject *parent = Q_NULLPTR);
+
+    void clear();
+private:
+    Hsharedmemory *m_SharedMemory;
+
+    // QThread interface
+protected:
+    void run() Q_DECL_OVERRIDE;
+
+protected:
+    QString m_info;
+
+signals:
+    void reportInfo(QString);
+
 };
 
 #endif // TSHAREDMEMORY_H
