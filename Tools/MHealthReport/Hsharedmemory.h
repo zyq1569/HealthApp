@@ -61,7 +61,7 @@ public:
     QString read() const;
 
 private:
-    QSharedMemory *m_SharedMemory;
+    QSharedMemory *m_SharedMemory, *m_recMem;
     qint64 m_Pid;
 };
 
