@@ -82,7 +82,7 @@ class HreadThread : public QThread
 {
     Q_OBJECT
 public:
-    HreadThread(Hsharedmemory *sharedMemory, QObject *parent = Q_NULLPTR);
+    HreadThread(Hsharedmemory *sharedMemory, bool sender = true, QObject *parent = Q_NULLPTR);
 
     void clear();
 
@@ -96,6 +96,7 @@ protected:
 
 protected:
     QString m_info;
+    bool m_sender;
 
 signals:
     void reportInfo(QString);
