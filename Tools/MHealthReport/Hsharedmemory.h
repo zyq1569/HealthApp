@@ -99,6 +99,7 @@ protected:
 
 signals:
     void reportInfo(QString);
+    void savereport(QString);
 
 };
 

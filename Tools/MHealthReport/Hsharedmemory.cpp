@@ -129,6 +129,12 @@ void HreadThread::run()
                 emit reportInfo(m_info);
             }
         }
+        s = m_SharedMemory->readFromReceiver();
+        if (!s.isEmpty())
+        {
+            m_info = s;
+            emit savereport(m_info);
+        }
         QThread::msleep(300);
     }
 }
