@@ -110,33 +110,44 @@ QString Hsharedmemory::readFromReceiver() const
 /// \param sharedMemory
 /// \param parent
 ///
-HreadThread::HreadThread(Hsharedmemory *sharedMemory, QObject *parent) : QThread(parent), m_SharedMemory(sharedMemory)
+HreadThread::HreadThread(Hsharedmemory *sharedMemory , bool sender, QObject *parent) : QThread(parent), m_SharedMemory(sharedMemory), m_sender(sender)
 {
     clear();
 }
 
 void HreadThread::run()
 {
-    while(true)
+    if (m_sender)
     {
-        QString s = m_SharedMemory->read();///file:
-        int n = s.length();
-        if(!s.isEmpty() && s.length() > 5)
+        while(true)
         {
-            if (s.toUpper().contains("FILE:"))
+            QString s = m_SharedMemory->readFromReceiver();
+            if (!s.isEmpty())
             {
-                m_info = s.right(n - 5);
-                emit reportInfo(m_info);
+                m_info = s;
+                emit savereport(m_info);
             }
+            QThread::msleep(300);
         }
-        s = m_SharedMemory->readFromReceiver();
-        if (!s.isEmpty())
-        {
-            m_info = s;
-            emit savereport(m_info);
-        }
-        QThread::msleep(300);
     }
+    else
+    {
+        while(true)
+        {
+            QString s = m_SharedMemory->read();///file:
+            int n = s.length();
+            if(!s.isEmpty() && s.length() > 5)
+            {
+                if (s.toUpper().contains("FILE:"))
+                {
+                    m_info = s.right(n - 5);
+                    emit reportInfo(m_info);
+                }
+            }
+            QThread::msleep(300);
+        }
+    }
+
 }
 
 void HreadThread::clear()
