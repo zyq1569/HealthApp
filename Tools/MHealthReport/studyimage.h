@@ -40,7 +40,6 @@ public slots:
     void editPatientInfo();
     void viewImage();
     void viewReport();
-    void finishedReport();
 
 private slots:
     /// StudyDB info
@@ -68,7 +67,6 @@ private:
     int m_currentRow;
     bool m_urlImage, m_urlReport;
     Hsharedmemory m_sharedInfo;
-    QString m_reportFile;
 
 private:
     Ui::StudyImage *ui;

@@ -102,18 +102,12 @@ void StudyImage:: viewReport()
     //QMessageBox::information(NULL, tr("检查"),tr("查看报告!"));
     QString StudyOrderIdentity = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
     QString studyuid           = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
-
     if (m_urlReport)
     {
         emit lookReport(StudyOrderIdentity);
     }
     else
     {
-//        if (!m_httpclient)
-//        {
-//            m_httpclient = new HttpClient(this,getDownDir());
-//            m_httpclient->setHost(getServerHttpUrl());
-//        }
         m_httpclient->setDwonloadDir(getDownDir());
         m_httpclient->setHost(getServerHttpUrl());
         m_httpclient->getStudyReportFile(getServerHttpUrl(),StudyOrderIdentity, studyuid);
@@ -159,7 +153,7 @@ void StudyImage::setUrlReport(bool flag)
     m_urlReport = flag;
 }
 
-void  StudyImage::connectImageApp()
+void StudyImage::connectImageApp()
 {
     m_localSocket->connectToServer(ImageAppName);
     if(m_localSocket->waitForConnected(1000))
@@ -172,7 +166,7 @@ void  StudyImage::connectImageApp()
     }
 }
 
-void  StudyImage::sendToImageAppMsg(QString data)
+void StudyImage::sendToImageAppMsg(QString data)
 {
     if (QLocalSocket::UnconnectedState == m_localSocket->state() || QLocalSocket::ClosingState == m_localSocket->state())
     {
@@ -214,7 +208,7 @@ void  StudyImage::sendToImageAppMsg(QString data)
     qDebug() <<"readImageApp"<<respond;
 }
 
-void  StudyImage::disconnectImageApp()
+void StudyImage::disconnectImageApp()
 {
 
 }
