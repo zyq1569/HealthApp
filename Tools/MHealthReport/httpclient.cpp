@@ -282,7 +282,7 @@ void HttpClient::getStudyReportFile(QUrl url, QString StudyOrderIdentity, QStrin
         QMessageBox::information(NULL, tr("Error"),tr("Invalid URL: %1: %2").arg(urlSpec, newUrl.errorString()));
         return;
     }
-    QString fileName = studyuid+".odt";
+    QString fileName = StudyOrderIdentity+".odt";
     if (fileName.isEmpty())
     {
         fileName = "temp.tmp";
