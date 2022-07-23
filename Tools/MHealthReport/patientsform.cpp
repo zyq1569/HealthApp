@@ -41,7 +41,6 @@ PatientsForm::PatientsForm(QWidget *parent) :  QWidget(parent),  ui(new Ui::Pati
     if (!m_httpclient)
     {
         m_httpclient = new HttpClient(this,getDownDir());
-        m_httpclient->setHost(getServerHttpUrl());
     }
 
 }
@@ -52,11 +51,6 @@ void PatientsForm::getPatients()
     QString endDate   = ui->dateTimeEnd->dateTime().toString("yyyyMMdd");
     QString mod = ui->comModality->currentText();
 
-//    if (!m_httpclient)
-//    {
-//        m_httpclient = new HttpClient(this,getDownDir());
-//        m_httpclient->setHost(getServerHttpUrl());
-//    }
     m_httpclient->setDwonloadDir(getDownDir());
     m_httpclient->setHost(getServerHttpUrl());
     connect(m_httpclient,&HttpClient::parseDataFinished,this,&PatientsForm::showPatients);
