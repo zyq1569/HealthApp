@@ -169,6 +169,7 @@ public:
 
 signals:
     void parseDataFinished();
+    void parseReportFinished();
 
 private slots:
     void cancelDownload();

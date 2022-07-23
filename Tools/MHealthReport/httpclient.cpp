@@ -123,6 +123,10 @@ void HttpClient::ParseStudyOderData()
         }
         emit parseDataFinished();
     }
+    if (m_currentfiletype == DownFileType::report)
+    {
+        emit parseReportFinished();
+    }
 }
 
 void HttpClient::setStudyOrder(QJsonValue &JsonValue, StudyOrderData &OrderData)
