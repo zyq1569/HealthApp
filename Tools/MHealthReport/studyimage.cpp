@@ -121,11 +121,6 @@ void StudyImage::viewReport()
     }
     else
     {
-//        if (!m_httpclient)
-//        {
-//            m_httpclient = new HttpClient(this,getDownDir());
-//            m_httpclient->setHost(getServerHttpUrl());
-//        }
         m_httpclient->getStudyReportFile(getServerHttpUrl(),StudyOrderIdentity, studyuid);
         ///"http://" + serverHost + "/WADO?StudyOrderIdentity=" + StudyOrderIdentity + "&type=odt&
         /// QString info=  getServerHttpUrl()+"&DownDir="+getDownDir()+"&studyuid="+ studyuid+".odt";
@@ -246,12 +241,6 @@ void StudyImage::on_m_getStudyDbImages_clicked()
     QString startDate = ui->m_startDate->dateTime().toString("yyyyMMdd");
     QString endDate   = ui->m_endDate->dateTime().toString("yyyyMMdd");
     QString mod = ui->m_StudyModality->currentText();
-//    if (!m_httpclient)
-//    {
-//        m_httpclient = new HttpClient(this,getDownDir());
-//        m_httpclient->setHost(getServerHttpUrl());
-//    }
-//    connect(m_httpclient,&HttpClient::parseDataFinished,this,&StudyImage::updateStudyImageTable);
     m_httpclient->getStudyDBinfo(getServerHttpUrl(),startDate,endDate,"1","100");
 }
 
