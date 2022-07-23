@@ -15,7 +15,8 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
 
     QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
-                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity" };
+                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"
+                       };
     ui->m_tableWidget->setColumnCount(strs.count());
 
     ui->m_tableWidget->setHorizontalHeaderLabels(strs);
@@ -64,7 +65,6 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     if (!m_httpclient)
     {
         m_httpclient = new HttpClient(this,getDownDir());
-        m_httpclient->setHost(getServerHttpUrl());
     }
 
     ///启动共享内存
@@ -97,7 +97,13 @@ void StudyImage::viewImage()
     }
 }
 
-void StudyImage:: viewReport()
+void StudyImage::editorSaveReport()
+{
+    m_sharedInfo.write(m_reportFile);
+    disconnect(m_httpclient,&HttpClient::parseReportFinished,this,&StudyImage::editorSaveReport);
+}
+
+void StudyImage::viewReport()
 {
     //QMessageBox::information(NULL, tr("检查"),tr("查看报告!"));
     QString StudyOrderIdentity = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
@@ -113,11 +119,14 @@ void StudyImage:: viewReport()
         m_httpclient->getStudyReportFile(getServerHttpUrl(),StudyOrderIdentity, studyuid);
         ///"http://" + serverHost + "/WADO?StudyOrderIdentity=" + StudyOrderIdentity + "&type=odt&
         /// QString info=  getServerHttpUrl()+"&DownDir="+getDownDir()+"&studyuid="+ studyuid+".odt";
-        QString info = "file:" + getDownDir()+"/"+ studyuid+"/"+studyuid+".odt";
+        QString info = "file:" + getDownDir()+"/"+ studyuid+"/"+StudyOrderIdentity+".odt";
         //emit sendClientMsg(info);
         //启用共享内存通知报告打开
         //1.openword      Hsharedmemory m_sharedInfo;
-        m_sharedInfo.write(info);
+        //parseReportFinished
+        connect(m_httpclient,&HttpClient::parseReportFinished,this,&StudyImage::editorSaveReport);
+        m_reportFile = info;
+
     }
 }
 

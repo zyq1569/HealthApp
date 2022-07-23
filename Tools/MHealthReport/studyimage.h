@@ -41,6 +41,8 @@ public slots:
     void viewImage();
     void viewReport();
 
+    void editorSaveReport();
+
 private slots:
     /// StudyDB info
     void on_m_getStudyDbImages_clicked();
@@ -67,6 +69,7 @@ private:
     int m_currentRow;
     bool m_urlImage, m_urlReport;
     Hsharedmemory m_sharedInfo;
+    QString m_reportFile;
 
 private:
     Ui::StudyImage *ui;
