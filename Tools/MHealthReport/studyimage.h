@@ -33,13 +33,14 @@ public slots:
     void connectImageApp();
     void sendToImageAppMsg(QString data);
     void disconnectImageApp();
-    void ReadImageApp();
+    void readImageApp();
     void connectImageAppCrash();
 
-    void EditReport();
-    void EditPatientInfo();
-    void ViewImage();
-    void ViewReport();
+    void editReport();
+    void editPatientInfo();
+    void viewImage();
+    void viewReport();
+    void finishedReport();
 
 private slots:
     /// StudyDB info
@@ -67,6 +68,7 @@ private:
     int m_currentRow;
     bool m_urlImage, m_urlReport;
     Hsharedmemory m_sharedInfo;
+    QString m_reportFile;
 
 private:
     Ui::StudyImage *ui;
