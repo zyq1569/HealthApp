@@ -38,6 +38,12 @@ PatientsForm::PatientsForm(QWidget *parent) :  QWidget(parent),  ui(new Ui::Pati
     connect(ui->m_PatientsTable,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(editPatient(int,int)));
     connect(ui->lookupPatient,SIGNAL(clicked()),this,SLOT(getPatients()));
 
+    if (!m_httpclient)
+    {
+        m_httpclient = new HttpClient(this,getDownDir());
+        m_httpclient->setHost(getServerHttpUrl());
+    }
+
 }
 
 void PatientsForm::getPatients()
@@ -46,11 +52,13 @@ void PatientsForm::getPatients()
     QString endDate   = ui->dateTimeEnd->dateTime().toString("yyyyMMdd");
     QString mod = ui->comModality->currentText();
 
-    if (!m_httpclient)
-    {
-        m_httpclient = new HttpClient(this,getDownDir());
-        m_httpclient->setHost(getServerHttpUrl());
-    }
+//    if (!m_httpclient)
+//    {
+//        m_httpclient = new HttpClient(this,getDownDir());
+//        m_httpclient->setHost(getServerHttpUrl());
+//    }
+    m_httpclient->setDwonloadDir(getDownDir());
+    m_httpclient->setHost(getServerHttpUrl());
     connect(m_httpclient,&HttpClient::parseDataFinished,this,&PatientsForm::showPatients);
     m_httpclient->getStudyDBinfo(getServerHttpUrl(),startDate,endDate,"1","100");
 

@@ -15,8 +15,7 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
 
     QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
-                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"
-                       };
+                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity" };
     ui->m_tableWidget->setColumnCount(strs.count());
 
     ui->m_tableWidget->setHorizontalHeaderLabels(strs);
@@ -44,17 +43,17 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     m_menu = new QMenu(ui->m_tableWidget);
 
     QAction *action = new QAction("患者报告",this);
-    //connect(action,SIGNAL(triggered()),this,SLOT(EditReport()));
+    //connect(action,SIGNAL(triggered()),this,SLOT(editReport()));
     connect(action,SIGNAL(triggered()),this,SLOT(viewReport()));
     m_menu->addAction(action);
 
     //temp del
     //action = new QAction("编辑信息",this);
-    //connect(action,SIGNAL(triggered()),this,SLOT(EditPatientInfo()));
+    //connect(action,SIGNAL(triggered()),this,SLOT(editPatientInfo()));
     //m_menu->addAction(action);
 
     action = new QAction("检查图像",this);
-    connect(action,SIGNAL(triggered()),this,SLOT(ViewImage()));
+    connect(action,SIGNAL(triggered()),this,SLOT(viewImage()));
     m_menu->addAction(action);
     ///------------CustomContextMenu---------------------------------
     ///
@@ -62,18 +61,12 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     m_urlImage  = false;
     m_urlReport = false;
 
-
-    ///
-    ///
     if (!m_httpclient)
     {
         m_httpclient = new HttpClient(this,getDownDir());
         m_httpclient->setHost(getServerHttpUrl());
     }
-    connect(m_httpclient,&HttpClient::parseDataFinished,this,&StudyImage::updateStudyImageTable);
-    connect(m_httpclient,&HttpClient::parseDataFinished,this,&StudyImage::viewReport);
-    ///
-    ///
+
     ///启动共享内存
     m_sharedInfo.open();
 }
@@ -104,12 +97,7 @@ void StudyImage::viewImage()
     }
 }
 
-void StudyImage::finishedReport()
-{
-    m_sharedInfo.write(m_reportFile);
-}
-
-void StudyImage::viewReport()
+void StudyImage:: viewReport()
 {
     //QMessageBox::information(NULL, tr("检查"),tr("查看报告!"));
     QString StudyOrderIdentity = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
@@ -121,15 +109,21 @@ void StudyImage::viewReport()
     }
     else
     {
+//        if (!m_httpclient)
+//        {
+//            m_httpclient = new HttpClient(this,getDownDir());
+//            m_httpclient->setHost(getServerHttpUrl());
+//        }
+        m_httpclient->setDwonloadDir(getDownDir());
+        m_httpclient->setHost(getServerHttpUrl());
         m_httpclient->getStudyReportFile(getServerHttpUrl(),StudyOrderIdentity, studyuid);
         ///"http://" + serverHost + "/WADO?StudyOrderIdentity=" + StudyOrderIdentity + "&type=odt&
         /// QString info=  getServerHttpUrl()+"&DownDir="+getDownDir()+"&studyuid="+ studyuid+".odt";
-        QString info = "file:" + getDownDir()+"/"+ studyuid+"/"+StudyOrderIdentity+".odt";
+        QString info = "file:" + getDownDir()+"/"+ studyuid+"/"+studyuid+".odt";
         //emit sendClientMsg(info);
         //启用共享内存通知报告打开
         //1.openword      Hsharedmemory m_sharedInfo;
-        //m_sharedInfo.write(info);
-        m_reportFile = info;
+        m_sharedInfo.write(info);
     }
 }
 
@@ -216,8 +210,8 @@ void  StudyImage::sendToImageAppMsg(QString data)
 
     QTextStream stream(m_localSocket);
     QString respond = stream.readAll();
-    //QMessageBox::information(NULL, tr("ReadImageApp"),respond);
-    qDebug() <<"ReadImageApp"<<respond;
+    //QMessageBox::information(NULL, tr("readImageApp"),respond);
+    qDebug() <<"readImageApp"<<respond;
 }
 
 void  StudyImage::disconnectImageApp()
@@ -238,9 +232,19 @@ void  StudyImage::connectImageAppCrash()
 ///整个检查列表
 void StudyImage::on_m_getStudyDbImages_clicked()
 {
+
     QString startDate = ui->m_startDate->dateTime().toString("yyyyMMdd");
     QString endDate   = ui->m_endDate->dateTime().toString("yyyyMMdd");
     QString mod = ui->m_StudyModality->currentText();
+
+//    if (!m_httpclient)
+//    {
+//        m_httpclient = new HttpClient(this,getDownDir());
+//        m_httpclient->setHost(getServerHttpUrl());
+//    }
+    m_httpclient->setDwonloadDir(getDownDir());
+    m_httpclient->setHost(getServerHttpUrl());
+    connect(m_httpclient,&HttpClient::parseDataFinished,this,&StudyImage::updateStudyImageTable);
     m_httpclient->getStudyDBinfo(getServerHttpUrl(),startDate,endDate,"1","100");
 }
 
