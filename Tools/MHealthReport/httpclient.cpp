@@ -182,6 +182,10 @@ void HttpClient::downFileFromWeb(QUrl httpUrl, QString savefilename, QString dow
                                   " Overwrite?").arg(fileName, useDirectory ? QString() : QStringLiteral(" in the current directory")),
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
         {
+            if (m_currentfiletype == DownFileType::report)
+            {
+                emit parseReportFinished();
+            }
             return;
         }
         QFile::remove(fileName);
