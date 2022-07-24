@@ -66,14 +66,15 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     {
         m_httpclient = new HttpClient(this,getDownDir());
     }
-    //savereport
-    connect(m_hreadThread,SIGNAL(savereport(QString)),this,SLOT(editorSaveReport(QString)));
+
     ///启动共享内存
     m_sharedInfo.open();
     if (!m_hreadThread)
     {
         m_hreadThread = new HreadThread(&m_sharedInfo);
         m_hreadThread->start();
+        //savereport
+        connect(m_hreadThread,SIGNAL(savereport(QString)),this,SLOT(editorSaveReport(QString)));
     }
 }
 
@@ -105,7 +106,7 @@ void StudyImage::viewImage()
 
 void StudyImage::editorSaveReport(QString filename)
 {
-//editorSaveReport
+    //editorSaveReport
     qDebug() << "editorSaveReport " << filename;
 }
 
