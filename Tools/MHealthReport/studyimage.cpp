@@ -15,8 +15,7 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
 
     QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
-                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"
-                       };
+                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity" };
     ui->m_tableWidget->setColumnCount(strs.count());
 
     ui->m_tableWidget->setHorizontalHeaderLabels(strs);
@@ -37,7 +36,6 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     ui->m_tableWidget->setColumnHidden(column-4,true);
 
     //connect(ui->m_tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));=on_m_tableWidget_cellDoubleClicked
-
     ///------------CustomContextMenu---------------------------------
     ui->m_tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -126,7 +124,6 @@ void StudyImage::viewReport()
         //parseReportFinished
         connect(m_httpclient,&HttpClient::parseReportFinished,this,&StudyImage::editorSaveReport);
         m_reportFile = info;
-
     }
 }
 
@@ -235,7 +232,6 @@ void  StudyImage::connectImageAppCrash()
 ///整个检查列表
 void StudyImage::on_m_getStudyDbImages_clicked()
 {
-
     QString startDate = ui->m_startDate->dateTime().toString("yyyyMMdd");
     QString endDate   = ui->m_endDate->dateTime().toString("yyyyMMdd");
     QString mod = ui->m_StudyModality->currentText();
@@ -316,7 +312,6 @@ void StudyImage::updateStudyImageTable()
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientIdentity].Value));
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyOrderIdentity].Value));
-
         }
         //ui->m_tableWidget->resizeColumnsToContents();
     }
