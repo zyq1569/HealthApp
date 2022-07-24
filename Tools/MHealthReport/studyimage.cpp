@@ -15,7 +15,8 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
 
     QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
-                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity" };
+                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"
+                       };
     ui->m_tableWidget->setColumnCount(strs.count());
 
     ui->m_tableWidget->setHorizontalHeaderLabels(strs);
@@ -64,7 +65,13 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     {
         m_httpclient = new HttpClient(this,getDownDir());
     }
-
+    if (!m_hreadThread)
+    {
+        m_hreadThread = new HreadThread(&m_sharedInfo, false);
+        m_hreadThread->start();
+    }
+    //savereport
+    connect(m_hreadThread,SIGNAL(savereport(QString)),this,SLOT(editorSaveReport(QString)));
     ///启动共享内存
     m_sharedInfo.open();
 }
@@ -95,10 +102,16 @@ void StudyImage::viewImage()
     }
 }
 
-void StudyImage::editorSaveReport()
+void StudyImage::editorSaveReport(QString filename)
+{
+//editorSaveReport
+
+}
+
+void StudyImage::sendEditorReport()
 {
     m_sharedInfo.write(m_reportFile);
-    disconnect(m_httpclient,&HttpClient::parseReportFinished,this,&StudyImage::editorSaveReport);
+    disconnect(m_httpclient,SIGNAL(parseReportFinished()),this,SLOT(sendEditorReport));
 }
 
 void StudyImage::viewReport()
@@ -122,7 +135,7 @@ void StudyImage::viewReport()
         //启用共享内存通知报告打开
         //1.openword      Hsharedmemory m_sharedInfo;
         //parseReportFinished
-        connect(m_httpclient,&HttpClient::parseReportFinished,this,&StudyImage::editorSaveReport);
+        connect(m_httpclient,SIGNAL(parseReportFinished()),this,SLOT(sendEditorReport));
         m_reportFile = info;
     }
 }

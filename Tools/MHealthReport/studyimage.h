@@ -40,7 +40,9 @@ public slots:
     void viewImage();
     void viewReport();
 
-    void editorSaveReport();
+    void sendEditorReport();
+
+    void editorSaveReport(QString filename);
 
 private slots:
     /// StudyDB info
@@ -68,6 +70,7 @@ private:
     int m_currentRow;
     bool m_urlImage, m_urlReport;
     Hsharedmemory m_sharedInfo;
+    HreadThread *m_hreadThread;
     QString m_reportFile;
 
 private:
