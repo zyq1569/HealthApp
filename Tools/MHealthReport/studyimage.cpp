@@ -9,7 +9,8 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
 {
     ui->setupUi(this);
     ///---------------
-    m_httpclient = NULL;
+    m_httpclient  = NULL;
+    m_hreadThread = NULL;
     m_localSocket = new QLocalSocket(this);
     //connect(m_clientSocket, SIGNAL(readyRead()), this, SLOT(getClientData()));
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
@@ -65,15 +66,15 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     {
         m_httpclient = new HttpClient(this,getDownDir());
     }
+    //savereport
+    connect(m_hreadThread,SIGNAL(savereport(QString)),this,SLOT(editorSaveReport(QString)));
+    ///启动共享内存
+    m_sharedInfo.open();
     if (!m_hreadThread)
     {
         m_hreadThread = new HreadThread(&m_sharedInfo, false);
         m_hreadThread->start();
     }
-    //savereport
-    connect(m_hreadThread,SIGNAL(savereport(QString)),this,SLOT(editorSaveReport(QString)));
-    ///启动共享内存
-    m_sharedInfo.open();
 }
 
 void StudyImage::viewImage()
