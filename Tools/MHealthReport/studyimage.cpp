@@ -72,7 +72,7 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     m_sharedInfo.open();
     if (!m_hreadThread)
     {
-        m_hreadThread = new HreadThread(&m_sharedInfo, false);
+        m_hreadThread = new HreadThread(&m_sharedInfo);
         m_hreadThread->start();
     }
 }
