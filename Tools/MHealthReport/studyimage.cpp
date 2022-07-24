@@ -112,7 +112,7 @@ void StudyImage::editorSaveReport(QString filename)
 void StudyImage::sendEditorReport()
 {
     m_sharedInfo.write(m_reportFile);
-    disconnect(m_httpclient,SIGNAL(parseReportFinished()),this,SLOT(sendEditorReport));
+    disconnect(m_httpclient,SIGNAL(parseReportFinished()),this,SLOT(sendEditorReport()));
 }
 
 void StudyImage::viewReport()
@@ -136,7 +136,7 @@ void StudyImage::viewReport()
         //启用共享内存通知报告打开
         //1.openword      Hsharedmemory m_sharedInfo;
         //parseReportFinished
-        connect(m_httpclient,SIGNAL(parseReportFinished()),this,SLOT(sendEditorReport));
+        connect(m_httpclient,SIGNAL(parseReportFinished()),this,SLOT(sendEditorReport()));
         m_reportFile = info;
     }
 }
