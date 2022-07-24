@@ -1,9 +1,13 @@
+#include "KoApplication.h"
 #include "Hsharedmemory.h"
 
 Hsharedmemory::Hsharedmemory(qint64 id) :
     m_SharedMemory(nullptr), m_Pid(id)
 {
-
+    if (0 == id)
+    {
+        m_Pid = qApp->applicationPid();
+    }
 }
 
 Hsharedmemory::~Hsharedmemory()
@@ -110,7 +114,7 @@ QString Hsharedmemory::readFromReceiver() const
 /// \param sharedMemory
 /// \param parent
 ///
-HreadThread::HreadThread(Hsharedmemory *sharedMemory , bool sender, QObject *parent) : QThread(parent), m_SharedMemory(sharedMemory), m_sender(sender)
+HreadThread::HreadThread(Hsharedmemory *sharedMemory, bool sender, QObject *parent) : QThread(parent), m_SharedMemory(sharedMemory), m_sender(sender)
 {
     clear();
 }
