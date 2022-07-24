@@ -105,7 +105,7 @@ void StudyImage::viewImage()
 void StudyImage::editorSaveReport(QString filename)
 {
 //editorSaveReport
-
+    qDebug() << "editorSaveReport " << filename;
 }
 
 void StudyImage::sendEditorReport()
