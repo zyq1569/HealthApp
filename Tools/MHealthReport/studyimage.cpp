@@ -127,13 +127,6 @@ void StudyImage::viewReport()
     }
 }
 
-void StudyImage::editReport()
-{
-    //QMessageBox::information(NULL, tr("检查"),tr("查看报告!"));
-    QString StudyOrderIdentity = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-1)->text();
-    emit lookReport(StudyOrderIdentity);
-}
-
 void StudyImage::editPatientInfo()
 {
     QString Info = "PatientIdentity:"+ ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-3)->text();
