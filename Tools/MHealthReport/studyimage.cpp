@@ -127,6 +127,11 @@ void StudyImage::viewReport()
     }
     else
     {
+        //启用共享内存通知报告打开
+        //1.openword      Hsharedmemory m_sharedInfo;
+        //parseReportFinished
+        connect(m_httpclient,SIGNAL(parseReportFinished()),this,SLOT(sendEditorReport()));
+
         m_httpclient->setDwonloadDir(getDownDir());
         m_httpclient->setHost(getServerHttpUrl());
         m_httpclient->getStudyReportFile(getServerHttpUrl(),StudyOrderIdentity, studyuid);
@@ -134,10 +139,6 @@ void StudyImage::viewReport()
         /// QString info=  getServerHttpUrl()+"&DownDir="+getDownDir()+"&studyuid="+ studyuid+".odt";
         QString info = "file:" + getDownDir()+"/"+ studyuid+"/"+StudyOrderIdentity+".odt";
         //emit sendClientMsg(info);
-        //启用共享内存通知报告打开
-        //1.openword      Hsharedmemory m_sharedInfo;
-        //parseReportFinished
-        connect(m_httpclient,SIGNAL(parseReportFinished()),this,SLOT(sendEditorReport()));
         m_reportFile = info;
     }
 }
