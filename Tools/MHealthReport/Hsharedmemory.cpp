@@ -1,4 +1,4 @@
-#include "KoApplication.h"
+#include <QApplication>
 #include "Hsharedmemory.h"
 
 Hsharedmemory::Hsharedmemory(qint64 id) :
