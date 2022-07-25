@@ -467,6 +467,7 @@ func CheckLogin(c echo.Context) error {
 	return c.String(http.StatusOK, "username or userpwd error! fail")
 }
 
+///"http://" + serverHost + "/healthsystem/ris/saveodtreport/?StudyOrderIdentity=" + orderid;
 func SaveOdtReport(c echo.Context) error {
 	var reportdata Study.ReportData
 	reportdata.ReportIdentity = ""
