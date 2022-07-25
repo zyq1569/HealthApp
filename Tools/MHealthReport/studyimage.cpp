@@ -389,7 +389,6 @@ void StudyImage::httpFinished()
     {
         m_networkreply->deleteLater();
         m_networkreply = nullptr;
-        //m_httpSuccess = false;
         if (QMessageBox::question(NULL, "Save New Patient", "Save New Patient To Server Fail!. try again?",
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
         {
@@ -399,16 +398,12 @@ void StudyImage::httpFinished()
     }
     else
     {
-
+        QMessageBox::information(NULL, tr("Save Report"),tr("Save OK!"));
     }
 
     m_networkreply->deleteLater();
     m_networkreply = nullptr;
 
-//    if (m_httpSuccess)
-//    {
-//        QMessageBox::information(NULL, tr("Save New Patient"),tr("Save OK!"));
-//    }
     disconnect(m_networkreply, &QNetworkReply::finished, this, &StudyImage::httpFinished);
 }
 
