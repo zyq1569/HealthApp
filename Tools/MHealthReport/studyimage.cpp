@@ -3,8 +3,11 @@
 
 #include "httpclient.h"
 #include "patientdata.h"
+
 #include <QLocalSocket>
 #include <QMessageBox>
+#include <QNetworkReply>
+
 StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyImage),m_sharedInfo(qApp->applicationPid()/*SHAREDHEALTH*/)
 {
     ui->setupUi(this);
@@ -358,4 +361,51 @@ void StudyImage::on_m_tableWidget_customContextMenuRequested(const QPoint &pos)
     {
         m_menu->exec(QCursor::pos());
     }
+}
+
+///////--------------------------server---------http-------------------------------------------
+void StudyImage::httpFinished()
+{
+    if (m_networkreply->error())
+    {
+        m_networkreply->deleteLater();
+        m_networkreply = nullptr;
+        //m_httpSuccess = false;
+        if (QMessageBox::question(NULL, "Save New Patient", "Save New Patient To Server Fail!. try again?",
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+        {
+            //on_actionSavePatientInfo_triggered();
+        }
+        return;
+    }
+
+    m_networkreply->deleteLater();
+    m_networkreply = nullptr;
+
+//    if (m_httpSuccess)
+//    {
+//        QMessageBox::information(NULL, tr("Save New Patient"),tr("Save OK!"));
+//    }
+}
+
+void StudyImage::httpReadyRead()
+{
+    QByteArray byteArray = m_networkreply->readAll();
+//    switch (m_questType)
+//    {
+//    case queryStudyOder:
+//        break;
+
+//    case nothing:
+//        break;
+//    case updateStudyOder:
+//        QString state = byteArray;
+//        if (state.toUpper() == "OK")
+//        {
+//            m_httpSuccess = true;
+//        }
+//        break;
+
+//    }
+    //QString state = byteArray;
 }

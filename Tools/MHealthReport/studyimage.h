@@ -2,6 +2,7 @@
 #define STUDYIMAGE_H
 
 #include <QMainWindow>
+#include <QNetworkAccessManager>
 
 #define ImageAppName  "StarViewer"
 
@@ -43,6 +44,13 @@ public slots:
     void sendEditorReport();
 
     void editorSaveReport(QString filename);
+    ///
+    void httpFinished();
+    void httpReadyRead();
+private:
+    QNetworkAccessManager m_networkmanager;
+    QNetworkReply *m_networkreply;
+    //QuestType m_questType;
 
 private slots:
     /// StudyDB info
