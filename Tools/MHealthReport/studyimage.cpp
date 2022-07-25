@@ -126,8 +126,8 @@ void StudyImage::editorSaveReport(QString filename)
 
     connect(m_networkreply, &QIODevice::readyRead, this, &StudyImage::httpReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &StudyImage::httpFinished);
-    qDebug() << "editorSaveReport " << filename;
-    qDebug() << "StudyOrderIdentity:"<< file.fileName();
+    //qDebug() << "editorSaveReport " << filename;
+    //qDebug() << "StudyOrderIdentity:"<< file.fileName();
 }
 
 void StudyImage::sendEditorReport()
@@ -396,6 +396,10 @@ void StudyImage::httpFinished()
             //on_actionSavePatientInfo_triggered();
         }
         return;
+    }
+    else
+    {
+
     }
 
     m_networkreply->deleteLater();
