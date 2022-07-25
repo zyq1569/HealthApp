@@ -352,8 +352,7 @@ void PatientStudyRegister::httpFinished()
         m_networkreply->deleteLater();
         m_networkreply = nullptr;
         m_httpSuccess = false;
-        if (QMessageBox::question(NULL,
-                                  "Save New Patient", "Save New Patient To Server Fail!. try again?",
+        if (QMessageBox::question(NULL, "Save New Patient", "Save New Patient To Server Fail!. try again?",
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
         {
             on_actionSavePatientInfo_triggered();
@@ -380,7 +379,6 @@ void PatientStudyRegister::httpReadyRead()
 
     case nothing:
         break;
-
     case updateStudyOder:
         QString state = byteArray;
         if (state.toUpper() == "OK")
