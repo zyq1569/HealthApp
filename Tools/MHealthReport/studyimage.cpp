@@ -114,7 +114,7 @@ void StudyImage::editorSaveReport(QString filename)
     bool isOk = file.open(QFile::ReadOnly);
     if (!isOk)
     {
-        QMessageBox::critical(this,"ERROR","file open failed");
+        QMessageBox::critical(this,"ERROR", "file open failed!" + filename);
         return;
     }
     // 读文件
@@ -399,6 +399,7 @@ void StudyImage::httpFinished()
 //    {
 //        QMessageBox::information(NULL, tr("Save New Patient"),tr("Save OK!"));
 //    }
+    disconnect(m_networkreply, &QNetworkReply::finished, this, &StudyImage::httpFinished);
 }
 
 void StudyImage::httpReadyRead()
@@ -421,4 +422,5 @@ void StudyImage::httpReadyRead()
 
 //    }
     //QString state = byteArray;
+    disconnect(m_networkreply, &QIODevice::readyRead, this, &StudyImage::httpReadyRead);
 }
