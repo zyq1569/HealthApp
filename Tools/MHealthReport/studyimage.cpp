@@ -8,7 +8,7 @@
 #include <QMessageBox>
 #include <QNetworkReply>
 
-StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyImage),m_sharedInfo(qApp->applicationPid()/*SHAREDHEALTH*/)
+StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyImage)
 {
     ui->setupUi(this);
     ///---------------
