@@ -118,12 +118,13 @@ void StudyImage::editorSaveReport(QString filename)
         return;
     }
     // 读文件
-    QByteArray byteArray = file.readAll();
-    m_networkreply = m_networkmanager.post(QNetworkRequest(getServerHttpUrl()+"/healthsystem/ris/SaveStudyOrde/"),byteArray);
+    QByteArray byteArray = file.readAll();///"http://" + serverHost + "/healthsystem/ris/saveodtreport/?StudyOrderIdentity=" + orderid;
+    m_networkreply = m_networkmanager.post(QNetworkRequest(getServerHttpUrl()+"/healthsystem/ris/saveodtreport/?StudyOrderIdentity="+file.fileName()),byteArray);
 
     connect(m_networkreply, &QIODevice::readyRead, this, &StudyImage::httpReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &StudyImage::httpFinished);
     qDebug() << "editorSaveReport " << filename;
+    qDebug() << "StudyOrderIdentity:"<< file.fileName();
 }
 
 void StudyImage::sendEditorReport()
