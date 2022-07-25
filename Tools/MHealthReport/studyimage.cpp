@@ -110,6 +110,19 @@ void StudyImage::viewImage()
 void StudyImage::editorSaveReport(QString filename)
 {
     //editorSaveReport
+    QFile file(filename);
+    bool isOk = file.open(QFile::ReadOnly);
+    if (!isOk)
+    {
+        QMessageBox::critical(this,"ERROR","file open failed");
+        return;
+    }
+    // 读文件
+    QByteArray byteArray = file.readAll();
+    m_networkreply = m_networkmanager.post(QNetworkRequest(getServerHttpUrl()+"/healthsystem/ris/SaveStudyOrde/"),byteArray);
+
+    connect(m_networkreply, &QIODevice::readyRead, this, &StudyImage::httpReadyRead);
+    connect(m_networkreply, &QNetworkReply::finished, this, &StudyImage::httpFinished);
     qDebug() << "editorSaveReport " << filename;
 }
 
