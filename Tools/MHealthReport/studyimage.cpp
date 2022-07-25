@@ -118,8 +118,11 @@ void StudyImage::editorSaveReport(QString filename)
         return;
     }
     // 读文件
+    int pos = filename.lastIndexOf("/");
+    QString StudyOrderIdentity = filename.right(filename.length() - pos - 1);
+    StudyOrderIdentity = StudyOrderIdentity.left(StudyOrderIdentity.length() - 4);
     QByteArray byteArray = file.readAll();///"http://" + serverHost + "/healthsystem/ris/saveodtreport/?StudyOrderIdentity=" + orderid;
-    m_networkreply = m_networkmanager.post(QNetworkRequest(getServerHttpUrl()+"/healthsystem/ris/saveodtreport/?StudyOrderIdentity="+file.fileName()),byteArray);
+    m_networkreply = m_networkmanager.post(QNetworkRequest(getServerHttpUrl()+"/healthsystem/ris/saveodtreport/?StudyOrderIdentity=" + StudyOrderIdentity),byteArray);
 
     connect(m_networkreply, &QIODevice::readyRead, this, &StudyImage::httpReadyRead);
     connect(m_networkreply, &QNetworkReply::finished, this, &StudyImage::httpFinished);
@@ -380,6 +383,8 @@ void StudyImage::on_m_tableWidget_customContextMenuRequested(const QPoint &pos)
 ///////--------------------------server---------http-------------------------------------------
 void StudyImage::httpFinished()
 {
+    disconnect(m_networkreply, &QNetworkReply::finished, this, &StudyImage::httpFinished);
+
     if (m_networkreply->error())
     {
         m_networkreply->deleteLater();
@@ -405,6 +410,7 @@ void StudyImage::httpFinished()
 
 void StudyImage::httpReadyRead()
 {
+    disconnect(m_networkreply, &QIODevice::readyRead, this, &StudyImage::httpReadyRead);
     QByteArray byteArray = m_networkreply->readAll();
 //    switch (m_questType)
 //    {
@@ -423,5 +429,5 @@ void StudyImage::httpReadyRead()
 
 //    }
     //QString state = byteArray;
-    disconnect(m_networkreply, &QIODevice::readyRead, this, &StudyImage::httpReadyRead);
+
 }
