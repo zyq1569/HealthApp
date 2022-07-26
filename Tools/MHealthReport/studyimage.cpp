@@ -411,22 +411,5 @@ void StudyImage::httpReadyRead()
 {
     disconnect(m_networkreply, &QIODevice::readyRead, this, &StudyImage::httpReadyRead);
     QByteArray byteArray = m_networkreply->readAll();
-//    switch (m_questType)
-//    {
-//    case queryStudyOder:
-//        break;
-
-//    case nothing:
-//        break;
-//    case updateStudyOder:
-//        QString state = byteArray;
-//        if (state.toUpper() == "OK")
-//        {
-//            m_httpSuccess = true;
-//        }
-//        break;
-
-//    }
-    //QString state = byteArray;
-
+    qDebug() << " m_networkreply->readAll()" ;
 }
