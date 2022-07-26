@@ -121,6 +121,9 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
 #if defined(Q_OS_LINUX)
     configfilename = iniDir+"/MHealthReport_linux.ini";
 #endif
+    QFile file(configfilename);
+    file.open(QIODevice::ReadWrite|QIODevice::Text);
+    file.close();
     QSettings configini(configfilename,QSettings::IniFormat);
     QFileInfo fileInfo(configfilename);
     if(fileInfo.exists())

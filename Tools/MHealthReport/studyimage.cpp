@@ -173,7 +173,11 @@ void StudyImage::editPatientInfo()
 
 StudyImage::~StudyImage()
 {
+    m_hreadThread->terminate();
+    m_hreadThread->wait();
+    delete m_hreadThread;
     m_sharedInfo.close();
+
 
     delete ui;
 }
@@ -265,11 +269,6 @@ void StudyImage::on_m_getStudyDbImages_clicked()
     QString endDate   = ui->m_endDate->dateTime().toString("yyyyMMdd");
     QString mod = ui->m_StudyModality->currentText();
 
-//    if (!m_httpclient)
-//    {
-//        m_httpclient = new HttpClient(this,getDownDir());
-//        m_httpclient->setHost(getServerHttpUrl());
-//    }
     m_httpclient->setDwonloadDir(getDownDir());
     m_httpclient->setHost(getServerHttpUrl());
     connect(m_httpclient,&HttpClient::parseDataFinished,this,&StudyImage::updateStudyImageTable);
