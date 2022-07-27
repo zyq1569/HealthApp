@@ -133,6 +133,10 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
         m_imageViewerEnable    = configini.value("/imageviewer/viewer_state",0).toInt();
         m_reportViewerEnable   = configini.value("/reportviewer/report_state",0).toInt();
     }
+    else
+    {
+        QMessageBox::information(NULL, configfilename+" fail!","creat file");
+    }
     if(fileInfo.exists())
     {
         m_config->setConfig(m_serverIP,m_serverPort,m_imageViewerEnable,m_reportViewerEnable);
@@ -319,7 +323,8 @@ MainApp::~MainApp()
     configfilename = iniDir+"/MHealthReport_linux.ini";
 #endif
     QSettings configini(configfilename,QSettings::IniFormat);
-    //if (isFileExist(configfilename))
+    QFileInfo fileInfo(configfilename);
+    if (fileInfo.exists())
     {
         configini.setValue("/webserver/server_IP",      m_serverIP);
         configini.setValue("/webserver/server_Port",    m_serverPort);
