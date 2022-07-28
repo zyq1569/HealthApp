@@ -173,13 +173,13 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
         int  pos = currentdir.lastIndexOf("/");
         QString wordDir =  currentdir.left(pos);
         wordDir = wordDir + "/openword/HEditor.exe";
-        wordDir = "D:/HealthApp/OpenWord/HEditor.exe";
+        //wordDir = "D:/HealthApp/OpenWord/HEditor.exe";
         QFileInfo fileExe(wordDir);
         if(fileExe.exists())
         {
             m_wordProcess = new QProcess(parent);
             m_wordProcess->start(wordDir);
-            QMessageBox::information(NULL, wordDir+" ok!","start HEditor.exe ok!");
+            //QMessageBox::information(NULL, wordDir+" ok!","start HEditor.exe ok!");
         }
         else
         {
@@ -202,12 +202,8 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     ///D-BUS: register
     /// ------------------------------------------------------------------------------------
     ///
-//    int timerID = startTimer(1000 / 33);///ms
 
 
-
-    ///启动共享内存
-    //m_sharedInfo.open();
 }
 
 void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer, int report)
@@ -366,7 +362,6 @@ MainApp::~MainApp()
         m_viewerProcess->close();
     }
 
-    //m_sharedInfo.close();
     delete ui;
 }
 
