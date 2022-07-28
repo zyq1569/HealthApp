@@ -3,6 +3,7 @@
 
 #include "httpclient.h"
 #include "patientdata.h"
+#include "logging.h"
 
 #include <QLocalSocket>
 #include <QMessageBox>
@@ -78,6 +79,7 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
         m_hreadThread->start();
         //savereport
         connect(m_hreadThread,SIGNAL(savereport(QString)),this,SLOT(editorSaveReport(QString)));
+        INFO_LOG("--m_hreadThread-- start() :---pid:" + QString::number(qApp->applicationPid()));
     }
 }
 
