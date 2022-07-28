@@ -25,6 +25,8 @@ INITIALIZE_EASYLOGGINGPP
 ///
 ///need  office:
 ///
+/// to do: https://curl.se/windows/
+///        https://curl.se/download.html
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
