@@ -13,7 +13,7 @@ class QAuthenticator;
 class QFile;
 class HManageThread;
 
-
+//https://curl.se/windows/
 ///-----------------------------------------------------------------------------------------------------------------------
 enum DownFileType
 {
