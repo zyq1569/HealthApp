@@ -43,9 +43,6 @@ private:
     QString m_url;
     int m_imageViewerEnable,m_reportViewerEnable;
 
-protected:
-    void timerEvent(QTimerEvent *event);
-
 
 private:
     Ui::MainApp *ui;

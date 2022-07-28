@@ -173,16 +173,23 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
         int  pos = currentdir.lastIndexOf("/");
         QString wordDir =  currentdir.left(pos);
         wordDir = wordDir + "/openword/HEditor.exe";
+        wordDir = "D:/HealthApp/OpenWord/HEditor.exe";
         QFileInfo fileExe(wordDir);
         if(fileExe.exists())
         {
             m_wordProcess = new QProcess(parent);
             m_wordProcess->start(wordDir);
+            QMessageBox::information(NULL, wordDir+" ok!","start HEditor.exe ok!");
+        }
+        else
+        {
+            QMessageBox::information(NULL, wordDir+" fail!","start HEditor.exe fail!");
         }
         ///----end word.exe--------------------
     }
     else
     {
+        QMessageBox::information(NULL, " ???!","start HEditor.exe fail!");
         m_StudyImage->setUrlReport(true);
     }
 
@@ -203,25 +210,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     //m_sharedInfo.open();
 }
 
-void MainApp::timerEvent(QTimerEvent *event)
-{
-    Q_UNUSED(event);
-//    switch (event->timerId()-1)
-//    {
-//    case timer1 :
-//      qDebug() << "timer1" << endl;
-//      break;
-//            break;
-//        default:
-//            qDebug() << "no  !!"<<endl;
-//            break;
-//    }
-//    int timerID = 0;
-//    killTimer(timerID);
-
-}
-
-
 void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer, int report)
 {
     m_serverIP           = serverIP;
@@ -230,6 +218,33 @@ void MainApp::saveServerConfig(QString serverIP, QString serverPort, int viewer,
     m_reportViewerEnable = report;
     QString HttpUrl      = "http://" + m_serverIP + ":" + m_serverPort;
     setServerHttpUrl(HttpUrl);
+
+    ///---sava config ini
+    QString Dir     = QDir::currentPath();
+    QString iniDir = Dir+"/config";
+    QDir dir(iniDir);
+    if(!dir.exists())
+    {
+        QDir dir(iniDir); // 注意
+        dir.setPath("");
+        if (!dir.mkpath(iniDir))
+        {
+            //error!
+        }
+    }
+    QString configfilename = iniDir+"/MHealthReport.ini";
+#if defined(Q_OS_LINUX)
+    configfilename = iniDir+"/MHealthReport_linux.ini";
+#endif
+    QSettings configini(configfilename,QSettings::IniFormat);
+    QFileInfo fileInfo(configfilename);
+    if (fileInfo.exists())
+    {
+        configini.setValue("/webserver/server_IP",      m_serverIP);
+        configini.setValue("/webserver/server_Port",    m_serverPort);
+        configini.setValue("/imageviewer/viewer_state", m_imageViewerEnable);
+        configini.setValue("/reportviewer/report_state",m_reportViewerEnable);
+    }
 }
 
 void MainApp::lookStudyImage(QString studyuid)
