@@ -356,10 +356,10 @@ MainApp::~MainApp()
     SAFEDELETE(m_StudyImage)
     SAFEDELETE(m_reportview)
     ///需要确认是否是否使用close()？
-    //if (m_wordProcess)
-    //{
-    //    m_wordProcess->close();
-    //}
+    if (m_wordProcess)
+    {
+        m_wordProcess->close();
+    }
     //m_viewerProcess
     if (m_viewerProcess)
     {
