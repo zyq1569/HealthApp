@@ -129,7 +129,7 @@ int test()
         }
         if(still_alive)
         {
-            //curl_multi_wait(cm, NULL, 0, 1000, NULL);
+            curl_multi_wait(cm, NULL, 0, 1000, NULL);
         }
 
     }
