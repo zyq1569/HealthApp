@@ -81,13 +81,8 @@ static void add_transfer(CURLM *cm, int i)
     curl_multi_add_handle(cm, eh);
 }
 
-
-int main(int argc, char *argv[])
+int test()
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
-    return a.exec();
 
     ///-----------------------------------------------------------
     CURLM *cm;
@@ -134,7 +129,7 @@ int main(int argc, char *argv[])
         }
         if(still_alive)
         {
-            curl_multi_wait(cm, NULL, 0, 1000, NULL);
+            //curl_multi_wait(cm, NULL, 0, 1000, NULL);
         }
 
     }
@@ -144,4 +139,14 @@ int main(int argc, char *argv[])
     curl_global_cleanup();
 
     return EXIT_SUCCESS;
+}
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    test();
+    return a.exec();
+
 }
