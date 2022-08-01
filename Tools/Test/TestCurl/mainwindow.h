@@ -3,19 +3,35 @@
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+namespace Ui
+{
+class MainWindow;
+}
+
+class QFile;
+class HCurlNetwork;
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void on_startStopButton_clicked();
+    void onTransferProgress(qint64 downloadTotal, qint64 downloadNow, qint64 uploadTotal, qint64 uploadNow);
+    void onTransferDone();
+    void onTransferAborted();
+
 private:
+    void log(QString text);
+
     Ui::MainWindow *ui;
+
+    HCurlNetwork *transfer = nullptr;
+    QFile *downloadFile = nullptr;
 };
+
 #endif // MAINWINDOW_H
