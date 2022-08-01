@@ -246,8 +246,7 @@ int HCurlNetwork::staticCurlXferInfoFunction(void *easyPtr, curl_off_t downloadT
     HCurlNetwork *transfer = static_cast<HCurlNetwork*>(easyPtr);
     Q_ASSERT(transfer != nullptr);
 
-    emit transfer->progress(static_cast<qint64>(downloadTotal), static_cast<qint64>(downloadNow),
-                            static_cast<qint64>(uploadTotal), static_cast<qint64>(uploadNow));
+    emit transfer->progress(static_cast<qint64>(downloadTotal), static_cast<qint64>(downloadNow),  static_cast<qint64>(uploadTotal), static_cast<qint64>(uploadNow));
 
     return 0;
 }
