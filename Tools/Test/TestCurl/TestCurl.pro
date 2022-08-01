@@ -16,14 +16,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    main.cpp \
-    mainwindow.cpp
+            main.cpp \
+            mainwindow.cpp \
+            HCurlNetwork.cpp
 
 HEADERS += \
-    mainwindow.h
+           HCurlNetwork.h \
+           mainwindow.h \
+           HCurlNetwork.h
 
 FORMS += \
-    mainwindow.ui
+          mainwindow.ui
 
 
 LIBS += -L$$PWD/libcurl \
