@@ -12,7 +12,6 @@
 
 class CurlMulti;
 
-
 class HCurlNetwork : public QObject
 {
     Q_OBJECT
@@ -121,6 +120,7 @@ class   CurlEasy;
 struct  CurlMultiSocket;
 
 
+#include <QSet>
 class CurlMulti : public QObject
 {
     Q_OBJECT
