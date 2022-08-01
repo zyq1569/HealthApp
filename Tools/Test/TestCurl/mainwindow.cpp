@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 {
     ui->setupUi(this);
 
+    curl_global_init(CURL_GLOBAL_ALL);
     // Create HCurlNetwork and connect signals.
     // Since curl_easy handles could be reused freely we can do it only once
     transfer = new HCurlNetwork(this); // Parent it so it will be destroyed automatically
