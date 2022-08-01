@@ -1,3 +1,5 @@
+#include <QDir>
+
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
@@ -14,6 +16,11 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(transfer, &HCurlNetwork::done, this, &MainWindow::onTransferDone);
     connect(transfer, &HCurlNetwork::aborted, this, &MainWindow::onTransferAborted);
     connect(transfer, &HCurlNetwork::progress, this, &MainWindow::onTransferProgress);
+
+    ui->fileNameEdit->text();
+    QString dir = QDir::currentPath();
+    ui->fileNameEdit->setText(dir+"/test.odt");
+
 }
 
 MainWindow::~MainWindow()
