@@ -1,6 +1,5 @@
 #include "HCurlNetwork.h"
 
-#include "CurlMulti.h"
 #include <limits>
 #include <memory>
 #include <QThreadStorage>
