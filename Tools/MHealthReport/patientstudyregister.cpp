@@ -13,8 +13,7 @@
 #include <QMessageBox>
 
 
-PatientStudyRegister::PatientStudyRegister(QWidget *parent) :
-    QMainWindow(parent),  ui(new Ui::PatientStudyRegister)
+PatientStudyRegister::PatientStudyRegister(QWidget *parent) : QMainWindow(parent),  ui(new Ui::PatientStudyRegister)
 {
     ui->setupUi(this);
 
