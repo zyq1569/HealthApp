@@ -151,3 +151,19 @@ protected:
 
     QSet<HCurlNetwork*> transfers_;
 };
+
+
+
+class HttpFileCurl:public QObject
+{
+    Q_OBJECT
+public:
+    HttpFileCurl(QObject* parent = nullptr)
+    {
+
+    }
+public slots:
+    void DownFile(QString url);
+
+
+};
