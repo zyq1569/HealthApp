@@ -154,16 +154,16 @@ protected:
 
 
 
-class HttpFileCurl:public QObject
-{
-    Q_OBJECT
-public:
-    HttpFileCurl(QObject* parent = nullptr)
-    {
+//class HttpFileCurl:public QObject
+//{
+//    Q_OBJECT
+//public:
+//    HttpFileCurl(QObject* parent = nullptr)
+//    {
 
-    }
-public slots:
-    void DownFile(QString url);
+//    }
+//public slots:
+//    void DownFile(QString url);
 
 
-};
+//};
