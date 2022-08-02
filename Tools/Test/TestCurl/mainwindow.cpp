@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 {
     ui->setupUi(this);
 
-    curl_global_init(CURL_GLOBAL_ALL);
+    curl_global_init(CURL_GLOBAL_ALL);//全局函数.仅调用一次
     // Create HCurlNetwork and connect signals.
     // Since curl_easy handles could be reused freely we can do it only once
     transfer = new HCurlNetwork(this); // Parent it so it will be destroyed automatically
@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     ui->fileNameEdit->text();
     QString dir = QDir::currentPath();
-    ui->fileNameEdit->setText(dir+"/test.odt");
+    ui->fileNameEdit->setText(dir+"/testWeb.odt");
 
 }
 
