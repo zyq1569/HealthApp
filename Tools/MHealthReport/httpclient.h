@@ -211,31 +211,25 @@ class HttpFiles: public QObject
 {
     Q_OBJECT
 public:
-    HttpFiles(QObject* parent=0):QObject(parent)
-    {
+    HttpFiles(QObject* parent=0);
 
-    }
 public slots:
-    void emitsig()
-    {
-        emit sig();
-    }
+    void notifyMsg();
+
 signals:
-    void sig();
+    void sigMsg();
 };
 
 
 
-class NetWorkObject:public QObject
+class NetWorkObject: public QObject
 {
     Q_OBJECT
 public:
-    NetWorkObject(){}
+    NetWorkObject();//{}
 public slots:
-    void slot()
-    {
-        qDebug()<<"from thread slot:" <<QThread::currentThreadId();
-    }
+    void slot();
+
 };
 
 

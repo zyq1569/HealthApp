@@ -15,6 +15,33 @@
 
 #include <QProcess>
 QProcess *process;
+
+
+
+HttpFiles::HttpFiles(QObject* parent):QObject(parent)
+{
+
+}
+
+void HttpFiles::notifyMsg()
+{
+
+    emit sigMsg();
+
+}
+
+
+NetWorkObject::NetWorkObject()
+{
+
+}
+
+void NetWorkObject::slot()
+{
+
+    qDebug()<<"from thread slot:" <<QThread::currentThreadId();
+
+}
 ///// -------------------------------------------------------------------------
 /// eg..
 /// dcm/
