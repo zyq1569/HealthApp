@@ -226,7 +226,7 @@ class NetWorkObject: public QObject
 {
     Q_OBJECT
 public:
-    NetWorkObject();//{}
+    NetWorkObject();
 public slots:
     void slot();
 
