@@ -8,6 +8,9 @@
 #include <QList>
 #include <QDir>
 
+#include <QtCore/QThread>
+
+
 class QNetworkReply;
 class QAuthenticator;
 class QFile;
@@ -202,5 +205,38 @@ private:
     QObject *m_parent;
 
 };
+
+
+class HttpFiles: public QObject
+{
+    Q_OBJECT
+public:
+    HttpFiles(QObject* parent=0):QObject(parent)
+    {
+
+    }
+public slots:
+    void emitsig()
+    {
+        emit sig();
+    }
+signals:
+    void sig();
+};
+
+
+
+class NetWorkObject:public QObject
+{
+    Q_OBJECT
+public:
+    NetWorkObject(){}
+public slots:
+    void slot()
+    {
+        qDebug()<<"from thread slot:" <<QThread::currentThreadId();
+    }
+};
+
 
 #endif // HTTPCLIENT_H
