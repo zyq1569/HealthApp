@@ -23,10 +23,18 @@ HttpFiles::HttpFiles(QObject* parent):QObject(parent)
 
 }
 
-void HttpFiles::notifyMsg()
+void HttpFiles::getStudyDBinfo(QUrl url,QString start,QString end,QString page,QString limit)
 {
 
-    emit sigMsg();
+}
+
+void HttpFiles::getStudyImageFile(QUrl url,QString studyuid ,QString seruid, QString imguid)
+{
+
+}
+
+void HttpFiles::getStudyReportFile(QUrl url, QString StudyOrderIdentity, QString studyuid)
+{
 
 }
 
@@ -34,6 +42,8 @@ void HttpFiles::notifyMsg()
 NetWorkObject::NetWorkObject()
 {
 
+    //HttpFiles files;
+    //files.moveToThread()
 }
 
 void NetWorkObject::slot()

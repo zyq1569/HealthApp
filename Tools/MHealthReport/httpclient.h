@@ -214,10 +214,12 @@ public:
     HttpFiles(QObject* parent=0);
 
 public slots:
-    void notifyMsg();
+    void getStudyDBinfo(QUrl url,QString start,QString end,QString page,QString limit);
+    void getStudyImageFile(QUrl url,QString studyuid="",QString seruid = "", QString imguid = "");
+    void getStudyReportFile(QUrl url, QString StudyOrderIdentity, QString studyuid="");
 
 signals:
-    void sigMsg();
+    void sigMsg(QString msg);
 };
 
 
