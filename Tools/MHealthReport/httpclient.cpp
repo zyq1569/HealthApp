@@ -42,8 +42,6 @@ void HttpFiles::getStudyReportFile(QUrl url, QString StudyOrderIdentity, QString
 NetWorkObject::NetWorkObject()
 {
 
-    //HttpFiles files;
-    //files.moveToThread()
 }
 
 void NetWorkObject::slot()
