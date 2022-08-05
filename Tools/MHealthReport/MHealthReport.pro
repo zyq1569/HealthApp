@@ -1,4 +1,16 @@
+
+win32 {
+msvc: DEFINES      += MSVC
+}
+
+contains(DEFINES, MSVC) {
 QT              += core gui network webenginewidgets
+
+}
+else {
+QT              += core gui
+}
+
 QMAKE_CXXFLAGS  += /utf-8
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
