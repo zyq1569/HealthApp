@@ -172,8 +172,11 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
         QString currentdir = QDir::currentPath();
         int  pos = currentdir.lastIndexOf("/");
         QString wordDir =  currentdir.left(pos);
-        wordDir = wordDir + "/openword/HEditor.exe";
+        wordDir = wordDir + "/OpenWord/HEditor.exe";
         //wordDir = "D:/HealthApp/OpenWord/HEditor.exe";
+#ifndef QT_NO_DEBUG
+        wordDir = "D:/HealthApp/OpenWord/HEditor.exe";
+#endif
         QFileInfo fileExe(wordDir);
         if(fileExe.exists())
         {
@@ -189,7 +192,6 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
     }
     else
     {
-        QMessageBox::information(NULL, " ???!","start HEditor.exe fail!");
         m_StudyImage->setUrlReport(true);
     }
 

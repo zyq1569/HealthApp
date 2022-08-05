@@ -36,6 +36,8 @@ INITIALIZE_EASYLOGGINGPP
 //    return NULL;
 //}
 
+//提取运行包文件
+//F:\temp\HealthApp\Tools\MHealthReport\ms_bin\release>C:\Qt\Qt5.14.1\5.14.1\msvc2017_64\bin\windeployqt.exe MHealthReport.exe
 ///
 ///need  office:
 ///
