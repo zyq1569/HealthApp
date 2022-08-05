@@ -41,6 +41,8 @@ static void *pull_one_url(void *url)
 ///
 /// to do: https://curl.se/windows/
 ///        https://curl.se/download.html
+/// 使用浏览器页面功能.暂时需要QWebEngineView. to do....???
+///
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
