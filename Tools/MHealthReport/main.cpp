@@ -24,24 +24,24 @@ INITIALIZE_EASYLOGGINGPP
 
 
 
-static void *pull_one_url(void *url)
-{
-//    CURL *curl;
+//static void *pull_one_url(void *url)
+//{
+////    CURL *curl;
 
-//    curl = curl_easy_init();
-//    curl_easy_setopt(curl, CURLOPT_URL, url);
-//    curl_easy_perform(curl); /* ignores error */
-//    curl_easy_cleanup(curl);
+////    curl = curl_easy_init();
+////    curl_easy_setopt(curl, CURLOPT_URL, url);
+////    curl_easy_perform(curl); /* ignores error */
+////    curl_easy_cleanup(curl);
 
-    return NULL;
-}
+//    return NULL;
+//}
 
 ///
 ///need  office:
 ///
 /// to do: https://curl.se/windows/
 ///        https://curl.se/download.html
-/// 使用浏览器页面功能.暂时需要QWebEngineView. to do....???
+/// 使用浏览器页面功能.暂时需要QWebEngineView. to do....???----- 20220805
 ///
 int main(int argc, char *argv[])
 {
