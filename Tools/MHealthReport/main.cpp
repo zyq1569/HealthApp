@@ -43,9 +43,10 @@ INITIALIZE_EASYLOGGINGPP
 ///
 /// to do: https://curl.se/windows/
 ///        https://curl.se/download.html
-/// 使用浏览器页面功能.暂时需要QWebEngineView. to do....???----- 20220805
+/// 使用浏览器页面功能.暂时需要QWebEngineView. to do.... curl???----- 20220805
 ///
-/// 当前使用的先线程 共享内存方式 to do....共享内存直接 vc(rel版本) 和 mingw 编译 失败
+/// 当前使用的线程 共享内存方式 to do....共享内存直接 vc(rel版本) 和 mingw 编译 失败
+/// 线程方式也有替换 to do..
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
