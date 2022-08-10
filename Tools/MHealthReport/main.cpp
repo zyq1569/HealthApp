@@ -47,6 +47,7 @@ INITIALIZE_EASYLOGGINGPP
 ///
 /// 当前使用的线程 共享内存方式 to do....共享内存直接 vc(rel版本) 和 mingw 编译 失败
 /// 线程方式也有替换 to do..   moveToThread
+/// 整个检查图像下载在starviewer中实现
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -64,7 +65,7 @@ int main(int argc, char *argv[])
     return a.exec();
 }
 
-
+//https://dicom.nema.org/medical/dicom/current/output/html/part05.html#chapter_C
 //Organizationally Derived UID
 //A UID may be formed using a registered root (see Annex C) and an organization specific suffix.
 //The manner in which the suffix of such an organizationally derived UID is defined is not constrained by the DICOM Standard.
