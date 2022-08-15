@@ -19,17 +19,17 @@ type OFHashValue struct {
 }
 
 func GetStudyHashDir(studyuid string) string {
-	// pos := strings.Index(studyuid, "|")
-	// if pos > 1 {
-	// 	// 2001 01 09 08 4247
-	// 	// 0123 45 67 89 0
-	// 	datestr := studyuid[pos:]
-	// 	year := datestr[0:3]  //2001
-	// 	month := datestr[4:5] //01
-	// 	day := datestr[6:7]   //09
-	// 	dir := "/" + year + "/" + month + "/" + day
-	// 	return dir
-	// }
+	pos := strings.Index(studyuid, "|")
+	if pos > 1 {
+		// 2001 01 09 08 4247
+		// 0123 45 67 89 0
+		datestr := studyuid[pos:]
+		year := datestr[0:3]  //2001
+		month := datestr[4:5] //01
+		day := datestr[6:7]   //09
+		dir := "/" + year + "/" + month + "/" + day
+		return dir
+	}
 
 	vl := CreateHashValue([]byte(studyuid), strings.Count(studyuid, "")-1)
 	dir := "/" + vl.first + "/" + vl.second
