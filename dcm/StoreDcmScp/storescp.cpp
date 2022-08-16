@@ -500,6 +500,7 @@ int AppRun(int argc, char *argv[])
 #endif
     return 0;
 }
+//20220816 考虑 目录结构: 年份/月份/日期/小时
 //1667 /home/zyq/windows_share/HealthApp/bin/win32/DCM_SAVE
 int main(int argc, char *argv[])
 {
