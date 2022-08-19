@@ -1568,12 +1568,12 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                             subdirectoryName += '_';
                         }
                         //add 通过hash值方法，将接收的dcm文件存储-----------------------------------------------
-                        OFHashValue path = CreateHashValue(dcminfo);
+                        OFHashValue path = CreateHashValue(dcminfo.studyUID);
                         //unsigned long hash_vaule = studyuid_hash(currentStudyInstanceUID.c_str()) % 100;
                         //OFString hash_dir = longToString(hash_vaule);
                         OFString hash_dir = path.first + "/" + path.second;
                         ///20220818
-                        //hash_dir = dcminfo.studyDate.substr(0, 3) + "/" + dcminfo.studyDate.substr(4, 5) + "/" + dcminfo.studyTime.substr(0, 1) + "/" + dcminfo.studyTime.substr(2, 3);
+                        hash_dir = dcminfo.studyDate.substr(0, 3) + "/" + dcminfo.studyDate.substr(4, 5) + "/" + dcminfo.studyTime.substr(0, 1) + "/" + dcminfo.studyTime.substr(2, 3);
                         OFString tem_dir = "Images/" + hash_dir + "/" + dcminfo.studyUID + "/" + dcminfo.seriesUID;
                         static OFString save_dir = OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName);
                         static OFString task_dir = save_dir + "/Task";
