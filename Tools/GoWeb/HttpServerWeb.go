@@ -343,6 +343,7 @@ func LoadImageFile(c echo.Context) error {
 	log4go.Debug("----LoadImageFile-------" + c.Request().URL.Path)
 	studyuid := c.FormValue("studyuid")
 	image_hash_dir := Units.GetStudyHashDir(studyuid)
+	log4go.Debug(image_hash_dir)
 	filepath := CONFIG[IMAGE_Dir] + image_hash_dir
 	filepath += "/"
 	filepath += studyuid
@@ -356,7 +357,8 @@ func LoadImageFile(c echo.Context) error {
 		if IsFileExists(filepath) {
 			return c.File(filepath)
 		} else {
-			log4go.Error("No filepath:" + filepath)
+			log4go.Error("studyuid:" + studyuid)
+			log4go.Error("image_hash_dir:" + image_hash_dir + "No filepath:" + filepath)
 		}
 	} else if filetype == "odt" {
 		odtpath := CONFIG[IMAGE_Dir] + "/Report/"
