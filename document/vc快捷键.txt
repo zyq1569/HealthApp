@@ -1,3 +1,5 @@
+
+vc2013社区版本 授权失效 解决https://docs.microsoft.com/en-us/answers/questions/810387/visual-studio-2013-community-says-stale.html
 https://my.visualstudio.com/Downloads?q=visual%20studio%202013&wt.mc_id=o~msft~vscom~older-downloads
 Ctrl+E,D ----格式化全部代码 
 Ctrl+E,F ----格式化选中的代码 
