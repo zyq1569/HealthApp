@@ -13,11 +13,18 @@ DCMTK_OFSTD_EXPORT struct OFHashValue
 //    int16_t second;
 #endif
     OFString first, second, third;
+    OFString vl[10];
+    int vl_len;
 
     OFHashValue()
     {
         first  = "A";
         second = "B";
+        for (int i = 0; i < 10; i++)
+        {
+            vl[i] = "";
+        }
+        vl_len = 10;
     }
 };
 
