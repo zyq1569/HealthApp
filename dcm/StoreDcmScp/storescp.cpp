@@ -1255,67 +1255,68 @@ OFBool GetStudyInfoFie(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, Dicom
     }
     if (!GetValueOfData(imageDataSet, rsp, key[3], studyinfo.studyDescription))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[4], studyinfo.seriesDescription))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[5], studyinfo.seriesNumber, OFTrue))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[6], studyinfo.studyId))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[7], studyinfo.patientName))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[8], studyinfo.patientId))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[9], studyinfo.patientSex))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[10], studyinfo.patientAge))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[11], studyinfo.patientBirthDate))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[12], studyinfo.patientBirthTime))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[13], studyinfo.studyDate))
     {
-        return flag;
+
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[14], studyinfo.studyTime))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[15], studyinfo.modality))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[16], studyinfo.manufacturer))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[17], studyinfo.institutionName))
     {
-        return flag;
+        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[18], studyinfo.instanceNumber))
     {
-        return flag;
+        //return flag;
     }
     return OFTrue;
 }
