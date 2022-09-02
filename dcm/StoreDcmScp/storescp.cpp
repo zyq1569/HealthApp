@@ -1301,8 +1301,6 @@ OFBool GetStudyInfoFie(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, Dicom
         char date[8];
         sprintf(date, "%04u%02u%02u", dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay());
         studyinfo.studyDate = date;
-        //set current date
-        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[14], studyinfo.studyTime))
     {
@@ -1311,8 +1309,6 @@ OFBool GetStudyInfoFie(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, Dicom
         char time[6];
         sprintf(time, "%02u%02u%02u%", dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond());
         studyinfo.studyTime = time;
-        //set current time
-        //return flag;
     }
     if (!GetValueOfData(imageDataSet, rsp, key[15], studyinfo.modality))
     {
