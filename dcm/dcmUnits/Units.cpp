@@ -36,7 +36,7 @@ typedef struct _GUID
 //typedef uint64_t UINT64
 //#endif // _WIN32
 
-OFString GetStudyHashDir(OFString studyuid)
+OFString GetStudyHashDir(DicomFileInfo studyuid)
 {
     OFString dir;
     OFHashValue vl = CreateHashValue(studyuid);
