@@ -503,7 +503,7 @@ int AppRun(int argc, char *argv[])
 //20220816 考虑 目录结构: 年份/月份/日期/小时
 //eg.
 //Images/2001/01/09/23
-
+//针对获取图像目录的方式如何调整,先查询路径再获取路径? to  do best
 //1667 /home/zyq/windows_share/HealthApp/bin/win32/DCM_SAVE
 int main(int argc, char *argv[])
 {
