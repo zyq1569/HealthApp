@@ -504,6 +504,7 @@ int AppRun(int argc, char *argv[])
 //eg.
 //Images/2001/01/09/23
 //针对获取图像目录的方式如何调整,先查询路径再获取路径? to  do best
+//hash 目录存放studyuid的对应目录文本文件?
 //1667 /home/zyq/windows_share/HealthApp/bin/win32/DCM_SAVE
 int main(int argc, char *argv[])
 {
