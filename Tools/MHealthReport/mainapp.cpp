@@ -156,7 +156,9 @@ MainApp::MainApp(QWidget *parent): QMainWindow(parent), ui(new Ui::MainApp)
         if(fileExe.exists())
         {
             m_viewerProcess = new QProcess(parent);
-            m_viewerProcess->start(viewerdir);
+            QStringList arg;
+            arg.append("hide");
+            m_viewerProcess->start(viewerdir,arg);
         }
         ///----end starviewer.exe
     }
