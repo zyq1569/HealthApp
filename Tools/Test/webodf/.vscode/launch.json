@@ -20,7 +20,8 @@
             "url": "http://localhost:8080",
             "runtimeArgs": [
                 "--disable-web-security",
-                "--user-data-dir=${workspaceFolder}",
+                // 浏览器存储用户配置文件的目录,会创建很多文件
+                //"--user-data-dir=${workspaceFolder}\\temp",
             ]
         }        
     ]
