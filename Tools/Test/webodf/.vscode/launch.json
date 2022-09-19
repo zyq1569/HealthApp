@@ -21,7 +21,7 @@
             "runtimeArgs": [
                 "--disable-web-security",
                 // 浏览器存储用户配置文件的目录,会创建很多文件
-                //"--user-data-dir=${workspaceFolder}\\temp",
+                //"--user-data-dir=${workspaceFolder}\\UserDataDir",
             ]
         }        
     ]
