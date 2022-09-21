@@ -5,14 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-chrome",
+            "type": "chrome",
             "request": "launch",
             "name": "Open studys.html",
             //"file": "E:/cornerstoneWADOImageLoader-master/examples/dicomfile/index.html"
             "url": "http://localhost:8080",
         },
         {
-            "type": "pwa-chrome",
+            "type": "chrome",
             "request": "launch",
             "name": "Open TestReportEditor.html",
             "file": "${workspaceFolder}//TestReportEditor.html",
