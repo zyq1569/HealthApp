@@ -14,7 +14,7 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open TestReportEditor.html",
+            "name": "Debug ODF",
             "file": "${workspaceFolder}//TestReportEditor.html",
             "webRoot": "${workspaceFolder}",
             "url": "http://localhost:8080",
