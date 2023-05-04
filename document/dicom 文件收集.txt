@@ -1,0 +1,13 @@
+http://www.osirix-viewer.com/datasets/    多序列DICOM文件，可用于测试三维渲染
+
+http://www.aycan.de/lp/sample-dicom-images.html    列举了一些可下载DICOM文件的链接
+
+http://www.barre.nom.fr/medical/samples/      很多单张或多帧DICOM文件
+
+https://estore.merge.com/na/efilmcommunity/sample.htm    CT/MR/CR/DX等
+
+http://www.dicomlibrary.com/      CT/MO/OT 
+
+http://www.chameleon-software.de/en/beispielvideos.php       超声
+
+http://www.triltech.com/test-images.htm             超声
