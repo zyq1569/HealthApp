@@ -1584,7 +1584,9 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                         OFString hash_dir = path.first + "/" + path.second;
                         ///20220818
                         //eg. 20100706 123213
-                        hash_dir = dcminfo.studyDate.substr(0, 3) + "/" + dcminfo.studyDate.substr(4, 5) + "/" + dcminfo.studyDate.substr(6, 7) + "/" + dcminfo.studyTime.substr(0, 1) + "/" + dcminfo.studyTime.substr(2, 3);
+                        //hash_dir = dcminfo.studyDate.substr(0, 3) + "/" + dcminfo.studyDate.substr(4, 5) + "/" + dcminfo.studyDate.substr(6, 7) +  \
+                        //"/" + dcminfo.studyTime.substr(0, 1) + "/" + dcminfo.studyTime.substr(2, 3);
+                        hash_dir = GetStudyDateDir(dcminfo);
                         OFString tem_dir = "Images/" + hash_dir + "/" + dcminfo.studyUID + "/" + dcminfo.seriesUID;
                         static OFString save_dir = OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName);
                         static OFString task_dir = save_dir + "/Task";

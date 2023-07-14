@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
   const char *opt_ifname = NULL;
   const char *opt_ofname = NULL;
 
-  E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
+  E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;// EXS_JPEGProcess14SV1;// EXS_LittleEndianExplicit;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
   E_EncodingType opt_oenctype = EET_ExplicitLength;
   E_PaddingEncoding opt_opadenc = EPD_noChange;
@@ -290,10 +290,10 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 
     OFLOG_INFO(dcmdjplsLogger, "decompressing file");
 
-    DcmXfer opt_oxferSyn(opt_oxfer);
+    //DcmXfer opt_oxferSyn(opt_oxfer);
     DcmXfer original_xfer(dataset->getOriginalXfer());
 
-    error = dataset->chooseRepresentation(opt_oxfer, NULL);
+    error = dataset->chooseRepresentation(dataset->getOriginalXfer()/*opt_oxfer*/, NULL);
     if (error.bad())
     {
       OFLOG_FATAL(dcmdjplsLogger, error.text() << ": decompressing file: " <<  opt_ifname);
@@ -301,7 +301,21 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
         OFLOG_FATAL(dcmdjplsLogger, "Input transfer syntax " << original_xfer.getXferName() << " not supported");
       return 1;
     }
-
+    //opt_oxfer = EXS_JPEGProcess14SV1;// EXS_LittleEndianExplicit;
+    //opt_oxfer = EXS_LittleEndianExplicit;
+    //EXS_LittleEndianImplicit = 0,
+    /// Implicit VR Big Endian (pseudo transfer syntax that does not really exist)
+    //EXS_BigEndianImplicit = 1,
+    /// Explicit VR Little Endian
+    //EXS_LittleEndianExplicit = 2,
+    /// Explicit VR Big Endian
+    //EXS_BigEndianExplicit = 3,
+    /// JPEG Baseline (lossy)
+    //EXS_JPEGProcess1 = 4,
+    /// JPEG Extended Sequential (lossy, 8/12 bit)
+    //EXS_JPEGProcess2_4 = 5,
+    opt_oxfer = EXS_BigEndianExplicit;
+    DcmXfer opt_oxferSyn(opt_oxfer);
     if (! dataset->canWriteXfer(opt_oxfer))
     {
       OFLOG_FATAL(dcmdjplsLogger, "no conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible");
