@@ -102,6 +102,7 @@ DCMTK_OFSTD_EXPORT unsigned long studyuid_hash(const char *str);
 
 DCMTK_OFSTD_EXPORT OFString longToString(unsigned long i);
 
+OFString GetStudyDateDir(DicomFileInfo dcminfo );
 //验证目录是否存在
 DCMTK_OFSTD_EXPORT bool DirectoryExists(const OFString Dir);
 

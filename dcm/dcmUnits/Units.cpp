@@ -44,6 +44,15 @@ OFString GetStudyHashDir(DicomFileInfo studyuid)
     return dir;
 }
 
+OFString GetStudyDateDir(DicomFileInfo dcminfo )
+{
+    OFString dir;
+    //OFHashValue vl = CreateHashValue(studyuid);
+    dir = dcminfo.studyDate.substr(0, 3) + "/" + dcminfo.studyDate.substr(4, 5) + "/" + dcminfo.studyDate.substr(6, 7) + "/" + dcminfo.studyTime.substr(0, 1) + "/" + dcminfo.studyTime.substr(2, 3);
+    //dir = "/" + vl.first + "/" + vl.second;
+    return dir;
+}
+
 OFString HashValue(int F, int S, OFString str)
 {
     size_t len = str.length();
