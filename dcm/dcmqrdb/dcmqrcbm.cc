@@ -86,22 +86,34 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     //{
     //    PatientName.clear();
     //}
-    OFString StudyInstanceUID;
-    if (moveRequestIdentifiers->findAndGetOFString(DCM_StudyInstanceUID, StudyInstanceUID).bad())
+    DicomFileInfo dcminfo;
+    //OFString StudyInstanceUID;
+    if (moveRequestIdentifiers->findAndGetOFString(DCM_StudyInstanceUID, dcminfo.studyUID/*StudyInstanceUID*/).bad())
     {
-        StudyInstanceUID.clear();
-        status->setStatus(STATUS_Success);
+        //StudyInstanceUID.clear();
+        dcminfo.studyUID.clear();
+        status->setStatus(STATUS_Success);//???
         return EC_Normal;
     }
-    OFString SeriesInstanceUID;
-    if (moveRequestIdentifiers->findAndGetOFString(DCM_SeriesInstanceUID, SeriesInstanceUID).bad())
+
+    //OFString SeriesInstanceUID;
+    if (moveRequestIdentifiers->findAndGetOFString(DCM_SeriesInstanceUID, dcminfo.seriesUID/*SeriesInstanceUID*/).bad())
     {
-        SeriesInstanceUID.clear();
+        dcminfo.studyUID.clear();//SeriesInstanceUID.clear();
     }
 
-    OFHashValue path = CreateHashValue(StudyInstanceUID);
-    OFString hash_dir = path.first + "/" + path.second;
-    OFString temp_dir = "/Images/" + hash_dir + "/" + StudyInstanceUID;
+    if (moveRequestIdentifiers->findAndGetOFString(DCM_StudyDate, dcminfo.studyDate).bad())
+    {
+
+    }    
+    if (moveRequestIdentifiers->findAndGetOFString(DCM_StudyTime, dcminfo.studyTime).bad())
+    {
+
+    }
+
+    //OFHashValue path = CreateHashValue(StudyInstanceUID);
+    OFString hash_dir = GetStudyDateDir(dcminfo);// path.first + "/" + path.second;
+    OFString temp_dir = "/Images/" + hash_dir + "/" + dcminfo.studyUID;//;StudyInstanceUID;
     //OFLOG_DEBUG(dcmqrscpLogger, "---------hash_dir:" + hash_dir + " ----------------------");
     //OFLOG_DEBUG(dcmqrscpLogger, "---------study_dir:" + hash_dir + " ----------------------");
     OFString find_dir;
@@ -132,7 +144,7 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
 
     if (find && !find_dir.empty())
     {
-        OFString fileini = find_dir + "/" + StudyInstanceUID + ".ini";
+        OFString fileini = find_dir + "/" + /*StudyInstanceUID*/dcminfo.studyUID + ".ini";
         m_matchingFiles.clear();
         if (OFStandard::fileExists(fileini))
         {
@@ -145,7 +157,7 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
         }
         if (m_matchingFiles.size() < 1)
         {
-            DCMQRDB_WARN("NO find StudyInstanceUID dcm:" + StudyInstanceUID);
+            DCMQRDB_WARN("NO find StudyInstanceUID dcm:" + dcminfo.studyUID/*StudyInstanceUID*/);
         }
     }
     else

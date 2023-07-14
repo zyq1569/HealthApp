@@ -590,7 +590,9 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 OFLOG_ERROR(SaveDcmInfoDbLogger, "NO StudyInstanceUID filename:" + filename);
                 return OFFalse;
             }
-            OFString pathname = g_ImageDir + GetStudyHashDir(StudyInfo.StudyInstanceUID) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
+            DicomFileInfo dcminfo;
+            dcminfo.studyDate = StudyInfo.StudyDateTime;
+            OFString pathname = g_ImageDir + /*GetStudyHashDir(StudyInfo.StudyInstanceUID)*/GetStudyDateDir(dcminfo) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
             OFString studyinifile = pathname + ".ini";
             OFString studyjsonfile = pathname + ".json";
             if (!OFStandard::fileExists(studyinifile))
