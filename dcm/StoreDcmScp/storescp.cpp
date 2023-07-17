@@ -247,6 +247,17 @@ OFBool Accept_NotMatchSOPClass = OFTrue;
 #define TEST_STORE  //line:2599 考虑存储空间有限，直接删除store 服务收到的dcm文件
 //--------------------------
 
+/* Define to the date of this package. */
+//#define PACKAGE_DATE "2018-02-05"
+
+/* Define to the version of this package. */
+//#define PACKAGE_VERSION "3.6.3"
+
+/* Define to the version suffix of this package. */
+//#define PACKAGE_VERSION_SUFFIX ""
+
+/* Define to the version number of this package. */
+//#define PACKAGE_VERSION_NUMBER 363
 //--single-process 默认为fork 模式，该设置为单进程
 //1040  \\home\testStoreSCP\Test_dcmtk_rec\SCP
 int AppRun(int argc, char *argv[])
