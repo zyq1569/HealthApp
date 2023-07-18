@@ -35,6 +35,7 @@ BEGIN_EVENT_TABLE(MyApp, wxApp)
     EVT_MENU(wxID_ABOUT, MyApp::OnAbout)
     END_EVENT_TABLE()
 
+// fork https://github.com/DraconPern/tonoka
 bool MyApp::OnInit()
 {
     wxTheApp->SetAppName("tonoka");
