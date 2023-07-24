@@ -4,11 +4,12 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-DEFINES += HAVE_POPEN
-DEFINES += HAVE_PCLOSE
+#DEFINES += HAVE_POPEN
+#DEFINES += HAVE_PCLOSE
 DEFINES  -= UNICODE
 DEFINES  -= _UNICODE
-
+include(../../rootdir.pri)
+DESTDIR = $$ROOTDIR/bin/win32/profile/bin
 
 SOURCES += \
         SaveDcmInfoDb.cc
@@ -24,13 +25,13 @@ INCLUDEPATH +=../../include/dcm/win32/dcmdata/include
 INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
 INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
 
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libmariadbclient.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
+#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libmariadbclient.a
 LIBS += -liphlpapi
 LIBS += -lwsock32
 LIBS += -lws2_32

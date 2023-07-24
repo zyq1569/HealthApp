@@ -9,7 +9,8 @@ QT       -= core gui
 TARGET = oflog
 TEMPLATE = lib
 CONFIG += staticlib
-
+include(../../rootdir.pri)
+DESTDIR = $$ROOTDIR/bin/win32/profile/lib
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -26,8 +27,8 @@ DEFINES += O3
 
 DEFINES += DCMTK_INSIDE_LOG4CPLUS
 DEFINES += DCMTK_BUILD_IN_PROGRESS
-DEFINES += HAVE_POPEN
-DEFINES += HAVE_PCLOSE
+#DEFINES += HAVE_POPEN
+#DEFINES += HAVE_PCLOSE
 DEFINES += QTCREATOR
 DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT

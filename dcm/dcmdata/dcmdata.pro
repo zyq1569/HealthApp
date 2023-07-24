@@ -9,18 +9,30 @@ QT       -= core gui
 TARGET = dcmdata
 TEMPLATE = lib
 CONFIG += staticlib
+include(../../rootdir.pri)
+DESTDIR = $$ROOTDIR/bin/win32/profile/lib
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 #-DDCMTK_BUILD_IN_PROGRESS -DUSE_NULL_SAFE_OFSTRING -D_REENTRANT -Ddcmdata_EXPORTS
-DEFINES += HAVE_POPEN
-DEFINES += HAVE_PCLOSE
-DEFINES += DCMTK_BUILD_IN_PROGRESS
-DEFINES += USE_NULL_SAFE_OFSTRING
-DEFINES += _REENTRANT
-DEFINES += dcmdata_EXPORTS
+linux {
+    DEFINES += HAVE_POPEN
+    DEFINES += HAVE_PCLOSE
+    DEFINES += DCMTK_BUILD_IN_PROGRESS
+    DEFINES += USE_NULL_SAFE_OFSTRING
+    DEFINES += _REENTRANT
+    DEFINES += dcmdata_EXPORTS
+}
+win32 {
+    DEFINES += dcmdata_EXPORTS  DCMTK_BUILD_IN_PROGRESS  NOMINMAX
+#    _CRT_FAR_MAPPINGS_NO_DEPRECATE _CRT_IS_WCTYPE_NO_DEPRECATE USE_NULL_SAFE_OFSTRING\
+#    _CRT_MANAGED_FP_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE \
+#    _CRT_SECURE_NO_DEPRECATE_GLOBALS _CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE \
+#    _CRT_TIME_FUNCTIONS_NO_DEPRECATE _CRT_VCCLRIT_NO_DEPRECATE \
+#    _SCL_SECURE_NO_DEPRECATE _REENTRANT
+}
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.

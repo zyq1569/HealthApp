@@ -6,10 +6,11 @@
 
 QT       -= core gui
 
-TARGET = dcmtls
+TARGET = dcmimage
 TEMPLATE = lib
 CONFIG += staticlib
-
+include(../../rootdir.pri)
+DESTDIR = $$ROOTDIR/bin/win32/profile/lib
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -20,14 +21,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-DEFINES += HAVE_POPEN
-DEFINES += HAVE_PCLOSE
+#DEFINES += HAVE_POPEN
+#DEFINES += HAVE_PCLOSE
 DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
-DEFINES += dcmtls_EXPORTS
+DEFINES += dcmimage_EXPORTS
 DEFINES += O3
 DEFINES  -= UNICODE
+
+linux {
+    DEFINES += HAVE_POPEN
+    DEFINES += HAVE_PCLOSE
+    DEFINES += DCMTK_BUILD_IN_PROGRESS
+    DEFINES += USE_NULL_SAFE_OFSTRING
+    DEFINES += _REENTRANT
+    DEFINES += dcmimage_EXPORTS
+}
+win32 {
+    DEFINES += dcmimage_EXPORTS  DCMTK_BUILD_IN_PROGRESS  NOMINMAX
+}
 SOURCES += \
             diargimg.cc \
             dicmyimg.cc \
@@ -49,12 +62,8 @@ SOURCES += \
             dirgbimg.cc \
             diybrimg.cc \
             diyf2img.cc \
-            diyp2img.cc \
-            tlscond.cc \
-            tlslayer.cc \
-            tlsopt.cc \
-            tlsscu.cc \
-            tlstrans.cc
+            diyp2img.cc
+
 
 HEADERS +=
 
@@ -70,3 +79,5 @@ INCLUDEPATH +=../../include/dcm/win32/oflog/include
 INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
 INCLUDEPATH +=../../include/dcm/win32/dcmdata/include
 INCLUDEPATH +=../../include/dcm/win32/dcmnet/include
+INCLUDEPATH +=../../include/dcm/win32/dcmimage/include
+INCLUDEPATH +=../../include/dcm/win32/dcmimgle/include

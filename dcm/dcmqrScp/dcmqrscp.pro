@@ -4,13 +4,13 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-DEFINES += HAVE_POPEN
-DEFINES += HAVE_PCLOSE
+#DEFINES += HAVE_POPEN
+#DEFINES += HAVE_PCLOSE
 DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
 DEFINES  -= UNICODE
-
+DESTDIR = ../../bin/win32/profile/bin
 SOURCES += \
         dcmqrscp.cc
 
@@ -26,21 +26,26 @@ INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
 INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
 INCLUDEPATH +=../../include/dcm/win32/dcmwlm/include
 
+win32 {
+ include(../../rootdir.pri)
+ LIB_DIR = $$ROOTDIR/bin/win32/profile/lib
+ LIBS   +=  -L$${LIB_DIR} \
+             -ldcmnet \
+             -ldcmdata \
+             -ldcmimgle \
+             -ldcmimage \
+             -ldcmsr \
+             -ldcmqrdb \
+             -ldcmtls \
+             -ldcmjpeg \
+             -llibijg8 \
+             -llibijg12 \
+             -llibijg16 \
+             -loflog \
+             -lofstd
 
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmqrdb.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
-LIBS +=F:/temp/HealthApp/lib/dcm/win32/libmariadbclient.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
-#LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
+}
+
 
 LIBS += -liphlpapi
 LIBS += -lwsock32

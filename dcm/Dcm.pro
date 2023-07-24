@@ -5,10 +5,8 @@
 
 #include(src/compilationtype.pri)
 
-SUBDIRS += dcmdata dcmjpeg dcmjpls dcmlog dcmnet dcmqrdb dcmqrScp dcmsr dcmstd dcmtls dcmUnits DcmWlm libi2d SaveDcmInfoDb sqlite \
-    dcmimage \
-    dcmimgle
-StoreDcmScp StoreDcmScu WorklistScp
+SUBDIRS += dcmdata dcmjpeg   dcmjpls dcmlog dcmnet dcmqrdb dcmqrScp dcmsr dcmstd dcmtls dcmUnits DcmWlm libi2d SaveDcmInfoDb \
+    dcmimage     dcmimgle  StoreDcmScp StoreDcmScu WorklistScp
 #!official_release:SUBDIRS += tests
 TEMPLATE = subdirs
 CONFIG += warn_on \
