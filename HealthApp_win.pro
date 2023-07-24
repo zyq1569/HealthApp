@@ -5,7 +5,10 @@
 
 #include(src/compilationtype.pri)
 
-SUBDIRS += dcm
+SUBDIRS +=  dcm \
+            dcm/dcmjpeg/libijg12.pro \
+            dcm/dcmjpeg/libijg16.pro \
+            dcm/dcmjpeg/libijg8.pro
 #!official_release:SUBDIRS += tests
 TEMPLATE = subdirs
 CONFIG += warn_on \
