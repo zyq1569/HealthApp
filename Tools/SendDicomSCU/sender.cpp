@@ -14,7 +14,7 @@
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/scu.h"
-
+#include <QDir>
 
 #ifdef _UNDEFINEDUNICODE
 #define _UNICODE 1
@@ -50,7 +50,7 @@ void DicomSender::UpdatePatientdatas(DcmDataset *data)
 void DicomSender::ScanPatient(QString dir)
 {
     QStringList filters;
-    filters<<"DCM"<<"dcm";
+    filters<<"*.DCM"<<"*.dcm";
     QStringList list = DirFilename(dir,filters);
     DcmFileFormat dcm;
     OFCondition cond;
@@ -89,6 +89,8 @@ void DicomSender::ScanPatient(QString dir)
                 std.sopclassuid = sopclassuid.c_str();
 
                 OFString studydate,studydesc,dir,transfersyntax;
+
+                std.dir = QFileInfo(path.c_str()).filePath().toStdString().c_str() ;
                 if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).bad())
                     std.studydate = studydate.c_str();
 

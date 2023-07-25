@@ -47,9 +47,9 @@ QStringList DirFilename(QString path, QStringList filters)
         return filelist;
     }
 
-    if (filelist.isEmpty())
+    if (filters.isEmpty())
     {
-        filelist<<QString("*.dcm")<<QString("*.DCM");
+        filters<<QString("*.dcm")<<QString("*.DCM");
     }
     QDirIterator dir_iterator(path, filters, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
 
