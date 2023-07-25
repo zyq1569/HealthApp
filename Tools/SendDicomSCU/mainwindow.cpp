@@ -24,12 +24,13 @@ MainWindow::MainWindow(QWidget *parent)
     //    QSettings configini(configfilename,QSettings::IniFormat);
 
     m_pMOdel = new QStandardItemModel(ui->tableView);
-    m_pMOdel->setColumnCount(5);
-    m_pMOdel->setHeaderData(0,Qt::Horizontal,QString("选择"));
+    m_pMOdel->setColumnCount(6);
+    m_pMOdel->setHeaderData(0,Qt::Horizontal,QString(" "));
     m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("姓名"));
-    m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("日期"));
-    m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("描述"));
-    m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("路径"));
+    m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
+    m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("日期"));
+    m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("描述"));
+    m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("路径"));
     ui->tableView->setModel(m_pMOdel);
 
 }
@@ -81,8 +82,14 @@ void MainWindow::on_pbUpdate_clicked()
         Patient pt = sender.listpatient[i];
         m_pMOdel->setItem(i,1,new QStandardItem(pt.patientname.c_str()));
         m_pMOdel->setItem(i,2,new QStandardItem(pt.patientid.c_str()));
-        m_pMOdel->setItem(i,3,new QStandardItem(pt.studydatas[0].studydate.c_str()));
-        m_pMOdel->setItem(i,4,new QStandardItem(pt.studydatas[0].dir.c_str()));
+        Study st = pt.studydatas[0];
+
+        m_pMOdel->setItem(i,3,new QStandardItem(st.studydate.c_str()));
+        QString str = st.studydesc.c_str();
+        str += "|images:";
+        str += QString::number(st.filespath.size());
+        m_pMOdel->setItem(i,4,new QStandardItem(str));
+        m_pMOdel->setItem(i,5,new QStandardItem(st.dir.c_str()));
 
         QStandardItem *item = new QStandardItem();
         item->setCheckable(true);

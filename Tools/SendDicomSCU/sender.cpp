@@ -90,7 +90,7 @@ void DicomSender::ScanPatient(QString dir)
 
                 OFString studydate,studydesc,dir,transfersyntax;
 
-                std.dir = QFileInfo(path.c_str()).filePath().toStdString().c_str() ;
+                std.dir = QFileInfo(path.c_str()).absolutePath().toStdString().c_str() ;
                 if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).bad())
                     std.studydate = studydate.c_str();
 
@@ -112,7 +112,7 @@ void DicomSender::ScanPatient(QString dir)
             else
             {
                 //find
-                bool bpatid = false;
+                bool bnewpatid = true;
                 foreach(Patient pt, listpatient)
                 {
                     bool flg = false;
@@ -122,6 +122,7 @@ void DicomSender::ScanPatient(QString dir)
                         {
                             std.filespath.push_back(path);
                             flg = true;
+                            bnewpatid = false;
                             break;
                         }
                     }
@@ -129,33 +130,32 @@ void DicomSender::ScanPatient(QString dir)
                     {
                         break;
                     }
-                    else
+
+                    if (pt.patientid == patid.c_str())
                     {
-                        if (pt.patientid == patid.c_str())
-                        {
-                            Study std;
-                            std.studyuid = studyuid.c_str();
-                            std.sopclassuid = sopclassuid.c_str();
+                        Study std;
+                        std.studyuid = studyuid.c_str();
+                        std.sopclassuid = sopclassuid.c_str();
 
-                            OFString studydate,studydesc,dir,transfersyntax;
-                            if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).bad())
-                                std.studydate = studydate.c_str();
+                        OFString studydate,studydesc,dir,transfersyntax;
+                        if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).bad())
+                            std.studydate = studydate.c_str();
 
-                            if (dcm.getDataset()->findAndGetOFString(DCM_StudyDescription, studydesc).bad())
-                                std.studydesc = studydesc.c_str();
+                        if (dcm.getDataset()->findAndGetOFString(DCM_StudyDescription, studydesc).bad())
+                            std.studydesc = studydesc.c_str();
 
-                            if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
-                                std.transfersyntax = transfersyntax.c_str();
+                        if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
+                            std.transfersyntax = transfersyntax.c_str();
 
-                            std.filespath.push_back(path);
-                            pt.studydatas.push_back(std);
+                        std.filespath.push_back(path);
+                        pt.studydatas.push_back(std);
 
-                            bpatid = true;
-                            break;
-                        }
+                        bnewpatid = false;
+                        break;
                     }
+
                 }
-                if (bpatid)
+                if (bnewpatid)
                 {
                     Study std;
                     std.studyuid = studyuid.c_str();
@@ -181,8 +181,8 @@ void DicomSender::ScanPatient(QString dir)
                 }
             }
 
-//            DcmXfer filexfer(dcm.getDataset()->getOriginalXfer());
-//            transfersyntax = filexfer.getXferID();
+            //            DcmXfer filexfer(dcm.getDataset()->getOriginalXfer());
+            //            transfersyntax = filexfer.getXferID();
         }
     }
 
