@@ -100,7 +100,8 @@ void DicomSender::ScanPatient(QString dir)
                 if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
                     std.transfersyntax = transfersyntax.c_str();
 
-                std.filespath.push_back(path);
+                std.filespath.push_back(it.toStdString());
+                printf("%s",std.filespath.at(0).c_str());
 
                 Patient patient;
                 patient.patientid = patid.c_str();
@@ -120,7 +121,7 @@ void DicomSender::ScanPatient(QString dir)
                     {
                         if (std.studyuid == studyuid.c_str())
                         {
-                            std.filespath.push_back(path);
+                            std.filespath.push_back(it.toStdString());
                             flg = true;
                             bnewpatid = false;
                             break;
@@ -147,7 +148,7 @@ void DicomSender::ScanPatient(QString dir)
                         if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
                             std.transfersyntax = transfersyntax.c_str();
 
-                        std.filespath.push_back(path);
+                        std.filespath.push_back(it.toStdString());
                         pt.studydatas.push_back(std);
 
                         bnewpatid = false;
@@ -171,7 +172,7 @@ void DicomSender::ScanPatient(QString dir)
                     if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
                         std.transfersyntax = transfersyntax.c_str();
 
-                    std.filespath.push_back(path);
+                    std.filespath.push_back(it.toStdString());
 
                     Patient patient;
                     patient.patientid = patid.c_str();

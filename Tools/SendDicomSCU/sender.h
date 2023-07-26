@@ -40,6 +40,8 @@ public:
     {
 
     };
+
+public:
     std::string studyuid,studydate,studydesc,dir,sopclassuid,transfersyntax;
     std::vector<std::string> filespath;
 

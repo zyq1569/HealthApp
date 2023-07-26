@@ -40,8 +40,12 @@ INCLUDEPATH +=  ../../boost1720 \
                 ../../include/dcm/win32/dcmpsta/includet \
                 ../../include/dcm/win32/dcmsr/include \
                 ../../include/dcm/win32/dcmjpeg/include
-
-DCMTKINCLUDEDIR =  F:\temp\HealthApp\bin\win32\profile\lib
+#msvc{
+    DCMTKINCLUDEDIR =  F:\temp\HealthApp\bin\win32\profile\vslib
+#}else
+#{
+#    DCMTKINCLUDEDIR =  F:\temp\HealthApp\bin\win32\profile\lib
+#}
 LIBS += -L$${DCMTKINCLUDEDIR} \
         -ldcmnet \
         -ldcmdata \
@@ -72,17 +76,24 @@ LIBS += -ladvapi32
 LIBS += -lcomdlg32
 LIBS += -luuid
 
+DEFINES += HAVE_POPEN
+DEFINES += HAVE_PCLOSE
 # we define that for visual studio-based windows compilation systems
 # compilation is done in as many cores as possible
-QMAKE_CXXFLAGS += /MP
+    msvc{
+    QMAKE_CXXFLAGS += /MP
 
-# We indicate that for debug compilations, Runtime Library
-# is Multi-threaded DLL (as in release) and not Multi-threaded Debug DLL
-QMAKE_CXXFLAGS_DEBUG -= -MDd
-QMAKE_CXXFLAGS_DEBUG += -MD
+    # We indicate that for debug compilations, Runtime Library
+    # is Multi-threaded DLL (as in release) and not Multi-threaded Debug DLL
+    QMAKE_CXXFLAGS_DEBUG -= -MDd
+    QMAKE_CXXFLAGS_DEBUG += -MD
+    QMAKE_CXXFLAGS -= -Zc:strictStrings
+    DEFINES -= HAVE_POPEN
+    DEFINES -= HAVE_PCLOSE
+    }else
+    {
 
-QMAKE_CXXFLAGS -= -Zc:strictStrings
-
+    }
 }
 #message($$DCMTKINCLUDEDIR)
 #: msvc-version.conf loaded but QMAKE_MSC_VER isn't set   /addd QMAKE_MSC_VER = 1909

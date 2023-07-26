@@ -86,8 +86,13 @@ void MainWindow::on_pbUpdate_clicked()
 
         m_pMOdel->setItem(i,3,new QStandardItem(st.studydate.c_str()));
         QString str = st.studydesc.c_str();
-        str += "|images:";
-        str += QString::number(st.filespath.size());
+
+        if (!st.filespath.empty())
+        {
+            str += "|images:";
+            int size = st.filespath.size();
+            str += QString::number(size);
+        }
         m_pMOdel->setItem(i,4,new QStandardItem(str));
         m_pMOdel->setItem(i,5,new QStandardItem(st.dir.c_str()));
 
@@ -143,10 +148,10 @@ void MainWindow::on_pBSend_clicked()
 
 void MainWindow::on_pBDir_clicked()
 {
-     QString  path = QFileDialog::getExistingDirectory(this,"select dicom dir...","./");
-//     ui->cbDcmDir->setCurrentText(path);
-     ui->cbDcmDir->setText(path);
-     ui->cbDcmDir->update();
+    QString  path = QFileDialog::getExistingDirectory(this,"select dicom dir...","./");
+    //     ui->cbDcmDir->setCurrentText(path);
+    ui->cbDcmDir->setText(path);
+    ui->cbDcmDir->update();
 
 }
 
