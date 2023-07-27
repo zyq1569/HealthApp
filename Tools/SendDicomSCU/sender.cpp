@@ -101,7 +101,6 @@ void DicomSender::ScanPatient(QString dir)
                     std.transfersyntax = transfersyntax.c_str();
 
                 std.filespath.push_back(it.toStdString());
-                printf("%s",std.filespath.at(0).c_str());
 
                 Patient patient;
                 patient.patientid = patid.c_str();

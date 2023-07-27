@@ -34,6 +34,11 @@ public:
     {
         this->studyuid = study.studyuid; this->studydate = study.studydate; this->studydesc = study.studydesc;
         this->dir = study.dir ; this->sopclassuid = study.sopclassuid; this->transfersyntax = study.transfersyntax;
+
+        foreach(std::string it, study.filespath)
+        {
+            this->filespath.push_back(it);
+        }
     };
 
     Study()
