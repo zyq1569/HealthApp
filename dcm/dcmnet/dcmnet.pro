@@ -38,6 +38,7 @@ win32 {
     {
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
+        DESTDIR = $$ROOTDIR/bin/win32/Mingw/lib
     }
 }
 

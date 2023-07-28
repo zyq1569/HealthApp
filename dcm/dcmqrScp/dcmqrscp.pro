@@ -33,6 +33,7 @@ msvc{
 {
     DEFINES += HAVE_POPEN
     DEFINES += HAVE_PCLOSE
+    DESTDIR = $$ROOTDIR/bin/win32/Mingw/bin
 }
  include(../../rootdir.pri)
  LIB_DIR = $$ROOTDIR/bin/win32/profile/lib

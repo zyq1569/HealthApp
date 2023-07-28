@@ -45,6 +45,7 @@ win32 {
     {
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
+        DESTDIR = $$ROOTDIR/bin/win32/Mingw/lib
     }
     DEFINES += dcmimage_EXPORTS  DCMTK_BUILD_IN_PROGRESS  NOMINMAX
 }

@@ -13,7 +13,16 @@ DEFINES  -= UNICODE
 include(../../rootdir.pri)
 DESTDIR = $$ROOTDIR/bin/win32/profile/bin
 #MOC_DIR = ../../temp/win32/scp
+win32 {
+    msvc{
 
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+        DESTDIR = $$ROOTDIR/bin/win32/Mingw/bin
+    }
+}
 SOURCES += \
         storescp.cpp
 

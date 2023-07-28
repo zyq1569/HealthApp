@@ -10,7 +10,16 @@ DEFINES  -= UNICODE
 DEFINES  -= _UNICODE
 include(../../rootdir.pri)
 DESTDIR = $$ROOTDIR/bin/win32/profile/bin
+win32 {
+    msvc{
 
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+        DESTDIR = $$ROOTDIR/bin/win32/Mingw/lib
+    }
+}
 SOURCES += \
         SaveDcmInfoDb.cc
 
