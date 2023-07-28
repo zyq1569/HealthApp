@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 #include <map>
-
 //--------------------
 //***************$$$$$$$$$*************************
 #ifdef HAVE_WINDOWS_H
@@ -73,8 +72,8 @@ OFString HashValue(int F, int S, OFString str)
 
 #if defined(__GNUC__)
     // Windows平台 GCC编译器特定的代码
-    QString hex = QString("%1").arg(value, 4, 16, QLatinlChar('0')); ///// 保留四位，不足补零
-    return QString.toLatin1().data();
+//    QString hex = QString("%1").arg(value, 4, 16, QLatinlChar('0')); ///// 保留四位，不足补零
+//    return QString.toLatin1().data();
 #endif
 
 #else

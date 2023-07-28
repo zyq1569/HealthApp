@@ -17,7 +17,15 @@ DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
 DEFINES += ijg16_EXPORTS
+win32 {
+    msvc{
 
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+    }
+}
 SOURCES += \
             libijg16/jaricom.c \
             libijg16/jcapimin.c \

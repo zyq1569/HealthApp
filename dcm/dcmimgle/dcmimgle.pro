@@ -29,6 +29,16 @@ DEFINES += _REENTRANT
 DEFINES += dcmimgle_EXPORTS
 DEFINES += O3
 DEFINES -= UNICODE
+
+win32 {
+    msvc{
+
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+    }
+}
 SOURCES += \
             dcmimage.cc \
             dibaslut.cc \

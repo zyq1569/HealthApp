@@ -30,7 +30,15 @@ DEFINES += _REENTRANT
 DEFINES += dcmwlm_EXPORTS
 DEFINES  -= UNICODE
 DEFINES  -= _UNICODE
+win32 {
+    msvc{
 
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+    }
+}
 SOURCES += \
     wlds.cc \
     wldsfs.cc \

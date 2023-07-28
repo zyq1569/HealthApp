@@ -27,6 +27,13 @@ INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
 INCLUDEPATH +=../../include/dcm/win32/dcmwlm/include
 
 win32 {
+msvc{
+
+}else
+{
+    DEFINES += HAVE_POPEN
+    DEFINES += HAVE_PCLOSE
+}
  include(../../rootdir.pri)
  LIB_DIR = $$ROOTDIR/bin/win32/profile/lib
  LIBS   +=  -L$${LIB_DIR} \
@@ -42,7 +49,8 @@ win32 {
              -llibijg12 \
              -llibijg16 \
              -loflog \
-             -lofstd
+             -lofstd \
+             -ldcmUnits
 
 }
 

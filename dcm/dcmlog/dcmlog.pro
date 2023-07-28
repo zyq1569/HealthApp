@@ -41,7 +41,15 @@ DEFINES  -= UNICODE
 #DEFINES += USE_NULL_SAFE_OFSTRING
 #DEFINES += _REENTRANT
 #DEFINES += dcmdata_EXPORTS
+win32 {
+    msvc{
 
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+    }
+}
 SOURCES += \
     apndimpl.cc \
     appender.cc \

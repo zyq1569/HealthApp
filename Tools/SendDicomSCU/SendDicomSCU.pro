@@ -26,9 +26,7 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-INCLUDEPATH +=  ../../boost1720 \
-                ../../boost1720/boost \
-                ../../include/dcm/win32/ofstd/include \
+INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
                 ../../include/dcm/win32/dcmdata/include \
                 ../../include/dcm/win32/dcmimgle/include \
                 ../../include/dcm/win32/dcmnet/include \

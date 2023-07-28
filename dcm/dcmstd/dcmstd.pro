@@ -22,6 +22,15 @@ DESTDIR = $$ROOTDIR/bin/win32/profile/lib
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 #DEFINES += HAVE_POPEN
 #DEFINES += HAVE_PCLOSE
+win32 {
+    msvc{
+
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+    }
+}
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += USE_NULL_SAFE_OFSTRING

@@ -35,7 +35,15 @@ SOURCES += \
     tlsopt.cc \
     tlsscu.cc \
     tlstrans.cc
+    win32 {
+        msvc{
 
+        }else
+        {
+            DEFINES += HAVE_POPEN
+            DEFINES += HAVE_PCLOSE
+        }
+    }
 HEADERS +=
 
 unix {

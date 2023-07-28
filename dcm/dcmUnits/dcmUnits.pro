@@ -28,7 +28,15 @@ DEFINES +=HAVE_PCLOSE
 DEFINES +=USE_NULL_SAFE_OFSTRING
 DEFINES += O3
 DEFINES  -= UNICODE
+win32 {
+    msvc{
 
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+    }
+}
 
 SOURCES += \
     CJsonObject.cpp \

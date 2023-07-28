@@ -30,7 +30,15 @@ DEFINES += dcmqrdb_EXPORTS
 DEFINES -= UNICODE
 DEFINES -= _UNICODE
 
+win32 {
+    msvc{
 
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+    }
+}
 SOURCES += \
     dcmqrcbf.cc \
     dcmqrcbg.cc \

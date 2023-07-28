@@ -39,6 +39,13 @@ linux {
     DEFINES += dcmimage_EXPORTS
 }
 win32 {
+    msvc{
+
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+    }
     DEFINES += dcmimage_EXPORTS  DCMTK_BUILD_IN_PROGRESS  NOMINMAX
 }
 SOURCES += \

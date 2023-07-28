@@ -20,7 +20,15 @@ DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
 DEFINES += ijg12_EXPORTS
+win32 {
+    msvc{
 
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+    }
+}
 SOURCES += \
     libijg12/jaricom.c \
     libijg12/jcapimin.c \

@@ -31,7 +31,15 @@ DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
 DEFINES += dcmnet_EXPORTS
 DEFINES -= UNICODE
+win32 {
+    msvc{
 
+    }else
+    {
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+    }
+}
 
 SOURCES += \
     assoc.cc \
