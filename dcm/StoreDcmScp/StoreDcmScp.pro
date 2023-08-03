@@ -16,6 +16,15 @@ win32 {
     msvc{
        LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
        DESTDIR = $$ROOTDIR/bin/win32/vs/bin
+       LIBS += -liphlpapi
+       LIBS += -lwsock32
+       LIBS += -lws2_32
+       LIBS += -lole32
+       LIBS += -lnetapi32
+       LIBS += -lShlwapi
+       LIBS += -lKernel32
+       LIBS += -lShlwapi
+       LIBS += -lAdvapi32
     }else{
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
@@ -36,17 +45,31 @@ INCLUDEPATH +=../../include/dcm/win32/dcmdata/include
 INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
 INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
 
+
+LIBS   +=  -L$${LIB_DIR} \
+             -ldcmjpeg \
+             -lijg8 \
+             -lijg12 \
+             -lijg16 \
+             -ldcmqrdb \
+             -ldcmnet \
+             -ldcmdata \
+             -ldcmimgle \
+             -ldcmimage \
+             -ldcmsr \
+             -ldcmtls \
+             -loflog \
+             -lofstd \
+             -ldcmUnits \
+             -lmariadb
+
 #LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
 #LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a
 #LIBS +=F:/temp/HealthApp/lib/dcm/win32/liboflog.a
 #LIBS +=F:/temp/HealthApp/lib/dcm/win32/libofstd.a
 #LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmtls.a
 #LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmUnits.a
-LIBS += -liphlpapi
-LIBS += -lwsock32
-LIBS += -lws2_32
-LIBS += -lole32
-LIBS += -lnetapi32
+
 
 
 #LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a

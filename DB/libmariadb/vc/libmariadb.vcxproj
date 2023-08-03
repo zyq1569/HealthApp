@@ -159,8 +159,6 @@
     <ClCompile Include="..\..\mariadb\libmariadb\get_password.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\mariadb_async.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\mariadb_charset.c" />
-    <ClCompile Include="..\..\mariadb\libmariadb\mariadb_dyncol.c" />
-    <ClCompile Include="..\..\mariadb\libmariadb\mariadb_lib.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\mariadb_rpl.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\mariadb_stmt.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_alloc.c" />
@@ -171,13 +169,11 @@
     <ClCompile Include="..\..\mariadb\libmariadb\ma_errmsg.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_hash.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_init.c" />
-    <ClCompile Include="..\..\mariadb\libmariadb\ma_io.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_list.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_ll2str.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_loaddata.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_net.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_password.c" />
-    <ClCompile Include="..\..\mariadb\libmariadb\ma_pvio.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_sha1.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_stmt_codec.c" />
     <ClCompile Include="..\..\mariadb\libmariadb\ma_string.c" />
@@ -207,7 +203,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties Qt5Version_x0020_x64="msvc2017_64" />
+      <UserProperties Qt5Version_x0020_Win32="msvc2017" Qt5Version_x0020_x64="msvc2017_64" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

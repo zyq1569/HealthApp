@@ -28,23 +28,23 @@ DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
 DEFINES += dcmtls_EXPORTS
 DEFINES += O3
-DEFINES  -= UNICODE
+DEFINES -= UNICODE
 SOURCES += \
-    tlscond.cc \
-    tlslayer.cc \
-    tlsopt.cc \
-    tlsscu.cc \
-    tlstrans.cc
+          tlscond.cc \
+          tlslayer.cc \
+          tlsopt.cc \
+          tlsscu.cc \
+          tlstrans.cc
     win32 {
         msvc{
             DESTDIR = $$ROOTDIR/bin/win32/vs/lib
-        }else
-        {
+        }else{
             DEFINES += HAVE_POPEN
             DEFINES += HAVE_PCLOSE
             DESTDIR = $$ROOTDIR/bin/win32/Mingw/lib
         }
     }
+
 HEADERS +=
 
 unix {

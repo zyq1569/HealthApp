@@ -26,20 +26,55 @@ INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
 INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
 INCLUDEPATH +=../../include/dcm/win32/dcmwlm/include
 
+include(../../rootdir.pri)
+
 win32{
-    include(../../rootdir.pri)
 
     msvc{
         LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
         DESTDIR = $$ROOTDIR/bin/win32/vs/bin
+
+        LIBS += -liphlpapi
+        LIBS += -lwsock32
+        LIBS += -lws2_32
+        LIBS += -lole32
+        LIBS += -lnetapi32
+        LIBS += -lShlwapi
+        LIBS += -lKernel32
+        LIBS += -lShlwapi
+        LIBS += -lAdvapi32
+#        LIBS += -luser32
+#        LIBS += -lgdi32
+#        LIBS += -lwinspool
+
+#        LIBS += -lshell32
+#        LIBS += -loleaut32
+#        LIBS += -luuid
+#        LIBS += -lcomdlg32
+
+        #Shlwapi.lib
+        #iphlpapi.lib
+        #ws2_32.lib
+        #netapi32.lib
+        #wsock32.lib
+        #kernel32.lib
+        #user32.lib
+        #gdi32.lib
+        #winspool.lib
+        #shell32.lib
+        #ole32.lib
+        #oleaut32.lib
+        #uuid.lib
+        #comdlg32.lib
+        #advapi32.lib
     }else{
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
         LIB_DIR = $$ROOTDIR/bin/win32/Mingw/lib
         DESTDIR = $$ROOTDIR/bin/win32/Mingw/bin
-
-        LIBS += -lShlwapi
     }
+}
+
 
 LIBS   +=  -L$${LIB_DIR} \
              -ldcmjpeg \
@@ -58,16 +93,6 @@ LIBS   +=  -L$${LIB_DIR} \
              -ldcmUnits \
              -lmariadb
 
-}
-
-
-LIBS += -liphlpapi
-LIBS += -lwsock32
-LIBS += -lws2_32
-LIBS += -lole32
-LIBS += -lnetapi32
-
-LIBS += -lKernel32
 
 
 
