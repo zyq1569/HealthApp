@@ -32,9 +32,8 @@ DEFINES  -= UNICODE
 DEFINES  -= _UNICODE
 win32 {
     msvc{
-
-    }else
-    {
+        DESTDIR = $$ROOTDIR/bin/win32/vs/lib
+    }else{
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
         DESTDIR = $$ROOTDIR/bin/win32/Mingw/lib

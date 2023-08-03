@@ -9,7 +9,7 @@ CONFIG -= qt
 DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
-DEFINES  -= UNICODE
+DEFINES -= UNICODE
 DESTDIR = ../../bin/win32/profile/bin
 SOURCES += \
         dcmqrscp.cc
@@ -26,32 +26,37 @@ INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
 INCLUDEPATH +=../../include/dcm/win32/dcmtls/include
 INCLUDEPATH +=../../include/dcm/win32/dcmwlm/include
 
-win32 {
-msvc{
+win32{
+    include(../../rootdir.pri)
 
-}else
-{
-    DEFINES += HAVE_POPEN
-    DEFINES += HAVE_PCLOSE
-    DESTDIR = $$ROOTDIR/bin/win32/Mingw/bin
-}
- include(../../rootdir.pri)
- LIB_DIR = $$ROOTDIR/bin/win32/profile/lib
- LIBS   +=  -L$${LIB_DIR} \
+    msvc{
+        LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
+        DESTDIR = $$ROOTDIR/bin/win32/vs/bin
+    }else{
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+        LIB_DIR = $$ROOTDIR/bin/win32/Mingw/lib
+        DESTDIR = $$ROOTDIR/bin/win32/Mingw/bin
+
+        LIBS += -lShlwapi
+    }
+
+LIBS   +=  -L$${LIB_DIR} \
+             -ldcmjpeg \
+             -lijg8 \
+             -lijg12 \
+             -lijg16 \
+             -ldcmqrdb \
              -ldcmnet \
              -ldcmdata \
              -ldcmimgle \
              -ldcmimage \
              -ldcmsr \
-             -ldcmqrdb \
              -ldcmtls \
-             -ldcmjpeg \
-             -llibijg8 \
-             -llibijg12 \
-             -llibijg16 \
              -loflog \
              -lofstd \
-             -ldcmUnits
+             -ldcmUnits \
+             -lmariadb
 
 }
 
@@ -61,3 +66,8 @@ LIBS += -lwsock32
 LIBS += -lws2_32
 LIBS += -lole32
 LIBS += -lnetapi32
+
+LIBS += -lKernel32
+
+
+

@@ -10,7 +10,7 @@ TARGET = dcmqrdb
 TEMPLATE = lib
 CONFIG += staticlib
 include(../../rootdir.pri)
-DESTDIR = $$ROOTDIR/bin/win32/profile/lib
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -32,9 +32,8 @@ DEFINES -= _UNICODE
 
 win32 {
     msvc{
-
-    }else
-    {
+        DESTDIR = $$ROOTDIR/bin/win32/vs/lib
+    }else{
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
         DESTDIR = $$ROOTDIR/bin/win32/Mingw/lib

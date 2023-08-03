@@ -2,8 +2,9 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += consonle c++17
+CONFIG += c++11
 
+#QMAKE_CXXFLAGS  += /utf-8
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
@@ -11,16 +12,12 @@ CONFIG += consonle c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    sender.cpp \
-#    sqlite3.c \
-#    sqlite3_exec_stmt.c \
+#    sender.cpp \
     util.cpp
 
 HEADERS += \
     mainwindow.h \
-    sender.h \
-#    sqlite3.h \
-#    sqlite3_exec_stmt.h \
+#    sender.h \
     util.h
 
 FORMS += \
@@ -38,27 +35,31 @@ INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
                 ../../include/dcm/win32/dcmpsta/includet \
                 ../../include/dcm/win32/dcmsr/include \
                 ../../include/dcm/win32/dcmjpeg/include
-#msvc{
-    DCMTKINCLUDEDIR =  F:\temp\HealthApp\bin\win32\profile\vslib
-#}else
-#{
-#    DCMTKINCLUDEDIR =  F:\temp\HealthApp\bin\win32\profile\lib
-#}
-LIBS += -L$${DCMTKINCLUDEDIR} \
-        -ldcmnet \
-        -ldcmdata \
-        -ldcmimgle \
-        -ldcmimage \
-        -ldcmsr \
-        -ldcmqrdb \
-        -ldcmtls \
-#        -ldcmdsig \
-        -ldcmjpeg \
-        -llibijg8 \
-        -llibijg12 \
-        -llibijg16 \
-        -loflog \
-        -lofstd
+win32 {
+    msvc {
+        LIB_DIR =  F:\temp\HealthApp\bin\win32\profile\vslib
+    }else
+    {
+        LIB_DIR =  F:\temp\HealthApp\bin\win32\Mingw\lib
+    }
+}
+
+LIBS   +=  -L$${LIB_DIR} \
+             -ldcmjpeg \
+             -llibijg8 \
+             -llibijg12 \
+             -llibijg16 \
+             -ldcmqrdb \
+             -ldcmnet \
+#             -ldcmdata \
+             -ldcmimgle \
+             -ldcmimage \
+             -ldcmsr \
+             -ldcmtls \
+             -loflog \
+             -lofstd \
+#             -lmariadb \
+             -ldcmUnits
 
 win32 {
 
@@ -85,16 +86,15 @@ DEFINES += HAVE_PCLOSE
     # is Multi-threaded DLL (as in release) and not Multi-threaded Debug DLL
     QMAKE_CXXFLAGS_DEBUG -= -MDd
     QMAKE_CXXFLAGS_DEBUG += -MD
-    QMAKE_CXXFLAGS -= -Zc:strictStrings
-    DEFINES -= HAVE_POPEN
-    DEFINES -= HAVE_PCLOSE
+    QMAKE_CXXFLAGS       -= -Zc:strictStrings
+    DEFINES              -= HAVE_POPEN
+    DEFINES              -= HAVE_PCLOSE
     }else
     {
 
     }
 }
-#message($$DCMTKINCLUDEDIR)
-#: msvc-version.conf loaded but QMAKE_MSC_VER isn't set   /addd QMAKE_MSC_VER = 1909
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

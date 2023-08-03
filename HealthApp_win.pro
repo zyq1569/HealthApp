@@ -5,14 +5,24 @@
 
 #include(src/compilationtype.pri)
 
-SUBDIRS +=  dcm/dcmApp.pro \
+SUBDIRS +=  dcm/dcmlib.pro \
             DB/libmariadb/Qt/libmariadb.pro \
-            dcm/dcmlib.pro
+            dcm/dcmApp.pro
 
 
 #!official_release:SUBDIRS += tests
 TEMPLATE = subdirs
-CONFIG += warn_on \
-          qt \
-          thread \
-          ordered
+CONFIG  += warn_on \
+           qt \
+           thread \
+           ordered
+
+
+#win32{
+#       msvc{
+
+#}else{ //中间不能有空格
+#       }else{
+
+#       }
+#}

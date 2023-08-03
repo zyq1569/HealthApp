@@ -11,13 +11,12 @@ DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
 DEFINES  -= UNICODE
 include(../../rootdir.pri)
-DESTDIR = $$ROOTDIR/bin/win32/profile/bin
 #MOC_DIR = ../../temp/win32/scp
 win32 {
     msvc{
-
-    }else
-    {
+       LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
+       DESTDIR = $$ROOTDIR/bin/win32/vs/bin
+    }else{
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
         DESTDIR = $$ROOTDIR/bin/win32/Mingw/bin

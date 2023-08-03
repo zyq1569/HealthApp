@@ -6,9 +6,9 @@
 
 QT       -= core gui
 
-TARGET = dcmdata
-TEMPLATE = lib
-CONFIG += staticlib
+TARGET    = dcmdata
+TEMPLATE  = lib
+CONFIG   += staticlib
 include(../../rootdir.pri)
 DESTDIR = $$ROOTDIR/bin/win32/profile/lib
 
@@ -17,36 +17,44 @@ DESTDIR = $$ROOTDIR/bin/win32/profile/lib
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 #-DDCMTK_BUILD_IN_PROGRESS -DUSE_NULL_SAFE_OFSTRING -D_REENTRANT -Ddcmdata_EXPORTS
-linux {
-    DEFINES += HAVE_POPEN
-    DEFINES += HAVE_PCLOSE
-    DEFINES += DCMTK_BUILD_IN_PROGRESS
-    DEFINES += USE_NULL_SAFE_OFSTRING
-    DEFINES += _REENTRANT
-    DEFINES += dcmdata_EXPORTS
-}
-win32 {
-    msvc{
 
-    }else
-    {
-        DEFINES += HAVE_POPEN
-        DEFINES += HAVE_PCLOSE
-        DESTDIR = $$ROOTDIR/bin/win32/Mingw/lib
-    }
-    DEFINES += dcmdata_EXPORTS  DCMTK_BUILD_IN_PROGRESS  NOMINMAX
-#    _CRT_FAR_MAPPINGS_NO_DEPRECATE _CRT_IS_WCTYPE_NO_DEPRECATE USE_NULL_SAFE_OFSTRING\
-#    _CRT_MANAGED_FP_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE \
-#    _CRT_SECURE_NO_DEPRECATE_GLOBALS _CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE \
-#    _CRT_TIME_FUNCTIONS_NO_DEPRECATE _CRT_VCCLRIT_NO_DEPRECATE \
-#    _SCL_SECURE_NO_DEPRECATE _REENTRANT
-}
+#    DCMTK_BUILD_IN_PROGRESS
+#                NOMINMAX \
+#                _CRT_FAR_MAPPINGS_NO_DEPRECATE _CRT_IS_WCTYPE_NO_DEPRECATE USE_NULL_SAFE_OFSTRING \
+#                _CRT_MANAGED_FP_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE \
+#                _CRT_SECURE_NO_DEPRECATE_GLOBALS _CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE \
+#                _CRT_TIME_FUNCTIONS_NO_DEPRECATE _CRT_VCCLRIT_NO_DEPRECATE   _SCL_SECURE_NO_DEPRECATE _REENTRANT
+
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-DEFINES  -= UNICODE
+DEFINES += DCMTK_BUILD_IN_PROGRESS
+DEFINES += dcmdata_EXPORTS
+linux{
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+        DEFINES += DCMTK_BUILD_IN_PROGRESS
+        DEFINES += USE_NULL_SAFE_OFSTRING
+        DEFINES += _REENTRANT
+}
+win32{
+       msvc{                      
+           DEFINES += dcmdata_EXPORTS
+           DEFINES += _REENTRANT
+           DEFINES += USE_NULL_SAFE_OFSTRING
+           DEFINES += O3
+           DEFINES -= UNICODE
+           DEFINES += NOMINMAX
+           #DEFINES +=  _CRT_FAR_MAPPINGS_NO_DEPRECATE _CRT_IS_WCTYPE_NO_DEPRECATE _CRT_MANAGED_FP_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE_GLOBALS _CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE _CRT_TIME_FUNCTIONS_NO_DEPRECATE _CRT_VCCLRIT_NO_DEPRECATE _SCL_SECURE_NO_DEPRECATE
+           DESTDIR  = $$ROOTDIR/bin/win32/vs/lib
+       }else{
 
+           DEFINES += HAVE_POPEN
+           DEFINES += HAVE_PCLOSE
+           DESTDIR  = $$ROOTDIR/bin/win32/Mingw/lib
+       }
+}
 SOURCES += \
         cmdlnarg.cc \
         dcbytstr.cc \
@@ -136,14 +144,35 @@ SOURCES += \
         vrscan.cc \
         vrscanl.c
 
-HEADERS +=
+HEADERS += \
+    vrscani.h \
+    vrscanl.h
+
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
-INCLUDEPATH +=../../include/dcm/win32/config/include
-INCLUDEPATH +=../../include/dcm/win32/ofstd/include
-INCLUDEPATH +=../../include/dcm/win32/oflog/include
-INCLUDEPATH +=../../include/dcm/win32/dcmqrdb/include
-INCLUDEPATH +=../../include/dcm/win32/dcmdata/include
+INCLUDEPATH +=  ../../include/dcm/win32/config/include \
+                ../../include/dcm/win32/ofstd/include \
+                ../../include/dcm/win32/oflog/include \
+                ../../include/dcm/win32/dcmqrdb/include \
+                ../../include/dcm/win32/dcmdata/include \
+                ./../../include/dcm/win32/dcmimgle/include \
+                ./../../include/dcm/win32/dcmimage/include \
+                ./../../include/dcm/win32/dcmjpeg/include \
+                ./../../include/dcm/win32/dcmjpls/include \
+                ./../../include/dcm/win32/dcmtls/include \
+                ./../../include/dcm/win32/dcmnet/include \
+                ./../../include/dcm/win32/dcmsr/include \
+                ./../../include/dcm/win32/dcmsign/include \
+                ./../../include/dcm/win32/dcmwlm/include \
+                ./../../include/dcm/win32/dcmqrdb/include \
+                ./../../include/dcm/win32/dcmpstat/include \
+                ./../../include/dcm/win32/dcmrt/include \
+                ./../../include/dcm/win32/dcmiod/include \
+                ./../../include/dcm/win32/dcmfg/include \
+                ./../../include/dcm/win32/dcmseg/include \
+                ./../../include/dcm/win32/dcmtract/include \
+                ./../../include/dcm/win32/dcmpmap/include

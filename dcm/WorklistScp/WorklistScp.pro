@@ -17,6 +17,17 @@ DESTDIR = $$ROOTDIR/bin/win32/profile/bin
 SOURCES += \
         wlcefs.cc\
         wlmscpfs.cc
+include(../../rootdir.pri)
+win32 {
+    msvc{
+        LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
+        DESTDIR = $$ROOTDIR/bin/win32/vs/bin
+    }else{
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+        DESTDIR = $$ROOTDIR/bin/win32/Mingw/bin
+    }
+}
 
 INCLUDEPATH +=../../include/mysql/win32
 INCLUDEPATH +=../../include/dcm/win32/dcmUnits

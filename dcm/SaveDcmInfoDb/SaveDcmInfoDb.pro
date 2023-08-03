@@ -12,13 +12,31 @@ include(../../rootdir.pri)
 DESTDIR = $$ROOTDIR/bin/win32/profile/bin
 win32 {
     msvc{
-
-    }else
-    {
+        LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
+        DESTDIR = $$ROOTDIR/bin/win32/vs/bin
+    }else{
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
-        DESTDIR = $$ROOTDIR/bin/win32/Mingw/lib
+        LIB_DIR = $$ROOTDIR/bin/win32/Mingw/lib
+        DESTDIR = $$ROOTDIR/bin/win32/Mingw/bin
     }
+
+LIBS   +=  -L$${LIB_DIR} \
+             -ldcmnet \
+             -ldcmdata \
+             -ldcmimgle \
+             -ldcmimage \
+             -ldcmsr \
+             -ldcmqrdb \
+             -ldcmtls \
+             -ldcmjpeg \
+             -llibijg8 \
+             -llibijg12 \
+             -llibijg16 \
+             -loflog \
+             -lofstd \
+             -ldcmUnits \
+             -llibmariadbclient
 }
 SOURCES += \
         SaveDcmInfoDb.cc

@@ -9,7 +9,7 @@
 
 
 QT       -= core gui
-TARGET   = libijg12
+TARGET   = ijg12
 TEMPLATE  = lib
 CONFIG   += staticlib
 
@@ -22,9 +22,8 @@ DEFINES += _REENTRANT
 DEFINES += ijg12_EXPORTS
 win32 {
     msvc{
-
-    }else
-    {
+        DESTDIR = $$ROOTDIR/bin/win32/vs/lib
+    }else{
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
 

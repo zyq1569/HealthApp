@@ -37,7 +37,7 @@ SOURCES += \
     tlstrans.cc
     win32 {
         msvc{
-
+            DESTDIR = $$ROOTDIR/bin/win32/vs/lib
         }else
         {
             DEFINES += HAVE_POPEN
