@@ -4,11 +4,14 @@
 #include <QSettings>
 #include <QFileDialog>
 #include <QStandardItemModel>
+#include <QThreadPool>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)//, /*scanner(patientdata),*/ sender(patientdata)
 {
     ui->setupUi(this);
+
+    //    QThreadPool::globalInstance()->setMaxThreadCount(10);///???
 
     //    QString Dir = QDir::currentPath();
     //    QString iniDir = Dir+"/config";
@@ -23,14 +26,23 @@ MainWindow::MainWindow(QWidget *parent)
 
     //    QSettings configini(configfilename,QSettings::IniFormat);
 
+    connect(&m_sender, &DicomSender::finishscandicomfile, this, &MainWindow::updatePatientList);
+
+
+
     m_pMOdel = new QStandardItemModel(ui->tableView);
     m_pMOdel->setColumnCount(6);
     m_pMOdel->setHeaderData(0,Qt::Horizontal,QString(" "));
-    m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("å§“å"));
+    //    m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("ÐÕÃû"));
+    //    m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
+    //    m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("ÈÕÆÚ"));
+    //    m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("ÃèÊö"));
+    //    m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("Â·¾¶"));
+    m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("Name"));
     m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
-    m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("æ—¥æœŸ"));
-    m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("æè¿°"));
-    m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("è·¯å¾„"));
+    m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("Date"));
+    m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("Dec"));
+    m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("Path"));
     ui->tableView->setModel(m_pMOdel);
 
 }
@@ -74,12 +86,18 @@ void MainWindow::on_pbUpdate_clicked()
 
     startScan(dir);
 
-    //show row col
-    //ui->tableView;
-    int rows = sender.listpatient.size();
+
+}
+
+
+void MainWindow::updatePatientList()
+{
+    //    //show row col
+    //    //ui->tableView;
+    int rows = m_sender.m_listpatient.size();
     for (int i=0; i<rows; i++)
     {
-        Patient pt = sender.listpatient[i];
+        Patient pt = m_sender.m_listpatient[i];
         m_pMOdel->setItem(i,1,new QStandardItem(pt.patientname.c_str()));
         m_pMOdel->setItem(i,2,new QStandardItem(pt.patientid.c_str()));
         Study st = pt.studydatas[0];
@@ -102,6 +120,7 @@ void MainWindow::on_pbUpdate_clicked()
         m_pMOdel->setItem(i,0,item);
     }
 }
+
 
 void MainWindow::stopSend()
 {
@@ -136,7 +155,7 @@ void MainWindow::saveDestinationList()
 
 void MainWindow::startScan(QString &path)
 {
-    sender.ScanPatient(path);
+    m_sender.ScanPatient(path);
 
 }
 
@@ -149,7 +168,7 @@ void MainWindow::on_pBSend_clicked()
 void MainWindow::on_pBDir_clicked()
 {
     QString  path = QFileDialog::getExistingDirectory(this,"select dicom dir...","./");
-    //     ui->cbDcmDir->setCurrentText(path);
+    //ui->cbDcmDir->setCurrentText(path);
     ui->cbDcmDir->setText(path);
     ui->cbDcmDir->update();
 

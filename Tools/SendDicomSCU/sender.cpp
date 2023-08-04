@@ -14,49 +14,36 @@
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/scu.h"
+#include <QThreadPool>
 #include <QDir>
+#include <QMetaType>
 
 #ifdef _UNDEFINEDUNICODE
 #define _UNICODE 1
 #define UNICODE 1
 #endif
 
-DicomSender::DicomSender()
+
+/////--------------------------Taskthread-----------------------------------------------------
+Taskthread::Taskthread(QObject *parent)
+{
+    setAutoDelete(false);
+}
+
+Taskthread::~Taskthread()
 {
 
 }
 
-bool DicomSender::IsCanceled()
-{
-    return false;
-}
-
-int DicomSender::SendStudy(Study &studys)
-{
-
-    return 1;
-}
-
-void  DicomSender::AddStudy(QString dir)
-{
-
-}
-
-void DicomSender::UpdatePatientdatas(DcmDataset *data)
-{
-
-}
-
-void DicomSender::ScanPatient(QString dir)
+void Taskthread::run()
 {
     QStringList filters;
     filters<<"*.DCM"<<"*.dcm";
-    QStringList list = DirFilename(dir,filters);
+    QStringList list = DirFilename(scanDir,filters);
     DcmFileFormat dcm;
     OFCondition cond;
     Study std;
     Patient pd;
-    //std::vector<Patient> listpatient;
     foreach(QString it, list)
     {
         std::string path = it.toStdString();
@@ -113,14 +100,14 @@ void DicomSender::ScanPatient(QString dir)
             {
                 //find
                 bool bnewpatid = true;
-                foreach(Patient pt, listpatient)
+                for(std::vector<Patient>::iterator pt = listpatient.begin(); pt != listpatient.end(); ++pt)
                 {
                     bool flg = false;
-                    foreach(Study std, pt.studydatas)
+                    for(std::vector<Study>::iterator std = pt->studydatas.begin(); std != pt->studydatas.end(); ++std)
                     {
-                        if (std.studyuid == studyuid.c_str())
+                        if (std->studyuid == studyuid.c_str())
                         {
-                            std.filespath.push_back(it.toStdString());
+                            std->filespath.push_back(it.toStdString());
                             flg = true;
                             bnewpatid = false;
                             break;
@@ -131,7 +118,7 @@ void DicomSender::ScanPatient(QString dir)
                         break;
                     }
 
-                    if (pt.patientid == patid.c_str())
+                    if (pt->patientid == patid.c_str())
                     {
                         Study std;
                         std.studyuid = studyuid.c_str();
@@ -148,7 +135,7 @@ void DicomSender::ScanPatient(QString dir)
                             std.transfersyntax = transfersyntax.c_str();
 
                         std.filespath.push_back(it.toStdString());
-                        pt.studydatas.push_back(std);
+                        pt->studydatas.push_back(std);
 
                         bnewpatid = false;
                         break;
@@ -180,12 +167,63 @@ void DicomSender::ScanPatient(QString dir)
                     listpatient.push_back(patient);
                 }
             }
-
             //            DcmXfer filexfer(dcm.getDataset()->getOriginalXfer());
             //            transfersyntax = filexfer.getXferID();
         }
     }
+    emit finish(listpatient);
+}
 
+
+void Taskthread::scandir(QString dir, std::vector<Patient> listpat)
+{
+    scanDir = dir;
+    //    listpatient.clear();
+    listpatient = listpat;
+}
+
+/////-------------------------------------------------------------------------------
+DicomSender::DicomSender()
+{
+    qRegisterMetaType<std::vector<Patient>>("std::vector<Patient>");
+    connect(this, &DicomSender::scandicomfile, &m_taskSdicom, &Taskthread::scandir);
+    connect(&m_taskSdicom, &Taskthread::finish, this, &DicomSender::finishlistpatient);
+}
+
+bool DicomSender::IsCanceled()
+{
+    return false;
+}
+
+int DicomSender::SendStudy(Study &studys)
+{
+    return 1;
+}
+
+void  DicomSender::AddStudy(QString dir)
+{
+
+
+}
+
+void DicomSender::UpdatePatientdatas(DcmDataset *data)
+{
+
+}
+
+void DicomSender::ScanPatient(QString dir)
+{
+    emit scandicomfile(dir,m_listpatient);
+
+    QThreadPool::globalInstance()->start(&m_taskSdicom);
+}
+
+void DicomSender::finishlistpatient(std::vector<Patient> listpat)
+{
+
+    m_listpatient = listpat;
+
+    emit finishscandicomfile();
 }
 
 
@@ -193,14 +231,14 @@ int DicomSender::SendDcmFiles(Study &studys)
 {
     DcmSCU scu;
 
-    if (IsCanceled() || destination.ourAETitle.length() < 1 || destination.destinationHost.length() <1 || destination.destinationAETitle.length() < 1)
+    if (IsCanceled() || m_destination.ourAETitle.length() < 1 || m_destination.destinationHost.length() <1 || m_destination.destinationAETitle.length() < 1)
         return 1;
 
     scu.setVerbosePCMode(true);
-    scu.setAETitle(destination.ourAETitle.c_str());
-    scu.setPeerHostName(destination.destinationHost.c_str());
-    scu.setPeerPort(destination.destinationPort);
-    scu.setPeerAETitle(destination.destinationAETitle.c_str());
+    scu.setAETitle(m_destination.ourAETitle.c_str());
+    scu.setPeerHostName(m_destination.destinationHost.c_str());
+    scu.setPeerPort(m_destination.destinationPort);
+    scu.setPeerAETitle(m_destination.destinationAETitle.c_str());
     scu.setACSETimeout(60);
     scu.setDIMSETimeout(120);
     scu.setDatasetConversionMode(true);

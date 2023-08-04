@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "sqlite3.h"
 #include "sender.h"
 
 QT_BEGIN_NAMESPACE
@@ -18,7 +17,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 public:
-    DicomSender sender;
+    DicomSender m_sender;
     QStandardItemModel *m_pMOdel;
 public:
     void stopSend();
@@ -29,6 +28,9 @@ public:
     void loadGlobalDestinationList();
     void saveDestinationList();
     void startScan(QString &path);
+
+public slots:
+    void updatePatientList();
 
 private slots:
     void on_pbUpdate_clicked();

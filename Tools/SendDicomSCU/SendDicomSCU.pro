@@ -12,16 +12,62 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-#    sender.cpp \
+    sender.cpp \
     util.cpp
 
 HEADERS += \
     mainwindow.h \
-#    sender.h \
+    sender.h \
     util.h
 
 FORMS += \
     mainwindow.ui
+
+include(../../rootdir.pri)
+
+win32 {
+
+    LIBS += -liphlpapi
+    LIBS += -lwsock32
+    LIBS += -lws2_32
+    LIBS += -lole32
+    LIBS += -lnetapi32
+
+    LIBS += -lkernel32
+    LIBS += -lwinspool
+    LIBS += -ladvapi32
+    LIBS += -lcomdlg32
+    LIBS += -luuid
+
+    msvc{
+        LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
+        DESTDIR = $$PWD/bin/windows/vs
+
+    }else{
+        LIB_DIR = $$ROOTDIR/bin/win32/Mingw/lib
+        DESTDIR = $$PWD/bin/windows/Mingw
+
+    }
+}
+
+#message($$LIB_DIR)
+
+LIBS   +=  -L$${LIB_DIR} \
+             -ldcmjpeg \
+             -lijg8 \
+             -lijg12 \
+             -lijg16 \
+             -ldcmqrdb \
+             -ldcmnet \
+             -ldcmdata \
+             -ldcmimgle \
+             -ldcmimage \
+             -ldcmsr \
+             -ldcmtls \
+             -loflog \
+             -lofstd \
+             -lmariadb \
+             -ldcmUnits
 
 INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
                 ../../include/dcm/win32/dcmdata/include \
@@ -35,65 +81,7 @@ INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
                 ../../include/dcm/win32/dcmpsta/includet \
                 ../../include/dcm/win32/dcmsr/include \
                 ../../include/dcm/win32/dcmjpeg/include
-win32 {
-    msvc {
-        LIB_DIR =  F:\temp\HealthApp\bin\win32\profile\vslib
-    }else
-    {
-        LIB_DIR =  F:\temp\HealthApp\bin\win32\Mingw\lib
-    }
-}
 
-LIBS   +=  -L$${LIB_DIR} \
-             -ldcmjpeg \
-             -llibijg8 \
-             -llibijg12 \
-             -llibijg16 \
-             -ldcmqrdb \
-             -ldcmnet \
-#             -ldcmdata \
-             -ldcmimgle \
-             -ldcmimage \
-             -ldcmsr \
-             -ldcmtls \
-             -loflog \
-             -lofstd \
-#             -lmariadb \
-             -ldcmUnits
-
-win32 {
-
-LIBS += -liphlpapi
-LIBS += -lwsock32
-LIBS += -lws2_32
-LIBS += -lole32
-LIBS += -lnetapi32
-
-LIBS += -lkernel32
-LIBS += -lwinspool
-LIBS += -ladvapi32
-LIBS += -lcomdlg32
-LIBS += -luuid
-
-DEFINES += HAVE_POPEN
-DEFINES += HAVE_PCLOSE
-# we define that for visual studio-based windows compilation systems
-# compilation is done in as many cores as possible
-    msvc{
-    QMAKE_CXXFLAGS += /MP
-
-    # We indicate that for debug compilations, Runtime Library
-    # is Multi-threaded DLL (as in release) and not Multi-threaded Debug DLL
-    QMAKE_CXXFLAGS_DEBUG -= -MDd
-    QMAKE_CXXFLAGS_DEBUG += -MD
-    QMAKE_CXXFLAGS       -= -Zc:strictStrings
-    DEFINES              -= HAVE_POPEN
-    DEFINES              -= HAVE_PCLOSE
-    }else
-    {
-
-    }
-}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

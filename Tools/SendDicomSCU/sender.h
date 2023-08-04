@@ -2,6 +2,8 @@
 #define DICOMSENDER_H
 
 #include<QStringList>
+#include<QRunnable>
+#include<QObject>
 #include<map>
 #include<vector>
 #include<set>
@@ -73,8 +75,31 @@ class PatientData
 };
 
 class DcmDataset;
-class DicomSender
+
+class Taskthread: public QObject ,public QRunnable
 {
+    Q_OBJECT
+
+public:
+    explicit Taskthread(QObject *parent = nullptr);
+    ~Taskthread();
+    void run();
+
+public slots:
+    void scandir(QString dir, std::vector<Patient> listpat);
+
+signals:
+    void finish(std::vector<Patient> listpatient);// to parent thread
+
+public:
+    QString scanDir;
+    std::vector<Patient> listpatient;
+};
+
+
+class DicomSender: public QObject
+{
+    Q_OBJECT
 
 public:
     DicomSender();
@@ -90,10 +115,19 @@ public:
     void AddStudy(QString dir);
 
     void UpdatePatientdatas(DcmDataset *data);
-public:
-    DestinationEntry destination;
-    std::vector<Patient> listpatient;
 
+public slots:
+    void finishlistpatient(std::vector<Patient> listpat);
+
+signals:
+    void scandicomfile(QString dir, std::vector<Patient> listpat);// to thread
+    void finishscandicomfile();// to forms
+
+public:
+    DestinationEntry m_destination;
+    std::vector<Patient> m_listpatient;
+
+    Taskthread m_taskSdicom;
 
 };
 
