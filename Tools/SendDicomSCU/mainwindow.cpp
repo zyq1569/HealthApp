@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    //    QThreadPool::globalInstance()->setMaxThreadCount(10);///???
+    QThreadPool::globalInstance()->setMaxThreadCount(10);///???
 
     //    QString Dir = QDir::currentPath();
     //    QString iniDir = Dir+"/config";
