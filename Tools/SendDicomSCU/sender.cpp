@@ -87,7 +87,7 @@ void Taskthread::run()
                 if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
                     std.transfersyntax = transfersyntax.c_str();
 
-                std.filespath.push_back(it.toStdString());
+                std.filespath.push_back(path);
 
                 Patient patient;
                 patient.patientid = patid.c_str();
@@ -107,7 +107,13 @@ void Taskthread::run()
                     {
                         if (std->studyuid == studyuid.c_str())
                         {
-                            std->filespath.push_back(it.toStdString());
+                            std::vector<std::string>::iterator it = std::find(std->filespath.begin(),std->filespath.end(),path);
+                            if (it == std->filespath.end())
+                            {
+                                std->filespath.push_back(path);
+                            }
+                            //else  {                                //exit path;                            }
+
                             flg = true;
                             bnewpatid = false;
                             break;
@@ -159,6 +165,7 @@ void Taskthread::run()
                         std.transfersyntax = transfersyntax.c_str();
 
                     std.filespath.push_back(it.toStdString());
+                    std.dir = QFileInfo(path.c_str()).absolutePath().toStdString().c_str() ;
 
                     Patient patient;
                     patient.patientid = patid.c_str();
