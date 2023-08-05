@@ -49,7 +49,7 @@ public:
     };
 
 public:
-    std::string studyuid,studydate,studydesc,dir,sopclassuid,transfersyntax;
+    std::string studyuid,studydate,studydesc,dir,sopclassuid,transfersyntax,originalXfer;
     std::vector<std::string> filespath;
 
 };

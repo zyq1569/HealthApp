@@ -75,19 +75,23 @@ void Taskthread::run()
                 std.studyuid = studyuid.c_str();
                 std.sopclassuid = sopclassuid.c_str();
 
-                OFString studydate,studydesc,dir,transfersyntax;
+                OFString studydate,studydesc,dir,transfersyntax,originalXfer;
 
                 std.dir = QFileInfo(path.c_str()).absolutePath().toStdString().c_str() ;
-                if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).bad())
+                if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).good())
                     std.studydate = studydate.c_str();
 
-                if (dcm.getDataset()->findAndGetOFString(DCM_StudyDescription, studydesc).bad())
+                if (dcm.getDataset()->findAndGetOFString(DCM_StudyDescription, studydesc).good())
                     std.studydesc = studydesc.c_str();
 
-                if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
+                if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).good())
                     std.transfersyntax = transfersyntax.c_str();
 
-                std.filespath.push_back(path);
+                 std.filespath.push_back(path);
+
+                DcmXfer filexfer(dcm.getDataset()->getOriginalXfer());
+                std.originalXfer = filexfer.getXferID();
+
 
                 Patient patient;
                 patient.patientid = patid.c_str();
@@ -103,50 +107,53 @@ void Taskthread::run()
                 for(std::vector<Patient>::iterator pt = listpatient.begin(); pt != listpatient.end(); ++pt)
                 {
                     bool flg = false;
-                    for(std::vector<Study>::iterator std = pt->studydatas.begin(); std != pt->studydatas.end(); ++std)
+                    if (pt->patientid == patid.c_str())// find patientid
                     {
-                        if (std->studyuid == studyuid.c_str())
-                        {
-                            std::vector<std::string>::iterator it = std::find(std->filespath.begin(),std->filespath.end(),path);
-                            if (it == std->filespath.end())
-                            {
-                                std->filespath.push_back(path);
-                            }
-                            //else  {                                //exit path;                            }
+                        bnewpatid = false;
 
-                            flg = true;
-                            bnewpatid = false;
+                        for(std::vector<Study>::iterator std = pt->studydatas.begin(); std != pt->studydatas.end(); ++std)
+                        {
+                            if (std->studyuid == studyuid.c_str())//find  studyuid
+                            {
+                                std::vector<std::string>::iterator it = std::find(std->filespath.begin(),std->filespath.end(),path);
+                                if (it == std->filespath.end())
+                                {
+                                    std->filespath.push_back(path);
+                                }
+                                //else  {                                //exit path;                            }
+                                flg = true;
+                                break;
+                            }
+                        }
+                        if (flg)//find patientid: find studyuid
+                        {
+                            break;
+                        }
+                        else   // find patientid: no studyuid
+                        {
+                            Study std;
+                            std.studyuid = studyuid.c_str();
+                            std.sopclassuid = sopclassuid.c_str();
+
+                            OFString studydate, studydesc, dir, transfersyntax, sopclassuid, originalXfer;
+                            if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).bad())
+                                std.studydate = studydate.c_str();
+
+                            if (dcm.getDataset()->findAndGetOFString(DCM_StudyDescription, studydesc).bad())
+                                std.studydesc = studydesc.c_str();
+
+                            if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
+                                std.transfersyntax = transfersyntax.c_str();
+
+                            DcmXfer filexfer(dcm.getDataset()->getOriginalXfer());
+                            std.originalXfer = filexfer.getXferID();
+
+                            std.filespath.push_back(it.toStdString());
+                            pt->studydatas.push_back(std);
+
                             break;
                         }
                     }
-                    if (flg)
-                    {
-                        break;
-                    }
-
-                    if (pt->patientid == patid.c_str())
-                    {
-                        Study std;
-                        std.studyuid = studyuid.c_str();
-                        std.sopclassuid = sopclassuid.c_str();
-
-                        OFString studydate,studydesc,dir,transfersyntax;
-                        if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).bad())
-                            std.studydate = studydate.c_str();
-
-                        if (dcm.getDataset()->findAndGetOFString(DCM_StudyDescription, studydesc).bad())
-                            std.studydesc = studydesc.c_str();
-
-                        if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
-                            std.transfersyntax = transfersyntax.c_str();
-
-                        std.filespath.push_back(it.toStdString());
-                        pt->studydatas.push_back(std);
-
-                        bnewpatid = false;
-                        break;
-                    }
-
                 }
                 if (bnewpatid)
                 {
@@ -164,6 +171,9 @@ void Taskthread::run()
                     if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
                         std.transfersyntax = transfersyntax.c_str();
 
+                    DcmXfer filexfer(dcm.getDataset()->getOriginalXfer());
+                    std.originalXfer = filexfer.getXferID();
+
                     std.filespath.push_back(it.toStdString());
                     std.dir = QFileInfo(path.c_str()).absolutePath().toStdString().c_str() ;
 
@@ -174,8 +184,6 @@ void Taskthread::run()
                     listpatient.push_back(patient);
                 }
             }
-            //            DcmXfer filexfer(dcm.getDataset()->getOriginalXfer());
-            //            transfersyntax = filexfer.getXferID();
         }
     }
     emit finish(listpatient);

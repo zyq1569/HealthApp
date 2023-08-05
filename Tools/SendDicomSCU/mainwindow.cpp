@@ -100,8 +100,8 @@ void MainWindow::on_pbUpdate_clicked()
 
 void MainWindow::updatePatientList()
 {
-    //    //show row col
-    //    //ui->tableView;
+    ////show row col
+    ////ui->tableView;
     int rows = m_sender.m_listpatient.size();
     for (int i=0; i<rows; i++)
     {
@@ -180,9 +180,11 @@ void MainWindow::on_pBSend_clicked()
 
 void MainWindow::on_pBDir_clicked()
 {
+    QString dlg;
+    dlg = ui->cbDcmDir->toPlainText();
     //第三个参数 如果是"./" 代表当前应用的目录. QString()空为上次打开的目录
-    QString  path = QFileDialog::getExistingDirectory(this,"select dicom dir...",QString(),QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-//    QString path(QWidget *parent = nullptr, const QString &caption = QString(), const QString &dir = QString(), QFileDialog::Options options = ShowDirsOnly);
+    QString  path = QFileDialog::getExistingDirectory(this,"select dicom dir...",dlg/*QString()*/,QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    //QString path(QWidget *parent = nullptr, const QString &caption = QString(), const QString &dir = QString(), QFileDialog::Options options = ShowDirsOnly);
     //ui->cbDcmDir->setCurrentText(path);
     ui->cbDcmDir->setText(path);
     ui->cbDcmDir->update();
