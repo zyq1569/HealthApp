@@ -31,19 +31,27 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     m_pMOdel = new QStandardItemModel(ui->tableView);
+
     m_pMOdel->setColumnCount(6);
-    m_pMOdel->setHeaderData(0,Qt::Horizontal,QString(" "));
-    //    m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("姓名"));
-    //    m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
-    //    m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("日期"));
-    //    m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("描述"));
-    //    m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("路径"));
+    m_pMOdel->setHeaderData(0,Qt::Horizontal,QString(""));
+    //m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("姓名"));
+    //m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
+    //m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("日期"));
+    //m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("描述"));
+    //m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("路径"));
     m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("Name"));
     m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
     m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("Date"));
     m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("Dec"));
     m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("Path"));
     ui->tableView->setModel(m_pMOdel);
+    ui->tableView->setColumnWidth(0,1);
+    ui->tableView->setColumnWidth(1,90);
+    ui->tableView->setColumnWidth(5,300);
+    //ui->tableView->resizeColumnToContents(5);
+    //ui->tableView->resizeColumnToContents(1);
+    //ui->tableView->resizeColumnToContents(2);
+    //ui->tableView->resizeColumnsToContents();
 
 }
 
@@ -98,7 +106,9 @@ void MainWindow::updatePatientList()
     for (int i=0; i<rows; i++)
     {
         Patient pt = m_sender.m_listpatient[i];
-        m_pMOdel->setItem(i,1,new QStandardItem(pt.patientname.c_str()));
+        QString name = pt.patientname.c_str();//^
+        name.replace("^","");
+        m_pMOdel->setItem(i,1,new QStandardItem(name.toStdString().c_str()/*pt.patientname.c_str()*/));
         m_pMOdel->setItem(i,2,new QStandardItem(pt.patientid.c_str()));
         Study st = pt.studydatas[0];
 
@@ -119,6 +129,9 @@ void MainWindow::updatePatientList()
         item->setCheckState(Qt::Unchecked);
         m_pMOdel->setItem(i,0,item);
     }
+    ui->tableView->setColumnWidth(0,1);
+    ui->tableView->setColumnWidth(1,90);
+    ui->tableView->setColumnWidth(5,300);
 }
 
 
@@ -167,7 +180,9 @@ void MainWindow::on_pBSend_clicked()
 
 void MainWindow::on_pBDir_clicked()
 {
-    QString  path = QFileDialog::getExistingDirectory(this,"select dicom dir...","./");
+    //第三个参数 如果是"./" 代表当前应用的目录. QString()空为上次打开的目录
+    QString  path = QFileDialog::getExistingDirectory(this,"select dicom dir...",QString(),QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+//    QString path(QWidget *parent = nullptr, const QString &caption = QString(), const QString &dir = QString(), QFileDialog::Options options = ShowDirsOnly);
     //ui->cbDcmDir->setCurrentText(path);
     ui->cbDcmDir->setText(path);
     ui->cbDcmDir->update();

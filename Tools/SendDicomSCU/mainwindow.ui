@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>995</width>
     <height>600</height>
    </rect>
   </property>
@@ -27,24 +27,11 @@
      <string>Directory:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>70</y>
-      <width>47</width>
-      <height>13</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Depth:</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>110</y>
+      <y>60</y>
       <width>71</width>
       <height>16</height>
      </rect>
@@ -57,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>210</y>
+      <y>170</y>
       <width>47</width>
       <height>13</height>
      </rect>
@@ -66,21 +53,11 @@
      <string>Threads:</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox_2">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>60</y>
-      <width>101</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QComboBox" name="comboBox_3">
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>210</y>
+      <y>160</y>
       <width>71</width>
       <height>22</height>
      </rect>
@@ -90,9 +67,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>240</y>
-      <width>761</width>
-      <height>281</height>
+      <y>190</y>
+      <width>971</width>
+      <height>331</height>
      </rect>
     </property>
    </widget>
@@ -177,8 +154,8 @@
    <widget class="QPushButton" name="pBSend">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>110</y>
+      <x>600</x>
+      <y>530</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -191,7 +168,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>140</y>
+      <y>80</y>
       <width>31</width>
       <height>16</height>
      </rect>
@@ -200,21 +177,11 @@
      <string>Host:</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="tHostIp">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>140</y>
-      <width>81</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="tPort">
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>140</y>
+      <y>80</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -224,7 +191,7 @@
     <property name="geometry">
      <rect>
       <x>377</x>
-      <y>140</y>
+      <y>80</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -234,7 +201,7 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>170</y>
+      <y>110</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -244,7 +211,7 @@
     <property name="geometry">
      <rect>
       <x>180</x>
-      <y>140</y>
+      <y>80</y>
       <width>31</width>
       <height>16</height>
      </rect>
@@ -257,7 +224,7 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>140</y>
+      <y>80</y>
       <width>51</width>
       <height>16</height>
      </rect>
@@ -270,7 +237,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>170</y>
+      <y>110</y>
       <width>71</width>
       <height>16</height>
      </rect>
@@ -311,7 +278,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>995</width>
      <height>20</height>
     </rect>
    </property>
