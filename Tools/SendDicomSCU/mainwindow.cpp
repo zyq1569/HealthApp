@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_pMOdel = new QStandardItemModel(ui->tableView);
 
-    m_pMOdel->setColumnCount(6);
+    m_pMOdel->setColumnCount(7);
     m_pMOdel->setHeaderData(0,Qt::Horizontal,QString(""));
     //m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("ÐÕÃû"));
     //m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
@@ -43,11 +43,12 @@ MainWindow::MainWindow(QWidget *parent)
     m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
     m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("Date"));
     m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("Dec"));
-    m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("Path"));
+    m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("SOPUID"));
+    m_pMOdel->setHeaderData(6,Qt::Horizontal,QString("Path"));
     ui->tableView->setModel(m_pMOdel);
     ui->tableView->setColumnWidth(0,1);
     ui->tableView->setColumnWidth(1,90);
-    ui->tableView->setColumnWidth(5,300);
+    ui->tableView->setColumnWidth(6,300);
     //ui->tableView->resizeColumnToContents(5);
     //ui->tableView->resizeColumnToContents(1);
     //ui->tableView->resizeColumnToContents(2);
@@ -117,12 +118,13 @@ void MainWindow::updatePatientList()
 
         if (!st.filespath.empty())
         {
-            str += "|images:";
+            str += "|";
             int size = st.filespath.size();
             str += QString::number(size);
         }
         m_pMOdel->setItem(i,4,new QStandardItem(str));
-        m_pMOdel->setItem(i,5,new QStandardItem(st.dir.c_str()));
+        m_pMOdel->setItem(i,5,new QStandardItem(st.sopclassuid.c_str()));
+        m_pMOdel->setItem(i,6,new QStandardItem(st.dir.c_str()));
 
         QStandardItem *item = new QStandardItem();
         item->setCheckable(true);
@@ -131,7 +133,8 @@ void MainWindow::updatePatientList()
     }
     ui->tableView->setColumnWidth(0,1);
     ui->tableView->setColumnWidth(1,90);
-    ui->tableView->setColumnWidth(5,300);
+    ui->tableView->setColumnWidth(5,150);
+    ui->tableView->setColumnWidth(6,600);
 }
 
 
