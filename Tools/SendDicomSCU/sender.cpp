@@ -1,4 +1,4 @@
-#include "sender.h"
+﻿#include "sender.h"
 
 // work around the fact that dcmtk doesn't work in unicode mode, so all string operation needs to be converted from/to mbcs
 #ifdef _UNICODE
@@ -28,6 +28,7 @@
 Taskthread::Taskthread(QObject *parent)
 {
     setAutoDelete(false);
+    m_type = 0;//dicomDataJob
 }
 
 Taskthread::~Taskthread()
@@ -36,6 +37,21 @@ Taskthread::~Taskthread()
 }
 
 void Taskthread::run()
+{
+    if (m_type == 0)
+    {
+        dicomDataJob();
+    }
+
+}
+
+void Taskthread::setJob(int type)
+{
+    if (type >= 0 && type <=3)
+        m_type = type;
+}
+
+void Taskthread::dicomDataJob()
 {
     QStringList filters;
     filters<<"*.DCM"<<"*.dcm";
@@ -87,7 +103,7 @@ void Taskthread::run()
                 if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).good())
                     std.transfersyntax = transfersyntax.c_str();
 
-                 std.filespath.push_back(path);
+                std.filespath.push_back(path);
 
                 DcmXfer filexfer(dcm.getDataset()->getOriginalXfer());
                 std.originalXfer = filexfer.getXferID();
@@ -136,13 +152,13 @@ void Taskthread::run()
                             std.sopclassuid = sopclassuid.c_str();
 
                             OFString studydate, studydesc, dir, transfersyntax, sopclassuid, originalXfer;
-                            if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).bad())
+                            if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).good())
                                 std.studydate = studydate.c_str();
 
-                            if (dcm.getDataset()->findAndGetOFString(DCM_StudyDescription, studydesc).bad())
+                            if (dcm.getDataset()->findAndGetOFString(DCM_StudyDescription, studydesc).good())
                                 std.studydesc = studydesc.c_str();
 
-                            if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
+                            if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).good())
                                 std.transfersyntax = transfersyntax.c_str();
 
                             DcmXfer filexfer(dcm.getDataset()->getOriginalXfer());
@@ -162,13 +178,13 @@ void Taskthread::run()
                     std.sopclassuid = sopclassuid.c_str();
 
                     OFString studydate,studydesc,dir,transfersyntax;
-                    if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).bad())
+                    if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).good())
                         std.studydate = studydate.c_str();
 
-                    if (dcm.getDataset()->findAndGetOFString(DCM_StudyDescription, studydesc).bad())
+                    if (dcm.getDataset()->findAndGetOFString(DCM_StudyDescription, studydesc).good())
                         std.studydesc = studydesc.c_str();
 
-                    if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).bad())
+                    if (dcm.getDataset()->findAndGetOFString(DCM_TransferSyntaxUID, transfersyntax).good())
                         std.transfersyntax = transfersyntax.c_str();
 
                     DcmXfer filexfer(dcm.getDataset()->getOriginalXfer());
@@ -189,6 +205,10 @@ void Taskthread::run()
     emit finish(listpatient);
 }
 
+void Taskthread::dicomSendJob()
+{
+
+}
 
 void Taskthread::scandir(QString dir, std::vector<Patient> listpat)
 {
@@ -201,8 +221,10 @@ void Taskthread::scandir(QString dir, std::vector<Patient> listpat)
 DicomSender::DicomSender()
 {
     qRegisterMetaType<std::vector<Patient>>("std::vector<Patient>");
-    connect(this, &DicomSender::scandicomfile, &m_taskSdicom, &Taskthread::scandir);
-    connect(&m_taskSdicom, &Taskthread::finish, this, &DicomSender::finishlistpatient);
+    connect(this, &DicomSender::scandicomfile, &m_taskScanDicom, &Taskthread::scandir);
+    connect(&m_taskScanDicom, &Taskthread::finish, this, &DicomSender::finishlistpatient);
+
+
 }
 
 bool DicomSender::IsCanceled()
@@ -230,7 +252,8 @@ void DicomSender::ScanPatient(QString dir)
 {
     emit scandicomfile(dir,m_listpatient);
 
-    QThreadPool::globalInstance()->start(&m_taskSdicom);
+    m_taskScanDicom.setJob(0);
+    QThreadPool::globalInstance()->start(&m_taskScanDicom);
 }
 
 void DicomSender::finishlistpatient(std::vector<Patient> listpat)

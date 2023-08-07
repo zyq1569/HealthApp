@@ -53,10 +53,10 @@ win32 {
 #message($$LIB_DIR)
 
 LIBS   +=  -L$${LIB_DIR} \
-             -ldcmjpeg \
              -lijg8 \
              -lijg12 \
              -lijg16 \
+             -ldcmjpeg \
              -ldcmqrdb \
              -ldcmnet \
              -ldcmdata \

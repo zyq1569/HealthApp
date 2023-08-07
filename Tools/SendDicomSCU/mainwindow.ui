@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>995</width>
-    <height>600</height>
+    <width>1234</width>
+    <height>693</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,21 +30,21 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>60</y>
-      <width>71</width>
+      <x>5</x>
+      <y>85</y>
+      <width>41</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Destination:</string>
+     <string>Dest:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>170</y>
+      <x>5</x>
+      <y>172</y>
       <width>47</width>
       <height>13</height>
      </rect>
@@ -56,9 +56,9 @@
    <widget class="QComboBox" name="comboBox_3">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>160</y>
-      <width>71</width>
+      <x>85</x>
+      <y>166</y>
+      <width>81</width>
       <height>22</height>
      </rect>
     </property>
@@ -66,10 +66,10 @@
    <widget class="QTableView" name="tableView">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>3</x>
       <y>190</y>
-      <width>971</width>
-      <height>331</height>
+      <width>1221</width>
+      <height>411</height>
      </rect>
     </property>
    </widget>
@@ -77,7 +77,7 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>530</y>
+      <y>613</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -90,7 +90,7 @@
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>530</y>
+      <y>613</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -103,7 +103,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>530</y>
+      <y>613</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -116,7 +116,7 @@
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>530</y>
+      <y>613</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -128,7 +128,7 @@
    <widget class="QPushButton" name="pBDir">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>1059</x>
       <y>20</y>
       <width>80</width>
       <height>21</height>
@@ -141,7 +141,7 @@
    <widget class="QPushButton" name="pbUpdate">
     <property name="geometry">
      <rect>
-      <x>690</x>
+      <x>1148</x>
       <y>20</y>
       <width>80</width>
       <height>21</height>
@@ -155,7 +155,7 @@
     <property name="geometry">
      <rect>
       <x>600</x>
-      <y>530</y>
+      <y>613</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -167,51 +167,21 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>80</y>
-      <width>31</width>
-      <height>16</height>
+      <x>4</x>
+      <y>99</y>
+      <width>61</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
      <string>Host:</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="tPort">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>80</y>
-      <width>81</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="tAeTitle">
-    <property name="geometry">
-     <rect>
-      <x>377</x>
-      <y>80</y>
-      <width>81</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="tLocalAeTitle">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>110</y>
-      <width>81</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
       <x>180</x>
-      <y>80</y>
+      <y>99</y>
       <width>31</width>
       <height>16</height>
      </rect>
@@ -224,7 +194,7 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>80</y>
+      <y>99</y>
       <width>51</width>
       <height>16</height>
      </rect>
@@ -233,25 +203,12 @@
      <string>AE Title:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_8">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>110</y>
-      <width>71</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Local AeTitle:</string>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="cbDcmDir">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>80</x>
       <y>20</y>
-      <width>521</width>
+      <width>971</width>
       <height>21</height>
      </rect>
     </property>
@@ -272,13 +229,169 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;D:\Test_DICOM\TestDicomData\Huang YinFeng&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+   <widget class="QTextEdit" name="cb_IP">
+    <property name="geometry">
+     <rect>
+      <x>85</x>
+      <y>99</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="lineWrapMode">
+     <enum>QTextEdit::NoWrap</enum>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;127.0.0.1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="cb_Port">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>99</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="lineWrapMode">
+     <enum>QTextEdit::NoWrap</enum>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;120&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="cb_Aetitle">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>99</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="lineWrapMode">
+     <enum>QTextEdit::NoWrap</enum>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;dicomServer&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="cb_LocalAetitle">
+    <property name="geometry">
+     <rect>
+      <x>84</x>
+      <y>58</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="lineWrapMode">
+     <enum>QTextEdit::NoWrap</enum>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;sendUser&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>3</x>
+      <y>58</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Local AeTitle:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lb_transfersyntax">
+    <property name="geometry">
+     <rect>
+      <x>4</x>
+      <y>138</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Transfersyntax:</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox_4">
+    <property name="geometry">
+     <rect>
+      <x>85</x>
+      <y>137</y>
+      <width>251</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>1.2.840.10008.1.2=Implicit VR Little Endian</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>1.2.840.10008.1.2.1=Explicit VR Little Endian
+</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>1.2.840.10008.1.2.2=Explicit VR Big Endian</string>
+     </property>
+    </item>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>995</width>
+     <width>1234</width>
      <height>20</height>
     </rect>
    </property>

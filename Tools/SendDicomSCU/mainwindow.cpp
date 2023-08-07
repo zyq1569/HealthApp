@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_pMOdel = new QStandardItemModel(ui->tableView);
 
-    m_pMOdel->setColumnCount(7);
+    m_pMOdel->setColumnCount(8);
     m_pMOdel->setHeaderData(0,Qt::Horizontal,QString(""));
     //m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("ÐÕÃû"));
     //m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("Dec"));
     m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("SOPUID"));
     m_pMOdel->setHeaderData(6,Qt::Horizontal,QString("Path"));
+    m_pMOdel->setHeaderData(7,Qt::Horizontal,QString("TransferSyntaxUID"));
     ui->tableView->setModel(m_pMOdel);
     ui->tableView->setColumnWidth(0,1);
     ui->tableView->setColumnWidth(1,90);
@@ -118,14 +119,16 @@ void MainWindow::updatePatientList()
 
         if (!st.filespath.empty())
         {
-            str += "|";
+            if (str.length() > 0)     str += "|";
+            else                      str += "Images:";
+
             int size = st.filespath.size();
             str += QString::number(size);
         }
         m_pMOdel->setItem(i,4,new QStandardItem(str));
         m_pMOdel->setItem(i,5,new QStandardItem(st.sopclassuid.c_str()));
         m_pMOdel->setItem(i,6,new QStandardItem(st.dir.c_str()));
-
+        m_pMOdel->setItem(i,7,new QStandardItem(st.transfersyntax.c_str()));
         QStandardItem *item = new QStandardItem();
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);
@@ -134,7 +137,7 @@ void MainWindow::updatePatientList()
     ui->tableView->setColumnWidth(0,1);
     ui->tableView->setColumnWidth(1,90);
     ui->tableView->setColumnWidth(5,150);
-    ui->tableView->setColumnWidth(6,600);
+    ui->tableView->setColumnWidth(6,700);
 }
 
 
@@ -178,6 +181,16 @@ void MainWindow::startScan(QString &path)
 void MainWindow::on_pBSend_clicked()
 {
 
+    QString ip,port,ae;
+    ip   = ui->cb_IP->toPlainText();
+    port = ui->cb_Port->toPlainText();
+    ae   = ui->cb_Aetitle->toPlainText();
+
+    m_sender.m_destination.destinationHost    = ip.toStdString().c_str();
+    m_sender.m_destination.destinationPort    = port.toInt();
+    m_sender.m_destination.destinationAETitle = ae.toStdString().c_str();
+    m_sender.m_destination.ourAETitle         = ui->cb_LocalAetitle->toPlainText().toStdString().c_str();
+
 }
 
 
@@ -193,6 +206,22 @@ void MainWindow::on_pBDir_clicked()
     ui->cbDcmDir->update();
 
 }
+
+
+//1.2.840.10008.1.2=Implicit VR Little Endian: Default Transfer Syntax for DICOM
+//1.2.840.10008.1.2.1=Explicit VR Little Endian
+//1.2.840.10008.1.2.2=Explicit VR Big Endian
+//1.2.840.10008.1.2.4.57=JPEG Lossless, Non-Hierarchical(Process 14)
+//1.2.840.10008.1.2.4.70=JPEG Lossless, Non-Hierarchical,First-Order Prediction (Process 14[Selection Value 1])
+//1.2.840.10008.1.2.4.50=JPEG Baseline (Process 1)
+//1.2.840.10008.1.2.4.51=JPEG Extended (Process 2 & 4)
+//1.2.840.10008.1.2.4.56=JPEG Full Progression, Non-Hierarchical (Process 11 & 13)
+//1.2.840.10008.1.2.4.70=JPEG Lossless, Non-Hierarchical,First-Order Prediction
+//1.2.840.10008.1.2.4.80=JPEG-LS Lossless Image Compression
+//1.2.840.10008.1.2.4.81=JPEG-LS Lossy (Near-Lossless)Image Compression
+//1.2.840.10008.1.2.4.90=JPEG 2000 Image Compression(Lossless Only)
+//1.2.840.10008.1.2.4.91=JPEG 2000 Image Compression
+//1.2.840.113619.5.2=(Unheard)
 
 
 /*

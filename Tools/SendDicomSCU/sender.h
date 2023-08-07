@@ -1,4 +1,4 @@
-#ifndef DICOMSENDER_H
+﻿#ifndef DICOMSENDER_H
 #define DICOMSENDER_H
 
 #include<QStringList>
@@ -84,6 +84,9 @@ public:
     explicit Taskthread(QObject *parent = nullptr);
     ~Taskthread();
     void run();
+    void dicomDataJob();
+    void dicomSendJob();
+    void setJob(int type);
 
 public slots:
     void scandir(QString dir, std::vector<Patient> listpat);
@@ -94,6 +97,9 @@ signals:
 public:
     QString scanDir;
     std::vector<Patient> listpatient;
+
+private:
+    int m_type;
 };
 
 
@@ -127,7 +133,7 @@ public:
     DestinationEntry m_destination;
     std::vector<Patient> m_listpatient;
 
-    Taskthread m_taskSdicom;
+    Taskthread m_taskScanDicom,m_taskSendDicom;
 
 };
 
