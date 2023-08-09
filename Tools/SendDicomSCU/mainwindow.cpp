@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QStandardItemModel>
 #include <QThreadPool>
+#include <QMessageBox>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)//, /*scanner(patientdata),*/ sender(patientdata)
@@ -191,6 +192,27 @@ void MainWindow::on_pBSend_clicked()
     m_sender.m_destination.destinationAETitle = ae.toStdString().c_str();
     m_sender.m_destination.ourAETitle         = ui->cb_LocalAetitle->toPlainText().toStdString().c_str();
 
+    Patient pt;
+    std::vector<Patient> listpatient;
+    int rows =  ui->tableView->model()->rowCount();
+    for (int i=0; i<rows; i++)
+    {
+        if (m_pMOdel->item(i,0)->checkState() == Qt::CheckState::Checked)
+        {
+            //QMessageBox::information(this,tr("check"),QString::number(i) + "succeed!",QMessageBox::Ok);
+            pt = m_sender.m_listpatient[i];
+            listpatient.push_back(pt);
+        }
+    }
+    m_sender.SendPatiens(listpatient);
+    //foreach(Patient pt, listpatient)
+    //{
+    //    foreach(Study st, pt.studydatas)
+    //    {
+
+    //    }
+    //}
+
 }
 
 
@@ -208,6 +230,33 @@ void MainWindow::on_pBDir_clicked()
 }
 
 
+void MainWindow::on_pBEcho_clicked()
+{
+    bool ok = m_sender.Echo();
+    if (ok)
+    {
+        QMessageBox::information(this,tr("Echo"),"succeed!",QMessageBox::Ok);
+    }
+    else
+    {
+        QMessageBox::information(this,tr("Echo"),"fail!",QMessageBox::Ok);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///-------------------------------------------------------------------------------------------
 //1.2.840.10008.1.2=Implicit VR Little Endian: Default Transfer Syntax for DICOM
 //1.2.840.10008.1.2.1=Explicit VR Little Endian
 //1.2.840.10008.1.2.2=Explicit VR Big Endian
@@ -890,4 +939,6 @@ Implant Template Group Storage
 Implant Template Group IOD
  *
  */
+
+
 

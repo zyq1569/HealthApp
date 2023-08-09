@@ -42,6 +42,10 @@ void Taskthread::run()
     {
         dicomDataJob();
     }
+    else if (m_type == 1)
+    {
+        dicomSendJob();
+    }
 
 }
 
@@ -51,11 +55,19 @@ void Taskthread::setJob(int type)
         m_type = type;
 }
 
+//////------------------scan dicom files------------------------
+void Taskthread::scanDir(QString dir, std::vector<Patient> listpat)
+{
+    m_scanDir = dir;
+    //    listpatient.clear();
+    m_listpatient = listpat;
+}
+
 void Taskthread::dicomDataJob()
 {
     QStringList filters;
     filters<<"*.DCM"<<"*.dcm";
-    QStringList list = DirFilename(scanDir,filters);
+    QStringList list = DirFilename(m_scanDir,filters);
     DcmFileFormat dcm;
     OFCondition cond;
     Study std;
@@ -84,7 +96,7 @@ void Taskthread::dicomDataJob()
             if (dcm.getDataset()->findAndGetOFString(DCM_PatientName, patname).bad())
                 return;
 
-            if (listpatient.empty())
+            if (m_listpatient.empty())
             {
                 //std::string studyuid,studydate,studydesc,dir,sopclassuid,transfersyntax;
                 Study std;
@@ -113,14 +125,14 @@ void Taskthread::dicomDataJob()
                 patient.patientid = patid.c_str();
                 patient.patientname = patname.c_str();
                 patient.studydatas.push_back(std);
-                listpatient.push_back(patient);
+                m_listpatient.push_back(patient);
 
             }
             else
             {
                 //find
                 bool bnewpatid = true;
-                for(std::vector<Patient>::iterator pt = listpatient.begin(); pt != listpatient.end(); ++pt)
+                for(std::vector<Patient>::iterator pt = m_listpatient.begin(); pt != m_listpatient.end(); ++pt)
                 {
                     bool flg = false;
                     if (pt->patientid == patid.c_str())// find patientid
@@ -197,33 +209,151 @@ void Taskthread::dicomDataJob()
                     patient.patientid = patid.c_str();
                     patient.patientname = patname.c_str();
                     patient.studydatas.push_back(std);
-                    listpatient.push_back(patient);
+                    m_listpatient.push_back(patient);
                 }
             }
         }
     }
-    emit finish(listpatient);
+    emit finishScanDir(m_listpatient);
 }
 
+
+
+/////-------------send dicom--------------------------------------
 void Taskthread::dicomSendJob()
 {
+    foreach (Patient pt, m_listpatient)
+    {
+        foreach(Study st, pt.studydatas)
+        {
+
+            if (sendStudy(st) == 1)
+            {
+                return;
+            }
+            Sleep(10);
+        }
+
+    }
 
 }
 
-void Taskthread::scandir(QString dir, std::vector<Patient> listpat)
+bool Taskthread::isCanceled()
 {
-    scanDir = dir;
-    //    listpatient.clear();
-    listpatient = listpat;
+
+    return false;
 }
 
-/////-------------------------------------------------------------------------------
+int Taskthread::sendStudy(Study &studys)
+{
+    DcmSCU scu;
+
+    if (isCanceled() || m_dest.ourAETitle.length() < 1 || m_dest.destinationHost.length() <1
+         || m_dest.destinationAETitle.length() < 1)
+        return 1;
+
+    scu.setVerbosePCMode(true);
+    scu.setAETitle(m_dest.ourAETitle.c_str());
+    scu.setPeerHostName(m_dest.destinationHost.c_str());
+    scu.setPeerPort(m_dest.destinationPort);
+    scu.setPeerAETitle(m_dest.destinationAETitle.c_str());
+    scu.setACSETimeout(60);
+    scu.setDIMSETimeout(120);
+    scu.setDatasetConversionMode(true);
+
+    OFList<OFString> defaulttransfersyntax,dcmfiles;
+    defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);//
+
+    foreach(std::string dcmf, studys.filespath)
+    {
+        dcmfiles.push_back(dcmf.c_str());
+    }
+
+    scu.addPresentationContext(studys.sopclassuid.c_str(), defaulttransfersyntax);
+    OFCondition cond;
+
+    if(scu.initNetwork().bad())
+        return 1;
+
+    if(scu.negotiateAssociation().bad())
+        return 1;
+
+
+    int isend = 0;
+    for(OFIterator<OFString> it = dcmfiles.begin(); it!= dcmfiles.end(); it++)
+    {
+        if(isCanceled())
+        {
+            break;
+        }
+
+        Uint16 status;
+
+        // load file
+        DcmFileFormat dcmff;
+        dcmff.loadFile(it->c_str());
+
+        // do some precheck of the transfer syntax
+        DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
+        OFString sopclassuid;
+        dcmff.getDataset()->findAndGetOFString(DCM_SOPClassUID, sopclassuid);
+
+        if (scu.findPresentationContextID(sopclassuid, UID_JPEGLSLosslessTransferSyntax) != 0)
+        {
+            dcmff.loadAllDataIntoMemory();
+
+            if(dcmff.getDataset())
+                dcmff.getDataset()->chooseRepresentation(EXS_JPEGLSLossless, NULL);
+
+            fileTransfer = dcmff.getDataset()->getCurrentXfer();
+        }
+
+        // out found.. change to
+        T_ASC_PresentationContextID pid = scu.findAnyPresentationContextID(sopclassuid, fileTransfer.getXferID());
+
+        cond = scu.sendSTORERequest(pid, "", dcmff.getDataset(), status);
+        if (cond.good() && (status == 0 || (status & 0xf000) == 0xb000))
+        {
+            //ok!
+        }
+        else if(cond == DUL_PEERABORTEDASSOCIATION)
+        {
+            return 1;
+        }
+        //        else            // some error? keep going
+        //        {
+        //            itr++;
+        //        }
+
+        isend++;
+        if (isend > 50)
+        {
+            Sleep(10);
+        }
+    }
+
+    scu.releaseAssociation();
+    return 0;
+}
+
+void Taskthread::sendDcm(DestinationEntry dest, std::vector<Patient> listpat)
+{
+    m_dest = dest;
+
+    m_listpatient = listpat;
+}
+
+/////---------------------class-----DicomSender-----------------------------------------------------
 DicomSender::DicomSender()
 {
     qRegisterMetaType<std::vector<Patient>>("std::vector<Patient>");
-    connect(this, &DicomSender::scandicomfile, &m_taskScanDicom, &Taskthread::scandir);
-    connect(&m_taskScanDicom, &Taskthread::finish, this, &DicomSender::finishlistpatient);
+    connect(this, &DicomSender::scandicomfile, &m_taskScanDicom, &Taskthread::scanDir);
+    connect(&m_taskScanDicom, &Taskthread::finishScanDir, this, &DicomSender::finishlistpatient);
 
+
+    qRegisterMetaType<DestinationEntry>("DestinationEntry");
+    connect(this, &DicomSender::senddicomfile, &m_taskScanDicom, &Taskthread::sendDcm);
+    connect(&m_taskScanDicom, &Taskthread::finishSendDcm, this, &DicomSender::finishsenddicomfile);
 
 }
 
@@ -264,6 +394,13 @@ void DicomSender::finishlistpatient(std::vector<Patient> listpat)
     emit finishscandicomfile();
 }
 
+void DicomSender::finishSendDcm(std::vector<Patient> listpat)
+{
+
+    m_listpatient = listpat;
+
+    emit finishscandicomfile();
+}
 
 int DicomSender::SendDcmFiles(Study &studys)
 {
@@ -347,4 +484,54 @@ int DicomSender::SendDcmFiles(Study &studys)
 
     scu.releaseAssociation();
     return 0;
+}
+
+bool DicomSender::Echo()
+{
+    DcmSCU scu;
+
+    scu.setVerbosePCMode(true);
+    scu.setAETitle(m_destination.ourAETitle.c_str());
+    scu.setPeerHostName(m_destination.destinationHost.c_str());
+    scu.setPeerPort(m_destination.destinationPort);
+    scu.setPeerAETitle(m_destination.destinationAETitle.c_str());
+    scu.setACSETimeout(30);
+    scu.setDIMSETimeout(60);
+    scu.setDatasetConversionMode(true);
+
+    OFList<OFString> transfersyntax;
+    transfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);
+    transfersyntax.push_back(UID_LittleEndianImplicitTransferSyntax);
+    scu.addPresentationContext(UID_VerificationSOPClass, transfersyntax);
+
+    OFCondition cond;
+    cond = scu.initNetwork();
+    if(cond.bad())
+        return false;
+
+    cond = scu.negotiateAssociation();
+    if(cond.bad())
+        return false;
+
+    cond = scu.sendECHORequest(0);
+
+    scu.releaseAssociation();
+
+    if(cond == EC_Normal)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+
+bool DicomSender::SendPatiens(std::vector<Patient> listpat)
+{
+    emit senddicomfile(m_destination, listpat);
+
+    m_taskSendDicom.setJob(1);
+    QThreadPool::globalInstance()->start(&m_taskSendDicom);
+
+    return true;
 }

@@ -86,17 +86,23 @@ public:
     void run();
     void dicomDataJob();
     void dicomSendJob();
+    int sendStudy(Study &studys);
+    bool isCanceled();
     void setJob(int type);
 
 public slots:
-    void scandir(QString dir, std::vector<Patient> listpat);
+    void scanDir(QString dir, std::vector<Patient> listpat);
+
+    void sendDcm(DestinationEntry dest, std::vector<Patient> listpat);
 
 signals:
-    void finish(std::vector<Patient> listpatient);// to parent thread
+    void finishScanDir(std::vector<Patient> listpatient);// to parent thread
 
+    void finishSendDcm(std::vector<Patient> listpatient);// to parent thread
 public:
-    QString scanDir;
-    std::vector<Patient> listpatient;
+    QString m_scanDir;
+    DestinationEntry m_dest;
+    std::vector<Patient> m_listpatient;
 
 private:
     int m_type;
@@ -122,12 +128,22 @@ public:
 
     void UpdatePatientdatas(DcmDataset *data);
 
+    bool Echo();
+
+    bool SendPatiens(std::vector<Patient> listpat);
+
 public slots:
     void finishlistpatient(std::vector<Patient> listpat);
+
+    void finishSendDcm(std::vector<Patient> listpat);
+
 
 signals:
     void scandicomfile(QString dir, std::vector<Patient> listpat);// to thread
     void finishscandicomfile();// to forms
+
+    void senddicomfile(DestinationEntry dest, std::vector<Patient> listpat);// to thread
+    void finishsenddicomfile();// to forms
 
 public:
     DestinationEntry m_destination;

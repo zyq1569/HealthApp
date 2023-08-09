@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -38,6 +38,8 @@ private slots:
     void on_pBSend_clicked();
 
     void on_pBDir_clicked();
+
+    void on_pBEcho_clicked();
 
 private:
     Ui::MainWindow *ui;
