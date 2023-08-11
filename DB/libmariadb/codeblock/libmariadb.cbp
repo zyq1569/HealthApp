@@ -5,478 +5,481 @@
 		<Option title="libmariadb" />
 		<Option makefile_is_custom="1" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\include\;CMake Files\plugins\;CMake Files\plugins\auth\;CMake Files\plugins\connection\;CMake Files\plugins\io\;CMake Files\plugins\pvio\;CMake Files\win\;CMake Files\libmariadb\;" />
+		<Option virtualFolders="CMake Files/;CMake Files/cmake/;CMake Files/include/;CMake Files/plugins/;CMake Files/plugins/auth/;CMake Files/plugins/connection/;CMake Files/plugins/io/;CMake Files/plugins/pvio/;CMake Files/win/;CMake Files/libmariadb/" />
 		<Build>
 			<Target title="all">
-				<Option type="4" />
+				<Option output="lib.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="F:/temp/HealthApp/DB/libmariadb/codeblock/.objs" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 all' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 all' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
-					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+					<SilentBuild command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 all &gt; $(CMD_NULL)' />
 				</MakeCommands>
 			</Target>
 			<Target title="mysql_clear_password">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/mysql_clear_password.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libmysql_clear_password.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 mysql_clear_password' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 mysql_clear_password' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
-					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+					<SilentBuild command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 mysql_clear_password &gt; $(CMD_NULL)' />
 				</MakeCommands>
 			</Target>
 			<Target title="mysql_clear_password/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/mysql_clear_password.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libmysql_clear_password.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 mysql_clear_password/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 mysql_clear_password/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
-					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+					<SilentBuild command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 mysql_clear_password/fast &gt; $(CMD_NULL)' />
 				</MakeCommands>
 			</Target>
 			<Target title="package_source">
 				<Option type="4" />
 				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 package_source' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 package_source' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="dialog">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/dialog.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libdialog.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 dialog' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 dialog' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="dialog/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/dialog.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libdialog.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 dialog/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 dialog/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="auth_gssapi_client">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/auth_gssapi_client.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libauth_gssapi_client.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 auth_gssapi_client' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 auth_gssapi_client' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="auth_gssapi_client/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/auth_gssapi_client.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libauth_gssapi_client.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 auth_gssapi_client/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 auth_gssapi_client/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="pvio_shmem">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/pvio_shmem.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libpvio_shmem.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_shmem' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_shmem' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="pvio_shmem/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/pvio_shmem.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libpvio_shmem.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_shmem/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_shmem/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="client_ed25519">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/client_ed25519.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libclient_ed25519.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth/ref10" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 client_ed25519' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 client_ed25519' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="client_ed25519/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/client_ed25519.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libclient_ed25519.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth/ref10" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth/ref10" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 client_ed25519/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 client_ed25519/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="caching_sha2_password">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/caching_sha2_password.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libcaching_sha2_password.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 caching_sha2_password' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 caching_sha2_password' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="caching_sha2_password/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/caching_sha2_password.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libcaching_sha2_password.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 caching_sha2_password/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 caching_sha2_password/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="sha256_password">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/sha256_password.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libsha256_password.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 sha256_password' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 sha256_password' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="sha256_password/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/sha256_password.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libsha256_password.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 sha256_password/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 sha256_password/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="pvio_npipe">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/pvio_npipe.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libpvio_npipe.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_npipe' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_npipe' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="pvio_npipe/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/pvio_npipe.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock" />
+				<Option output="lib/libpvio_npipe.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
 					<Add option='-DMARIADB_MACHINE_TYPE=&quot;AMD64&quot;' />
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_npipe/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 pvio_npipe/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
@@ -485,10 +488,10 @@
 				<Option type="4" />
 				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 package' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 package' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
@@ -497,10 +500,10 @@
 				<Option type="4" />
 				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 edit_cache' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 edit_cache' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
@@ -509,10 +512,10 @@
 				<Option type="4" />
 				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 rebuild_cache' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 rebuild_cache' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
@@ -521,10 +524,10 @@
 				<Option type="4" />
 				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 list_install_components' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 list_install_components' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
@@ -533,10 +536,10 @@
 				<Option type="4" />
 				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 install/local' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 install/local' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
@@ -545,10 +548,10 @@
 				<Option type="4" />
 				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 install' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 install' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
@@ -557,16 +560,16 @@
 				<Option type="4" />
 				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 install/strip' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 install/strip' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
 					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="mariadbclient">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadbclient.a" prefix_auto="0" extension_auto="0" />
+				<Option output="lib/libmariadbclient.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="./" />
 				<Option type="2" />
@@ -577,13 +580,13 @@
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
 					<Add option="-DSIZEOF_CHARP=8" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/libmariadb" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/win-iconv" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/zlib" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/libmariadb" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/win-iconv" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/zlib" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
@@ -592,16 +595,16 @@
 					<Add before="_WIN32" />
 				</ExtraCommands>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
-					<SilentBuild command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient &gt; $(CMD_NULL)' />
+					<SilentBuild command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient &gt; $(CMD_NULL)' />
 				</MakeCommands>
 			</Target>
 			<Target title="mariadbclient/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadbclient.a" prefix_auto="0" extension_auto="0" />
+				<Option output="lib/libmariadbclient.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="./" />
 				<Option type="2" />
@@ -612,31 +615,31 @@
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
 					<Add option="-DSIZEOF_CHARP=8" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/libmariadb" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/win-iconv" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/zlib" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/libmariadb" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/win-iconv" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/zlib" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
-					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+					<SilentBuild command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 mariadbclient/fast &gt; $(CMD_NULL)' />
 				</MakeCommands>
 			</Target>
 			<Target title="libmariadb">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadb.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb" />
+				<Option output="lib/libmariadb.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
@@ -644,31 +647,31 @@
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
 					<Add option="-DSIZEOF_CHARP=8" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/libmariadb" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/win-iconv" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/zlib" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/libmariadb" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/win-iconv" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/zlib" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 libmariadb' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 libmariadb' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
-					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+					<SilentBuild command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 libmariadb &gt; $(CMD_NULL)' />
 				</MakeCommands>
 			</Target>
 			<Target title="libmariadb/fast">
-				<Option output="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadb.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb" />
+				<Option output="F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/libmariadb.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="./" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option='-DMARIADB_SYSTEM_TYPE=&quot;Windows&quot;' />
@@ -676,24 +679,24 @@
 					<Add option="-DHAVE_DLOPEN" />
 					<Add option="-D_CRT_SECURE_NO_WARNINGS" />
 					<Add option="-DSIZEOF_CHARP=8" />
-					<Add directory="D:/code/C++/HealthApp/DB/libmariadb/codeblock/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/auth" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/include" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/plugins/pvio" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/libmariadb" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/win-iconv" />
-					<Add directory="D:/code/C++/HealthApp/DB/mariadb/zlib" />
+					<Add directory="F:/temp/HealthApp/DB/libmariadb/codeblock/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/auth" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/include" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/plugins/pvio" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/libmariadb" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/win-iconv" />
+					<Add directory="F:/temp/HealthApp/DB/mariadb/zlib" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed" />
 					<Add directory="C:/MinGW/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 libmariadb/fast' />
-					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
-					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
-					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/code/C++/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 libmariadb/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 clean' />
 					<AskRebuildNeeded command="$make -q -f $makefile $target" />
-					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+					<SilentBuild command='C:/MinGW/bin/mingw32-make.exe -f &quot;F:/temp/HealthApp/DB/libmariadb/codeblock/libmariadb/Makefile&quot;  VERBOSE=1 libmariadb/fast &gt; $(CMD_NULL)' />
 				</MakeCommands>
 			</Target>
 		</Build>
@@ -1265,10 +1268,6 @@
 			<Option compilerVar="WINDRES" />
 			<Option target="sha256_password" />
 		</Unit>
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

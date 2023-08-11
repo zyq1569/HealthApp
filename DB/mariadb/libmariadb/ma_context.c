@@ -24,7 +24,7 @@
 #include "ma_global.h"
 #include "ma_string.h"
 #include "ma_context.h"
-
+#include "fibersapi.h"
 #ifdef HAVE_VALGRIND
 #include <valgrind/valgrind.h>
 #endif

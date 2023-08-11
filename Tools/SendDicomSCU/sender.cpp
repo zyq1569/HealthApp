@@ -23,7 +23,7 @@
 #define UNICODE 1
 #endif
 
-
+/////#########################################################################################
 /////--------------------------Taskthread-----------------------------------------------------
 Taskthread::Taskthread(QObject *parent)
 {
@@ -236,8 +236,10 @@ void Taskthread::dicomSendJob()
 
     }
 
+    emit  finishSendDcm(m_listpatient);
 }
 
+////----
 bool Taskthread::isCanceled()
 {
 
@@ -336,6 +338,7 @@ int Taskthread::sendStudy(Study &studys)
     return 0;
 }
 
+///DicomSender call ---> Taskthread::sendDcm
 void Taskthread::sendDcm(DestinationEntry dest, std::vector<Patient> listpat)
 {
     m_dest = dest;
@@ -343,6 +346,7 @@ void Taskthread::sendDcm(DestinationEntry dest, std::vector<Patient> listpat)
     m_listpatient = listpat;
 }
 
+/////###############################################################################################
 /////---------------------class-----DicomSender-----------------------------------------------------
 DicomSender::DicomSender()
 {
@@ -360,130 +364,6 @@ DicomSender::DicomSender()
 bool DicomSender::IsCanceled()
 {
     return false;
-}
-
-int DicomSender::SendStudy(Study &studys)
-{
-    return 1;
-}
-
-void  DicomSender::AddStudy(QString dir)
-{
-
-
-}
-
-void DicomSender::UpdatePatientdatas(DcmDataset *data)
-{
-
-}
-
-void DicomSender::ScanPatient(QString dir)
-{
-    emit scandicomfile(dir,m_listpatient);
-
-    m_taskScanDicom.setJob(0);
-    QThreadPool::globalInstance()->start(&m_taskScanDicom);
-}
-
-void DicomSender::finishlistpatient(std::vector<Patient> listpat)
-{
-
-    m_listpatient = listpat;
-
-    emit finishscandicomfile();
-}
-
-void DicomSender::finishSendDcm(std::vector<Patient> listpat)
-{
-
-    m_listpatient = listpat;
-
-    emit finishscandicomfile();
-}
-
-int DicomSender::SendDcmFiles(Study &studys)
-{
-    DcmSCU scu;
-
-    if (IsCanceled() || m_destination.ourAETitle.length() < 1 || m_destination.destinationHost.length() <1 || m_destination.destinationAETitle.length() < 1)
-        return 1;
-
-    scu.setVerbosePCMode(true);
-    scu.setAETitle(m_destination.ourAETitle.c_str());
-    scu.setPeerHostName(m_destination.destinationHost.c_str());
-    scu.setPeerPort(m_destination.destinationPort);
-    scu.setPeerAETitle(m_destination.destinationAETitle.c_str());
-    scu.setACSETimeout(60);
-    scu.setDIMSETimeout(120);
-    scu.setDatasetConversionMode(true);
-
-    OFList<OFString> defaulttransfersyntax,dcmfiles;
-    defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);//
-
-    foreach(std::string dcmf, studys.filespath)
-    {
-        dcmfiles.push_back(dcmf.c_str());
-    }
-
-    scu.addPresentationContext(studys.sopclassuid.c_str(), defaulttransfersyntax);
-    OFCondition cond;
-
-    if(scu.initNetwork().bad())
-        return 1;
-
-    if(scu.negotiateAssociation().bad())
-        return 1;
-
-
-    for(OFIterator<OFString> it = dcmfiles.begin(); it!= dcmfiles.end(); it++)
-    {
-        if(IsCanceled())
-        {
-            break;
-        }
-
-        Uint16 status;
-
-        // load file
-        DcmFileFormat dcmff;
-        dcmff.loadFile(it->c_str());
-
-        // do some precheck of the transfer syntax
-        DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
-        OFString sopclassuid;
-        dcmff.getDataset()->findAndGetOFString(DCM_SOPClassUID, sopclassuid);
-
-        if (scu.findPresentationContextID(sopclassuid, UID_JPEGLSLosslessTransferSyntax) != 0)
-        {
-            dcmff.loadAllDataIntoMemory();
-
-            if(dcmff.getDataset())
-                dcmff.getDataset()->chooseRepresentation(EXS_JPEGLSLossless, NULL);
-
-            fileTransfer = dcmff.getDataset()->getCurrentXfer();
-        }
-
-        // out found.. change to
-        T_ASC_PresentationContextID pid = scu.findAnyPresentationContextID(sopclassuid, fileTransfer.getXferID());
-
-        cond = scu.sendSTORERequest(pid, "", dcmff.getDataset(), status);
-        if (cond.good() && (status == 0 || (status & 0xf000) == 0xb000))
-        {
-            //ok!
-        }
-        else if(cond == DUL_PEERABORTEDASSOCIATION)
-        {
-            return 1;
-        }
-        //        else            // some error? keep going
-        //        {
-        //            itr++;
-        //        }
-    }
-
-    scu.releaseAssociation();
-    return 0;
 }
 
 bool DicomSender::Echo()
@@ -525,7 +405,27 @@ bool DicomSender::Echo()
     return false;
 }
 
+////-------------------------scan dicomfiles
+/// mainwindow call ---> DicomSender::ScanPatient
+void DicomSender::ScanPatient(QString dir)
+{
+    emit scandicomfile(dir,m_listpatient);
 
+    m_taskScanDicom.setJob(0);
+    QThreadPool::globalInstance()->start(&m_taskScanDicom);
+}
+///call ---> mainwindow call
+void DicomSender::finishlistpatient(std::vector<Patient> listpat)
+{
+
+    m_listpatient = listpat;
+
+    emit finishscandicomfile();
+}
+
+
+///---------------------------send dicomfiles
+/// mainwindow call --->DicomSender::SendPatiens  --->call  thread
 bool DicomSender::SendPatiens(std::vector<Patient> listpat)
 {
     emit senddicomfile(m_destination, listpat);
@@ -534,4 +434,12 @@ bool DicomSender::SendPatiens(std::vector<Patient> listpat)
     QThreadPool::globalInstance()->start(&m_taskSendDicom);
 
     return true;
+}
+///call ---> mainwindow call
+void DicomSender::finishSendDcm(std::vector<Patient> listpat)
+{
+
+    m_listpatient = listpat;
+
+    emit finishscandicomfile();
 }

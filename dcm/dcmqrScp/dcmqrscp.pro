@@ -91,7 +91,8 @@ LIBS   +=  -L$${LIB_DIR} \
              -loflog \
              -lofstd \
              -ldcmUnits \
-             -lmariadb
+             -lmariadb \
+             -lopenjp2
 
 
 

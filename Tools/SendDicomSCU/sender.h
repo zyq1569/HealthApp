@@ -116,17 +116,9 @@ class DicomSender: public QObject
 public:
     DicomSender();
 
-    int SendStudy(Study &studys);
-
-    int SendDcmFiles(Study &studys);
-
     bool IsCanceled();
 
     void ScanPatient(QString dir);
-
-    void AddStudy(QString dir);
-
-    void UpdatePatientdatas(DcmDataset *data);
 
     bool Echo();
 
