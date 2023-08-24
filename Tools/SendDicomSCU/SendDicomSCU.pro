@@ -2,8 +2,9 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
-
+CONFIG  += c++11
+DEFINES -= UNICODE
+DEFINES += NEED_SHORT_EXTERNAL_NAMES
 #QMAKE_CXXFLAGS  += /utf-8
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -67,7 +68,8 @@ LIBS   +=  -L$${LIB_DIR} \
              -loflog \
              -lofstd \
              -lmariadb \
-             -ldcmUnits
+             -ldcmUnits \
+             -lopenjp2
 
 INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
                 ../../include/dcm/win32/dcmdata/include \
@@ -87,3 +89,11 @@ INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+#Qt4VSv1.0
+#https://stackoverflow.com/questions/72031733/the-online-service-is-not-available-issue-in-visual-studio-professional-2013-w
+#尝试这个; 它对我有用。只需将两个DWORD值添加到 Windows 注册表即可。网站go.microsoft.com目前仅支持 TLS1.2 协议。
+
+#[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319]
+#"SystemDefaultTlsVersions"=dword:00000001
+#"SchUseStrongCrypto"=dword:00000001

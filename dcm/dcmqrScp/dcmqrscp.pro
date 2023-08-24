@@ -34,6 +34,10 @@ win32{
         LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
         DESTDIR = $$ROOTDIR/bin/win32/vs/bin
 
+DEFINES      +=  USE_NULL_SAFE_OFSTRING DCMTK_BUILD_IN_PROGRESS NOMINMAX _CRT_FAR_MAPPINGS_NO_DEPRECATE _CRT_IS_WCTYPE_NO_DEPRECATE _CRT_MANAGED_FP_NO_DEPRECATE
+DEFINES      +=  _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE_GLOBALS _CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE _CRT_TIME_FUNCTIONS_NO_DEPRECATE
+DEFINES      +=  _CRT_VCCLRIT_NO_DEPRECATE _SCL_SECURE_NO_DEPRECATE _REENTRANT
+
         LIBS += -liphlpapi
         LIBS += -lwsock32
         LIBS += -lws2_32
@@ -77,23 +81,21 @@ win32{
 
 
 LIBS   +=  -L$${LIB_DIR} \
-             -ldcmjpeg \
-             -lijg8 \
-             -lijg12 \
-             -lijg16 \
-             -ldcmqrdb \
-             -ldcmnet \
-             -ldcmdata \
-             -ldcmimgle \
-             -ldcmimage \
-             -ldcmsr \
-             -ldcmtls \
-             -loflog \
-             -lofstd \
-             -ldcmUnits \
-             -lmariadb \
-             -lopenjp2
-
+           -ldcmjpeg \
+           -lijg8 \
+           -lijg12 \
+           -lijg16 \
+           -ldcmqrdb \
+           -ldcmnet \
+           -ldcmdata \
+           -ldcmimgle \
+           -ldcmimage \
+           -ldcmsr \
+           -ldcmtls \
+           -loflog \
+           -lofstd \
+           -ldcmUnits \
+           -lmariadb
 
 
 

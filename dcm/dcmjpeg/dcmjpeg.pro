@@ -21,7 +21,7 @@ DESTDIR = $$ROOTDIR/bin/win32/profile/lib
 DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += USE_NULL_SAFE_OFSTRING
 DEFINES += _REENTRANT
-DEFINES += dcmjpeg_EXPORTS
+DEFINES += dcmjpeg_EXPORTS  NEED_SHORT_EXTERNAL_NAMES
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -29,11 +29,17 @@ DEFINES += dcmjpeg_EXPORTS
 DEFINES  -= UNICODE
 win32 {
     msvc{
+        LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
         DESTDIR = $$ROOTDIR/bin/win32/vs/lib
 
 DEFINES        += USE_NULL_SAFE_OFSTRING DCMTK_BUILD_IN_PROGRESS NOMINMAX _CRT_FAR_MAPPINGS_NO_DEPRECATE _CRT_IS_WCTYPE_NO_DEPRECATE _CRT_MANAGED_FP_NO_DEPRECATE
 DEFINES        += _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE_GLOBALS _CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE _CRT_TIME_FUNCTIONS_NO_DEPRECATE
 DEFINES        += _CRT_VCCLRIT_NO_DEPRECATE _SCL_SECURE_NO_DEPRECATE _REENTRANT CMAKE_INTDIR=\"Release\"
+
+#LIBS           +=  -L$${LIB_DIR} \
+#                   -lijg8 \
+#                   -lijg12 \
+#                   -lijg16
 
     }else{
         DEFINES += HAVE_POPEN

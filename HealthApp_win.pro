@@ -7,8 +7,12 @@
 
 SUBDIRS +=  dcm/dcmlib.pro \
             DB/libmariadb/Qt/libmariadb.pro \
-            dcm/dcmApp.pro
+            dcm/dcmApp.pro \
+            Tools/SendDicomSCU/SendDicomSCU.pro
 
+#SUBDIRS += Tools/fmjpeg2k/jpeg2k.pro
+
+SUBDIRS += openjpeg/OPENJPEG.pro
 
 #!official_release:SUBDIRS += tests
 TEMPLATE = subdirs

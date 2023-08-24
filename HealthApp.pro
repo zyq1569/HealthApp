@@ -8,7 +8,13 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 TEMPLATE = subdirs
-SUBDIRS += dcm/dcmdata/dcmdata.pro \
+SUBDIRS += dcm/dcmqrScp/dcmqrScp.pro \
+    dcm/dcmdata/dcmdata.pro \
+    dcm/dcmjpeg/dcmjpeg.pro \
     dcm/dcmjpeg/libijg8.pro \
     dcm/dcmjpeg/libijg12.pro \
-    dcm/dcmjpeg/libijg16.pro
+    dcm/dcmjpeg/libijg16.pro \
+    DB/libmariadb/vc/libmariadb.pro \
+    Tools/fmjpeg2k/fmjpeg2k.pro \
+    Tools/fmjpeg2k/dcmdjp2k.pro \
+    Tools/fmjpeg2k/dcmcjp2k.pro

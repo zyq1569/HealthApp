@@ -10,7 +10,6 @@ TARGET    = dcmdata
 TEMPLATE  = lib
 CONFIG   += staticlib
 include(../../rootdir.pri)
-DESTDIR = $$ROOTDIR/bin/win32/profile/lib
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -29,6 +28,8 @@ DESTDIR = $$ROOTDIR/bin/win32/profile/lib
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+DEFINES += USE_NULL_SAFE_OFSTRING DCMTK_BUILD_IN_PROGRESS NOMINMAX _CRT_FAR_MAPPINGS_NO_DEPRECATE _CRT_IS_WCTYPE_NO_DEPRECATE _CRT_MANAGED_FP_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE_GLOBALS _CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE _CRT_TIME_FUNCTIONS_NO_DEPRECATE _CRT_VCCLRIT_NO_DEPRECATE _SCL_SECURE_NO_DEPRECATE _REENTRANT  _UNICODE _ENABLE_EXTENDED_ALIGNED_STORAGE WIN64
+
 DEFINES += DCMTK_BUILD_IN_PROGRESS
 DEFINES += dcmdata_EXPORTS
 linux{
@@ -37,6 +38,7 @@ linux{
         DEFINES += DCMTK_BUILD_IN_PROGRESS
         DEFINES += USE_NULL_SAFE_OFSTRING
         DEFINES += _REENTRANT
+        DESTDIR  = $$ROOTDIR/bin/linux/lib
 }
 win32{
        msvc{                      
@@ -49,12 +51,13 @@ win32{
            #DEFINES +=  _CRT_FAR_MAPPINGS_NO_DEPRECATE _CRT_IS_WCTYPE_NO_DEPRECATE _CRT_MANAGED_FP_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE_GLOBALS _CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE _CRT_TIME_FUNCTIONS_NO_DEPRECATE _CRT_VCCLRIT_NO_DEPRECATE _SCL_SECURE_NO_DEPRECATE
            DESTDIR  = $$ROOTDIR/bin/win32/vs/lib
        }else{
-
+           DEFINES -= UNICODE
            DEFINES += HAVE_POPEN
            DEFINES += HAVE_PCLOSE
            DESTDIR  = $$ROOTDIR/bin/win32/Mingw/lib
        }
 }
+
 SOURCES += \
         cmdlnarg.cc \
         dcbytstr.cc \
@@ -145,8 +148,8 @@ SOURCES += \
         vrscanl.c
 
 HEADERS += \
-    vrscani.h \
-    vrscanl.h
+        vrscani.h \
+        vrscanl.h
 
 
 unix {

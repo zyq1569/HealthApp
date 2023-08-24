@@ -61,6 +61,7 @@ LIBS   +=  -L$${LIB_DIR} \
              -loflog \
              -lofstd \
              -ldcmUnits \
+             -lopenjp2 \
              -lmariadb
 
 #LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
