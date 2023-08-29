@@ -19,7 +19,7 @@ win32 {
         DESTDIR = $$ROOTDIR/bin/win32/vs/lib
     }else{
         DEFINES += HAVE_POPEN
-        DEFINES += HAVE_PCLOSE
+        DEFINES += HAVE_PCLOSE NEED_SHORT_EXTERNAL_NAMES
         DESTDIR = $$ROOTDIR/bin/win32/Mingw/lib
     }
 }

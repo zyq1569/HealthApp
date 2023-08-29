@@ -4,7 +4,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG  += c++11
 DEFINES -= UNICODE
-DEFINES += NEED_SHORT_EXTERNAL_NAMES
+DEFINES += NEED_SHORT_EXTERNAL_NAMES  ON_THE_FLY_COMPRESSION
 #QMAKE_CXXFLAGS  += /utf-8
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -28,23 +28,31 @@ include(../../rootdir.pri)
 
 win32 {
 
-    LIBS += -liphlpapi
-    LIBS += -lwsock32
-    LIBS += -lws2_32
-    LIBS += -lole32
-    LIBS += -lnetapi32
-
-    LIBS += -lkernel32
-    LIBS += -lwinspool
-    LIBS += -ladvapi32
-    LIBS += -lcomdlg32
-    LIBS += -luuid
-
     msvc{
         LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
+        LIB_DIR = $$ROOTDIR/lib/dcm/win32
         DESTDIR = $$PWD/bin/windows/vs
 
+# we define that for visual studio-based windows compilation systems
+# compilation is done in as many cores as possible
+#QMAKE_CXXFLAGS += /MP
+
+## We indicate that for debug compilations, Runtime Library
+## is Multi-threaded DLL (as in release) and not Multi-threaded Debug DLL
+QMAKE_CXXFLAGS_DEBUG -= -MD
+QMAKE_CXXFLAGS_DEBUG += -MT
+
+QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO -= -MD
+QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO += -MT
+
+QMAKE_CXXFLAGS_RELEASE -= -MD
+QMAKE_CXXFLAGS_RELEASE += -MT
+
+QMAKE_CXXFLAGS -= -Zc:strictStrings
+
     }else{
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE NEED_SHORT_EXTERNAL_NAMES
         LIB_DIR = $$ROOTDIR/bin/win32/Mingw/lib
         DESTDIR = $$PWD/bin/windows/Mingw
 
@@ -54,11 +62,7 @@ win32 {
 #message($$LIB_DIR)
 
 LIBS   +=  -L$${LIB_DIR} \
-             -lijg8 \
-             -lijg12 \
-             -lijg16 \
-             -ldcmjpeg \
-             -ldcmqrdb \
+#             -ldcmqrdb \
              -ldcmnet \
              -ldcmdata \
              -ldcmimgle \
@@ -67,9 +71,28 @@ LIBS   +=  -L$${LIB_DIR} \
              -ldcmtls \
              -loflog \
              -lofstd \
-             -lmariadb \
              -ldcmUnits \
+             -ldcmjpls \
+             -ldcmcharls \
+             -ldcmjpeg \
+             -llibijg8 \
+             -llibijg12 \
+             -llibijg16
+             \
              -lopenjp2
+
+win32 {
+
+            LIBS += -liphlpapi
+            LIBS += -lwsock32
+            LIBS += -lws2_32
+            LIBS += -lole32
+            LIBS += -lnetapi32
+            LIBS += -lShlwapi
+            LIBS += -lKernel32
+            LIBS += -lShlwapi
+            LIBS += -lAdvapi32
+}
 
 INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
                 ../../include/dcm/win32/dcmdata/include \
@@ -82,8 +105,8 @@ INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
                 ../../include/dcm/win32/config/include \
                 ../../include/dcm/win32/dcmpsta/includet \
                 ../../include/dcm/win32/dcmsr/include \
-                ../../include/dcm/win32/dcmjpeg/include
-
+                ../../include/dcm/win32/dcmjpeg/include \
+                ../../include/dcm/win32/dcmjpls/include
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

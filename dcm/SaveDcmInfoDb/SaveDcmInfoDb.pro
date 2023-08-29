@@ -15,15 +15,15 @@ win32 {
         LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
         DESTDIR = $$ROOTDIR/bin/win32/vs/bin
 
-        LIBS += -liphlpapi
-        LIBS += -lwsock32
-        LIBS += -lws2_32
-        LIBS += -lole32
-        LIBS += -lnetapi32
-        LIBS += -lShlwapi
-        LIBS += -lKernel32
-        LIBS += -lShlwapi
-        LIBS += -lAdvapi32
+#        LIBS += -liphlpapi
+#        LIBS += -lwsock32
+#        LIBS += -lws2_32
+#        LIBS += -lole32
+#        LIBS += -lnetapi32
+#        LIBS += -lShlwapi
+#        LIBS += -lKernel32
+#        LIBS += -lShlwapi
+#        LIBS += -lAdvapi32
 
     }else{
         DEFINES += HAVE_POPEN
@@ -65,3 +65,15 @@ LIBS   +=  -L$${LIB_DIR} \
              -ldcmUnits \
              -lmariadb
 
+win32 {
+
+            LIBS += -liphlpapi
+            LIBS += -lwsock32
+            LIBS += -lws2_32
+            LIBS += -lole32
+            LIBS += -lnetapi32
+            LIBS += -lShlwapi
+            LIBS += -lKernel32
+            LIBS += -lShlwapi
+            LIBS += -lAdvapi32
+}

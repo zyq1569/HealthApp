@@ -16,18 +16,19 @@ win32 {
     msvc{
        LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
        DESTDIR = $$ROOTDIR/bin/win32/vs/bin
-       LIBS += -liphlpapi
-       LIBS += -lwsock32
-       LIBS += -lws2_32
-       LIBS += -lole32
-       LIBS += -lnetapi32
-       LIBS += -lShlwapi
-       LIBS += -lKernel32
-       LIBS += -lShlwapi
-       LIBS += -lAdvapi32
+#       LIBS += -liphlpapi
+#       LIBS += -lwsock32
+#       LIBS += -lws2_32
+#       LIBS += -lole32
+#       LIBS += -lnetapi32
+#       LIBS += -lShlwapi
+#       LIBS += -lKernel32
+#       LIBS += -lShlwapi
+#       LIBS += -lAdvapi32
     }else{
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
+        LIB_DIR = $$ROOTDIR/bin/win32/Mingw/lib
         DESTDIR = $$ROOTDIR/bin/win32/Mingw/bin
     }
 }
@@ -63,6 +64,19 @@ LIBS   +=  -L$${LIB_DIR} \
              -ldcmUnits \
              -lopenjp2 \
              -lmariadb
+
+win32 {
+
+            LIBS += -liphlpapi
+            LIBS += -lwsock32
+            LIBS += -lws2_32
+            LIBS += -lole32
+            LIBS += -lnetapi32
+            LIBS += -lShlwapi
+            LIBS += -lKernel32
+            LIBS += -lShlwapi
+            LIBS += -lAdvapi32
+}
 
 #LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmnet.a
 #LIBS +=F:/temp/HealthApp/lib/dcm/win32/libdcmdata.a

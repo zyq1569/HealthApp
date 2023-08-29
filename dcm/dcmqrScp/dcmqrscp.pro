@@ -30,6 +30,16 @@ include(../../rootdir.pri)
 
 win32{
 
+#LIBS += -liphlpapi
+#LIBS += -lwsock32
+#LIBS += -lws2_32
+#LIBS += -lole32
+#LIBS += -lnetapi32
+#LIBS += -lShlwapi
+#LIBS += -lKernel32
+#LIBS += -lShlwapi
+#LIBS += -lAdvapi32
+
     msvc{
         LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
         DESTDIR = $$ROOTDIR/bin/win32/vs/bin
@@ -38,15 +48,7 @@ DEFINES      +=  USE_NULL_SAFE_OFSTRING DCMTK_BUILD_IN_PROGRESS NOMINMAX _CRT_FA
 DEFINES      +=  _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE_GLOBALS _CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE _CRT_TIME_FUNCTIONS_NO_DEPRECATE
 DEFINES      +=  _CRT_VCCLRIT_NO_DEPRECATE _SCL_SECURE_NO_DEPRECATE _REENTRANT
 
-        LIBS += -liphlpapi
-        LIBS += -lwsock32
-        LIBS += -lws2_32
-        LIBS += -lole32
-        LIBS += -lnetapi32
-        LIBS += -lShlwapi
-        LIBS += -lKernel32
-        LIBS += -lShlwapi
-        LIBS += -lAdvapi32
+
 #        LIBS += -luser32
 #        LIBS += -lgdi32
 #        LIBS += -lwinspool
@@ -97,5 +99,16 @@ LIBS   +=  -L$${LIB_DIR} \
            -ldcmUnits \
            -lmariadb
 
+win32 {
 
+            LIBS += -liphlpapi
+            LIBS += -lwsock32
+            LIBS += -lws2_32
+            LIBS += -lole32
+            LIBS += -lnetapi32
+            LIBS += -lShlwapi
+            LIBS += -lKernel32
+            LIBS += -lShlwapi
+            LIBS += -lAdvapi32
+}
 
