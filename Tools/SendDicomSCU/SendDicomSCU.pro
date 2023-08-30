@@ -77,8 +77,8 @@ LIBS   +=  -L$${LIB_DIR} \
              -ldcmjpeg \
              -llibijg8 \
              -llibijg12 \
-             -llibijg16
-             \
+             -llibijg16 \
+             -lfmjpeg2k \
              -lopenjp2
 
 win32 {
@@ -92,6 +92,7 @@ win32 {
             LIBS += -lKernel32
             LIBS += -lShlwapi
             LIBS += -lAdvapi32
+
 }
 
 INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
@@ -106,7 +107,9 @@ INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
                 ../../include/dcm/win32/dcmpsta/includet \
                 ../../include/dcm/win32/dcmsr/include \
                 ../../include/dcm/win32/dcmjpeg/include \
-                ../../include/dcm/win32/dcmjpls/include
+                ../../include/dcm/win32/dcmjpls/include \
+                ../../Tools/fmjpeg2k/include
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

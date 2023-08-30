@@ -307,28 +307,38 @@ p, li { white-space: pre-wrap; }
      <string>Transfersyntax:</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox_4">
+   <widget class="QComboBox" name="cB_transfersyntaxes">
     <property name="geometry">
      <rect>
       <x>85</x>
       <y>137</y>
-      <width>271</width>
+      <width>531</width>
       <height>21</height>
      </rect>
     </property>
     <item>
      <property name="text">
-      <string>Implicit VR Little Endian=1.2.840.10008.1.2</string>
+      <string>Implicit VR Little Endian                                                               =          1.2.840.10008.1.2</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Explicit VR Little Endian=1.2.840.10008.1.2.1</string>
+      <string>Explicit VR Little Endian                                                                =          1.2.840.10008.1.2.1</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Explicit VR Big Endian=1.2.840.10008.1.2.2</string>
+      <string>Explicit VR Big Endian                                                                   =          1.2.840.10008.1.2.2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>JPEG Lossless, Non-Hierarchical,First-Order Prediction           =          1.2.840.10008.1.2.4.70</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>JPEG 2000 Image Compression(Lossless Only)                           =          1.2.840.10008.1.2.4.90</string>
      </property>
     </item>
    </widget>
@@ -388,7 +398,20 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
     <property name="text">
-     <string>OpenJPG2k</string>
+     <string>De JPG2k</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pBOpen2KC">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>70</y>
+      <width>80</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>En JPG2k</string>
     </property>
    </widget>
   </widget>

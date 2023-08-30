@@ -520,7 +520,16 @@ int AppRun(int argc, char *argv[])
 int main(int argc, char *argv[])
 {
     //OFString s = GetStudyHashDir("1.2.826.0.1.3680043.9.7606.20091101104529.177289.200911020017");
-    printf("---int main(int argc, char *argv[])---");
+    printf("---int main(int argc, char *argv[])---\n");
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        printf("no data dictionary loaded, check environment variable:\n");
+    }
+    else
+    {
+        printf("dictionary loaded ok!\n");
+    }
+
     if (argc > 2)
     {
         return AppRun(argc, argv);
@@ -531,6 +540,10 @@ int main(int argc, char *argv[])
         printf("...eg: ./StoreDcmScp_linux 1400 /home/Images ...\n");
         printf("...now exit!...\n");
     }
+
+
+
+
     return 0;
 }
 
