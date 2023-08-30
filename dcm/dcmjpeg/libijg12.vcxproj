@@ -30,6 +30,7 @@
     <ProjectGuid>{08A025E9-984C-4EF4-A975-8BC73976039E}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
     <RootNamespace>dcmjpeg</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

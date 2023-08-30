@@ -1,9 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -13,8 +25,20 @@
       <Configuration>MinSizeRel</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="RelWithDebInfo|x64">
       <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Rel_Static|Win32">
+      <Configuration>Rel_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Rel_Static|x64">
+      <Configuration>Rel_Static</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -22,29 +46,60 @@
     <ProjectGuid>{258846D8-C2A7-3276-A9CE-45E43E291709}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
-    <ProjectName>dcmtkcharls</ProjectName>
+    <ProjectName>dcmcharls</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -58,19 +113,53 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)lib\dcm\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)lib\dcm\win32\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'">$(SolutionDir)lib\dcm\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">$(ProjectName)</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(SolutionDir)lib\dcm\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(ProjectName)</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(SolutionDir)lib\dcm\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(ProjectName)</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">
+    <OutDir>$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <OutDir>$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <OutDir>$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir>..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -102,6 +191,38 @@
     </Midl>
     <Lib>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;.\libijg8;.\libijg12;.\libijg16;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;DEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;DEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x86</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -136,6 +257,102 @@
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;.\libijg8;.\libijg12;.\libijg16;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;.\libijg8;.\libijg12;.\libijg16;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;.\libijg8;.\libijg12;.\libijg16;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;.\libijg8;.\libijg12;.\libijg16;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -168,6 +385,38 @@
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;.\libijg8;.\libijg12;.\libijg16;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;.\libijg8;.\libijg12;.\libijg16;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -197,6 +446,37 @@
     </Midl>
     <Lib>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;.\libijg8;.\libijg12;.\libijg16;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;dcmtkcharls_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\dcmtk-DCMTK-3.6.7_vc\config\include;E:\dcmtk-DCMTK-3.6.7\ofstd\include;E:\dcmtk-DCMTK-3.6.7\oflog\include;E:\dcmtk-DCMTK-3.6.7\dcmdata\include;E:\dcmtk-DCMTK-3.6.7\dcmimgle\include;E:\dcmtk-DCMTK-3.6.7\dcmimage\include;E:\dcmtk-DCMTK-3.6.7\dcmjpeg\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\include;E:\dcmtk-DCMTK-3.6.7\dcmtls\include;E:\dcmtk-DCMTK-3.6.7\dcmnet\include;E:\dcmtk-DCMTK-3.6.7\dcmsr\include;E:\dcmtk-DCMTK-3.6.7\dcmsign\include;E:\dcmtk-DCMTK-3.6.7\dcmwlm\include;E:\dcmtk-DCMTK-3.6.7\dcmqrdb\include;E:\dcmtk-DCMTK-3.6.7\dcmpstat\include;E:\dcmtk-DCMTK-3.6.7\dcmrt\include;E:\dcmtk-DCMTK-3.6.7\dcmiod\include;E:\dcmtk-DCMTK-3.6.7\dcmfg\include;E:\dcmtk-DCMTK-3.6.7\dcmseg\include;E:\dcmtk-DCMTK-3.6.7\dcmtract\include;E:\dcmtk-DCMTK-3.6.7\dcmpmap\include;E:\dcmtk-DCMTK-3.6.7\dcmect\include;E:\dcmtk-DCMTK-3.6.7\dcmjpls\libcharls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x86</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

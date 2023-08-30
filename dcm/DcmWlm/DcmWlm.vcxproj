@@ -27,6 +27,7 @@
     <ProjectGuid>{B90A4A47-7BE2-4357-BC57-E1FCCCE860CD}</ProjectGuid>
     <RootNamespace>dcmwlm</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
