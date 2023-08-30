@@ -1,0 +1,612 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Rel_Static|Win32">
+      <Configuration>Rel_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Rel_Static|x64">
+      <Configuration>Rel_Static</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{966AFCA2-8EE7-3F51-99A0-C49D9C2553FE}</ProjectGuid>
+    <Platform>Win32</Platform>
+    <ProjectName>dcmdata</ProjectName>
+    <Keyword>Qt4VSv1.0</Keyword>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)_d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)_d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)lib\dcm\win32\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(SolutionDir)lib\dcm\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\temp\$(ProjectName)\$(Configuration)\$(ProjectName).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Debug";UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\temp\$(ProjectName)\$(Configuration)\$(ProjectName).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ProgramDataBaseFileName>..\..\temp\$(ProjectName)\$(Configuration)\$(ProjectName).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release";UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ProgramDataBaseFileName>..\..\temp\$(ProjectName)\$(Configuration)\$(ProjectName).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ProgramDataBaseFileName>..\..\temp\$(ProjectName)\$(Configuration)\$(ProjectName).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release";UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ProgramDataBaseFileName>..\..\temp\$(ProjectName)\$(Configuration)\$(ProjectName).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="MinSizeRel";UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="RelWithDebInfo";UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;dcmdata_EXPORTS;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\C++\HealthApp\dcmtk_2013\config\include;D:\code\C++\HealthApp\dcmtk-3.6.3\ofstd\include;D:\code\C++\HealthApp\dcmtk-3.6.3\oflog\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimgle\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmimage\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpeg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmjpls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtls\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmnet\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsr\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmsign\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmwlm\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmqrdb\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpstat\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmrt\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmiod\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmfg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmseg\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmtract\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmpmap\include;D:\code\C++\HealthApp\dcmtk-3.6.3\dcmdata\libsrc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cmdlnarg.cc" />
+    <ClCompile Include="dcbytstr.cc" />
+    <ClCompile Include="dcchrstr.cc" />
+    <ClCompile Include="dccodec.cc" />
+    <ClCompile Include="dcdatset.cc" />
+    <ClCompile Include="dcdatutl.cc" />
+    <ClCompile Include="dcddirif.cc" />
+    <ClCompile Include="dcdicdir.cc" />
+    <ClCompile Include="dcdicent.cc" />
+    <ClCompile Include="dcdict.cc" />
+    <ClCompile Include="dcdictbi.cc" />
+    <ClCompile Include="dcdirrec.cc" />
+    <ClCompile Include="dcelem.cc" />
+    <ClCompile Include="dcerror.cc" />
+    <ClCompile Include="dcfilefo.cc" />
+    <ClCompile Include="dcfilter.cc" />
+    <ClCompile Include="dchashdi.cc" />
+    <ClCompile Include="dcistrma.cc" />
+    <ClCompile Include="dcistrmb.cc" />
+    <ClCompile Include="dcistrmf.cc" />
+    <ClCompile Include="dcistrmz.cc" />
+    <ClCompile Include="dcitem.cc" />
+    <ClCompile Include="dcjson.cc" />
+    <ClCompile Include="dclist.cc" />
+    <ClCompile Include="dcmatch.cc" />
+    <ClCompile Include="dcmetinf.cc" />
+    <ClCompile Include="dcobject.cc" />
+    <ClCompile Include="dcostrma.cc" />
+    <ClCompile Include="dcostrmb.cc" />
+    <ClCompile Include="dcostrmf.cc" />
+    <ClCompile Include="dcostrmz.cc" />
+    <ClCompile Include="dcpath.cc" />
+    <ClCompile Include="dcpcache.cc" />
+    <ClCompile Include="dcpixel.cc" />
+    <ClCompile Include="dcpixseq.cc" />
+    <ClCompile Include="dcpxitem.cc" />
+    <ClCompile Include="dcrleccd.cc" />
+    <ClCompile Include="dcrlecce.cc" />
+    <ClCompile Include="dcrlecp.cc" />
+    <ClCompile Include="dcrledrg.cc" />
+    <ClCompile Include="dcrleerg.cc" />
+    <ClCompile Include="dcrlerp.cc" />
+    <ClCompile Include="dcsequen.cc" />
+    <ClCompile Include="dcspchrs.cc" />
+    <ClCompile Include="dcstack.cc" />
+    <ClCompile Include="dcswap.cc" />
+    <ClCompile Include="dctag.cc" />
+    <ClCompile Include="dctagkey.cc" />
+    <ClCompile Include="dctypes.cc" />
+    <ClCompile Include="dcuid.cc" />
+    <ClCompile Include="dcvr.cc" />
+    <ClCompile Include="dcvrae.cc" />
+    <ClCompile Include="dcvras.cc" />
+    <ClCompile Include="dcvrat.cc" />
+    <ClCompile Include="dcvrcs.cc" />
+    <ClCompile Include="dcvrda.cc" />
+    <ClCompile Include="dcvrds.cc" />
+    <ClCompile Include="dcvrdt.cc" />
+    <ClCompile Include="dcvrfd.cc" />
+    <ClCompile Include="dcvrfl.cc" />
+    <ClCompile Include="dcvris.cc" />
+    <ClCompile Include="dcvrlo.cc" />
+    <ClCompile Include="dcvrlt.cc" />
+    <ClCompile Include="dcvrobow.cc" />
+    <ClCompile Include="dcvrod.cc" />
+    <ClCompile Include="dcvrof.cc" />
+    <ClCompile Include="dcvrol.cc" />
+    <ClCompile Include="dcvrpn.cc" />
+    <ClCompile Include="dcvrpobw.cc" />
+    <ClCompile Include="dcvrsh.cc" />
+    <ClCompile Include="dcvrsl.cc" />
+    <ClCompile Include="dcvrss.cc" />
+    <ClCompile Include="dcvrst.cc" />
+    <ClCompile Include="dcvrtm.cc" />
+    <ClCompile Include="dcvruc.cc" />
+    <ClCompile Include="dcvrui.cc" />
+    <ClCompile Include="dcvrul.cc" />
+    <ClCompile Include="dcvrulup.cc" />
+    <ClCompile Include="dcvrur.cc" />
+    <ClCompile Include="dcvrus.cc" />
+    <ClCompile Include="dcvrut.cc" />
+    <ClCompile Include="dcwcache.cc" />
+    <ClCompile Include="dcxfer.cc" />
+    <ClCompile Include="vrscan.cc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\include\dcm\win32\config\include;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmtls\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\dcmwlm\include;..\..\include\dcm\win32\dcmqrdb\include;..\..\include\dcm\win32\dcmpstat\include;..\..\include\dcm\win32\dcmrt\include;..\..\include\dcm\win32\dcmiod\include;..\..\include\dcm\win32\dcmfg\include;..\..\include\dcm\win32\dcmseg\include;..\..\include\dcm\win32\dcmtract\include;..\..\include\dcm\win32\dcmpmap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ProgramDataBaseFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\temp\$(ProjectName)\$(Configuration)\$(ProjectName).pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\temp\$(ProjectName)\$(Configuration)\$(ProjectName).pdb</ProgramDataBaseFileName>
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</AssemblerListingLocation>
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)</AssemblerListingLocation>
+    </ClCompile>
+    <ClCompile Include="vrscanl.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Rel_Static|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Rel_Static|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties Qt5Version_x0020_Win32="msvc2017" Qt5Version_x0020_x64="msvc2017_64" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
