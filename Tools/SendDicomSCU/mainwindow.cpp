@@ -250,6 +250,10 @@ void MainWindow::on_pBDir_clicked()
 
 void MainWindow::on_pBEcho_clicked()
 {
+    m_sender.m_destination.ourAETitle = ui->cb_LocalAetitle->toPlainText().toStdString();
+    m_sender.m_destination.destinationAETitle = ui->cb_Aetitle->toPlainText().toStdString();
+    m_sender.m_destination.destinationHost = ui->cb_IP->toPlainText().toStdString();
+    m_sender.m_destination.destinationPort = ui->cb_Port->toPlainText().toUInt();
     bool ok = m_sender.Echo();
     if (ok)
     {
