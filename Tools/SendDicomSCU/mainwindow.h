@@ -19,6 +19,7 @@ public:
 public:
     DicomSender m_sender;
     QStandardItemModel *m_pMOdel;
+    int m_sendTotal;
 public:
     void stopSend();
     void stopScan();
@@ -34,6 +35,7 @@ public:
 
 public slots:
     void updatePatientList();
+    void updateSendDcm(int sendFiles);
 
 private slots:
     void on_pbUpdate_clicked();

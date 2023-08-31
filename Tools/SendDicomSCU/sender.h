@@ -75,7 +75,8 @@ class PatientData
 };
 
 class DcmDataset;
-
+class DcmItem;
+class DcmTagKey;
 class Taskthread: public QObject ,public QRunnable
 {
     Q_OBJECT
@@ -89,6 +90,9 @@ public:
     int sendStudy(Study &studys);
     bool isCanceled();
     void setJob(int type);
+    /*static*/ bool updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, std::string &value);
+    void registerCodecs();
+    void registercleanup();
 
 public slots:
     void scanDir(QString dir, std::vector<Patient> listpat);
@@ -98,9 +102,10 @@ public slots:
 signals:
     void finishScanDir(std::vector<Patient> listpatient);// to parent thread
 
-    void finishSendDcm(std::vector<Patient> listpatient);// to parent thread
+    void finishSendDcm(int );// to parent thread
 public:
     QString m_scanDir;
+    uint m_sendFiles;
     DestinationEntry m_dest;
     std::vector<Patient> m_listpatient;
 
@@ -127,7 +132,7 @@ public:
 public slots:
     void finishlistpatient(std::vector<Patient> listpat);
 
-    void finishSendDcm(std::vector<Patient> listpat);
+    void finishSendDcm(int sendFiles);
 
 
 signals:
@@ -135,7 +140,7 @@ signals:
     void finishscandicomfile();// to forms
 
     void senddicomfile(DestinationEntry dest, std::vector<Patient> listpat);// to thread
-    void finishsenddicomfile();// to forms
+    void finishsenddicomfile(int sendFiles);// to forms
 
 public:
     DestinationEntry m_destination;

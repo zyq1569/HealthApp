@@ -14,6 +14,16 @@
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/scu.h"
+
+#include "dcmtk/dcmjpeg/djdecode.h"    /* for dcmjpeg decoders */
+#include "dcmtk/dcmjpeg/djencode.h"    /* for dcmjpeg decoders */
+#include "dcmtk/dcmjpls/djdecode.h"
+#include "dcmtk/dcmjpls/djencode.h"
+#include "dcmtk/dcmdata/dcrleerg.h"
+#include "dcmtk/dcmdata/dcrledrg.h"
+#include "fmjpeg2k/djdecode.h"
+#include "fmjpeg2k/djencode.h"
+
 #include <QThreadPool>
 #include <QDir>
 #include <QMetaType>
@@ -24,7 +34,82 @@
 #endif
 
 /////#########################################################################################
+
 /////--------------------------Taskthread-----------------------------------------------------
+void Taskthread::registerCodecs()
+{
+    // register global JPEG decompression codecs
+    DJDecoderRegistration::registerCodecs();
+
+    // register global JPEG compression codecs
+    DJEncoderRegistration::registerCodecs();
+
+    // register JPEG-LS decompression codecs
+    DJLSDecoderRegistration::registerCodecs();
+
+    //        // register JPEG-LS compression codecs
+    DJLSEncoderRegistration::registerCodecs();
+
+    // register RLE compression codec
+    DcmRLEEncoderRegistration::registerCodecs();
+
+    // register RLE decompression codec
+    DcmRLEDecoderRegistration::registerCodecs();
+
+    // jpeg2k
+    FMJPEG2KEncoderRegistration::registerCodecs();
+    FMJPEG2KDecoderRegistration::registerCodecs();
+}
+
+void Taskthread::registercleanup()
+{
+    // deregister JPEG codecs
+    DJDecoderRegistration::cleanup();
+    DJEncoderRegistration::cleanup();
+
+    // deregister JPEG-LS codecs
+    DJLSDecoderRegistration::cleanup();
+    DJLSEncoderRegistration::cleanup();
+
+    // deregister RLE codecs
+    DcmRLEDecoderRegistration::cleanup();
+    DcmRLEEncoderRegistration::cleanup();
+}
+/*static*/ bool Taskthread::updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, std::string &value)
+{
+    DcmStack stack;
+    DcmTag tag(key);
+
+    OFCondition cond = EC_Normal;
+    cond = dataset->search(key, stack, ESM_fromHere, OFFalse);
+    if (cond != EC_Normal)
+    {
+        //        OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: cannot find: " << tag.getTagName()
+        //            << " " << key << ": " << cond.text());
+        return OFFalse;
+    }
+
+    DcmElement *elem = OFstatic_cast(DcmElement *, stack.top());
+
+    DcmVR vr(elem->ident());
+    if (elem->getLength() > vr.getMaxValueLength())
+    {
+        //        OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: INTERNAL ERROR: " << tag.getTagName()
+        //            << " " << key << ": value too large (max " << vr.getMaxValueLength()
+        //            << ") for " << vr.getVRName() << " value: " << value);
+        return OFFalse;
+    }
+
+    cond = elem->putOFStringArray(value.c_str());
+    if (cond != EC_Normal)
+    {
+        //        OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName()
+        //            << " " << key << ": " << cond.text());
+        return OFFalse;
+    }
+
+    return OFTrue;
+}
 Taskthread::Taskthread(QObject *parent)
 {
     setAutoDelete(false);
@@ -222,6 +307,13 @@ void Taskthread::dicomDataJob()
 /////-------------send dicom--------------------------------------
 void Taskthread::dicomSendJob()
 {
+    int n = m_listpatient.size();
+    m_sendFiles = 0;
+    if (n < 1)
+    {
+        emit  finishSendDcm(m_sendFiles);
+        return;
+    }
     foreach (Patient pt, m_listpatient)
     {
         foreach(Study st, pt.studydatas)
@@ -229,6 +321,7 @@ void Taskthread::dicomSendJob()
 
             if (sendStudy(st) == 1)
             {
+                emit  finishSendDcm(-1);
                 return;
             }
             Sleep(10);
@@ -236,7 +329,7 @@ void Taskthread::dicomSendJob()
 
     }
 
-    emit  finishSendDcm(m_listpatient);
+    emit  finishSendDcm(m_sendFiles);
 }
 
 ////----
@@ -246,12 +339,13 @@ bool Taskthread::isCanceled()
     return false;
 }
 
+
 int Taskthread::sendStudy(Study &studys)
 {
     DcmSCU scu;
 
     if (isCanceled() || m_dest.ourAETitle.length() < 1 || m_dest.destinationHost.length() <1
-         || m_dest.destinationAETitle.length() < 1)
+            || m_dest.destinationAETitle.length() < 1)
         return 1;
 
     scu.setVerbosePCMode(true);
@@ -264,15 +358,21 @@ int Taskthread::sendStudy(Study &studys)
     scu.setDatasetConversionMode(true);
 
     OFList<OFString> defaulttransfersyntax,dcmfiles;
-    defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);//
+    defaulttransfersyntax.push_back(UID_LittleEndianImplicitTransferSyntax);//
+    defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);
+    defaulttransfersyntax.push_back(UID_JPEGLSLosslessTransferSyntax);
+    defaulttransfersyntax.push_back(UID_JPEGProcess14SV1TransferSyntax);//
+    defaulttransfersyntax.push_back(UID_JPEG2000LosslessOnlyTransferSyntax);
 
     foreach(std::string dcmf, studys.filespath)
     {
         dcmfiles.push_back(dcmf.c_str());
     }
 
-    scu.addPresentationContext(studys.sopclassuid.c_str(), defaulttransfersyntax);
-    OFCondition cond;
+    OFCondition cond = scu.addPresentationContext(studys.sopclassuid.c_str(), defaulttransfersyntax);//EC_Normal
+    if (cond != EC_Normal)
+        return 1;
+
 
     if(scu.initNetwork().bad())
         return 1;
@@ -292,7 +392,7 @@ int Taskthread::sendStudy(Study &studys)
         Uint16 status;
 
         // load file
-        DcmFileFormat dcmff;
+        DcmFileFormat dcmff;   //QString filename = it->c_str();
         dcmff.loadFile(it->c_str());
 
         // do some precheck of the transfer syntax
@@ -300,7 +400,7 @@ int Taskthread::sendStudy(Study &studys)
         OFString sopclassuid;
         dcmff.getDataset()->findAndGetOFString(DCM_SOPClassUID, sopclassuid);
 
-        if (scu.findPresentationContextID(sopclassuid, UID_JPEGLSLosslessTransferSyntax) != 0)
+        if (scu.findPresentationContextID(sopclassuid, UID_JPEGProcess14SV1TransferSyntax) != 0)//UID_JPEGProcess14SV1TransferSyntax
         {
             dcmff.loadAllDataIntoMemory();
 
@@ -311,9 +411,13 @@ int Taskthread::sendStudy(Study &studys)
         }
 
         // out found.. change to
-        T_ASC_PresentationContextID pid = scu.findAnyPresentationContextID(sopclassuid, fileTransfer.getXferID());
+        T_ASC_PresentationContextID pid;
+        pid = scu.findAnyPresentationContextID(sopclassuid, fileTransfer.getXferID());
 
+        registerCodecs();
         cond = scu.sendSTORERequest(pid, "", dcmff.getDataset(), status);
+        registercleanup();
+
         if (cond.good() && (status == 0 || (status & 0xf000) == 0xb000))
         {
             //ok!
@@ -322,15 +426,18 @@ int Taskthread::sendStudy(Study &studys)
         {
             return 1;
         }
-        //        else            // some error? keep going
-        //        {
-        //            itr++;
-        //        }
+        //else            // some error? keep going
+        //{
+        //    itr++;
+        //}
 
         isend++;
+        m_sendFiles ++;
         if (isend > 50)
         {
-            Sleep(10);
+            Sleep(1);
+            isend = 0;
+            emit  finishSendDcm(m_sendFiles);
         }
     }
 
@@ -344,6 +451,7 @@ void Taskthread::sendDcm(DestinationEntry dest, std::vector<Patient> listpat)
     m_dest = dest;
 
     m_listpatient = listpat;
+
 }
 
 /////###############################################################################################
@@ -356,8 +464,8 @@ DicomSender::DicomSender()
 
 
     qRegisterMetaType<DestinationEntry>("DestinationEntry");
-    connect(this, &DicomSender::senddicomfile, &m_taskScanDicom, &Taskthread::sendDcm);
-    connect(&m_taskScanDicom, &Taskthread::finishSendDcm, this, &DicomSender::finishsenddicomfile);
+    connect(this, &DicomSender::senddicomfile, &m_taskSendDicom, &Taskthread::sendDcm);
+    connect(&m_taskSendDicom, &Taskthread::finishSendDcm, this, &DicomSender::finishSendDcm);
 
 }
 
@@ -436,10 +544,9 @@ bool DicomSender::SendPatiens(std::vector<Patient> listpat)
     return true;
 }
 ///call ---> mainwindow call
-void DicomSender::finishSendDcm(std::vector<Patient> listpat)
+void DicomSender::finishSendDcm(int sendFiles)
 {
 
-    m_listpatient = listpat;
+    emit finishsenddicomfile(sendFiles);
 
-    emit finishscandicomfile();
 }

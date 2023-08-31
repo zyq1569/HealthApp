@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     //    QSettings configini(configfilename,QSettings::IniFormat);
 
     connect(&m_sender, &DicomSender::finishscandicomfile, this, &MainWindow::updatePatientList);
-
+    connect(&m_sender, &DicomSender::finishsenddicomfile, this, &MainWindow::updateSendDcm);
 
 
     m_pMOdel = new QStandardItemModel(ui->tableView);
@@ -73,6 +73,9 @@ MainWindow::MainWindow(QWidget *parent)
     //ui->tableView->resizeColumnToContents(1);
     //ui->tableView->resizeColumnToContents(2);
     //ui->tableView->resizeColumnsToContents();
+
+    ui->pBSendDcm->setOrientation(Qt::Horizontal);
+    ui->pBSendDcm->setMinimum(0);
 
 }
 
@@ -109,12 +112,51 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::registerCodecs()
+{
+    // register global JPEG decompression codecs
+    DJDecoderRegistration::registerCodecs();
+
+    // register global JPEG compression codecs
+    DJEncoderRegistration::registerCodecs();
+
+    // register JPEG-LS decompression codecs
+    DJLSDecoderRegistration::registerCodecs();
+
+    //        // register JPEG-LS compression codecs
+    DJLSEncoderRegistration::registerCodecs();
+
+    // register RLE compression codec
+    DcmRLEEncoderRegistration::registerCodecs();
+
+    // register RLE decompression codec
+    DcmRLEDecoderRegistration::registerCodecs();
+
+    // jpeg2k
+    FMJPEG2KEncoderRegistration::registerCodecs();
+    FMJPEG2KDecoderRegistration::registerCodecs();
+}
+
+void MainWindow::registercleanup()
+{
+    // deregister JPEG codecs
+    DJDecoderRegistration::cleanup();
+    DJEncoderRegistration::cleanup();
+
+    // deregister JPEG-LS codecs
+    DJLSDecoderRegistration::cleanup();
+    DJLSEncoderRegistration::cleanup();
+
+    // deregister RLE codecs
+    DcmRLEDecoderRegistration::cleanup();
+    DcmRLEEncoderRegistration::cleanup();
+}
+
 void MainWindow::on_pbUpdate_clicked()
 {
     QString dir = ui->cbDcmDir->toPlainText();
 
     startScan(dir);
-
 
 }
 
@@ -200,6 +242,7 @@ void MainWindow::startScan(QString &path)
 void MainWindow::on_pBSend_clicked()
 {
 
+
     QString ip,port,ae;
     ip   = ui->cb_IP->toPlainText();
     port = ui->cb_Port->toPlainText();
@@ -222,17 +265,21 @@ void MainWindow::on_pBSend_clicked()
             listpatient.push_back(pt);
         }
     }
-    m_sender.SendPatiens(listpatient);
-    //foreach(Patient pt, listpatient)
-    //{
-    //    foreach(Study st, pt.studydatas)
-    //    {
+    m_sendTotal = listpatient.size();
+    if (m_sendTotal < 1)
+        return;
 
-    //    }
-    //}
+    ui->pBSendDcm->setMaximum(m_sendTotal);
+    ui->pBSendDcm->setValue(1);
+    m_sender.SendPatiens(listpatient);
 
 }
 
+void MainWindow::updateSendDcm(int sendFiles)
+{
+    ui->pBSendDcm->setValue(sendFiles);
+    ui->pBSendDcm->setFormat(("now:")+QString(sendFiles)+"/"+QString(m_sendTotal));
+}
 
 void MainWindow::on_pBDir_clicked()
 {
@@ -265,45 +312,6 @@ void MainWindow::on_pBEcho_clicked()
     }
 }
 
-void MainWindow::registerCodecs()
-{
-    // register global JPEG decompression codecs
-    DJDecoderRegistration::registerCodecs();
-
-    // register global JPEG compression codecs
-    DJEncoderRegistration::registerCodecs();
-
-    // register JPEG-LS decompression codecs
-    DJLSDecoderRegistration::registerCodecs();
-
-    //        // register JPEG-LS compression codecs
-    DJLSEncoderRegistration::registerCodecs();
-
-    // register RLE compression codec
-    DcmRLEEncoderRegistration::registerCodecs();
-
-    // register RLE decompression codec
-    DcmRLEDecoderRegistration::registerCodecs();
-
-    // jpeg2k
-    FMJPEG2KEncoderRegistration::registerCodecs();
-    FMJPEG2KDecoderRegistration::registerCodecs();
-}
-
-void MainWindow::registercleanup()
-{
-    // deregister JPEG codecs
-    DJDecoderRegistration::cleanup();
-    DJEncoderRegistration::cleanup();
-
-    // deregister JPEG-LS codecs
-    DJLSDecoderRegistration::cleanup();
-    DJLSEncoderRegistration::cleanup();
-
-    // deregister RLE codecs
-    DcmRLEDecoderRegistration::cleanup();
-    DcmRLEEncoderRegistration::cleanup();
-}
 
 void MainWindow::on_pBOpen2K_clicked()
 {
