@@ -367,12 +367,12 @@ p, li { white-space: pre-wrap; }
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="pBLoad">
      <property name="text">
       <string>Load</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="pBSave">
      <property name="text">
       <string>Save</string>
      </property>

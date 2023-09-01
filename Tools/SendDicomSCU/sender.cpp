@@ -360,8 +360,8 @@ int Taskthread::sendStudy(Study &studys)
     OFList<OFString> defaulttransfersyntax,dcmfiles;
     defaulttransfersyntax.push_back(UID_LittleEndianImplicitTransferSyntax);//
     defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEGLSLosslessTransferSyntax);
     defaulttransfersyntax.push_back(UID_JPEGProcess14SV1TransferSyntax);//
+    defaulttransfersyntax.push_back(UID_JPEGLSLosslessTransferSyntax);
     defaulttransfersyntax.push_back(UID_JPEG2000LosslessOnlyTransferSyntax);
 
     foreach(std::string dcmf, studys.filespath)

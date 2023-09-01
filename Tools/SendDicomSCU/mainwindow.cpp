@@ -273,7 +273,10 @@ void MainWindow::on_pBSend_clicked()
     }
 
     if (m_sendTotal < 1)
+    {
+        QMessageBox::information(this,tr("No Dicom files"),"No Dicom files!",QMessageBox::Ok);
         return;
+    }
 
     ui->pBSendDcm->reset();
     ui->pBSendDcm->setMaximum(m_sendTotal);
