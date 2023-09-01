@@ -278,12 +278,13 @@ void MainWindow::on_pBSend_clicked()
         return;
     }
 
-    if (ui->cBAnonymous->isChecked())
+    if (ui->cBAnonymous->isChecked() && QMessageBox::Yes == QMessageBox::question(NULL, "question", "Anonymous  Dicom file?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes))
     {
         m_sender.SetUpateDcmFileAnonymous(true);
     }
     else
     {
+        ui->cBAnonymous->setChecked(false);
         m_sender.SetUpateDcmFileAnonymous(false);
     }
 

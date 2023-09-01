@@ -442,7 +442,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>710</x>
       <y>160</y>
-      <width>331</width>
+      <width>491</width>
       <height>20</height>
      </rect>
     </property>
@@ -453,7 +453,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>Patient Anonymous: Patient Name|StudyUID|InstitutionName </string>
+     <string>Patient Anonymous: Patient Name|StudyUID|InstitutionName  UID:1.2.826.0.1.3680043.9.7604</string>
     </property>
    </widget>
   </widget>

@@ -403,12 +403,6 @@ int Taskthread::sendStudy(Study &studys)
         DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
         OFString sopclassuid;
         dcmff.getDataset()->findAndGetOFString(DCM_SOPClassUID, sopclassuid);
-        OFString ImpUID,Studyuid;
-        if (Taskthread::g_static_check)
-        {
-
-
-        }
 
         if (scu.findPresentationContextID(sopclassuid, UID_JPEGProcess14SV1TransferSyntax) != 0)//UID_JPEGProcess14SV1TransferSyntax
         {
@@ -426,17 +420,18 @@ int Taskthread::sendStudy(Study &studys)
 
         if (Taskthread::g_static_check)
         {
+            OFString ImpUID,Studyuid;
             if (dcmff.getMetaInfo()->findAndGetOFString(DCM_ImplementationClassUID, ImpUID).bad())
             {
-                ImpUID = "1.2.826.0.1.3680043.9.760";
+                ImpUID = "1.2.826.0.1.3680043.9.7604.";
             }
             dcmff.getDataset()->findAndGetOFString(DCM_StudyInstanceUID, Studyuid);
 
             OFString name = "Anonymous";
             updateStringAttributeValue(dcmff.getDataset(),DCM_PatientName, name);
 
-            OFString newstudyuid = "1.2.826.0.1.3680043.9.7604";
-            newstudyuid         += Studyuid.substr(ImpUID.length(),Studyuid.length());
+            OFString newstudyuid = "1.2.826.0.1.3680043.9.7604.";
+            newstudyuid         += Studyuid.substr(ImpUID.length()+3,Studyuid.length());
 
             updateStringAttributeValue(dcmff.getDataset(),DCM_StudyInstanceUID, newstudyuid);
 
