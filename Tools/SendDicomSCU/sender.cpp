@@ -329,7 +329,7 @@ void Taskthread::dicomSendJob()
 
     }
 
-    emit  finishSendDcm(m_sendFiles);
+    emit  finishSendDcm(0);
 }
 
 ////----
@@ -433,7 +433,7 @@ int Taskthread::sendStudy(Study &studys)
 
         isend++;
         m_sendFiles ++;
-        if (isend > 50)
+        if (isend > 20)
         {
             Sleep(1);
             isend = 0;
