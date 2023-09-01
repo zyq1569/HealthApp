@@ -8,6 +8,8 @@
 #include<vector>
 #include<set>
 #include "util.h"
+
+
 class DestinationEntry
 {
 public:
@@ -77,6 +79,7 @@ class PatientData
 class DcmDataset;
 class DcmItem;
 class DcmTagKey;
+class OFString;
 class Taskthread: public QObject ,public QRunnable
 {
     Q_OBJECT
@@ -90,7 +93,7 @@ public:
     int sendStudy(Study &studys);
     bool isCanceled();
     void setJob(int type);
-    /*static*/ bool updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, std::string &value);
+    static bool updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, OFString &value);
     void registerCodecs();
     void registercleanup();
 
@@ -103,11 +106,15 @@ signals:
     void finishScanDir(std::vector<Patient> listpatient);// to parent thread
 
     void finishSendDcm(int );// to parent thread
+
 public:
     QString m_scanDir;
     uint m_sendFiles;
     DestinationEntry m_dest;
     std::vector<Patient> m_listpatient;
+
+public:
+    static bool  g_static_check;
 
 private:
     int m_type;
@@ -128,6 +135,8 @@ public:
     bool Echo();
 
     bool SendPatiens(std::vector<Patient> listpat);
+
+    void SetUpateDcmFileAnonymous(bool key = false);
 
 public slots:
     void finishlistpatient(std::vector<Patient> listpat);

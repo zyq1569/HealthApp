@@ -278,6 +278,15 @@ void MainWindow::on_pBSend_clicked()
         return;
     }
 
+    if (ui->cBAnonymous->isChecked())
+    {
+        m_sender.SetUpateDcmFileAnonymous(true);
+    }
+    else
+    {
+        m_sender.SetUpateDcmFileAnonymous(false);
+    }
+
     ui->pBSendDcm->reset();
     ui->pBSendDcm->setMaximum(m_sendTotal);
     ui->pBSendDcm->setValue(1);
@@ -291,10 +300,12 @@ void MainWindow::updateSendDcm(int sendFiles)
     if (sendFiles == -1)
     {
         QMessageBox::information(this,tr("Send Dcm"), "Some dcm files send fail! pls check!",QMessageBox::Ok);
+        ui->cBAnonymous->setChecked(false);
         return;
     }
     if (sendFiles == 0)
     {
+        ui->cBAnonymous->setChecked(false);
         ui->pBSendDcm->setFormat(info.arg(QString::number(100,'f',1)));
         QMessageBox::information(this,tr("Send Dcm"), "All dcm files send succeed!",QMessageBox::Ok);
     }

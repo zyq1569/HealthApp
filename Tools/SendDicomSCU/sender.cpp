@@ -35,6 +35,8 @@
 
 /////#########################################################################################
 
+bool Taskthread::g_static_check = false;
+
 /////--------------------------Taskthread-----------------------------------------------------
 void Taskthread::registerCodecs()
 {
@@ -75,7 +77,8 @@ void Taskthread::registercleanup()
     DcmRLEDecoderRegistration::cleanup();
     DcmRLEEncoderRegistration::cleanup();
 }
-/*static*/ bool Taskthread::updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, std::string &value)
+
+bool Taskthread::updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, OFString &value)
 {
     DcmStack stack;
     DcmTag tag(key);
@@ -100,7 +103,7 @@ void Taskthread::registercleanup()
         return OFFalse;
     }
 
-    cond = elem->putOFStringArray(value.c_str());
+    cond = elem->putOFStringArray(value);
     if (cond != EC_Normal)
     {
         //        OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName()
@@ -110,6 +113,7 @@ void Taskthread::registercleanup()
 
     return OFTrue;
 }
+
 Taskthread::Taskthread(QObject *parent)
 {
     setAutoDelete(false);
@@ -399,6 +403,12 @@ int Taskthread::sendStudy(Study &studys)
         DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
         OFString sopclassuid;
         dcmff.getDataset()->findAndGetOFString(DCM_SOPClassUID, sopclassuid);
+        OFString ImpUID,Studyuid;
+        if (Taskthread::g_static_check)
+        {
+
+
+        }
 
         if (scu.findPresentationContextID(sopclassuid, UID_JPEGProcess14SV1TransferSyntax) != 0)//UID_JPEGProcess14SV1TransferSyntax
         {
@@ -414,6 +424,26 @@ int Taskthread::sendStudy(Study &studys)
         T_ASC_PresentationContextID pid;
         pid = scu.findAnyPresentationContextID(sopclassuid, fileTransfer.getXferID());
 
+        if (Taskthread::g_static_check)
+        {
+            if (dcmff.getMetaInfo()->findAndGetOFString(DCM_ImplementationClassUID, ImpUID).bad())
+            {
+                ImpUID = "1.2.826.0.1.3680043.9.760";
+            }
+            dcmff.getDataset()->findAndGetOFString(DCM_StudyInstanceUID, Studyuid);
+
+            OFString name = "Anonymous";
+            updateStringAttributeValue(dcmff.getDataset(),DCM_PatientName, name);
+
+            OFString newstudyuid = "1.2.826.0.1.3680043.9.7604";
+            newstudyuid         += Studyuid.substr(ImpUID.length(),Studyuid.length());
+
+            updateStringAttributeValue(dcmff.getDataset(),DCM_StudyInstanceUID, newstudyuid);
+
+            OFString MedicalName = "DCMTK_OmlyTEST";
+            updateStringAttributeValue(dcmff.getDataset(),DCM_InstitutionName, MedicalName);
+
+        }
         registerCodecs();
         cond = scu.sendSTORERequest(pid, "", dcmff.getDataset(), status);
         registercleanup();
@@ -456,6 +486,12 @@ void Taskthread::sendDcm(DestinationEntry dest, std::vector<Patient> listpat)
 
 /////###############################################################################################
 /////---------------------class-----DicomSender-----------------------------------------------------
+void DicomSender::SetUpateDcmFileAnonymous(bool key )
+{
+    Taskthread::g_static_check = key;
+}
+
+
 DicomSender::DicomSender()
 {
     qRegisterMetaType<std::vector<Patient>>("std::vector<Patient>");
