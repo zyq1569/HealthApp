@@ -1243,7 +1243,7 @@ OFBool GetValueOfData(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, DcmTag
 {
     if ((*imageDataSet)->findAndGetOFString(key, value).bad() || value.empty())
     {
-        OFLOG_ERROR(storescpLogger, "element StudyInstanceUID " << key << " absent or empty in data set");
+        //OFLOG_WARN(storescpLogger, "element StudyInstanceUID " << key << " absent or empty in data set");
         if (judge)
         {
             rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
@@ -1616,15 +1616,15 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                         static OFString task_dir = save_dir + "/Task";
                         static OFString ini_dir = task_dir + "/1";
                         OFString tem_study_dir = save_dir + "/Images/" + hash_dir + "/" + dcminfo.studyUID;
-                        OFLOG_ERROR(storescpLogger, "tem_study_dir:" + tem_study_dir);
+                        OFLOG_DEBUG(storescpLogger, "tem_study_dir:" + tem_study_dir);
                         if (!OFStandard::dirExists(task_dir))
                         {
-                            OFLOG_WARN(storescpLogger, "mkdir:" + task_dir);
+                            //OFLOG_WARN(storescpLogger, "mkdir:" + task_dir);
                             //mkdir(task_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO);
                             CreatDir(task_dir);
                             if (!OFStandard::dirExists(ini_dir))
                             {
-                                OFLOG_WARN(storescpLogger, "mkdir:" + ini_dir);
+                                //OFLOG_WARN(storescpLogger, "mkdir:" + ini_dir);
                                 CreatDir(ini_dir);
                             }
                         }
@@ -1632,21 +1632,21 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                         {
                             if (!OFStandard::dirExists(ini_dir))
                             {
-                                OFLOG_WARN(storescpLogger, "mkdir:" + ini_dir);
+                                //OFLOG_WARN(storescpLogger, "mkdir:" + ini_dir);
                                 CreatDir(ini_dir);
                             }
                         }
 
                         OFString ini_filename; 
-                        ini_filename = ini_dir + "/" + StringGUID() + ".ini";
-                        ini_filename = ini_dir + "/" + dcminfo.studyUID + "." + dcminfo.imageSOPInstanceUID + ".ini";
+                        //ini_filename = ini_dir + "/" + StringGUID() + ".ini";//+ dcminfo.seriesUID
+                        ini_filename = ini_dir + "/" + dcminfo.studyUID  + dcminfo.imageSOPInstanceUID + ".ini";
                         ///-----------------------------------------------------------                       
-                        /*OFString uuid = dcminfo.studyUID + "." + dcminfo.seriesUID + "." + dcminfo.imageSOPInstanceUID;
+                        /*
+                        // have to do: put in thread
+                        OFString uuid = dcminfo.studyUID + "." + dcminfo.seriesUID + "." + dcminfo.imageSOPInstanceUID;
                         OFList<OFString>  list = SplitUUID(uuid, ".");
                         OFString struid;
                         int size = list.size();
-                        OFLOG_WARN(storescpLogger, "--------------------------------------");
-                        OFLOG_WARN(storescpLogger, uuid);
                         for (OFListIterator(OFString) id = list.begin(); id != list.end(); id++)
                         {
                             OFString number = *id;
@@ -1655,25 +1655,24 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                             struid += out;
                         }
                         OFString ini_filename = ini_dir + "/" + struid + ".ini";
-                        OFLOG_WARN(storescpLogger, ini_filename);
-                        OFLOG_WARN(storescpLogger, "--------------------------------------");*/
+                        */
                         ///-----------------------------------------------------------
                         SaveDcmIni(dcminfo, ini_filename);
                         OFString image_dir = save_dir + "/Images";
                         if (!OFStandard::dirExists(image_dir))
                         {
-                            OFLOG_WARN(storescpLogger, "mkdir:" + image_dir);
+                            //OFLOG_WARN(storescpLogger, "mkdir:" + image_dir);
                             CreatDir(image_dir);//mkdir(image_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO );
                         }
                         hash_dir = image_dir + "/" + hash_dir;
                         if (!OFStandard::dirExists(hash_dir))
                         {
-                            OFLOG_WARN(storescpLogger, "mkdir:" + hash_dir);
+                            //OFLOG_WARN(storescpLogger, "mkdir:" + hash_dir);
                             CreatDir(hash_dir);//mkdir(hash_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO );
                         }
                         if (!OFStandard::dirExists(tem_study_dir))
                         {
-                            OFLOG_INFO(storescpLogger, "mkdir:" + tem_study_dir);
+                            //OFLOG_INFO(storescpLogger, "mkdir:" + tem_study_dir);
                             CreatDir(tem_study_dir);//mkdir(tem_study_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO );
                         }
                         subdirectoryName += tem_dir;
@@ -1702,7 +1701,9 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                     // check if the subdirectory already exists
                     // if it already exists dump a warning
                     if (OFStandard::dirExists(subdirectoryPathAndName))
-                        OFLOG_WARN(storescpLogger, "subdirectory for study already exists: " << subdirectoryPathAndName);
+                    {
+                        //OFLOG_WARN(storescpLogger, "subdirectory for study already exists: " << subdirectoryPathAndName);
+                    }
                     else
                     {
                         // if it does not exist create it

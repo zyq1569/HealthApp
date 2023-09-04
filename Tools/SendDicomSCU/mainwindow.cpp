@@ -506,47 +506,43 @@ void MainWindow::on_pBOpen2K_clicked()
 
 }
 
-std::vector<std::string> split(std::string str, std::string pattern)
-{
-    std::string::size_type pos;
-    std::vector<std::string> result;
-    str += pattern;
-    int size = str.size();
-    for(int i = 0; i <size; i++)
-    {
-        pos = str.find(pattern, i);
-        if (pos < size)
-        {
-            std::string s = str.substr(i,pos-i);
-            result.push_back(s);
-            i = pos + pattern.size() - 1;
-        }
-    }
-    return result;
-}
-const char BASE64[64] = {'A','B', 'C','D','E', 'F',   'G','H', 'I','J','K', 'L',   'M','N', 'O','P','Q', 'R',  'S','T','U', 'V','W','X',    'Y','Z',
-                         'a','b', 'c','d','e', 'f',   'g','h', 'i','j','k', 'l',   'm','n', 'o','p','q', 'r',  's','t','u', 'v','w','x',    'y','z',
-                         '0','1', '2','3','4', '5',   '6','7', '8','9','+', '/'      };
+//std::vector<std::string> split(std::string str, std::string pattern)
+//{
+//    std::string::size_type pos;
+//    std::vector<std::string> result;
+//    str += pattern;
+//    int size = str.size();
+//    for(int i = 0; i <size; i++)
+//    {
+//        pos = str.find(pattern, i);
+//        if (pos < size)
+//        {
+//            std::string s = str.substr(i,pos-i);
+//            result.push_back(s);
+//            i = pos + pattern.size() - 1;
+//        }
+//    }
+//    return result;
+//}
+//const char BASE64[64] = {'A','B', 'C','D','E', 'F',   'G','H', 'I','J','K', 'L',   'M','N', 'O','P','Q', 'R',  'S','T','U', 'V','W','X',    'Y','Z',
+//                         'a','b', 'c','d','e', 'f',   'g','h', 'i','j','k', 'l',   'm','n', 'o','p','q', 'r',  's','t','u', 'v','w','x',    'y','z',
+//                         '0','1', '2','3','4', '5',   '6','7', '8','9','+', '/'      };
 
-std::string Base64F(long long input, std::string &out)
-{
-    //long long a = 200911030261;
-    int base;
-    std::string s;
-    do
-    {
-        base = input % 64;
-        s    = BASE64[base]  + s;
-        input   /= 64;
-    }while (input);
-    out = s;
-    return out;
-}
+//std::string Base64F(long long input, std::string &out)
+//{
+//    //long long a = 200911030261;
+//    int base;
+//    std::string s;
+//    do
+//    {
+//        base = input % 64;
+//        s    = BASE64[base]  + s;
+//        input   /= 64;
+//    }while (input);
+//    out = s;
+//    return out;
+//}
 
-#include "Units.h"
-//https://github.com/moyumoyu/dcmtk-openjpeg
-void MainWindow::on_pBOpen2KC_clicked()
-{
 //    OFString uuid = "1.2.826.0.1.3680043.9.7604.091103151322.178053.2009110302611.2.840.113619.2.55.3.604688119.699.1256270056.701.31.2.840.113619.2.55.3.604688119.699.1256270056.756.1";
 
 //    OFList<OFString>  list = SplitUUID(uuid, ".");
@@ -580,6 +576,9 @@ void MainWindow::on_pBOpen2KC_clicked()
 
 //    return;
 
+//https://github.com/moyumoyu/dcmtk-openjpeg
+void MainWindow::on_pBOpen2KC_clicked()
+{
     QString derror;
     if (!dcmDataDict.isDictionaryLoaded())
     {
