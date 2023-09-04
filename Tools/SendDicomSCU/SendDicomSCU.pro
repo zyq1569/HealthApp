@@ -80,6 +80,8 @@ LIBS   +=  -L$${LIB_DIR} \
              -llibijg16 \
              -lfmjpeg2k \
              -lopenjp2
+#             \
+#             -lzlibstatic
 
 win32 {
 
@@ -108,6 +110,7 @@ INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
                 ../../include/dcm/win32/dcmsr/include \
                 ../../include/dcm/win32/dcmjpeg/include \
                 ../../include/dcm/win32/dcmjpls/include \
+                ../../include/dcm/win32/dcmUnits \
                 ../../Tools/fmjpeg2k/include
 
 

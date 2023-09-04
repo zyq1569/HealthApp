@@ -22,6 +22,77 @@
 #include <QThreadPool>
 #include <QMessageBox>
 
+
+//#include <fcntl.h>
+//#include <io.h>
+//#include "zlib.h"
+//#define CHUNK 16384
+///https://blog.csdn.net/infoworld/article/details/55101712
+/* Compress from file source to file dest until EOF on source.
+def() returns Z_OK on success, Z_MEM_ERROR if memory could not be
+allocated for processing, Z_STREAM_ERROR if an invalid compression
+level is supplied, Z_VERSION_ERROR if the version of zlib.h and the
+version of the library linked do not match, or Z_ERRNO if there is
+an error reading or writing the files. */
+//int compressString(const char* in_str, size_t in_len, std::string &out_str, int level)
+//{
+//    if (!in_str)
+//    {
+//        return Z_DATA_ERROR;
+//    }
+
+//    int ret, flush;
+//    unsigned have;
+//    z_stream strm;
+//    unsigned char out[CHUNK];
+
+//    /* allocate deflate state */
+//    strm.zalloc = Z_NULL;
+//    strm.zfree = Z_NULL;
+//    strm.opaque = Z_NULL;
+//    ret = deflateInit(&strm, level);
+//    if (ret != Z_OK)
+//        return ret;
+
+//    std::shared_ptr<z_stream> sp_strm(&strm, [](z_stream* strm)    {        (void)deflateEnd(strm);    });
+//    const char* end = in_str + in_len;
+
+//    size_t pos_index = 0;
+//    size_t distance = 0;
+
+//    /* compress until end of file */
+//    do {
+//        distance = end - in_str;
+//        strm.avail_in = (distance >= CHUNK)?CHUNK:distance;
+//        strm.next_in = (Bytef*)in_str;
+
+//        // next pos
+//        in_str += strm.avail_in;
+//        flush   = (in_str == end) ? Z_FINISH : Z_NO_FLUSH;
+
+//        do {
+//            strm.avail_out = CHUNK;
+//            strm.next_out = out;
+//            ret = deflate(&strm, flush);
+//            if(ret == Z_STREAM_ERROR)
+//            {
+//                break;
+//            }
+//            have = CHUNK - strm.avail_out;
+//            out_str.append((const char*)out,have);
+//        } while (strm.avail_out == 0);
+//        if (strm.avail_in != 0)
+//            break;
+
+//    } while (flush != Z_FINISH);
+//    if (ret != Z_STREAM_END)
+//    {
+//        return Z_STREAM_ERROR;
+//    }
+
+//    return Z_OK;
+//}
+
 void MainWindow::registerCodecs()
 {
     // register global JPEG decompression codecs
@@ -435,10 +506,80 @@ void MainWindow::on_pBOpen2K_clicked()
 
 }
 
+std::vector<std::string> split(std::string str, std::string pattern)
+{
+    std::string::size_type pos;
+    std::vector<std::string> result;
+    str += pattern;
+    int size = str.size();
+    for(int i = 0; i <size; i++)
+    {
+        pos = str.find(pattern, i);
+        if (pos < size)
+        {
+            std::string s = str.substr(i,pos-i);
+            result.push_back(s);
+            i = pos + pattern.size() - 1;
+        }
+    }
+    return result;
+}
+const char BASE64[64] = {'A','B', 'C','D','E', 'F',   'G','H', 'I','J','K', 'L',   'M','N', 'O','P','Q', 'R',  'S','T','U', 'V','W','X',    'Y','Z',
+                         'a','b', 'c','d','e', 'f',   'g','h', 'i','j','k', 'l',   'm','n', 'o','p','q', 'r',  's','t','u', 'v','w','x',    'y','z',
+                         '0','1', '2','3','4', '5',   '6','7', '8','9','+', '/'      };
 
+std::string Base64F(long long input, std::string &out)
+{
+    //long long a = 200911030261;
+    int base;
+    std::string s;
+    do
+    {
+        base = input % 64;
+        s    = BASE64[base]  + s;
+        input   /= 64;
+    }while (input);
+    out = s;
+    return out;
+}
+
+#include "Units.h"
 //https://github.com/moyumoyu/dcmtk-openjpeg
 void MainWindow::on_pBOpen2KC_clicked()
 {
+//    OFString uuid = "1.2.826.0.1.3680043.9.7604.091103151322.178053.2009110302611.2.840.113619.2.55.3.604688119.699.1256270056.701.31.2.840.113619.2.55.3.604688119.699.1256270056.756.1";
+
+//    OFList<OFString>  list = SplitUUID(uuid, ".");
+//    OFString struid;
+//    for (OFListIterator(OFString) id = list.begin(); id != list.end(); id++)
+//    {
+//        OFString number = *id;
+//        OFString out;
+//        UIDBase64(atoll(number.c_str()), out);
+//        out += ".";
+//        struid += out;
+////        qDebug("%s", number.c_str());
+//    }
+//    //OFString ini_filename = ini_dir + "/" + struid + ".ini";
+//    qDebug("%s", struid.c_str());
+
+//    //std::string  uid = "1.2.826.0.1.3680043.9.7604.091103151322.178053.2009110302611.2.840.113619.2.55.3.604688119.699.1256270056.701.31.2.840.113619.2.55.3.604688119.699.1256270056.756.1";
+//    std::string pattern = ".";
+//    std::vector<std::string>  listq = split(uuid.c_str(), pattern);
+//    std::string suid;
+//    foreach( std::string s, listq)
+//    {
+//        QString number = s.c_str();
+//        std::string out;
+//        Base64F(number.toLongLong(), out);
+//        out += ".";
+//        suid += out;
+////        qDebug("%s", s.c_str());
+//    }
+//    qDebug("%s", suid.c_str());
+
+//    return;
+
     QString derror;
     if (!dcmDataDict.isDictionaryLoaded())
     {
@@ -446,6 +587,7 @@ void MainWindow::on_pBOpen2KC_clicked()
         QMessageBox::warning(NULL, "warning!", derror);
         return;
     }
+
 
     QString filename;
     filename = QFileDialog::getOpenFileName(this,tr("select dcm file!"),QString(),tr("Dcm Files (*.dcm *.DCM *.*" ));

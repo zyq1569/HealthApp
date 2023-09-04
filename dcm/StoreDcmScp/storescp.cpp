@@ -1637,7 +1637,27 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                             }
                         }
 
-                        OFString ini_filename = ini_dir + "/" + StringGUID() + ".ini";
+                        OFString ini_filename; 
+                        ini_filename = ini_dir + "/" + StringGUID() + ".ini";
+                        ini_filename = ini_dir + "/" + dcminfo.studyUID + "." + dcminfo.imageSOPInstanceUID + ".ini";
+                        ///-----------------------------------------------------------                       
+                        /*OFString uuid = dcminfo.studyUID + "." + dcminfo.seriesUID + "." + dcminfo.imageSOPInstanceUID;
+                        OFList<OFString>  list = SplitUUID(uuid, ".");
+                        OFString struid;
+                        int size = list.size();
+                        OFLOG_WARN(storescpLogger, "--------------------------------------");
+                        OFLOG_WARN(storescpLogger, uuid);
+                        for (OFListIterator(OFString) id = list.begin(); id != list.end(); id++)
+                        {
+                            OFString number = *id;
+                            OFString out;
+                            UIDBase64(atoll(number.c_str()), out);//out += ".";                           
+                            struid += out;
+                        }
+                        OFString ini_filename = ini_dir + "/" + struid + ".ini";
+                        OFLOG_WARN(storescpLogger, ini_filename);
+                        OFLOG_WARN(storescpLogger, "--------------------------------------");*/
+                        ///-----------------------------------------------------------
                         SaveDcmIni(dcminfo, ini_filename);
                         OFString image_dir = save_dir + "/Images";
                         if (!OFStandard::dirExists(image_dir))

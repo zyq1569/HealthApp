@@ -718,3 +718,41 @@ OFBool ReadStudyInfo(OFString filename,OFString dir, OFList<OFString> &data)
     }
     return OFTrue;
 }
+
+
+OFList<OFString> SplitUUID(OFString str, OFString pattern)
+{
+    std::string::size_type pos;
+    OFList<OFString> result;
+    str += pattern;
+    int size = str.size();
+    for (int i = 0; i < size; i++)
+    {
+        pos = str.find(pattern, i);
+        if (pos < size)
+        {
+            OFString s = str.substr(i, pos - i);
+            result.push_back(s);
+            i = pos + pattern.size() - 1;
+        }
+    }
+    return result;
+}
+
+ static const char BASE64[64] = { 'A','B', 'C','D','E', 'F',   'G','H', 'I','J','K', 'L',   'M','N', 'O','P','Q', 'R',  'S','T','U', 'V','W','X',    'Y','Z',
+                                  'a','b', 'c','d','e', 'f',   'g','h', 'i','j','k', 'l',   'm','n', 'o','p','q', 'r',  's','t','u', 'v','w','x',    'y','z',
+                                  '0','1', '2','3','4', '5',   '6','7', '8','9','+', '/'     };
+
+ OFString UIDBase64(long long input, OFString &out)
+{
+    int base;
+    OFString s;
+    do
+    {
+        base = input % 64;
+        s = BASE64[base] + s;
+        input /= 64;
+    } while (input);
+    out = s;
+    return out;
+}

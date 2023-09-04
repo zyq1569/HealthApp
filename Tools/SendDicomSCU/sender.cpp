@@ -325,8 +325,8 @@ void Taskthread::dicomSendJob()
 
             if (sendStudy(st) == 1)
             {
-                emit  finishSendDcm(-1);
-                return;
+                //emit  finishSendDcm(-1);
+                //return;
             }
             Sleep(10);
         }

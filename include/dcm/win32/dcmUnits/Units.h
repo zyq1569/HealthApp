@@ -152,3 +152,6 @@ DCMTK_OFSTD_EXPORT OFBool SaveStudy2JsonFile(StudyInfo study,  OFString filename
 DCMTK_OFSTD_EXPORT OFBool SaveString2File(OFString str, OFString filename);
 
 DCMTK_OFSTD_EXPORT OFBool ReadStudyInfo(OFString filename, OFString dir,   OFList<OFString> &data);
+
+DCMTK_OFSTD_EXPORT OFList<OFString> SplitUUID(OFString str, OFString pattern);
+DCMTK_OFSTD_EXPORT OFString UIDBase64(long long input, OFString &out);
