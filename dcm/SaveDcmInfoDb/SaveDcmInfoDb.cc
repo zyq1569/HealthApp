@@ -592,7 +592,8 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
             }
             DicomFileInfo dcminfo;
             dcminfo.studyDate = StudyInfo.StudyDateTime;
-            OFString pathname = g_ImageDir + /*GetStudyHashDir(StudyInfo.StudyInstanceUID)*/GetStudyDateDir(dcminfo) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
+            dcminfo.studyTime = StudyInfo.StudyDateTime.substr(8,6);
+            OFString pathname = g_ImageDir + "/" + GetStudyDateDir(dcminfo) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
             OFString studyinifile = pathname + ".ini";
             OFString studyjsonfile = pathname + ".json";
             if (!OFStandard::fileExists(studyinifile))
@@ -743,7 +744,8 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 ///-------------------2020-11-19-add--------------------------- 
 
             }
-            if (SaveDcmInfoFile(StudyInfo, studyinifile) && CjsonSaveFile(StudyInfo, studyjsonfile))
+            //if (SaveDcmInfoFile(StudyInfo, studyinifile) && CjsonSaveFile(StudyInfo, studyjsonfile))
+            if (CjsonSaveFile(StudyInfo, studyjsonfile))
             {
                 OFStandard::deleteFile(filename);
             }

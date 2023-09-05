@@ -97,19 +97,16 @@ void MainWindow::registerCodecs()
 {
     // register global JPEG decompression codecs
     DJDecoderRegistration::registerCodecs();
-
     // register global JPEG compression codecs
     DJEncoderRegistration::registerCodecs();
 
     // register JPEG-LS decompression codecs
     DJLSDecoderRegistration::registerCodecs();
-
     //        // register JPEG-LS compression codecs
     DJLSEncoderRegistration::registerCodecs();
 
     // register RLE compression codec
     DcmRLEEncoderRegistration::registerCodecs();
-
     // register RLE decompression codec
     DcmRLEDecoderRegistration::registerCodecs();
 
@@ -131,6 +128,10 @@ void MainWindow::registercleanup()
     // deregister RLE codecs
     DcmRLEDecoderRegistration::cleanup();
     DcmRLEEncoderRegistration::cleanup();
+
+    // jpeg2k
+    FMJPEG2KEncoderRegistration::cleanup();
+    FMJPEG2KDecoderRegistration::cleanup();
 }
 
 

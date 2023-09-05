@@ -216,7 +216,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\dcmnet.lib;..\..\lib\dcm\win32\dcmdata.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\ofstd.lib;..\..\lib\dcm\win32\dcmUnits.lib;..\..\lib\dcm\win32\libijg16.lib;..\..\lib\dcm\win32\libijg12.lib;..\..\lib\dcm\win32\libijg8.lib;..\..\lib\dcm\win32\dcmjpeg.lib;..\..\lib\dcm\win32\openjp2.lib;..\..\lib\dcm\win32\fmjpeg2k.lib;iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\dcmnet.lib;..\..\lib\dcm\win32\dcmdata.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\ofstd.lib;..\..\lib\dcm\win32\dcmUnits.lib;..\..\lib\dcm\win32\libijg16.lib;..\..\lib\dcm\win32\libijg12.lib;..\..\lib\dcm\win32\libijg8.lib;..\..\lib\dcm\win32\dcmjpeg.lib;..\..\lib\dcm\win32\dcmjpls.lib;..\..\lib\dcm\win32\openjp2.lib;..\..\lib\dcm\win32\fmjpeg2k.lib;iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:X86 setargv</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>

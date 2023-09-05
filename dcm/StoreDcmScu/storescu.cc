@@ -67,6 +67,8 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcrledrg.h"  /* for RLE decoder */
 #include "dcmtk/dcmdata/dcrleerg.h"  /* for RLE encoder */
 #include "dcmtk/dcmjpeg/dipijpeg.h"  /* for dcmimage JPEG plugin */
+#include "fmjpeg2k/djdecode.h"
+#include "fmjpeg2k/djencode.h"
 #endif
 
 #ifdef WITH_OPENSSL
@@ -1307,6 +1309,10 @@ int FindAndSendImage(int argc, char *argv[])
 
     // register RLE decompression codec
     DcmRLEDecoderRegistration::registerCodecs();
+
+    // jpeg2k
+    FMJPEG2KEncoderRegistration::registerCodecs();
+    FMJPEG2KDecoderRegistration::registerCodecs();
 #endif
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
@@ -1648,6 +1654,10 @@ int FindAndSendImage(int argc, char *argv[])
     // deregister RLE codecs
     DcmRLEDecoderRegistration::cleanup();
     DcmRLEEncoderRegistration::cleanup();
+
+    // jpeg2k
+    FMJPEG2KEncoderRegistration::cleanup();
+    FMJPEG2KDecoderRegistration::cleanup();
 #endif
 
 #ifdef DEBUG
