@@ -119,6 +119,18 @@
 #include "dcmtk/dcmdata/dcvrui.h"      /* for class DcmUniqueIdentifier */
 #include<dcmtk/dcmjpeg/djdecode.h>
 
+#ifdef ON_THE_FLY_COMPRESSION
+#include "dcmtk/dcmjpeg/djdecode.h"  /* for JPEG decoders */
+#include "dcmtk/dcmjpeg/djencode.h"  /* for JPEG encoders */
+#include "dcmtk/dcmjpls/djdecode.h"  /* for JPEG-LS decoders */
+#include "dcmtk/dcmjpls/djencode.h"  /* for JPEG-LS encoders */
+#include "dcmtk/dcmdata/dcrledrg.h"  /* for RLE decoder */
+#include "dcmtk/dcmdata/dcrleerg.h"  /* for RLE encoder */
+#include "dcmtk/dcmjpeg/dipijpeg.h"  /* for dcmimage JPEG plugin */
+#include "fmjpeg2k/djdecode.h"
+#include "fmjpeg2k/djencode.h"
+#endif
+
 /*
  * Global variables, mutex protected
  */
@@ -941,18 +953,30 @@ DIMSE_sendMessage(
         /* transfer syntax. In detail, every single item of the data object will be checked. */
         if (dataObject)
         {
-            // 2019 07 25 add test
-            DcmXfer writeXferSyntax(xferSyntax);
-            DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
-            if (!dataObject->canWriteXfer(xferSyntax))
-            {
-                DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
-                            << dataFileName << "' from '" << originalXferSyntax.getXferName()
-                            << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'");
-                xferSyntax = dataObject->getOriginalXfer();
-            }
-            //------------------
-            // add test
+
+#ifdef ON_THE_FLY_COMPRESSION
+            // register global JPEG decompression codecs
+            DJDecoderRegistration::registerCodecs();
+
+            // register global JPEG compression codecs
+            DJEncoderRegistration::registerCodecs();
+
+            // register JPEG-LS decompression codecs
+            DJLSDecoderRegistration::registerCodecs();
+
+            // register JPEG-LS compression codecs
+            DJLSEncoderRegistration::registerCodecs();
+
+            // register RLE compression codec
+            DcmRLEEncoderRegistration::registerCodecs();
+
+            // register RLE decompression codec
+            DcmRLEDecoderRegistration::registerCodecs();
+
+            // jpeg2k
+            FMJPEG2KEncoderRegistration::registerCodecs();
+            FMJPEG2KDecoderRegistration::registerCodecs();
+#endif
             if (dataObject->isEmpty())
             {
                 /* if dataset is empty, i.e. it contains no data elements, create a warning. */
@@ -964,72 +988,37 @@ DIMSE_sendMessage(
                 /* if we cannot write all elements in the required transfer syntax, create a warning. */
                 DcmXfer writeXferSyntax(xferSyntax);
                 DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
-                //DCMNET_WARN(DIMSE_warn_str(assoc) << "-------writeXferSyntax.getXferName():" << writeXferSyntax.getXferName());
-                ////add ---------------begin
-#ifdef JPEG2000
-                ////UID_JPEGProcess14SV1TransferSyntax
-                OFString TransferSyntax = writeXferSyntax.getXferID();
-                if (TransferSyntax == UID_JPEG2000TransferSyntax||
-                        TransferSyntax == UID_JPEG2000LosslessOnlyTransferSyntax)
+                if (fromFile && dataFileName)
                 {
-                    OFString newfile = dataFileName;
-                    newfile += ".JK2";
-                    DcmFileFormat newdcmff;
-                    DCMNET_WARN(DIMSE_warn_str(assoc) << "writeXferSyntax.getXferName():" << writeXferSyntax.getXferName() << newfile);
-                    if (!OFStandard::fileExists(newfile))
-                    {
-                        DJDecoderRegistration::registerCodecs();
-                        dataObject->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-                        if (dataObject->canWriteXfer(EXS_LittleEndianExplicit))
-                        {
-                            dcmff.saveFile(newfile, EXS_LittleEndianExplicit);
-                        }
-                        DJDecoderRegistration::cleanup();
-                        DcmFileFormat newdcmff;
-                        if (newdcmff.loadFile(newfile, EXS_Unknown).good())
-                        {
-                            dataObject = newdcmff.getDataset();
-                        }
-                    }
-                    if (newdcmff.loadFile(newfile, EXS_Unknown).good())
-                    {
-                        dataObject = newdcmff.getDataset();
-                    }
+                    DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
+                        << dataFileName << "' from '" << originalXferSyntax.getXferName()
+                        << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'");
                 }
                 else
-#endif
                 {
-                    if (fromFile && dataFileName)
-                    {
-                        DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
-                                    << dataFileName << "' from '" << originalXferSyntax.getXferName()
-                                    << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'");
-                    }
-                    else {
-                        DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset from '"
-                                    << originalXferSyntax.getXferName() << "' transfer syntax to '"
-                                    << writeXferSyntax.getXferName() << "'");
-                    }
-                    cond = DIMSE_SENDFAILED;
+                    DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset from '"
+                        << originalXferSyntax.getXferName() << "' transfer syntax to '"
+                        << writeXferSyntax.getXferName() << "'");
                 }
-                //----------add ---------------end--2020-03-28
-                //------------------------------------------------------
-                //delete begin
-                //if (fromFile && dataFileName)
-                //{
-                //    DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
-                //        << dataFileName << "' from '" << originalXferSyntax.getXferName()
-                //        << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'");
-                //}
-                //else {
-                //    DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset from '"
-                //        << originalXferSyntax.getXferName() << "' transfer syntax to '"
-                //        << writeXferSyntax.getXferName() << "'");
-                //}
-                //cond = DIMSE_SENDFAILED;
-                //delete end
+                cond = DIMSE_SENDFAILED;
             }
+#ifdef ON_THE_FLY_COMPRESSION
+            // deregister JPEG codecs
+            DJDecoderRegistration::cleanup();
+            DJEncoderRegistration::cleanup();
 
+            // deregister JPEG-LS codecs
+            DJLSDecoderRegistration::cleanup();
+            DJLSEncoderRegistration::cleanup();
+
+            // deregister RLE codecs
+            DcmRLEDecoderRegistration::cleanup();
+            DcmRLEEncoderRegistration::cleanup();
+
+            // jpeg2k
+            FMJPEG2KEncoderRegistration::cleanup();
+            FMJPEG2KDecoderRegistration::cleanup();
+#endif
         }
         else
         {
