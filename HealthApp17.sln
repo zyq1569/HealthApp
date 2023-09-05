@@ -725,8 +725,8 @@ Global
 		{258846D8-C2A7-3276-A9CE-45E43E291709}.MinSizeRel|x64.Build.0 = MinSizeRel|x64
 		{258846D8-C2A7-3276-A9CE-45E43E291709}.Rel_Static|Mixed Platforms.ActiveCfg = Rel_Static|Win32
 		{258846D8-C2A7-3276-A9CE-45E43E291709}.Rel_Static|Mixed Platforms.Build.0 = Rel_Static|Win32
-		{258846D8-C2A7-3276-A9CE-45E43E291709}.Rel_Static|Win32.ActiveCfg = MinSizeRel|x64
-		{258846D8-C2A7-3276-A9CE-45E43E291709}.Rel_Static|Win32.Build.0 = MinSizeRel|x64
+		{258846D8-C2A7-3276-A9CE-45E43E291709}.Rel_Static|Win32.ActiveCfg = Rel_Static|Win32
+		{258846D8-C2A7-3276-A9CE-45E43E291709}.Rel_Static|Win32.Build.0 = Rel_Static|Win32
 		{258846D8-C2A7-3276-A9CE-45E43E291709}.Rel_Static|x64.ActiveCfg = Release|x64
 		{258846D8-C2A7-3276-A9CE-45E43E291709}.Rel_Static|x64.Build.0 = Release|x64
 		{258846D8-C2A7-3276-A9CE-45E43E291709}.Release|Mixed Platforms.ActiveCfg = Release|x64
