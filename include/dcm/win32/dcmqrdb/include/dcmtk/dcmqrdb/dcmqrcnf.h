@@ -60,7 +60,7 @@ struct DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveCharacterSetOptions
          *  If this flag is not set, the response will be created to the
          *  character set of the request (if possible).
          */
-        Override   = 0x02,
+        Override = 0x02,
 
         /** Fall back to another character set.
          *  If this flag is set, the application will try to recover from a
@@ -78,7 +78,7 @@ struct DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveCharacterSetOptions
          *    the response will still be left as-is, even if a fall back
          *    option was given.
          */
-        Fallback   = 0x04
+        Fallback = 0x04
     };
 
     /** Constructor, will construct an object that is marked as
@@ -199,352 +199,356 @@ class DCMTK_DCMQRDB_EXPORT DcmQueryRetrieveConfig
 
 public:
 
-  DcmQueryRetrieveConfig()
-  : UserName_()
-  , GroupName_()
-  , networkTCPPort_(0)
-  , maxPDUSize_(0)
-  , maxAssociations_(0)
-  , CNF_Config()
-  , CNF_HETable()
-  , CNF_VendorTable()
-  {
-  }
+    DcmQueryRetrieveConfig()
+        : UserName_()
+        , GroupName_()
+        , networkTCPPort_(0)
+        , maxPDUSize_(0)
+        , maxAssociations_(0)
+        , CNF_Config()
+        , CNF_HETable()
+        , CNF_VendorTable()
+    {
+    }
 
-  ~DcmQueryRetrieveConfig();
+    ~DcmQueryRetrieveConfig();
 
-  /*
-   *  read configuration file and initialize the
-   *  intern configuration structure
-   *  Input : configuration file name
-   *  Return : 1 - ok
-   *     0 - error
-   */
-  int init(const char *ConfigurationFile);
+    /*
+     *  read configuration file and initialize the
+     *  intern configuration structure
+     *  Input : configuration file name
+     *  Return : 1 - ok
+     *     0 - error
+     */
+    int init(const char *ConfigurationFile);
 
-  /*
-   *  search for peer with AETitle
-   *  Input : AETitle
-   *  Ouput : Host Name, Port Number
-   *  Return : 1 - found in AETable
-   *     2 - found in HostTable
-   *     0 - not found
-   */
-  int peerForAETitle(const char *AETitle, const char **HostName, int *PortNumber) const;
+    /*
+     *  search for peer with AETitle
+     *  Input : AETitle
+     *  Ouput : Host Name, Port Number
+     *  Return : 1 - found in AETable
+     *     2 - found in HostTable
+     *     0 - not found
+     */
+    int peerForAETitle(const char *AETitle, const char **HostName, int *PortNumber) const;
 
-  /*
-   *  check if given AETitles exist in same
-   *  Vendor Group
-   *  Input : two AETitles
-   *  Return : 1 - same group
-   *     0 - else
-   */
-  int checkForSameVendor(const char *AETitle1, const char *AETitle2) const;
+    /*
+     *  check if given AETitles exist in same
+     *  Vendor Group
+     *  Input : two AETitles
+     *  Return : 1 - same group
+     *     0 - else
+     */
+    int checkForSameVendor(const char *AETitle1, const char *AETitle2) const;
 
-  /*
-   *  get Storage Area for AETitle
-   *  Input : AETitle
-   *  Return : Storage Area
-   */
-  const char *getStorageArea(const char *AETitle) const;
+    /*
+     *  get Storage Area for AETitle
+     *  Input : AETitle
+     *  Return : Storage Area
+     */
+    const char *getStorageArea(const char *AETitle) const;
 
-  /*
-   *  get Number of Maximal Studies
-   *  Input : AETitle
-   *  Return : Number of Maximal Studies
-   */
-  int getMaxStudies(const char *AETitle) const;
+    /*
+     *  get Number of Maximal Studies
+     *  Input : AETitle
+     *  Return : Number of Maximal Studies
+     */
+    int getMaxStudies(const char *AETitle) const;
 
-  /*
-   *  get Number of maximal Bytes per Study
-   *  Input : AETitle
-   *  Return : Number of maximal Bytes per Study
-   */
-  long getMaxBytesPerStudy(const char *AETitle) const;
+    /*
+     *  get Number of maximal Bytes per Study
+     *  Input : AETitle
+     *  Return : Number of maximal Bytes per Study
+     */
+    long getMaxBytesPerStudy(const char *AETitle) const;
 
-  /*
-   *  get Max Associations
-   *  Input :
-   *  Return : Max Associations
-   */
-  int getMaxAssociations() const;
+    /*
+     *  get Max Associations
+     *  Input :
+     *  Return : Max Associations
+     */
+    int getMaxAssociations() const;
 
-  /*
-   *  get Network TCP Port
-   *  Input :
-   *  Return : Network TCP Port
-   */
-  int getNetworkTCPPort() const;
+    /*
+     *  get Network TCP Port
+     *  Input :
+     *  Return : Network TCP Port
+     */
+    int getNetworkTCPPort() const;
 
-  /*
-   *  get Max PDU Size
-   *  Input :
-   *  Return : Max PDU Size
-   */
-  OFCmdUnsignedInt getMaxPDUSize() const;
+    /*
+     *  get Max PDU Size
+     *  Input :
+     *  Return : Max PDU Size
+     */
+    OFCmdUnsignedInt getMaxPDUSize() const;
 
-  /*
-   *  check if there is an peer with calling AETitle
-   *  on HostName
-   *  Input : called AETitle, calling AETitle, Host Name
-   *  Return : 1 -- yes
-   *     0 -- no
-   */
-  int peerInAETitle(const char *calledAETitle, const char *callingAETitle, const char *HostName) const;
+    /*
+     *  check if there is an peer with calling AETitle
+     *  on HostName
+     *  Input : called AETitle, calling AETitle, Host Name
+     *  Return : 1 -- yes
+     *     0 -- no
+     */
+    int peerInAETitle(const char *calledAETitle, const char *callingAETitle, const char *HostName) const;
 
-  /*
-   *  get Access mode
-   *  Input : AETitle
-   *  Return : Access mode
-   */
-  const char *getAccess(const char *AETitle) const;
+    /*
+     *  get Access mode
+     *  Input : AETitle
+     *  Return : Access mode
+     */
+    const char *getAccess(const char *AETitle) const;
 
-  /*
-   *  check if given storage area is read/write
-   *  Input : AETitle
-   *  Return : true if storage area is writable
-   */
-  OFBool writableStorageArea(const char *aeTitle) const;
+    /*
+     *  check if given storage area is read/write
+     *  Input : AETitle
+     *  Return : true if storage area is writable
+     */
+    OFBool writableStorageArea(const char *aeTitle) const;
 
-  // methods only used by TI
+    // methods only used by TI
 
-  /*
-   *  searches in the host table for all AE titles
-   *  known for peer hostName.  Creates an array of string pointers
-   *  containing the known AE titles.  The AE titles contained
-   *  in the array are privately owned by the config facility (you
-   *  may not free them).  You may free the array when no longer needed.
-   *
-   *  Input Parameter: peer host name
-   *  Output Parameter: malloc'ed array of private string pointers.
-   *  Returns : number of entries in the malloced array.
-   *      0 if no entries found.
-   */
+    /*
+     *  searches in the host table for all AE titles
+     *  known for peer hostName.  Creates an array of string pointers
+     *  containing the known AE titles.  The AE titles contained
+     *  in the array are privately owned by the config facility (you
+     *  may not free them).  You may free the array when no longer needed.
+     *
+     *  Input Parameter: peer host name
+     *  Output Parameter: malloc'ed array of private string pointers.
+     *  Returns : number of entries in the malloced array.
+     *      0 if no entries found.
+     */
 
-  int aeTitlesForPeer(const char *hostName, const char *** aeTitleList) const;
+    int aeTitlesForPeer(const char *hostName, const char *** aeTitleList) const;
 
-  /*
-   *  Creates an array of string pointers
-   *  containing the known AE titles for CTN storage areas.
-   *  The AE titles contained in the array are privately owned
-   *  by the config facility (you may not free them).  You may
-   *  free the array when no longer needed.
-   *
-   *  Output Parameter: malloc'ed array of private string pointers.
-   *  Returns : number of entries in the malloced array.
-   *      0 if no entries exist.
-   */
+    /*
+     *  Creates an array of string pointers
+     *  containing the known AE titles for CTN storage areas.
+     *  The AE titles contained in the array are privately owned
+     *  by the config facility (you may not free them).  You may
+     *  free the array when no longer needed.
+     *
+     *  Output Parameter: malloc'ed array of private string pointers.
+     *  Returns : number of entries in the malloced array.
+     *      0 if no entries exist.
+     */
 
-  int ctnTitles(const char *** ctnTitleList) const;
+    int ctnTitles(const char *** ctnTitleList) const;
 
-  /*
-   *  Creates an array of string pointers
-   *  containing the kown Host Names for given Vendor Name.
-   *  The Host Names contained in the array are privately owned
-   *  by the config facility (you may not free them). You may
-   *  free the array when no longer needed.
-   *  Input : Vendor Name
-   *  Ouput : array of string pointers
-   *  Return : number of entries in array
-   *     0 if no entries exist
-   */
-  int HostNamesForVendor(const char *Vendor, const char ***HostNameArray) const;
+    /*
+     *  Creates an array of string pointers
+     *  containing the kown Host Names for given Vendor Name.
+     *  The Host Names contained in the array are privately owned
+     *  by the config facility (you may not free them). You may
+     *  free the array when no longer needed.
+     *  Input : Vendor Name
+     *  Ouput : array of string pointers
+     *  Return : number of entries in array
+     *     0 if no entries exist
+     */
+    int HostNamesForVendor(const char *Vendor, const char ***HostNameArray) const;
 
-  /*
-   *  searches in the host table for all AE titles
-   *  known for a symbolic name.  Creates an array of string pointers
-   *  containing the known AE titles.  The AE titles contained
-   *  in the array are privately owned by the config facility (you
-   *  may not free them).  You may free the array when no longer needed.
-   *
-   *  Input Parameter: symbolic name
-   *  Output Parameter: malloc'ed array of private string pointers.
-   *  Returns : number of entries in the malloced array.
-   *      0 if no entries found.
-   */
-  int aeTitlesForSymbolicName(const char *symbolicName, const char ***aeTitleList) const;
+    /*
+     *  searches in the host table for all AE titles
+     *  known for a symbolic name.  Creates an array of string pointers
+     *  containing the known AE titles.  The AE titles contained
+     *  in the array are privately owned by the config facility (you
+     *  may not free them).  You may free the array when no longer needed.
+     *
+     *  Input Parameter: symbolic name
+     *  Output Parameter: malloc'ed array of private string pointers.
+     *  Returns : number of entries in the malloced array.
+     *      0 if no entries found.
+     */
+    int aeTitlesForSymbolicName(const char *symbolicName, const char ***aeTitleList) const;
 
-  /*
-   *  printf contents of configuration stucture
-   *  to stdout
-   */
-  void printConfig();
+    /*
+     *  printf contents of configuration stucture
+     *  to stdout
+     */
+    void printConfig();
 
-  /*
-   *  get User Name
-   *  Input :
-   *  Return : User Name
-   */
-  const char *getUserName() const;
+    /*
+     *  get User Name
+     *  Input :
+     *  Return : User Name
+     */
+    const char *getUserName() const;
 
-  /*
-   *  get Group Name
-   *  Input :
-   *  Return : Group Name
-   */
-  const char *getGroupName() const;
+    /*
+     *  get Group Name
+     *  Input :
+     *  Return : Group Name
+     */
+    const char *getGroupName() const;
 
-  /*
-   *  get Character Set Options
-   *  Input :
-   *  Return : Character Set Options
-   */
-  const DcmQueryRetrieveCharacterSetOptions& getCharacterSetOptions() const;
+    /*
+     *  get Character Set Options
+     *  Input :
+     *  Return : Character Set Options
+     */
+    const DcmQueryRetrieveCharacterSetOptions& getCharacterSetOptions() const;
 
-  /*
-   *  get Character Set Options
-   *  Input :
-   *  Return : Character Set Options
-   */
-  DcmQueryRetrieveCharacterSetOptions& getCharacterSetOptions();
+    /*
+     *  get Character Set Options
+     *  Input :
+     *  Return : Character Set Options
+     */
+    DcmQueryRetrieveCharacterSetOptions& getCharacterSetOptions();
 
-  //--------------
-  const char *getSqlServer() const;
-  const char *getSqldbname() const;
-  const char *getSqlusername() const;
-  const char *getSqlpass() const;
+    //--------------
+    const char *getSqlServer() const;
+    const char *getSqldbname() const;
+    const char *getSqlusername() const;
+    const char *getSqlpass() const;
 
-  void setSqlServer(OFString sqlserver);
-  void setSqldbname(OFString sqlname);
-  void setSqlusername(OFString sqlusername);
-  void setSqlpass(OFString sqlpass);
-  const OFList<OFString> *getStoreDir() const
-  {
-      return &m_storedir;
-  }
-  //-----------------
+    void setSqlServer(OFString sqlserver);
+    void setSqldbname(OFString sqlname);
+    void setSqlusername(OFString sqlusername);
+    void setSqlpass(OFString sqlpass);
+    const OFList<OFString> *getStoreDir() const
+    {
+        return &m_storedir;
+    }
+    //-----------------
 
 private:
 
-  friend class DcmQueryRetrieveCharacterSetOptions;
+    friend class DcmQueryRetrieveCharacterSetOptions;
 
-  const char* vendorForPeerAETitle(const char *peerAETitle) const;
+    const char* vendorForPeerAETitle(const char *peerAETitle) const;
 
-  int countCtnTitles() const;
+    int countCtnTitles() const;
 
 
-  /*
-   *  initialize configuration storage structure
-   */
-  void initConfigStruct();
+    /*
+     *  initialize configuration storage structure
+     */
+    void initConfigStruct();
 
-  /*
-   *  read configuration file line by line
-   *  Input : configuration file pointer
-   *  Return : 1 - ok
-   *     0 - error
-   */
-  int readConfigLines(FILE *cnffp);
+    /*
+     *  read configuration file line by line
+     *  Input : configuration file pointer
+     *  Return : 1 - ok
+     *     0 - error
+     */
+    int readConfigLines(FILE *cnffp);
 
-  /*
-   *  read HostTable in configuration file
-   *  Input : configuration file pointer, line number
-   *  Output : line number
-   *  Return : 1 - ok
-   *     0 - error
-   */
-  int readHostTable(FILE *cnffp, int *lineno);
+    /*
+     *  read HostTable in configuration file
+     *  Input : configuration file pointer, line number
+     *  Output : line number
+     *  Return : 1 - ok
+     *     0 - error
+     */
+    int readHostTable(FILE *cnffp, int *lineno);
 
-  /*
-   *  read VendorTable in configuration file
-   *  Input : configuration file pointer, line number
-   *  Output : line number
-   *  Return : 1 - ok
-   *     0 - error
-   */
-  int readVendorTable(FILE *cnffp, int *lineno);
+    /*
+     *  read VendorTable in configuration file
+     *  Input : configuration file pointer, line number
+     *  Output : line number
+     *  Return : 1 - ok
+     *     0 - error
+     */
+    int readVendorTable(FILE *cnffp, int *lineno);
 
-  /*
-   *  read AETable in configuration file
-   *  Input : configuration file pointer, line number
-   *  Output : line number
-   *  Return : 1 - ok
-   *     0 - error
-   */
-  int readAETable(FILE *cnffp, int *lineno);
+    /*
+     *  read AETable in configuration file
+     *  Input : configuration file pointer, line number
+     *  Output : line number
+     *  Return : 1 - ok
+     *     0 - error
+     */
+    int readAETable(FILE *cnffp, int *lineno);
 
-  /*
-   *  separate the peer list from value list
-   *  Input : pointer to value list
-   *  Output : number of peers
-   *  Return : pointer to peer list
-   */
-  DcmQueryRetrieveConfigPeer *parsePeers(char **valuehandle, int *peers);
+    /*
+     *  separate the peer list from value list
+     *  Input : pointer to value list
+     *  Output : number of peers
+     *  Return : pointer to peer list
+     */
+    DcmQueryRetrieveConfigPeer *parsePeers(char **valuehandle, int *peers);
 
-  /*
-   *  extract peers from peer list
-   *  Input : pointer to value list
-   *  Output : number of peers
-   *  Return : pointer to peer list
-   */
-  DcmQueryRetrieveConfigPeer *readPeerList(char **valuehandle, int *peers);
+    /*
+     *  extract peers from peer list
+     *  Input : pointer to value list
+     *  Output : number of peers
+     *  Return : pointer to peer list
+     */
+    DcmQueryRetrieveConfigPeer *readPeerList(char **valuehandle, int *peers);
 
-  /*
-   *  separate a quota from value list
-   *  Input : pointer to value list
-   *  Return : pointer to quota structure
-   */
-  static DcmQueryRetrieveConfigQuota *parseQuota(char **valuehandle);
+    /*
+     *  separate a quota from value list
+     *  Input : pointer to value list
+     *  Return : pointer to quota structure
+     */
+    static DcmQueryRetrieveConfigQuota *parseQuota(char **valuehandle);
 
-  /*
-   *  check if character is white space or separator
-   *  Input : character
-   *  Return : 1 - yes
-   *     0 - no
-   */
-  static int isgap (char gap);
+    /*
+     *  check if character is white space or separator
+     *  Input : character
+     *  Return : 1 - yes
+     *     0 - no
+     */
+    static int isgap(char gap);
 
-  /*
-   *  check if character is quote
-   *  Input : character
-   *  Return : 1 - yes
-   *     0 - no
-   */
-  static int isquote (char quote);
+    /*
+     *  check if character is quote
+     *  Input : character
+     *  Return : 1 - yes
+     *     0 - no
+     */
+    static int isquote(char quote);
 
-  /*
-   *  print a panic message to stderr
-   *  Input : variable
-   */
-  static void panic(const char *fmt, ...);
+    /*
+     *  print a panic message to stderr
+     *  Input : variable
+     */
+    static void panic(const char *fmt, ...);
 
-  /*
-   *  convert string to long
-   *  Input : parameter string value
-   *  Return : parameter as long
-   *     -1 on error
-   */
-  static long quota (const char *value);
+    /*
+     *  convert string to long
+     *  Input : parameter string value
+     *  Return : parameter as long
+     *     -1 on error
+     */
+    static long quota(const char *value);
 
-  /*
-   *  skip mnemonic and first gap in rc line
-   *  Input : rc line
-   *  Return : pointer to value list
-   */
-  static char *skipmnemonic (char *rcline);
+    /*
+     *  skip mnemonic and first gap in rc line
+     *  Input : rc line
+     *  Return : pointer to value list
+     */
+    static char *skipmnemonic(char *rcline);
 
-  /*
-   *  separate on value from value list
-   *  Input : pointer to value list
-   *  Return : pointer to next value
-   */
-  static char *parsevalues (char **valuehandle);
+    /*
+     *  separate on value from value list
+     *  Input : pointer to value list
+     *  Return : pointer to next value
+     */
+    static char *parsevalues(char **valuehandle);
 
-  /* Configuration Parameters */
-  OFString UserName_;
-  OFString GroupName_;
-  int networkTCPPort_;
-  Uint32 maxPDUSize_;
-  int maxAssociations_;
-  //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-  OFList<OFString> m_storedir;
-  OFString m_sqlserver, m_sqldbname, m_sqlusername, m_sqlpass;//add 20190727
-  //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-  DcmQueryRetrieveCharacterSetOptions characterSetOptions_;
-  DcmQueryRetrieveConfigConfiguration CNF_Config;   /* configuration file contents */
-  DcmQueryRetrieveConfigHostTable CNF_HETable;      /* HostEntries Table */
-  DcmQueryRetrieveConfigHostTable CNF_VendorTable;  /* Vendor Table */
+    /* Configuration Parameters */
+    OFString UserName_;
+    OFString GroupName_;
+    int networkTCPPort_;
+    Uint32 maxPDUSize_;
+    int maxAssociations_;
 
+    DcmQueryRetrieveCharacterSetOptions characterSetOptions_;
+    DcmQueryRetrieveConfigConfiguration CNF_Config;   /* configuration file contents */
+    DcmQueryRetrieveConfigHostTable CNF_HETable;      /* HostEntries Table */
+    DcmQueryRetrieveConfigHostTable CNF_VendorTable;  /* Vendor Table */
+
+    //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+public:
+    OFList<OFString> m_storedir;
+    OFString m_sqlserver, m_sqldbname, m_sqlusername, m_sqlpass;//add 20190727
+    static OFString getStudyQueryList(OFString key);
+    static void addStudyQueryList(OFString key, OFString v);
+    //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 };
 
 

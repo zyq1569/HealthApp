@@ -35,6 +35,8 @@
 
 OFLogger DCM_dcmqrdbLogger = OFLog::getLogger("dcmtk.dcmqrdb");
 
+static OFMap<OFString, OFString> g_StudyQueryList;
+
 static void freePeer(OFMap<const void *, OFBool> &pointersToFree, struct DcmQueryRetrieveConfigPeer *entry)
 {
     // Hack to make sure we don't double-free
@@ -1376,4 +1378,21 @@ void DcmQueryRetrieveConfig::setSqlusername(OFString sqlusername)
 void DcmQueryRetrieveConfig::setSqlpass(OFString sqlpass)
 {
     m_sqlpass = sqlpass;
+}
+
+
+OFString DcmQueryRetrieveConfig::getStudyQueryList(OFString key)
+{
+    OFString value;
+    OFMap<OFString, OFString>::iterator it = g_StudyQueryList.find(key);
+    if (it != g_StudyQueryList.end())
+    {       
+        value = (*it).second;
+    }
+    return value;
+}
+void DcmQueryRetrieveConfig::addStudyQueryList(OFString key, OFString v)
+{
+    OFPair< OFString, OFString> it(key, v);
+    g_StudyQueryList.insert(it);
 }

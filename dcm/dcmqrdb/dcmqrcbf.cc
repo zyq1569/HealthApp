@@ -1120,10 +1120,10 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
             {
                 strcpy(dbRecod.StudyDescription, StudyDescription.c_str());
             }
+            OFString date, time;
             if (rs->getValue(row_index, "StudyDateTime", StudyDateTime))
             {
-                OFString datetime(StudyDateTime.c_str());
-                OFString date, time;
+                OFString datetime(StudyDateTime.c_str());               
                 datetime = ToDateTimeFormate(datetime, date, time);
                 strcpy(dbRecod.StudyDate, date.c_str());
                 strcpy(dbRecod.StudyTime, time.c_str());
@@ -1137,6 +1137,9 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
             findResponseList = NULL;
             m_matchingDatasets.push_back(findResponseIdentifiers);
             row_index++;
+            //cach querydata map_.insert( OFPair<const OFString, DcmProfileEntry*>( (*first).first, copy ) );
+            //OFPair< OFString, OFString> it(StudyInstanceUID.c_str(), StudyDateTime.c_str());
+            m_config->addStudyQueryList(StudyInstanceUID.c_str(), (date + time));
         }
 #ifdef DEBUG
         DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_Pending");
