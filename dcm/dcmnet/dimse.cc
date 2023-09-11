@@ -977,13 +977,14 @@ DIMSE_sendMessage(
             FMJPEG2KEncoderRegistration::registerCodecs();
             FMJPEG2KDecoderRegistration::registerCodecs();
 #endif
+
             if (dataObject->isEmpty())
             {
                 /* if dataset is empty, i.e. it contains no data elements, create a warning. */
                 DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: dataset is empty");
                 cond = DIMSE_SENDFAILED;
             }
-            else if (!dataObject->canWriteXfer(xferSyntax))
+            else if ((EC_Normal != dataObject->chooseRepresentation(xferSyntax, NULL)) ||  !dataObject->canWriteXfer(xferSyntax))
             {
                 /* if we cannot write all elements in the required transfer syntax, create a warning. */
                 DcmXfer writeXferSyntax(xferSyntax);
