@@ -35,6 +35,17 @@
 #include "dcmtk/dcmjpeg/djencode.h"      /* for dcmjpeg decoders */
 
 #include "Units.h"
+//#include "dcmtk/dcmjpeg/djdecode.h"  /* for JPEG decoders */
+//#include "dcmtk/dcmjpeg/djencode.h"  /* for JPEG encoders */
+//#include "dcmtk/dcmjpls/djdecode.h"  /* for JPEG-LS decoders */
+//#include "dcmtk/dcmjpls/djencode.h"  /* for JPEG-LS encoders */
+//#include "dcmtk/dcmdata/dcrledrg.h"  /* for RLE decoder */
+//#include "dcmtk/dcmdata/dcrleerg.h"  /* for RLE encoder */
+//#include "dcmtk/dcmjpeg/dipijpeg.h"  /* for dcmimage JPEG plugin */
+//#include "fmjpeg2k/djdecode.h"
+//#include "fmjpeg2k/djencode.h"
+
+
 
 BEGIN_EXTERN_C
 
@@ -99,18 +110,29 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     //OFString SeriesInstanceUID;
     if (moveRequestIdentifiers->findAndGetOFString(DCM_SeriesInstanceUID, dcminfo.seriesUID/*SeriesInstanceUID*/).bad())
     {
-        dcminfo.studyUID.clear();//SeriesInstanceUID.clear();
+        dcminfo.seriesUID.clear();//SeriesInstanceUID.clear();
     }
-
+    bool blookupCache = false;
     if (moveRequestIdentifiers->findAndGetOFString(DCM_StudyDate, dcminfo.studyDate).bad())
     {
-
-    }    
+        //need to luook up DB
+        blookupCache = true;
+    }//DCMQRDB_WARN("DCM_StudyDate:" + dcminfo.studyDate);    
     if (moveRequestIdentifiers->findAndGetOFString(DCM_StudyTime, dcminfo.studyTime).bad())
     {
-
+        //need to luook up DB
+        blookupCache = true;
     }
-
+    if (blookupCache)
+    {
+        OFString datatime = m_config->getStudyQueryList(dcminfo.studyUID);//"20120609151843";//
+        if (datatime.length() > 1)
+        {
+            //2009 1103 172721
+            dcminfo.studyDate = datatime.substr(0,8);
+            dcminfo.studyTime = datatime.substr(8,6);
+        }
+    }
     //OFHashValue path = CreateHashValue(StudyInstanceUID);
     OFString hash_dir = GetStudyDateDir(dcminfo);// path.first + "/" + path.second;
     OFString temp_dir = "/Images/" + hash_dir + "/" + dcminfo.studyUID;//;StudyInstanceUID;
@@ -366,36 +388,87 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     req.MoveOriginatorID = origMsgId;
 
     DCMQRDB_INFO("Store SCU RQ: MsgID " << msgId << ", ("<< dcmSOPClassUIDToModality(sopClass, "OT") << ")");
-
-    //add ---------------------jp2k--------------------
+    //-----------------------------register----------
     // register global JPEG decompression codecs
-    DJDecoderRegistration::registerCodecs();
-    //// register global JPEG compression codecs
-    DJEncoderRegistration::registerCodecs();
-    DcmFileFormat dcmff;
-    cond = dcmff.loadFile(fname, EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
-    ///* figure out if an error occured while the file was read*/
-    if (cond.bad())
+    //DJDecoderRegistration::registerCodecs();
+
+    // register global JPEG compression codecs
+    //DJEncoderRegistration::registerCodecs();
+
+    // register JPEG-LS decompression codecs
+    //DJLSDecoderRegistration::registerCodecs();
+
+    // register JPEG-LS compression codecs
+    //DJLSEncoderRegistration::registerCodecs();
+
+    // register RLE compression codec
+    //DcmRLEEncoderRegistration::registerCodecs();
+
+    // register RLE decompression codec
+    //DcmRLEDecoderRegistration::registerCodecs();
+
+    // jpeg2k
+    //FMJPEG2KEncoderRegistration::registerCodecs();
+    //FMJPEG2KDecoderRegistration::registerCodecs();
+
+    ///----------------
+ /*   
+    T_ASC_PresentationContext pc;
+    char *ts = NULL;
+    cond = ASC_findAcceptedPresentationContext(subAssoc->params, presId, &pc);
+    ts = pc.acceptedTransferSyntax;
+    DcmXfer xfer(ts);
+    E_TransferSyntax des_opt_oxfer = xfer.getXfer();
+    E_TransferSyntax current_oxfer = dcmff.getDataset()->getCurrentXfer();
+    E_TransferSyntax c_oxfer = dcmff.getDataset()->getOriginalXfer();
+    bool bflag = true;
+    if (EXS_LittleEndianImplicit != c_oxfer && EXS_BigEndianImplicit != c_oxfer && EXS_LittleEndianExplicit != c_oxfer)
     {
-        DCMQRDB_ERROR("Bad DICOM file: " << fname << ": " << cond.text());
-        // deregister JPEG codecs
-        DJDecoderRegistration::cleanup();
-        DJEncoderRegistration::cleanup();
-        return cond;
+        E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
+        if (EC_Normal == dcmff.getDataset()->chooseRepresentation(opt_oxfer, NULL))
+        {
+            if (dcmff.getDataset()->canWriteXfer(opt_oxfer))
+            {               
+                if (EC_Normal == dcmff.getDataset()->chooseRepresentation(des_opt_oxfer, NULL))
+                {
+                    if (dcmff.getDataset()->canWriteXfer(des_opt_oxfer))
+                    {
+                        dcmff.getDataset()->updateOriginalXfer();
+                        cond = DIMSE_storeUser(subAssoc, presId, &req, NULL, dcmff.getDataset(), moveSubOpProgressCallback, this, options_.blockMode_, options_.dimse_timeout_, &rsp, &stDetail);
+                    }
+                }              
+            }
+            else
+            {
+                bflag = false;
+            }
+        }
+        else
+        {
+            bflag = false;
+        }
     }
 
-    T_ASC_PresentationContext pc;
-    ASC_findAcceptedPresentationContext(subAssoc->params, presId, &pc);
-    DcmXfer netTransfer(pc.acceptedTransferSyntax);
+    if (!bflag)*/
+    cond = DIMSE_storeUser(subAssoc, presId, &req, fname, NULL, moveSubOpProgressCallback, this, options_.blockMode_, options_.dimse_timeout_, &rsp, &stDetail);
 
-    dcmff.getDataset()->chooseRepresentation(netTransfer.getXfer(), NULL);
+    ///-----------------------------------------------------
+    // deregister JPEG codecs
+    //DJDecoderRegistration::cleanup();
+    //DJEncoderRegistration::cleanup();
 
-    //-----------------------jp2k----------------------
-    cond = DIMSE_storeUser(subAssoc, presId, &req, fname, NULL, moveSubOpProgressCallback, this,
-        options_.blockMode_, options_.dimse_timeout_, &rsp, &stDetail);
-   /* cond = DIMSE_storeUser(subAssoc, presId, &req, NULL, dcmff.getDataset(),
-           moveSubOpProgressCallback, this, options_.blockMode_, options_.dimse_timeout_,
-           &rsp, &stDetail, NULL, OFStandard::getFileSize(fname));*/
+    // deregister JPEG-LS codecs
+    //DJLSDecoderRegistration::cleanup();
+    //DJLSEncoderRegistration::cleanup();
+
+    // deregister RLE codecs
+    //DcmRLEDecoderRegistration::cleanup();
+    //DcmRLEEncoderRegistration::cleanup();
+
+    // jpeg2k
+    //FMJPEG2KEncoderRegistration::cleanup();
+    //FMJPEG2KDecoderRegistration::cleanup();
+    //-------------------------------------------------
 
 #ifdef LOCK_IMAGE_FILES
     /* unlock image file */
@@ -440,9 +513,6 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
         DCMQRDB_INFO("  Status Detail:" << OFendl << DcmObject::PrintHelper(*stDetail));
         delete stDetail;
     }
-    // deregister JPEG codecs
-    DJDecoderRegistration::cleanup();
-    DJEncoderRegistration::cleanup();
     return cond;
 }
 
@@ -778,11 +848,7 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
     int i;
     int pid = 1;
 
-    //const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
-        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 21
-        NULL
-    };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
     int numTransferSyntaxes = 0;
 
 #ifdef DISABLE_COMPRESSION_EXTENSION
@@ -802,19 +868,14 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 3;
-}
+    }
 #else
     switch (options_.networkTransferSyntaxOut_)
     {
     case EXS_LittleEndianImplicit:
         /* we only propose Little Endian Implicit */
-        //transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
-        //numTransferSyntaxes = 1;
         transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;
-        numTransferSyntaxes = 4;
+        numTransferSyntaxes = 1;
         break;
     case EXS_LittleEndianExplicit:
         /* we prefer Little Endian Explicit */
@@ -954,62 +1015,25 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
          * If we are running on a Little Endian machine we prefer
          * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
          */
-        transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
-        transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
-        transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;
-        transferSyntaxes[3] = UID_JPEGProcess1TransferSyntax;
-        transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
-        transferSyntaxes[5] = UID_JPEGLSLossyTransferSyntax;
-        transferSyntaxes[6] = UID_JPEGLSLosslessTransferSyntax;
-        transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
-        transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-        transferSyntaxes[9] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
-        transferSyntaxes[10] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
-        transferSyntaxes[11] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
-        transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
-        transferSyntaxes[13] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
-        transferSyntaxes[14] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
-        transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
-        transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
-        transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-        transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 21;
-        //if (gLocalByteOrder == EBO_LittleEndian)
-        //{
-        //}
-        /* else {
-        transferSyntaxes[18] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
-        }*/
-
-        ///
-        ///-----
-        //if (gLocalByteOrder != EBO_BigEndian/*EBO_LittleEndian*/)  /* defined in dcxfer.h */
-        //{
-        //    transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-        //    transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        //}
-        //else
-        //{
-        //    transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-        //    transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        //}
-        //transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        //numTransferSyntaxes = 3;
-        //---------------------
-        //1.2.840.10008.1.2 = Implicit VR Little Endian : Default Transfer Syntax for DICOM
-        //transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
-        //numTransferSyntaxes = 1;
+        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+        {
+            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+        }
+        else
+        {
+            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        }
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 3;
         break;
     }
 #endif
 
     for (i = 0; i < numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++)
     {
-        cond = ASC_addPresentationContext(params, pid, dcmLongSCUStorageSOPClassUIDs[i],
-                                            transferSyntaxes, numTransferSyntaxes);
+        cond = ASC_addPresentationContext( params, pid, dcmLongSCUStorageSOPClassUIDs[i], transferSyntaxes, numTransferSyntaxes);
         pid += 2;   /* only odd presentation context id's */
     }
     return cond;
