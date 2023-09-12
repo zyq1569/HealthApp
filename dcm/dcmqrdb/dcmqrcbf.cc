@@ -1014,7 +1014,10 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     if (pMariaDb == NULL)
     {
         //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
-        if (mysql != NULL)
+        int sqltype;
+        GetSqlDbInfo(strIP, strDadaName, strUser, strPwd, sqltype);
+        //if (mysql != NULL)
+        if (strIP.length() >1 && strDadaName.length() > 1 && strUser.length() > 1 && strPwd.length() > 1)
         {
             strIP = mysql->IpAddress;
             strUser = mysql->SqlUserName;
@@ -1032,8 +1035,8 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
         pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
             W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
 #else
-        pMariaDb = new HMariaDb(strIP.c_str(), strUser.c_str(), \
-            strPwd.c_str(), strDadaName.c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+        ///*"127.0.0.1"*/"root", "root", "HIT");
+        pMariaDb = new HMariaDb(strIP.c_str(), strUser.c_str(), strPwd.c_str(), strDadaName.c_str());
 
 #endif
     }

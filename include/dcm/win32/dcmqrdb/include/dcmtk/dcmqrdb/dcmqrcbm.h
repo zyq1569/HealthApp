@@ -118,6 +118,8 @@ public:
 
     //set config;
     void SetDcmQueryRetrieveConfig(const DcmQueryRetrieveConfig* config);
+    //find studyuid studydata by mysql
+    OFString GetStudyDataByDataBase(OFString studyuid);
 private:
 
     /// private undefined copy constructor

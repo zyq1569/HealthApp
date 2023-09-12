@@ -758,3 +758,34 @@ OFList<OFString> SplitUUID(OFString str, OFString pattern)
     out = s;
     return out;
 }
+
+ struct  SqlDbdataInfo
+ {
+     OFString  IpAddress, SqlName, SqlUserName, SqlPWD;
+     int Sqltype;
+     SqlDbdataInfo()
+     {
+         IpAddress = SqlName = SqlUserName = SqlPWD = "";
+         Sqltype = 0;
+     }
+ };
+ static SqlDbdataInfo g_SqlDbdataInfo;
+ void SetSqlDbInfo(OFString  IpAddress, OFString SqlName, OFString SqlUserName, OFString SqlPWD, int Sqltype)
+ {
+     g_SqlDbdataInfo.IpAddress      =    IpAddress;
+     g_SqlDbdataInfo.SqlName        =    SqlName;
+     g_SqlDbdataInfo.SqlUserName    =    SqlUserName;
+     g_SqlDbdataInfo.SqlPWD         =    SqlPWD;
+     g_SqlDbdataInfo.Sqltype        =    Sqltype;
+
+ }
+
+ void GetSqlDbInfo(OFString  &IpAddress, OFString  &SqlName, OFString  &SqlUserName, OFString  &SqlPWD, int &Sqltype)
+ {
+    IpAddress     =  g_SqlDbdataInfo.IpAddress   ;
+    SqlName       =  g_SqlDbdataInfo.SqlName     ;
+    SqlUserName   =  g_SqlDbdataInfo.SqlUserName ;
+    SqlPWD        =  g_SqlDbdataInfo.SqlPWD      ;
+    Sqltype       =  g_SqlDbdataInfo.Sqltype     ;
+
+ }

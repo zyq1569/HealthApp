@@ -155,3 +155,16 @@ DCMTK_OFSTD_EXPORT OFBool ReadStudyInfo(OFString filename, OFString dir,   OFLis
 
 DCMTK_OFSTD_EXPORT OFList<OFString> SplitUUID(OFString str, OFString pattern);
 DCMTK_OFSTD_EXPORT OFString UIDBase64(long long input, OFString &out);
+
+/*
+struct DCMTK_DCMNET_EXPORT MySqlInfo
+{
+    OFString  IpAddress, SqlName, SqlUserName, SqlPWD;
+    MySqlInfo()
+    {
+        IpAddress = SqlName = SqlUserName = SqlPWD = "";
+    }
+};
+*/
+DCMTK_OFSTD_EXPORT void SetSqlDbInfo(OFString  IpAddress,  OFString SqlName,   OFString SqlUserName,   OFString SqlPWD,   int sqltype = 0);
+DCMTK_OFSTD_EXPORT void GetSqlDbInfo(OFString  &IpAddress, OFString  &SqlName, OFString  &SqlUserName, OFString  &SqlPWD, int &Sqltype);

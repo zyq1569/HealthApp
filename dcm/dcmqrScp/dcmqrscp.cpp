@@ -541,6 +541,8 @@ unsigned __stdcall QueryThread(void *argv)
             sql.SqlUserName = g_argv[8];
             sql.SqlPWD = g_argv[9];
             scp.SetMysql(&sql);
+
+            SetSqlDbInfo(sql.IpAddress, sql.SqlName, sql.SqlUserName, sql.SqlPWD);
         }
         if (g_argc > 11)
         {

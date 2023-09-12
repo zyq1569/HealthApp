@@ -55,6 +55,10 @@ BEGIN_EXTERN_C
 
 END_EXTERN_C
 
+
+//add mysql driver  后期需要将数据库的处理独立模块
+#include "HMariaDb.h"
+
 static OFLogger dcmqrscpLogger = OFLog::getLogger("dcmtk.dcmqr.apps.");
 
 static void moveSubOpProgressCallback(void * /* callbackData */,
@@ -131,6 +135,13 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
             //2009 1103 172721
             dcminfo.studyDate = datatime.substr(0,8);
             dcminfo.studyTime = datatime.substr(8,6);
+        }
+        else
+        {
+            datatime = GetStudyDataByDataBase(dcminfo.studyUID);
+            //2009 1103 172721
+            dcminfo.studyDate = datatime.substr(0, 8);
+            dcminfo.studyTime = datatime.substr(8, 6);
         }
     }
     //OFHashValue path = CreateHashValue(StudyInstanceUID);
@@ -1042,4 +1053,76 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 void DcmQueryRetrieveMoveContext::SetDcmQueryRetrieveConfig(const DcmQueryRetrieveConfig* config)
 {
     m_config = config;
+}
+
+OFString DcmQueryRetrieveMoveContext::GetStudyDataByDataBase(OFString studyuid)
+{
+    OFString studydate;
+    if (studyuid.length() < 1)
+        return studydate;
+
+    static HMariaDb *pMariaDb = NULL;
+
+    //OFString strIP, strUser, strPwd, strDadaName;
+    if (pMariaDb == NULL)
+    {
+        //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
+        OFString strIP, strUser, strPwd, strDadaName;
+        /*
+        strIP = m_config->getSqlServer();
+        strUser = m_config->getSqlusername();
+        strPwd = m_config->getSqlpass();
+        strDadaName = m_config->getSqldbname();
+        */
+        int sqltype = 0;
+        GetSqlDbInfo(strIP, strDadaName, strUser, strPwd, sqltype);
+#ifdef _UNICODE
+        pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
+            W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
+#else
+        ///*"127.0.0.1"*/"root", "root", "HIT"); 
+        pMariaDb = new HMariaDb(strIP.c_str(), strUser.c_str(), strPwd.c_str(), strDadaName.c_str());
+
+#endif
+    }
+    //int count;//数据库查询的记录条数
+    OFString sql = "select StudyDateTime  from  h_order where StudyType = 0 and StudyState > 2 ";
+    sql = sql + " and StudyUID = '" + studyuid + "' ;";
+
+    ResultSet * rs = NULL;
+    try
+    {
+        pMariaDb->query(sql.c_str());
+        rs = pMariaDb->QueryResult();
+    }
+    catch (...)
+    {
+        DCMQRDB_ERROR("connection or query database error! ");
+    }
+    if (rs == NULL)
+    {
+        DCMQRDB_DEBUG("No data info in database");
+        return studydate;
+    }
+    else
+    {
+        std::vector<std::string> row;
+        int row_index = 0;
+        while (rs->fetch(row))
+        {
+            std::string  StudyDateTime;
+            OFString date, time;
+            if (rs->getValue(row_index, "StudyDateTime", StudyDateTime))
+            {
+                OFString datetime(StudyDateTime.c_str());
+                datetime = ToDateTimeFormate(datetime, date, time);
+                return datetime;
+            }
+        }
+#ifdef DEBUG
+        DCMQRDB_DEBUG("DB_GetStudyData() : STATUS_find");
+#endif
+        return studydate;
+    }
+
 }
