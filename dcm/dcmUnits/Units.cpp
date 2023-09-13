@@ -18,6 +18,7 @@
 #include "cJSON.h"
 #include "Units.h"
 #include "dcmtk/ofstd/ofdatime.h"
+#include "CJsonObject.hpp"
 
 #ifndef HAVE_WINDOWS_H
 #include <uuid/uuid.h>
@@ -43,7 +44,7 @@ OFString GetStudyHashDir(DicomFileInfo studyuid)
     return dir;
 }
 
-OFString GetStudyDateDir(DicomFileInfo dcminfo )
+OFString GetStudyDateDir(DicomFileInfo dcminfo)
 {
     OFString dir;
     OFString studyDate = dcminfo.studyDate;
@@ -60,15 +61,15 @@ OFString HashValue(int F, int S, OFString str)
     size_t value = F + S;
     for (size_t i = 0; i < len; i++)
     {
-        value = (value + str[i])*F + i*S;
+        value = (value + str[i])*F + i * S;
     }
 
 #if defined(_WIN32)
 
 #if defined(_MSC_VER)
     // Windows:  Visual Statuio 
-    char oxstr[256] = {0};
-    sprintf(oxstr,"%04x",value);
+    char oxstr[256] = { 0 };
+    sprintf(oxstr, "%04x", value);
     return oxstr;
 #endif
 
@@ -90,7 +91,7 @@ OFString HashValue(int F, int S, OFString str)
 ///依据常规的hash 算法方式，目前不考虑使用强加密不可逆方式
 //参考 https://github.com/Tessil/hopscotch-map 类似很多，注意协议
 //!根据字符计算两个Hash数值  to do user uint64
-OFHashValue CreateHashValue(DicomFileInfo dcminfo )
+OFHashValue CreateHashValue(DicomFileInfo dcminfo)
 {
     //2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
     //101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179
@@ -98,7 +99,7 @@ OFHashValue CreateHashValue(DicomFileInfo dcminfo )
     OFString str = dcminfo.studyUID;
     OFHashValue hashvalue;
     //71 197
-    hashvalue.first  = HashValue(71, 197, str);
+    hashvalue.first = HashValue(71, 197, str);
     //79 199
     hashvalue.second = HashValue(79, 199, str);
 
@@ -108,11 +109,11 @@ OFHashValue CreateHashValue(DicomFileInfo dcminfo )
 unsigned long studyuid_hash(const char *str)
 {
     unsigned long hash = 32767;
-    unsigned long pid  = 65537;
+    unsigned long pid = 65537;
     int c;
     while (c = *str++)
     {
-        hash = hash + c *pid; /* hash * 33 + c */
+        hash = hash + c * pid; /* hash * 33 + c */
     }
     return hash;
 }
@@ -139,7 +140,7 @@ bool DirectoryExists(const OFString Dir)
 #else
     struct stat statbuff;
     Code = stat(Dir.c_str(), &statbuff);
-    if(Code == 0)
+    if (Code == 0)
     {
         return true;
     }
@@ -239,7 +240,7 @@ OFString GetCurrWorkingDir()
     strPath = OFString(szFull);
 #else
     //to do add!
-    if((strPath = getcwd(NULL, 0)) == "")
+    if ((strPath = getcwd(NULL, 0)) == "")
     {
         perror("getcwd error");
     }
@@ -297,22 +298,29 @@ void SearchDirFile(const OFString Dir, const OFString FileExt, OFList<OFString> 
             }
             else
             {
-                OFString temp;
+                OFString findExt;
+                int pos = name.find_last_of('.');
+                if (pos > 0)
+                {
+                    findExt = name.substr(pos+1);
+                }
+                OFString temp,up1,up2;
+                up1 = OFStandard::toUpper(temp, FileExt);
+                up2 = OFStandard::toUpper(temp, findExt);
                 if (FileExt == "")
                 {
                     datas.push_back(dir + name);
                 }
-                else if (Not == false && OFStandard::toUpper(temp, FileExt) == OFStandard::toUpper(temp, name))
+                else if (Not == false && up1 == up2)
                 {
                     datas.push_back(dir + name);
                 }
-                else if (Not == true && OFStandard::toUpper(temp, FileExt) != OFStandard::toUpper(temp, name))
+                else if (Not == true && up1 != up2)
                 {
                     datas.push_back(dir + name);
                 }
             }
-        }
-        while (FindNextFile(h, &sr) != 0);
+        } while (FindNextFile(h, &sr) != 0);
         FindClose(h);
     }
 #else
@@ -480,8 +488,7 @@ void SearchDirectory(const OFString Dir, OFList<OFString> &datas)
                     datas.push_back(dir + name);
                 }
             }
-        }
-        while (FindNextFile(h, &sr) != 0);
+        } while (FindNextFile(h, &sr) != 0);
         FindClose(h);
     }
 #else
@@ -519,13 +526,13 @@ uint64_t CreateGUID()
     // create a name for the new subdirectory.
     char timestamp[32];
     sprintf(timestamp, "%04u%02u%02u%02u%02u%02u%03u",
-            dateTime.getDate().getYear(), dateTime.getDate().getMonth(),
-            dateTime.getDate().getDay(), dateTime.getTime().getHour(),
-            dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(),
-            dateTime.getTime().getMilliSecond());
+        dateTime.getDate().getYear(), dateTime.getDate().getMonth(),
+        dateTime.getDate().getDay(), dateTime.getTime().getHour(),
+        dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(),
+        dateTime.getTime().getMilliSecond());
     //2019 0424 0951 14 708
     //2005 0000 0000 00 000
-    UINT64 delt_y,delt_M,delt_d,delt_h,delt_m,delt_s,delt_ma,delt_mi;
+    UINT64 delt_y, delt_M, delt_d, delt_h, delt_m, delt_s, delt_ma, delt_mi;
     delt_y = (dateTime.getDate().getYear() - 2015) * 365;
     delt_M = dateTime.getDate().getMonth() * 30;
     delt_d = dateTime.getDate().getDay() * 24 * 60 * 60 * 1000;
@@ -535,11 +542,11 @@ uint64_t CreateGUID()
     delt_ma = delt_y + delt_M;
     delt_mi = delt_d + delt_h + delt_m + delt_s + dateTime.getTime().getMilliSecond();
 #else
-    uint64_t delt_y,delt_M,delt_d,delt_h,delt_m,delt_s,delt_ma,delt_mi;
+    uint64_t delt_y, delt_M, delt_d, delt_h, delt_m, delt_s, delt_ma, delt_mi;
     time_t t;
     time(&t);
     struct tm *t1;
-    t1=localtime(&t);
+    t1 = localtime(&t);
     delt_y = t1->tm_year;
     delt_M = t1->tm_mon;
     delt_d = t1->tm_mday;
@@ -548,9 +555,9 @@ uint64_t CreateGUID()
     delt_s = t1->tm_sec;
     delt_ma = delt_y + delt_M;
     delt_mi = delt_d + delt_h + delt_m + delt_s + t1->tm_gmtoff;
-//    struct timeval t_start; //microseconds
-//    gettimeofday(&t_start, NULL);
-//    printf("Start time: %ld us", t_start.tv_usec);
+    //    struct timeval t_start; //microseconds
+    //    gettimeofday(&t_start, NULL);
+    //    printf("Start time: %ld us", t_start.tv_usec);
 #endif // _WIN32
 
     uid[1] = delt_ma << g_GUID_len;
@@ -563,10 +570,9 @@ uint64_t CreateGUID()
     {
         result = CoCreateGuid(&guid);
         uid[0] = guid.Data1;
-    }
-    while (result != S_OK);
+    } while (result != S_OK);
 
-    return (*((UINT64*)uid)>>1);
+    return (*((UINT64*)uid) >> 1);
 #else
     //to do add! :centos yum install uuid-dev
     GUID guid;
@@ -651,7 +657,86 @@ OFBool SaveString2File(OFString str, OFString filename)
     return OFTrue;
 }
 
-OFBool ReadStudyInfo(OFString filename,OFString dir, OFList<OFString> &data)
+OFBool ReadStudyInfoJsonFile(OFString filename, OFString dir, OFList<OFString> &data)
+{
+    OFString strjson;
+    if (OFStandard::fileExists(filename))
+    {
+        OFFile jsonfile;
+        jsonfile.fopen(filename, "r+");
+        const int maxline = 256;
+        char line[maxline];
+        OFList<OFString> StudyInfo;
+        while (jsonfile.fgets(line, maxline) != NULL)
+        {
+            strjson += line;
+        }
+        jsonfile.fclose();
+        CJSON::CJsonObject Json(strjson.c_str());
+
+        int size = Json["seriesList"].GetArraySize();
+        for (int i = 0; i < size; i++)
+        {
+            std::string strValue;
+            if (Json["seriesList"][i].Get("seriesUid", strValue))
+            {
+                OFString suid = strValue.c_str();
+                int asize = Json["seriesList"][i]["instanceList"].GetArraySize();
+                for (int j = 0; j < asize; j++)
+                {
+                    if (Json["seriesList"][i]["instanceList"][j].Get("imageId", strValue))
+                    {
+                        OFString imageid = strValue.c_str();
+                        data.push_back(dir + "/" + suid + "/" + imageid + ".dcm");
+                    }
+                }
+
+            }
+        }
+        return OFTrue;
+    }
+    /*
+    else
+    {
+        CJSON::CJsonObject Json;
+        int numImages = 1;
+        Json.Add("patientName", dcminfo.StudyPatientName.c_str());
+        Json.Add("patientId", dcminfo.StudyPatientId.c_str());
+        Json.Add("modality", dcminfo.StudyModality.c_str());
+        Json.Add("studyDescription", dcminfo.studydescription.c_str());
+        Json.Add("numImages", numImages);
+        Json.Add("studyId", dcminfo.StudyID.c_str());
+        Json.Add("studyuid", dcminfo.StudyInstanceUID.c_str());
+        //add 2021-0106
+        Json.Add("studyDate", dcminfo.StudyDateTime.c_str());
+        Json.Add("patientsex", dcminfo.StudySex.c_str());
+        Json.Add("patientage", dcminfo.StudyAge.c_str());
+        Json.Add("patientbirth", dcminfo.PatientBirth.c_str());
+        Json.Add("manufacturer", dcminfo.StudyManufacturer.c_str());
+        Json.Add("institutionname", dcminfo.StudyInstitutionName.c_str());
+
+        Json.AddEmptySubArray("seriesList");
+        CJSON::CJsonObject Series;
+        Series.Add("seriesUid", dcminfo.Seriesuid.c_str());
+        Series.Add("seriesDescription", dcminfo.Seriesdescription.c_str());
+        Series.Add("seriesNumber", dcminfo.Seriesnumber.c_str());
+
+        Series.AddEmptySubArray("instanceList");
+        CJSON::CJsonObject Images;
+        Images.Add("imageId", dcminfo.Sopinstanceuid.c_str());
+        Series["instanceList"].Add(Images);
+        Json["seriesList"].Add(Series);
+
+        strjson = Json.ToJsonString().c_str();
+        SaveString2File(strjson, filename);
+        return OFTrue;
+    }
+    */
+
+    return OFTrue;
+}
+
+OFBool ReadStudyInfo(OFString filename, OFString dir, OFList<OFString> &data)
 {
     OFString value;
     if (OFStandard::fileExists(filename))
@@ -692,7 +777,7 @@ OFBool ReadStudyInfo(OFString filename,OFString dir, OFList<OFString> &data)
                     value = dir + "/";
                     value += seruid;
                     value += "/";
-                    value += imageuid+".dcm";
+                    value += imageuid + ".dcm";
                     data.push_back(value);
                     out.getline(buffer, max, '\n');
                     value = OFString(buffer);
@@ -714,8 +799,7 @@ OFBool ReadStudyInfo(OFString filename,OFString dir, OFList<OFString> &data)
                 out.getline(buffer, max, '\n');//getline(char *,int,char) 表示该行字符达到256个或遇到换行就结束
                 value = OFString(buffer);
             }
-        }
-        while (!out.eof());
+        } while (!out.eof());
         out.close();
     }
     return OFTrue;
@@ -741,11 +825,11 @@ OFList<OFString> SplitUUID(OFString str, OFString pattern)
     return result;
 }
 
- static const char BASE64[64] = { 'A','B', 'C','D','E', 'F',   'G','H', 'I','J','K', 'L',   'M','N', 'O','P','Q', 'R',  'S','T','U', 'V','W','X',    'Y','Z',
-                                  'a','b', 'c','d','e', 'f',   'g','h', 'i','j','k', 'l',   'm','n', 'o','p','q', 'r',  's','t','u', 'v','w','x',    'y','z',
-                                  '0','1', '2','3','4', '5',   '6','7', '8','9','+', '/'     };
+static const char BASE64[64] = { 'A','B', 'C','D','E', 'F',   'G','H', 'I','J','K', 'L',   'M','N', 'O','P','Q', 'R',  'S','T','U', 'V','W','X',    'Y','Z',
+                                 'a','b', 'c','d','e', 'f',   'g','h', 'i','j','k', 'l',   'm','n', 'o','p','q', 'r',  's','t','u', 'v','w','x',    'y','z',
+                                 '0','1', '2','3','4', '5',   '6','7', '8','9','+', '/' };
 
- OFString UIDBase64(long long input, OFString &out)
+OFString UIDBase64(long long input, OFString &out)
 {
     int base;
     OFString s;
@@ -759,33 +843,33 @@ OFList<OFString> SplitUUID(OFString str, OFString pattern)
     return out;
 }
 
- struct  SqlDbdataInfo
- {
-     OFString  IpAddress, SqlName, SqlUserName, SqlPWD;
-     int Sqltype;
-     SqlDbdataInfo()
-     {
-         IpAddress = SqlName = SqlUserName = SqlPWD = "";
-         Sqltype = 0;
-     }
- };
- static SqlDbdataInfo g_SqlDbdataInfo;
- void SetSqlDbInfo(OFString  IpAddress, OFString SqlName, OFString SqlUserName, OFString SqlPWD, int Sqltype)
- {
-     g_SqlDbdataInfo.IpAddress      =    IpAddress;
-     g_SqlDbdataInfo.SqlName        =    SqlName;
-     g_SqlDbdataInfo.SqlUserName    =    SqlUserName;
-     g_SqlDbdataInfo.SqlPWD         =    SqlPWD;
-     g_SqlDbdataInfo.Sqltype        =    Sqltype;
+struct  SqlDbdataInfo
+{
+    OFString  IpAddress, SqlName, SqlUserName, SqlPWD;
+    int Sqltype;
+    SqlDbdataInfo()
+    {
+        IpAddress = SqlName = SqlUserName = SqlPWD = "";
+        Sqltype = 0;
+    }
+};
+static SqlDbdataInfo g_SqlDbdataInfo;
+void SetSqlDbInfo(OFString  IpAddress, OFString SqlName, OFString SqlUserName, OFString SqlPWD, int Sqltype)
+{
+    g_SqlDbdataInfo.IpAddress = IpAddress;
+    g_SqlDbdataInfo.SqlName = SqlName;
+    g_SqlDbdataInfo.SqlUserName = SqlUserName;
+    g_SqlDbdataInfo.SqlPWD = SqlPWD;
+    g_SqlDbdataInfo.Sqltype = Sqltype;
 
- }
+}
 
- void GetSqlDbInfo(OFString  &IpAddress, OFString  &SqlName, OFString  &SqlUserName, OFString  &SqlPWD, int &Sqltype)
- {
-    IpAddress     =  g_SqlDbdataInfo.IpAddress   ;
-    SqlName       =  g_SqlDbdataInfo.SqlName     ;
-    SqlUserName   =  g_SqlDbdataInfo.SqlUserName ;
-    SqlPWD        =  g_SqlDbdataInfo.SqlPWD      ;
-    Sqltype       =  g_SqlDbdataInfo.Sqltype     ;
+void GetSqlDbInfo(OFString  &IpAddress, OFString  &SqlName, OFString  &SqlUserName, OFString  &SqlPWD, int &Sqltype)
+{
+    IpAddress = g_SqlDbdataInfo.IpAddress;
+    SqlName = g_SqlDbdataInfo.SqlName;
+    SqlUserName = g_SqlDbdataInfo.SqlUserName;
+    SqlPWD = g_SqlDbdataInfo.SqlPWD;
+    Sqltype = g_SqlDbdataInfo.Sqltype;
 
- }
+}

@@ -177,15 +177,17 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
 
     if (find && !find_dir.empty())
     {
-        OFString fileini = find_dir + "/" + /*StudyInstanceUID*/dcminfo.studyUID + ".ini";
+        //OFString fileini = find_dir + "/" + /*StudyInstanceUID*/dcminfo.studyUID + ".ini";//ReadStudyInfoJsonFile
+        OFString filejson = find_dir + "/" + dcminfo.studyUID + ".json";
         m_matchingFiles.clear();
-        if (OFStandard::fileExists(fileini))
+        if (OFStandard::fileExists(filejson))
         {
-            ReadStudyInfo(fileini, find_dir, m_matchingFiles);
+            //ReadStudyInfo(fileini, find_dir, m_matchingFiles);//delete 20230911
+            ReadStudyInfoJsonFile(filejson, find_dir, m_matchingFiles);
         }
         else
         {
-            DCMQRDB_WARN("NO StudyInstanceUID ini:"+fileini);
+            DCMQRDB_WARN("NO StudyInstanceUID json:"+ filejson);
             SearchDirFile(find_dir, "dcm", m_matchingFiles,false, 10000);
         }
         if (m_matchingFiles.size() < 1)
@@ -1086,8 +1088,8 @@ OFString DcmQueryRetrieveMoveContext::GetStudyDataByDataBase(OFString studyuid)
 #endif
     }
     //int count;//数据库查询的记录条数
-    OFString sql = "select StudyDateTime  from  h_order where StudyType = 0 and StudyState > 2 ";
-    sql = sql + " and StudyUID = '" + studyuid + "' ;";
+    OFString sql = "select StudyDateTime  from  h_order where StudyType = 0 and StudyState > 2  and StudyUID = '";
+    sql         += studyuid + "' ;";
 
     ResultSet * rs = NULL;
     try
