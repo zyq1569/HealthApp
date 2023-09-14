@@ -120,9 +120,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 #dimse.cc   / 2019 07 25 add test  to do it better
+#人生漫长，转瞬即逝。有人见尘埃，有人见星辰。
 
-
-
+#雨萱
+#@HeroWeliam
+#?????? 落入凡间深处 迷失不知归路
+#拨开迷雾见晴天，晓的真相明是非。
 #Qt4VSv1.0
 #https://stackoverflow.com/questions/72031733/the-online-service-is-not-available-issue-in-visual-studio-professional-2013-w
 #尝试这个; 它对我有用。只需将两个DWORD值添加到 Windows 注册表即可。网站go.microsoft.com目前仅支持 TLS1.2 协议。
