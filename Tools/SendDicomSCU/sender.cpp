@@ -114,10 +114,14 @@ bool Taskthread::updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &k
     return OFTrue;
 }
 
+
 Taskthread::Taskthread(QObject *parent)
 {
     setAutoDelete(false);
     m_type = 0;//dicomDataJob
+
+    initAbstractSyntax();
+
 }
 
 Taskthread::~Taskthread()
@@ -358,25 +362,26 @@ int Taskthread::sendStudy(Study &studys)
     scu.setPeerPort(m_dest.destinationPort);
     scu.setPeerAETitle(m_dest.destinationAETitle.c_str());
     scu.setACSETimeout(60);
+
     scu.setDIMSETimeout(120);
     scu.setDatasetConversionMode(true);
 
     OFList<OFString> defaulttransfersyntax,dcmfiles;
-    defaulttransfersyntax.push_back(UID_LittleEndianImplicitTransferSyntax);//
+
+    defaulttransfersyntax.push_back(UID_LittleEndianImplicitTransferSyntax);
+    defaulttransfersyntax.push_back(UID_BigEndianExplicitTransferSyntax);
     defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEGProcess14SV1TransferSyntax);//
+    defaulttransfersyntax.push_back(UID_JPEGProcess14SV1TransferSyntax);
     defaulttransfersyntax.push_back(UID_JPEGLSLosslessTransferSyntax);
     defaulttransfersyntax.push_back(UID_JPEG2000LosslessOnlyTransferSyntax);
 
-    foreach(std::string dcmf, studys.filespath)
+
+    OFList<OFString> abstractSyntaxlist;
+    OFCondition cond;
+    foreach(OFString abstractSyntax, m_abstractSyntaxlist)
     {
-        dcmfiles.push_back(dcmf.c_str());
+        scu.addPresentationContext(abstractSyntax, defaulttransfersyntax);
     }
-
-    OFCondition cond = scu.addPresentationContext(studys.sopclassuid.c_str(), defaulttransfersyntax);//EC_Normal
-    if (cond != EC_Normal)
-        return 1;
-
 
     if(scu.initNetwork().bad())
         return 1;
@@ -386,38 +391,35 @@ int Taskthread::sendStudy(Study &studys)
 
 
     int isend = 0;
-    for(OFIterator<OFString> it = dcmfiles.begin(); it!= dcmfiles.end(); it++)
+    //for(OFIterator<OFString> it = dcmfiles.begin(); it!= dcmfiles.end(); it++)
+    foreach(std::string dcmf, studys.filespath)
     {
-        if(isCanceled())
-        {
-            break;
-        }
-
+//        if(isCanceled())
+//        {
+//            break;
+//        }
         Uint16 status;
-
         // load file
         DcmFileFormat dcmff;   //QString filename = it->c_str();
-        dcmff.loadFile(it->c_str());
+        dcmff.loadFile(dcmf.c_str());
 
         // do some precheck of the transfer syntax
         DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
         OFString sopclassuid;
         dcmff.getDataset()->findAndGetOFString(DCM_SOPClassUID, sopclassuid);
-
-        if (scu.findPresentationContextID(sopclassuid, UID_JPEGProcess14SV1TransferSyntax) != 0)//UID_JPEGProcess14SV1TransferSyntax
-        {
-            dcmff.loadAllDataIntoMemory();
-
-            if(dcmff.getDataset())
-                dcmff.getDataset()->chooseRepresentation(EXS_JPEGLSLossless, NULL);
-
-            fileTransfer = dcmff.getDataset()->getCurrentXfer();
-        }
-
+        //if (scu.findPresentationContextID(sopclassuid, UID_JPEGLSLosslessTransferSyntax) != 0)//UID_JPEGProcess14SV1TransferSyntax
+        //{
+        //    dcmff.loadAllDataIntoMemory();
+        //    if(dcmff.getDataset())
+        //        dcmff.getDataset()->chooseRepresentation(EXS_JPEGLSLossless, NULL);
+        //    fileTransfer = dcmff.getDataset()->getCurrentXfer();
+        //}
+        //qDebug("Send files numbers: %s", dcmf.c_str());
         // out found.. change to
         T_ASC_PresentationContextID pid;
         pid = scu.findAnyPresentationContextID(sopclassuid, fileTransfer.getXferID());
 
+        registerCodecs();
         if (Taskthread::g_static_check)
         {
             OFString ImpUID,Studyuid;
@@ -438,9 +440,13 @@ int Taskthread::sendStudy(Study &studys)
             OFString MedicalName = "DCMTK_OmlyTEST";
             updateStringAttributeValue(dcmff.getDataset(),DCM_InstitutionName, MedicalName);
 
+
+            cond = scu.sendSTORERequest(pid, NULL, dcmff.getDataset(), status);
         }
-        registerCodecs();
-        cond = scu.sendSTORERequest(pid, "", dcmff.getDataset(), status);
+        else
+        {
+            cond = scu.sendSTORERequest(pid, dcmf.c_str(), NULL, status);
+        }
         registercleanup();
 
         if (cond.good() && (status == 0 || (status & 0xf000) == 0xb000))
@@ -449,7 +455,7 @@ int Taskthread::sendStudy(Study &studys)
         }
         else if(cond == DUL_PEERABORTEDASSOCIATION)
         {
-            return 1;
+            //return 1;
         }
         //else            // some error? keep going
         //{
@@ -464,6 +470,7 @@ int Taskthread::sendStudy(Study &studys)
             isend = 0;
             emit  finishSendDcm(m_sendFiles);
         }
+        //qDebug("%4d  %s", ++n, dcmf.c_str());
     }
 
     scu.releaseAssociation();
@@ -580,4 +587,171 @@ void DicomSender::finishSendDcm(int sendFiles)
 
     emit finishsenddicomfile(sendFiles);
 
+}
+
+void Taskthread::initAbstractSyntax()
+{
+    m_abstractSyntaxlist.push_back(UID_RETIRED_StoredPrintStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_HardcopyGrayscaleImageStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_HardcopyColorImageStorage);
+    m_abstractSyntaxlist.push_back(UID_ComputedRadiographyImageStorage);
+    m_abstractSyntaxlist.push_back(UID_DigitalXRayImageStorageForPresentation);
+    m_abstractSyntaxlist.push_back(UID_DigitalXRayImageStorageForProcessing);
+    m_abstractSyntaxlist.push_back(UID_DigitalMammographyXRayImageStorageForPresentation);
+    m_abstractSyntaxlist.push_back(UID_DigitalMammographyXRayImageStorageForProcessing);
+    m_abstractSyntaxlist.push_back(UID_DigitalIntraOralXRayImageStorageForPresentation);
+    m_abstractSyntaxlist.push_back(UID_DigitalIntraOralXRayImageStorageForProcessing);
+    m_abstractSyntaxlist.push_back(UID_CTImageStorage);
+    m_abstractSyntaxlist.push_back(UID_EnhancedCTImageStorage);
+    m_abstractSyntaxlist.push_back(UID_LegacyConvertedEnhancedCTImageStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_UltrasoundMultiframeImageStorage);
+    m_abstractSyntaxlist.push_back(UID_UltrasoundMultiframeImageStorage);
+    m_abstractSyntaxlist.push_back(UID_MRImageStorage);
+    m_abstractSyntaxlist.push_back(UID_EnhancedMRImageStorage);
+    m_abstractSyntaxlist.push_back(UID_MRSpectroscopyStorage);
+    m_abstractSyntaxlist.push_back(UID_EnhancedMRColorImageStorage);
+    m_abstractSyntaxlist.push_back(UID_LegacyConvertedEnhancedMRImageStorage);
+
+
+    m_abstractSyntaxlist.push_back(UID_RETIRED_NuclearMedicineImageStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_UltrasoundImageStorage);
+    m_abstractSyntaxlist.push_back(UID_UltrasoundImageStorage);
+    m_abstractSyntaxlist.push_back(UID_EnhancedUSVolumeStorage);
+    m_abstractSyntaxlist.push_back(UID_SecondaryCaptureImageStorage);
+    m_abstractSyntaxlist.push_back(UID_MultiframeSingleBitSecondaryCaptureImageStorage);
+    m_abstractSyntaxlist.push_back(UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage);
+    m_abstractSyntaxlist.push_back(UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage);
+    m_abstractSyntaxlist.push_back(UID_MultiframeTrueColorSecondaryCaptureImageStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_StandaloneCurveStorage);
+    m_abstractSyntaxlist.push_back(UID_TwelveLeadECGWaveformStorage);
+    m_abstractSyntaxlist.push_back(UID_GeneralECGWaveformStorage);
+    m_abstractSyntaxlist.push_back(UID_AmbulatoryECGWaveformStorage);
+    m_abstractSyntaxlist.push_back(UID_HemodynamicWaveformStorage);
+    m_abstractSyntaxlist.push_back(UID_CardiacElectrophysiologyWaveformStorage);
+    m_abstractSyntaxlist.push_back(UID_BasicVoiceAudioWaveformStorage);
+    m_abstractSyntaxlist.push_back(UID_GeneralAudioWaveformStorage);
+
+    m_abstractSyntaxlist.push_back(UID_ArterialPulseWaveformStorage);
+    m_abstractSyntaxlist.push_back(UID_RespiratoryWaveformStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_StandaloneModalityLUTStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_StandaloneVOILUTStorage);
+    m_abstractSyntaxlist.push_back(UID_GrayscaleSoftcopyPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_ColorSoftcopyPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_PseudoColorSoftcopyPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_BlendingSoftcopyPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_XAXRFGrayscaleSoftcopyPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_GrayscalePlanarMPRVolumetricPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_CompositingPlanarMPRVolumetricPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_AdvancedBlendingPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_VolumeRenderingVolumetricPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_MultipleVolumeRenderingVolumetricPresentationStateStorage);
+    m_abstractSyntaxlist.push_back(UID_XRayAngiographicImageStorage);
+    m_abstractSyntaxlist.push_back(UID_EnhancedXAImageStorage);
+
+    m_abstractSyntaxlist.push_back(UID_XRayRadiofluoroscopicImageStorage);
+    m_abstractSyntaxlist.push_back(UID_EnhancedXRFImageStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_XRayAngiographicBiPlaneImageStorage);
+    m_abstractSyntaxlist.push_back(UID_XRay3DAngiographicImageStorage);
+    m_abstractSyntaxlist.push_back(UID_XRay3DCraniofacialImageStorage);
+    m_abstractSyntaxlist.push_back(UID_BreastTomosynthesisImageStorage);
+    m_abstractSyntaxlist.push_back(UID_BreastProjectionXRayImageStorageForPresentation);
+    m_abstractSyntaxlist.push_back(UID_BreastProjectionXRayImageStorageForProcessing);
+    m_abstractSyntaxlist.push_back(UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation);
+    m_abstractSyntaxlist.push_back(UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing);
+    m_abstractSyntaxlist.push_back(UID_NuclearMedicineImageStorage);
+    m_abstractSyntaxlist.push_back(UID_ParametricMapStorage);
+    m_abstractSyntaxlist.push_back(UID_RawDataStorage);
+    m_abstractSyntaxlist.push_back(UID_SpatialRegistrationStorage);
+    m_abstractSyntaxlist.push_back(UID_SpatialFiducialsStorage);
+    m_abstractSyntaxlist.push_back(UID_DeformableSpatialRegistrationStorage);
+    m_abstractSyntaxlist.push_back(UID_SegmentationStorage);
+
+    m_abstractSyntaxlist.push_back(UID_SurfaceSegmentationStorage);
+    m_abstractSyntaxlist.push_back(UID_TractographyResultsStorage);
+    m_abstractSyntaxlist.push_back(UID_RealWorldValueMappingStorage);
+    m_abstractSyntaxlist.push_back(UID_SurfaceScanMeshStorage);
+    m_abstractSyntaxlist.push_back(UID_SurfaceScanPointCloudStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_VLImageStorage);
+    m_abstractSyntaxlist.push_back(UID_VLEndoscopicImageStorage);
+    m_abstractSyntaxlist.push_back(UID_VideoEndoscopicImageStorage);
+    m_abstractSyntaxlist.push_back(UID_VLMicroscopicImageStorage);
+    m_abstractSyntaxlist.push_back(UID_VideoMicroscopicImageStorage);
+    m_abstractSyntaxlist.push_back(UID_VLSlideCoordinatesMicroscopicImageStorage);
+    m_abstractSyntaxlist.push_back(UID_VLPhotographicImageStorage);
+    m_abstractSyntaxlist.push_back(UID_VideoPhotographicImageStorage);
+    m_abstractSyntaxlist.push_back(UID_OphthalmicPhotography8BitImageStorage);
+    m_abstractSyntaxlist.push_back(UID_OphthalmicPhotography16BitImageStorage);
+    m_abstractSyntaxlist.push_back(UID_StereometricRelationshipStorage);
+    m_abstractSyntaxlist.push_back(UID_OphthalmicTomographyImageStorage);
+
+    m_abstractSyntaxlist.push_back(UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage);
+    m_abstractSyntaxlist.push_back(UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage);
+    m_abstractSyntaxlist.push_back(UID_OphthalmicOpticalCoherenceTomographyEnFaceImageStorage);
+    m_abstractSyntaxlist.push_back(UID_OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage);
+    m_abstractSyntaxlist.push_back(UID_VLWholeSlideMicroscopyImageStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_VLMultiFrameImageStorage);
+    m_abstractSyntaxlist.push_back(UID_LensometryMeasurementsStorage);
+    m_abstractSyntaxlist.push_back(UID_AutorefractionMeasurementsStorage);
+    m_abstractSyntaxlist.push_back(UID_KeratometryMeasurementsStorage);
+    m_abstractSyntaxlist.push_back(UID_SubjectiveRefractionMeasurementsStorage);
+    m_abstractSyntaxlist.push_back(UID_VisualAcuityMeasurementsStorage);
+    m_abstractSyntaxlist.push_back(UID_SpectaclePrescriptionReportStorage);
+    m_abstractSyntaxlist.push_back(UID_OphthalmicAxialMeasurementsStorage);
+    m_abstractSyntaxlist.push_back(UID_IntraocularLensCalculationsStorage);
+    m_abstractSyntaxlist.push_back(UID_MacularGridThicknessAndVolumeReportStorage);
+    m_abstractSyntaxlist.push_back(UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage);
+    m_abstractSyntaxlist.push_back(UID_OphthalmicThicknessMapStorage);
+    m_abstractSyntaxlist.push_back(UID_CornealTopographyMapStorage);
+    m_abstractSyntaxlist.push_back(UID_BasicTextSRStorage);
+    m_abstractSyntaxlist.push_back(UID_EnhancedSRStorage);
+    m_abstractSyntaxlist.push_back(UID_ComprehensiveSRStorage);
+    m_abstractSyntaxlist.push_back(UID_Comprehensive3DSRStorage);
+    m_abstractSyntaxlist.push_back(UID_ExtensibleSRStorage);
+    m_abstractSyntaxlist.push_back(UID_ProcedureLogStorage);
+    m_abstractSyntaxlist.push_back(UID_MammographyCADSRStorage);
+    m_abstractSyntaxlist.push_back(UID_KeyObjectSelectionDocumentStorage);
+    m_abstractSyntaxlist.push_back(UID_ChestCADSRStorage);
+    m_abstractSyntaxlist.push_back(UID_XRayRadiationDoseSRStorage);
+    m_abstractSyntaxlist.push_back(UID_RadiopharmaceuticalRadiationDoseSRStorage);
+    m_abstractSyntaxlist.push_back(UID_ColonCADSRStorage);
+    m_abstractSyntaxlist.push_back(UID_ImplantationPlanSRDocumentStorage);
+    m_abstractSyntaxlist.push_back(UID_AcquisitionContextSRStorage);
+    m_abstractSyntaxlist.push_back(UID_SimplifiedAdultEchoSRStorage);
+    m_abstractSyntaxlist.push_back(UID_PatientRadiationDoseSRStorage);
+    m_abstractSyntaxlist.push_back(UID_ContentAssessmentResultsStorage);
+    m_abstractSyntaxlist.push_back(UID_EncapsulatedPDFStorage);
+    m_abstractSyntaxlist.push_back(UID_EncapsulatedCDAStorage);
+    m_abstractSyntaxlist.push_back(UID_PositronEmissionTomographyImageStorage);
+    m_abstractSyntaxlist.push_back(UID_LegacyConvertedEnhancedPETImageStorage);
+    m_abstractSyntaxlist.push_back(UID_RETIRED_StandalonePETCurveStorage);
+    m_abstractSyntaxlist.push_back(UID_EnhancedPETImageStorage);
+    m_abstractSyntaxlist.push_back(UID_BasicStructuredDisplayStorage);
+    m_abstractSyntaxlist.push_back(UID_CTDefinedProcedureProtocolStorage);
+    m_abstractSyntaxlist.push_back(UID_CTPerformedProcedureProtocolStorage);
+    m_abstractSyntaxlist.push_back(UID_ProtocolApprovalStorage);
+    m_abstractSyntaxlist.push_back(UID_RTImageStorage);
+    m_abstractSyntaxlist.push_back(UID_RTDoseStorage);
+    m_abstractSyntaxlist.push_back(UID_RTStructureSetStorage);
+    m_abstractSyntaxlist.push_back(UID_RTBeamsTreatmentRecordStorage);
+    m_abstractSyntaxlist.push_back(UID_RTPlanStorage);
+    m_abstractSyntaxlist.push_back(UID_RTBrachyTreatmentRecordStorage);
+    m_abstractSyntaxlist.push_back(UID_RTTreatmentSummaryRecordStorage);
+    m_abstractSyntaxlist.push_back(UID_RTIonPlanStorage);
+    m_abstractSyntaxlist.push_back(UID_RTIonBeamsTreatmentRecordStorage);
+    m_abstractSyntaxlist.push_back(UID_RTBeamsDeliveryInstructionStorage);
+    m_abstractSyntaxlist.push_back(UID_RTBrachyApplicationSetupDeliveryInstructionStorage);
+    m_abstractSyntaxlist.push_back(UID_HangingProtocolStorage);
+    m_abstractSyntaxlist.push_back(UID_GenericImplantTemplateStorage);
+    m_abstractSyntaxlist.push_back(UID_ImplantAssemblyTemplateStorage);
+    m_abstractSyntaxlist.push_back(UID_ImplantTemplateGroupStorage);
+
+//    m_abstractSyntaxlist.push_back(UID_RETIRED_UltrasoundImageStorage);
+//    m_abstractSyntaxlist.push_back(UID_RETIRED_UltrasoundImageStorage);
+//    m_abstractSyntaxlist.push_back(UID_RETIRED_UltrasoundImageStorage);
+//    m_abstractSyntaxlist.push_back(UID_RETIRED_UltrasoundImageStorage);
+//    m_abstractSyntaxlist.push_back(UID_RETIRED_UltrasoundImageStorage);
+//    m_abstractSyntaxlist.push_back(UID_RETIRED_UltrasoundImageStorage);
+//    m_abstractSyntaxlist.push_back(UID_RETIRED_UltrasoundImageStorage);
+//    m_abstractSyntaxlist.push_back(UID_RETIRED_UltrasoundImageStorage);
 }

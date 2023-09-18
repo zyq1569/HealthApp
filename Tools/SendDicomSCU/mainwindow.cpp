@@ -601,9 +601,64 @@ void MainWindow::on_pBOpen2KC_clicked()
     // load file
     DcmFileFormat dcmff;
     dcmff.loadFile(filename.toStdString().c_str());
-
-    // do some precheck of the transfer syntax
     DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
+    ///-----------------------------------------------------------------------------------
+    ///
+    E_TransferSyntax c_oxfer = dcmff.getDataset()->getOriginalXfer();
+    if (EXS_LittleEndianImplicit !=  c_oxfer &&  EXS_BigEndianImplicit !=  c_oxfer && EXS_LittleEndianExplicit !=  c_oxfer)
+    {
+        registerCodecs();
+        OFCondition error = EC_Normal;
+        E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
+        error = dcmff.chooseRepresentation(opt_oxfer, NULL);
+        if (error.bad())
+        {
+            derror = error.text();
+            QMessageBox::warning(NULL, "error! chooseRepresentation", derror);
+        }
+        else
+        {
+            if (!dcmff.canWriteXfer(opt_oxfer))
+            {
+                QMessageBox::warning(NULL,"warning!",  "canWriteXfer error!  fail!"  );
+                registercleanup();
+                return;
+            }
+            QString newfilename = fileInfo.path() + "/"+ fileInfo.fileName();
+            newfilename += "EXS_JPEGProcess14SV1.dcm";
+
+            DcmFileFormat DcmEncode(dcmff);
+            E_TransferSyntax encode_oxfer = EXS_JPEGProcess14SV1;
+            error = dcmff.chooseRepresentation(encode_oxfer, NULL);
+            if (error.bad())
+            {
+                derror = error.text();
+                QMessageBox::warning(NULL, "fail! chooseRepresentation", derror);
+            }
+            else
+            {
+
+                if (!dcmff.canWriteXfer(encode_oxfer))
+                {
+                    QMessageBox::warning(NULL,"warning!", "---->  EXS_LittleEndianExplicit  fail!" );
+                }
+                else
+                {
+
+                    newfilename = fileInfo.path() + "/"+ fileInfo.fileName();
+                    newfilename += "EXS_JPEG2000LosslessOnly.dcm";
+                    dcmff.loadAllDataIntoMemory();
+                    dcmff.saveFile(newfilename.toStdString().c_str(), EXS_JPEGProcess14SV1);
+                    QMessageBox::information(NULL, "OK!", "Encoder JPEG ok!-- dcm /");
+                }
+            }
+
+        }
+        registercleanup();
+
+        return;
+    }
+    //////////////////////////////////////////////////////////////////////////////////////
 
     if (!fileTransfer.isEncapsulated())
     {
@@ -676,10 +731,14 @@ void MainWindow::on_pBOpen2KC_clicked()
             QString newfilename = fileInfo.path() + "/"+ fileInfo.fileName();
             if (3==index)
             {
+                DcmXfer opt_oxferSyn(EXS_JPEGProcess14SV1);
+                newfilename += opt_oxferSyn.getXferName();
                 newfilename +=    "70_encode.dcm";
             }
             else
             {
+                DcmXfer opt_oxferSyn(EXS_JPEG2000LosslessOnly);
+                newfilename += opt_oxferSyn.getXferName();
                 newfilename +=   "90_encode.dcm";
             }
             dcmff.saveFile(newfilename.toStdString().c_str(),opt_oxfer);

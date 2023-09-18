@@ -87,6 +87,7 @@ class Taskthread: public QObject ,public QRunnable
 public:
     explicit Taskthread(QObject *parent = nullptr);
     ~Taskthread();
+    void initAbstractSyntax();
     void run();
     void dicomDataJob();
     void dicomSendJob();
@@ -112,6 +113,7 @@ public:
     uint m_sendFiles;
     DestinationEntry m_dest;
     std::vector<Patient> m_listpatient;
+    std::vector<OFString> m_abstractSyntaxlist;
 
 public:
     static bool  g_static_check;
