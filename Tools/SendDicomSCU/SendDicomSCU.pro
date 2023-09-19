@@ -133,3 +133,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 #[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319]
 #"SystemDefaultTlsVersions"=dword:00000001
 #"SchUseStrongCrypto"=dword:00000001
+
+RESOURCES += \
+    Config.qrc

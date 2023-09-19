@@ -172,15 +172,9 @@ void Taskthread::dicomDataJob()
         if (cond.good())
         {
             OFString studyuid;
-            OFString sopuid, sopclassuid, transfersyntax,patid,patname;
+            OFString  transfersyntax,patid,patname;
 
             if (dcm.getDataset()->findAndGetOFString(DCM_StudyInstanceUID, studyuid).bad())
-                return;
-
-            if (dcm.getDataset()->findAndGetOFString(DCM_SOPInstanceUID, sopuid).bad())
-                return;
-
-            if (dcm.getDataset()->findAndGetOFString(DCM_SOPClassUID, sopclassuid).bad())
                 return;
 
             if (dcm.getDataset()->findAndGetOFString(DCM_PatientID, patid).bad())
@@ -191,10 +185,8 @@ void Taskthread::dicomDataJob()
 
             if (m_listpatient.empty())
             {
-                //std::string studyuid,studydate,studydesc,dir,sopclassuid,transfersyntax;
                 Study std;
                 std.studyuid = studyuid.c_str();
-                std.sopclassuid = sopclassuid.c_str();
 
                 OFString studydate,studydesc,dir,transfersyntax,originalXfer;
 
@@ -254,7 +246,6 @@ void Taskthread::dicomDataJob()
                         {
                             Study std;
                             std.studyuid = studyuid.c_str();
-                            std.sopclassuid = sopclassuid.c_str();
 
                             OFString studydate, studydesc, dir, transfersyntax, sopclassuid, originalXfer;
                             if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).good())
@@ -280,7 +271,6 @@ void Taskthread::dicomDataJob()
                 {
                     Study std;
                     std.studyuid = studyuid.c_str();
-                    std.sopclassuid = sopclassuid.c_str();
 
                     OFString studydate,studydesc,dir,transfersyntax;
                     if (dcm.getDataset()->findAndGetOFString(DCM_StudyDate, studydate).good())
@@ -457,10 +447,6 @@ int Taskthread::sendStudy(Study &studys)
         {
             //return 1;
         }
-        //else            // some error? keep going
-        //{
-        //    itr++;
-        //}
 
         isend++;
         m_sendFiles ++;
