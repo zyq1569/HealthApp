@@ -92,7 +92,75 @@ an error reading or writing the files. */
 
 //    return Z_OK;
 //}
+//std::vector<std::string> split(std::string str, std::string pattern)
+//{
+//    std::string::size_type pos;
+//    std::vector<std::string> result;
+//    str += pattern;
+//    int size = str.size();
+//    for(int i = 0; i <size; i++)
+//    {
+//        pos = str.find(pattern, i);
+//        if (pos < size)
+//        {
+//            std::string s = str.substr(i,pos-i);
+//            result.push_back(s);
+//            i = pos + pattern.size() - 1;
+//        }
+//    }
+//    return result;
+//}
+//const char BASE64[64] = {'A','B', 'C','D','E', 'F',   'G','H', 'I','J','K', 'L',   'M','N', 'O','P','Q', 'R',  'S','T','U', 'V','W','X',    'Y','Z',
+//                         'a','b', 'c','d','e', 'f',   'g','h', 'i','j','k', 'l',   'm','n', 'o','p','q', 'r',  's','t','u', 'v','w','x',    'y','z',
+//                         '0','1', '2','3','4', '5',   '6','7', '8','9','+', '/'      };
 
+//std::string Base64F(long long input, std::string &out)
+//{
+//    //long long a = 200911030261;
+//    int base;
+//    std::string s;
+//    do
+//    {
+//        base = input % 64;
+//        s    = BASE64[base]  + s;
+//        input   /= 64;
+//    }while (input);
+//    out = s;
+//    return out;
+//}
+
+//    OFString uuid = "1.2.826.0.1.3680043.9.7604.091103151322.178053.2009110302611.2.840.113619.2.55.3.604688119.699.1256270056.701.31.2.840.113619.2.55.3.604688119.699.1256270056.756.1";
+
+//    OFList<OFString>  list = SplitUUID(uuid, ".");
+//    OFString struid;
+//    for (OFListIterator(OFString) id = list.begin(); id != list.end(); id++)
+//    {
+//        OFString number = *id;
+//        OFString out;
+//        UIDBase64(atoll(number.c_str()), out);
+//        out += ".";
+//        struid += out;
+////        qDebug("%s", number.c_str());
+//    }
+//    //OFString ini_filename = ini_dir + "/" + struid + ".ini";
+//    qDebug("%s", struid.c_str());
+
+//    //std::string  uid = "1.2.826.0.1.3680043.9.7604.091103151322.178053.2009110302611.2.840.113619.2.55.3.604688119.699.1256270056.701.31.2.840.113619.2.55.3.604688119.699.1256270056.756.1";
+//    std::string pattern = ".";
+//    std::vector<std::string>  listq = split(uuid.c_str(), pattern);
+//    std::string suid;
+//    foreach( std::string s, listq)
+//    {
+//        QString number = s.c_str();
+//        std::string out;
+//        Base64F(number.toLongLong(), out);
+//        out += ".";
+//        suid += out;
+////        qDebug("%s", s.c_str());
+//    }
+//    qDebug("%s", suid.c_str());
+
+//    return;
 void MainWindow::registerCodecs()
 {
     // register global JPEG decompression codecs
@@ -449,7 +517,8 @@ void MainWindow::on_pBOpen2K_clicked()
     // do some precheck of the transfer syntax
     DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
 
-    if (fileTransfer.isEncapsulated())
+    E_TransferSyntax c_oxfer = dcmff.getDataset()->getOriginalXfer();
+    if (EXS_LittleEndianImplicit !=  c_oxfer &&  EXS_BigEndianImplicit !=  c_oxfer && EXS_LittleEndianExplicit !=  c_oxfer)
     {
         OFCondition error = EC_Normal;
         //OFBool opt_forceSingleFragmentPerFrame = OFFalse;
@@ -457,23 +526,20 @@ void MainWindow::on_pBOpen2K_clicked()
         registerCodecs();
 
         QString info = "Explicit VR Little Endian";
-        E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;//EXS_LittleEndianImplicit;  //opt_oxfer = EXS_BigEndianImplicit;  //opt_oxfer = EXS_LittleEndianExplicit;
+        E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
         DcmXfer opt_oxferSyn(opt_oxfer);
         DcmXfer original_xfer(fileTransfer);
 
         error = dcmff.chooseRepresentation(opt_oxfer, NULL);
         if (error.bad())
         {
-            //ERROR_LOG(QString( error.text()) + " decompressing file: " + opt_ifname);
             derror = error.text();
             if (error == EJ_UnsupportedColorConversion)
             {
-                //ERROR_LOG( "Try --conv-never to disable color space conversion");
                 derror +=  "Try --conv-never to disable color space conversion";
             }
             else if (error == EC_CannotChangeRepresentation)
             {
-                //ERROR_LOG( QString("Input transfer syntax ") +  original_xfer.getXferName() + "not supported");
                 derror +=  QString("Input transfer syntax ") +  original_xfer.getXferName() + "not supported";
             }
             // deregister global decompression codecs
@@ -485,7 +551,6 @@ void MainWindow::on_pBOpen2K_clicked()
         {
             if (!dcmff.canWriteXfer(opt_oxfer))
             {
-                // ERROR_LOG(QString ("no conversion to transfer syntax") + opt_oxferSyn.getXferName() + "possible");
                 // deregister global decompression codecs
                 registercleanup();
                 QMessageBox::warning(NULL,"warning!","conversion to transfer syntax fail!" + QString(opt_oxferSyn.getXferName()));
@@ -507,75 +572,6 @@ void MainWindow::on_pBOpen2K_clicked()
 
 }
 
-//std::vector<std::string> split(std::string str, std::string pattern)
-//{
-//    std::string::size_type pos;
-//    std::vector<std::string> result;
-//    str += pattern;
-//    int size = str.size();
-//    for(int i = 0; i <size; i++)
-//    {
-//        pos = str.find(pattern, i);
-//        if (pos < size)
-//        {
-//            std::string s = str.substr(i,pos-i);
-//            result.push_back(s);
-//            i = pos + pattern.size() - 1;
-//        }
-//    }
-//    return result;
-//}
-//const char BASE64[64] = {'A','B', 'C','D','E', 'F',   'G','H', 'I','J','K', 'L',   'M','N', 'O','P','Q', 'R',  'S','T','U', 'V','W','X',    'Y','Z',
-//                         'a','b', 'c','d','e', 'f',   'g','h', 'i','j','k', 'l',   'm','n', 'o','p','q', 'r',  's','t','u', 'v','w','x',    'y','z',
-//                         '0','1', '2','3','4', '5',   '6','7', '8','9','+', '/'      };
-
-//std::string Base64F(long long input, std::string &out)
-//{
-//    //long long a = 200911030261;
-//    int base;
-//    std::string s;
-//    do
-//    {
-//        base = input % 64;
-//        s    = BASE64[base]  + s;
-//        input   /= 64;
-//    }while (input);
-//    out = s;
-//    return out;
-//}
-
-//    OFString uuid = "1.2.826.0.1.3680043.9.7604.091103151322.178053.2009110302611.2.840.113619.2.55.3.604688119.699.1256270056.701.31.2.840.113619.2.55.3.604688119.699.1256270056.756.1";
-
-//    OFList<OFString>  list = SplitUUID(uuid, ".");
-//    OFString struid;
-//    for (OFListIterator(OFString) id = list.begin(); id != list.end(); id++)
-//    {
-//        OFString number = *id;
-//        OFString out;
-//        UIDBase64(atoll(number.c_str()), out);
-//        out += ".";
-//        struid += out;
-////        qDebug("%s", number.c_str());
-//    }
-//    //OFString ini_filename = ini_dir + "/" + struid + ".ini";
-//    qDebug("%s", struid.c_str());
-
-//    //std::string  uid = "1.2.826.0.1.3680043.9.7604.091103151322.178053.2009110302611.2.840.113619.2.55.3.604688119.699.1256270056.701.31.2.840.113619.2.55.3.604688119.699.1256270056.756.1";
-//    std::string pattern = ".";
-//    std::vector<std::string>  listq = split(uuid.c_str(), pattern);
-//    std::string suid;
-//    foreach( std::string s, listq)
-//    {
-//        QString number = s.c_str();
-//        std::string out;
-//        Base64F(number.toLongLong(), out);
-//        out += ".";
-//        suid += out;
-////        qDebug("%s", s.c_str());
-//    }
-//    qDebug("%s", suid.c_str());
-
-//    return;
 
 //https://github.com/moyumoyu/dcmtk-openjpeg
 void MainWindow::on_pBOpen2KC_clicked()
@@ -602,12 +598,38 @@ void MainWindow::on_pBOpen2KC_clicked()
     DcmFileFormat dcmff;
     dcmff.loadFile(filename.toStdString().c_str());
     DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
-    ///-----------------------------------------------------------------------------------
-    ///
+    ///------------first decode----------------------------------------------------------------------
+    QString info;
+    int index = ui->cB_transfersyntaxes->currentIndex();
+    E_TransferSyntax opt_oxfer;
+    opt_oxfer = EXS_JPEG2000LosslessOnly;//EXS_JPEGProcess14SV1;//EXS_LittleEndianImplicit;
+    info = "JPEG 2000 Image Compression(Lossless Only)/70";
+
+    if (3 == index)
+    {
+        opt_oxfer = EXS_JPEGProcess14SV1;
+        info = "JPEG Lossless, Non-Hierarchical,First-Order Prediction/90";
+    }
+    else
+    {
+        if (index < 3)
+        {
+            ui->cB_transfersyntaxes->setCurrentIndex(4);
+        }
+    }
     E_TransferSyntax c_oxfer = dcmff.getDataset()->getOriginalXfer();
+    if (c_oxfer == opt_oxfer)
+    {
+        DcmXfer current_xfer(opt_oxfer);
+        info = current_xfer.getXferName();
+        QMessageBox::information(NULL, "OK!", "current dcm Encoder :" + info);
+        return;
+    }
+#ifdef ON_THE_FLY_COMPRESSION
+        registerCodecs();
+#endif
     if (EXS_LittleEndianImplicit !=  c_oxfer &&  EXS_BigEndianImplicit !=  c_oxfer && EXS_LittleEndianExplicit !=  c_oxfer)
     {
-        registerCodecs();
         OFCondition error = EC_Normal;
         E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
         error = dcmff.chooseRepresentation(opt_oxfer, NULL);
@@ -621,141 +643,71 @@ void MainWindow::on_pBOpen2KC_clicked()
             if (!dcmff.canWriteXfer(opt_oxfer))
             {
                 QMessageBox::warning(NULL,"warning!",  "canWriteXfer error!  fail!"  );
+#ifdef ON_THE_FLY_COMPRESSION
                 registercleanup();
+#endif
                 return;
             }
-            QString newfilename = fileInfo.path() + "/"+ fileInfo.fileName();
-            newfilename += "EXS_JPEGProcess14SV1.dcm";
-
-            DcmFileFormat DcmEncode(dcmff);
-            E_TransferSyntax encode_oxfer = EXS_JPEGProcess14SV1;
-            error = dcmff.chooseRepresentation(encode_oxfer, NULL);
-            if (error.bad())
-            {
-                derror = error.text();
-                QMessageBox::warning(NULL, "fail! chooseRepresentation", derror);
-            }
-            else
-            {
-
-                if (!dcmff.canWriteXfer(encode_oxfer))
-                {
-                    QMessageBox::warning(NULL,"warning!", "---->  EXS_LittleEndianExplicit  fail!" );
-                }
-                else
-                {
-
-                    newfilename = fileInfo.path() + "/"+ fileInfo.fileName();
-                    newfilename += "EXS_JPEG2000LosslessOnly.dcm";
-                    dcmff.loadAllDataIntoMemory();
-                    dcmff.saveFile(newfilename.toStdString().c_str(), EXS_JPEGProcess14SV1);
-                    QMessageBox::information(NULL, "OK!", "Encoder JPEG ok!-- dcm /");
-                }
-            }
-
         }
-        registercleanup();
 
-        return;
     }
     //////////////////////////////////////////////////////////////////////////////////////
+    OFCondition error = EC_Normal;
+    DcmXfer opt_oxferSyn(opt_oxfer);
+    DcmXfer original_xfer(fileTransfer);
 
-    if (!fileTransfer.isEncapsulated())
+    error = dcmff.chooseRepresentation(opt_oxfer, NULL);
+    if (error.bad())
     {
-        OFCondition error = EC_Normal;
-#ifdef ON_THE_FLY_COMPRESSION
-
-        registerCodecs();
-
-#endif
-
-        QString info;
-        E_TransferSyntax opt_oxfer;
-        opt_oxfer = EXS_JPEG2000LosslessOnly;//transfersyntaxesEXS_JPEGProcess14SV1;//EXS_JPEGProcess14SV1;//EXS_LittleEndianImplicit;  //opt_oxfer = EXS_BigEndianImplicit;  //opt_oxfer = EXS_LittleEndianExplicit;
-        info = "JPEG 2000 Image Compression(Lossless Only)/70";
-        int index = ui->cB_transfersyntaxes->currentIndex();
-        if (3 == index)
+        derror = error.text();
+        if (error == EJ_UnsupportedColorConversion)
         {
-            opt_oxfer = EXS_JPEGProcess14SV1;
-            info = "JPEG Lossless, Non-Hierarchical,First-Order Prediction/90";
+            derror +=  "Try --conv-never to disable color space conversion";
         }
-        else
+        else if (error == EC_CannotChangeRepresentation)
         {
-            if (index < 3)
-            {
-                ui->cB_transfersyntaxes->setCurrentIndex(4);
-            }
+            derror +=  QString("[Input transfer syntax: ") +  original_xfer.getXferName() + "not supported]";
         }
-
-        DcmXfer opt_oxferSyn(opt_oxfer);
-        DcmXfer original_xfer(fileTransfer);
-
-        error = dcmff.chooseRepresentation(opt_oxfer, NULL);
-        if (error.bad())
-        {
-            //ERROR_LOG(QString( error.text()) + " decompressing file: " + opt_ifname);
-            derror = error.text();
-            if (error == EJ_UnsupportedColorConversion)
-            {
-                //ERROR_LOG( "Try --conv-never to disable color space conversion");
-                derror +=  "Try --conv-never to disable color space conversion";
-            }
-            else if (error == EC_CannotChangeRepresentation)
-            {
-                //ERROR_LOG( QString("Input transfer syntax ") +  original_xfer.getXferName() + "not supported");
-                derror +=  QString("[Input transfer syntax: ") +  original_xfer.getXferName() + "not supported]";
-            }
-            // deregister global decompression codecs
+        // deregister global decompression codecs
 #ifdef ON_THE_FLY_COMPRESSION
-
-            registercleanup();
-#endif
-            QMessageBox::warning(NULL, "warning!", derror);
-
-        }
-        else
-        {
-            if (!dcmff.canWriteXfer(opt_oxfer))
-            {
-                // ERROR_LOG(QString ("no conversion to transfer syntax") + opt_oxferSyn.getXferName() + "possible");
-                // deregister global decompression codecs
-#ifdef ON_THE_FLY_COMPRESSION
-
-                registercleanup();
-
-#endif
-                QMessageBox::warning(NULL,"warning!","conversion to transfer syntax fail!" + QString(opt_oxferSyn.getXferName()));
-                return;
-            }
-
-            QString newfilename = fileInfo.path() + "/"+ fileInfo.fileName();
-            if (3==index)
-            {
-                DcmXfer opt_oxferSyn(EXS_JPEGProcess14SV1);
-                newfilename += opt_oxferSyn.getXferName();
-                newfilename +=    "70_encode.dcm";
-            }
-            else
-            {
-                DcmXfer opt_oxferSyn(EXS_JPEG2000LosslessOnly);
-                newfilename += opt_oxferSyn.getXferName();
-                newfilename +=   "90_encode.dcm";
-            }
-            dcmff.saveFile(newfilename.toStdString().c_str(),opt_oxfer);
-            // deregister global decompression codecs
-            QMessageBox::information(NULL, "OK!", "Encoder JPEG ok!-- dcm /" + info);
-        }
-
-#ifdef ON_THE_FLY_COMPRESSION
-
         registercleanup();
 #endif
+        QMessageBox::warning(NULL, "warning!", derror);
 
     }
     else
     {
-        QMessageBox::information(this,tr("Dcm"),"Encapsulated dcm!",QMessageBox::Ok);
+        if (!dcmff.canWriteXfer(opt_oxfer))
+        {
+            // deregister global decompression codecs
+#ifdef ON_THE_FLY_COMPRESSION
+            registercleanup();
+#endif
+            QMessageBox::warning(NULL,"warning!","conversion to transfer syntax fail!" + QString(opt_oxferSyn.getXferName()));
+            return;
+        }
+
+        QString newfilename = fileInfo.path() + "/"+ fileInfo.fileName();
+        if (3==index)
+        {
+            DcmXfer opt_oxferSyn(EXS_JPEGProcess14SV1);
+            newfilename += opt_oxferSyn.getXferName();
+            newfilename +=    "70_encode.dcm";
+        }
+        else
+        {
+            DcmXfer opt_oxferSyn(EXS_JPEG2000LosslessOnly);
+            newfilename += opt_oxferSyn.getXferName();
+            newfilename +=   "90_encode.dcm";
+        }
+        dcmff.saveFile(newfilename.toStdString().c_str(),opt_oxfer);
+        // deregister global decompression codecs
+        QMessageBox::information(NULL, "OK!", "Encoder JPEG ok!-- dcm /" + info);
     }
+
+#ifdef ON_THE_FLY_COMPRESSION
+    registercleanup();
+#endif
 
 }
 
