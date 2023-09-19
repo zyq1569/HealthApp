@@ -36,6 +36,8 @@
 /////#########################################################################################
 
 bool Taskthread::g_static_check = false;
+OFString  Taskthread::g_Pname = "Anonymous";
+OFString  Taskthread::g_InsUID = "1.2.826.0.1.3680043.9.7604.";
 
 /////--------------------------Taskthread-----------------------------------------------------
 void Taskthread::registerCodecs()
@@ -381,6 +383,12 @@ int Taskthread::sendStudy(Study &studys)
 
 
     int isend = 0;
+    OFString newname,newuid;
+    if (Taskthread::g_Pname.length() > 1)
+        newname = Taskthread::g_Pname;
+    if (Taskthread::g_InsUID.length() > 1)
+        newuid = Taskthread::g_InsUID;
+
     //for(OFIterator<OFString> it = dcmfiles.begin(); it!= dcmfiles.end(); it++)
     foreach(std::string dcmf, studys.filespath)
     {
@@ -419,17 +427,13 @@ int Taskthread::sendStudy(Study &studys)
             }
             dcmff.getDataset()->findAndGetOFString(DCM_StudyInstanceUID, Studyuid);
 
-            OFString name = "Anonymous";
-            updateStringAttributeValue(dcmff.getDataset(),DCM_PatientName, name);
+            updateStringAttributeValue(dcmff.getDataset(),DCM_PatientName, newname);
 
-            OFString newstudyuid = "1.2.826.0.1.3680043.9.7604.";
-            newstudyuid         += Studyuid.substr(ImpUID.length()+3,Studyuid.length());
-
-            updateStringAttributeValue(dcmff.getDataset(),DCM_StudyInstanceUID, newstudyuid);
+            newuid         += Studyuid.substr(ImpUID.length()+3,Studyuid.length());
+            updateStringAttributeValue(dcmff.getDataset(),DCM_StudyInstanceUID, newuid);
 
             OFString MedicalName = "DCMTK_OmlyTEST";
             updateStringAttributeValue(dcmff.getDataset(),DCM_InstitutionName, MedicalName);
-
 
             cond = scu.sendSTORERequest(pid, NULL, dcmff.getDataset(), status);
         }

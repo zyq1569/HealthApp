@@ -117,6 +117,7 @@ public:
 
 public:
     static bool  g_static_check;
+    static OFString g_Pname, g_InsUID;
 
 private:
     int m_type;

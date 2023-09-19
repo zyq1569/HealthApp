@@ -421,6 +421,12 @@ void MainWindow::on_pBSend_clicked()
     if (ui->cBAnonymous->isChecked() && QMessageBox::Yes == QMessageBox::question(NULL, "question", "Anonymous  Dicom file?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes))
     {
         m_sender.SetUpateDcmFileAnonymous(true);
+        QString str = ui->cb_Pname->toPlainText();
+        if (str.length() > 1)
+            Taskthread::g_Pname = str.toStdString().c_str();
+        str = ui->cb_InsUID->toPlainText();
+        if (str.length() > 1)
+            Taskthread::g_InsUID = str.toStdString().c_str();
     }
     else
     {
