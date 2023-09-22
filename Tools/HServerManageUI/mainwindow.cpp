@@ -1,4 +1,4 @@
-﻿#include "mainwindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include "units.h"
@@ -131,7 +131,7 @@ HMainWindow::HMainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HMai
         ui->query_clientinfo->setModel(m_model);
         ui->query_clientinfo->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
         ui->query_clientinfo->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-        ui->query_clientinfo->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中��
+        ui->query_clientinfo->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
         //--------------------------------------------------------------------------
 
         //web
@@ -482,7 +482,7 @@ void HMainWindow::on_WebServer_clicked()
         QString program = "java";
         QStringList arg;
 
-        //启动java 应用的参��-jar  filename[app.exe] other
+        //启动java 应用的参数-jar  filename[app.exe] other
         arg.append("-jar");
         arg.append(m_ExeDir + m_WebServerName);
         arg.append("com.mysql.cj.jdbc.Driver");
@@ -561,14 +561,14 @@ void HMainWindow::on_query_add_clicked()
 
 void HMainWindow::on_query_delete_clicked()
 {
-    int curRow=ui->query_clientinfo->currentIndex().row();//选中��
+    int curRow=ui->query_clientinfo->currentIndex().row();//选中行
     m_model->removeRow(curRow);
 }
 
 
 void HMainWindow::on_query_modify_clicked()
 {
-    //int curRow=ui->query_clientinfo->currentIndex().row();//选中��
+    //int curRow=ui->query_clientinfo->currentIndex().row();//选中行
 }
 
 void HMainWindow::closeEvent(QCloseEvent *event)
