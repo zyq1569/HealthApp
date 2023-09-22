@@ -1,16 +1,17 @@
-﻿#include "HMariaDb.h"
+﻿#include "MysqlDb.h"
+#include <synchapi.h>
 
-HMariaDb::HMariaDb(void)
+MysqlDb::MysqlDb(void)
 {
     pConnectionHandlerPtr = NULL;
 }
 
-HMariaDb::HMariaDb(const std::string& server, const std::string& user, const std::string& password, const std::string& database)
+MysqlDb::MysqlDb(const std::string& server, const std::string& user, const std::string& password, const std::string& database)
 {
     pConnectionHandlerPtr = mysql_init(NULL);
     if (NULL == mysql_real_connect(pConnectionHandlerPtr, server.c_str(), user.c_str(), password.c_str(), database.c_str(), 0, NULL, 0))
     {
-        throw HSqlError("Failed to connect to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
+        throw SqlError("Failed to connect to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
     }
     if (!mysql_set_character_set(pConnectionHandlerPtr, "GBK"))
     {
@@ -20,7 +21,7 @@ HMariaDb::HMariaDb(const std::string& server, const std::string& user, const std
     }
     else
     {
-        throw HSqlError("Failed to mysql_set_character_set GBK" + std::string(mysql_error(pConnectionHandlerPtr)));
+        throw SqlError("Failed to mysql_set_character_set GBK" + std::string(mysql_error(pConnectionHandlerPtr)));
     }
     m_server = server;
     m_user = user;
@@ -28,18 +29,18 @@ HMariaDb::HMariaDb(const std::string& server, const std::string& user, const std
     m_database = database;
 }
 
-HMariaDb::~HMariaDb(void)
+MysqlDb::~MysqlDb(void)
 {
     close();
 }
 
-bool HMariaDb::open(const std::string& server, const std::string& user, const std::string& password, const std::string& database, std::string &error)
+bool MysqlDb::open(const std::string& server, const std::string& user, const std::string& password, const std::string& database, std::string &error)
 {
     try
     {
         connect(server, user,  password,  database);
     }
-    catch (HSqlError e)
+    catch (SqlError e)
     {
         error = e.what();
         return false;
@@ -47,13 +48,13 @@ bool HMariaDb::open(const std::string& server, const std::string& user, const st
     return true;
 }
 
-void HMariaDb::connect(const std::string& server, const std::string& user, const std::string& password, const std::string& database)
+void MysqlDb::connect(const std::string& server, const std::string& user, const std::string& password, const std::string& database)
 {
     pConnectionHandlerPtr = mysql_init(NULL);
 
     if (NULL == mysql_real_connect(pConnectionHandlerPtr, server.c_str(), user.c_str(), password.c_str(), database.c_str(), 0, NULL, 0))
     {
-        throw HSqlError("Failed to connect to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
+        throw SqlError("Failed to connect to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
     }
     if (!mysql_set_character_set(pConnectionHandlerPtr, "GBK"))
     {
@@ -63,7 +64,7 @@ void HMariaDb::connect(const std::string& server, const std::string& user, const
     }
     else
     {
-        throw HSqlError("Failed to mysql_set_character_set GBK" + std::string(mysql_error(pConnectionHandlerPtr)));
+        throw SqlError("Failed to mysql_set_character_set GBK" + std::string(mysql_error(pConnectionHandlerPtr)));
     }
     m_server = server;
     m_user = user;
@@ -71,7 +72,7 @@ void HMariaDb::connect(const std::string& server, const std::string& user, const
     m_database = database;
 }
 
-int HMariaDb::reconnection()
+int MysqlDb::reconnection()
 {
     close();
     int try_times = 0;
@@ -109,7 +110,7 @@ int HMariaDb::reconnection()
     return -1;
 }
 
-void HMariaDb::query(const std::string& sql)
+void MysqlDb::query(const std::string& sql)
 {
     if (NULL == pConnectionHandlerPtr)
         return;
@@ -118,12 +119,12 @@ void HMariaDb::query(const std::string& sql)
     {
         if (NULL != reconnection())
         {
-            throw HSqlError("Failed to reconnection to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
+            throw SqlError("Failed to reconnection to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
         }
     }
     if (!(mysql_query(pConnectionHandlerPtr, sql.c_str()) == 0))
     {
-        throw HSqlError("Failed to execute sql: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
+        throw SqlError("Failed to execute sql: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
     }
     else
     {
@@ -132,7 +133,7 @@ void HMariaDb::query(const std::string& sql)
     }
 }
 
-void HMariaDb::execute(const std::string& sql)
+void MysqlDb::execute(const std::string& sql)
 {
     if (NULL == pConnectionHandlerPtr)
         return;
@@ -140,16 +141,16 @@ void HMariaDb::execute(const std::string& sql)
     {
         if (NULL != reconnection())
         {
-            throw HSqlError("Failed to reconnection to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
+            throw SqlError("Failed to reconnection to database: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
         }
     }
     if (!(mysql_query(pConnectionHandlerPtr, sql.c_str()) == 0))
     {
-        throw HSqlError("Failed to execute sql: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
+        throw SqlError("Failed to execute sql: Error: " + std::string(mysql_error(pConnectionHandlerPtr)));
     }
 }
 
-void HMariaDb::getresult(ResultSet& rs)
+void MysqlDb::getresult(ResultSet& rs)
 {
     if (NULL == pConnectionHandlerPtr)
         return;

@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include "units.h"
@@ -11,11 +11,9 @@
 #include <QtWidgets>
 #include <QtGlobal>
 #include <QModelIndex>
-
+#include "MysqlDb.h"
 /// to do: 调整界面的布局 参考http://c.biancheng.net/view/9422.html
-HMainWindow::HMainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::HMainWindow)
+HMainWindow::HMainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HMainWindow)
 {
     ui->setupUi(this);
     QString Dir     = QDir::currentPath();
@@ -133,7 +131,7 @@ HMainWindow::HMainWindow(QWidget *parent) :
         ui->query_clientinfo->setModel(m_model);
         ui->query_clientinfo->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
         ui->query_clientinfo->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-        ui->query_clientinfo->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中行
+        ui->query_clientinfo->setSelectionBehavior(QAbstractItemView::SelectRows);//设置选中模式为选中��
         //--------------------------------------------------------------------------
 
         //web
@@ -484,7 +482,7 @@ void HMainWindow::on_WebServer_clicked()
         QString program = "java";
         QStringList arg;
 
-        //启动java 应用的参数 -jar  filename[app.exe] other
+        //启动java 应用的参��-jar  filename[app.exe] other
         arg.append("-jar");
         arg.append(m_ExeDir + m_WebServerName);
         arg.append("com.mysql.cj.jdbc.Driver");
@@ -563,14 +561,14 @@ void HMainWindow::on_query_add_clicked()
 
 void HMainWindow::on_query_delete_clicked()
 {
-    int curRow=ui->query_clientinfo->currentIndex().row();//选中行
+    int curRow=ui->query_clientinfo->currentIndex().row();//选中��
     m_model->removeRow(curRow);
 }
 
 
 void HMainWindow::on_query_modify_clicked()
 {
-    //int curRow=ui->query_clientinfo->currentIndex().row();//选中行
+    //int curRow=ui->query_clientinfo->currentIndex().row();//选中��
 }
 
 void HMainWindow::closeEvent(QCloseEvent *event)
@@ -586,11 +584,11 @@ void HMainWindow::changeEvent(QEvent *event)
 #ifndef QT_NO_SYSTEMTRAYICON
         if (m_TrayIcon->isVisible())
         {
-            //            QMessageBox::information(this, tr("Systray"),
-            //                                     tr("The program will keep running in the "
-            //                                        "system tray. To terminate the program, "
-            //                                        "choose <b>close</b> in the context menu "
-            //                                        "of the system tray entry."));
+            //QMessageBox::information(this, tr("Systray"),
+            //                         tr("The program will keep running in the "
+            //                            "system tray. To terminate the program, "
+            //                            "choose <b>close</b> in the context menu "
+            //                            "of the system tray entry."));
             hide();
             event->ignore();
         }
@@ -646,3 +644,26 @@ void HMainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
     }
 }
 #endif
+
+void HMainWindow::on_Sql_Echo_clicked()
+{
+    m_MysqlServer   = ui->mysqlServerValue->text();
+    m_MysqlDbName   = ui->mysqldbNameValue->text();
+    m_MysqlUserName = ui->mysqlUserNameValue->text();
+    m_MysqlPWD      = ui->mysqlPWDValue->text();
+
+    MysqlDb mysql;
+    std::string error;
+    bool ok = mysql.open(m_MysqlServer.toStdString().c_str(), m_MysqlUserName.toStdString().c_str(), m_MysqlPWD.toStdString().c_str(), m_MysqlDbName.toStdString().c_str(), error);
+    if (ok)
+    {
+        QMessageBox::information(this,"infor", "success");
+    }
+    else
+    {
+        QMessageBox::information(this,"infor", "fail!");
+    }
+}
+
+
+

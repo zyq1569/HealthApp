@@ -4,9 +4,10 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 #QT       += sql
 #QMAKE_CXXFLAGS += /utf-8
+DEFINES  -= UNICODE
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = HServerUI
@@ -28,6 +29,8 @@ DEFINES += ELPP_THREAD_SAFE ELPP_NO_DEFAULT_LOG_FILE ELPP_DISABLE_DEFAULT_CRASH_
 
 CONFIG += c++11
 
+include(../../rootdir.pri)
+
 SOURCES += \
         easylogging++.cc \
         logging.cpp \
@@ -44,10 +47,45 @@ HEADERS += \
 FORMS += \
         mainwindow.ui
 
+INCLUDEPATH +=../../DB/mariadb
+
+win32 {
+
+    msvc{
+        LIB_DIR = $$ROOTDIR/bin/win32/vs/lib
+        DESTDIR = $$PWD/bin/windows/vs
+
+    }else{
+        DEFINES += HAVE_POPEN
+        DEFINES += HAVE_PCLOSE
+        LIB_DIR = $$ROOTDIR/bin/win32/Mingw/lib
+        contains(CONFIG, static){
+            LIB_DIR = $$ROOTDIR/bin/win32/Mingw/staticlib
+        }else{
+            LIBS += -liphlpapi
+            LIBS += -lwsock32
+            LIBS += -lws2_32
+            LIBS += -lole32
+            LIBS += -lnetapi32
+            LIBS += -lShlwapi
+            LIBS += -lKernel32
+            LIBS += -lShlwapi
+            LIBS += -lAdvapi32
+            #message("win32 share")
+        }
+        DESTDIR = $$PWD/bin/windows/Mingw
+
+    }
+}
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    systray.qrc
+             systray.qrc
+
+LIBS      +=  -L$${LIB_DIR} \
+              -lmariadb
+

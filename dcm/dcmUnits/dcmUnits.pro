@@ -31,10 +31,27 @@ DEFINES  -= UNICODE
 win32 {
     msvc{
         DESTDIR = $$ROOTDIR/bin/win32/vs/lib
+
+#        contains(CONFIG, shared){
+#          message("share")
+#        }
+        contains(CONFIG, static){
+#          message("static")
+           DESTDIR = $$ROOTDIR/bin/win32/vs/staticlib
+        }
+
     }else{
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
         DESTDIR = $$ROOTDIR/bin/win32/Mingw/lib
+
+#        contains(CONFIG, shared){
+#          message("share")
+#        }
+        contains(CONFIG, static){
+#          message("static")
+          DESTDIR = $$ROOTDIR/bin/win32/Mingw/staticlib
+        }
     }
 }
 

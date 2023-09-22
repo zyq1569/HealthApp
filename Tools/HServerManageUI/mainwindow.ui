@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>413</width>
+    <width>419</width>
     <height>630</height>
    </rect>
   </property>
@@ -189,7 +189,7 @@
      <rect>
       <x>85</x>
       <y>558</y>
-      <width>311</width>
+      <width>301</width>
       <height>21</height>
      </rect>
     </property>
@@ -384,6 +384,31 @@
     <property name="title">
      <string>MySql</string>
     </property>
+    <widget class="QPushButton" name="Sql_Echo">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>50</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;manage dicom info to mysql&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="locale">
+      <locale language="Chinese" country="China"/>
+     </property>
+     <property name="text">
+      <string>Echo</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
    <widget class="Line" name="line_3">
     <property name="enabled">
@@ -580,7 +605,7 @@
    <widget class="QLineEdit" name="mysqldbNameValue">
     <property name="geometry">
      <rect>
-      <x>257</x>
+      <x>247</x>
       <y>231</y>
       <width>91</width>
       <height>22</height>
@@ -599,7 +624,7 @@
    <widget class="QLabel" name="MySqldbName">
     <property name="geometry">
      <rect>
-      <x>208</x>
+      <x>198</x>
       <y>234</y>
       <width>43</width>
       <height>16</height>
@@ -615,7 +640,7 @@
    <widget class="QLabel" name="mysqlPWD">
     <property name="geometry">
      <rect>
-      <x>208</x>
+      <x>198</x>
       <y>267</y>
       <width>39</width>
       <height>16</height>
@@ -650,7 +675,7 @@
    <widget class="QLineEdit" name="mysqlPWDValue">
     <property name="geometry">
      <rect>
-      <x>257</x>
+      <x>247</x>
       <y>262</y>
       <width>91</width>
       <height>22</height>

@@ -1,10 +1,7 @@
 #pragma once
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-//-------統一使用dcmtklog方式
-#include "dcmtk/oflog/fileap.h"
-#include "dcmtk/oflog/oflog.h"
+
 //--------------------
-#include "mysql.h"
+#include "../../include/mysql/win32/mysql.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -18,10 +15,10 @@
 //#endif
 //#include "dcmtk/oflog/fileap.h"
 
-class HSqlError : public std::exception
+class SqlError : public std::exception
 {
 public:
-    HSqlError(const std::string& what)
+    SqlError(const std::string& what)
         //: exception(what.c_str())
     {
     }
@@ -187,12 +184,12 @@ private:
     std::vector<std::string > _field;
 }; // ResultSet
 
-class HMariaDb
+class MysqlDb
 {
 public:
-    HMariaDb(void);
-    HMariaDb(const std::string& server, const std::string& user, const std::string& password, const std::string& database);
-    ~HMariaDb(void);
+    MysqlDb(void);
+    MysqlDb(const std::string& server, const std::string& user, const std::string& password, const std::string& database);
+    ~MysqlDb(void);
 
     void connect(const std::string& server, const std::string& user, const std::string& password, const std::string& database);
     bool open(const std::string& server, const std::string& user, const std::string& password, const std::string& database, std::string &error);

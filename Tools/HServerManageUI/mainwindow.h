@@ -78,6 +78,8 @@ private slots:
 
     void on_query_modify_clicked();
 
+    void on_Sql_Echo_clicked();
+
 protected:
     QProcess *m_pQProcess[QPROCESSSIZE];//,*m_pStoreQProcess,*m_pQuerQProcess,*m_pWLMQProcess,*m_pDcmQProcess;
     QStandardItemModel *m_model;
