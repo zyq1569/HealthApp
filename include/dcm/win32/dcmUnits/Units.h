@@ -2,6 +2,7 @@
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 #include "dcmtk/oflog/fileap.h"
 
+class sqlite3;
 DCMTK_OFSTD_EXPORT struct OFHashValue
 {
 
@@ -169,3 +170,11 @@ struct DCMTK_DCMNET_EXPORT MySqlInfo
 */
 DCMTK_OFSTD_EXPORT void SetSqlDbInfo(OFString  IpAddress,  OFString SqlName,   OFString SqlUserName,   OFString SqlPWD,   int sqltype = 0);
 DCMTK_OFSTD_EXPORT void GetSqlDbInfo(OFString  &IpAddress, OFString  &SqlName, OFString  &SqlUserName, OFString  &SqlPWD, int &Sqltype);
+
+
+DCMTK_OFSTD_EXPORT sqlite3* OpenSqlite(std::string filename);
+DCMTK_OFSTD_EXPORT int CloseSqlite(sqlite3* db);
+DCMTK_OFSTD_EXPORT int CreateTableSqlite(sqlite3* db, std::string sqlstr);
+DCMTK_OFSTD_EXPORT int InsertSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param);
+DCMTK_OFSTD_EXPORT int SelectSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param, std::vector<std::map<std::string, std::string>> result );
+DCMTK_OFSTD_EXPORT int UpdateSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param);
