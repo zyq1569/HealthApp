@@ -2,6 +2,8 @@
 //-------統一使用dcmtklog方式
 //#include "dcmtk/oflog/fileap.h"
 #include "dcmtk/oflog/oflog.h"
+#include "../../Tools/sqlite3/sqlite3.h"
+#include "../../Tools/sqlite3/sqlite3_exec_stmt.h"
 //--------------------
 #include <iostream>
 #include <string>
@@ -871,5 +873,112 @@ void GetSqlDbInfo(OFString  &IpAddress, OFString  &SqlName, OFString  &SqlUserNa
     SqlUserName = g_SqlDbdataInfo.SqlUserName;
     SqlPWD = g_SqlDbdataInfo.SqlPWD;
     Sqltype = g_SqlDbdataInfo.Sqltype;
+
+}
+
+///------------------Sqlite----------------database-----------------------------------------------------------------------------
+int onerowresult_sqlitecallback(void *para, int col, char** pValue, char** pNmae);
+
+sqlite3* OpenSqlite(std::string filename)
+{
+    sqlite3* db = NULL;
+    if (sqlite3_open_v2(filename.c_str(), &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, NULL) != SQLITE_OK)
+    {
+        std::ostringstream msg;
+        msg << "Can't create database: " << sqlite3_errmsg(db);
+        throw std::runtime_error(msg.str().c_str());
+    }
+}
+int CloseSqlite(sqlite3* db)
+{
+    if (db)
+    {
+       return sqlite3_close(db);
+    }
+    return -1;
+}
+int CreateTableSqlite(sqlite3* db, std::string sqlstr)
+{
+    //if (db)
+    //sqlite3_exec(db, "CREATE TABLE studies (studyuid TEXT UNIQUE, patid TEXT, patname TEXT, studydesc TEXT, studydate TEXT, path TEXT, checked TEXT)", NULL, NULL, NULL);
+
+    if (db)
+    {
+        return sqlite3_exec(db, sqlstr.c_str(), NULL, NULL, NULL);
+    }
+    return -1;
+}
+int InsertSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param)
+{
+    //std::string sql = "INSERT INTO studies VALUES(?, ?, ?, ?, ?, ?, '1')";
+    sqlite3_stmt *insert;
+    sqlite3_prepare_v2(db, sqlstr.c_str(), sqlstr.length(), &insert, NULL);
+    int nu = param.size();
+    for (int i = 0; i < nu; i++)
+    {
+        std::string str = param[i].c_str();
+        sqlite3_bind_text(insert, i+1, str.c_str(), str.length(), SQLITE_STATIC);
+    }
+
+    int res = sqlite3_exec_stmt(insert, NULL, NULL, NULL);
+    sqlite3_finalize(insert);
+    return res;
+
+    //if (res == SQLITE_DONE || res == SQLITE_ABORT)
+    //    return 1;
+   // else
+    //    return SQLITE_OK;
+
+}
+
+int onerowresult_sqlitecallback(void *para, int col, char** pValue, char** pNmae)
+{
+    if (para == NULL)
+        return 0;
+
+    std::vector<std::map<std::string, std::string>> *result = (std::vector<std::map<std::string, std::string>> *)&para;
+    std::map<std::string, std::string> keyvl;
+    for (int i = 0; i < col; i++)
+    {
+        std::string key = pNmae[i];
+        std::string vl = pValue[i];
+        keyvl.insert(std::make_pair(key, vl));
+    }
+    result->push_back(keyvl);
+    return 0;
+}
+
+int SelectSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param, std::vector<std::map<std::string, std::string>> result)
+{
+    //std::string sql = "SELECT studyuid, patid, patname, studydesc, studydate, path, checked FROM studies WHERE (patid = ? AND patname = ?) ORDER BY studyuid ASC";
+    sqlite3_stmt *select;
+    sqlite3_prepare_v2(db, sqlstr.c_str(), sqlstr.length(), &select, NULL);
+    int nu = param.size();
+    for (int i = 0; i < nu; i++)
+    {
+        std::string str = param[i].c_str();
+        sqlite3_bind_text(select, i + 1, str.c_str(), str.length(), SQLITE_STATIC);
+    }
+    result.clear();
+    int res = sqlite3_exec_stmt(select, onerowresult_sqlitecallback, &result, NULL);
+    sqlite3_finalize(select);
+    return res;
+
+}
+
+int UpdateSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param)
+{
+    //std::string sql = "UPDATE studies SET checked = ? WHERE (studyuid = ?)";
+    sqlite3_stmt *update;
+    sqlite3_prepare_v2(db, sqlstr.c_str(), sqlstr.length(), &update, NULL);
+    int nu = param.size();
+    for (int i = 0; i < nu; i++)
+    {
+        std::string str = param[i].c_str();
+        sqlite3_bind_text(update, i + 1, str.c_str(), str.length(), SQLITE_STATIC);
+    }
+    int res = sqlite3_exec_stmt(update, onerowresult_sqlitecallback, NULL, NULL);
+    sqlite3_finalize(update);
+    return res;
 
 }
