@@ -661,6 +661,7 @@ int main(int argc, char *argv[])
     //OFString uid = "/1.2.840.113619.2.66.2158408118.16050010109105933.20000.ini";
     //ReadStudyInfo(dir + uid, dir, data);
     //char *p = new char[100];
+    SetAppDir(argv[0]);
     RunQRSCP(argc, argv);
     return 0;
 }

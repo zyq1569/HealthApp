@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #define QPROCESSSIZE 5
@@ -79,6 +79,8 @@ private slots:
     void on_query_modify_clicked();
 
     void on_Sql_Echo_clicked();
+
+    void on_cBSqlite_clicked();
 
 protected:
     QProcess *m_pQProcess[QPROCESSSIZE];//,*m_pStoreQProcess,*m_pQuerQProcess,*m_pWLMQProcess,*m_pDcmQProcess;

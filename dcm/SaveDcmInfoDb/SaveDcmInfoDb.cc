@@ -97,14 +97,15 @@ static OFLogger SaveDcmInfoDbLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSO
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-static OFBool opt_recurse = OFTrue;
+static OFBool opt_recurse          = OFTrue;
 static const char *opt_scanPattern = "";
-static HMariaDb *g_pMariaDb = NULL;
-static OFString g_mySql_IP = "127.0.0.1";
-static OFString g_mySql_username = "root";
-static OFString g_mySql_pwd = "root";
-static OFString g_mySql_dbname = "HIT";
-static OFString g_ImageDir = "";
+static HMariaDb *g_pMariaDb        = NULL;
+static sqlite3  *g_pSqlite         = NULL;
+static OFString g_mySql_IP         = "127.0.0.1";
+static OFString g_mySql_username   = "root";
+static OFString g_mySql_pwd        = "root";
+static OFString g_mySql_dbname     = "HIT";
+static OFString g_ImageDir         = "";
 
 
 
@@ -452,7 +453,7 @@ OFBool SaveDcmInfoFile(HStudyInfo dcminfo, OFString filename)
     return OFTrue;
 }
 
-OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
+OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
 {
     HStudyInfo StudyInfo;
     OFFile inifile;
@@ -592,9 +593,266 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
             }
             DicomFileInfo dcminfo;
             dcminfo.studyDate = StudyInfo.StudyDateTime;
-            dcminfo.studyTime = StudyInfo.StudyDateTime.substr(8,6);
+            dcminfo.studyTime = StudyInfo.StudyDateTime.substr(8, 6);
             OFString pathname = g_ImageDir + "/" + GetStudyDateDir(dcminfo) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
             OFString studyinifile = pathname + ".ini";
+            OFString studyjsonfile = pathname + ".json";
+            if (!OFStandard::fileExists(studyinifile))
+            {
+                if (g_pSqlite == NULL)
+                {
+                    OFString appdir   =  GetCurrentDir();
+                    appdir           += "\hitSqlite.db";
+                    g_pSqlite         = OpenSqlite(appdir.c_str());
+                    if (g_pSqlite == NULL)
+                    {
+                        OFLOG_ERROR(SaveDcmInfoDbLogger, "OpenSqlite error:" + appdir);
+                        return;
+                    }
+                }
+                querysql = "select * from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
+                //g_pMariaDb->query(querysql.c_str());
+                ResultSet * rs = g_pMariaDb->QueryResult();
+                OFString PatientIdentity;
+                if (rs == NULL)
+                {
+                    //int rows = rs->countRows();
+                    char uuid[64];
+                    sprintf(uuid, "%llu", (CreateGUID() >> 1));
+                    PatientIdentity = uuid;
+                    querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
+                                                           PatientSex,PatientBirthday) value(";
+                    querysql += PatientIdentity;
+                    querysql += ",'";
+                    querysql += StudyInfo.StudyPatientId;
+                    querysql += "','";
+                    querysql += StudyInfo.StudyPatientName;
+                    querysql += "','";
+                    querysql += StudyInfo.PatientNameEnglish;
+                    querysql += "','";
+                    if (StudyInfo.StudySex == "")
+                    {
+                        querysql += "O";
+                    }
+                    else
+                    {
+                        querysql += StudyInfo.StudySex;
+                    }
+                    querysql += "','";
+                    querysql += StudyInfo.PatientBirth;
+                    querysql += "');";
+                    g_pMariaDb->execute(querysql.c_str());
+                }
+                else
+                {
+                    std::vector<std::string> row;
+                    //std::string sdata;
+                    while (rs->fetch(row))
+                    {
+                        PatientIdentity = row[0].c_str();
+                    }
+                }
+
+                ///------------------ - 2020 - 11 - 19 - add-------------------------- -
+                querysql = "select * from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
+                g_pMariaDb->query(querysql.c_str());
+                rs = g_pMariaDb->QueryResult();
+                if (rs == NULL)
+                {
+                    char uuid[64];
+                    sprintf(uuid, "%llu", (CreateGUID() >> 1));
+                    OFString StudyIdentity = uuid;
+                    strsql = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,";
+                    strsql += "StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) value(";
+                    strsql += StudyIdentity;
+                    strsql += ",'";
+                    strsql += StudyInfo.StudyID;
+                    strsql += "','";
+                    strsql += StudyInfo.StudyInstanceUID;
+                    strsql += "',";
+                    strsql += PatientIdentity;
+                    strsql += ",'";
+                    if (StudyInfo.StudyDateTime.empty())
+                    {
+                        StudyInfo.StudyDateTime = "1800-01-01 00:00:01.000000";
+                    }
+                    strsql += StudyInfo.StudyDateTime;
+                    strsql += "','";
+                    strsql += StudyInfo.StudyModality;
+                    strsql += "','";
+                    strsql += StudyInfo.StudyInstitutionName;
+                    strsql += "','";
+                    strsql += StudyInfo.StudyManufacturer;
+                    strsql += "','3','";///检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核
+                    //strsql += StudyInfo.StudyPatientName;
+                    //strsql += "','";//StudyDescription
+                    strsql += StudyInfo.studydescription;
+                    strsql += "');";
+                    g_pMariaDb->execute(strsql.c_str());
+                }
+                ///-------------------2020-11-19-add--------------------------- 
+
+            }
+            //if (SaveDcmInfoFile(StudyInfo, studyinifile) && CjsonSaveFile(StudyInfo, studyjsonfile))
+            if (CjsonSaveFile(StudyInfo, studyjsonfile))
+            {
+                OFStandard::deleteFile(filename);
+            }
+        }
+        catch (...)
+        {
+            //OFLOG_ERR(storescuLogger, "---------argv[]:" + tempstr + " ----------------------");
+            OFLOG_ERROR(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
+            OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql querysql:" + querysql);
+            OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql strsql:" + strsql);
+            return OFFalse;
+        }
+    }
+    return OFTrue;
+}
+OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
+{
+    HStudyInfo StudyInfo;
+    OFFile inifile;
+    if (OFStandard::fileExists(filename))
+    {
+        inifile.fopen(filename, "r");
+        //OFString str = "studyuid=" + currentStudyInstanceUID;
+        const int maxline = 256;
+        char line[maxline];
+        OFList<OFString> value_list;
+        while (inifile.fgets(line, maxline) != NULL)
+        {
+            OFString str = line;
+            value_list.push_back(str);
+        }
+        inifile.fclose();
+        OFListIterator(OFString) if_iter = value_list.begin();
+        OFListIterator(OFString) if_last = value_list.end();
+        while (if_iter != if_last)
+        {
+            OFString str = *if_iter;
+            OFString studyuid = "studyuid=";
+            OFString PatientId = "patientid=";
+            OFString PatientName = "patientname=";
+            OFString PatientSex = "patientsex=";
+            OFString StudyID = "studyid=";
+            OFString PatientAge = "patientage=";
+            OFString PatientBirth = "patientbirth=";
+            OFString StudyDateTime = "studydatetime=";
+            OFString StudyModality = "modality=";
+            OFString StudyManufacturer = "manufacturer=";
+            OFString StudyInstitutionName = "institutionname=";
+            OFString Studydescription = "studydescription=";
+            OFString Seriesuid = "seriesuid=";
+            OFString Seriesdescription = "seriesdescription=";
+            OFString Seriesnumber = "seriesnumber=";
+            OFString Sopinstanceuid = "sopinstanceuid=";
+            OFString InstanceNumber = "instanceNumber=";
+            //int pos = str.find(studyuid);
+            if (str.find(studyuid) == 0)
+            {
+                int sublen = studyuid.length();
+                StudyInfo.StudyInstanceUID = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(PatientId) == 0)
+            {
+                int sublen = PatientId.length();
+                StudyInfo.StudyPatientId = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(PatientName) == 0)
+            {
+                int sublen = PatientName.length();
+                OFString temp = str.substr(sublen, str.length() - sublen - 1);
+                StudyInfo.StudyPatientName = FormatePatienName(temp);
+            }
+            if (str.find(PatientSex) == 0)
+            {
+                int sublen = PatientSex.length();
+                StudyInfo.StudySex = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(StudyID) == 0)
+            {
+                int sublen = StudyID.length();
+                StudyInfo.StudyID = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(PatientAge) == 0)
+            {
+                int sublen = PatientAge.length();
+                StudyInfo.StudyAge = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(PatientBirth) == 0)
+            {
+                int sublen = PatientBirth.length();
+                StudyInfo.PatientBirth = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(StudyDateTime) == 0)
+            {
+                int sublen = StudyDateTime.length();
+                StudyInfo.StudyDateTime = str.substr(sublen, str.length() - sublen - 1);
+            }//StudyModality, StudyManufacturer, StudyInstitutionName
+            else if (str.find(StudyModality) == 0)
+            {
+                int sublen = StudyModality.length();
+                StudyInfo.StudyModality = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(StudyManufacturer) == 0)
+            {
+                int sublen = StudyManufacturer.length();
+                StudyInfo.StudyManufacturer = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(StudyInstitutionName) == 0)
+            {
+                int sublen = StudyInstitutionName.length();
+                StudyInfo.StudyInstitutionName = str.substr(sublen, str.length() - sublen - 1);
+            }//Seriesuid, Seriesdescription, Seriesnumber, Sopinstanceuid;
+            else if (str.find(Seriesuid) == 0)
+            {
+                int sublen = Seriesuid.length();
+                StudyInfo.Seriesuid = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(Seriesdescription) == 0)
+            {
+                int sublen = Seriesdescription.length();
+                StudyInfo.Seriesdescription = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(Seriesnumber) == 0)
+            {
+                int sublen = Seriesnumber.length();
+                StudyInfo.Seriesnumber = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(Sopinstanceuid) == 0)
+            {
+                int sublen = Sopinstanceuid.length();
+                StudyInfo.Sopinstanceuid = str.substr(sublen, str.length() - sublen - 1);
+            }//Studydescription
+            else if (str.find(Studydescription) == 0)
+            {
+                int sublen = Studydescription.length();
+                StudyInfo.studydescription = str.substr(sublen, str.length() - sublen - 1);
+            }
+            else if (str.find(InstanceNumber) == 0)
+            {
+                int sublen = InstanceNumber.length();
+                StudyInfo.instanceNumber = str.substr(sublen, str.length() - sublen - 1);
+            }
+            if_iter++;
+        }
+        //save to db
+        //OFCondition l_error = EC_Normal;
+        OFString strsql, querysql;
+        try
+        {
+            if (StudyInfo.StudyInstanceUID.length() < 1)
+            {
+                OFLOG_ERROR(SaveDcmInfoDbLogger, "NO StudyInstanceUID filename:" + filename);
+                return OFFalse;
+            }
+            DicomFileInfo dcminfo;
+            dcminfo.studyDate      = StudyInfo.StudyDateTime;
+            dcminfo.studyTime      = StudyInfo.StudyDateTime.substr(8,6);
+            OFString pathname      = g_ImageDir + "/" + GetStudyDateDir(dcminfo) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
+            OFString studyinifile  = pathname + ".ini";
             OFString studyjsonfile = pathname + ".json";
             if (!OFStandard::fileExists(studyinifile))
             {
@@ -651,58 +909,6 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                         PatientIdentity = row[0].c_str();
                     }
                 }
-
-                ///-----------------old h_study table--------------------------------------------------
-                //to do : delete code  abandon H_study/
-                /*
-                querysql = "select * from H_study where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
-                g_pMariaDb->query(querysql.c_str());
-                rs = g_pMariaDb->QueryResult();
-                if (rs == NULL)
-                {
-                char uuid[64];
-                sprintf(uuid, "%llu", (CreateGUID() >> 1));
-                OFString StudyIdentity = uuid;
-                strsql = "insert into H_study (StudyIdentity,StudyID,StudyUID,PatientIdentity,";
-                strsql += " StudyDateTime,StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDcmPatientName,StudyDescription) value(";
-                strsql += StudyIdentity;
-                strsql += ",'";
-                strsql += StudyInfo.StudyID;
-                strsql += "','";
-                strsql += StudyInfo.StudyInstanceUID;
-                strsql += "',";
-                strsql += PatientIdentity;
-                strsql += ",'";
-                if (StudyInfo.StudyDateTime.empty())
-                {
-                StudyInfo.StudyDateTime = "1970-01-01 00:00:01.000000";
-                }
-                strsql += StudyInfo.StudyDateTime;
-                strsql += "','";
-                strsql += StudyInfo.StudyModality;
-                strsql += "','";
-                strsql += StudyInfo.StudyInstitutionName;
-                strsql += "','";
-                strsql += StudyInfo.StudyManufacturer;
-                strsql += "','dcm','";
-                strsql += StudyInfo.StudyPatientName;
-                strsql += "','";//StudyDescription
-                strsql += StudyInfo.studydescription;
-                strsql += "');";
-                g_pMariaDb->execute(strsql.c_str());
-                }
-                //OFStandard::deleteFile(filename);
-                OFLOG_INFO(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
-                */
-
-                //-------------------------------------------------------------------------------
-                //更新预约表检查状态 // modify 2020-11-19
-                //querysql = "update H_order set StudyState = 3 where StudyUID = '" + StudyInfo.StudyInstanceUID + "';";
-                //g_pMariaDb->execute(querysql.c_str());
-                //OFLOG_INFO(SaveDcmInfoDbLogger, "update table H_order:" + StudyInfo.StudyInstanceUID);
-                //-------------------------------------------------------------------------------
-                ///---------------UP  old h_study table------------------------------------------
-
 
                 ///------------------ - 2020 - 11 - 19 - add-------------------------- -
                 querysql = "select * from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
@@ -770,7 +976,7 @@ int main(int argc, char *argv[])
     //OFString ini_dir, ini_error_dir;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM file Info 2 DB", rcsid);
-    OFString tempstr, path = argv[0];
+    OFString tempstr, path  = argv[0];
     OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
     Log_Dir = currentAppPath + "/log";
     int pos = 0;
@@ -791,8 +997,8 @@ int main(int argc, char *argv[])
         //travel_files((char*)dir.c_str(),"ini",list_file_ini_test);
         if (OFStandard::dirExists(dir))
         {
-            Task_Dir = dir + "/Task/1";
-            Error_Dir = dir + "/Task/error";
+            Task_Dir   = dir + "/Task/1";
+            Error_Dir  = dir + "/Task/error";
             //Log_Dir    = dir + "/log";
             g_ImageDir = dir + "/Images";
             //int pos = dir.find_last_of("/");
@@ -811,21 +1017,23 @@ int main(int argc, char *argv[])
         }
         if (argc > 5)
         {
-            g_mySql_IP = argv[2];
-            g_mySql_dbname = argv[3];
-            g_mySql_username = argv[4];
-            g_mySql_pwd = argv[5];
+            g_mySql_IP        = argv[2];
+            g_mySql_dbname    = argv[3];
+            g_mySql_username  = argv[4];
+            g_mySql_pwd       = argv[5];
+            SetSqlDbInfo(g_mySql_IP, g_mySql_dbname, g_mySql_username, g_mySql_pwd);
+            SetAppDir(argv[0]);
         }
     }
     else
     {
         if (dcmconfig.init((currentAppPath + "/config/DcmServerConfig.cfg").c_str()))
         {
-            OFString dir = dcmconfig.getStoreDir()->front();
-            Task_Dir = dir + "/Task/1";
-            Error_Dir = dir + "/Task/error";
-            //Log_Dir    = dir + "/log";
-            g_ImageDir = dir + "/Images";
+            OFString dir     = dcmconfig.getStoreDir()->front();
+            Task_Dir         = dir + "/Task/1";
+            Error_Dir        = dir + "/Task/error";
+            //Log_Dir        = dir + "/log";
+            g_ImageDir       = dir + "/Images";
             //int pos = dir.find_last_of("/");
             //if (pos > -1)
             //{
@@ -839,18 +1047,18 @@ int main(int argc, char *argv[])
             //        Log_Dir = dir.substr(0, pos) + "/log";
             //    }
             //}
-            //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
-            g_mySql_IP = dcmconfig.getSqlServer();
+            //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");            
+            g_mySql_IP       = dcmconfig.getSqlServer();
             g_mySql_username = dcmconfig.getSqlusername();
-            g_mySql_pwd = dcmconfig.getSqlpwd();
-            g_mySql_dbname = dcmconfig.getSqldbname();
+            g_mySql_pwd      = dcmconfig.getSqlpwd();
+            g_mySql_dbname   = dcmconfig.getSqldbname();
         }
         else
         {
-            Task_Dir = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
-            Error_Dir = currentAppPath + "/DCM_SAVE/Task/error";
+            Task_Dir   = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
+            Error_Dir  = currentAppPath + "/DCM_SAVE/Task/error";
             g_ImageDir = currentAppPath + "/DCM_SAVE/Images";
-            Log_Dir = currentAppPath + "/log";
+            Log_Dir    = currentAppPath + "/log";
         }
     }
 
@@ -905,7 +1113,7 @@ int main(int argc, char *argv[])
         //Sleep(1);
         if (list_file_ini.size() > 0)
         {
-            OFListIterator(OFString) iter = list_file_ini.begin();
+            OFListIterator(OFString) iter    = list_file_ini.begin();
             OFListIterator(OFString) enditer = list_file_ini.end();
             while (iter != enditer)
             {

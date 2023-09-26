@@ -875,13 +875,111 @@ void GetSqlDbInfo(OFString  &IpAddress, OFString  &SqlName, OFString  &SqlUserNa
     Sqltype = g_SqlDbdataInfo.Sqltype;
 
 }
+static std::string g_appDir;
+void SetAppDir(std::string dir)
+{
+    g_appDir = dir;
+}
+
+std::string GetAppDir()
+{
+    return g_appDir;
+}
 
 ///------------------Sqlite----------------database-----------------------------------------------------------------------------
 int onerowresult_sqlitecallback(void *para, int col, char** pValue, char** pNmae);
+/*
+CREATE TABLE  if not exists h_order(
+    StudyOrderIdentity INTEGER PRIMARY KEY,
+    PatientIdentity INTEGER,
 
+    StudyID  TEXT NOT NULL DEFAULT '0',
+    ClinicID TEXT NULL DEFAULT '0',
+    StudyUID TEXT NOT NULL DEFAULT '0',
+    StudyModality TEXT  DEFAULT '',
+    StudyAge INTEGER  DEFAULT - 1,
+    ScheduledDateTime DATETIME NULL DEFAULT '1900-01-01 00:00:00',
+    AETitle TEXT NULL DEFAULT '',
+    OrderDateTime TIMESTAMP default (datetime('now', 'localtime')),
+    StudyDescription TEXT NULL DEFAULT '',
+    StudyDepart TEXT NULL DEFAULT '',
+    StudyCode TEXT NULL DEFAULT '0000',
+    StudyCost TEXT NULL DEFAULT '0',
+    CostType TEXT NULL DEFAULT '',
+    StudyType INTEGER NULL DEFAULT '0',
+    StudyState INTEGER NULL DEFAULT '1',
+    StudyDateTime DATETIME NULL DEFAULT '1900-01-01 00:00:00',
+    InstitutionName TEXT NULL DEFAULT '',
+    ProcedureStepStartDate DATETIME NULL DEFAULT '1900-01-01 00:00:00',
+    StudyModalityIdentity INTEGER NULL DEFAULT - 1,
+    StudyManufacturer INTEGER NULL DEFAULT '',
+    RegisterID INTEGER NULL DEFAULT - 1
+)
+*/
+
+int init(sqlite3* db)
+{
+    static bool flag = true;
+    if (flag)
+    {
+        flag = false;
+        OFString str =    " CREATE TABLE  if not exists h_order( "
+                          " StudyOrderIdentity INTEGER PRIMARY KEY, "
+                          " PatientIdentity INTEGER, "
+                          " StudyID  TEXT NOT NULL DEFAULT '0', "
+                          " ClinicID TEXT NULL DEFAULT '0', "
+                          " StudyUID TEXT NOT NULL DEFAULT '0', "
+                          " StudyModality TEXT  DEFAULT '', "
+                          " StudyAge INTEGER  DEFAULT - 1, "
+                          " ScheduledDateTime DATETIME NULL DEFAULT '1900-01-01 00:00:00', "
+                          " AETitle TEXT NULL DEFAULT '', "
+                          " OrderDateTime TIMESTAMP default (datetime('now', 'localtime')), "
+                          " StudyDescription TEXT NULL DEFAULT '', "
+                          " StudyDepart TEXT NULL DEFAULT '', "
+                          " StudyCode TEXT NULL DEFAULT '0000', "
+                          " StudyCost TEXT NULL DEFAULT '0', "
+                          " CostType TEXT NULL DEFAULT '', "
+                          " StudyType INTEGER NULL DEFAULT '0', "
+                          " StudyState INTEGER NULL DEFAULT '1', "
+                          " StudyDateTime DATETIME NULL DEFAULT '1900-01-01 00:00:00', "
+                          " InstitutionName TEXT NULL DEFAULT '', "
+                          " ProcedureStepStartDate DATETIME NULL DEFAULT '1900-01-01 00:00:00', "
+                          " StudyModalityIdentity INTEGER NULL DEFAULT - 1, "
+                          " StudyManufacturer INTEGER NULL DEFAULT '', "
+                          " RegisterID INTEGER NULL DEFAULT - 1 "
+                          " )";
+        CreateTableSqlite(db, str.c_str());
+
+        str          =    "CREATE TABLE if not exists h_patient( "
+                          "PatientIdentity    INTEGER PRIMARY KEY, "
+                          "PatientID          TEXT    NOT NULL, "
+                          "PatientName        TEXT, "
+                          "PatientNameEnglish TEXT, "
+                          "PatientSex         TEXT    DEFAULT '0', "
+                          "PatientBirthday    TEXT    DEFAULT '19000101', "
+                          "PatientAddr        TEXT    DEFAULT '""', "
+                          "PatientEmail       TEXT    DEFAULT '""', "
+                          "PatientCarID       TEXT    DEFAULT '""', "
+                          "PatientTelNumber   TEXT    DEFAULT '""', "
+                          "PatientType        INTEGER DEFAULT '0', "
+                          "PatientState       INTEGER DEFAULT '0', "
+                          "PatientJob         TEXT    DEFAULT 'JOB', "
+                          "PatientNation      TEXT    DEFAULT '汉族', "
+                          "PatientMarriage    TEXT    DEFAULT '未知', "
+                          "PatientHometown    TEXT    DEFAULT '广东', "
+                          "PatientHisID       TEXT    DEFAULT '-1', "
+                          "PatientHistoryTell TEXT    DEFAULT '无' "
+                          ")";
+        CreateTableSqlite(db, str.c_str());
+    }
+}
 sqlite3* OpenSqlite(std::string filename)
 {
     sqlite3* db = NULL;
+    if (filename.length() < 1)
+    {
+        filename = "hitsqlite.db";
+    }
     if (sqlite3_open_v2(filename.c_str(), &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, NULL) != SQLITE_OK)
     {
         std::ostringstream msg;

@@ -171,8 +171,10 @@ struct DCMTK_DCMNET_EXPORT MySqlInfo
 DCMTK_OFSTD_EXPORT void SetSqlDbInfo(OFString  IpAddress,  OFString SqlName,   OFString SqlUserName,   OFString SqlPWD,   int sqltype = 0);
 DCMTK_OFSTD_EXPORT void GetSqlDbInfo(OFString  &IpAddress, OFString  &SqlName, OFString  &SqlUserName, OFString  &SqlPWD, int &Sqltype);
 
+DCMTK_OFSTD_EXPORT void SetAppDir(std::string dir);
+DCMTK_OFSTD_EXPORT std::string GetAppDir();
 
-DCMTK_OFSTD_EXPORT sqlite3* OpenSqlite(std::string filename);
+DCMTK_OFSTD_EXPORT sqlite3* OpenSqlite(std::string filename = "");
 DCMTK_OFSTD_EXPORT int CloseSqlite(sqlite3* db);
 DCMTK_OFSTD_EXPORT int CreateTableSqlite(sqlite3* db, std::string sqlstr);
 DCMTK_OFSTD_EXPORT int InsertSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param);

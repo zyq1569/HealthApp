@@ -59,8 +59,10 @@ win32 {
         DEFINES += HAVE_POPEN
         DEFINES += HAVE_PCLOSE
         LIB_DIR = $$ROOTDIR/bin/win32/Mingw/lib
+        DESTDIR = $$PWD/bin/windows/Mingw
         contains(CONFIG, static){
             LIB_DIR = $$ROOTDIR/bin/win32/Mingw/staticlib
+            DESTDIR = $$PWD/bin/windows/MingwStatic
         }else{
             LIBS += -liphlpapi
             LIBS += -lwsock32
@@ -73,7 +75,7 @@ win32 {
             LIBS += -lAdvapi32
             #message("win32 share")
         }
-        DESTDIR = $$PWD/bin/windows/Mingw
+
 
     }
 }

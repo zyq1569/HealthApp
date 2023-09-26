@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include "units.h"
@@ -44,14 +44,14 @@ HMainWindow::HMainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HMai
     }
     //QString Dir   = QDir::currentPath();
 
-    m_ExeDir        = Dir;
-    m_ImageDir      = m_ExeDir;
-    m_ExeDir        = m_ExeDir.remove("/debug");
-    m_ExeDir        = m_ExeDir.remove("/ServerUI");
+    m_ExeDir          = Dir;
+    m_ImageDir        = m_ExeDir;
+    m_ExeDir          = m_ExeDir.remove("/debug");
+    m_ExeDir          = m_ExeDir.remove("/ServerUI");
     ui->Dir_Store->setText(Dir+"/DCM_SAVE");
     ui->Dir_Pagefile->setText(Dir+"/PageWeb");
-    m_Log4j2Config  = m_ExeDir + "log";
-    m_WebServerName = "health.jar";
+    m_Log4j2Config    = m_ExeDir + "log";
+    m_WebServerName   = "health.jar";
 #if defined(Q_OS_LINUX)
     m_ExeDir          = m_ExeDir+"/linux/";
     m_StoreScpName    = "StoreDcmSCP";
@@ -324,7 +324,14 @@ void HMainWindow::on_QRSCP_clicked()
     arg.append(ui->AEtitle->text());
     arg.append(ui->clientPortValue->text());
     arg.append(ui->IpAddressValue->text());
-    arg.append(m_MysqlServer);
+    if (ui->cBSqlite->isChecked())
+    {
+        arg.append("0.0.0.0");
+    }
+    else
+    {
+        arg.append(m_MysqlServer);
+    }
     arg.append(m_MysqlDbName);
     arg.append(m_MysqlUserName);
     arg.append(m_MysqlPWD);
@@ -373,14 +380,21 @@ void HMainWindow::on_Dcm2DB_clicked()
         QMessageBox::information(this, m_Dcm2DBName, tr("No Dcm2DBapp program Exist!"));
         return;
     }
-    m_MysqlServer = ui->mysqlServerValue->text();
-    m_MysqlDbName = ui->mysqldbNameValue->text();
+    m_MysqlServer   = ui->mysqlServerValue->text();
+    m_MysqlDbName   = ui->mysqldbNameValue->text();
     m_MysqlUserName = ui->mysqlUserNameValue->text();
-    m_MysqlPWD = ui->mysqlPWDValue->text();
+    m_MysqlPWD      = ui->mysqlPWDValue->text();
 
     QStringList arg;
     arg.append(ui->Dir_Store->text());
-    arg.append(m_MysqlServer);
+    if (ui->cBSqlite->isChecked())
+    {
+        arg.append("0.0.0.0");
+    }
+    else
+    {
+        arg.append(m_MysqlServer);
+    }
     arg.append(m_MysqlDbName);
     arg.append(m_MysqlUserName);
     arg.append(m_MysqlPWD);
@@ -466,53 +480,53 @@ void HMainWindow::on_WebServer_clicked()
             INFO_LOG("-----------WebServer Stop!-----------------------");
         }
     }
-    else ///Java App
-    {
-        QString JavaWeb = m_ExeDir + m_WebServerName;
-        if (!isFileExist(goWebServer))
-        {
-            QMessageBox::information(this, tr("No web program Exist!"), tr("No web program Exist!"));
-            return;
-        }
-        m_MysqlServer   = ui->mysqlServerValue->text();
-        m_MysqlDbName   = ui->mysqldbNameValue->text();
-        m_MysqlUserName = ui->mysqlUserNameValue->text();
-        m_MysqlPWD      = ui->mysqlPWDValue->text();
-        m_WebSerPort    = ui->port_webserver->text();
-        QString program = "java";
-        QStringList arg;
+//else ///Java App
+//{
+//    QString JavaWeb = m_ExeDir + m_WebServerName;
+//    if (!isFileExist(goWebServer))
+//    {
+//        QMessageBox::information(this, tr("No web program Exist!"), tr("No web program Exist!"));
+//        return;
+//    }
+//    m_MysqlServer   = ui->mysqlServerValue->text();
+//    m_MysqlDbName   = ui->mysqldbNameValue->text();
+//    m_MysqlUserName = ui->mysqlUserNameValue->text();
+//    m_MysqlPWD      = ui->mysqlPWDValue->text();
+//    m_WebSerPort    = ui->port_webserver->text();
+//    QString program = "java";
+//    QStringList arg;
 
-        //启动java 应用的参数-jar  filename[app.exe] other
-        arg.append("-jar");
-        arg.append(m_ExeDir + m_WebServerName);
-        arg.append("com.mysql.cj.jdbc.Driver");
-        QString DriverUrl = "jdbc:mysql://"+m_MysqlServer+":3306/"+m_MysqlDbName+"?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC";
-        arg.append(DriverUrl);
-        arg.append(m_MysqlUserName);
-        arg.append(m_MysqlPWD);
-        arg.append(m_WebSerPort);
-        arg.append(ui->Dir_Store->text()+"/Images");
-        arg.append(ui->Dir_Pagefile->text());
-        arg.append(m_Log4j2Config);
-        arg.append(ui->comLevel_web->currentText());
-        if (!m_bstorescp[WEBSER] && m_pQProcess[WEBSER]==nullptr)
-        {
-            m_pQProcess[WEBSER] =  new QProcess(this);
-            m_pQProcess[WEBSER]->start(program,arg);
-            m_bstorescp[WEBSER] = true;
-            ui->WebServer->setText("运行中!");
-            //QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
-        }
-        else if( m_pQProcess[WEBSER]!=nullptr)
-        {
-            m_pQProcess[WEBSER]->close();
-            delete m_pQProcess[WEBSER];
-            m_pQProcess[WEBSER] = nullptr;
-            m_bstorescp[WEBSER] = false;
-            ui->WebServer->setText("启动");
-            //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
-        }
-    }
+//    //启动java 应用的参数-jar  filename[app.exe] other
+//    arg.append("-jar");
+//    arg.append(m_ExeDir + m_WebServerName);
+//    arg.append("com.mysql.cj.jdbc.Driver");
+//    QString DriverUrl = "jdbc:mysql://"+m_MysqlServer+":3306/"+m_MysqlDbName+"?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC";
+//    arg.append(DriverUrl);
+//    arg.append(m_MysqlUserName);
+//    arg.append(m_MysqlPWD);
+//    arg.append(m_WebSerPort);
+//    arg.append(ui->Dir_Store->text()+"/Images");
+//    arg.append(ui->Dir_Pagefile->text());
+//    arg.append(m_Log4j2Config);
+//    arg.append(ui->comLevel_web->currentText());
+//    if (!m_bstorescp[WEBSER] && m_pQProcess[WEBSER]==nullptr)
+//    {
+//        m_pQProcess[WEBSER] =  new QProcess(this);
+//        m_pQProcess[WEBSER]->start(program,arg);
+//        m_bstorescp[WEBSER] = true;
+//        ui->WebServer->setText("运行中!");
+//        //QMessageBox::information(this, tr("Dcm2DBNameApp Start!"), tr("run ok!"));
+//    }
+//    else if( m_pQProcess[WEBSER]!=nullptr)
+//    {
+//        m_pQProcess[WEBSER]->close();
+//        delete m_pQProcess[WEBSER];
+//        m_pQProcess[WEBSER] = nullptr;
+//        m_bstorescp[WEBSER] = false;
+//        ui->WebServer->setText("启动");
+//        //QMessageBox::information(this, tr("Dcm2DBNameApp Stop!"), tr("close app ok!"));
+//    }
+//}
 }
 
 void HMainWindow::on_query_clientinfo_doubleClicked(const QModelIndex &index)
@@ -665,5 +679,23 @@ void HMainWindow::on_Sql_Echo_clicked()
     }
 }
 
-
+void HMainWindow::on_cBSqlite_clicked()
+{
+    if (ui->cBSqlite->isChecked())
+    {
+        ui->groupBox_3->setDisabled(true);
+        ui->mysqlServerValue->setDisabled(true);
+        ui->mysqldbNameValue->setDisabled(true);
+        ui->mysqlUserNameValue->setDisabled(true);
+        ui->mysqlPWDValue->setDisabled(true);
+    }
+    else
+    {
+        ui->groupBox_3->setDisabled(false);
+        ui->mysqlServerValue->setDisabled(false);
+        ui->mysqldbNameValue->setDisabled(false);
+        ui->mysqlUserNameValue->setDisabled(false);
+        ui->mysqlPWDValue->setDisabled(false);
+    }
+}
 
