@@ -2,8 +2,6 @@
 //-------統一使用dcmtklog方式
 //#include "dcmtk/oflog/fileap.h"
 #include "dcmtk/oflog/oflog.h"
-#include "../../Tools/sqlite3/sqlite3.h"
-#include "../../Tools/sqlite3/sqlite3_exec_stmt.h"
 //--------------------
 #include <iostream>
 #include <string>
@@ -888,34 +886,6 @@ std::string GetAppDir()
 
 ///------------------Sqlite----------------database-----------------------------------------------------------------------------
 int onerowresult_sqlitecallback(void *para, int col, char** pValue, char** pNmae);
-/*
-CREATE TABLE  if not exists h_order(
-    StudyOrderIdentity INTEGER PRIMARY KEY,
-    PatientIdentity INTEGER,
-
-    StudyID  TEXT NOT NULL DEFAULT '0',
-    ClinicID TEXT NULL DEFAULT '0',
-    StudyUID TEXT NOT NULL DEFAULT '0',
-    StudyModality TEXT  DEFAULT '',
-    StudyAge INTEGER  DEFAULT - 1,
-    ScheduledDateTime DATETIME NULL DEFAULT '1900-01-01 00:00:00',
-    AETitle TEXT NULL DEFAULT '',
-    OrderDateTime TIMESTAMP default (datetime('now', 'localtime')),
-    StudyDescription TEXT NULL DEFAULT '',
-    StudyDepart TEXT NULL DEFAULT '',
-    StudyCode TEXT NULL DEFAULT '0000',
-    StudyCost TEXT NULL DEFAULT '0',
-    CostType TEXT NULL DEFAULT '',
-    StudyType INTEGER NULL DEFAULT '0',
-    StudyState INTEGER NULL DEFAULT '1',
-    StudyDateTime DATETIME NULL DEFAULT '1900-01-01 00:00:00',
-    InstitutionName TEXT NULL DEFAULT '',
-    ProcedureStepStartDate DATETIME NULL DEFAULT '1900-01-01 00:00:00',
-    StudyModalityIdentity INTEGER NULL DEFAULT - 1,
-    StudyManufacturer INTEGER NULL DEFAULT '',
-    RegisterID INTEGER NULL DEFAULT - 1
-)
-*/
 
 int init(sqlite3* db)
 {
@@ -964,16 +934,17 @@ int init(sqlite3* db)
                           "PatientType        INTEGER DEFAULT '0', "
                           "PatientState       INTEGER DEFAULT '0', "
                           "PatientJob         TEXT    DEFAULT 'JOB', "
-                          "PatientNation      TEXT    DEFAULT '汉族', "
-                          "PatientMarriage    TEXT    DEFAULT '未知', "
-                          "PatientHometown    TEXT    DEFAULT '广东', "
+                          "PatientNation      TEXT    DEFAULT 'H', "
+                          "PatientMarriage    TEXT    DEFAULT 'unknow', "
+                          "PatientHometown    TEXT    DEFAULT 'guangdong', "
                           "PatientHisID       TEXT    DEFAULT '-1', "
-                          "PatientHistoryTell TEXT    DEFAULT '无' "
+                          "PatientHistoryTell TEXT    DEFAULT 'NULL' "
                           ")";
         CreateTableSqlite(db, str.c_str());
     }
+    return 0;
 }
-sqlite3* OpenSqlite(std::string filename)
+sqlite3* OpenSqlite(OFString filename)
 {
     sqlite3* db = NULL;
     if (filename.length() < 1)
@@ -986,6 +957,8 @@ sqlite3* OpenSqlite(std::string filename)
         msg << "Can't create database: " << sqlite3_errmsg(db);
         throw std::runtime_error(msg.str().c_str());
     }
+    init(db);
+    return db;
 }
 int CloseSqlite(sqlite3* db)
 {
@@ -1050,7 +1023,7 @@ int SelectSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param
 {
     //std::string sql = "SELECT studyuid, patid, patname, studydesc, studydate, path, checked FROM studies WHERE (patid = ? AND patname = ?) ORDER BY studyuid ASC";
     sqlite3_stmt *select;
-    sqlite3_prepare_v2(db, sqlstr.c_str(), sqlstr.length(), &select, NULL);
+    sqlite3_prepare_v2((sqlite3*)db, sqlstr.c_str(), sqlstr.length(), &select, NULL);
     int nu = param.size();
     for (int i = 0; i < nu; i++)
     {

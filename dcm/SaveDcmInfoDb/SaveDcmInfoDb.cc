@@ -81,8 +81,8 @@ END_EXTERN_C
 #endif
 
 #include "Units.h"
-
 #include "CJsonObject.hpp"
+
 
 #if defined (HAVE_WINDOWS_H) || defined(HAVE_FNMATCH_H)
 #define PATTERN_MATCHING_AVAILABLE
@@ -97,15 +97,18 @@ static OFLogger SaveDcmInfoDbLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSO
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-static OFBool opt_recurse          = OFTrue;
-static const char *opt_scanPattern = "";
-static HMariaDb *g_pMariaDb        = NULL;
-static sqlite3  *g_pSqlite         = NULL;
-static OFString g_mySql_IP         = "127.0.0.1";
-static OFString g_mySql_username   = "root";
-static OFString g_mySql_pwd        = "root";
-static OFString g_mySql_dbname     = "HIT";
-static OFString g_ImageDir         = "";
+static OFBool opt_recurse                    = OFTrue;
+static const char *opt_scanPattern           = "";
+static HMariaDb *g_pMariaDb                  = NULL;
+static sqlite3  *g_pSqlite                   = NULL;
+static OFString g_mySql_IP                   = "127.0.0.1";
+static OFString g_mySql_username             = "root";
+static OFString g_mySql_pwd                  = "root";
+static OFString g_mySql_dbname               = "HIT";
+static OFString g_ImageDir                   = "";
+static OFString g_InsertLastUID              = "";
+static OFString g_InsertLastPatientID        = "";
+static OFString g_InsertLastPatientIdentity  = "";
 
 
 
@@ -460,7 +463,6 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
     if (OFStandard::fileExists(filename))
     {
         inifile.fopen(filename, "r");
-        //OFString str = "studyuid=" + currentStudyInstanceUID;
         const int maxline = 256;
         char line[maxline];
         OFList<OFString> value_list;
@@ -592,108 +594,113 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                 return OFFalse;
             }
             DicomFileInfo dcminfo;
-            dcminfo.studyDate = StudyInfo.StudyDateTime;
-            dcminfo.studyTime = StudyInfo.StudyDateTime.substr(8, 6);
-            OFString pathname = g_ImageDir + "/" + GetStudyDateDir(dcminfo) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
-            OFString studyinifile = pathname + ".ini";
+            dcminfo.studyDate      = StudyInfo.StudyDateTime;
+            dcminfo.studyTime      = StudyInfo.StudyDateTime.substr(8, 6);
+            OFString pathname      = g_ImageDir + "/" + GetStudyDateDir(dcminfo) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
+            OFString studyinifile  = pathname + ".ini";
             OFString studyjsonfile = pathname + ".json";
             if (!OFStandard::fileExists(studyinifile))
             {
                 if (g_pSqlite == NULL)
                 {
                     OFString appdir   =  GetCurrentDir();
-                    appdir           += "\hitSqlite.db";
+                    appdir           += "/hitSqlite.db";
                     g_pSqlite         = OpenSqlite(appdir.c_str());
                     if (g_pSqlite == NULL)
                     {
                         OFLOG_ERROR(SaveDcmInfoDbLogger, "OpenSqlite error:" + appdir);
-                        return;
+                        return OFFalse;
                     }
                 }
-                querysql = "select * from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
-                //g_pMariaDb->query(querysql.c_str());
-                ResultSet * rs = g_pMariaDb->QueryResult();
+                std::vector<std::string> param;
+                std::vector<std::map<std::string, std::string>> result;
                 OFString PatientIdentity;
-                if (rs == NULL)
+                int res, size;
+                if (g_InsertLastUID != StudyInfo.StudyInstanceUID)
                 {
-                    //int rows = rs->countRows();
-                    char uuid[64];
-                    sprintf(uuid, "%llu", (CreateGUID() >> 1));
-                    PatientIdentity = uuid;
-                    querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
-                                                           PatientSex,PatientBirthday) value(";
-                    querysql += PatientIdentity;
-                    querysql += ",'";
-                    querysql += StudyInfo.StudyPatientId;
-                    querysql += "','";
-                    querysql += StudyInfo.StudyPatientName;
-                    querysql += "','";
-                    querysql += StudyInfo.PatientNameEnglish;
-                    querysql += "','";
-                    if (StudyInfo.StudySex == "")
+                    querysql = "select StudyOrderIdentity from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
+                    res      = SelectSqlite(g_pSqlite, querysql.c_str(), param, result);
+                    size     = result.size();
+                    if (size < 1)
                     {
-                        querysql += "O";
+                        char uuid[64];
+                        sprintf(uuid, "%llu", (CreateGUID() >> 1));
+                        PatientIdentity = uuid;
+                        querysql  = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
+                                                           PatientSex,PatientBirthday) values (";
+                        querysql += PatientIdentity;
+                        querysql += ",'";
+                        querysql += StudyInfo.StudyPatientId;
+                        querysql += "','";
+                        querysql += StudyInfo.StudyPatientName;
+                        querysql += "','";
+                        querysql += StudyInfo.PatientNameEnglish;
+                        querysql += "','";
+                        if (StudyInfo.StudySex == "")
+                        {
+                            querysql += "O";
+                        }
+                        else
+                        {
+                            querysql += StudyInfo.StudySex;
+                        }
+                        querysql += "','";
+                        querysql += StudyInfo.PatientBirth;
+                        querysql += "');";
+                        res = InsertSqlite(g_pSqlite, querysql.c_str(), param);
                     }
                     else
                     {
-                        querysql += StudyInfo.StudySex;
+                        PatientIdentity = result[0].at("StudyOrderIdentity").c_str();
                     }
-                    querysql += "','";
-                    querysql += StudyInfo.PatientBirth;
-                    querysql += "');";
-                    g_pMariaDb->execute(querysql.c_str());
+                    g_InsertLastPatientIdentity = PatientIdentity;
                 }
                 else
                 {
-                    std::vector<std::string> row;
-                    //std::string sdata;
-                    while (rs->fetch(row))
-                    {
-                        PatientIdentity = row[0].c_str();
-                    }
+                    PatientIdentity = g_InsertLastPatientIdentity;
                 }
-
                 ///------------------ - 2020 - 11 - 19 - add-------------------------- -
-                querysql = "select * from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
-                g_pMariaDb->query(querysql.c_str());
-                rs = g_pMariaDb->QueryResult();
-                if (rs == NULL)
+                if (g_InsertLastUID != StudyInfo.StudyInstanceUID)
                 {
-                    char uuid[64];
-                    sprintf(uuid, "%llu", (CreateGUID() >> 1));
-                    OFString StudyIdentity = uuid;
-                    strsql = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,";
-                    strsql += "StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) value(";
-                    strsql += StudyIdentity;
-                    strsql += ",'";
-                    strsql += StudyInfo.StudyID;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyInstanceUID;
-                    strsql += "',";
-                    strsql += PatientIdentity;
-                    strsql += ",'";
-                    if (StudyInfo.StudyDateTime.empty())
+                    querysql = "select * from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
+                    res      = SelectSqlite(g_pSqlite, querysql.c_str(), param, result);
+                    size     = result.size();
+                    if (size < 1)
                     {
-                        StudyInfo.StudyDateTime = "1800-01-01 00:00:01.000000";
-                    }
-                    strsql += StudyInfo.StudyDateTime;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyModality;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyInstitutionName;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyManufacturer;
-                    strsql += "','3','";///检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核
-                    //strsql += StudyInfo.StudyPatientName;
-                    //strsql += "','";//StudyDescription
-                    strsql += StudyInfo.studydescription;
-                    strsql += "');";
-                    g_pMariaDb->execute(strsql.c_str());
-                }
-                ///-------------------2020-11-19-add--------------------------- 
+                        char uuid[64];
+                        sprintf(uuid, "%llu", (CreateGUID() >> 1));
+                        OFString StudyIdentity = uuid;
+                        strsql  = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,";
+                        strsql += "StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) values (";
+                        strsql += StudyIdentity;
+                        strsql += ",'";
+                        strsql += StudyInfo.StudyID;
+                        strsql += "','";
+                        strsql += StudyInfo.StudyInstanceUID;
+                        strsql += "',";
+                        strsql += PatientIdentity;
+                        strsql += ",'";
+                        if (StudyInfo.StudyDateTime.empty())
+                        {
+                            StudyInfo.StudyDateTime = "1800-01-01 00:00:01.000000";
+                        }
+                        strsql += StudyInfo.StudyDateTime;
+                        strsql += "','";
+                        strsql += StudyInfo.StudyModality;
+                        strsql += "','";
+                        strsql += StudyInfo.StudyInstitutionName;
+                        strsql += "','";
+                        strsql += StudyInfo.StudyManufacturer;
+                        strsql += "','3','";///检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核
+                        strsql += StudyInfo.studydescription;
+                        strsql += "');";
 
+                        res = InsertSqlite(g_pSqlite, strsql.c_str(), param);
+                    }
+                    g_InsertLastUID = StudyInfo.StudyInstanceUID;
+                }
             }
-            //if (SaveDcmInfoFile(StudyInfo, studyinifile) && CjsonSaveFile(StudyInfo, studyjsonfile))
+
             if (CjsonSaveFile(StudyInfo, studyjsonfile))
             {
                 OFStandard::deleteFile(filename);
@@ -701,7 +708,6 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
         }
         catch (...)
         {
-            //OFLOG_ERR(storescuLogger, "---------argv[]:" + tempstr + " ----------------------");
             OFLOG_ERROR(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
             OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql querysql:" + querysql);
             OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql strsql:" + strsql);
@@ -867,85 +873,94 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
 
 #endif
                 }
-                querysql = "select * from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
-                g_pMariaDb->query(querysql.c_str());
-                ResultSet * rs = g_pMariaDb->QueryResult();
                 OFString PatientIdentity;
-                if (rs == NULL)
+                ResultSet *rs = NULL;
+                if (g_InsertLastUID != StudyInfo.StudyInstanceUID)
                 {
-                    //int rows = rs->countRows();
-                    char uuid[64];
-                    sprintf(uuid, "%llu", (CreateGUID() >> 1));
-                    PatientIdentity = uuid;
-                    querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
-                                                           PatientSex,PatientBirthday) value(";
-                    querysql += PatientIdentity;
-                    querysql += ",'";
-                    querysql += StudyInfo.StudyPatientId;
-                    querysql += "','";
-                    querysql += StudyInfo.StudyPatientName;
-                    querysql += "','";
-                    querysql += StudyInfo.PatientNameEnglish;
-                    querysql += "','";
-                    if (StudyInfo.StudySex == "")
+                    querysql = "select * from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
+                    g_pMariaDb->query(querysql.c_str());
+                    rs = g_pMariaDb->QueryResult();
+                    if (rs == NULL)
                     {
-                        querysql += "O";
+                        //int rows = rs->countRows();
+                        char uuid[64];
+                        sprintf(uuid, "%llu", (CreateGUID() >> 1));
+                        PatientIdentity = uuid;
+                        querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
+                                                           PatientSex,PatientBirthday) values (";
+                        querysql += PatientIdentity;
+                        querysql += ",'";
+                        querysql += StudyInfo.StudyPatientId;
+                        querysql += "','";
+                        querysql += StudyInfo.StudyPatientName;
+                        querysql += "','";
+                        querysql += StudyInfo.PatientNameEnglish;
+                        querysql += "','";
+                        if (StudyInfo.StudySex == "")
+                        {
+                            querysql += "O";
+                        }
+                        else
+                        {
+                            querysql += StudyInfo.StudySex;
+                        }
+                        querysql += "','";
+                        querysql += StudyInfo.PatientBirth;
+                        querysql += "');";
+                        g_pMariaDb->execute(querysql.c_str());                        
                     }
                     else
                     {
-                        querysql += StudyInfo.StudySex;
+                        std::vector<std::string> row;
+                        while (rs->fetch(row))
+                        {
+                            PatientIdentity = row[0].c_str();
+                        }
                     }
-                    querysql += "','";
-                    querysql += StudyInfo.PatientBirth;
-                    querysql += "');";
-                    g_pMariaDb->execute(querysql.c_str());
+                    g_InsertLastPatientIdentity = PatientIdentity;
                 }
                 else
                 {
-                    std::vector<std::string> row;
-                    //std::string sdata;
-                    while (rs->fetch(row))
-                    {
-                        PatientIdentity = row[0].c_str();
-                    }
+                    PatientIdentity = g_InsertLastPatientIdentity;
                 }
-
                 ///------------------ - 2020 - 11 - 19 - add-------------------------- -
-                querysql = "select * from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
-                g_pMariaDb->query(querysql.c_str());
-                rs = g_pMariaDb->QueryResult();
-                if (rs == NULL)
+                if (g_InsertLastUID != StudyInfo.StudyInstanceUID)
                 {
-                    char uuid[64];
-                    sprintf(uuid, "%llu", (CreateGUID()>>1));
-                    OFString StudyIdentity = uuid;
-                    strsql = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,";
-                    strsql += "StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) value(";
-                    strsql += StudyIdentity;
-                    strsql += ",'";
-                    strsql += StudyInfo.StudyID;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyInstanceUID;
-                    strsql += "',";
-                    strsql += PatientIdentity;
-                    strsql += ",'";
-                    if (StudyInfo.StudyDateTime.empty())
+                    querysql = "select * from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
+                    g_pMariaDb->query(querysql.c_str());
+                    rs = g_pMariaDb->QueryResult();
+                    if (rs == NULL)
                     {
-                        StudyInfo.StudyDateTime = "1800-01-01 00:00:01.000000";
+                        char uuid[64];
+                        sprintf(uuid, "%llu", (CreateGUID()>>1));
+                        OFString StudyIdentity = uuid;
+                        strsql = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,";
+                        strsql += "StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) values (";
+                        strsql += StudyIdentity;
+                        strsql += ",'";
+                        strsql += StudyInfo.StudyID;
+                        strsql += "','";
+                        strsql += StudyInfo.StudyInstanceUID;
+                        strsql += "',";
+                        strsql += PatientIdentity;
+                        strsql += ",'";
+                        if (StudyInfo.StudyDateTime.empty())
+                        {
+                            StudyInfo.StudyDateTime = "1800-01-01 00:00:01.000000";
+                        }
+                        strsql += StudyInfo.StudyDateTime;
+                        strsql += "','";
+                        strsql += StudyInfo.StudyModality;
+                        strsql += "','";
+                        strsql += StudyInfo.StudyInstitutionName;
+                        strsql += "','";
+                        strsql += StudyInfo.StudyManufacturer;
+                        strsql += "','3','";///检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核
+                        strsql += StudyInfo.studydescription;
+                        strsql += "');";
+                        g_pMariaDb->execute(strsql.c_str());                      
                     }
-                    strsql += StudyInfo.StudyDateTime;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyModality;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyInstitutionName;
-                    strsql += "','";
-                    strsql += StudyInfo.StudyManufacturer;
-                    strsql += "','3','";///检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核
-                    //strsql += StudyInfo.StudyPatientName;
-                    //strsql += "','";//StudyDescription
-                    strsql += StudyInfo.studydescription;
-                    strsql += "');";
-                    g_pMariaDb->execute(strsql.c_str());
+                    g_InsertLastUID = StudyInfo.StudyInstanceUID;
                 }
                 ///-------------------2020-11-19-add--------------------------- 
 
@@ -1116,20 +1131,38 @@ int main(int argc, char *argv[])
             OFListIterator(OFString) iter    = list_file_ini.begin();
             OFListIterator(OFString) enditer = list_file_ini.end();
             while (iter != enditer)
-            {
-                if (!SaveDcmInfo2Db(*iter, &dcmconfig))
+            {    
+                if (g_mySql_IP != "0.0.0.0")
                 {
-                    OFString filename;
-                    OFStandard::getFilenameFromPath(filename, *iter);
-                    if (OFStandard::copyFile(*iter, Task_Dir + "/" + filename), OFTrue)
+                    if (!SaveDcmInfo2Db(*iter, &dcmconfig))
                     {
-                        OFStandard::deleteFile(*iter);
+                        OFString filename;
+                        OFStandard::getFilenameFromPath(filename, *iter);
+                        if (OFStandard::copyFile(*iter, Task_Dir + "/" + filename), OFTrue)
+                        {
+                            OFStandard::deleteFile(*iter);
+                        }
                     }
                 }
+                else
+                {
+                    if (!SaveDcmInfo2Sqlite(*iter, &dcmconfig))
+                    {
+                        OFString filename;
+                        OFStandard::getFilenameFromPath(filename, *iter);
+                        if (OFStandard::copyFile(*iter, Task_Dir + "/" + filename), OFTrue)
+                        {
+                            OFStandard::deleteFile(*iter);
+                        }
+                    }
+                }
+
                 ++iter;
             }
         }
     }
+
+
     if (g_pMariaDb != NULL)
     {
         delete g_pMariaDb;

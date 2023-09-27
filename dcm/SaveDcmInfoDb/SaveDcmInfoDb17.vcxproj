@@ -152,7 +152,7 @@
     </ProjectReference>
     <Link>
       <AdditionalOptions>/machine:X86 /debug setargv %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;Shlwapi.lib;..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\dcmnet.lib;..\..\lib\dcm\win32\dcmdata.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\ofstd.lib;..\..\lib\dcm\win32\libmariadb.lib;..\..\lib\dcm\win32\dcmUnits_d.lib;..\..\lib\dcm\win32\openjp2.lib;..\..\lib\dcm\win32\fmjpeg2k.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;Shlwapi.lib;..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\dcmnet.lib;..\..\lib\dcm\win32\dcmdata.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\ofstd.lib;..\..\lib\dcm\win32\libmariadb.lib;..\..\lib\dcm\win32\dcmUnits_d.lib;..\..\lib\dcm\win32\openjp2.lib;..\..\lib\dcm\win32\fmjpeg2k.lib;..\..\lib\sqlite3\win32\sqlite3_d.lib</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <Version>0.0</Version>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -250,7 +250,7 @@
     </ProjectReference>
     <Link>
       <AdditionalOptions>/machine:X86 setargv %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;Shlwapi.lib;..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\dcmnet.lib;..\..\lib\dcm\win32\dcmdata.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\ofstd.lib;..\..\lib\dcm\win32\libmariadb.lib;..\..\lib\dcm\win32\dcmUnits.lib;..\..\lib\dcm\win32\openjp2.lib;..\..\lib\dcm\win32\fmjpeg2k.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;Shlwapi.lib;..\..\lib\dcm\win32\dcmtls.lib;..\..\lib\dcm\win32\dcmnet.lib;..\..\lib\dcm\win32\dcmdata.lib;..\..\lib\dcm\win32\oflog.lib;..\..\lib\dcm\win32\ofstd.lib;..\..\lib\dcm\win32\libmariadb.lib;..\..\lib\dcm\win32\dcmUnits.lib;..\..\lib\dcm\win32\openjp2.lib;..\..\lib\dcm\win32\fmjpeg2k.lib;..\..\lib\sqlite3\win32\sqlite3.lib</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <Version>0.0</Version>
       <ProgramDatabaseFile>..\..\temp\$(ProjectName)\$(Configuration)\$(TargetName).pdb</ProgramDatabaseFile>

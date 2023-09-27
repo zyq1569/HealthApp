@@ -231,7 +231,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_pMOdel = new QStandardItemModel(ui->tableView);
 
-    m_pMOdel->setColumnCount(8);
+    m_pMOdel->setColumnCount(7);
     m_pMOdel->setHeaderData(0,Qt::Horizontal,QString(""));
     //m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("ÐÕÃû"));
     //m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
@@ -242,17 +242,13 @@ MainWindow::MainWindow(QWidget *parent)
     m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
     m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("Date"));
     m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("Dec"));
-    m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("SOPUID"));
-    m_pMOdel->setHeaderData(6,Qt::Horizontal,QString("Path"));
-    m_pMOdel->setHeaderData(7,Qt::Horizontal,QString("TransferSyntaxUID"));
+    //m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("SOPUID"));
+    m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("Path"));
+    m_pMOdel->setHeaderData(6,Qt::Horizontal,QString("TransferSyntaxUID"));
     ui->tableView->setModel(m_pMOdel);
     ui->tableView->setColumnWidth(0,1);
     ui->tableView->setColumnWidth(1,90);
-    ui->tableView->setColumnWidth(6,300);
-    //ui->tableView->resizeColumnToContents(5);
-    //ui->tableView->resizeColumnToContents(1);
-    //ui->tableView->resizeColumnToContents(2);
-    //ui->tableView->resizeColumnsToContents();
+    ui->tableView->setColumnWidth(5,300);
 
     ui->pBSendDcm->setOrientation(Qt::Horizontal);
     ui->pBSendDcm->setMinimum(0);
@@ -422,8 +418,8 @@ void MainWindow::on_pBSend_clicked()
     {
         m_sender.SetUpateDcmFileAnonymous(true);
         QString str = ui->cb_Pname->toPlainText();
-        if (str.length() > 1)
-            Taskthread::g_Pname = str.toStdString().c_str();
+
+        Taskthread::g_Pname = str.toStdString().c_str();
         str = ui->cb_InsUID->toPlainText();
         if (str.length() > 1)
             Taskthread::g_InsUID = str.toStdString().c_str();

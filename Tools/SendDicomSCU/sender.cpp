@@ -36,7 +36,7 @@
 /////#########################################################################################
 
 bool Taskthread::g_static_check = false;
-OFString  Taskthread::g_Pname = "Anonymous";
+OFString  Taskthread::g_Pname = "";
 OFString  Taskthread::g_InsUID = "1.2.826.0.1.3680043.9.7604.";
 
 /////--------------------------Taskthread-----------------------------------------------------
@@ -384,8 +384,8 @@ int Taskthread::sendStudy(Study &studys)
 
     int isend = 0;
     OFString newname,newuid;
-    if (Taskthread::g_Pname.length() > 1)
-        newname = Taskthread::g_Pname;
+
+    newname = Taskthread::g_Pname;
     if (Taskthread::g_InsUID.length() > 1)
         newuid = Taskthread::g_InsUID;
 
