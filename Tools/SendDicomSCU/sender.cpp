@@ -405,15 +405,7 @@ int Taskthread::sendStudy(Study &studys)
         DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
         OFString sopclassuid;
         dcmff.getDataset()->findAndGetOFString(DCM_SOPClassUID, sopclassuid);
-        //if (scu.findPresentationContextID(sopclassuid, UID_JPEGLSLosslessTransferSyntax) != 0)//UID_JPEGProcess14SV1TransferSyntax
-        //{
-        //    dcmff.loadAllDataIntoMemory();
-        //    if(dcmff.getDataset())
-        //        dcmff.getDataset()->chooseRepresentation(EXS_JPEGLSLossless, NULL);
-        //    fileTransfer = dcmff.getDataset()->getCurrentXfer();
-        //}
-        //qDebug("Send files numbers: %s", dcmf.c_str());
-        // out found.. change to
+
         T_ASC_PresentationContextID pid;
         pid = scu.findAnyPresentationContextID(sopclassuid, fileTransfer.getXferID());
 
@@ -427,10 +419,16 @@ int Taskthread::sendStudy(Study &studys)
             }
             dcmff.getDataset()->findAndGetOFString(DCM_StudyInstanceUID, Studyuid);
 
-            updateStringAttributeValue(dcmff.getDataset(),DCM_PatientName, newname);
-
-            newuid         += Studyuid.substr(ImpUID.length()+3,Studyuid.length());
-            updateStringAttributeValue(dcmff.getDataset(),DCM_StudyInstanceUID, newuid);
+            if (newname.length() > 0)
+            {
+                updateStringAttributeValue(dcmff.getDataset(),DCM_PatientName, newname);
+            }
+            if (newuid.length() > 0)
+            {
+                OFString struid = newuid;
+                struid         += Studyuid.substr(ImpUID.length()+3,Studyuid.length());
+                updateStringAttributeValue(dcmff.getDataset(),DCM_StudyInstanceUID, struid);
+            }
 
             OFString MedicalName = "DCMTK_OmlyTEST";
             updateStringAttributeValue(dcmff.getDataset(),DCM_InstitutionName, MedicalName);
