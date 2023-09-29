@@ -649,10 +649,18 @@ OFBool SaveString2File(OFString str, OFString filename)
         //savedcmfile.open(filename.c_str(), ios::out | ios::app); //ios::trunc表示在打开文件前将文件清空,由于是写入,文件不存在则创建
         //savedcmfile << str.c_str();
         //savedcmfile.close();//关闭文件
-        OFFile inifile;
-        inifile.fopen(filename, "w");
-        inifile.fputs(str.c_str());
-        inifile.fclose();
+        try
+        {
+            OFFile inifile;
+            inifile.fopen(filename, "w");
+            inifile.fputs(str.c_str());
+            inifile.fclose();
+        }
+        catch (...)
+        {
+            return OFFalse;
+        }
+
     }
     return OFTrue;
 }

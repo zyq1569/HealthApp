@@ -324,9 +324,9 @@ void MainWindow::updatePatientList()
             str += QString::number(size);
         }
         m_pMOdel->setItem(i,4,new QStandardItem(str));
-        m_pMOdel->setItem(i,5,new QStandardItem(st.sopclassuid.c_str()));
-        m_pMOdel->setItem(i,6,new QStandardItem(st.dir.c_str()));
-        m_pMOdel->setItem(i,7,new QStandardItem(st.transfersyntax.c_str()));
+//        m_pMOdel->setItem(i,5,new QStandardItem(st.sopclassuid.c_str()));
+        m_pMOdel->setItem(i,5,new QStandardItem(st.dir.c_str()));
+        m_pMOdel->setItem(i,6,new QStandardItem(st.transfersyntax.c_str()));
         QStandardItem *item = new QStandardItem();
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);
@@ -334,8 +334,8 @@ void MainWindow::updatePatientList()
     }
     ui->tableView->setColumnWidth(0,1);
     ui->tableView->setColumnWidth(1,90);
-    ui->tableView->setColumnWidth(5,150);
-    ui->tableView->setColumnWidth(6,700);
+//    ui->tableView->setColumnWidth(5,150);
+    ui->tableView->setColumnWidth(5,700);
 }
 
 

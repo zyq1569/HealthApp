@@ -647,6 +647,7 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                         querysql += "','";
                         querysql += StudyInfo.PatientBirth;
                         querysql += "');";
+                        //define SQLITE_DONE        101  /* sqlite3_step() has finished executing */
                         res = InsertSqlite(g_pSqlite, querysql.c_str(), param);
                     }
                     else
@@ -694,7 +695,7 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                         strsql += "','3','";///检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核
                         strsql += StudyInfo.studydescription;
                         strsql += "');";
-
+                        //define SQLITE_DONE        101  /* sqlite3_step() has finished executing */
                         res = InsertSqlite(g_pSqlite, strsql.c_str(), param);
                     }
                     g_InsertLastUID = StudyInfo.StudyInstanceUID;
