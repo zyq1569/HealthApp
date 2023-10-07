@@ -109,6 +109,7 @@ static OFString g_ImageDir                   = "";
 static OFString g_InsertLastUID              = "";
 static OFString g_InsertLastPatientID        = "";
 static OFString g_InsertLastPatientIdentity  = "";
+static OFBool   g_LocalSqlite                = OFFalse;
 
 
 
@@ -624,7 +625,7 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                     if (size < 1)
                     {
                         char uuid[64];
-                        sprintf(uuid, "%llu", (CreateGUID() >> 1));
+                        sprintf(uuid, "%llu", (CreateGUID() >> 3));
                         PatientIdentity = uuid;
                         querysql  = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
                                                            PatientSex,PatientBirthday) values (";
@@ -669,7 +670,7 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                     if (size < 1)
                     {
                         char uuid[64];
-                        sprintf(uuid, "%llu", (CreateGUID() >> 1));
+                        sprintf(uuid, "%llu", (CreateGUID() >> 3));
                         OFString StudyIdentity = uuid;
                         strsql  = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,";
                         strsql += "StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) values (";
@@ -706,6 +707,11 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
             {
                 OFStandard::deleteFile(filename);
             }
+        }
+        catch (char *c)
+        {
+            OFLOG_ERROR(SaveDcmInfoDbLogger,c);
+            return OFFalse;
         }
         catch (...)
         {
@@ -1009,27 +1015,13 @@ int main(int argc, char *argv[])
     if (argc > 1)
     {
         OFString dir = argv[1];
-        //OFList<OFString> list_file_ini_test;
-        //travel_files((char*)dir.c_str(),"ini",list_file_ini_test);
+
         if (OFStandard::dirExists(dir))
         {
             Task_Dir   = dir + "/Task/1";
             Error_Dir  = dir + "/Task/error";
             //Log_Dir    = dir + "/log";
             g_ImageDir = dir + "/Images";
-            //int pos = dir.find_last_of("/");
-            //if (pos > -1)
-            //{
-            //    Log_Dir = dir.substr(0, pos) + "/log";
-            //}
-            //else
-            //{
-            //    int pos = dir.find_last_of("\\");
-            //    if (pos > -1)
-            //    {
-            //        Log_Dir = dir.substr(0, pos) + "/log";
-            //    }
-            //}
         }
         if (argc > 5)
         {
@@ -1071,7 +1063,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            Task_Dir   = currentAppPath + "/DCM_SAVE/Task/1";// +currentStudyInstanceUID + ".ini";
+            Task_Dir   = currentAppPath + "/DCM_SAVE/Task/1";
             Error_Dir  = currentAppPath + "/DCM_SAVE/Task/error";
             g_ImageDir = currentAppPath + "/DCM_SAVE/Images";
             Log_Dir    = currentAppPath + "/log";
@@ -1085,7 +1077,7 @@ int main(int argc, char *argv[])
         CreatDir(Log_Dir);
     }
 
-    OFString logfilename = Log_Dir + "/SaveDcmInfoDb.log";//"/home/zyq/code/C++/DicomScuApp/DicomSCU/bin/Debug/dcmtk_storescu";
+    OFString logfilename = Log_Dir + "/SaveDcmInfoDb.log";
 
     const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
     OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
@@ -1111,6 +1103,12 @@ int main(int argc, char *argv[])
     }
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------argv[]:" + tempstr + " ----------------------");
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------currentAppPath:" + currentAppPath + " ----------------------");
+    
+    if (g_mySql_IP == "0.0.0.0")
+    {
+        OFLOG_INFO(SaveDcmInfoDbLogger, "---------local sqlite DB ----------------------");
+        g_LocalSqlite = OFTrue;
+    }
 
     if (!OFStandard::dirExists(Error_Dir))
     {
@@ -1133,7 +1131,7 @@ int main(int argc, char *argv[])
             OFListIterator(OFString) enditer = list_file_ini.end();
             while (iter != enditer)
             {    
-                if (g_mySql_IP != "0.0.0.0")
+                if (!g_LocalSqlite)
                 {
                     if (!SaveDcmInfo2Db(*iter, &dcmconfig))
                     {
