@@ -21,8 +21,10 @@
 #include <QStandardItemModel>
 #include <QThreadPool>
 #include <QMessageBox>
+#include "Units.h"
 
 
+static OFLogger g_SendDicomSCULogge =  OFLog::getLogger("SendDicomSCU");
 //#include <fcntl.h>
 //#include <io.h>
 //#include "zlib.h"
@@ -161,6 +163,7 @@ an error reading or writing the files. */
 //    qDebug("%s", suid.c_str());
 
 //    return;
+
 void MainWindow::registerCodecs()
 {
     // register global JPEG decompression codecs
@@ -204,9 +207,7 @@ void MainWindow::registercleanup()
 
 
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)//, /*scanner(patientdata),*/ sender(patientdata)
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)//, /*scanner(patientdata),*/ sender(patientdata)
 {
     ui->setupUi(this);
 
@@ -231,7 +232,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_pMOdel = new QStandardItemModel(ui->tableView);
 
-    m_pMOdel->setColumnCount(7);
+    m_pMOdel->setColumnCount(6);
     m_pMOdel->setHeaderData(0,Qt::Horizontal,QString(""));
     //m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("姓名"));
     //m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
@@ -244,7 +245,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("Dec"));
     //m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("SOPUID"));
     m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("Path"));
-    m_pMOdel->setHeaderData(6,Qt::Horizontal,QString("TransferSyntaxUID"));
+    //m_pMOdel->setHeaderData(6,Qt::Horizontal,QString("TransferSyntaxUID"));
     ui->tableView->setModel(m_pMOdel);
     ui->tableView->setColumnWidth(0,1);
     ui->tableView->setColumnWidth(1,90);
@@ -254,7 +255,25 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pBSendDcm->setMinimum(0);
     ui->pBSendDcm->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     ui->pBSendDcm->setValue(100);
+
+    OFConsoleApplication app("SendDicomSCU", "DICOM send scu");
+    //--------------------增加日志文件的方式----------------------------------------------------------------
+    const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
+    OFString currentAppPath, Log_Dir,tempstr;
+    currentAppPath = GetCurrWorkingDir();
+    currentAppPath = OFStandard::getDirNameFromPath(tempstr, currentAppPath);
+    //qDebug("%s", currentAppPath.c_str());
+    Log_Dir = currentAppPath + "/log";
+    CreatDir(Log_Dir);
+    OFString logfilename = Log_Dir + "/SendDicomSCU.log";
+    OFunique_ptr<dcmtk::log4cplus::Layout> layout(new dcmtk::log4cplus::PatternLayout(pattern));
+    dcmtk::log4cplus::SharedAppenderPtr logfile(new dcmtk::log4cplus::FileAppender(logfilename, STD_NAMESPACE ios::app));
+    m_log = dcmtk::log4cplus::Logger::getRoot();
+    logfile->setLayout(OFmove(layout));
+    m_log.removeAllAppenders();
+    m_log.addAppender(logfile);
 }
+
 
 MainWindow::~MainWindow()
 {
@@ -324,9 +343,9 @@ void MainWindow::updatePatientList()
             str += QString::number(size);
         }
         m_pMOdel->setItem(i,4,new QStandardItem(str));
-//        m_pMOdel->setItem(i,5,new QStandardItem(st.sopclassuid.c_str()));
+        //m_pMOdel->setItem(i,5,new QStandardItem(st.sopclassuid.c_str()));
         m_pMOdel->setItem(i,5,new QStandardItem(st.dir.c_str()));
-        m_pMOdel->setItem(i,6,new QStandardItem(st.transfersyntax.c_str()));
+        //m_pMOdel->setItem(i,6,new QStandardItem(st.transfersyntax.c_str()));
         QStandardItem *item = new QStandardItem();
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);
@@ -334,7 +353,7 @@ void MainWindow::updatePatientList()
     }
     ui->tableView->setColumnWidth(0,1);
     ui->tableView->setColumnWidth(1,90);
-//    ui->tableView->setColumnWidth(5,150);
+    //ui->tableView->setColumnWidth(5,150);
     ui->tableView->setColumnWidth(5,700);
 }
 
@@ -430,6 +449,9 @@ void MainWindow::on_pBSend_clicked()
         m_sender.SetUpateDcmFileAnonymous(false);
     }
 
+    //
+    m_log.setLogLevel((ui->cm_logLevel->currentIndex()+1)*10000);
+    //
     ui->pBSendDcm->reset();
     ui->pBSendDcm->setMaximum(m_sendTotal);
     ui->pBSendDcm->setValue(1);
@@ -628,7 +650,7 @@ void MainWindow::on_pBOpen2KC_clicked()
         return;
     }
 #ifdef ON_THE_FLY_COMPRESSION
-        registerCodecs();
+    registerCodecs();
 #endif
     if (EXS_LittleEndianImplicit !=  c_oxfer &&  EXS_BigEndianImplicit !=  c_oxfer && EXS_LittleEndianExplicit !=  c_oxfer)
     {

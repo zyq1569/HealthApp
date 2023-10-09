@@ -547,6 +547,62 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </widget>
+   <widget class="QComboBox" name="cm_logLevel">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>620</y>
+      <width>65</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
+    <property name="currentIndex">
+     <number>3</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>TRACE</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DEBUG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>INFO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>WARN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ERROR</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>FATAL</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OFF</string>
+     </property>
+    </item>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

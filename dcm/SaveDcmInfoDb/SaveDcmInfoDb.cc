@@ -597,7 +597,22 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
             DicomFileInfo dcminfo;
             dcminfo.studyDate      = StudyInfo.StudyDateTime;
             dcminfo.studyTime      = StudyInfo.StudyDateTime.substr(8, 6);
-            OFString pathname      = g_ImageDir + "/" + GetStudyDateDir(dcminfo) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
+            OFString hash          = GetStudyDateDir(dcminfo);
+            OFString pathname = g_ImageDir + "/" + hash + "/" + StudyInfo.StudyInstanceUID;
+            if (!OFStandard::dirExists(pathname) || dcminfo.studyDate.length() < 8 || dcminfo.studyTime.length() < 4 )
+            {
+                OFString desdir, name, desfilename = filename;
+                int pos = desfilename.find_last_of("\\");
+                name = desfilename.substr(pos + 1);
+                desdir = desfilename.substr(0, pos - 1);
+                pos = desdir.find_last_of("/", pos);
+                desdir = desdir.substr(0, pos) + "/error";
+                CreatDir(desdir);
+                OFStandard::copyFile(filename, desdir + "/" + name);
+                OFStandard::deleteFile(filename);
+                return OFFalse;
+            }
+            pathname += "/" + StudyInfo.StudyInstanceUID;
             OFString studyinifile  = pathname + ".ini";
             OFString studyjsonfile = pathname + ".json";
             if (!OFStandard::fileExists(studyinifile))
@@ -711,6 +726,14 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
         catch (char *c)
         {
             OFLOG_ERROR(SaveDcmInfoDbLogger,c);
+            OFString desdir,name, desfilename = filename;
+            int pos = desfilename.find_last_of("/");
+            name = desfilename.substr(pos+1);
+            desdir = desfilename.substr(0, pos - 1);
+            pos = desdir.find_last_of("/", pos);
+            desdir = desdir.substr(0, pos)+"error";
+            CreatDir(desdir);
+            OFStandard::copyFile(filename,desdir+"/"+name);
             return OFFalse;
         }
         catch (...)
@@ -718,6 +741,14 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
             OFLOG_ERROR(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
             OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql querysql:" + querysql);
             OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql strsql:" + strsql);
+            OFString desdir, name, desfilename = filename;
+            int pos = desfilename.find_last_of("/");
+            name = desfilename.substr(pos + 1);
+            desdir = desfilename.substr(0, pos - 1);
+            pos = desdir.find_last_of("/", pos);
+            desdir = desdir.substr(0, pos) + "error";
+            CreatDir(desdir);
+            OFStandard::copyFile(filename, desdir + "/" + name);
             return OFFalse;
         }
     }
@@ -992,10 +1023,8 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
 
 int main(int argc, char *argv[])
 {
-    //uint64 uid = CreateGUID();
     static DcmConfigFile dcmconfig;
     OFString Task_Dir, Log_Dir, Error_Dir;
-    //OFString ini_dir, ini_error_dir;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM file Info 2 DB", rcsid);
     OFString tempstr, path  = argv[0];
@@ -1020,7 +1049,6 @@ int main(int argc, char *argv[])
         {
             Task_Dir   = dir + "/Task/1";
             Error_Dir  = dir + "/Task/error";
-            //Log_Dir    = dir + "/log";
             g_ImageDir = dir + "/Images";
         }
         if (argc > 5)
@@ -1040,21 +1068,8 @@ int main(int argc, char *argv[])
             OFString dir     = dcmconfig.getStoreDir()->front();
             Task_Dir         = dir + "/Task/1";
             Error_Dir        = dir + "/Task/error";
-            //Log_Dir        = dir + "/log";
             g_ImageDir       = dir + "/Images";
-            //int pos = dir.find_last_of("/");
-            //if (pos > -1)
-            //{
-            //    Log_Dir = dir.substr(0, pos) + "/log";
-            //}
-            //else
-            //{
-            //    int pos = dir.find_last_of("\\");
-            //    if (pos > -1)
-            //    {
-            //        Log_Dir = dir.substr(0, pos) + "/log";
-            //    }
-            //}
+
             //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");            
             g_mySql_IP       = dcmconfig.getSqlServer();
             g_mySql_username = dcmconfig.getSqlusername();

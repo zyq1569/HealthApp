@@ -652,7 +652,7 @@ OFBool SaveString2File(OFString str, OFString filename)
         try
         {
             OFFile inifile;
-            inifile.fopen(filename, "w");
+            inifile.fopen(filename, "w+");
             inifile.fputs(str.c_str());
             inifile.fclose();
         }

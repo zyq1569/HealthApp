@@ -8,7 +8,7 @@
 #include<vector>
 #include<set>
 #include "util.h"
-
+#include "dcmtk/oflog/oflog.h"
 
 class DestinationEntry
 {
@@ -159,7 +159,6 @@ public:
     std::vector<Patient> m_listpatient;
 
     Taskthread m_taskScanDicom,m_taskSendDicom;
-
 };
 
 #endif // DICOMSENDER_H

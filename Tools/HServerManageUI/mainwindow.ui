@@ -1226,6 +1226,9 @@
     <property name="text">
      <string>Sqlite(use Local database)</string>
     </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
    </widget>
    <zorder>groupBox_2</zorder>
    <zorder>label_wlm</zorder>

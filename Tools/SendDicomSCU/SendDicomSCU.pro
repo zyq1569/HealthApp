@@ -79,6 +79,7 @@ LIBS   +=  -L$${LIB_DIR} \
              -llibijg12 \
              -llibijg16 \
              -lfmjpeg2k \
+             -lsqlite3 \
              -lopenjp2
 #             \
 #             -lzlibstatic
@@ -120,15 +121,15 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 #dimse.cc   / 2019 07 25 add test  to do it better
-#ÈËÉúÂş³¤£¬×ªË²¼´ÊÅ¡£ÓĞÈË¼û³¾°££¬ÓĞÈË¼ûĞÇ³½¡£
+#äººç”Ÿæ¼«é•¿ï¼Œè½¬ç¬å³é€ã€‚æœ‰äººè§å°˜åŸƒï¼Œæœ‰äººè§æ˜Ÿè¾°ã€‚
 
-#Óêİæ
+#é›¨è±
 #@HeroWeliam
-#?????? ÂäÈë·²¼äÉî´¦ ÃÔÊ§²»Öª¹éÂ·
-#²¦¿ªÃÔÎí¼ûÇçÌì£¬ÏşµÄÕæÏàÃ÷ÊÇ·Ç¡£
+#?????? è½å…¥å‡¡é—´æ·±å¤„ è¿·å¤±ä¸çŸ¥å½’è·¯
+#æ‹¨å¼€è¿·é›¾è§æ™´å¤©ï¼Œæ™“çš„çœŸç›¸æ˜æ˜¯éã€‚
 #Qt4VSv1.0
 #https://stackoverflow.com/questions/72031733/the-online-service-is-not-available-issue-in-visual-studio-professional-2013-w
-#³¢ÊÔÕâ¸ö; Ëü¶ÔÎÒÓĞÓÃ¡£Ö»Ğè½«Á½¸öDWORDÖµÌí¼Óµ½ Windows ×¢²á±í¼´¿É¡£ÍøÕ¾go.microsoft.comÄ¿Ç°½öÖ§³Ö TLS1.2 Ğ­Òé¡£
+#å°è¯•è¿™ä¸ª; å®ƒå¯¹æˆ‘æœ‰ç”¨ã€‚åªéœ€å°†ä¸¤ä¸ªDWORDå€¼æ·»åŠ åˆ° Windows æ³¨å†Œè¡¨å³å¯ã€‚ç½‘ç«™go.microsoft.comç›®å‰ä»…æ”¯æŒ TLS1.2 åè®®ã€‚
 
 #[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319]
 #"SystemDefaultTlsVersions"=dword:00000001

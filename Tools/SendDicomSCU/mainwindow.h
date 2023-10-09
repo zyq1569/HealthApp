@@ -3,12 +3,12 @@
 
 #include <QMainWindow>
 #include "sender.h"
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class QStandardItemModel;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -19,7 +19,9 @@ public:
 public:
     DicomSender m_sender;
     QStandardItemModel *m_pMOdel;
+    dcmtk::log4cplus::Logger m_log;
     int m_sendTotal;
+
 public:
     void stopSend();
     void stopScan();

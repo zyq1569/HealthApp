@@ -21,6 +21,7 @@
 #include "dcmtk/dcmjpls/djencode.h"
 #include "dcmtk/dcmdata/dcrleerg.h"
 #include "dcmtk/dcmdata/dcrledrg.h"
+#include "dcmtk/dcmimage/diregist.h"
 #include "fmjpeg2k/djdecode.h"
 #include "fmjpeg2k/djencode.h"
 
@@ -39,6 +40,7 @@ bool Taskthread::g_static_check = false;
 OFString  Taskthread::g_Pname = "";
 OFString  Taskthread::g_InsUID = "1.2.826.0.1.3680043.9.7604.";
 
+OFLogger g_SendDicomSCULogge = OFLog::getLogger("SendDicomSCU");
 /////--------------------------Taskthread-----------------------------------------------------
 void Taskthread::registerCodecs()
 {
@@ -122,8 +124,7 @@ Taskthread::Taskthread(QObject *parent)
     setAutoDelete(false);
     m_type = 0;//dicomDataJob
 
-    initAbstractSyntax();
-
+    initAbstractSyntax();    
 }
 
 Taskthread::~Taskthread()
@@ -344,6 +345,7 @@ int Taskthread::sendStudy(Study &studys)
 {
     DcmSCU scu;
 
+    uint dicomSendNumber = 0;
     if (isCanceled() || m_dest.ourAETitle.length() < 1 || m_dest.destinationHost.length() <1
             || m_dest.destinationAETitle.length() < 1)
         return 1;
@@ -443,10 +445,12 @@ int Taskthread::sendStudy(Study &studys)
 
         if (cond.good() && (status == 0 || (status & 0xf000) == 0xb000))
         {
+            dicomSendNumber++;
             //ok!
         }
-        else if(cond == DUL_PEERABORTEDASSOCIATION)
+        else// if(cond == DUL_PEERABORTEDASSOCIATION)
         {
+            OFLOG_ERROR(g_SendDicomSCULogge, "send fail!:" + dcmf);
             //return 1;
         }
 
@@ -461,6 +465,8 @@ int Taskthread::sendStudy(Study &studys)
         //qDebug("%4d  %s", ++n, dcmf.c_str());
     }
 
+    OFString str = QString::number(m_sendFiles).toStdString().c_str();
+    OFLOG_INFO(g_SendDicomSCULogge, "---------send dicom number:" + str );
     scu.releaseAssociation();
     return 0;
 }
@@ -492,7 +498,6 @@ DicomSender::DicomSender()
     qRegisterMetaType<DestinationEntry>("DestinationEntry");
     connect(this, &DicomSender::senddicomfile, &m_taskSendDicom, &Taskthread::sendDcm);
     connect(&m_taskSendDicom, &Taskthread::finishSendDcm, this, &DicomSender::finishSendDcm);
-
 }
 
 bool DicomSender::IsCanceled()
