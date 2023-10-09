@@ -52,6 +52,7 @@ HMainWindow::HMainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HMai
     ui->Dir_Pagefile->setText(Dir+"/PageWeb");
     m_Log4j2Config    = m_ExeDir + "log";
     m_WebServerName   = "health.jar";
+    ui->cBSqlite->setChecked(true);
 #if defined(Q_OS_LINUX)
     m_ExeDir          = m_ExeDir+"/linux/";
     m_StoreScpName    = "StoreDcmSCP";
@@ -106,6 +107,8 @@ HMainWindow::HMainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HMai
         ui->comLevel_Query->setCurrentText(configini.value("/dicom/log_Query").toString());
         ui->comLevel_SaveInfo->setCurrentText(configini.value("/dicom/log_SaveInfo").toString());
 
+        ui->cBSqlite->setChecked(configini.value("/sqlite/localdb").toBool());
+        on_cBSqlite_clicked();
         //client //configini.setValue("/client/count",count);
         int count = configini.value("/client/count").toInt();
         //m_model->setColumnCount(3);
@@ -177,6 +180,9 @@ HMainWindow::~HMainWindow()
         configini.setValue("/dicom/log_worklist",ui->comLevel_worklist->currentText());
         configini.setValue("/dicom/log_Query",ui->comLevel_Query->currentText());
         configini.setValue("/dicom/log_SaveInfo",ui->comLevel_SaveInfo->currentText());
+
+        configini.setValue("/sqlite/localdb",ui->cBSqlite->isChecked());
+
         //client
         //configini.setValue("/client/aetitle1",ui->AEtitle->text());
         //configini.setValue("/client/port1",ui->clientPortValue->text());
