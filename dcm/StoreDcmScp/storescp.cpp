@@ -268,7 +268,7 @@ int AppRun(int argc, char *argv[])
     for (int i = 0; i < size; i++)
     {
         tmp = argv[i];
-        strArg += tmp + "|";
+        strArg += tmp + " ";
     }
     int index = strArg.find("forked-child");
     if (index > -1)
@@ -511,6 +511,7 @@ int AppRun(int argc, char *argv[])
 #endif
     return 0;
 }
+//调试时间修改 OFBool             opt_forkMode = OFTrue/*OFFalse*/;//修改为默认多进程处理
 //20220816 考虑 目录结构: 年份/月份/日期/小时
 //eg.
 //Images/2001/01/09/23
@@ -519,6 +520,10 @@ int AppRun(int argc, char *argv[])
 //1667 /home/zyq/windows_share/HealthApp/bin/win32/DCM_SAVE
 int main(int argc, char *argv[])
 {
+#ifdef DEBUG
+    opt_forkMode = OFFalse;
+#endif // DEBUG
+
     //OFString s = GetStudyHashDir("1.2.826.0.1.3680043.9.7606.20091101104529.177289.200911020017");
     printf("---int main(int argc, char *argv[])---\n");
     if (!dcmDataDict.isDictionaryLoaded())
@@ -985,7 +990,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 #ifdef PRIVATE_STORESCP_CODE
         PRIVATE_STORESCP_CODE
 #endif
-            cond = ASC_acknowledgeAssociation(assoc);
+        cond = ASC_acknowledgeAssociation(assoc);
         if (cond.bad())
         {
             OFLOG_ERROR(storescpLogger, DimseCondition::dump(temp_str, cond));
@@ -1261,10 +1266,11 @@ OFBool GetStudyInfoFie(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, Dicom
     key[0] = DCM_StudyInstanceUID;    key[1] = DCM_SeriesInstanceUID;    key[2] = DCM_SOPInstanceUID;
     key[3] = DCM_StudyDescription;    key[4] = DCM_SeriesDescription;    key[5] = DCM_SeriesNumber;
     key[6] = DCM_StudyID;             key[7] = DCM_PatientName;          key[8] = DCM_PatientID;
-    key[9] = DCM_PatientSex;          key[10] = DCM_PatientAge;           key[11] = DCM_PatientBirthDate;
-    key[12] = DCM_PatientBirthTime;    key[13] = DCM_StudyDate;            key[14] = DCM_StudyTime;
-    key[15] = DCM_Modality;            key[16] = DCM_Manufacturer;         key[17] = DCM_InstitutionName;
-    key[18] = DCM_InstanceNumber;
+    key[9] = DCM_PatientSex;
+    key[10] = DCM_PatientAge;          key[11] = DCM_PatientBirthDate;     key[12] = DCM_PatientBirthTime;
+    key[13] = DCM_StudyDate;           key[14] = DCM_StudyTime;            key[15] = DCM_Modality;
+    key[16] = DCM_Manufacturer;        key[17] = DCM_InstitutionName;      key[18] = DCM_InstanceNumber;
+
 
     if (!GetValueOfData(imageDataSet, rsp, key[0], studyinfo.studyUID, OFTrue))
     {
@@ -1362,45 +1368,30 @@ void SaveDcmIni(DicomFileInfo image, OFString filename)
     OFString ini_filename = filename;// ini_dir + "/" + StringGUID() + ".ini";
     if (!OFStandard::fileExists(ini_filename))
     {
-        OFString str;
-        inifile.fopen(ini_filename, "w");
-        str = "[STUDY]\n";
-        str += "studyuid=" + image.studyUID;
-        str += "\n";
-        str += "patientid=" + image.patientId;
-        str += "\n";
-        str += "patientname=" + image.patientName;
-        str += "\n";
-        str += "patientsex=" + image.patientSex;
-        str += "\n";
-        str += "studyid=" + image.studyId;
-        str += "\n";
-        str += "patientage=" + image.patientAge;
-        str += "\n";
-        str += "patientbirth=" + image.patientBirthDate + image.patientBirthTime;
-        str += "\n";
-        //currentStudyTime
-        str += "studydatetime=" + image.studyDate + image.studyTime;
-        str += "\n";
-        str += "modality=" + image.modality;
-        str += "\n";
-        str += "manufacturer=" + image.manufacturer;
-        str += "\n";
-        str += "institutionname=" + image.institutionName;
-        str += "\n";
-        str += "studydescription=" + image.studyDescription;
-        str += "\n";
-        str += "[SERIES]\n";
-        str += "seriesuid=" + image.seriesUID;
-        str += "\n";
-        str += "seriesdescription=" + image.seriesDescription;
-        str += "\n";
-        str += "seriesnumber=" + image.seriesNumber;
-        str += "\n";
-        str += "[IMAGE]\n";
-        str += "sopinstanceuid=" + image.imageSOPInstanceUID + "\n";
-        str += "instanceNumber=" + image.instanceNumber + "\n";
-        inifile.fputs(str.c_str());
+        inifile.fopen(ini_filename, "w");       
+        std::string strtemp, strn;
+        strn = "\n";
+        strtemp  = "[STUDY]\n";
+        strtemp += std::string("studyuid=") +  image.studyUID.c_str() + strn;
+        strtemp += std::string("patientid=") + image.patientId.c_str() + strn;
+        strtemp += std::string("patientname=") + image.patientName.c_str() + strn;
+        strtemp += std::string("patientsex=") + image.patientSex.c_str() + strn;
+        strtemp += std::string("studyid=") + image.studyId.c_str() + strn;
+        strtemp += std::string("patientage=") + image.patientAge.c_str() + strn;
+        strtemp += std::string("patientbirth=") + image.patientBirthDate.c_str() + image.patientBirthTime.c_str() + strn;
+        strtemp += std::string("studydatetime=") + image.studyDate.c_str() + image.studyTime.c_str() + strn;
+        strtemp += std::string("modality=") + image.modality.c_str() + strn;
+        strtemp += std::string("manufacturer=") + image.manufacturer.c_str() + strn;
+        strtemp += std::string("institutionname=") + image.institutionName.c_str() + strn;
+        strtemp += std::string("studydescription=") + image.studyDescription.c_str() + strn;
+        strtemp += std::string("[SERIES]\n");
+        strtemp += std::string("seriesuid=") + image.seriesUID.c_str() + strn;
+        strtemp += std::string("seriesdescription=") + image.seriesDescription.c_str() + strn;
+        strtemp += std::string("seriesnumber=") + image.seriesNumber.c_str() + strn;
+        strtemp += std::string("[IMAGE]\n");
+        strtemp += std::string("sopinstanceuid=") + image.imageSOPInstanceUID.c_str() + strn;
+        strtemp += std::string("instanceNumber=") + image.instanceNumber.c_str() + strn;       
+        inifile.fputs(strtemp.c_str());
         inifile.fclose();
     }
     //end write ini file
@@ -1511,23 +1502,32 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
 
 
             OFString subdirectoryName;
-            subdirectoryName = opt_sortStudyDirPrefix;
-            if (!subdirectoryName.empty())
-            {
-                subdirectoryName += '_';
-            }
-            //add 通过hash值方法，将接收的dcm文件存储-----------------------------------------------
             OFHashValue path = CreateHashValue(dcminfo);
-
-            OFString hash_dir = path.first + "/" + path.second;
-            ///20220818
             //eg. 20100706 123213
-            hash_dir = GetStudyDateDir(dcminfo);
-            OFString tem_dir = "Images/" + hash_dir + "/" + dcminfo.studyUID + "/" + dcminfo.seriesUID;
+            static OFString s_studyUID, s_hash_dir, s_date, s_time;
+            OFString hash_dir;
+            if (s_studyUID == dcminfo.studyUID)
+            {
+                hash_dir          = s_hash_dir;
+                dcminfo.studyDate = s_date;
+                dcminfo.studyTime = s_time;
+            }
+            else
+            {
+                //to do: add find sql form db
+                hash_dir   = GetStudyDateDir(dcminfo);
+
+                s_hash_dir = hash_dir;
+                s_studyUID = dcminfo.studyUID;
+                s_date     = dcminfo.studyDate;
+                s_time     = dcminfo.studyTime;
+            }
+
+            OFString tem_dir         = "Images/" + hash_dir + "/" + dcminfo.studyUID + "/" + dcminfo.seriesUID;
             static OFString save_dir = OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName);
             static OFString task_dir = save_dir + "/Task";
-            static OFString ini_dir = task_dir + "/1";
-            OFString tem_study_dir = save_dir + "/Images/" + hash_dir + "/" + dcminfo.studyUID;
+            static OFString ini_dir  = task_dir + "/1";
+            OFString tem_study_dir   = save_dir + "/Images/" + hash_dir + "/" + dcminfo.studyUID;
             OFLOG_DEBUG(storescpLogger, "tem_study_dir:" + tem_study_dir);
             if (!OFStandard::dirExists(task_dir))
             {
@@ -1548,25 +1548,21 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
             }
 
             OFString ini_filename;
-            ini_filename = ini_dir + "/" + dcminfo.studyUID + dcminfo.imageSOPInstanceUID + ".ini";
-
-            SaveDcmIni(dcminfo, ini_filename);
+            ini_filename = ini_dir + "/" + dcminfo.studyUID + "-" + dcminfo.imageSOPInstanceUID + ".ini";
+            //SaveDcmIni(dcminfo, ini_filename, infostr);
             OFString image_dir = save_dir + "/Images";
             if (!OFStandard::dirExists(image_dir))
             {
-                //OFLOG_WARN(storescpLogger, "mkdir:" + image_dir);
-                CreatDir(image_dir);//mkdir(image_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO );
+                CreatDir(image_dir);
             }
             hash_dir = image_dir + "/" + hash_dir;
             if (!OFStandard::dirExists(hash_dir))
             {
-                //OFLOG_WARN(storescpLogger, "mkdir:" + hash_dir);
-                CreatDir(hash_dir);//mkdir(hash_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO );
+                CreatDir(hash_dir);
             }
             if (!OFStandard::dirExists(tem_study_dir))
             {
-                //OFLOG_INFO(storescpLogger, "mkdir:" + tem_study_dir);
-                CreatDir(tem_study_dir);//mkdir(tem_study_dir.c_str(),S_IRWXU | S_IRWXG | S_IRWXO );
+                CreatDir(tem_study_dir);
             }
             subdirectoryName += tem_dir;
 
@@ -1588,11 +1584,6 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                     rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
                     return;
                 }
-                // all objects of a study have been received, so a new subdirectory is started.
-                // ->timename counter can be reset, because the next filename can't cause a duplicate.
-                // if no reset would be done, files of a new study (->new directory) would start with a counter in filename
-                if (opt_timeNames)
-                    timeNameCounter = -1;
             }
 
             // integrate subdirectory name into file name (note that cbdata->imageFileName currently contains both
@@ -1616,9 +1607,8 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
             {
                 OFLOG_WARN(storescpLogger, "DICOM file already exists, overwriting: " << fileName);
             }
-            OFCondition cond = cbdata->dcmff->saveFile(fileName.c_str(), xfer, opt_sequenceType, opt_groupLength,
-                opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
-                (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
+            OFCondition cond = cbdata->dcmff->saveFile(fileName.c_str(), xfer, opt_sequenceType, opt_groupLength, opt_paddingType, OFstatic_cast(Uint32, opt_filepad),
+                OFstatic_cast(Uint32, opt_itempad), (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
             if (cond.bad())
             {
                 OFLOG_ERROR(storescpLogger, "cannot write DICOM file: " << fileName << ": " << cond.text());
@@ -1627,7 +1617,7 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                 // delete incomplete file
                 OFStandard::deleteFile(fileName);
             }
-
+            SaveDcmIni(dcminfo, ini_filename);
             if (rsp->DimseStatus == STATUS_Success)
             {
                 // which SOP class and SOP instance ?
@@ -1649,26 +1639,23 @@ static void storeSCPCallback(void *callbackData, T_DIMSE_StoreProgress *progress
                         rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
                     }
                 }
-                }
             }
         }
     }
+}
 
 
-static OFCondition storeSCP(
-    T_ASC_Association *assoc,
-    T_DIMSE_Message *msg,
-    T_ASC_PresentationContextID presID)
-    /*
-         * This function processes a DIMSE C-STORE-RQ command that was
-         * received over the network connection.
-         *
-         * Parameters:
-         *   assoc  - [in] The association (network connection to another DICOM application).
-         *   msg    - [in] The DIMSE C-STORE-RQ message that was received.
-         *   presID - [in] The ID of the presentation context which was specified in the PDV which contained
-         *                 the DIMSE command.
-         */
+static OFCondition storeSCP(T_ASC_Association *assoc, T_DIMSE_Message *msg, T_ASC_PresentationContextID presID)
+/*
+     * This function processes a DIMSE C-STORE-RQ command that was
+     * received over the network connection.
+     *
+     * Parameters:
+     *   assoc  - [in] The association (network connection to another DICOM application).
+     *   msg    - [in] The DIMSE C-STORE-RQ message that was received.
+     *   presID - [in] The ID of the presentation context which was specified in the PDV which contained
+     *                 the DIMSE command.
+     */
 {
     OFCondition cond = EC_Normal;
     T_DIMSE_C_StoreRQ *req;
@@ -1759,7 +1746,7 @@ static OFCondition storeSCP(
                     req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
             }
         }
-        }
+    }
 
     // dump some information if required
     OFString str;
@@ -1844,7 +1831,7 @@ static OFCondition storeSCP(
 
     // return return value
     return cond;
-    }
+}
 
 
 static void executeEndOfStudyEvents()
@@ -2116,7 +2103,7 @@ static void executeCommand(const OFString &cmd)
     CloseHandle(procinfo.hProcess);
     CloseHandle(procinfo.hThread);
 #endif
-}
+    }
 
 
 static void cleanChildren(pid_t pid, OFBool synch)
@@ -2157,7 +2144,7 @@ static void cleanChildren(pid_t pid, OFBool synch)
         }
 
         if (synch) child = -1; // break out of loop
-}
+    }
 #endif
 }
 
@@ -2273,9 +2260,9 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
                 if (cond.bad()) return cond;
             }
         }
-        }
-    return EC_Normal;
     }
+    return EC_Normal;
+}
 
 
 /** accept all presentation contexts for unknown SOP classes,
