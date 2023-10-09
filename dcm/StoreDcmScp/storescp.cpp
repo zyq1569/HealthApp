@@ -1362,35 +1362,38 @@ OFBool GetStudyInfoFie(DcmDataset **imageDataSet, T_DIMSE_C_StoreRSP *rsp, Dicom
 
 void SaveDcmIni(DicomFileInfo image, OFString filename)
 {
+    static const std::string key[21] = { "[STUDY]\n", "studyuid=" ,"patientid=" ,"patientname=" , "patientsex=" , "studyid=" , "patientage=" ,"patientbirth=" ,
+        "studydatetime=" ,"modality=" ,"manufacturer=" ,"institutionname=" ,"studydescription=" ,"[SERIES]\n" ,"seriesuid=" ,"seriesdescription=" ,
+        "seriesnumber=" ,"[IMAGE]\n" ,"sopinstanceuid=" ,"instanceNumber=", "hash=" };
+    static const std::string strn = "\n";
     //write ini file 写入每次收到检查uid时，产生一个ini文件
     OFFile inifile;
     //OFString ini_filename = ini_dir + "/" + currentStudyInstanceUID + ".ini";
     OFString ini_filename = filename;// ini_dir + "/" + StringGUID() + ".ini";
     if (!OFStandard::fileExists(ini_filename))
     {
-        inifile.fopen(ini_filename, "w");       
-        std::string strtemp, strn;
-        strn = "\n";
-        strtemp  = "[STUDY]\n";
-        strtemp += std::string("studyuid=") +  image.studyUID.c_str() + strn;
-        strtemp += std::string("patientid=") + image.patientId.c_str() + strn;
-        strtemp += std::string("patientname=") + image.patientName.c_str() + strn;
-        strtemp += std::string("patientsex=") + image.patientSex.c_str() + strn;
-        strtemp += std::string("studyid=") + image.studyId.c_str() + strn;
-        strtemp += std::string("patientage=") + image.patientAge.c_str() + strn;
-        strtemp += std::string("patientbirth=") + image.patientBirthDate.c_str() + image.patientBirthTime.c_str() + strn;
-        strtemp += std::string("studydatetime=") + image.studyDate.c_str() + image.studyTime.c_str() + strn;
-        strtemp += std::string("modality=") + image.modality.c_str() + strn;
-        strtemp += std::string("manufacturer=") + image.manufacturer.c_str() + strn;
-        strtemp += std::string("institutionname=") + image.institutionName.c_str() + strn;
-        strtemp += std::string("studydescription=") + image.studyDescription.c_str() + strn;
-        strtemp += std::string("[SERIES]\n");
-        strtemp += std::string("seriesuid=") + image.seriesUID.c_str() + strn;
-        strtemp += std::string("seriesdescription=") + image.seriesDescription.c_str() + strn;
-        strtemp += std::string("seriesnumber=") + image.seriesNumber.c_str() + strn;
-        strtemp += std::string("[IMAGE]\n");
-        strtemp += std::string("sopinstanceuid=") + image.imageSOPInstanceUID.c_str() + strn;
-        strtemp += std::string("instanceNumber=") + image.instanceNumber.c_str() + strn;       
+        inifile.fopen(ini_filename, "w");
+        std::string strtemp;
+        strtemp = key[0];
+        strtemp += key[1] + image.studyUID.c_str() + strn;
+        strtemp += key[2] + image.patientId.c_str() + strn;
+        strtemp += key[3] + image.patientName.c_str() + strn;
+        strtemp += key[4] + image.patientSex.c_str() + strn;
+        strtemp += key[5] + image.studyId.c_str() + strn;
+        strtemp += key[6] + image.patientAge.c_str() + strn;
+        strtemp += key[7] + image.patientBirthDate.c_str() + image.patientBirthTime.c_str() + strn;
+        strtemp += key[8] + image.studyDate.c_str() + image.studyTime.c_str() + strn;
+        strtemp += key[9] + image.modality.c_str() + strn;
+        strtemp += key[10] + image.manufacturer.c_str() + strn;
+        strtemp += key[11] + image.institutionName.c_str() + strn;
+        strtemp += key[12] + image.studyDescription.c_str() + strn;
+        strtemp += key[13];
+        strtemp += key[14] + image.seriesUID.c_str() + strn;
+        strtemp += key[15] + image.seriesDescription.c_str() + strn;
+        strtemp += key[16] + image.seriesNumber.c_str() + strn;
+        strtemp += key[17];
+        strtemp += key[18] + image.imageSOPInstanceUID.c_str() + strn;
+        strtemp += key[19] + image.instanceNumber.c_str() + strn;
         inifile.fputs(strtemp.c_str());
         inifile.fclose();
     }
