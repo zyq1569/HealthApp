@@ -171,5 +171,5 @@ DCMTK_OFSTD_EXPORT sqlite3* OpenSqlite(OFString filename = "");
 DCMTK_OFSTD_EXPORT int CloseSqlite(sqlite3* db);
 DCMTK_OFSTD_EXPORT int CreateTableSqlite(sqlite3* db, std::string sqlstr);
 DCMTK_OFSTD_EXPORT int InsertSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param);
-DCMTK_OFSTD_EXPORT int SelectSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param, std::vector<std::map<std::string, std::string>> result );
+DCMTK_OFSTD_EXPORT int SelectSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param, std::vector<std::map<std::string, std::string>> &result );
 DCMTK_OFSTD_EXPORT int UpdateSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param);

@@ -634,7 +634,7 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                 int res, size;
                 if (g_InsertLastUID != StudyInfo.StudyInstanceUID)
                 {
-                    querysql = "select StudyOrderIdentity from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
+                    querysql = "select PatientIdentity from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
                     res      = SelectSqlite(g_pSqlite, querysql.c_str(), param, result);
                     size     = result.size();
                     if (size < 1)
@@ -668,7 +668,7 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                     }
                     else
                     {
-                        PatientIdentity = result[0].at("StudyOrderIdentity").c_str();
+                        PatientIdentity = result[0].at("PatientIdentity").c_str();
                     }
                     g_InsertLastPatientIdentity = PatientIdentity;
                 }
@@ -679,7 +679,7 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                 ///------------------ - 2020 - 11 - 19 - add-------------------------- -
                 if (g_InsertLastUID != StudyInfo.StudyInstanceUID)
                 {
-                    querysql = "select * from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
+                    querysql = "select count(*) from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
                     res      = SelectSqlite(g_pSqlite, querysql.c_str(), param, result);
                     size     = result.size();
                     if (size < 1)
@@ -731,7 +731,7 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
             name = desfilename.substr(pos+1);
             desdir = desfilename.substr(0, pos - 1);
             pos = desdir.find_last_of("/", pos);
-            desdir = desdir.substr(0, pos)+"error";
+            desdir = desdir.substr(0, pos)+"/Task/error";
             CreatDir(desdir);
             OFStandard::copyFile(filename,desdir+"/"+name);
             return OFFalse;
@@ -746,7 +746,7 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
             name = desfilename.substr(pos + 1);
             desdir = desfilename.substr(0, pos - 1);
             pos = desdir.find_last_of("/", pos);
-            desdir = desdir.substr(0, pos) + "error";
+            desdir = desdir.substr(0, pos) + "/Task/error";
             CreatDir(desdir);
             OFStandard::copyFile(filename, desdir + "/" + name);
             return OFFalse;

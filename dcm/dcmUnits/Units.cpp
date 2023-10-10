@@ -1010,12 +1010,27 @@ int InsertSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param
 
 }
 
+class SqliteDbResult
+{
+public:
+    SqliteDbResult()
+    {
+        result = NULL;
+    }
+    ~SqliteDbResult()
+    {
+
+    }
+public:
+    std::vector<std::map<std::string, std::string>> *result;
+private:
+
+};
 int onerowresult_sqlitecallback(void *para, int col, char** pValue, char** pNmae)
 {
     if (para == NULL)
         return 0;
-
-    std::vector<std::map<std::string, std::string>> *result = (std::vector<std::map<std::string, std::string>> *)&para;
+    SqliteDbResult *result = (SqliteDbResult*)para;
     std::map<std::string, std::string> keyvl;
     for (int i = 0; i < col; i++)
     {
@@ -1023,12 +1038,14 @@ int onerowresult_sqlitecallback(void *para, int col, char** pValue, char** pNmae
         std::string vl = pValue[i];
         keyvl.insert(std::make_pair(key, vl));
     }
-    result->push_back(keyvl);
+    result->result->push_back(keyvl);
     return 0;
 }
 
-int SelectSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param, std::vector<std::map<std::string, std::string>> result)
+int SelectSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param, std::vector<std::map<std::string, std::string>> &result)
 {
+    SqliteDbResult resultdb;
+    resultdb.result = &result;
     //std::string sql = "SELECT studyuid, patid, patname, studydesc, studydate, path, checked FROM studies WHERE (patid = ? AND patname = ?) ORDER BY studyuid ASC";
     sqlite3_stmt *select;
     sqlite3_prepare_v2((sqlite3*)db, sqlstr.c_str(), sqlstr.length(), &select, NULL);
@@ -1039,7 +1056,7 @@ int SelectSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param
         sqlite3_bind_text(select, i + 1, str.c_str(), str.length(), SQLITE_STATIC);
     }
     result.clear();
-    int res = sqlite3_exec_stmt(select, onerowresult_sqlitecallback, &result, NULL);
+    int res = sqlite3_exec_stmt(select, onerowresult_sqlitecallback, &resultdb, NULL);
     sqlite3_finalize(select);
     return res;
 
