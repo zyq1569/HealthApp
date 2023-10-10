@@ -395,6 +395,25 @@ void MainWindow::startScan(QString &path)
 
 }
 
+void MainWindow::on_pBselect_clicked()
+{
+    int rows =  ui->tableView->model()->rowCount();
+    for (int i=0; i<rows; i++)
+    {
+       m_pMOdel->item(i,0)->setCheckable(true);
+    }
+}
+
+void MainWindow::on_pBunselect_clicked()
+{
+    int rows =  ui->tableView->model()->rowCount();
+    for (int i=0; i<rows; i++)
+    {
+       m_pMOdel->item(i,0)->setCheckable(!(m_pMOdel->item(i,0)->checkState() == Qt::CheckState::Checked));
+    }
+}
+
+
 void MainWindow::on_pBSend_clicked()
 {
 

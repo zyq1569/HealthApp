@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1234</width>
+    <width>1268</width>
     <height>841</height>
    </rect>
   </property>
@@ -68,7 +68,7 @@
      <rect>
       <x>3</x>
       <y>190</y>
-      <width>1221</width>
+      <width>1251</width>
       <height>411</height>
      </rect>
     </property>
@@ -419,7 +419,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>3</x>
       <y>650</y>
-      <width>1211</width>
+      <width>1251</width>
       <height>161</height>
      </rect>
     </property>
@@ -441,9 +441,9 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>630</x>
-      <y>109</y>
-      <width>591</width>
-      <height>81</height>
+      <y>100</y>
+      <width>621</width>
+      <height>90</height>
      </rect>
     </property>
     <property name="title">
@@ -603,13 +603,39 @@ p, li { white-space: pre-wrap; }
      </property>
     </item>
    </widget>
+   <widget class="QPushButton" name="pBselect">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>620</y>
+      <width>76</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>select all</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pBunselect">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>620</y>
+      <width>76</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>unselect all</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1234</width>
+     <width>1268</width>
      <height>20</height>
     </rect>
    </property>

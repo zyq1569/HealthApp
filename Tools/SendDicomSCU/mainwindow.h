@@ -52,6 +52,10 @@ private slots:
 
     void on_pBOpen2KC_clicked();
 
+    void on_pBselect_clicked();
+
+    void on_pBunselect_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
