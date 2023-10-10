@@ -97,19 +97,19 @@ static OFLogger SaveDcmInfoDbLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSO
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-static OFBool opt_recurse                    = OFTrue;
-static const char *opt_scanPattern           = "";
-static HMariaDb *g_pMariaDb                  = NULL;
-static sqlite3  *g_pSqlite                   = NULL;
-static OFString g_mySql_IP                   = "127.0.0.1";
-static OFString g_mySql_username             = "root";
-static OFString g_mySql_pwd                  = "root";
-static OFString g_mySql_dbname               = "HIT";
-static OFString g_ImageDir                   = "";
-static OFString g_InsertLastUID              = "";
-static OFString g_InsertLastPatientID        = "";
-static OFString g_InsertLastPatientIdentity  = "";
-static OFBool   g_LocalSqlite                = OFFalse;
+static OFBool opt_recurse = OFTrue;
+static const char *opt_scanPattern = "";
+static HMariaDb *g_pMariaDb = NULL;
+static sqlite3  *g_pSqlite = NULL;
+static OFString g_mySql_IP = "127.0.0.1";
+static OFString g_mySql_username = "root";
+static OFString g_mySql_pwd = "root";
+static OFString g_mySql_dbname = "HIT";
+static OFString g_ImageDir = "";
+static OFString g_InsertLastUID = "";
+static OFString g_InsertLastPatientID = "";
+static OFString g_InsertLastPatientIdentity = "";
+static OFBool   g_LocalSqlite = OFFalse;
 
 
 
@@ -154,11 +154,11 @@ void travel_files(char *path, const OFString FileExt, OFList<OFString> &datas, c
                 { /* regular file */
                     OFString filename = ptr->d_name;
                     size_t len = filename.length();
-                    OFString ext = filename.substr(len-4,len);
+                    OFString ext = filename.substr(len - 4, len);
                     if (OFStandard::toUpper(ext) == UpfileExt)
                     {
                         OFString path = folderfirst->path;
-                        datas.push_back(path+"/"+filename);
+                        datas.push_back(path + "/" + filename);
                         if (datas.size() > Count)
                         {
                             //释放当前查找目录节点&新的目录节点 空间，并返回
@@ -595,33 +595,25 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                 return OFFalse;
             }
             DicomFileInfo dcminfo;
-            dcminfo.studyDate      = StudyInfo.StudyDateTime;
-            dcminfo.studyTime      = StudyInfo.StudyDateTime.substr(8, 6);
-            OFString hash          = GetStudyDateDir(dcminfo);
+            dcminfo.studyDate = StudyInfo.StudyDateTime;
+            dcminfo.studyTime = StudyInfo.StudyDateTime.substr(8, 6);
+            OFString hash = GetStudyDateDir(dcminfo);
             OFString pathname = g_ImageDir + "/" + hash + "/" + StudyInfo.StudyInstanceUID;
-            if (!OFStandard::dirExists(pathname) || dcminfo.studyDate.length() < 8 || dcminfo.studyTime.length() < 4 )
+            if (!OFStandard::dirExists(pathname) || dcminfo.studyDate.length() < 8 || dcminfo.studyTime.length() < 4)
             {
-                OFString desdir, name, desfilename = filename;
-                int pos = desfilename.find_last_of("\\");
-                name = desfilename.substr(pos + 1);
-                desdir = desfilename.substr(0, pos - 1);
-                pos = desdir.find_last_of("/", pos);
-                desdir = desdir.substr(0, pos) + "/error";
-                CreatDir(desdir);
-                OFStandard::copyFile(filename, desdir + "/" + name);
-                OFStandard::deleteFile(filename);
-                return OFFalse;
+                OFString error = "error->pathname:" + pathname + "|" + dcminfo.studyDate + "|" + dcminfo.studyTime;
+                throw error.c_str();
             }
             pathname += "/" + StudyInfo.StudyInstanceUID;
-            OFString studyinifile  = pathname + ".ini";
+            OFString studyinifile = pathname + ".ini";
             OFString studyjsonfile = pathname + ".json";
             if (!OFStandard::fileExists(studyinifile))
             {
                 if (g_pSqlite == NULL)
                 {
-                    OFString appdir   =  GetCurrentDir();
-                    appdir           += "/hitSqlite.db";
-                    g_pSqlite         = OpenSqlite(appdir.c_str());
+                    OFString appdir = GetCurrentDir();
+                    appdir += "/hitSqlite.db";
+                    g_pSqlite = OpenSqlite(appdir.c_str());
                     if (g_pSqlite == NULL)
                     {
                         OFLOG_ERROR(SaveDcmInfoDbLogger, "OpenSqlite error:" + appdir);
@@ -635,14 +627,14 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                 if (g_InsertLastUID != StudyInfo.StudyInstanceUID)
                 {
                     querysql = "select PatientIdentity from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
-                    res      = SelectSqlite(g_pSqlite, querysql.c_str(), param, result);
-                    size     = result.size();
+                    res = SelectSqlite(g_pSqlite, querysql.c_str(), param, result);
+                    size = result.size();
                     if (size < 1)
                     {
                         char uuid[64];
                         sprintf(uuid, "%llu", (CreateGUID() >> 3));
                         PatientIdentity = uuid;
-                        querysql  = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
+                        querysql = "insert into h_patient (PatientIdentity,PatientID,PatientName,PatientNameEnglish,\
                                                            PatientSex,PatientBirthday) values (";
                         querysql += PatientIdentity;
                         querysql += ",'";
@@ -679,15 +671,15 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                 ///------------------ - 2020 - 11 - 19 - add-------------------------- -
                 if (g_InsertLastUID != StudyInfo.StudyInstanceUID)
                 {
-                    querysql = "select count(*) from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
-                    res      = SelectSqlite(g_pSqlite, querysql.c_str(), param, result);
-                    size     = result.size();
+                    querysql = "select StudyOrderIdentity from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
+                    res = SelectSqlite(g_pSqlite, querysql.c_str(), param, result);
+                    size = result.size();
                     if (size < 1)
                     {
                         char uuid[64];
                         sprintf(uuid, "%llu", (CreateGUID() >> 3));
                         OFString StudyIdentity = uuid;
-                        strsql  = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,";
+                        strsql = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,";
                         strsql += "StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) values (";
                         strsql += StudyIdentity;
                         strsql += ",'";
@@ -723,30 +715,38 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                 OFStandard::deleteFile(filename);
             }
         }
-        catch (char *c)
+        catch (const char *c)
         {
-            OFLOG_ERROR(SaveDcmInfoDbLogger,c);
-            OFString desdir,name, desfilename = filename;
-            int pos = desfilename.find_last_of("/");
-            name = desfilename.substr(pos+1);
-            desdir = desfilename.substr(0, pos - 1);
-            pos = desdir.find_last_of("/", pos);
-            desdir = desdir.substr(0, pos)+"/Task/error";
+            char *s;
+#ifndef _WIN32
+            s = "/";
+#else
+            s = "\\";
+#endif
+            OFLOG_ERROR(SaveDcmInfoDbLogger, c);
+            OFString desdir, name, desfilename = filename;
+            int pos = desfilename.find_last_of(s);
+            name = desfilename.substr(pos +1);
+            desdir = desfilename.substr(0, pos-1)+ "error";
             CreatDir(desdir);
-            OFStandard::copyFile(filename,desdir+"/"+name);
+            OFStandard::copyFile(filename, desdir + "/" + name);
             return OFFalse;
         }
         catch (...)
         {
+            char *s;
+#ifndef _WIN32
+            s = "/";
+#else
+            s = "\\";
+#endif
             OFLOG_ERROR(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
             OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql querysql:" + querysql);
             OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql strsql:" + strsql);
             OFString desdir, name, desfilename = filename;
-            int pos = desfilename.find_last_of("/");
+            int pos = desfilename.find_last_of(s);
             name = desfilename.substr(pos + 1);
-            desdir = desfilename.substr(0, pos - 1);
-            pos = desdir.find_last_of("/", pos);
-            desdir = desdir.substr(0, pos) + "/Task/error";
+            desdir = desfilename.substr(0, pos - 1) + "error";
             CreatDir(desdir);
             OFStandard::copyFile(filename, desdir + "/" + name);
             return OFFalse;
@@ -893,10 +893,17 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 return OFFalse;
             }
             DicomFileInfo dcminfo;
-            dcminfo.studyDate      = StudyInfo.StudyDateTime;
-            dcminfo.studyTime      = StudyInfo.StudyDateTime.substr(8,6);
-            OFString pathname      = g_ImageDir + "/" + GetStudyDateDir(dcminfo) + "/" + StudyInfo.StudyInstanceUID + "/" + StudyInfo.StudyInstanceUID;
-            OFString studyinifile  = pathname + ".ini";
+            dcminfo.studyDate = StudyInfo.StudyDateTime;
+            dcminfo.studyTime = StudyInfo.StudyDateTime.substr(8, 6);
+            OFString hash = GetStudyDateDir(dcminfo);
+            OFString pathname = g_ImageDir + "/" + hash + "/" + StudyInfo.StudyInstanceUID;
+            if (!OFStandard::dirExists(pathname) || dcminfo.studyDate.length() < 8 || dcminfo.studyTime.length() < 4)
+            {
+                OFString error = "error->pathname:" + pathname + "|" + dcminfo.studyDate + "|" + dcminfo.studyTime;
+                throw error.c_str();
+            }
+            pathname += "/" + StudyInfo.StudyInstanceUID;
+            OFString studyinifile = pathname + ".ini";
             OFString studyjsonfile = pathname + ".json";
             if (!OFStandard::fileExists(studyinifile))
             {
@@ -915,7 +922,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 ResultSet *rs = NULL;
                 if (g_InsertLastUID != StudyInfo.StudyInstanceUID)
                 {
-                    querysql = "select * from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
+                    querysql = "select PatientIdentity from h_patient where PatientID = '" + StudyInfo.StudyPatientId + "'";
                     g_pMariaDb->query(querysql.c_str());
                     rs = g_pMariaDb->QueryResult();
                     if (rs == NULL)
@@ -945,7 +952,7 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                         querysql += "','";
                         querysql += StudyInfo.PatientBirth;
                         querysql += "');";
-                        g_pMariaDb->execute(querysql.c_str());                        
+                        g_pMariaDb->execute(querysql.c_str());
                     }
                     else
                     {
@@ -961,16 +968,16 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 {
                     PatientIdentity = g_InsertLastPatientIdentity;
                 }
-                ///------------------ - 2020 - 11 - 19 - add-------------------------- -
+
                 if (g_InsertLastUID != StudyInfo.StudyInstanceUID)
                 {
-                    querysql = "select * from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
+                    querysql = "select StudyOrderIdentity from H_order where StudyUID = '" + StudyInfo.StudyInstanceUID + "'";
                     g_pMariaDb->query(querysql.c_str());
                     rs = g_pMariaDb->QueryResult();
                     if (rs == NULL)
                     {
                         char uuid[64];
-                        sprintf(uuid, "%llu", (CreateGUID()>>1));
+                        sprintf(uuid, "%llu", (CreateGUID() >> 1));
                         OFString StudyIdentity = uuid;
                         strsql = "insert into H_order (StudyOrderIdentity,StudyID,StudyUID,PatientIdentity,StudyDateTime,";
                         strsql += "StudyModality,InstitutionName,StudyManufacturer,StudyState,StudyDescription) values (";
@@ -996,11 +1003,10 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                         strsql += "','3','";///检查状态：-1.标记删除 1.预约 2.等待检查 3.已检查 4.诊断 5.报告审核
                         strsql += StudyInfo.studydescription;
                         strsql += "');";
-                        g_pMariaDb->execute(strsql.c_str());                      
+                        g_pMariaDb->execute(strsql.c_str());
                     }
                     g_InsertLastUID = StudyInfo.StudyInstanceUID;
                 }
-                ///-------------------2020-11-19-add--------------------------- 
 
             }
             //if (SaveDcmInfoFile(StudyInfo, studyinifile) && CjsonSaveFile(StudyInfo, studyjsonfile))
@@ -1009,12 +1015,40 @@ OFBool SaveDcmInfo2Db(OFString filename, DcmConfigFile *configfile)
                 OFStandard::deleteFile(filename);
             }
         }
+        catch (const char *c)
+        {
+            char *s;
+#ifndef _WIN32
+            s = "/";
+#else
+            s = "\\";
+#endif
+            OFLOG_ERROR(SaveDcmInfoDbLogger, c);
+            OFString desdir, name, desfilename = filename;
+            int pos = desfilename.find_last_of(s);
+            name = desfilename.substr(pos + 1);
+            desdir = desfilename.substr(0, pos - 1) + "error";
+            CreatDir(desdir);
+            OFStandard::copyFile(filename, desdir + "/" + name);
+            return OFFalse;
+        }
         catch (...)
         {
-            //OFLOG_ERR(storescuLogger, "---------argv[]:" + tempstr + " ----------------------");
             OFLOG_ERROR(SaveDcmInfoDbLogger, "SaveDcmInfo2Db filename:" + filename);
             OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql querysql:" + querysql);
             OFLOG_ERROR(SaveDcmInfoDbLogger, "DB sql strsql:" + strsql);
+            char *s;
+#ifndef _WIN32
+            s = "/";
+#else
+            s = "\\";
+#endif
+            OFString desdir, name, desfilename = filename;
+            int pos = desfilename.find_last_of(s);
+            name = desfilename.substr(pos + 1);
+            desdir = desfilename.substr(0, pos - 1) + "error";
+            CreatDir(desdir);
+            OFStandard::copyFile(filename, desdir + "/" + name);
             return OFFalse;
         }
     }
@@ -1027,7 +1061,7 @@ int main(int argc, char *argv[])
     OFString Task_Dir, Log_Dir, Error_Dir;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM file Info 2 DB", rcsid);
-    OFString tempstr, path  = argv[0];
+    OFString tempstr, path = argv[0];
     OFString currentAppPath = OFStandard::getDirNameFromPath(tempstr, path);
     Log_Dir = currentAppPath + "/log";
     int pos = 0;
@@ -1047,16 +1081,16 @@ int main(int argc, char *argv[])
 
         if (OFStandard::dirExists(dir))
         {
-            Task_Dir   = dir + "/Task/1";
-            Error_Dir  = dir + "/Task/error";
+            Task_Dir = dir + "/Task/1";
+            Error_Dir = dir + "/Task/error";
             g_ImageDir = dir + "/Images";
         }
         if (argc > 5)
         {
-            g_mySql_IP        = argv[2];
-            g_mySql_dbname    = argv[3];
-            g_mySql_username  = argv[4];
-            g_mySql_pwd       = argv[5];
+            g_mySql_IP = argv[2];
+            g_mySql_dbname = argv[3];
+            g_mySql_username = argv[4];
+            g_mySql_pwd = argv[5];
             SetSqlDbInfo(g_mySql_IP, g_mySql_dbname, g_mySql_username, g_mySql_pwd);
             SetAppDir(argv[0]);
         }
@@ -1065,23 +1099,23 @@ int main(int argc, char *argv[])
     {
         if (dcmconfig.init((currentAppPath + "/config/DcmServerConfig.cfg").c_str()))
         {
-            OFString dir     = dcmconfig.getStoreDir()->front();
-            Task_Dir         = dir + "/Task/1";
-            Error_Dir        = dir + "/Task/error";
-            g_ImageDir       = dir + "/Images";
+            OFString dir = dcmconfig.getStoreDir()->front();
+            Task_Dir = dir + "/Task/1";
+            Error_Dir = dir + "/Task/error";
+            g_ImageDir = dir + "/Images";
 
             //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");            
-            g_mySql_IP       = dcmconfig.getSqlServer();
+            g_mySql_IP = dcmconfig.getSqlServer();
             g_mySql_username = dcmconfig.getSqlusername();
-            g_mySql_pwd      = dcmconfig.getSqlpwd();
-            g_mySql_dbname   = dcmconfig.getSqldbname();
+            g_mySql_pwd = dcmconfig.getSqlpwd();
+            g_mySql_dbname = dcmconfig.getSqldbname();
         }
         else
         {
-            Task_Dir   = currentAppPath + "/DCM_SAVE/Task/1";
-            Error_Dir  = currentAppPath + "/DCM_SAVE/Task/error";
+            Task_Dir = currentAppPath + "/DCM_SAVE/Task/1";
+            Error_Dir = currentAppPath + "/DCM_SAVE/Task/error";
             g_ImageDir = currentAppPath + "/DCM_SAVE/Images";
-            Log_Dir    = currentAppPath + "/log";
+            Log_Dir = currentAppPath + "/log";
         }
     }
 
@@ -1118,7 +1152,7 @@ int main(int argc, char *argv[])
     }
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------argv[]:" + tempstr + " ----------------------");
     OFLOG_INFO(SaveDcmInfoDbLogger, "---------currentAppPath:" + currentAppPath + " ----------------------");
-    
+
     if (g_mySql_IP == "0.0.0.0")
     {
         OFLOG_INFO(SaveDcmInfoDbLogger, "---------local sqlite DB ----------------------");
@@ -1135,17 +1169,17 @@ int main(int argc, char *argv[])
     {
         list_file_ini.clear();
 #ifndef _WIN32
-        travel_files((char*)Task_Dir.c_str(),"ini",list_file_ini);
+        travel_files((char*)Task_Dir.c_str(), "ini", list_file_ini);
 #else
         SearchDirFile(Task_Dir, "ini", list_file_ini);
 #endif
         //Sleep(1);
         if (list_file_ini.size() > 0)
         {
-            OFListIterator(OFString) iter    = list_file_ini.begin();
+            OFListIterator(OFString) iter = list_file_ini.begin();
             OFListIterator(OFString) enditer = list_file_ini.end();
             while (iter != enditer)
-            {    
+            {
                 if (!g_LocalSqlite)
                 {
                     if (!SaveDcmInfo2Db(*iter, &dcmconfig))
