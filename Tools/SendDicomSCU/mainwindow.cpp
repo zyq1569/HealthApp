@@ -400,7 +400,7 @@ void MainWindow::on_pBselect_clicked()
     int rows =  ui->tableView->model()->rowCount();
     for (int i=0; i<rows; i++)
     {
-       m_pMOdel->item(i,0)->setCheckable(true);
+        m_pMOdel->item(i,0)->setCheckState(Qt::CheckState::Checked);
     }
 }
 
@@ -409,7 +409,14 @@ void MainWindow::on_pBunselect_clicked()
     int rows =  ui->tableView->model()->rowCount();
     for (int i=0; i<rows; i++)
     {
-       m_pMOdel->item(i,0)->setCheckable(!(m_pMOdel->item(i,0)->checkState() == Qt::CheckState::Checked));
+        if (m_pMOdel->item(i,0)->checkState() == Qt::CheckState::Unchecked)
+        {
+            m_pMOdel->item(i,0)->setCheckState(Qt::CheckState::Checked);
+        }
+        else
+        {
+            m_pMOdel->item(i,0)->setCheckState(Qt::CheckState::Unchecked);
+        }
     }
 }
 
