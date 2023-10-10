@@ -1044,6 +1044,7 @@ int onerowresult_sqlitecallback(void *para, int col, char** pValue, char** pNmae
 
 int SelectSqlite(sqlite3* db, std::string sqlstr, std::vector<std::string> param, std::vector<std::map<std::string, std::string>> &result)
 {
+    result.clear();
     SqliteDbResult resultdb;
     resultdb.result = &result;
     //std::string sql = "SELECT studyuid, patid, patname, studydesc, studydate, path, checked FROM studies WHERE (patid = ? AND patname = ?) ORDER BY studyuid ASC";
