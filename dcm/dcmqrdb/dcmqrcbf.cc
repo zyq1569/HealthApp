@@ -800,6 +800,150 @@ OFString ToSearchName(OFString OrName)
     return str;
 }
 
+OFCondition DcmQueryRetrieveFindContext::querySqlite(DcmDataset *findRequestIdentifiers, DB_LEVEL queryLevel, 
+    DcmQueryRetrieveDatabaseStatus  *status, DB_ElementList *findRequestList, DB_ElementList *findResponseList)
+{
+    static sqlite3 *g_pSqlite = NULL;
+    if (g_pSqlite == NULL)
+    {
+        OFString appdir = GetCurrentDir();
+        appdir += "/hitSqlite.db";
+        g_pSqlite = OpenSqlite(appdir.c_str());
+        if (g_pSqlite == NULL)
+        {
+            DCMQRDB_INFO("OpenSqlite error:" << appdir);
+            return EC_Normal;
+        }
+    }
+    if (g_pSqlite != NULL)
+    {
+        //1.读取Q/R SCU 端查询条件信息
+        OFString PatientName;
+        if (findRequestIdentifiers->findAndGetOFString(DCM_PatientName, PatientName).bad())
+        {
+            PatientName.clear();//*ceshi*
+        }
+        else
+        {
+            PatientName = ToSearchName(PatientName);
+        }
+        OFString DateTime, StudyDateStart, StudyDateEnd, Modality;
+        if (findRequestIdentifiers->findAndGetOFString(DCM_StudyDate, DateTime).bad())
+        {
+            DateTime.clear();
+        }
+        else
+        {
+            DateTime = ToSearchDateTimeFormate(DateTime, StudyDateStart, StudyDateEnd);
+        }
+        if (findRequestIdentifiers->findAndGetOFString(DCM_ModalitiesInStudy, Modality).bad())
+        {
+            Modality.clear();
+        }
+        if (findRequestIdentifiers->findAndGetOFStringArray(DCM_SpecificCharacterSet, findRequestCharacterSet).bad())
+        {
+            findRequestCharacterSet.clear();
+        }
+        //int count;//数据库查询的记录条数
+        OFString sql  = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,";
+        sql          += "o.StudyID, o.StudyUID, o.StudyDateTime,o.InstitutionName,";
+        sql          += "o.StudyModality, o.AETitle , o.StudyDescription from h_patient p, h_order o where o.StudyType = 0 and StudyState > 2 ";
+        sql          += "and p.PatientIdentity = o.PatientIdentity";
+        if (!Modality.empty())
+        {
+            sql = sql + " and o.StudyModality = '" + Modality + "'";
+        }
+        if (StudyDateStart.length() > 3)
+        {
+            sql = sql + " and o.StudyDateTime >= " + StudyDateStart;
+        }
+        if (StudyDateEnd.length() > 3)
+        {
+            sql = sql + " and o.StudyDateTime <= " + StudyDateEnd;
+        }
+        if (PatientName.length() > 1)
+        {
+            sql = sql + " and p.PatientName = '" + PatientName + "'";
+        }
+        sql = sql + ";";
+        std::vector<std::string> param;
+        std::vector<std::map<std::string, std::string>> result;
+        OFString PatientIdentity;
+        int res, size;
+        res = SelectSqlite(g_pSqlite, sql.c_str(), param, result);
+        size = result.size();
+        if ( size > 1)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                IdxRecord dbRecod;
+                InitRecord(&dbRecod);
+
+                std::string StudyModality; //
+                //DcmDataset dataset;
+                if (!result[i].at("StudyModality").empty())
+                {
+                    strcpy(dbRecod.Modality, result[i].at("StudyModality").c_str());
+                }
+                if (!result[i].at("StudyUID").empty())
+                {
+                    strcpy(dbRecod.StudyInstanceUID, result[i].at("StudyUID").c_str());
+                }
+                if (!result[i].at("PatientName").empty())
+                {
+                    strcpy(dbRecod.PatientName, result[i].at("PatientName").c_str());
+                }
+                if (!result[i].at("PatientID").empty())
+                {
+                    strcpy(dbRecod.PatientID, result[i].at("PatientID").c_str());
+                }
+                if (!result[i].at("StudyID").empty())
+                {
+                    strcpy(dbRecod.StudyID, result[i].at("StudyID").c_str());
+                }
+                if (!result[i].at("PatientBirthday").empty())
+                {
+                    strcpy(dbRecod.PatientBirthDate, result[i].at("PatientBirthday").c_str());
+                }
+                //PatientSex
+                if (!result[i].at("InstitutionName").empty())
+                {
+                    strcpy(dbRecod.InstitutionName, result[i].at("InstitutionName").c_str());
+                }//
+                if (!result[i].at("StudyDescription").empty())
+                {
+                    strcpy(dbRecod.StudyDescription, result[i].at("StudyDescription").c_str());
+                }
+                OFString date, time;
+                if (!result[i].at("StudyDateTime").empty())
+                {
+                    OFString datetime(result[i].at("StudyDateTime").c_str());
+                    datetime = ToDateTimeFormate(datetime, date, time);
+                    strcpy(dbRecod.StudyDate, date.c_str());
+                    strcpy(dbRecod.StudyTime, time.c_str());
+                }
+                FinishRecord(&dbRecod);
+                findResponseList = NULL;
+                makeResponseList(findResponseList, findRequestList, &dbRecod);
+                DcmDataset      findResponseIdentifiers;
+                nextFindResponse(findResponseList, &findResponseIdentifiers, queryLevel, status, characterSetOptions);
+                DB_FreeElementList(findResponseList);
+                findResponseList = NULL;
+                m_matchingDatasets.push_back(findResponseIdentifiers);
+                //cach querydata map_.insert( OFPair<const OFString, DcmProfileEntry*>( (*first).first, copy ) );
+                //OFPair< OFString, OFString> it(StudyInstanceUID.c_str(), StudyDateTime.c_str());
+                m_config->addStudyQueryList(result[i].at("StudyUID").c_str(), (date + time));
+            }
+        
+            DB_FreeElementList(findRequestList);
+            findRequestList = NULL;
+            status->setStatus(STATUS_Pending);
+            return (EC_Normal);
+        }
+    }
+
+}
+
 OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     const char   *SOPClassUID, DcmDataset      *findRequestIdentifiers,
     DcmQueryRetrieveDatabaseStatus  *status, MySqlInfo *mysql)
@@ -1016,19 +1160,33 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
         //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
         int sqltype;
         GetSqlDbInfo(strIP, strDadaName, strUser, strPwd, sqltype);
+        static bool useSqlite = false;
+        static bool sqliteini = false;
+        if (!sqliteini)
+        {
+            sqliteini = true;
+            if (strIP == "0.0.0.0")
+            {
+                useSqlite = true;
+            }
+        }
+        if (useSqlite)
+        {         
+            return querySqlite(findRequestIdentifiers, queryLevel, status, findRequestList, findResponseList);
+        }
         //if (mysql != NULL)
         if (strIP.length() >1 && strDadaName.length() > 1 && strUser.length() > 1 && strPwd.length() > 1)
         {
-            strIP = mysql->IpAddress;
-            strUser = mysql->SqlUserName;
-            strPwd = mysql->SqlPWD;
+            strIP       = mysql->IpAddress;
+            strUser     = mysql->SqlUserName;
+            strPwd      = mysql->SqlPWD;
             strDadaName = mysql->SqlName;
         }
         else
         {
-            strIP = m_config->getSqlServer();
-            strUser = m_config->getSqlusername();
-            strPwd = m_config->getSqlpass();
+            strIP       = m_config->getSqlServer();
+            strUser     = m_config->getSqlusername();
+            strPwd      = m_config->getSqlpass();
             strDadaName = m_config->getSqldbname();
         }
 #ifdef _UNICODE
@@ -1042,9 +1200,9 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
     }
     //int count;//数据库查询的记录条数
     OFString sql = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,";
-    sql += "o.StudyID, o.StudyUID, o.StudyDateTime,o.InstitutionName,";
-    sql += "o.StudyModality, o.AETitle from h_patient p, h_order o where o.StudyType = 0 and StudyState > 2 ";
-    sql += "and p.PatientIdentity = o.PatientIdentity";
+    sql         += "o.StudyID, o.StudyUID, o.StudyDateTime,o.InstitutionName,";
+    sql         += "o.StudyModality, o.AETitle, o.StudyDescription from h_patient p, h_order o where o.StudyType = 0 and StudyState > 2 ";
+    sql         += "and p.PatientIdentity = o.PatientIdentity";
     if (!Modality.empty())
     {
         sql = sql + " and o.StudyModality = '" + Modality + "'";
@@ -1147,6 +1305,7 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
 #ifdef DEBUG
         DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_Pending");
 #endif
+
         DB_FreeElementList(findRequestList);
         findRequestList = NULL;
         status->setStatus(STATUS_Pending);

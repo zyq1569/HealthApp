@@ -1368,11 +1368,9 @@ void SaveDcmIni(DicomFileInfo image, OFString filename)
     static const std::string strn = "\n";
     //write ini file 写入每次收到检查uid时，产生一个ini文件
     OFFile inifile;
-    //OFString ini_filename = ini_dir + "/" + currentStudyInstanceUID + ".ini";
-    OFString ini_filename = filename;// ini_dir + "/" + StringGUID() + ".ini";
-    if (!OFStandard::fileExists(ini_filename))
+    if (!OFStandard::fileExists(filename))
     {
-        inifile.fopen(ini_filename, "w");
+        inifile.fopen(filename, "w");
         std::string strtemp;
         strtemp = key[0];
         strtemp += key[1] + image.studyUID.c_str() + strn;

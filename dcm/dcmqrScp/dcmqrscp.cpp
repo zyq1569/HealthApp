@@ -110,11 +110,17 @@ OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define APPLICATIONTITLE "DCMQRSCP"
 
-const char *opt_configFileName = DEFAULT_CONFIGURATION_DIR "DcmServerConfig.cfg";
+const char *opt_configFileName      = DEFAULT_CONFIGURATION_DIR "DcmServerConfig.cfg";
 OFBool      opt_checkFindIdentifier = OFFalse;
 OFBool      opt_checkMoveIdentifier = OFFalse;
-OFCmdUnsignedInt opt_port = 0;
-OFCmdUnsignedInt g_query_port = 1668;
+OFCmdUnsignedInt opt_port           = 0;
+OFCmdUnsignedInt g_query_port       = 1668;
+static OFString g_mySql_IP          = "127.0.0.1";
+static OFString g_mySql_username    = "root";
+static OFString g_mySql_pwd         = "root";
+static OFString g_mySql_dbname      = "HIT";
+static OFBool   g_LocalSqlite       = OFFalse;
+
 
 #define SHORTCOL 4
 #define LONGCOL 22
@@ -368,10 +374,14 @@ int RunQRSCP(int argc, char *argv[])
         clientAE     = argv[3];
         clientPort   = atoi(argv[4]);
     }
-
+    if (g_mySql_IP == "0.0.0.0")
+    {
+        OFLOG_INFO(dcmqrscpLogger, "---------local sqlite DB ----------------------");
+        g_LocalSqlite = OFTrue;
+    }
     if (opt_port == 0)
     {
-        opt_port = g_query_port; /* not set, use default */
+        opt_port     = g_query_port; /* not set, use default */
         OFString msg = "----default QR NetworkTCPPort:" + longToString(opt_port);
         OFLOG_INFO(dcmqrscpLogger, msg);
     }
@@ -528,20 +538,19 @@ unsigned __stdcall QueryThread(void *argv)
         scp.SetDcmDirSize(1);
         scp.SetDcmDir(0, g_imagedir);
         QueryClientInfo qc;
-        qc.AEtitle = g_argv[3];
-        qc.port = atoi(g_argv[4]);
+        qc.AEtitle   = g_argv[3];
+        qc.port      = atoi(g_argv[4]);
         qc.IpAddress = g_argv[5];
         scp.SetQueryClientSize(1);
         scp.SetQueryClient(&qc, 0);
         if (g_argc > 9)
         {
             MySqlInfo sql;
-            sql.IpAddress = g_argv[6];
-            sql.SqlName = g_argv[7];
+            sql.IpAddress   = g_argv[6];
+            sql.SqlName     = g_argv[7];
             sql.SqlUserName = g_argv[8];
-            sql.SqlPWD = g_argv[9];
+            sql.SqlPWD      = g_argv[9];
             scp.SetMysql(&sql);
-
             SetSqlDbInfo(sql.IpAddress, sql.SqlName, sql.SqlUserName, sql.SqlPWD);
         }
         if (g_argc > 11)
@@ -552,9 +561,9 @@ unsigned __stdcall QueryThread(void *argv)
             for (int i = 0; i < size; i++)
             {
                 QueryClientInfo qc;
-                int delt = i * 3;
-                qc.AEtitle = g_argv[12 + delt];
-                qc.port = atoi(g_argv[13 + delt]);
+                int delt     = i * 3;
+                qc.AEtitle   = g_argv[12 + delt];
+                qc.port      = atoi(g_argv[13 + delt]);
                 qc.IpAddress = g_argv[14 + delt];
                 scp.SetQueryClient(&qc, i+1);
             }

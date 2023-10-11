@@ -94,6 +94,10 @@ public:
     //set config;
     void SetDcmQueryRetrieveConfig(const DcmQueryRetrieveConfig* config);
 
+    // find all by sqlite
+    OFCondition querySqlite(DcmDataset *findRequestIdentifiers, DB_LEVEL queryLevel, DcmQueryRetrieveDatabaseStatus  *status,
+        DB_ElementList *findRequestList, DB_ElementList *findResponseList);
+
 private:
 
     /// reference to database handle

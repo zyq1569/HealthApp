@@ -864,21 +864,21 @@ struct  SqlDbdataInfo
 static SqlDbdataInfo g_SqlDbdataInfo;
 void SetSqlDbInfo(OFString  IpAddress, OFString SqlName, OFString SqlUserName, OFString SqlPWD, int Sqltype)
 {
-    g_SqlDbdataInfo.IpAddress = IpAddress;
-    g_SqlDbdataInfo.SqlName = SqlName;
+    g_SqlDbdataInfo.IpAddress   = IpAddress;
+    g_SqlDbdataInfo.SqlName     = SqlName;
     g_SqlDbdataInfo.SqlUserName = SqlUserName;
-    g_SqlDbdataInfo.SqlPWD = SqlPWD;
-    g_SqlDbdataInfo.Sqltype = Sqltype;
+    g_SqlDbdataInfo.SqlPWD      = SqlPWD;
+    g_SqlDbdataInfo.Sqltype     = Sqltype;
 
 }
 
 void GetSqlDbInfo(OFString  &IpAddress, OFString  &SqlName, OFString  &SqlUserName, OFString  &SqlPWD, int &Sqltype)
 {
-    IpAddress = g_SqlDbdataInfo.IpAddress;
-    SqlName = g_SqlDbdataInfo.SqlName;
+    IpAddress   = g_SqlDbdataInfo.IpAddress;
+    SqlName     = g_SqlDbdataInfo.SqlName;
     SqlUserName = g_SqlDbdataInfo.SqlUserName;
-    SqlPWD = g_SqlDbdataInfo.SqlPWD;
-    Sqltype = g_SqlDbdataInfo.Sqltype;
+    SqlPWD      = g_SqlDbdataInfo.SqlPWD;
+    Sqltype     = g_SqlDbdataInfo.Sqltype;
 
 }
 static std::string g_appDir;

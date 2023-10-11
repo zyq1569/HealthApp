@@ -1070,12 +1070,6 @@ OFString DcmQueryRetrieveMoveContext::GetStudyDataByDataBase(OFString studyuid)
     {
         //OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
         OFString strIP, strUser, strPwd, strDadaName;
-        /*
-        strIP = m_config->getSqlServer();
-        strUser = m_config->getSqlusername();
-        strPwd = m_config->getSqlpass();
-        strDadaName = m_config->getSqldbname();
-        */
         int sqltype = 0;
         GetSqlDbInfo(strIP, strDadaName, strUser, strPwd, sqltype);
 #ifdef _UNICODE
