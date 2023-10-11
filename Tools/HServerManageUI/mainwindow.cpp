@@ -737,13 +737,12 @@ void HMainWindow::on_cBSqlite_clicked()
         }
         else
         {
-            ui->cBSqlite->setChecked(!flag);
+            ui->cBSqlite->setChecked(flag);
+            flag = !flag;
             return;
         }
     }
-
-
-    if (flag/*ui->cBSqlite->isChecked()*/)
+    if (flag)
     {
         ui->groupBox_3->setDisabled(false);
         ui->mysqlServerValue->setDisabled(false);
