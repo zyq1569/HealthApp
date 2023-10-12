@@ -892,6 +892,23 @@ std::string GetAppDir()
     return g_appDir;
 }
 
+///dcm query db cache
+static std::map<std::string, std::string> g_StudyQueryList;
+void AddDcmQrCache(std::string key, std::string vl)
+{
+    g_StudyQueryList.insert(std::make_pair(key,vl));
+}
+std::string GetDcmQrCache(std::string key)
+{
+    std::string vl;
+    std::map<std::string, std::string>::iterator it = g_StudyQueryList.find(key);
+    if (it != g_StudyQueryList.end())
+    {
+        vl = (*it).second;
+    }
+    return vl;
+}
+
 ///------------------Sqlite----------------database-----------------------------------------------------------------------------
 int onerowresult_sqlitecallback(void *para, int col, char** pValue, char** pNmae);
 

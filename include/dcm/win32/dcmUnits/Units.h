@@ -162,6 +162,12 @@ DCMTK_OFSTD_EXPORT OFString UIDBase64(long long input, OFString &out);
 DCMTK_OFSTD_EXPORT void SetSqlDbInfo(OFString  IpAddress,  OFString SqlName,   OFString SqlUserName,   OFString SqlPWD,   int sqltype = 0);
 DCMTK_OFSTD_EXPORT void GetSqlDbInfo(OFString  &IpAddress, OFString  &SqlName, OFString  &SqlUserName, OFString  &SqlPWD, int &Sqltype);
 
+///---------------------------dcm query db cache------------------------
+DCMTK_OFSTD_EXPORT void  AddDcmQrCache(std::string key, std::string vl);
+DCMTK_OFSTD_EXPORT std::string GetDcmQrCache(std::string key);
+///----------------------------------------------------------------------
+
+
 DCMTK_OFSTD_EXPORT void SetAppDir(std::string dir);
 DCMTK_OFSTD_EXPORT std::string GetAppDir();
 

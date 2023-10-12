@@ -546,8 +546,6 @@ private:
 public:
     OFList<OFString> m_storedir;
     OFString m_sqlserver, m_sqldbname, m_sqlusername, m_sqlpass;//add 20190727
-    static OFString getStudyQueryList(OFString key);
-    static void addStudyQueryList(OFString key, OFString v);
     //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 };
 

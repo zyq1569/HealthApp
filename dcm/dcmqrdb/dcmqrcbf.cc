@@ -815,6 +815,7 @@ OFCondition DcmQueryRetrieveFindContext::querySqlite(DcmDataset *findRequestIden
             return EC_Normal;
         }
     }
+    ////-------------------------
     if (g_pSqlite != NULL)
     {
         //1.读取Q/R SCU 端查询条件信息
@@ -878,7 +879,6 @@ OFCondition DcmQueryRetrieveFindContext::querySqlite(DcmDataset *findRequestIden
             {
                 IdxRecord dbRecod;
                 InitRecord(&dbRecod);
-
                 std::string StudyModality; //
                 //DcmDataset dataset;
                 if (!result[i].at("StudyModality").empty())
@@ -931,8 +931,7 @@ OFCondition DcmQueryRetrieveFindContext::querySqlite(DcmDataset *findRequestIden
                 findResponseList = NULL;
                 m_matchingDatasets.push_back(findResponseIdentifiers);
                 //cach querydata map_.insert( OFPair<const OFString, DcmProfileEntry*>( (*first).first, copy ) );
-                //OFPair< OFString, OFString> it(StudyInstanceUID.c_str(), StudyDateTime.c_str());
-                m_config->addStudyQueryList(result[i].at("StudyUID").c_str(), (date + time));
+                AddDcmQrCache(result[i].at("StudyUID"), (date + time).c_str());
             }
         
             DB_FreeElementList(findRequestList);
@@ -1298,9 +1297,9 @@ OFCondition DcmQueryRetrieveFindContext::startFindRequestFromSql(
             findResponseList = NULL;
             m_matchingDatasets.push_back(findResponseIdentifiers);
             row_index++;
-            //cach querydata map_.insert( OFPair<const OFString, DcmProfileEntry*>( (*first).first, copy ) );
-            //OFPair< OFString, OFString> it(StudyInstanceUID.c_str(), StudyDateTime.c_str());
-            m_config->addStudyQueryList(StudyInstanceUID.c_str(), (date + time));
+            //cach querydata 
+            AddDcmQrCache(StudyInstanceUID, (date + time).c_str());
+
         }
 #ifdef DEBUG
         DCMQRDB_DEBUG("DB_startFindRequest () : STATUS_Pending");

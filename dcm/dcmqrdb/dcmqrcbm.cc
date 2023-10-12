@@ -129,7 +129,7 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
     }
     if (blookupCache)
     {
-        OFString datatime = m_config->getStudyQueryList(dcminfo.studyUID);//"20120609151843";//
+        OFString datatime = GetDcmQrCache(dcminfo.studyUID.c_str()).c_str();//"20120609151843";//
         if (datatime.length() > 1)
         {
             //2009 1103 172721
@@ -177,7 +177,6 @@ OFCondition DcmQueryRetrieveMoveContext::startMoveRequest(
 
     if (find && !find_dir.empty())
     {
-        //OFString fileini = find_dir + "/" + /*StudyInstanceUID*/dcminfo.studyUID + ".ini";//ReadStudyInfoJsonFile
         OFString filejson = find_dir + "/" + dcminfo.studyUID + ".json";
         m_matchingFiles.clear();
         if (OFStandard::fileExists(filejson))
@@ -1072,6 +1071,55 @@ OFString DcmQueryRetrieveMoveContext::GetStudyDataByDataBase(OFString studyuid)
         OFString strIP, strUser, strPwd, strDadaName;
         int sqltype = 0;
         GetSqlDbInfo(strIP, strDadaName, strUser, strPwd, sqltype);
+        //use sqlite db
+        {
+            static bool useSqlite = false;
+            static bool sqliteini = false;
+            if (!sqliteini)
+            {
+                sqliteini = true;
+                if (strIP == "0.0.0.0")
+                {
+                    useSqlite = true;
+                }
+            }
+            if (useSqlite)
+            {
+                static sqlite3 *g_pSqlite = NULL;
+                if (g_pSqlite == NULL)
+                {
+                    OFString appdir = GetCurrentDir() + "/hitSqlite.db";
+                    g_pSqlite       = OpenSqlite(appdir.c_str());
+                    if (g_pSqlite == NULL)
+                    {
+                        DCMQRDB_INFO("OpenSqlite error:" << appdir);
+                        return "";
+                    }
+                }
+                ////------------------
+                if (g_pSqlite != NULL)
+                {
+                    OFString sql = "select StudyDateTime  from  h_order where StudyType = 0 and StudyState > 2  and StudyUID = '";
+                    sql         += studyuid + "' ;";
+                    std::vector<std::string> param;
+                    std::vector<std::map<std::string, std::string>> result;
+                    int res      = SelectSqlite(g_pSqlite, sql.c_str(), param, result);
+                    int size     = result.size();
+                    for (int i = 0; i < size; i++)
+                    {
+                        std::string  StudyDateTime;
+                        OFString date, time;
+                        if (!result[i].at("StudyDateTime").empty())
+                        {
+                            OFString datetime(result[i].at("StudyDateTime").c_str());
+                            datetime = ToDateTimeFormate(datetime, date, time);
+                            return datetime;
+                        }
+                    }
+                    return "";
+                }
+            }
+        }
 #ifdef _UNICODE
         pMariaDb = new HMariaDb(W2S(strIP.GetBuffer()).c_str(), W2S(strUser.GetBuffer()).c_str(), \
             W2S(strPwd.GetBuffer()).c_str(), W2S(strDadaName.GetBuffer()).c_str());///*"127.0.0.1"*/"root", "root", "HIT");
