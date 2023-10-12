@@ -165,6 +165,7 @@ int main(int argc, char *argv[])
             config.setSqlpwd(argv[5]);
         }
     }
+    SetSqlDbInfo(argv[2], argv[3], argv[4], argv[5]);
 
     if (TCPport == "")
     {

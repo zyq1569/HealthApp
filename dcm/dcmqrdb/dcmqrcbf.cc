@@ -873,7 +873,7 @@ OFCondition DcmQueryRetrieveFindContext::querySqlite(DcmDataset *findRequestIden
         int res, size;
         res = SelectSqlite(g_pSqlite, sql.c_str(), param, result);
         size = result.size();
-        if ( size > 1)
+        if ( size > 0)
         {
             for (int i = 0; i < size; i++)
             {

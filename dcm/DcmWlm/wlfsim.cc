@@ -348,16 +348,195 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
         }
     }
     //2.准备数据库读取数据
+    static bool initDb = false;
+    static bool useSqlite = false;
+    //OFString strIP, strUser, strPwd, strDadaName;
+    OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
+    int sqltype = 0;
+    static sqlite3 *g_pSqlite = NULL;
+    if (!initDb)
+    {
+        GetSqlDbInfo(strIP, strDadaName,strUser,strPwd,sqltype);
+        if (strIP == "0.0.0.0")
+        {
+            useSqlite = true;
+            OFString appdir = GetCurrentDir() + "/hitSqlite.db";
+            g_pSqlite = OpenSqlite(appdir.c_str());
+        }
+    }
+    //use sqlite (local)
+    if (useSqlite)
+    {      
+        if (g_pSqlite == NULL)
+        {
+            DCMWLM_ERROR("OpenSqlite error: " << GetCurrentDir() + "/hitSqlite.db");
+            return ;
+        }
+        //int count;//数据库查询的记录条数
+        OFString sql = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,";
+        sql          = sql + " s.StudyID, s.StudyUID, s.OrderDateTime, s.ScheduledDateTime, ";
+        sql          = sql + " s.StudyModality, s.AETitle, s.StudyDescription ,s.StudyCode from h_patient p, h_order s where  s.StudyState = 1 and p.PatientIdentity=s.PatientIdentity ";
+        if (!Modality.empty())
+        {
+            sql = sql + " and s.StudyModality = '" + Modality + "'";
+        }
+        int pos = StartDate.find('-');
+        if (pos > 7)
+        {
+            OFString s = StartDate.substr(0, pos);
+            OFString e = StartDate.substr(pos + 1, StartDate.length() - pos);
+            if (EndDate.empty() && e != s)
+            {
+                EndDate = e;
+            }
+            StartDate = s;
+        }
+        OFString tempSql = sql;
+        if (!StartDate.empty())
+        {
+            StartDate = ToDateFormate(StartDate);
+            if (!StartTime.empty())
+            {
+                StartDate += StartTime;
+            }
+            sql = sql + " and s.ScheduledDateTime>= " + StartDate;
+        }
+        if (!EndDate.empty())
+        {
+            EndDate = ToDateFormate(EndDate);
+            if (!EndTime.empty())
+            {
+                EndDate += EndTime;
+            }
+            sql = sql + " and s.ScheduledDateTime<=" + EndDate;
+        }
+        if (!StartDate.empty() && !EndDate.empty())
+        {
+            int ST = atoi(StartDate.c_str());
+            int ET = atoi(EndDate.c_str());
+            if (ST > ET)
+            {
+                sql = tempSql + " and s.ScheduledDateTime>=" + EndDate;
+                sql = sql + " and s.ScheduledDateTime<=" + StartDate;
+            }
+        }
+        if (!PatientName.empty())
+        {
+            sql = sql + " and p.PatientName = '" + PatientName + "'";
+        }//PatientID Studyid
+        if (!PatientID.empty())
+        {
+            sql = sql + " and p.PatientID = '" + PatientID + "'";
+        }
+        if (!Studyid.empty())
+        {
+            sql = sql + " and s.StudyID = '" + Studyid + "'";
+        }
+        sql = sql + " ;";
+        std::vector<std::string> param;
+        std::vector<std::map<std::string, std::string>> result;
+        OFString PatientIdentity;
+        int res = SelectSqlite(g_pSqlite, sql.c_str(), param, result);
+        int size = result.size();
+        if (size > 0)
+        {
+            DcmDataset dataset;
+            for (int i = 0; i < size; i++)
+            {
+                //!result[i].at("StudyModality").empty()
+                if (!result[i].at("StudyUID").empty())
+                {
+                    dataset.putAndInsertString(DCM_StudyInstanceUID, result[i].at("StudyUID").c_str());
+                }
+                if (!result[i].at("PatientName").empty())
+                {
+                    dataset.putAndInsertString(DCM_PatientName, result[i].at("PatientName").c_str());
+                }
+                else
+                {
+                    dataset.putAndInsertString(DCM_PatientName, "unknow");
+                }
+                if (!result[i].at("PatientID").empty())
+                {
+                    dataset.putAndInsertString(DCM_PatientID, result[i].at("PatientID").c_str());
+                }
+
+                if (!result[i].at("StudyID").empty())
+                {
+                    dataset.putAndInsertString(DCM_AccessionNumber, result[i].at("StudyID").c_str());
+                }
+
+                if (!result[i].at("PatientBirthday").empty())
+                {
+                    dataset.putAndInsertString(DCM_PatientBirthDate, result[i].at("PatientBirthday").c_str());
+                }
+                //PatientSex
+                if (!result[i].at("PatientSex").empty())
+                {
+                    dataset.putAndInsertString(DCM_PatientSex, result[i].at("PatientSex").c_str());
+                }
+                else
+                {
+                    dataset.putAndInsertString(DCM_PatientSex, "O");
+                }
+                //dataset.putAndInsertString(DCM_RequestingPhysician, "NEIER");
+                //dataset.putAndInsertString(DCM_RequestedProcedureDescription, "EXAM78");
+                //dataset->putAndInsertString(DCM_PatientSex, "W");
+                DcmItem *ditem = NULL;
+                if (dataset.findOrCreateSequenceItem(DCM_ScheduledProcedureStepSequence, ditem).good())
+                {
+                    if (!result[i].at("StudyModality").empty())
+                    {
+                        ditem->putAndInsertString(DCM_Modality, result[i].at("StudyModality").c_str());
+                    }
+
+                    if (!result[i].at("ScheduledDateTime").empty())
+                    {
+                        OFString str, date, time;
+                        str = DbDateTimeToDateTimeFormate(result[i].at("ScheduledDateTime").c_str(), date, time);
+                        ditem->putAndInsertString(DCM_ScheduledProcedureStepStartDate, date.c_str());
+                        ditem->putAndInsertString(DCM_ScheduledProcedureStepStartTime, time.c_str());
+                    }
+
+                    if (!result[i].at("StudyCode").empty())
+                    {
+                        ditem->putAndInsertString(DCM_ScheduledProcedureStepID, result[i].at("StudyCode").c_str());
+                    }
+                    else
+                    {
+                        ditem->putAndInsertString(DCM_ScheduledProcedureStepID, "unknow");
+                    }
+                    if (!result[i].at("StudyDescription").empty())
+                    {
+                        ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription, result[i].at("StudyDescription").c_str());
+                    }
+                    else
+                    {
+                        ditem->putAndInsertString(DCM_ScheduledProcedureStepDescription, "unknow");
+                    }
+                }
+                //dataset.putAndInsertString(DCM_RequestedProcedureID, "RP34734H328");
+                //dataset.putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
+                listDataset.push_back(dataset);
+            }
+            return;
+        }
+        else
+        {
+            DCMWLM_INFO("No data info in database:" + sql);
+            return;
+        }
+    }
+
+    //else use MariaDb
     static HMariaDb *pMariaDb = NULL;
     if (pMariaDb == NULL)
     {
-        //OFString strIP, strUser, strPwd, strDadaName;
-        OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
         if (configfile != NULL)
         {
-            strIP = configfile->getSqlServer();
-            strUser = configfile->getSqlusername();
-            strPwd = configfile->getSqlpwd();
+            strIP       = configfile->getSqlServer();
+            strUser     = configfile->getSqlusername();
+            strPwd      = configfile->getSqlpwd();
             strDadaName = configfile->getSqldbname();
         }
 #ifdef _UNICODE
@@ -371,7 +550,7 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
     //int count;//数据库查询的记录条数
     OFString sql = "select p.PatientID, p.PatientName, p.PatientSex, p.PatientBirthday,";
     sql = sql + " s.StudyID, s.StudyUID, s.OrderDateTime, s.ScheduledDateTime, ";
-    sql = sql + " s.StudyModality, s.AETitle, s.StudyDescription ,s.StudyCode from h_patient p, h_order s where  StudyState = 1 and p.PatientIdentity=s.PatientIdentity ";
+    sql = sql + " s.StudyModality, s.AETitle, s.StudyDescription ,s.StudyCode from h_patient p, h_order s where  s.StudyState = 1 and p.PatientIdentity=s.PatientIdentity ";
     if (!Modality.empty())
     {
         sql = sql + " and s.StudyModality = '" + Modality + "'";
