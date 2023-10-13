@@ -142,17 +142,18 @@ int main(int argc, char *argv[])
     config.init(configdir.c_str());
     OFString TCPport;
     TCPport = argv[1];
-
+    SetSqlDbInfo(argv[2], argv[3], argv[4], argv[5]);
     pos = tempstr.find("forked-child");
     if (pos > 0)
     {
         TCPport = argv[2];
-        if (argc == 7)
+        if (argc > 7)
         {
             config.setSqlServer(argv[3]);
             config.setSqldbname(argv[4]);
             config.setSqlusername(argv[5]);
             config.setSqlpwd(argv[6]);
+            SetSqlDbInfo(argv[3], argv[4], argv[5], argv[6]);
         }
     }
     else
@@ -165,8 +166,7 @@ int main(int argc, char *argv[])
             config.setSqlpwd(argv[5]);
         }
     }
-    SetSqlDbInfo(argv[2], argv[3], argv[4], argv[5]);
-
+    
     if (TCPport == "")
     {
         TCPport = longToString(config.getWorklistScpPort());
