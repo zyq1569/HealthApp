@@ -348,20 +348,20 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
         }
     }
     //2.准备数据库读取数据
-    static bool initDb = false;
+    static bool initDb    = false;
     static bool useSqlite = false;
-    //OFString strIP, strUser, strPwd, strDadaName;
     OFString strIP("127.0.0.1"), strUser("root"), strPwd("root"), strDadaName("HIT");
     int sqltype = 0;
     static sqlite3 *g_pSqlite = NULL;
     if (!initDb)
     {
         GetSqlDbInfo(strIP, strDadaName,strUser,strPwd,sqltype);
+        DCMWLM_ERROR("sqlinfo: " << strIP);
         if (strIP == "0.0.0.0")
         {
-            useSqlite = true;
+            useSqlite       = true;
             OFString appdir = GetCurrentDir() + "/hitSqlite.db";
-            g_pSqlite = OpenSqlite(appdir.c_str());
+            g_pSqlite       = OpenSqlite(appdir.c_str());
         }
     }
     //use sqlite (local)
@@ -384,29 +384,31 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
         if (pos > 7)
         {
             OFString s = StartDate.substr(0, pos);
-            OFString e = StartDate.substr(pos + 1, StartDate.length() - pos);
+            OFString e = StartDate.substr(pos + 1);
             if (EndDate.empty() && e != s)
             {
                 EndDate = e;
             }
             StartDate = s;
         }
+        DCMWLM_DEBUG("StartDate:" + StartDate);
+        DCMWLM_DEBUG("EndDate:" + EndDate);
         OFString tempSql = sql;
         if (!StartDate.empty())
         {
-            StartDate = ToDateFormate(StartDate);
-            if (!StartTime.empty())
+            pos = StartDate.find('-');
+            if (pos < 1)
             {
-                StartDate += StartTime;
+                StartDate = StartDate.substr(0, 4) + "-" + StartDate.substr(4, 2) + "-" + StartDate.substr(6, 2);
             }
             sql = sql + " and s.ScheduledDateTime>= " + StartDate;
         }
         if (!EndDate.empty())
         {
-            EndDate = ToDateFormate(EndDate);
-            if (!EndTime.empty())
+            pos = EndDate.find('-');
+            if (pos < 1)
             {
-                EndDate += EndTime;
+                EndDate = EndDate.substr(0, 4) + "-" + EndDate.substr(4, 2) + "-" + EndDate.substr(6, 2);
             }
             sql = sql + " and s.ScheduledDateTime<=" + EndDate;
         }
@@ -519,16 +521,17 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
                 //dataset.putAndInsertString(DCM_RequestedProcedurePriority, "HIGH");
                 listDataset.push_back(dataset);
             }
+            DCMWLM_DEBUG("data info in database/sqlite:" + sql);
             return;
         }
         else
         {
-            DCMWLM_INFO("No data info in database:" + sql);
+            DCMWLM_WARN("No data info in database/sqlite:" + sql);
             return;
         }
     }
-
-    //else use MariaDb
+    //else 
+    //use MariaDb
     static HMariaDb *pMariaDb = NULL;
     if (pMariaDb == NULL)
     {
@@ -612,7 +615,7 @@ void WlmFileSystemInteractionManager::GetWorklistData(OFList<DcmDataset > &listD
     ResultSet * rs = pMariaDb->QueryResult();
     if (rs == NULL)
     {
-        DCMWLM_INFO("No data info in database:"+sql);
+        DCMWLM_INFO("No data info in database/MariaDb:"+sql);
         return;
     }
     else
