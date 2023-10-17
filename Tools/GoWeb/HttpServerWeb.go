@@ -176,7 +176,7 @@ func main() {
 		if err != nil {
 			log4go.Error(err)
 		}
-		sqlite3_Driver = dir + "\hitSqlite.db"
+		sqlite3_Driver = dir + "\\hitSqlite.db"
 		log4go.Info(sqlite3_Driver)
 
 		open, db := OpenSqlite()
@@ -669,8 +669,8 @@ func GetDBStudyImage(c echo.Context) error {
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
 	if sqlite_db {
-		startTime = startTime[0,4]+"-"+startTime[4,2]+"-"+startTime[6,2]
-		endTime = endTime[0,4]+"-"+endTime[4,2]+"-"+endTime[6,2]
+		startTime = startTime[0:4] + "-" + startTime[4:6] + "-" + startTime[6:8]
+		endTime = endTime[0:4] + "-" + endTime[4:6] + "-" + endTime[6:8]
 	}
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
@@ -684,13 +684,14 @@ func GetDBStudyImage(c echo.Context) error {
 		count = (p - 1) * lim
 		var sqlstr string
 		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
-			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyIdentity,s.StudyDateTime," +
+			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyOrderIdentity,s.StudyDateTime," +
 			" s.StudyDescription, s.StudyModality, s.StudyState from " +
-			" h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
+			" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and " +
 			" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
 			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
 		// println(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
+		log4go.Info(sqlstr)
 		if err != nil {
 			println(err)
 		} else {
