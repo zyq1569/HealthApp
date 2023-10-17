@@ -45,9 +45,9 @@ import (
 	// "encoding/json"
 	"io/ioutil"
 
-	"./Data"
+	"GoWeb/Data"
 
-	"./Units"
+	"GoWeb/Units"
 
 	// "fmt"
 	// "time"
@@ -57,6 +57,8 @@ import (
 
 	log4go "github.com/jeanphorn/log4go"
 	// "github.com/labstack/echo/middleware"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 const (
@@ -85,13 +87,16 @@ const (
 
 var CONFIG [CONGIG_SIZE]string
 var DB_Driver string
+var sqlite3_Driver string
 var Go_Level int
+var sqlite_db bool
 
 // var name string
 var maridb_db *sql.DB
 
 func main() {
 	DB_Driver = "root:root@tcp(127.0.0.1:3306)/hit?charset=utf8"
+	sqlite3_Driver = "hitSqlite.db"
 	CONFIG[IMAGE_Dir] = "F:/temp/HealthApp/DCM_SAVE/DCM_SAVE/Images"
 	CONFIG[PAGE_Dir] = "F:/temp/HealthApp/PageWeb/PageWeb"
 	CONFIG[Web_Port] = "9090"
@@ -166,12 +171,35 @@ func main() {
 	}
 	// println(hash)
 	maridb_db = nil
-	open, db := OpenDB()
-	if open == true {
-		maridb_db = db
-		for i := 1; i < 9; i++ {
-			CONFIG[i] = os.Args[i]
-			log4go.Info("CONFIG:" + CONFIG[i])
+	if CONFIG[MySQL_IP] == "0.0.0.0" {
+		dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			log4go.Error(err)
+		}
+		sqlite3_Driver = dir + "\hitSqlite.db"
+		log4go.Info(sqlite3_Driver)
+
+		open, db := OpenSqlite()
+		if open == true {
+			sqlite_db = true
+			maridb_db = db
+			log4go.Info("local sqlite3 DB")
+			for i := 1; i < 9; i++ {
+				CONFIG[i] = os.Args[i]
+				log4go.Info("CONFIG:" + CONFIG[i])
+			}
+		}
+
+	} else {
+		sqlite_db = false
+		open, db := OpenDB()
+		if open == true {
+			maridb_db = db
+			log4go.Info("maridb DB")
+			for i := 1; i < 9; i++ {
+				CONFIG[i] = os.Args[i]
+				log4go.Info("CONFIG:" + CONFIG[i])
+			}
 		}
 	}
 
@@ -315,7 +343,7 @@ func Healthsystem(c echo.Context) error {
 	}
 }
 
-///https://github.com/authelia/authelia
+// /https://github.com/authelia/authelia
 func Login(c echo.Context) error {
 	log4go.Info("-------Login:" + c.Request().URL.Path)
 	log4go.Info(c.Request().URL.Path)
@@ -327,11 +355,11 @@ func Login(c echo.Context) error {
 	return c.File(filepath)
 }
 
-///20220827 文件存储方式是否考虑调整(dicom QR服务如何处理，直接传入studyuid 没有日期？)
-///
-/// 获取odt文档时:如果对应的检查uid的odt文件没有找到，使用patient.odt，如果patient.odt也没有找到
-///在查找HealthApp\Server\PageWeb\Login\test 下面studyTemp.odt
-/// get files: image | odt | json|
+// /20220827 文件存储方式是否考虑调整(dicom QR服务如何处理，直接传入studyuid 没有日期？)
+// /
+// / 获取odt文档时:如果对应的检查uid的odt文件没有找到，使用patient.odt，如果patient.odt也没有找到
+// /在查找HealthApp\Server\PageWeb\Login\test 下面studyTemp.odt
+// / get files: image | odt | json|
 func LoadImageFile(c echo.Context) error {
 	/// -------------------------------------------------------------------------
 	///http://127.0.0.1:8080/WADO?
@@ -471,7 +499,7 @@ func CheckLogin(c echo.Context) error {
 	return c.String(http.StatusOK, "username or userpwd error! fail")
 }
 
-///"http://" + serverHost + "/healthsystem/ris/saveodtreport/?StudyOrderIdentity=" + orderid;
+// /"http://" + serverHost + "/healthsystem/ris/saveodtreport/?StudyOrderIdentity=" + orderid;
 func SaveOdtReport(c echo.Context) error {
 	var reportdata Study.ReportData
 	reportdata.ReportIdentity = ""
@@ -506,7 +534,7 @@ func SaveOdtReport(c echo.Context) error {
 	return c.String(http.StatusOK, "ok")
 }
 
-/// for tinymce report ：： 目前没有用，web 页面已经屏蔽
+// / for tinymce report ：： 目前没有用，web 页面已经屏蔽
 func SaveReportdata(c echo.Context) error {
 	//log4go.Info(c.Request().URL.Path)
 	var reportdata Study.ReportData
@@ -694,7 +722,7 @@ func GetDBStudyImage(c echo.Context) error {
 	return c.String(http.StatusOK, string(js))
 }
 
-/// web->>html Update---->DBStudyData
+// / web->>html Update---->DBStudyData
 func UpdateDBStudyData(c echo.Context) error {
 	var studyData Study.StudyData
 	var bodyBytes []byte
@@ -928,7 +956,17 @@ func checkMariDB(db *sql.DB) {
 		// println(password)
 	}
 }
-
+func OpenSqlite() (success bool, db *sql.DB) {
+	var isOpen bool
+	db, err := sql.Open("sqlite3", sqlite3_Driver)
+	if err != nil {
+		log4go.Error(err)
+	} else {
+		isOpen = true
+		log4go.Info("loacal sqlite3 db")
+	}
+	return isOpen, db
+}
 func OpenDB() (success bool, db *sql.DB) {
 	var isOpen bool
 	db, err := sql.Open("mysql", DB_Driver)
@@ -945,8 +983,8 @@ func OpenDB() (success bool, db *sql.DB) {
 	return isOpen, db
 }
 
-///----------------2020-1117 add fun-------------------------------------------------------------------------------------
-///2020-1117:add{ 从新order表（增加字段）：查询检查信息（json data）}
+// /----------------2020-1117 add fun-------------------------------------------------------------------------------------
+// /2020-1117:add{ 从新order表（增加字段）：查询检查信息（json data）}
 func GetStudyOrderFromDB(c echo.Context) error {
 	//log4go.Debug(c.Request().URL)
 	//'http://127.0.0.1:8080/healthsystem/ris/StudyOrder/?' + searchStudyTime
