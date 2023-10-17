@@ -668,6 +668,10 @@ func GetDBStudyImage(c echo.Context) error {
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
+	if sqlite_db {
+		startTime = startTime[0,4]+"-"+startTime[4,2]+"-"+startTime[6,2]
+		endTime = endTime[0,4]+"-"+endTime[4,2]+"-"+endTime[6,2]
+	}
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
 	var studyjson Study.StudyDataJson
