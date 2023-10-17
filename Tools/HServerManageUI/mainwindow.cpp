@@ -285,7 +285,14 @@ void HMainWindow::on_WLMSCP_clicked()
 
     QStringList arg;
     arg.append(ui->port_wlm->text());
+    if (ui->cBSqlite->isChecked())
+    {
+        arg.append("0.0.0.0");
+    }
+    else
+    {
     arg.append(m_MysqlServer);
+    }
     arg.append(m_MysqlDbName);
     arg.append(m_MysqlUserName);
     arg.append(m_MysqlPWD);
@@ -454,7 +461,14 @@ void HMainWindow::on_WebServer_clicked()
         QString program = goWebServer;
         QStringList arg;
         //mysql
-        arg.append(m_MysqlServer);
+        if (ui->cBSqlite->isChecked())
+        {
+            arg.append("0.0.0.0");
+        }
+        else
+        {
+            arg.append(m_MysqlServer);
+        }
         arg.append(m_MysqlDbName);
         arg.append(m_MysqlUserName);
         arg.append(m_MysqlPWD);
