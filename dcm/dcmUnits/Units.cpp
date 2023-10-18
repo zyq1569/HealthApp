@@ -966,6 +966,14 @@ int init(sqlite3* db)
                           "PatientHistoryTell TEXT    DEFAULT 'NULL' "
                           ")";
         CreateTableSqlite(db, str.c_str());
+
+        str = "CREATE TABLE if not exists h_user( "
+            "id                INTEGER PRIMARY KEY, "
+            "username          TEXT    NOT NULL, "
+            "password          TEXT    NOT NULL"
+            ")";
+        CreateTableSqlite(db, str.c_str());
+
     }
     return 0;
 }
