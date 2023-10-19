@@ -24,40 +24,23 @@ https://blog.csdn.net/Noob_coder_JZ/article/details/83410095
 package main
 
 import (
+	"GoWeb/Data"
+	"GoWeb/Units"
+	"database/sql"
+	"encoding/json"
 	"errors"
-	// "log"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
-
-	//"./jsonparser"
-	// "bytes"
-	"database/sql"
-	"encoding/json"
-
-	// "flag"
-	"net/http"
-	// "os"
 	"strconv"
 	"strings"
 
-	// "encoding/json"
-	"io/ioutil"
-
-	"GoWeb/Data"
-
-	"GoWeb/Units"
-
-	// "fmt"
-	// "time"
-
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/labstack/echo"
-
 	log4go "github.com/jeanphorn/log4go"
-	// "github.com/labstack/echo/middleware"
-
+	"github.com/labstack/echo"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -669,8 +652,8 @@ func GetDBStudyImage(c echo.Context) error {
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
 	if sqlite_db {
-		startTime = startTime[0:4] + "-" + startTime[4:6] + "-" + startTime[6:8]
-		endTime = endTime[0:4] + "-" + endTime[4:6] + "-" + endTime[6:8]
+		startTime = startTime + "000000"
+		endTime = endTime + "000000"
 	}
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
@@ -691,13 +674,13 @@ func GetDBStudyImage(c echo.Context) error {
 			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
 		// println(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
-		log4go.Info(sqlstr)
+		log4go.Debug(sqlstr)
 		if err != nil {
 			println(err)
 		} else {
 			studyjson.Code = 0
 			studyjson.Msg = ""
-			studyjson.Count = 21
+			studyjson.Count = 0
 			for rows.Next() {
 				var data Study.StudyData
 				err = rows.Scan(&data.PatientIdentity, &data.PatientName,
@@ -706,16 +689,10 @@ func GetDBStudyImage(c echo.Context) error {
 					&data.StudyOrderIdentity, &data.StudyDateTime,
 					&data.StudyDescription, &data.StudyModality, &data.StudyState)
 				studyjson.Data = append(studyjson.Data, data)
+				studyjson.Count++
+				log4go.Debug(data.StudyDateTime)
 			}
-			sqlstr = "select count(*) count from " +
-				"h_patient p, h_study s where p.PatientIdentity = s.PatientIdentity and " +
-				" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime
-			rows, err := maridb_db.Query(sqlstr)
-			if err == nil {
-				for rows.Next() {
-					rows.Scan(&studyjson.Count)
-				}
-			}
+			log4go.Debug(studyjson)
 		}
 	}
 	js, err := json.Marshal(studyjson)
@@ -874,6 +851,10 @@ func GetDBStudyData(c echo.Context) error {
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
+	if sqlite_db {
+		startTime = startTime + "000000"
+		endTime = endTime + "000000"
+	}
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
 	var studyjson Study.StudyDataJson
@@ -887,7 +868,7 @@ func GetDBStudyData(c echo.Context) error {
 		var sqlstr string
 		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
 			" p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
-			" s.StudyOrderIdentity,s.ScheduledDateTime,s.ScheduledDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
+			" s.StudyOrderIdentity,s.ScheduledDateTime,s.OrderDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
 			" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
 			" s.StudyDateTime>=" + startTime + " and  s.StudyDateTime<=" + endTime + " order by s.StudyOrderIdentity " +
 			" limit " + strconv.Itoa(count) + "," + limit
@@ -902,7 +883,7 @@ func GetDBStudyData(c echo.Context) error {
 		} else {
 			studyjson.Code = 0
 			studyjson.Msg = ""
-			studyjson.Count = 21
+			studyjson.Count = 0
 			for rows.Next() {
 				var data Study.StudyData
 				err = rows.Scan(&data.PatientIdentity, &data.PatientName,
@@ -916,15 +897,7 @@ func GetDBStudyData(c echo.Context) error {
 					&data.StudyModality, &data.StudyCost,
 					&data.StudyState)
 				studyjson.Data = append(studyjson.Data, data)
-			}
-			sqlstr = "select count(*) count from " +
-				" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and" +
-				"  s.StudyDateTime>= " + startTime + " and  s.StudyDateTime <= " + endTime
-			rows, err := maridb_db.Query(sqlstr)
-			if err == nil {
-				for rows.Next() {
-					rows.Scan(&studyjson.Count)
-				}
+				studyjson.Count++
 			}
 		}
 	}
