@@ -652,8 +652,8 @@ func GetDBStudyImage(c echo.Context) error {
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
 	if sqlite_db {
-		startTime = startTime + "000000"
-		endTime = endTime + "000000"
+		startTime = startTime[0:4] + "-" + startTime[4:6] + "-" + startTime[6:8]
+		endTime = endTime[0:4] + "-" + endTime[4:6] + "-" + endTime[6:8]
 	}
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
@@ -670,8 +670,8 @@ func GetDBStudyImage(c echo.Context) error {
 			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyOrderIdentity,s.StudyDateTime," +
 			" s.StudyDescription, s.StudyModality, s.StudyState from " +
 			" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and " +
-			" s.StudyDateTime >= " + startTime + " and  s.StudyDateTime <= " + endTime +
-			" order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
+			" s.StudyDateTime >= '" + startTime + "' and  s.StudyDateTime <= '" + endTime +
+			"' order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
 		// println(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
 		log4go.Debug(sqlstr)
@@ -852,8 +852,8 @@ func GetDBStudyData(c echo.Context) error {
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
 	if sqlite_db {
-		startTime = startTime + "000000"
-		endTime = endTime + "000000"
+		startTime = startTime[0:4] + "-" + startTime[4:6] + "-" + startTime[6:8]
+		endTime = endTime[0:4] + "-" + endTime[4:6] + "-" + endTime[6:8]
 	}
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
@@ -868,9 +868,9 @@ func GetDBStudyData(c echo.Context) error {
 		var sqlstr string
 		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
 			" p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
-			" s.StudyOrderIdentity,s.ScheduledDateTime,s.OrderDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
+			" s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
 			" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
-			" s.StudyDateTime>=" + startTime + " and  s.StudyDateTime<=" + endTime + " order by s.StudyOrderIdentity " +
+			" s.StudyDateTime>= '" + startTime + "' and  s.StudyDateTime<= '" + endTime + "' order by s.StudyOrderIdentity " +
 			" limit " + strconv.Itoa(count) + "," + limit
 		// println(sqlstr)
 		if Go_Level < 2 {
