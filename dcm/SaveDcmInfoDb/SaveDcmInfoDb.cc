@@ -699,11 +699,11 @@ OFBool SaveDcmInfo2Sqlite(OFString filename, DcmConfigFile *configfile)
                             OFString temp = DT.substr(0, 4) + "-" + DT.substr(4, 2) + "-" + DT.substr(6, 2)+" ";
                             if (DT.length() > 11)
                             {
-                                StudyInfo.StudyDateTime += temp + DT.substr(8, 2) + ":" + DT.substr(10, 2) + ":" + DT.substr(12, 2);
+                                StudyInfo.StudyDateTime = temp + DT.substr(8, 2) + ":" + DT.substr(10, 2) + ":" + DT.substr(12, 2);
                             }
                             else
                             {
-                                StudyInfo.StudyDateTime += temp + "00:00:01";
+                                StudyInfo.StudyDateTime = temp + "00:00:01";
                             }
                         }
                         strsql += StudyInfo.StudyDateTime;
