@@ -18,22 +18,30 @@ type OFHashValue struct {
 	second string
 }
 
-func GetStudyHashDir(studyuid string) string {
-	pos := strings.Index(studyuid, "|")
-	if pos > 1 {
-		// 2001 01 09 08 4247
-		// 0123 45 67 89 0
-		datestr := studyuid[pos:]
-		year := datestr[0:3]  //2001
-		month := datestr[4:5] //01
-		day := datestr[6:7]   //09
-		dir := "/" + year + "/" + month + "/" + day
-		return dir
-	}
-
-	vl := CreateHashValue([]byte(studyuid), strings.Count(studyuid, "")-1)
-	dir := "/" + vl.first + "/" + vl.second
+func GetStudyHashDir(studyuid string, studyDate string) string {
+	dir := "/" + studyDate[0:4] + "/" + studyDate[4:6] + "/" + studyDate[6:8] + "/" + studyDate[8:10] + "/" + studyDate[10:12] + "/" + studyuid
 	return dir
+
+	// pos := strings.Index(studyuid, "|")
+	// if pos > 1 {
+	// 	// 2001 01 09 08 42 47
+	// 	// 0123 45 67 89 0
+	// 	//log4go.Info("studyuid:" + studyuid)
+	// 	datestr := studyuid[pos+1:]
+	// 	//log4go.Info("datestr:" + datestr)
+	// 	year := datestr[0:3]  //2001
+	// 	month := datestr[4:5] //01
+	// 	day := datestr[6:7]   //09
+	// 	hour := datestr[8:9]  //08
+	// 	min := datestr[10:11] //42
+	// 	dir := "/" + year + "/" + month + "/" + day + "/" + hour + "/" + min
+	// 	//log4go.Info("dir:" + dir)
+	// 	return dir
+	// }
+
+	// vl := CreateHashValue([]byte(studyuid), strings.Count(studyuid, "")-1)
+	// dir := "/" + vl.first + "/" + vl.second
+	// return dir
 }
 
 func GetCurrentTime() string {

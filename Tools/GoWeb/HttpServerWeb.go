@@ -355,11 +355,12 @@ func LoadImageFile(c echo.Context) error {
 	///-------------------------------------------------------------------------
 	log4go.Debug("----LoadImageFile-------" + c.Request().URL.Path)
 	studyuid := c.FormValue("studyuid")
-	image_hash_dir := Units.GetStudyHashDir(studyuid)
+	studyDate := c.FormValue("studyDate")
+	log4go.Info("studyDate:" + studyDate)
+	image_hash_dir := Units.GetStudyHashDir(studyuid, studyDate)
 	log4go.Debug(image_hash_dir)
 	filepath := CONFIG[IMAGE_Dir] + image_hash_dir
 	filepath += "/"
-	filepath += studyuid
 	filetype := c.FormValue("type")
 	// println(filetype)
 	if filetype == "json" {
@@ -651,9 +652,22 @@ func GetDBStudyImage(c echo.Context) error {
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
+	var sqlstr string
+	sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
+		" p.PatientSex,s.StudyUID,s.StudyID,s.StudyOrderIdentity,s.StudyDateTime," +
+		" s.StudyDescription, s.StudyModality, s.StudyState from " +
+		" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and " +
+		" s.StudyDateTime >= '" + startTime + "' and  s.StudyDateTime <= '" + endTime +
+		"' order by s.PatientIdentity limit "
 	if sqlite_db {
 		startTime = startTime[0:4] + "-" + startTime[4:6] + "-" + startTime[6:8]
 		endTime = endTime[0:4] + "-" + endTime[4:6] + "-" + endTime[6:8]
+		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
+			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyOrderIdentity,strftime('%Y%m%d%H%M',s.StudyDateTime) as StudyDateTime," +
+			" s.StudyDescription, s.StudyModality, s.StudyState from " +
+			" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and " +
+			" s.StudyDateTime >= '" + startTime + "' and  s.StudyDateTime <= '" + endTime +
+			"' order by s.PatientIdentity limit "
 	}
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
@@ -665,13 +679,7 @@ func GetDBStudyImage(c echo.Context) error {
 		lim, err := strconv.Atoi(limit)
 		checkErr(err)
 		count = (p - 1) * lim
-		var sqlstr string
-		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday," +
-			" p.PatientSex,s.StudyUID,s.StudyID,s.StudyOrderIdentity,s.StudyDateTime," +
-			" s.StudyDescription, s.StudyModality, s.StudyState from " +
-			" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and " +
-			" s.StudyDateTime >= '" + startTime + "' and  s.StudyDateTime <= '" + endTime +
-			"' order by s.PatientIdentity limit " + strconv.Itoa(count) + "," + limit
+		sqlstr += strconv.Itoa(count) + "," + limit
 		// println(sqlstr)
 		rows, err := maridb_db.Query(sqlstr)
 		log4go.Debug(sqlstr)
@@ -851,9 +859,22 @@ func GetDBStudyData(c echo.Context) error {
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
+	var sqlstr string
+	sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
+		" p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
+		" s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
+		" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
+		" s.StudyDateTime>= '" + startTime + "' and  s.StudyDateTime<= '" + endTime + "' order by s.StudyOrderIdentity " +
+		" limit "
 	if sqlite_db {
 		startTime = startTime[0:4] + "-" + startTime[4:6] + "-" + startTime[6:8]
 		endTime = endTime[0:4] + "-" + endTime[4:6] + "-" + endTime[6:8]
+		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
+			" p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
+			" s.StudyOrderIdentity,s.ScheduledDateTime,strftime('%Y%m%d%H%M',s.StudyDateTime) as StudyDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
+			" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
+			" s.StudyDateTime>= '" + startTime + "' and  s.StudyDateTime<= '" + endTime + "' order by s.StudyOrderIdentity " +
+			" limit "
 	}
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
@@ -865,13 +886,7 @@ func GetDBStudyData(c echo.Context) error {
 		lim, err := strconv.Atoi(limit)
 		checkErr(err)
 		count = (p - 1) * lim
-		var sqlstr string
-		sqlstr = "select p.PatientIdentity,p.PatientName,p.PatientID,p.PatientBirthday,p.PatientSex,p.PatientTelNumber," +
-			" p.PatientAddr, p.PatientEmail, p.PatientCarID, s.StudyID ,s.StudyUID,s.StudyDepart,s.CostType," +
-			" s.StudyOrderIdentity,s.ScheduledDateTime,s.StudyDateTime,s.StudyDescription, s.StudyModality, s.StudyCost, s.StudyState " +
-			" from h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and " +
-			" s.StudyDateTime>= '" + startTime + "' and  s.StudyDateTime<= '" + endTime + "' order by s.StudyOrderIdentity " +
-			" limit " + strconv.Itoa(count) + "," + limit
+		sqlstr += strconv.Itoa(count) + "," + limit
 		// println(sqlstr)
 		if Go_Level < 2 {
 			log4go.Debug(sqlstr)
