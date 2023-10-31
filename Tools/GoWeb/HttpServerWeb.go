@@ -356,15 +356,14 @@ func LoadImageFile(c echo.Context) error {
 	log4go.Debug("----LoadImageFile-------" + c.Request().URL.Path)
 	studyuid := c.FormValue("studyuid")
 	studyDate := c.FormValue("studyDate")
-	log4go.Info("studyDate:" + studyDate)
+	//log4go.Info("studyDate:" + studyDate)
 	image_hash_dir := Units.GetStudyHashDir(studyuid, studyDate)
-	log4go.Debug(image_hash_dir)
+	//log4go.Debug(image_hash_dir)
 	filepath := CONFIG[IMAGE_Dir] + image_hash_dir
 	filepath += "/"
 	filetype := c.FormValue("type")
 	// println(filetype)
 	if filetype == "json" {
-		filepath += "/"
 		filepath += studyuid
 		filepath += ".json"
 		log4go.Debug("type == json filepath:" + filepath)
@@ -397,11 +396,11 @@ func LoadImageFile(c echo.Context) error {
 	} else {
 		seriesuid := c.FormValue("seriesuid")
 		sopinstanceuid := c.FormValue("sopinstanceuid")
-		filepath += "/"
 		filepath += seriesuid
 		filepath += "/"
 		filepath += sopinstanceuid
 		filepath += ".dcm"
+		//log4go.Debug("dcm filepath:" + filepath)
 		if IsFileExists(filepath) {
 			return c.File(filepath)
 		} else {
@@ -568,6 +567,7 @@ func SaveReportdata(c echo.Context) error {
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
 				println(sqlstr)
+				log4go.Error(sqlstr)
 				log4go.Error(perr)
 				//os.Exit(1)
 				return c.String(http.StatusBadRequest, "error")
@@ -700,7 +700,7 @@ func GetDBStudyImage(c echo.Context) error {
 				studyjson.Count++
 				log4go.Debug(data.StudyDateTime)
 			}
-			log4go.Debug(studyjson)
+			//log4go.Debug(studyjson)
 		}
 	}
 	js, err := json.Marshal(studyjson)
