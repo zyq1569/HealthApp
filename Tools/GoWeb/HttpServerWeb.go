@@ -563,7 +563,7 @@ func SaveReportdata(c echo.Context) error {
 			reportdata.ReportCheckID = "0"
 			reportdata.ReportOther = "0"
 			sqlstr = "insert into h_report (`StudyOrderIdentity`, `ReportIdentity`,`ReportState`,`ReportTemplate`,`ReportCreatDate`," +
-				"`ReportWriterID`,`ReportCheckID`, `ReportCheckDate`,`ReportContent`,`ReportOther`) value(?,?,?,?,?,?,?,?,?,?)"
+				"`ReportWriterID`,`ReportCheckID`, `ReportCheckDate`,`ReportContent`,`ReportOther`) values(?,?,?,?,?,?,?,?,?,?)"
 			stmt, perr := maridb_db.Prepare(sqlstr)
 			if perr != nil {
 				println(sqlstr)
@@ -698,7 +698,6 @@ func GetDBStudyImage(c echo.Context) error {
 					&data.StudyDescription, &data.StudyModality, &data.StudyState)
 				studyjson.Data = append(studyjson.Data, data)
 				studyjson.Count++
-				log4go.Debug(data.StudyDateTime)
 			}
 			//log4go.Debug(studyjson)
 		}
