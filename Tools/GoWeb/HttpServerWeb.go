@@ -993,6 +993,10 @@ func GetStudyOrderFromDB(c echo.Context) error {
 		lim, err := strconv.Atoi(limit)
 		checkErr(err)
 		count = (p - 1) * lim
+		if sqlite_db {
+			startTime = startTime[0:4] + "-" + startTime[4:6] + "-" + startTime[6:8]
+			endTime = endTime[0:4] + "-" + endTime[4:6] + "-" + endTime[6:8]
+		}
 		var sqlstr string
 		sqlstr = "select p.PatientIdentity , p.PatientID, p.PatientName, p.PatientNameEnglish," +
 			"p.PatientSex , p.PatientBirthday , p.PatientAddr , p.PatientEmail , p.PatientCarID," +
@@ -1006,7 +1010,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 			"o.StudyModalityIdentity, o.StudyManufacturer , o.RegisterID " +
 			"from h_patient p, h_order o  " +
 			"where p.PatientIdentity = o.PatientIdentity and StudyState > 0 and " +
-			"o.StudyDateTime>=" + startTime + " and  o.StudyDateTime<=" + endTime + " " +
+			"o.StudyDateTime>= '" + startTime + "' and  o.StudyDateTime<= '" + endTime + "' " +
 			"order by o.StudyOrderIdentity " +
 			"limit " + strconv.Itoa(count) + "," + limit
 
@@ -1034,15 +1038,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 					&data.ProcedureStepStartDate, &data.StudyModalityIdentity,
 					&data.StudyManufacturer, &data.RegisterID)
 				studyjson.Data = append(studyjson.Data, data)
-			}
-			sqlstr = "select count(*) count from " +
-				" h_patient p, h_order s where p.PatientIdentity = s.PatientIdentity and StudyState > 0 and" +
-				"  s.StudyDateTime>= " + startTime + " and  s.StudyDateTime <= " + endTime
-			rows, err := maridb_db.Query(sqlstr)
-			if err == nil {
-				for rows.Next() {
-					rows.Scan(&studyjson.Count)
-				}
+				studyjson.Count++
 			}
 		}
 	}

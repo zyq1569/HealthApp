@@ -19,6 +19,9 @@ type OFHashValue struct {
 }
 
 func GetStudyHashDir(studyuid string, studyDate string) string {
+	studyDate = strings.Replace(studyDate, "-", "", -1)
+	studyDate = strings.Replace(studyDate, ":", "", -1)
+	studyDate = strings.Replace(studyDate, " ", "", -1)
 	dir := "/" + studyDate[0:4] + "/" + studyDate[4:6] + "/" + studyDate[6:8] + "/" + studyDate[8:10] + "/" + studyDate[10:12] + "/" + studyuid
 	return dir
 
