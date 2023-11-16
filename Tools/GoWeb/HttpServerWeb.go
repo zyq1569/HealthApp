@@ -338,8 +338,6 @@ func Login(c echo.Context) error {
 	return c.File(filepath)
 }
 
-// /20220827 文件存储方式是否考虑调整(dicom QR服务如何处理，直接传入studyuid 没有日期？)
-// /
 // / 获取odt文档时:如果对应的检查uid的odt文件没有找到，使用patient.odt，如果patient.odt也没有找到
 // /在查找HealthApp\Server\PageWeb\Login\test 下面studyTemp.odt
 // / get files: image | odt | json|
@@ -354,31 +352,15 @@ func LoadImageFile(c echo.Context) error {
 	///studyuid=1.2.826.1.1.3680043.2.461.20090916105245.168977.200909160196&type=json
 	///-------------------------------------------------------------------------
 	log4go.Debug("----LoadImageFile-------" + c.Request().URL.Path)
-	studyuid := c.FormValue("studyuid")
-	studyDate := c.FormValue("studyDate")
-	//log4go.Info("studyDate:" + studyDate)
-	image_hash_dir := Units.GetStudyHashDir(studyuid, studyDate)
-	//log4go.Debug(image_hash_dir)
-	filepath := CONFIG[IMAGE_Dir] + image_hash_dir
-	filepath += "/"
 	filetype := c.FormValue("type")
-	// println(filetype)
-	if filetype == "json" {
-		filepath += studyuid
-		filepath += ".json"
-		log4go.Debug("type == json filepath:" + filepath)
-		if IsFileExists(filepath) {
-			return c.File(filepath)
-		} else {
-			log4go.Error("studyuid:" + studyuid)
-			log4go.Error("image_hash_dir:" + image_hash_dir + "No filepath:" + filepath)
-		}
-	} else if filetype == "odt" {
+	studyuid := c.FormValue("studyuid")
+	log4go.Debug("filetype:" + filetype)
+	if filetype == "odt" {
 		odtpath := CONFIG[IMAGE_Dir] + "/Report/"
 		odtpath += studyuid
 		odtpath += ".odt"
 		patientReport := CONFIG[IMAGE_Dir] + "/Report/patient.odt"
-		log4go.Debug("type == odt filepath:" + odtpath) //patient.odt
+		//log4go.Debug("type == odt filepath:" + odtpath) //patient.odt
 		studyTemp := CONFIG[PAGE_Dir] + "/Login/test/studyTemp.odt"
 		if IsFileExists(odtpath) {
 			return c.File(odtpath)
@@ -392,6 +374,27 @@ func LoadImageFile(c echo.Context) error {
 			return c.File(studyTemp)
 		} else {
 			log4go.Error("No filepath:" + odtpath)
+		}
+		return c.Redirect(http.StatusMovedPermanently, c.Scheme()+"://"+c.Request().Host+"/login/login.html")
+	}
+
+	studyDate := c.FormValue("studyDate")
+	//log4go.Info("studyDate:" + studyDate)
+	image_hash_dir := Units.GetStudyHashDir(studyuid, studyDate)
+	//log4go.Debug(image_hash_dir)
+	filepath := CONFIG[IMAGE_Dir] + image_hash_dir
+	filepath += "/"
+
+	// println(filetype)
+	if filetype == "json" {
+		filepath += studyuid
+		filepath += ".json"
+		log4go.Debug("type == json filepath:" + filepath)
+		if IsFileExists(filepath) {
+			return c.File(filepath)
+		} else {
+			log4go.Error("studyuid:" + studyuid)
+			log4go.Error("image_hash_dir:" + image_hash_dir + "No filepath:" + filepath)
 		}
 	} else {
 		seriesuid := c.FormValue("seriesuid")
@@ -983,6 +986,10 @@ func GetStudyOrderFromDB(c echo.Context) error {
 	//分页查询https://blog.csdn.net/myth_g/article/details/89672722
 	startTime := c.FormValue("start")
 	endTime := c.FormValue("end")
+	if sqlite_db {
+		startTime = startTime[0:4] + "-" + startTime[4:6] + "-" + startTime[6:8]
+		endTime = endTime[0:4] + "-" + endTime[4:6] + "-" + endTime[6:8]
+	}
 	page := c.FormValue("page")
 	limit := c.FormValue("limit")
 	var studyjson Study.StudyOrderDataJson
@@ -993,10 +1000,6 @@ func GetStudyOrderFromDB(c echo.Context) error {
 		lim, err := strconv.Atoi(limit)
 		checkErr(err)
 		count = (p - 1) * lim
-		if sqlite_db {
-			startTime = startTime[0:4] + "-" + startTime[4:6] + "-" + startTime[6:8]
-			endTime = endTime[0:4] + "-" + endTime[4:6] + "-" + endTime[6:8]
-		}
 		var sqlstr string
 		sqlstr = "select p.PatientIdentity , p.PatientID, p.PatientName, p.PatientNameEnglish," +
 			"p.PatientSex , p.PatientBirthday , p.PatientAddr , p.PatientEmail , p.PatientCarID," +
@@ -1010,7 +1013,7 @@ func GetStudyOrderFromDB(c echo.Context) error {
 			"o.StudyModalityIdentity, o.StudyManufacturer , o.RegisterID " +
 			"from h_patient p, h_order o  " +
 			"where p.PatientIdentity = o.PatientIdentity and StudyState > 0 and " +
-			"o.StudyDateTime>= '" + startTime + "' and  o.StudyDateTime<= '" + endTime + "' " +
+			"o.StudyDateTime>='" + startTime + "' and  o.StudyDateTime<='" + endTime + "' " +
 			"order by o.StudyOrderIdentity " +
 			"limit " + strconv.Itoa(count) + "," + limit
 
