@@ -1,4 +1,4 @@
-#include "patientsform.h"
+﻿#include "patientsform.h"
 #include "ui_patientsform.h"
 
 #include <QDateTime>
@@ -137,7 +137,9 @@ void  PatientsForm::showPatients()
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyCost].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[ProcedureStepStartDate].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyManufacturer].Value));
+            ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDateTime].Value));
             ui->m_PatientsTable->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyOrderIdentity].Value));
+
         }
     }
 }

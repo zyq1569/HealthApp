@@ -1,4 +1,4 @@
-#include "studyimage.h"
+﻿#include "studyimage.h"
 #include "ui_studyimage.h"
 
 #include "httpclient.h"
@@ -20,7 +20,7 @@ StudyImage::StudyImage(QWidget *parent) : QMainWindow(parent), ui(new Ui::StudyI
     connect(this,SIGNAL(sendClientMsg(QString)),this,SLOT(sendToImageAppMsg(QString)));
 
     QStringList strs = {"patientId", "patientName", "patientSex",  "patientBirthday","studyState","studyModality",
-                        "studyDescription","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"
+                        "studyDescription","StudyDateTime","studyuid","PatientIdentity","PatientID","StudyOrderIdentity"
                        };
     ui->m_tableWidget->setColumnCount(strs.count());
 
@@ -87,7 +87,14 @@ void StudyImage::viewImage()
 {
     //QMessageBox::information(NULL, tr("检查"),tr("查看图像!"));
     QString studyuid = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-4)->text();
-    QString studystate =  ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-7)->text();
+    QString StudyDateTime = ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-5)->text();
+    StudyDateTime = StudyDateTime.replace("-","");
+    StudyDateTime = StudyDateTime.replace("T","");
+    StudyDateTime = StudyDateTime.replace("Z","");
+    StudyDateTime = StudyDateTime.replace(":","");
+    StudyDateTime = "&studyDate=" + StudyDateTime;
+    studyuid+= StudyDateTime;
+    QString studystate =  ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-8)->text();
     if (studystate == "已检查" || studystate == "诊断" || studystate == "报告审核")
     {
         //emit sendClientMsg(studyuid);
@@ -338,6 +345,7 @@ void StudyImage::updateStudyImageTable()
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(state));
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyModality].Value));
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDescription].Value));
+            ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyDateTime].Value));
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[StudyUID].Value));
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientIdentity].Value));
             ui->m_tableWidget->setItem(row,column++,new QTableWidgetItem(StudyOder->orderdata[row].studyorder[PatientID].Value));
