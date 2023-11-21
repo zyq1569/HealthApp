@@ -356,7 +356,7 @@ func LoadImageFile(c echo.Context) error {
 	studyuid := c.FormValue("studyuid")
 	log4go.Debug("filetype:" + filetype)
 	if filetype == "" {
-		log4go.Error("filetype:NULL" + c.Request().URL)
+		log4go.Error(c.Request().URL)
 	}
 	if filetype == "odt" {
 		odtpath := CONFIG[IMAGE_Dir] + "/Report/"
