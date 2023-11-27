@@ -151,7 +151,7 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
     });
     //testWebDOF
     $('.testWebDOF .layui-btn').on('click', function () {
-        window.open('http://' + window.location.host + '/login/test/testReport.html#A');
+        window.open('http://' + window.location.host + '/login/report/studyReport.html#A');
         //window.location.replace('http://' + window.location.host + '/healthsystem/ris/StudyReport.html')
     });
     //监听头工具栏事件
@@ -249,75 +249,25 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                 }
         }
     });
+
     //监听表格行双击
+    var host = window.location.host;
+    var imageview_url = "http://" + host + "/view/view.html?";
+    var reportview_url = "http://" + host + "/login/report/studyReport.html#";
+    var reportview_ur2 = "http://" + host + "/login/report/newReport.html#";
     table.on('rowDouble(studytabledatas)', function (obj) {
         //var patient = JSON.stringify(obj.data);
         var json = obj.data; // JSON.parse(patient);
         //<!-- begin 20201218 add:new report -->
         if (flag) {
-            window.open('http://' + window.location.host + '/login/test/studyReport.html?' + Math.random() + '#' + json.StudyOrderIdentity);
+            new_report =  reportview_url+json.studyOrderIdentity;
         } else {
-            window.open('http://' + window.location.host + '/login/test/testReport.html?' + Math.random() + '#' + json.StudyOrderIdentity);
+            new_report =  reportview_ur2+json.studyOrderIdentity; 
         }
         flag = !flag;
-        //<!-- end 20201218 add:new report -->
-
-        /// <!-- abandon 2020-1229: old report & load -->
-        // if (json.StudyOrderIdentity == g_currentReportOrderIdentity) {
-        //     element.tabChange('TabBrief', 'layid_report');
-        //     return;
-        // } else if (g_currentReportOrderIdentity.length > 0) {
-        //     if (saveReport2ServerContent() < 0) {
-        //         layer.alert(g_mess_savereportfail);
-        //         element.tabChange('TabBrief', 'layid_report');
-        //         return -1;
-        //     }
-        // }
-        // var reportdata = g_reportData; //temp_report
-        // reportdata.StudyOrderIdentity = json.StudyOrderIdentity;
-        // reportdata.ReportIdentity = json.StudyOrderIdentity;
-        // reportdata.ReportContent = ''; // to do ... next
-        // //set title content
-        // // document.getElementById("reporpatientname").innerText = "Name:" + json.patientName;
-        // //document.getElementById("reporpatientid").innerText = "ID:" + json.patientId;
-        // var postdata = JSON.stringify(reportdata);
-        // //获取数据库检查报告信息
-        // $.ajax({
-        //     type: "POST",
-        //     url: 'http://' + window.location.host + '/healthsystem/ris/getreportdata',
-        //     async: false, //同步：意思是当有返回值以后才会进行后面的js程序。
-        //     data: postdata, //JSON.stringify(reportdata), //请求save处理数据
-        //     // dataType: "json",
-        //     success: function (result) {
-        //         try {
-        //             if (typeof result == 'string') {
-        //                 var jsondata;
-        //                 jsondata = JSON.parse(result);
-        //                 // console.log('result == string');
-        //                 result = jsondata;
-        //             }
-        //         } catch (e) {
-        //             console.log('result != string');
-        //         }
-        //         if (result.ReportContent.length > 0) {
-        //             reportdata = result;
-        //             // layer.alert('ok:' + reportdata.ReportContent);
-        //             element.tabChange('TabBrief', 'layid_report');
-        //             setStudyReportContent(reportdata);
-        //             return;
-        //         } else {
-        //             setStudyReportContent(reportdata);
-        //             reportdata.ReportIdentity = "";
-        //             layer.alert('no report data! to create new empty report!');
-        //             element.tabChange('TabBrief', 'layid_report');
-        //         }
-        //     },
-        //     error: function (XMLHttpRequest, textStatus, errorThrown) {
-        //         setStudyReportContent(reportdata);
-        //         layer.alert('Get report error! no report data!');
-        //         element.tabChange('TabBrief', 'layid_report');
-        //     }
-        // });
+        window.open(new_report,"Report");      
+        var new_url = imageview_url + json.studyuid + "&studyDate="+json.studyDate;
+        window.open(new_url,"ImageView");
     });
 
     //submit patientform //自动加载表单所有数据 来自 属性：<form class="layui-form layui-form-pane1" action="" lay-filter="formpatient">
