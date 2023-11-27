@@ -355,16 +355,16 @@ func LoadImageFile(c echo.Context) error {
 	filetype := c.FormValue("type")
 	studyuid := c.FormValue("studyuid")
 	log4go.Debug("filetype:" + filetype)
-	if filetype == "" {
-		log4go.Error(c.Request().URL)
-	}
+	// if filetype == "" {
+	// 	filetype == dcm
+	// }
 	if filetype == "odt" {
 		odtpath := CONFIG[IMAGE_Dir] + "/Report/"
 		odtpath += studyuid
 		odtpath += ".odt"
 		patientReport := CONFIG[IMAGE_Dir] + "/Report/patient.odt"
-		//log4go.Debug("type == odt filepath:" + odtpath) //patient.odt
-		studyTemp := CONFIG[PAGE_Dir] + "/Login/test/studyTemp.odt"
+		//log4go.Debug("type == odt filepath:" + odtpath) //patient/.odt
+		studyTemp := CONFIG[PAGE_Dir] + "/Login/report/patient.odt"
 		if IsFileExists(odtpath) {
 			return c.File(odtpath)
 		} else if IsFileExists(patientReport) {
