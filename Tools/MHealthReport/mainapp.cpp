@@ -1,11 +1,11 @@
-#include "mainapp.h"
+﻿#include "mainapp.h"
 #include "ui_mainapp.h"
 
 #include "studyimage.h"
 #include "patientstudyregister.h"
 #include "patientdata.h"
 #include "config.h"
-
+#include "logging.h"
 #include <QProcess>
 #include <QWebEngineView>
 #include <QWebEngineCookieStore>
@@ -259,6 +259,7 @@ void MainApp::lookStudyImage(QString studyuid)
     {
         m_imageView->setUrl(QUrl(m_url+"/view/view.html?"+studyuid));
     }
+    DEBUG_LOG(m_url+"/view/view.html?"+studyuid);
     m_imageView->show();
     flag = !flag;
     //QMessageBox::information(NULL, tr("studyReport"),StudyOrderIdentity);
@@ -278,15 +279,16 @@ void MainApp::lookStudyReport(QString StudyOrderIdentity)
         return;
     }
 
+    //打开指定的页面，有页面内的js自动下载odt文件报告
     m_url = "http://"+m_serverIP+":"+m_serverPort;
     static bool flag = true;
     if (flag)
     {
-        m_reportview->setUrl(QUrl(m_url+"/login/test/studyReport.html#"+StudyOrderIdentity));
+        m_reportview->setUrl(QUrl(m_url+"/login/report/studyReport.html#"+StudyOrderIdentity));
     }
     else
     {
-        m_reportview->setUrl(QUrl(m_url+"/login/test/oderReport.html#"+StudyOrderIdentity));
+        m_reportview->setUrl(QUrl(m_url+"/login/report/oderReport.html#"+StudyOrderIdentity));
     }
     m_reportview->show();
     flag = !flag;

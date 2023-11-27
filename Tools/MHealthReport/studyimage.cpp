@@ -94,8 +94,10 @@ void StudyImage::viewImage()
     StudyDateTime = StudyDateTime.replace(":","");
     StudyDateTime = "&studyDate=" + StudyDateTime;
     studyuid+= StudyDateTime;
-    QString studystate =  ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-8)->text();
-    if (studystate == "已检查" || studystate == "诊断" || studystate == "报告审核")
+    DEBUG_LOG(studyuid);
+    //QString studystate =  ui->m_tableWidget->item(m_currentRow,ui->m_tableWidget->columnCount()-8)->text();
+    DEBUG_LOG(studyuid);
+    //if (studystate == "已检查" || studystate == "诊断" || studystate == "报告审核")
     {
         //emit sendClientMsg(studyuid);
         if (m_urlImage)
@@ -109,11 +111,11 @@ void StudyImage::viewImage()
             emit sendClientMsg(info/*studyuid*/);
         }
     }
-    else
-    {
-        QMessageBox::information(NULL, tr("未检查"),tr("目前无图像!"));
-        return;
-    }
+//    else
+//    {
+//        QMessageBox::information(NULL, tr("未检查"),tr("目前无图像!"));
+//        return;
+//    }
 }
 
 void StudyImage::editorSaveReport(QString filename)
