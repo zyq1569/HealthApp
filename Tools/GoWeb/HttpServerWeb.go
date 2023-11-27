@@ -509,7 +509,7 @@ func SaveOdtReport(c echo.Context) error {
 		}
 		///
 		reportIdentity := reportdata.ReportIdentity
-		fileName := CONFIG[IMAGE_Dir] + "/Report//Report/" + reportIdentity + ".odt"
+		fileName := CONFIG[IMAGE_Dir] + "/Report/" + reportIdentity + ".odt"
 		f, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE /*|os.O_TRUNC*/, 0666)
 		defer f.Close()
 		if err != nil {
