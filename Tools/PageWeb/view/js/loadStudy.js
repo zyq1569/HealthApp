@@ -68,7 +68,7 @@ function loadStudy(studyViewer, viewportModel, server_json_url, server_wado_url)
                     var imageId = image.imageId;
 
                     if (image.imageId.substr(0, 4) !== 'http') {
-                        imageId = server_wado_url + data.studyuid + "&seriesuid=" + series.seriesUid + "&sopinstanceuid=" + image.imageId;
+                        imageId = server_wado_url + data.studyuid + "&studyDate=" + data.studyDate +"&seriesuid=" + series.seriesUid + "&sopinstanceuid=" + image.imageId;
                     }
                     stack.imageIds.push(imageId);
                     //console.log(imageId);
