@@ -63,11 +63,12 @@ function createEditor() {
     function guessDocServerUrl( editor ) {
         var pos, orderid = "", docUrl = String(document.location), serverHost = String(document.location.host);
         var mimetype = "application/vnd.oasis.opendocument.text";
-        var myServerOdtUrl = "", serverODTurl = "http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt&random="+Math.random();
+        var serverODTurl = "";
         // If the URL has a fragment (#...), try to load the file it represents
         pos = docUrl.indexOf('#');
         if (pos !== -1) {
             orderid = docUrl.substr(pos + 1);
+            serverODTurl = "http://" + serverHost + "/WADO?studyuid=" + orderid + "&type=odt&random="+Math.random()
         } else {
             serverODTurl = "http://" + serverHost + "/WADO?studyuid=patient&type=odt&random="+Math.random();
         }
@@ -81,9 +82,9 @@ function createEditor() {
             if ((xmlRequest.status >= 200 && xmlRequest.status < 300) || xmlRequest.status === 304) {
                 var blob = new Blob([this.response]);
                 blob.fileName = this.fileName;
-                myServerOdtUrl = URL.createObjectURL(blob);
-                editor.openDocumentFromUrl(myServerOdtUrl, startEditing);
-                URL.revokeObjectURL(myServerOdtUrl);
+                serverODTurl = URL.createObjectURL(blob);
+                editor.openDocumentFromUrl(serverODTurl, startEditing);
+                URL.revokeObjectURL(serverODTurl);
             } else {
                 Dialogs.showWarn('下载失败');
             }
