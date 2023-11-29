@@ -260,13 +260,17 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
         var json = obj.data; // JSON.parse(patient);
         //<!-- begin 20201218 add:new report -->
         if (flag) {
-            new_report =  reportview_url+json.studyOrderIdentity;
+            new_report =  reportview_url+json.StudyOrderIdentity;
         } else {
-            new_report =  reportview_ur2+json.studyOrderIdentity; 
+            new_report =  reportview_ur2+json.StudyOrderIdentity; 
         }
         flag = !flag;
-        window.open(new_report,"Report");      
-        var new_url = imageview_url + json.studyuid + "&studyDate="+json.studyDate;
+        window.open(new_report,"Report");  
+        var datetime = json.StudyDateTime.replace(/T/g, "");
+        datetime = datetime.replace(/Z/g, "");
+        datetime = datetime.replace(/-/g, "");
+        datetime = datetime.replace(/:/g, "");       
+        var new_url = imageview_url + json.StudyUID + "&studyDate="+datetime;
         window.open(new_url,"ImageView");
     });
 
@@ -482,191 +486,3 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
         ]
     });
 });
-    ///------------20201218-------------------------
-    //----------------abandon-----------------
-    //执行一个 table 实例
-    // var tableStudyImage = table.render({
-    //     elem: '#studyimage',
-    //     height: 'full-200',
-    //     url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime, //数据接口 http://127.0.0.1:80/
-    //     //url: 'http://127.0.0.1/healthsystem/ris/stduydata/?start=20190101&end=20191219',
-    //     title: 'studyimages',
-    //     page: true, //开启分页
-    //     toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
-    //     defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
-    //         title: '提示',
-    //         layEvent: 'LAYTABLE_TIPS',
-    //         icon: 'layui-icon-tips'
-    //     }],
-    //     totalRow: true, //开启合计行
-    //     loading: true,
-    //     //skin: 'row' ,
-    //     limits: [10, 20, 40, 60, 80, 100, 150, 200, 300],
-    //     limit: 20,
-    //     patientId: "testReload",
-    //     size: 'sm',
-    //     // type: 'radio',
-    //     // even: true, //开启隔行背景
-    //     cols: [
-    //         [ //表头
-    //             {
-    //                 type: 'radio', //'checkbox',
-    //                 fixed: 'left'
-    //             }, {
-    //                 field: 'patientId',
-    //                 title: 'PatientId',
-    //                 width: 100,
-    //                 sort: true,
-    //                 fixed: 'left',
-    //                 event: 'setSign',
-    //                 totalRowText: '合计：'
-    //             }, {
-    //                 field: 'patientName',
-    //                 width: 120,
-    //                 event: 'setSign',
-    //                 title: 'PatientName'
-    //             }, {
-    //                 field: 'studyDate',
-    //                 title: 'StudyDateTime',
-    //                 width: 100,
-    //                 sort: true,
-    //                 event: 'setSign',
-    //                 totalRow: false
-    //             }, {
-    //                 field: 'patientSex',
-    //                 title: 'PatientSex',
-    //                 width: 100,
-    //                 event: 'setSign',
-    //                 sort: false
-    //             }, {
-    //                 field: 'studyModality',
-    //                 title: 'StudyModality',
-    //                 event: 'setSign',
-    //                 width: 100
-    //             }, {
-    //                 field: 'studyId',
-    //                 title: 'StudyId',
-    //                 width: 120,
-    //                 sort: true,
-    //                 hide: true,
-    //                 event: 'setSign',
-    //                 totalRow: false
-    //             }, {
-    //                 field: 'patientBirthday',
-    //                 title: 'PatientBirthday',
-    //                 event: 'setSign',
-    //                 sort: true,
-    //                 width: 100
-    //             }, {
-    //                 field: 'studyDescription',
-    //                 event: 'setSign',
-    //                 title: 'StudyDescription',
-    //                 width: 100
-    //             }, {
-    //                 field: 'studyuid',
-    //                 title: 'Studyuid',
-    //                 event: 'setSign',
-    //                 sort: true,
-    //                 hide: false,
-    //                 totalRow: false
-    //             }, {
-    //                 field: 'studystate',
-    //                 title: 'Studystate',
-    //                 event: 'setSign',
-    //                 sort: true,
-    //                 hide: true,
-    //                 totalRow: false
-    //             }, {
-    //                 field: 'studytype',
-    //                 title: 'StudyType',
-    //                 event: 'setSign',
-    //                 sort: true,
-    //                 hide: true,
-    //                 totalRow: false
-    //             }, {
-    //                 field: 'patientIdentity',
-    //                 title: 'PatientIdentity',
-    //                 event: 'setSign',
-    //                 sort: false,
-    //                 hide: true,
-    //                 totalRow: false
-    //             }, {
-    //                 field: 'studyOrderIdentity',
-    //                 title: 'StudyOrderIdentity',
-    //                 event: 'setSign',
-    //                 sort: false,
-    //                 hide: true,
-    //                 totalRow: false
-    //             }, {
-    //                 field: 'studyDepart',
-    //                 title: 'StudyDepart',
-    //                 event: 'setSign',
-    //                 sort: false,
-    //                 hide: true,
-    //                 totalRow: false
-    //             }
-    //             , {
-    //                 fixed: 'right',
-    //                 width: 360,
-    //                 align: 'center',
-    //                 toolbar: '#toolbarDemo'
-    //             }
-    //         ]
-    //     ]
-    // });
-    //上传
-    // upload.render({
-    //     elem: '#uploadDemo',
-    //     url: '', //上传接口
-    //     done: function(res) {
-    //         console.log(res);
-    //     }
-    // });
-    //studyimage
-    // var host = window.location.host;
-    // var imageview_url = "http://" + host + "/view/view.html?";
-    // table.on('rowDouble(studyimagedatas)', function (obj) {
-    //     //var patient = JSON.stringify(obj.data);
-    //     var json = obj.data; // JSON.parse(patient);
-    //     // layer.alert(JSON.stringify(obj.data));
-    //     window.open(imageview_url + json.studyuid);
-    //     // layer.alert(json.studyuid);
-    // });
-    // table.on('radio(studytabledatas)', function(obj) {
-    //     layer.alert('---' + obj.tr.data('isChecked'));
-    //     if (obj.tr.data('isChecked')) {
-    //         obj.checked = false;
-    //         obj.tr.find(':radio[lay-type="layTableRadio"]').prop('checked', false);
-    //         layui.form.render();
-    //     }
-    // });
-    //监听表格行点击
-    // table.on('row(studytabledatas)', function(obj) {
-    // if (obj.checked) {
-    //     obj.checked = false;
-    //     // obj.tr.find(':radio[lay-type="layTableRadio"]').prop('checked', false);
-    //     layui.form.render();
-    // }
-    // $('input:radio[name=sex]')[0].checked = false;
-    // form.render('radio');
-    // console.log(obj);
-    // layer.alert('row rowIndex:'+ obj.tr[0].rowIndex +' 选中数据:'+JSON.stringify(obj.data));
-    // });
-    // table.on('toolbar(studyimagedatas)', function (obj) {
-    //     var checkStatus = table.checkStatus(obj.config.id),
-    //         data = checkStatus.data; //获取选中的数据
-    //     switch (obj.event) {
-    //         //自定义头工具栏右侧图标 - 提示
-    //         case 'LAYTABLE_TIPS':
-    //             layer.alert('检查图像表,不一定在预约表中');
-    //             break;
-    //     }
-    // });
-    // $('.SerarchImageTable .layui-btn').on('click', function () {
-    //     searchImageTime = 'start=' + $('#imagestduystart').val() + '&end=' + $('#imagestduyend').val();
-    //     tableStudyImage.reload({
-    //         url: 'http://' + window.location.host + '/healthsystem/ris/stduyimage/?' + searchImageTime
-    //     });
-    //     // var type = $(this).data('type');
-    //     // active[type] ? active[type].call(this) : '';
-    // });
