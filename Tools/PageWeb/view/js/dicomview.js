@@ -129,11 +129,10 @@ function showStduyImage(studystudyuid) {
   }
   // $(image).style.height = "100%";
   //eg.: http://127.0.0.1:8080/WADO?studyuid=1.3.6.1.4.1.25403.52237031786.3872.20100510032220.1&type=json
-  var host = window.location.host;
+  var host            = window.location.host;
   var server_json_url = "http://" + host + "/";
   var server_wado_url = "wadouri:http://" + host + "/WADO?studyuid=";
-  server_json_url =
-    server_json_url + "WADO?studyuid=" + studystudyuid + "&type=json";
+  server_json_url     = server_json_url + "WADO?studyuid=" + studystudyuid + "&type=json";
   $.getJSON(server_json_url, function (data) {
     // document.getElementById("image").style.height = parseInt(document.body.clientHeight) - 2 + 'px';
     if (typeof viewportModel === "undefined") {
@@ -218,13 +217,7 @@ function showStduyImage(studystudyuid) {
           var imageId = image.imageId;
 
           if (image.imageId.substr(0, 4) !== "http") {
-            imageId =
-              server_wado_url +
-              data.studyuid +
-              "&seriesuid=" +
-              series.seriesUid +
-              "&sopinstanceuid=" +
-              image.imageId;
+            imageId = server_wado_url + data.studyuid + "&studyDate=" + data.studyDate + "&seriesuid=" + series.seriesUid + "&sopinstanceuid=" + image.imageId;
           }
           stack.imageIds.push(imageId);
           //console.log(imageId);

@@ -279,7 +279,7 @@ void MainApp::lookStudyReport(QString StudyOrderIdentity)
         return;
     }
 
-    //打开指定的页面，有页面内的js自动下载odt文件报告
+    //打开指定的页面，有页面内的js自动下载odt文件报告localfileeditor.js
     m_url = "http://"+m_serverIP+":"+m_serverPort;
     static bool flag = true;
     if (flag)

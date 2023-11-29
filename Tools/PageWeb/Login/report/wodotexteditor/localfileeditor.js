@@ -97,7 +97,7 @@ function createEditor() {
             Dialogs.showWarn('发送下载请求失败');
             console.error('发送失败', e);
         }
-        return myServerOdtUrl || null;
+        return serverODTurl || null;
     }
 
     function fileSelectHandler(evt) {
