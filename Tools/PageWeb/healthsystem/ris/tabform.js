@@ -206,9 +206,9 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     var json = obj.data;
                     //var reportview_url ='http://' + window.location.host + '/login/test/testReport.html#'+json.StudyOrderIdentity;
                     if (flag) {
-                        window.open('http://' + window.location.host + '/login/test/studyReport.html?' + Math.random() + '#' + json.StudyOrderIdentity);
+                        window.open('http://' + window.location.host + '/login/report/studyReport.html#' + json.StudyOrderIdentity,"Report");
                     } else {
-                        window.open('http://' + window.location.host + '/login/test/testReport.html?' + Math.random() + '#' + json.StudyOrderIdentity);
+                        window.open('http://' + window.location.host + '/login/report/newReport.html#' + json.StudyOrderIdentity,"Report");
                     }
                     flag = !flag;
                     break;
@@ -236,9 +236,13 @@ layui.use(['laypage', 'table', 'element', 'upload', 'form'], function () {
                     var json = obj.data; // JSON.parse(patient);
                     // layer.alert(JSON.stringify(obj.data));
                     //layer.msg(JSON.stringify(obj.data));
+                    var datetime = json.StudyDateTime.replace(/T/g, "");
+                    datetime = datetime.replace(/Z/g, "");
+                    datetime = datetime.replace(/-/g, "");
+                    datetime = datetime.replace(/:/g, "");
                     if (parseInt(json.StudyState) > 2 && parseInt(json.StudyType) == 0) {
                         //if (parseInt(json.studyState) >= 2) {
-                        window.open(imageview_url + json.StudyUID);
+                        window.open(imageview_url + json.StudyUID + "&studyDate=" + datetime, "ImageView");
                     }
                     else {
                         //layer.msg(json.studystate);
