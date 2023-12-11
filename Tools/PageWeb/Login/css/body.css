@@ -9,10 +9,10 @@
  
  .body {
      position: absolute;
-     top: -20px;
-     left: -20px;
-     right: -40px;
-     bottom: -40px;
+     top: 0px;
+     left: 0px;
+     right: 0px;
+     bottom: 0px;
      width: auto;
      height: auto;
      background-image: url(../image/city-skyline-wallpapers.jpg);
@@ -23,10 +23,10 @@
  
  .grad {
      position: absolute;
-     top: -20px;
-     left: -20px;
-     right: -40px;
-     bottom: -40px;
+     top: 0px;
+     left: 0px;
+     right: 0px;
+     bottom: 0px;
      width: auto;
      height: auto;
      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(0, 0, 0, 0)), color-stop(100%, rgba(0, 0, 0, 0.65)));

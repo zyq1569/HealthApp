@@ -6,8 +6,7 @@
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="format-detection" content="email=no" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,16 +31,12 @@
     </div>
     <br>
     <div class="login">
-        <input type="text" placeholder="username" name="user" id="user"><br>
-        <input type="password" placeholder="password" name="password" id="password"><br>
-        <input type="button" value="Login" onclick=check()>
+        <input type="text" placeholder="用户名" name="user" id="user"><br>
+        <input type="password" placeholder="密码" name="password" id="password"><br>
+        <input type="button" value="登陆" onclick=check()>
         <script type="text/javascript">
             // document.cookie = 'name=jack;password=123';
             function Login() {
-                //var btn = document.getElementsByTagName("button")[0];
-                // console.log("事件1");
-                // alert("hello Login");
-                // 异步对象
                 var host = window.location.host;
                 console.log(host);
                 $.ajax({
@@ -56,9 +51,7 @@
                         console.log(mess);
 
                         if (mess.toUpperCase() == "OK") { //根据返回值进行跳转
-                            //alert('http://' + host + '/healthsystem/ris/studys.html');
                             location.href = 'http://' + host + '/healthsystem/ris/studys.html';
-                            //window.location = 'http://' + host + '/view/imageview.html';
                         } else {
                             alert("message from server: " + mess);
                             // $("#errorplace").show();
