@@ -774,3 +774,21 @@ void HMainWindow::on_cBSqlite_clicked()
     }
 }
 
+
+void HMainWindow::on_pBopenLog_clicked()
+{
+    QString explorer = "explorer.exe";
+    //QStringList param;
+
+    QString logDir = m_ExeDir+"log";
+    logDir.replace("/","\\");
+    //QMessageBox::information(NULL, "question", logDir, QMessageBox::Yes );
+    if (QFileInfo(logDir).isDir())
+    {
+        //param<<QLatin1String("/select,")<<logDir;
+        explorer += QString(" /select,\"%1\"").arg(logDir);
+        QProcess::startDetached(explorer);
+    }
+    //QDesktopServices::openUrl(QUrl("file:"+logDir,QUrl::TolerantMode));
+}
+

@@ -80,6 +80,10 @@ void Taskthread::registercleanup()
     // deregister RLE codecs
     DcmRLEDecoderRegistration::cleanup();
     DcmRLEEncoderRegistration::cleanup();
+
+    // jpeg2k
+    FMJPEG2KEncoderRegistration::cleanup();
+    FMJPEG2KDecoderRegistration::cleanup();
 }
 
 bool Taskthread::updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, OFString &value)

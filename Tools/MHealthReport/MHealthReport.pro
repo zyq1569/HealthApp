@@ -2,7 +2,7 @@
 win32 {
 msvc: DEFINES      += MSVC
 }
-TARGET = ./bin
+TARGET = MHealthReport
 contains(DEFINES, MSVC) {
 QT              += core gui network webenginewidgets
 

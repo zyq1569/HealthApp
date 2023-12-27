@@ -82,6 +82,8 @@ private slots:
 
     void on_cBSqlite_clicked();
 
+    void on_pBopenLog_clicked();
+
 protected:
     QProcess *m_pQProcess[QPROCESSSIZE];//,*m_pStoreQProcess,*m_pQuerQProcess,*m_pWLMQProcess,*m_pDcmQProcess;
     QStandardItemModel *m_model;
