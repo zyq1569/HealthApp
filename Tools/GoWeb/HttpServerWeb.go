@@ -807,7 +807,7 @@ func UpdateDBStudyData(c echo.Context) error {
 			}
 			sqlstr = "insert into h_order (`StudyOrderIdentity`,`PatientIdentity`,`StudyID`, `StudyUID`,`StudyModality`," +
 				"`ScheduledDateTime`,`StudyDateTime`,`StudyDescription`,`StudyDepart`,`StudyCode`,`StudyCost`,`CostType`)" +
-				" value(?,?,?,?,?,?,?,?,?,?,?,?)"
+				" values(?,?,?,?,?,?,?,?,?,?,?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
 			if err != nil {
 				println("------fail  maridb_db.Prepare(sqlstr) insert into h_order:--------")
@@ -815,6 +815,9 @@ func UpdateDBStudyData(c echo.Context) error {
 				log4go.Error(err)
 				//os.Exit(1)
 				return c.String(http.StatusBadRequest, "error")
+			}
+			if sqlite_db {
+				studyData.ScheduledDate = studyData.ScheduledDate[0:4] + "-" + studyData.ScheduledDate[4:6] + "-" + studyData.ScheduledDate[6:8]
 			}
 			affect_count, err := stmt.Exec(StudyOrderIdentity, studyData.PatientIdentity, studyData.StudyID,
 				studyData.StudyUID, studyData.StudyModality, studyData.ScheduledDate, studyData.ScheduledDate, studyData.StudyDescription,
@@ -1164,7 +1167,7 @@ func UpdateStudyOrderToDB(c echo.Context) error {
 				"`StudyDepart`,`StudyCode`, `StudyCost`,`CostType`, " +
 				"`StudyType`, `StudyState`,`StudyDateTime`, `InstitutionName`," +
 				"`ProcedureStepStartDate`,`StudyModalityIdentity`,`StudyManufacturer`,`RegisterID`)" +
-				"value(?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?)"
+				"values(?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?)"
 			stmt, err := maridb_db.Prepare(sqlstr)
 			if err != nil {
 				log4go.Error("------fail  maridb_db.Prepare(sqlstr) insert into h_order:--------")
