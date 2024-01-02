@@ -482,7 +482,7 @@ func CheckLogin(c echo.Context) error {
 		}
 	} else {
 		log4go.Info("OpenDB error! username:" + username + "/userpwd:" + userpwd)
-		return c.String(http.StatusOK, "OpenDB error! username or userpwd error! fail")
+		return c.String(http.StatusOK, "error! username or userpwd error? or table[h_user] no data, pls add data! } fail! ")
 	}
 	log4go.Info("username:" + username + "/userpwd:" + userpwd)
 	return c.String(http.StatusOK, "username or userpwd error! fail")
