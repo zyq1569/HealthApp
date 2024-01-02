@@ -1,4 +1,4 @@
-#include "httpclient.h"
+﻿#include "httpclient.h"
 
 #include <QNetworkReply>
 #include <QFileInfo>
@@ -213,16 +213,16 @@ void HttpClient::downFileFromWeb(QUrl httpUrl, QString savefilename, QString dow
     }
     if (QFile::exists(fileName))
     {
-        if (QMessageBox::question(NULL, tr("Overwrite Existing File"), tr("There already exists a file called %1%2."
-                                  " Overwrite?").arg(fileName, useDirectory ? QString() : QStringLiteral(" in the current directory")),
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
-        {
-            if (m_currentfiletype == DownFileType::report)
-            {
-                emit parseReportFinished();
-            }
-            return;
-        }
+//        if (QMessageBox::question(NULL, tr("Overwrite Existing File"), tr("There already exists a file called %1%2."
+//                                  " Overwrite?").arg(fileName, useDirectory ? QString() : QStringLiteral(" in the current directory")),
+//                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
+//        {
+//            if (m_currentfiletype == DownFileType::report)
+//            {
+//                emit parseReportFinished();
+//            }
+//            return;
+//        }
         QFile::remove(fileName);
     }
     if (m_currentfiletype != DownFileType::dbinfo)
