@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+ï»¿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include "dcmtk/ofstd/ofstd.h"
@@ -234,11 +234,11 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     m_pMOdel->setColumnCount(6);
     m_pMOdel->setHeaderData(0,Qt::Horizontal,QString(""));
-    //m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("ÐÕÃû"));
+    //m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("å§“å"));
     //m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
-    //m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("ÈÕÆÚ"));
-    //m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("ÃèÊö"));
-    //m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("Â·¾¶"));
+    //m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("æ—¥æœŸ"));
+    //m_pMOdel->setHeaderData(4,Qt::Horizontal,QString("æè¿°"));
+    //m_pMOdel->setHeaderData(5,Qt::Horizontal,QString("è·¯å¾„"));
     m_pMOdel->setHeaderData(1,Qt::Horizontal,QString("Name"));
     m_pMOdel->setHeaderData(2,Qt::Horizontal,QString("PatientID"));
     m_pMOdel->setHeaderData(3,Qt::Horizontal,QString("Date"));
@@ -257,7 +257,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->pBSendDcm->setValue(100);
 
     OFConsoleApplication app("SendDicomSCU", "DICOM send scu");
-    //--------------------Ôö¼ÓÈÕÖ¾ÎÄ¼þµÄ·½Ê½----------------------------------------------------------------
+    //--------------------å¢žåŠ æ—¥å¿—æ–‡ä»¶çš„æ–¹å¼----------------------------------------------------------------
     const char *pattern = "%D{%Y-%m-%d %H:%M:%S.%q} %i %T %5p: %M %m%n";//https://support.dcmtk.org/docs/classdcmtk_1_1log4cplus_1_1PatternLayout.html
     OFString currentAppPath, Log_Dir,tempstr;
     currentAppPath = GetCurrWorkingDir();
@@ -435,6 +435,31 @@ void MainWindow::on_pBSend_clicked()
     m_sender.m_destination.destinationAETitle = ae.toStdString().c_str();
     m_sender.m_destination.ourAETitle         = ui->cb_LocalAetitle->toPlainText().toStdString().c_str();
 
+    //defaulttransfersyntax.push_back(UID_LittleEndianImplicitTransferSyntax);
+    //defaulttransfersyntax.push_back(UID_BigEndianExplicitTransferSyntax);
+    //defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);
+    //defaulttransfersyntax.push_back(UID_JPEGProcess14SV1TransferSyntax);
+    //defaulttransfersyntax.push_back(UID_JPEGLSLosslessTransferSyntax);
+    //defaulttransfersyntax.push_back(UID_JPEG2000LosslessOnlyTransferSyntax);
+    int index = ui->cB_transfersyntaxes->currentIndex();
+    switch (index)
+    {
+    case 0:
+        m_sender.SetDefaulttransfersyntax(UID_LittleEndianImplicitTransferSyntax);break;
+    case 1:
+        m_sender.SetDefaulttransfersyntax(UID_LittleEndianExplicitTransferSyntax);break;
+    case 2:
+        m_sender.SetDefaulttransfersyntax(UID_BigEndianExplicitTransferSyntax);break;
+    case 3:
+        m_sender.SetDefaulttransfersyntax(UID_JPEGProcess14SV1TransferSyntax);break;
+    case 4:
+        m_sender.SetDefaulttransfersyntax(UID_JPEGLSLosslessTransferSyntax);break;
+    case 5:
+        m_sender.SetDefaulttransfersyntax(UID_JPEG2000LosslessOnlyTransferSyntax);break;
+    default:
+        m_sender.SetDefaulttransfersyntax("");
+        break;
+    }
     Patient pt;
     std::vector<Patient> listpatient;
     int rows =  ui->tableView->model()->rowCount();
@@ -513,7 +538,7 @@ void MainWindow::on_pBDir_clicked()
 {
     QString dlg;
     dlg = ui->cbDcmDir->toPlainText();
-    //µÚÈý¸ö²ÎÊý Èç¹ûÊÇ"./" ´ú±íµ±Ç°Ó¦ÓÃµÄÄ¿Â¼. QString()¿ÕÎªÉÏ´Î´ò¿ªµÄÄ¿Â¼
+    //ç¬¬ä¸‰ä¸ªå‚æ•° å¦‚æžœæ˜¯"./" ä»£è¡¨å½“å‰åº”ç”¨çš„ç›®å½•. QString()ç©ºä¸ºä¸Šæ¬¡æ‰“å¼€çš„ç›®å½•
     QString  path = QFileDialog::getExistingDirectory(this,"select dicom dir...",dlg/*QString()*/,QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     //QString path(QWidget *parent = nullptr, const QString &caption = QString(), const QString &dir = QString(), QFileDialog::Options options = ShowDirsOnly);
     //ui->cbDcmDir->setCurrentText(path);

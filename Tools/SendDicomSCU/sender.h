@@ -117,7 +117,7 @@ public:
 
 public:
     static bool  g_static_check;
-    static OFString g_Pname, g_InsUID;
+    static OFString g_Pname, g_InsUID, m_transfersyntax;
 
 private:
     int m_type;
@@ -141,6 +141,8 @@ public:
 
     void SetUpateDcmFileAnonymous(bool key = false);
 
+    void SetDefaulttransfersyntax(OFString transfersyntax);
+
 public slots:
     void finishlistpatient(std::vector<Patient> listpat);
 
@@ -159,6 +161,7 @@ public:
     std::vector<Patient> m_listpatient;
 
     Taskthread m_taskScanDicom,m_taskSendDicom;
+
 };
 
 #endif // DICOMSENDER_H

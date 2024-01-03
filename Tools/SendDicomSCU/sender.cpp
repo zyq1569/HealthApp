@@ -39,6 +39,7 @@
 bool Taskthread::g_static_check = false;
 OFString  Taskthread::g_Pname = "";
 OFString  Taskthread::g_InsUID = "1.2.826.0.1.3680043.9.7604.";
+OFString  Taskthread::m_transfersyntax = "";
 
 OFLogger g_SendDicomSCULogge = OFLog::getLogger("SendDicomSCU");
 /////--------------------------Taskthread-----------------------------------------------------
@@ -366,12 +367,19 @@ int Taskthread::sendStudy(Study &studys)
 
     OFList<OFString> defaulttransfersyntax,dcmfiles;
 
-    defaulttransfersyntax.push_back(UID_LittleEndianImplicitTransferSyntax);
-    defaulttransfersyntax.push_back(UID_BigEndianExplicitTransferSyntax);
-    defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEGProcess14SV1TransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEGLSLosslessTransferSyntax);
-    defaulttransfersyntax.push_back(UID_JPEG2000LosslessOnlyTransferSyntax);
+    if (Taskthread::m_transfersyntax.length() > 1)
+    {
+        defaulttransfersyntax.push_back(Taskthread::m_transfersyntax);
+    }
+    else
+    {
+        defaulttransfersyntax.push_back(UID_LittleEndianImplicitTransferSyntax);
+        defaulttransfersyntax.push_back(UID_LittleEndianExplicitTransferSyntax);
+        defaulttransfersyntax.push_back(UID_BigEndianExplicitTransferSyntax);
+        defaulttransfersyntax.push_back(UID_JPEGProcess14SV1TransferSyntax);
+        defaulttransfersyntax.push_back(UID_JPEGLSLosslessTransferSyntax);
+        defaulttransfersyntax.push_back(UID_JPEG2000LosslessOnlyTransferSyntax);
+    }
 
 
     OFList<OFString> abstractSyntaxlist;
@@ -491,6 +499,10 @@ void DicomSender::SetUpateDcmFileAnonymous(bool key )
     Taskthread::g_static_check = key;
 }
 
+void DicomSender::SetDefaulttransfersyntax(OFString transfersyntax)
+{
+    Taskthread::m_transfersyntax = transfersyntax;
+}
 
 DicomSender::DicomSender()
 {
