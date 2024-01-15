@@ -3,12 +3,14 @@ win32 {
 msvc: DEFINES      += MSVC
 }
 TARGET = MHealthReport
+DESTDIR = ./ms_bin
 contains(DEFINES, MSVC) {
 QT              += core gui network webenginewidgets
 
 }
 else {
 QT              += core gui
+DESTDIR = ./gw_bin
 }
 
 QMAKE_CXXFLAGS  += /utf-8
@@ -35,7 +37,6 @@ SOURCES += \
            config.cpp \
            easylogging++.cc \
            httpclient.cpp \
-#           ipcinterfaceinterface.cpp \
            logging.cpp \
            main.cpp \
            mainapp.cpp \
@@ -49,7 +50,6 @@ HEADERS += \
            config.h \
            easylogging++.h \
            httpclient.h \
-#           ipcinterfaceinterface.h \
            logging.h \
            mainapp.h \
            patientdata.h \
