@@ -116,8 +116,10 @@ INCLUDEPATH +=  ../../include/dcm/win32/ofstd/include \
 
 
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+#qnx: target.path = /tmp/$${TARGET}/bin
+#else: unix:!android: target.path = /opt/$${TARGET}/bin
+qnx: target.path = /DESTDIR
+else: unix:!android: target.path = /DESTDIR
 !isEmpty(target.path): INSTALLS += target
 
 #dimse.cc   / 2019 07 25 add test  to do it better
