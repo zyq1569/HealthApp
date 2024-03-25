@@ -1,0 +1,531 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="profile|Win32">
+      <Configuration>profile</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="profile|x64">
+      <Configuration>profile</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0DAF0BFE-7E44-3CB6-B489-EAEA7C67CBCC}</ProjectGuid>
+    <RootNamespace>TestDcm2Image</RootNamespace>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.17763.0</WindowsTargetPlatformMinVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputDirectory>bin\windows\vs\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>TestDcm2Image</PrimaryOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|x64'" Label="Configuration">
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputDirectory>bin\windows\vs\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>TestDcm2Image</PrimaryOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputDirectory>bin\windows\vs\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>TestDcm2Image</PrimaryOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'" Label="Configuration">
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputDirectory>bin\windows\vs\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>MultiByte</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>TestDcm2Image</PrimaryOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputDirectory>bin\windows\vs\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>debug\</IntermediateDirectory>
+    <PrimaryOutput>TestDcm2Image</PrimaryOutput>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputDirectory>bin\windows\vs\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>debug\</IntermediateDirectory>
+    <PrimaryOutput>TestDcm2Image</PrimaryOutput>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='profile|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>bin\windows\vs\</OutDir>
+    <IntDir>debug\</IntDir>
+    <TargetName>TestDcm2Image</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>TestDcm2Image</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>bin\windows\vs\</OutDir>
+    <IntDir>release\</IntDir>
+    <TargetName>TestDcm2Image</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|x64'">
+    <OutDir>bin\windows\vs\</OutDir>
+    <IntDir>release\</IntDir>
+    <TargetName>TestDcm2Image</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>TestDcm2Image</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'">
+    <TargetName>TestDcm2Image</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtInstall>msvc2017_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="QtSettings">
+    <QtInstall>msvc2017</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtInstall>msvc2017_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|x64'" Label="QtSettings">
+    <QtInstall>msvc2017_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="QtSettings">
+    <QtInstall>msvc2017</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'" Label="QtSettings">
+    <QtInstall>msvc2017</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\config\include;../../include/dcm/win32/dcmpsta/includet;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmUnits;..\..\Tools\fmjpeg2k\include;release;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:throwingNew -Zc:referenceBinding -Zc:__cplusplus -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>release\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>release\</ObjectFileName>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;QT_NO_DEBUG;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>
+      </ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>F:\temp\HealthApp\lib\dcm\win32\dcmnet.lib;F:\temp\HealthApp\lib\dcm\win32\dcmdata.lib;F:\temp\HealthApp\lib\dcm\win32\dcmimgle.lib;F:\temp\HealthApp\lib\dcm\win32\dcmimage.lib;F:\temp\HealthApp\lib\dcm\win32\dcmsr.lib;F:\temp\HealthApp\lib\dcm\win32\dcmtls.lib;F:\temp\HealthApp\lib\dcm\win32\oflog.lib;F:\temp\HealthApp\lib\dcm\win32\ofstd.lib;F:\temp\HealthApp\lib\dcm\win32\dcmUnits.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmcharls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpeg.lib;F:\temp\HealthApp\lib\dcm\win32\libijg8.lib;F:\temp\HealthApp\lib\dcm\win32\libijg12.lib;F:\temp\HealthApp\lib\dcm\win32\libijg16.lib;F:\temp\HealthApp\lib\dcm\win32\fmjpeg2k.lib;F:\temp\HealthApp\lib\dcm\win32\sqlite3.lib;F:\temp\HealthApp\lib\dcm\win32\openjp2.lib;"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\iphlpapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\wsock32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ws2_32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ole32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\netapi32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Kernel32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Shlwapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Advapi32.lib";shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\temp\HealthApp\lib\dcm\win32;C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OutputFile>$(OutDir)\TestDcm2Image.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='profile|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\config\include;../../include/dcm/win32/dcmpsta/includet;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmUnits;..\..\Tools\fmjpeg2k\include;release;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:throwingNew -Zc:referenceBinding -Zc:__cplusplus -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>release\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>release\</ObjectFileName>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;QT_NO_DEBUG;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>
+      </ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>F:\temp\HealthApp\lib\dcm\win32\dcmnet.lib;F:\temp\HealthApp\lib\dcm\win32\dcmdata.lib;F:\temp\HealthApp\lib\dcm\win32\dcmimgle.lib;F:\temp\HealthApp\lib\dcm\win32\dcmimage.lib;F:\temp\HealthApp\lib\dcm\win32\dcmsr.lib;F:\temp\HealthApp\lib\dcm\win32\dcmtls.lib;F:\temp\HealthApp\lib\dcm\win32\oflog.lib;F:\temp\HealthApp\lib\dcm\win32\ofstd.lib;F:\temp\HealthApp\lib\dcm\win32\dcmUnits.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmcharls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpeg.lib;F:\temp\HealthApp\lib\dcm\win32\libijg8.lib;F:\temp\HealthApp\lib\dcm\win32\libijg12.lib;F:\temp\HealthApp\lib\dcm\win32\libijg16.lib;F:\temp\HealthApp\lib\dcm\win32\fmjpeg2k.lib;F:\temp\HealthApp\lib\dcm\win32\sqlite3.lib;F:\temp\HealthApp\lib\dcm\win32\openjp2.lib;"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\iphlpapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\wsock32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ws2_32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ole32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\netapi32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Kernel32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Shlwapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Advapi32.lib";shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\temp\HealthApp\lib\dcm\win32;C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OutputFile>$(OutDir)\TestDcm2Image.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\config\include;../../include/dcm/win32/dcmpsta/includet;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmUnits;..\..\Tools\fmjpeg2k\include;release;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:throwingNew -Zc:referenceBinding -Zc:__cplusplus -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>release\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>release\</ObjectFileName>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;QT_NO_DEBUG;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>
+      </ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>F:\temp\HealthApp\lib\dcm\win32\dcmnet.lib;F:\temp\HealthApp\lib\dcm\win32\dcmdata.lib;F:\temp\HealthApp\lib\dcm\win32\dcmimgle.lib;F:\temp\HealthApp\lib\dcm\win32\dcmimage.lib;F:\temp\HealthApp\lib\dcm\win32\dcmsr.lib;F:\temp\HealthApp\lib\dcm\win32\dcmtls.lib;F:\temp\HealthApp\lib\dcm\win32\oflog.lib;F:\temp\HealthApp\lib\dcm\win32\ofstd.lib;F:\temp\HealthApp\lib\dcm\win32\dcmUnits.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmcharls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpeg.lib;F:\temp\HealthApp\lib\dcm\win32\libijg8.lib;F:\temp\HealthApp\lib\dcm\win32\libijg12.lib;F:\temp\HealthApp\lib\dcm\win32\libijg16.lib;F:\temp\HealthApp\lib\dcm\win32\fmjpeg2k.lib;F:\temp\HealthApp\lib\dcm\win32\sqlite3.lib;F:\temp\HealthApp\lib\dcm\win32\openjp2.lib;"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\iphlpapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\wsock32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ws2_32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ole32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\netapi32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Kernel32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Shlwapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Advapi32.lib";shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\temp\HealthApp\lib\dcm\win32;C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OutputFile>$(OutDir)\TestDcm2Image.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='profile|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\config\include;../../include/dcm/win32/dcmpsta/includet;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmUnits;..\..\Tools\fmjpeg2k\include;release;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:throwingNew -Zc:referenceBinding -Zc:__cplusplus -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>release\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>release\</ObjectFileName>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>
+      </ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>F:\temp\HealthApp\lib\dcm\win32\dcmnet.lib;F:\temp\HealthApp\lib\dcm\win32\dcmdata.lib;F:\temp\HealthApp\lib\dcm\win32\dcmimgle.lib;F:\temp\HealthApp\lib\dcm\win32\dcmimage.lib;F:\temp\HealthApp\lib\dcm\win32\dcmsr.lib;F:\temp\HealthApp\lib\dcm\win32\dcmtls.lib;F:\temp\HealthApp\lib\dcm\win32\oflog.lib;F:\temp\HealthApp\lib\dcm\win32\ofstd.lib;F:\temp\HealthApp\lib\dcm\win32\dcmUnits.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmcharls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpeg.lib;F:\temp\HealthApp\lib\dcm\win32\libijg8.lib;F:\temp\HealthApp\lib\dcm\win32\libijg12.lib;F:\temp\HealthApp\lib\dcm\win32\libijg16.lib;F:\temp\HealthApp\lib\dcm\win32\fmjpeg2k.lib;F:\temp\HealthApp\lib\dcm\win32\sqlite3.lib;F:\temp\HealthApp\lib\dcm\win32\openjp2.lib;"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\iphlpapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\wsock32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ws2_32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ole32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\netapi32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Kernel32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Shlwapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Advapi32.lib";shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\temp\HealthApp\lib\dcm\win32;C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OutputFile>$(OutDir)\TestDcm2Image.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\config\include;../../include/dcm/win32/dcmpsta/includet;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmUnits;..\..\Tools\fmjpeg2k\include;debug;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:throwingNew -Zc:referenceBinding -Zc:__cplusplus -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>debug\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>debug\</ObjectFileName>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>F:\temp\HealthApp\lib\dcm\win32\dcmnet.lib;F:\temp\HealthApp\lib\dcm\win32\dcmdata.lib;F:\temp\HealthApp\lib\dcm\win32\dcmimgle.lib;F:\temp\HealthApp\lib\dcm\win32\dcmimage.lib;F:\temp\HealthApp\lib\dcm\win32\dcmsr.lib;F:\temp\HealthApp\lib\dcm\win32\dcmtls.lib;F:\temp\HealthApp\lib\dcm\win32\oflog.lib;F:\temp\HealthApp\lib\dcm\win32\ofstd.lib;F:\temp\HealthApp\lib\dcm\win32\dcmUnits.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmcharls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpeg.lib;F:\temp\HealthApp\lib\dcm\win32\libijg8.lib;F:\temp\HealthApp\lib\dcm\win32\libijg12.lib;F:\temp\HealthApp\lib\dcm\win32\libijg16.lib;F:\temp\HealthApp\lib\dcm\win32\fmjpeg2k.lib;F:\temp\HealthApp\lib\dcm\win32\sqlite3.lib;F:\temp\HealthApp\lib\dcm\win32\openjp2.lib;"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\iphlpapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\wsock32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ws2_32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ole32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\netapi32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Kernel32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Shlwapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Advapi32.lib";shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\temp\HealthApp\lib\dcm\win32;C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <OutputFile>$(OutDir)\TestDcm2Image.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;..\..\include\dcm\win32\ofstd\include;..\..\include\dcm\win32\dcmdata\include;..\..\include\dcm\win32\dcmimgle\include;..\..\include\dcm\win32\dcmnet\include;..\..\include\dcm\win32\dcmsign\include;..\..\include\dcm\win32\oflog\include;..\..\include\dcm\win32\dcmimage\include;..\..\include\dcm\win32\config\include;../../include/dcm/win32/dcmpsta/includet;..\..\include\dcm\win32\dcmsr\include;..\..\include\dcm\win32\dcmjpeg\include;..\..\include\dcm\win32\dcmjpls\include;..\..\include\dcm\win32\dcmUnits;..\..\Tools\fmjpeg2k\include;debug;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:throwingNew -Zc:referenceBinding -Zc:__cplusplus -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>debug\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>debug\</ObjectFileName>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>F:\temp\HealthApp\lib\dcm\win32\dcmnet.lib;F:\temp\HealthApp\lib\dcm\win32\dcmdata.lib;F:\temp\HealthApp\Tools\TestDcm2Image\lib\dcm\win32\dcmimgle_d.lib;F:\temp\HealthApp\Tools\TestDcm2Image\lib\dcm\win32\dcmimage_d.lib;F:\temp\HealthApp\lib\dcm\win32\dcmsr.lib;F:\temp\HealthApp\lib\dcm\win32\dcmtls.lib;F:\temp\HealthApp\lib\dcm\win32\oflog.lib;F:\temp\HealthApp\lib\dcm\win32\ofstd.lib;F:\temp\HealthApp\lib\dcm\win32\dcmUnits.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmcharls.lib;F:\temp\HealthApp\lib\dcm\win32\dcmjpeg.lib;F:\temp\HealthApp\lib\dcm\win32\libijg8.lib;F:\temp\HealthApp\lib\dcm\win32\libijg12.lib;F:\temp\HealthApp\lib\dcm\win32\libijg16.lib;F:\temp\HealthApp\lib\dcm\win32\fmjpeg2k.lib;F:\temp\HealthApp\lib\dcm\win32\sqlite3.lib;F:\temp\HealthApp\lib\dcm\win32\openjp2.lib;"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\iphlpapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\wsock32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ws2_32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\ole32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\netapi32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Kernel32.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Shlwapi.lib";"C:\Program Files (x86)\Windows Kits\10\lib\10.0.17763.0\um\x86\Advapi32.lib";shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\temp\HealthApp\lib\dcm\win32;C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <OutputFile>$(OutDir)\TestDcm2Image.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NEED_SHORT_EXTERNAL_NAMES;ON_THE_FLY_COMPRESSION;QT_DEPRECATED_WARNINGS;NOMINMAX;ELPP_THREAD_SAFE;ELPP_NO_DEFAULT_LOG_FILE;ELPP_DISABLE_DEFAULT_CRASH_HANDLING;MSVC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="easylogging++.cc" />
+    <ClCompile Include="logging.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mainwindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="logging.h" />
+    <QtMoc Include="mainwindow.h">
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="mainwindow.ui">
+    </QtUic>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
