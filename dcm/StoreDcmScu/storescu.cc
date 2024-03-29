@@ -537,9 +537,20 @@ void FindAndSendThread(void* param)
     FindAndSendImage(argc,argv);
     thread_end = OFTrue;
 }
-
+//#include "dcmtk/dcmimgle/dcmimage.h"
 int main(int argc, char *argv[])
 {
+	//test
+	/*
+    DicomImage image("D:\\log\\us2.dcm");
+	if (image.getStatus() == EIS_Normal)
+	{
+		OFLOG_INFO(storescuLogger,"DicomImage ok!" );
+	}
+	else
+	{
+		OFLOG_ERROR(storescuLogger, "DicomImage fail!");
+	}*/
     //FindAndSendImage(argc,argv);
 
     static SendParm param;
