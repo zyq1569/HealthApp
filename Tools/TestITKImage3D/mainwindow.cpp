@@ -7,35 +7,19 @@
 #include <itkImageFileWriter.h>
 #include <itkRescaleIntensityImageFilter.h>
 #include <itkPNGImageIOFactory.h>
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkRescaleIntensityImageFilter.h"
 #include "itkGDCMImageIO.h"
 #include <itkJPEGImageIOFactory.h>
-
-////
 #include <vtkAutoInit.h> 
 #include<vtkRenderingVolumeOpenGL2ObjectFactory.h>
 #include<vtkRenderingOpenGL2ObjectFactory.h>
-#include<vtkRenderWindow.h>
-#include<vtkRenderWindowInteractor.h>
-#include<vtkDICOMImageReader.h>
-#include<vtkMarchingCubes.h>
-#include<vtkPolyDataMapper.h>
-#include<vtkStripper.h>
-#include<vtkActor.h>
-#include<vtkProperty.h>
-#include<vtkCamera.h>
 #include<vtkOutlineFilter.h>
 #include<vtkOBJExporter.h>
-#include<vtkRenderer.h>
 #include<vtkMetaImageReader.h>
 #include<vtkInteractorStyleTrackballCamera.h>
 #include <vtkImageData.h>
 #include <vtkProperty.h>
 #include <vtkDataSetMapper.h>
 #include <vtkRendererCollection.h>
-#include <itkImageToVTKImageFilter.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyData.h>
 #include <vtkPointData.h>
@@ -44,51 +28,59 @@
 #include "vtkRenderWindow.h"
 #include "vtkMarchingCubes.h"
 #include "vtkStripper.h"
-#include "vtkActor.h"
 #include "vtkSmoothPolyDataFilter.h"
-#include "vtkPolyDataNormals.h"
 #include "vtkImageShrink3D.h"
 #include "vtkDecimatePro.h"
-#include "vtkProperty.h"
 #include <vtkInteractorStyleImage.h>
 #include "itkImageToVTKImageFilter.h"
-#include "itkImage.h"
-#include "itkGDCMImageIO.h"
 #include "itkGDCMSeriesFileNames.h"
 #include "itkImageSeriesReader.h"
-
-///---------------on_pBVolume3D_clicked
-#include<vtkRenderWindowInteractor.h>
 #include<vtkDICOMImageReader.h>
 #include<vtkCamera.h>
 #include<vtkActor.h>
-#include<vtkRenderer.h>
 #include<vtkVolumeProperty.h>
-#include<vtkProperty.h>
 #include<vtkPolyDataNormals.h>
 #include<vtkImageShiftScale.h>
-//#include"vtkVolumeRayCastMapper.h"
 #include "vtkSmartVolumeMapper.h"
 #include<vtkPiecewiseFunction.h>
 #include<vtkColorTransferFunction.h>
-//#include<vtkVolumeRayCastCompositeFunction.h>
-#include<vtkRenderWindow.h>
 #include<vtkImageCast.h>
-//#include<vtkVolumeRayCastCompositeFunction.h>
-#include<vtkOBJExporter.h>
-#include<vtkOutlineFilter.h>
-#include<vtkPolyDataMapper.h>
-#include<vtkInteractorStyleTrackballCamera.h>
-#include<vtkRenderingVolumeOpenGL2ObjectFactory.h>
-#include<vtkRenderingOpenGL2ObjectFactory.h>
-#include<vtkMetaImageReader.h>
 #include<vtkLODProp3D.h>
+#include <vtkAxesActor.h>
+#include <vtkSmartPointer.h>
+#include <vtkImageActor.h>
+#include <vtkImageViewer2.h>
+#include <vtkImageSliceMapper.h>
+#include <vtkImageFlip.h>
+#include <vtkImageGradient.h>
+#include <vtkImageMagnitude.h>
+#include <vtkImageHybridMedian2D.h>
+#include <vtkTextProperty.h>
+#include <vtkProperty2D.h>
+#include <vtkSliderWidget.h>
+#include <vtkCommand.h>
+#include <vtkWidgetEvent.h>
+#include <vtkCallbackCommand.h>
+#include <vtkWidgetEventTranslator.h>
+#include <vtkSliderRepresentation2D.h>
+#include "itkVTKImageToImageFilter.h"
+#include "itkImageSeriesWriter.h"
+#include "itkCurvatureFlowImageFilter.h"
+#include "itkCastImageFilter.h"
+#include "itksys/SystemTools.hxx"
+#include "itkImageRegionIterator.h"
+#include <itkConnectedThresholdImageFilter.h>
+#include "itkBinaryThresholdImageFilter.h"
+#include "itkBinaryFillholeImageFilter.h"
+#include "itkGrayscaleFillholeImageFilter.h"
+#include "itkMeanImageFilter.h"
+#include "itkGradientMagnitudeImageFilter.h"
+#include "itkExtractImageFilter.h"
+#include <string>
 //体绘制加速
 //Gpu光照映射
 #include<vtkGPUVolumeRayCastMapper.h>
 #include<iostream>
-///---------------------------------------
-
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 #include "dcmtk/oflog/fileap.h"
 #include "dcmtk/ofstd/ofstd.h"
@@ -97,6 +89,11 @@
 
 // On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
 #include <signal.h>
+
+VTK_MODULE_INIT(vtkRenderingOpenGL2);
+VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
+VTK_MODULE_INIT(vtkInteractionStyle);
+VTK_MODULE_INIT(vtkRenderingFreeType);
 //!判断目录是否为空
 OFString CheckDirPath(const OFString dir)
 {
@@ -277,15 +274,13 @@ QStringList generateFilenames(const QString &dirPath)
 
 Input3dImageType::Pointer read3dImage(std::string path, QString dir)
 {
-   
+ 
 	reader3d->SetImageIO(gdcmImageIO);
 
-	
 	using FileNamesContainer = std::vector< std::string >;
 	FileNamesContainer fileNames;
 	if (1)
 	{
-
 		nameGenerator->SetUseSeriesDetails(true);
 		nameGenerator->AddSeriesRestriction("0008|0021");
 		nameGenerator->SetDirectory(dir.toUtf8().data());//bool SystemTools::FileIsDirectory(const std::string& inName)
