@@ -474,7 +474,6 @@ void MainWindow::on_pBVolume3D_clicked()
 		init = true;
 	}
 
-
 	//定义绘制器；
 	vtkRenderer *rendererViewer = vtkRenderer::New();//指向指针；
 	vtkSmartPointer<vtkRenderWindow> RenderWindow = vtkSmartPointer<vtkRenderWindow>::New();
@@ -511,7 +510,7 @@ void MainWindow::on_pBVolume3D_clicked()
 	volumeProperty->ShadeOn();//应用
 	volumeProperty->SetInterpolationTypeToLinear();//直线间样条插值；
 	volumeProperty->SetAmbient(0.4);//环境光系数；
-	volumeProperty->SetDiffuse(0.6);//漫反射；
+	volumeProperty->SetDiffuse(0.69996);//漫反射；
 	volumeProperty->SetSpecular(0.2);
 	volumeProperty->SetSpecularPower(10);//高光强度；
 
@@ -520,7 +519,8 @@ void MainWindow::on_pBVolume3D_clicked()
 	//vtkSmartPointer<vtkSmartVolumeMapper> volumeMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
 	vtkSmartVolumeMapper *volumeMapper = vtkSmartVolumeMapper::New();
 	volumeMapper->SetInputData(ImageDataItkToVtk(dicomimage));//;cast_file->GetOutput());
-
+	volumeMapper->SetBlendModeToComposite();
+	volumeMapper->SetRequestedRenderModeToDefault();
 	//vtkSmartPointer<vtkLODProp3D> lodProp3D = vtkSmartPointer<vtkLODProp3D>::New();
 	vtkLODProp3D *lodProp3D =  vtkLODProp3D::New();
 	lodProp3D->AddLOD(volumeMapper, volumeProperty, 0.0);
