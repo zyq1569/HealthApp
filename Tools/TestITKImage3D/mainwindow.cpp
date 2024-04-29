@@ -406,6 +406,7 @@ void MainWindow::initImage3D_ITK_VTK(vtkActor *vtkactor)
 	vtkActor *OutlineActor = vtkActor::New();
 	OutlineActor->SetMapper(outmapper);
 	OutlineActor->GetProperty()->SetColor(0, 0, 0);//线框颜色
+
 	outmapper->Delete();
 	outmapper = NULL;
 	OutlineActor->Delete();
@@ -417,12 +418,10 @@ void MainWindow::showImage3D_ITK_VTK()
 	vtkActor *vtkactor = vtkActor::New();
 	initImage3D_ITK_VTK(vtkactor);
 
-	//vtkSmartPointer<vtkRenderer> vtkrenderer = vtkSmartPointer<vtkRenderer>::New();
 	vtkRenderer *vtkrenderer = vtkRenderer::New();
-	//vtkSmartPointer<vtkRenderWindow> show3DWinow = vtkSmartPointer<vtkRenderWindow>::New();//WINDOW；
 	vtkRenderWindow* show3DWinow = vtkRenderWindow::New();
 	show3DWinow->AddRenderer(vtkrenderer);
-	//vtkSmartPointer<vtkRenderWindowInteractor> show3DInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();//wininteratcor;
+
 	vtkRenderWindowInteractor *show3DInteractor = vtkRenderWindowInteractor::New();
 	show3DInteractor->SetRenderWindow(show3DWinow);
 	vtkrenderer->AddActor(vtkactor);
