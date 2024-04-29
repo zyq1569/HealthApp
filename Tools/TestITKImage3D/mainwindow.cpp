@@ -406,7 +406,10 @@ void MainWindow::initImage3D_ITK_VTK(vtkActor *vtkactor)
 	vtkActor *OutlineActor = vtkActor::New();
 	OutlineActor->SetMapper(outmapper);
 	OutlineActor->GetProperty()->SetColor(0, 0, 0);//线框颜色
+	outmapper->Delete();
 	outmapper = NULL;
+	OutlineActor->Delete();
+	OutlineActor = NULL;
 }
 
 void MainWindow::showImage3D_ITK_VTK()
