@@ -217,9 +217,6 @@ Input3dImageType::Pointer GdcmRead3dImage(std::string path, QString dir)
 	typedef itk::GDCMImageIO   ImageIOType;//GDCMImageIO读DICOM
 	ImageIOType::Pointer gdcmImageIO = ImageIOType::New();
 
-	//typedef itk::ImageFileReader< Input2dImageType > ReaderType2d;
-	//ReaderType2d::Pointer reader2d = ReaderType2d::New();
-
 	reader3d->SetImageIO(gdcmImageIO);
     reader3d->SetFileNames(fileNames);
     reader3d->Update();
@@ -408,8 +405,8 @@ void MainWindow::initImage3D_ITK_VTK(vtkActor *vtkactor)
 
 	vtkActor *OutlineActor = vtkActor::New();
 	OutlineActor->SetMapper(outmapper);
-	outmapper = NULL;
 	OutlineActor->GetProperty()->SetColor(0, 0, 0);//线框颜色
+	outmapper = NULL;
 }
 
 void MainWindow::showImage3D_ITK_VTK()
