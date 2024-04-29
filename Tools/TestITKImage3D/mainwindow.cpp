@@ -435,9 +435,8 @@ void MainWindow::showImage3D_ITK_VTK()
 	vtkInteractorStyleTrackballCamera *style = vtkInteractorStyleTrackballCamera::New();
 	show3DInteractor->SetInteractorStyle(style);
 
-
 	show3DWinow->Render();
-	show3DWinow->SetWindowName("SetWindowName");
+	show3DWinow->SetWindowName("Image3D-Viewer");
 
 	show3DInteractor->Initialize();
 	show3DInteractor->Start();
@@ -467,17 +466,19 @@ void MainWindow::on_pBVolume3D_clicked()
 	QString dir = ui->m_dcmDir->toPlainText();
 	std::string Input_Name = qPrintable(dir);
 	Input3dImageType::Pointer dicomimage = GdcmRead3dImage(Input_Name, dir);
+	static bool init = false;
+	if (!init)
+	{
+		vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
+		vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
+		init = true;
+	}
 
-	vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
-	vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
 
 	//定义绘制器；
-	vtkRenderer *aRenderer = vtkRenderer::New();//指向指针；
+	vtkRenderer *rendererViewer = vtkRenderer::New();//指向指针；
 	vtkSmartPointer<vtkRenderWindow> RenderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-	RenderWindow->AddRenderer(aRenderer);
-
-	vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
-	iren->SetRenderWindow(RenderWindow);
+	RenderWindow->AddRenderer(rendererViewer);
 
 	//透明度映射函数定义；
 	vtkPiecewiseFunction *opacityTransform = vtkPiecewiseFunction::New();
@@ -516,15 +517,17 @@ void MainWindow::on_pBVolume3D_clicked()
 
 	//光纤映射类型定义：
 	//Mapper定义,
-	vtkSmartPointer<vtkSmartVolumeMapper> hiresMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
-	hiresMapper->SetInputData(ImageDataItkToVtk(dicomimage));//;cast_file->GetOutput());
+	//vtkSmartPointer<vtkSmartVolumeMapper> volumeMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
+	vtkSmartVolumeMapper *volumeMapper = vtkSmartVolumeMapper::New();
+	volumeMapper->SetInputData(ImageDataItkToVtk(dicomimage));//;cast_file->GetOutput());
 
-	vtkSmartPointer<vtkLODProp3D> prop = vtkSmartPointer<vtkLODProp3D>::New();
-	prop->AddLOD(hiresMapper, volumeProperty, 0.0);
+	//vtkSmartPointer<vtkLODProp3D> lodProp3D = vtkSmartPointer<vtkLODProp3D>::New();
+	vtkLODProp3D *lodProp3D =  vtkLODProp3D::New();
+	lodProp3D->AddLOD(volumeMapper, volumeProperty, 0.0);
 
 
 	vtkVolume *volume = vtkVolume::New();
-	volume->SetMapper(hiresMapper);
+	volume->SetMapper(volumeMapper);
 	volume->SetProperty(volumeProperty);//设置体属性；
 
 	double volumeView[4] = { 0,0,0.5,1 };
@@ -537,26 +540,39 @@ void MainWindow::on_pBVolume3D_clicked()
 	outline->SetMapper(mapOutline);
 	outline->GetProperty()->SetColor(0, 0, 0);//背景纯黑色；
 
-	aRenderer->AddVolume(volume);
-	aRenderer->AddActor(outline);
-	aRenderer->SetBackground(1, 1, 1);
-	aRenderer->ResetCamera();
+	rendererViewer->AddVolume(volume);
+	rendererViewer->AddActor(outline);
+	rendererViewer->SetBackground(1, 1, 1);
+	rendererViewer->ResetCamera();
 
 
 	//重设相机的剪切范围；
-	aRenderer->ResetCameraClippingRange();
-	RenderWindow->SetSize(800, 800);
-	RenderWindow->SetWindowName("vtkVolume-3D");
+	rendererViewer->ResetCameraClippingRange();
+	RenderWindow->SetSize(500, 500);
+	RenderWindow->SetWindowName("Volume-3D");
 
 	vtkRenderWindowInteractor *RenderWindowInteractor = vtkRenderWindowInteractor::New();
 	RenderWindowInteractor->SetRenderWindow(RenderWindow);
 
 	//设置相机跟踪模式
-	vtkInteractorStyleTrackballCamera *style = vtkInteractorStyleTrackballCamera::New();
-	RenderWindowInteractor->SetInteractorStyle(style);
+	vtkInteractorStyleTrackballCamera *Interactorstyle = vtkInteractorStyleTrackballCamera::New();
+	RenderWindowInteractor->SetInteractorStyle(Interactorstyle);
 
 	RenderWindow->Render();
 	RenderWindowInteractor->Initialize();
 	RenderWindowInteractor->Start();
+
+	RenderWindowInteractor->Delete();
+	lodProp3D->Delete();
+	volumeMapper->Delete();
+	colorTransformFunction->Delete();
+	gradientTransform->Delete();
+	volumeProperty->Delete();
+	volume->Delete();
+	outlineData->Delete();
+	outline->Delete();
+	mapOutline->Delete();
+	Interactorstyle->Delete();
+	rendererViewer->Delete();
 
 }
