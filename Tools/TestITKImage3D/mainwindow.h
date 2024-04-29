@@ -13,6 +13,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class vtkActor;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -20,6 +21,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+public:
+	void initImage3D_ITK_VTK(vtkActor *vtkactor);
+	void showImage3D_ITK_VTK();
 
 private slots:
     void on_pBITK_clicked();
