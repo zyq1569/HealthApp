@@ -89,6 +89,7 @@
 #include <vector>
 #include <map>
 
+///https://shenchunxu.blog.csdn.net/article/details/53022151
 // On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
 #include <signal.h>
 
@@ -504,25 +505,32 @@ void MainWindow::on_pBVolume3D_clicked()
 
 	//透明度映射函数定义；
 	vtkPiecewiseFunction *opacityTransform = vtkPiecewiseFunction::New();
-	opacityTransform->AddPoint(0, 0.0);
-	opacityTransform->AddPoint(20, 0.0);
-	opacityTransform->AddPoint(200, 1.0);
-	opacityTransform->AddPoint(300, 1.0);
+	opacityTransform->AddPoint(-1024, 0.0);
+	opacityTransform->AddPoint(-24, 0.0);
+	opacityTransform->AddPoint(167.00000000000000, 0.16862745098039220);
+	opacityTransform->AddPoint(218.00000000000000, 0.41960784313725491);
+	opacityTransform->AddPoint(218.00000000000000, 0.41960784313725491);
+	opacityTransform->AddPoint(445.00000000000000, 0.57254901960784310);
+	opacityTransform->AddPoint(1455.0000000000000, 0.87450980392156863);
+	opacityTransform->AddPoint(2784.0000000000000, 0.88235294117647056);
 
 	//颜色映射函数定义,梯度上升的
 	vtkColorTransferFunction *colorTransformFunction = vtkColorTransferFunction::New();
-	//colorTransformFunction->AddRGBPoint(0.0, 0.0, 0.0, 0.0);
-	//colorTransformFunction->AddRGBPoint(64.0, 0.0, 0.0, 0.0);
-	//colorTransformFunction->AddRGBPoint(128.0, 1.0, 0.0, 0.0);
-	//colorTransformFunction->AddRGBPoint(192.0, 1.0, 0.0, 0.0);
-	//colorTransformFunction->AddRGBPoint(255.0, 1.0, 0.0, 0.0);
+	colorTransformFunction->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+	colorTransformFunction->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+	colorTransformFunction->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+	colorTransformFunction->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
+	colorTransformFunction->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
+
+	colorTransformFunction->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
+	colorTransformFunction->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
+	colorTransformFunction->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
 
 	vtkPiecewiseFunction *gradientTransform = vtkPiecewiseFunction::New();
-	gradientTransform->AddPoint(0, 0.0);
-
-	gradientTransform->AddPoint(20, 2.0);
-	gradientTransform->AddPoint(200, 0.1);
-	gradientTransform->AddPoint(300, 0.1);
+	gradientTransform->AddPoint(1, 0.0);
+	gradientTransform->AddPoint(70, 0.5);
+	gradientTransform->AddPoint(130, 1.0);
+	//gradientTransform->AddPoint(300, 0.1);
 
 
 	//体数据属性；
