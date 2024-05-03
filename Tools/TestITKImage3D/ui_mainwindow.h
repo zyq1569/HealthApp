@@ -37,12 +37,12 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(915, 211);
+        MainWindow->resize(493, 84);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         m_dcmDir = new QTextEdit(centralwidget);
         m_dcmDir->setObjectName(QString::fromUtf8("m_dcmDir"));
-        m_dcmDir->setGeometry(QRect(0, 10, 901, 21));
+        m_dcmDir->setGeometry(QRect(0, 10, 491, 21));
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
         layoutWidget->setGeometry(QRect(0, 40, 320, 25));

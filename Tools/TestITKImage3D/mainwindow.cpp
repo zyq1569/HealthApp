@@ -277,7 +277,7 @@ MainWindow::MainWindow(QWidget *parent)
 	vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
 
 	QString dir = QCoreApplication::applicationDirPath();
-	ui->m_dcmDir->setText(dir+"/Dicom Data/A Aorta w-c  3.0  SPO  cor  55%");
+	ui->m_dcmDir->setText(dir+"/Dicom Data");
 }
 
 MainWindow::~MainWindow()
@@ -578,7 +578,6 @@ void MainWindow::on_pBVolume3D_clicked()
 	//重设相机的剪切范围；
 	rendererViewer->ResetCameraClippingRange();
 	RenderWindow->SetSize(500, 500);
-	RenderWindow->SetWindowName("Volume-3D");
 
 	vtkRenderWindowInteractor *RenderWindowInteractor = vtkRenderWindowInteractor::New();
 	RenderWindowInteractor->SetRenderWindow(RenderWindow);
@@ -588,6 +587,7 @@ void MainWindow::on_pBVolume3D_clicked()
 	RenderWindowInteractor->SetInteractorStyle(Interactorstyle);
 
 	RenderWindow->Render();
+	RenderWindow->SetWindowName("Volume-3D");
 	RenderWindowInteractor->Initialize();
 	RenderWindowInteractor->Start();
 
