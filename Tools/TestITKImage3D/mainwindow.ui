@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1099</width>
+    <width>915</width>
     <height>211</height>
    </rect>
   </property>
@@ -17,8 +17,8 @@
    <widget class="QTextEdit" name="m_dcmDir">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>20</y>
+      <x>0</x>
+      <y>10</y>
       <width>901</width>
       <height>21</height>
      </rect>
@@ -34,8 +34,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>50</y>
+      <x>0</x>
+      <y>40</y>
       <width>320</width>
       <height>25</height>
      </rect>
@@ -71,16 +71,6 @@ p, li { white-space: pre-wrap; }
      </item>
     </layout>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1099</width>
-     <height>21</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
