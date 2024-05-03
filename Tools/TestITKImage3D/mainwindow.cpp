@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 
+
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -77,6 +78,7 @@
 #include "itkGradientMagnitudeImageFilter.h"
 #include "itkExtractImageFilter.h"
 #include <string>
+
 //体绘制加速
 //Gpu光照映射
 #include<vtkGPUVolumeRayCastMapper.h>
@@ -89,6 +91,8 @@
 
 // On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
 #include <signal.h>
+
+#include <qmessagebox.h>
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
@@ -270,6 +274,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 	vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
 	vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
+
+	QString dir = QCoreApplication::applicationDirPath();
+	ui->m_dcmDir->setText(dir+"/Dicom Data/A Aorta w-c  3.0  SPO  cor  55%");
 }
 
 MainWindow::~MainWindow()
@@ -387,21 +394,23 @@ void MainWindow::initImage3D_ITK_VTK(vtkActor *vtkactor)
 	vtkactor->SetMapper(Mapper);//获得皮肤几何数据
 	Mapper->Delete();
 	Mapper = NULL;
-	vtkactor->GetProperty()->SetDiffuseColor(.50, .49, .25);//设置皮肤颜色；
+	vtkactor->GetProperty()->SetDiffuseColor(.50, .50, .50);//设置皮肤颜色；
 	vtkactor->GetProperty()->SetSpecular(0.3);//反射率；
 	vtkactor->GetProperty()->SetOpacity(1.0);//透明度；
 	vtkactor->GetProperty()->SetSpecularPower(20);//反射光强度；
-	vtkactor->GetProperty()->SetColor(0.45, 0.23, 0.26);//设置角的颜色；
+	vtkactor->GetProperty()->SetColor(0.23, 0.23, 0.23);//设置角的颜色；
 	vtkactor->GetProperty()->SetRepresentationToWireframe();//线框；
 
 	vtkOutlineFilter * outfilterline = vtkOutlineFilter::New();
 	outfilterline->SetInputData(ImageVTKData);
-	ImageVTKData = NULL;
+
 	
 	vtkPolyDataMapper *outmapper = vtkPolyDataMapper::New();
 	outmapper->SetInputConnection(outfilterline->GetOutputPort());
 	outfilterline->Delete();
 	outfilterline = NULL;
+
+	ImageVTKData = NULL;
 
 	vtkActor *OutlineActor = vtkActor::New();
 	OutlineActor->SetMapper(outmapper);
@@ -415,6 +424,15 @@ void MainWindow::initImage3D_ITK_VTK(vtkActor *vtkactor)
 
 void MainWindow::showImage3D_ITK_VTK()
 {
+	QString DicomDir = ui->m_dcmDir->toPlainText();
+	QDir dir;
+	if (!dir.exists(DicomDir))
+	{
+		QMessageBox::information(NULL, "Dicom3D", "No dicom files!");
+		return;
+	}
+
+
 	vtkActor *vtkactor = vtkActor::New();
 	initImage3D_ITK_VTK(vtkactor);
 
@@ -426,11 +444,9 @@ void MainWindow::showImage3D_ITK_VTK()
 	show3DInteractor->SetRenderWindow(show3DWinow);
 	vtkrenderer->AddActor(vtkactor);
 
-	//vtkrenderer->AddActor(OutlineActor);
-	//OutlineActor = NULL;
 	vtkrenderer->SetBackground(1, 1, 1);//设置背景颜色；
 
-	show3DWinow->SetSize(1000, 600);
+	show3DWinow->SetSize(500, 500);
 
 	vtkInteractorStyleTrackballCamera *style = vtkInteractorStyleTrackballCamera::New();
 	show3DInteractor->SetInteractorStyle(style);
@@ -463,9 +479,16 @@ void MainWindow::on_pBITK3D_clicked()//return show3DIVTK(Input_Name);
 
 void MainWindow::on_pBVolume3D_clicked()
 {
-	QString dir = ui->m_dcmDir->toPlainText();
-	std::string Input_Name = qPrintable(dir);
-	Input3dImageType::Pointer dicomimage = GdcmRead3dImage(Input_Name, dir);
+	QString DicomDir = ui->m_dcmDir->toPlainText();
+	QDir dir;
+	if (!dir.exists(DicomDir))
+	{
+		QMessageBox::information(NULL, "Dicom3D", "No dicom files!");
+		return;
+	}
+
+	std::string Input_Name = qPrintable(DicomDir);
+	Input3dImageType::Pointer dicomimage = GdcmRead3dImage(Input_Name, DicomDir);
 	static bool init = false;
 	if (!init)
 	{
@@ -488,11 +511,11 @@ void MainWindow::on_pBVolume3D_clicked()
 
 	//颜色映射函数定义,梯度上升的
 	vtkColorTransferFunction *colorTransformFunction = vtkColorTransferFunction::New();
-	colorTransformFunction->AddRGBPoint(0.0, 0.0, 0.0, 0.0);
-	colorTransformFunction->AddRGBPoint(64.0, 0.0, 0.0, 0.0);
-	colorTransformFunction->AddRGBPoint(128.0, 1.0, 0.0, 0.0);
-	colorTransformFunction->AddRGBPoint(192.0, 1.0, 0.0, 0.0);
-	colorTransformFunction->AddRGBPoint(255.0, 1.0, 0.0, 0.0);
+	//colorTransformFunction->AddRGBPoint(0.0, 0.0, 0.0, 0.0);
+	//colorTransformFunction->AddRGBPoint(64.0, 0.0, 0.0, 0.0);
+	//colorTransformFunction->AddRGBPoint(128.0, 1.0, 0.0, 0.0);
+	//colorTransformFunction->AddRGBPoint(192.0, 1.0, 0.0, 0.0);
+	//colorTransformFunction->AddRGBPoint(255.0, 1.0, 0.0, 0.0);
 
 	vtkPiecewiseFunction *gradientTransform = vtkPiecewiseFunction::New();
 	gradientTransform->AddPoint(0, 0.0);
@@ -516,12 +539,10 @@ void MainWindow::on_pBVolume3D_clicked()
 
 	//光纤映射类型定义：
 	//Mapper定义,
-	//vtkSmartPointer<vtkSmartVolumeMapper> volumeMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
 	vtkSmartVolumeMapper *volumeMapper = vtkSmartVolumeMapper::New();
 	volumeMapper->SetInputData(ImageDataItkToVtk(dicomimage));//;cast_file->GetOutput());
 	volumeMapper->SetBlendModeToComposite();
 	volumeMapper->SetRequestedRenderModeToDefault();
-	//vtkSmartPointer<vtkLODProp3D> lodProp3D = vtkSmartPointer<vtkLODProp3D>::New();
 	vtkLODProp3D *lodProp3D =  vtkLODProp3D::New();
 	lodProp3D->AddLOD(volumeMapper, volumeProperty, 0.0);
 
