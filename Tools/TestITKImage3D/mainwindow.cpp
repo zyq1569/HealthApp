@@ -1,5 +1,10 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
+
+#include "transferfunctionio.h"
+#include "renderingstyle.h"
+
+
 #include <QFileDialog>
 
 
@@ -33,20 +38,18 @@
 #include "vtkImageShrink3D.h"
 #include "vtkDecimatePro.h"
 #include <vtkInteractorStyleImage.h>
-#include "itkImageToVTKImageFilter.h"
-#include "itkGDCMSeriesFileNames.h"
-#include "itkImageSeriesReader.h"
-#include<vtkDICOMImageReader.h>
-#include<vtkCamera.h>
-#include<vtkActor.h>
-#include<vtkVolumeProperty.h>
-#include<vtkPolyDataNormals.h>
-#include<vtkImageShiftScale.h>
-#include "vtkSmartVolumeMapper.h"
-#include<vtkPiecewiseFunction.h>
-#include<vtkColorTransferFunction.h>
-#include<vtkImageCast.h>
-#include<vtkLODProp3D.h>
+
+#include <vtkDICOMImageReader.h>
+#include <vtkCamera.h>
+#include <vtkActor.h>
+#include <vtkVolumeProperty.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkImageShiftScale.h>
+#include <vtkSmartVolumeMapper.h>
+#include <vtkPiecewiseFunction.h>
+#include <vtkColorTransferFunction.h>
+#include <vtkImageCast.h>
+#include <vtkLODProp3D.h>
 #include <vtkAxesActor.h>
 #include <vtkSmartPointer.h>
 #include <vtkImageActor.h>
@@ -63,7 +66,11 @@
 #include <vtkWidgetEvent.h>
 #include <vtkCallbackCommand.h>
 #include <vtkWidgetEventTranslator.h>
+#include <vtkMetaImageWriter.h>
 #include <vtkSliderRepresentation2D.h>
+#include "itkImageToVTKImageFilter.h"
+#include "itkGDCMSeriesFileNames.h"
+#include "itkImageSeriesReader.h"
 #include "itkVTKImageToImageFilter.h"
 #include "itkImageSeriesWriter.h"
 #include "itkCurvatureFlowImageFilter.h"
@@ -94,6 +101,15 @@
 #include <signal.h>
 
 #include <qmessagebox.h>
+
+// Qt
+#include <QAction>
+#include <QFileDialog>
+#include <QStandardItemModel>
+#include <QTimer>
+
+
+using namespace udg;
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
@@ -291,7 +307,7 @@ void MainWindow::on_pBDir_clicked()
 {
     QString dlg;
     dlg = ui->m_dcmDir->toPlainText();
-    //第三个参数 如果是"./" 代表当前应用的目录. QString()空为上次打开的目录
+    //第三个参数 如果是"./" 代表当前应用的目录. QString()空为上次打开的目录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
     QString  path = QFileDialog::getExistingDirectory(this,"select dicom dir...",dlg/*QString()*/,QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     //QString path(QWidget *parent = nullptr, const QString &caption = QString(), const QString &dir = QString(), QFileDialog::Options options = ShowDirsOnly);
     //ui->cbDcmDir->setCurrentText(path);
@@ -364,6 +380,150 @@ void MainWindow::on_pBITK_clicked()/////https://blog.csdn.net/l1783111653/articl
 	return;
 }
 
+void MainWindow::loadRenderingStyles()
+{
+    m_renderingStyleModel = new QStandardItemModel(this);
+
+    // For the first version we create all this by default.
+    // For each style we create an item and assign some data that will be used to apply it.
+    QStandardItem *item;
+    RenderingStyle renderingStyle;
+    TransferFunction *transferFunction;
+
+    item = new QStandardItem(QIcon(":/renderingstyles/spine2.png"), tr("Spine"));
+    renderingStyle.setMethod(RenderingStyle::RayCasting);
+    renderingStyle.setShading(true);
+    renderingStyle.setAmbientCoefficient(0.1);
+    renderingStyle.setDiffuseCoefficient(0.7);
+    renderingStyle.setSpecularCoefficient(1.0);
+    renderingStyle.setSpecularPower(64.0);
+    transferFunction = TransferFunctionIO::fromXmlFile(":/renderingstyles/spine2.xml");
+    renderingStyle.setTransferFunction(*transferFunction);
+    delete transferFunction;
+    item->setData(renderingStyle.toVariant());
+    m_renderingStyleModel->appendRow(item);
+
+    item = new QStandardItem(QIcon(":/renderingstyles/thorax1.png"), tr("Thorax"));
+    renderingStyle.setMethod(RenderingStyle::RayCasting);
+    renderingStyle.setShading(true);
+    renderingStyle.setAmbientCoefficient(0.1);
+    renderingStyle.setDiffuseCoefficient(0.7);
+    renderingStyle.setSpecularCoefficient(1.0);
+    renderingStyle.setSpecularPower(64.0);
+    transferFunction = TransferFunctionIO::fromXmlFile(":/renderingstyles/thorax1.xml");
+    renderingStyle.setTransferFunction(*transferFunction);
+    delete transferFunction;
+    item->setData(renderingStyle.toVariant());
+    m_renderingStyleModel->appendRow(item);
+
+    item = new QStandardItem(QIcon(":/renderingstyles/pelvis2.png"), tr("Pelvis"));
+    renderingStyle.setMethod(RenderingStyle::RayCasting);
+    renderingStyle.setShading(true);
+    renderingStyle.setAmbientCoefficient(0.1);
+    renderingStyle.setDiffuseCoefficient(0.7);
+    renderingStyle.setSpecularCoefficient(1.0);
+    renderingStyle.setSpecularPower(64.0);
+    transferFunction = TransferFunctionIO::fromXmlFile(":/renderingstyles/pelvis2.xml");
+    renderingStyle.setTransferFunction(*transferFunction);
+    delete transferFunction;
+    item->setData(renderingStyle.toVariant());
+    m_renderingStyleModel->appendRow(item);
+
+    item = new QStandardItem(QIcon(":/renderingstyles/cow1.png"), tr("Circle of Willis"));
+    renderingStyle.setMethod(RenderingStyle::RayCasting);
+    renderingStyle.setShading(true);
+    renderingStyle.setAmbientCoefficient(0.1);
+    renderingStyle.setDiffuseCoefficient(0.7);
+    renderingStyle.setSpecularCoefficient(0.0);
+    transferFunction = TransferFunctionIO::fromXmlFile(":/renderingstyles/cow1.xml");
+    renderingStyle.setTransferFunction(*transferFunction);
+    delete transferFunction;
+    item->setData(renderingStyle.toVariant());
+    m_renderingStyleModel->appendRow(item);
+
+    item = new QStandardItem(QIcon(":/renderingstyles/carotids2.png"), tr("Carotids"));
+    renderingStyle.setMethod(RenderingStyle::RayCasting);
+    renderingStyle.setShading(true);
+    renderingStyle.setAmbientCoefficient(0.1);
+    renderingStyle.setDiffuseCoefficient(0.7);
+    renderingStyle.setSpecularCoefficient(1.0);
+    renderingStyle.setSpecularPower(64.0);
+    transferFunction = TransferFunctionIO::fromXmlFile(":/renderingstyles/carotids2.xml");
+    renderingStyle.setTransferFunction(*transferFunction);
+    delete transferFunction;
+    item->setData(renderingStyle.toVariant());
+    m_renderingStyleModel->appendRow(item);
+
+    item = new QStandardItem(QIcon(":/renderingstyles/bones4.png"), tr("Bones"));
+    renderingStyle.setMethod(RenderingStyle::RayCasting);
+    renderingStyle.setShading(true);
+    renderingStyle.setAmbientCoefficient(0.1);
+    renderingStyle.setDiffuseCoefficient(0.7);
+    renderingStyle.setSpecularCoefficient(1.0);
+    renderingStyle.setSpecularPower(64.0);
+    transferFunction = TransferFunctionIO::fromXmlFile(":/renderingstyles/bones4.xml");
+    renderingStyle.setTransferFunction(*transferFunction);
+    delete transferFunction;
+    item->setData(renderingStyle.toVariant());
+    m_renderingStyleModel->appendRow(item);
+
+    item = new QStandardItem(QIcon(":/renderingstyles/bonehires.png"), tr("Bones 2"));
+    renderingStyle.setMethod(RenderingStyle::RayCasting);
+    renderingStyle.setShading(true);
+    renderingStyle.setAmbientCoefficient(0.1);
+    renderingStyle.setDiffuseCoefficient(0.7);
+    renderingStyle.setSpecularCoefficient(0.0);
+    transferFunction = TransferFunctionIO::fromXmlFile(":/renderingstyles/bonehires.xml");
+    renderingStyle.setTransferFunction(*transferFunction);
+    delete transferFunction;
+    item->setData(renderingStyle.toVariant());
+    m_renderingStyleModel->appendRow(item);
+
+    item = new QStandardItem(QIcon(":/renderingstyles/abdomenbones.png"), tr("Abdomen bones"));
+    renderingStyle.setMethod(RenderingStyle::RayCasting);
+    renderingStyle.setShading(true);
+    renderingStyle.setAmbientCoefficient(0.1);
+    renderingStyle.setDiffuseCoefficient(0.7);
+    renderingStyle.setSpecularCoefficient(1.0);
+    renderingStyle.setSpecularPower(64.0);
+    transferFunction = TransferFunctionIO::fromXmlFile(":/renderingstyles/abdomenbones.xml");
+    renderingStyle.setTransferFunction(*transferFunction);
+    delete transferFunction;
+    item->setData(renderingStyle.toVariant());
+    m_renderingStyleModel->appendRow(item);
+
+    item = new QStandardItem(QIcon(":/renderingstyles/abdomenrunoff1.png"), tr("Abdomen run-off"));
+    renderingStyle.setMethod(RenderingStyle::RayCasting);
+    renderingStyle.setShading(true);
+    renderingStyle.setAmbientCoefficient(0.1);
+    renderingStyle.setDiffuseCoefficient(0.7);
+    renderingStyle.setSpecularCoefficient(1.0);
+    renderingStyle.setSpecularPower(64.0);
+    transferFunction = TransferFunctionIO::fromXmlFile(":/renderingstyles/abdomenrunoff1.xml");
+    renderingStyle.setTransferFunction(*transferFunction);
+    delete transferFunction;
+    item->setData(renderingStyle.toVariant());
+    m_renderingStyleModel->appendRow(item);
+
+    item = new QStandardItem(QIcon(":/renderingstyles/abdomenslab.png"), tr("Abdomen slab"));
+    renderingStyle.setMethod(RenderingStyle::RayCasting);
+    renderingStyle.setShading(true);
+    renderingStyle.setAmbientCoefficient(0.1);
+    renderingStyle.setDiffuseCoefficient(0.7);
+    renderingStyle.setSpecularCoefficient(1.0);
+    renderingStyle.setSpecularPower(64.0);
+    transferFunction = TransferFunctionIO::fromXmlFile(":/renderingstyles/abdomenslab.xml");
+    renderingStyle.setTransferFunction(*transferFunction);
+    delete transferFunction;
+    item->setData(renderingStyle.toVariant());
+    m_renderingStyleModel->appendRow(item);
+
+    //m_renderingStyleListView->setModel(m_renderingStyleModel);
+    ui->m_renderingStyleListView->setModel(m_renderingStyleModel);
+
+    // Rendering styles
+    connect(ui->m_renderingStyleListView, SIGNAL(activated(const QModelIndex&)), SLOT(applyRenderingStyle(const QModelIndex&)));
+}
 
 
 void MainWindow::initImage3D_ITK_VTK(vtkActor *vtkactor)
@@ -545,10 +705,46 @@ void MainWindow::on_pBVolume3D_clicked()
 	volumeProperty->SetSpecular(0.2);
 	volumeProperty->SetSpecularPower(10);//高光强度；
 
+	vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
+	vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+	vtkdatawrite->SetInputData(itkImageData);
+	std::string path = Input_Name + "/VTKdata.mhd";
+	vtkdatawrite->SetFileName(path.c_str());
+	path = Input_Name + "/VTKdata.raw";
+	vtkdatawrite->SetRAWFileName(path.c_str());
+	vtkdatawrite->Write();
+	vtkdatawrite->Delete();
+
+	/*
+	typedef VolumePixelData::ItkImageType ItkImageType;
+	typedef itk::ImageFileReader<Volume::ItkImageType> ReaderType;
+	ReaderType::Pointer reader = ReaderType::New();
+	reader->SetFileName(qPrintable(fileName));
+	reader->SetImageIO(m_gdcmIO);
+	emit progress(0);
+	try
+	{
+		reader->Update();
+	}
+	catch (const itk::ProcessAborted&)
+	{
+		errorCode = ReadAborted;
+	}
+	catch (itk::ExceptionObject &e)
+	{
+		WARN_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
+		//DEBUG_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
+		//We read the error message to find out what the error is
+		errorCode = identifyErrorMessage(QString(e.GetDescription()));
+	}	
+	*/
+
+
 	//光纤映射类型定义：
 	//Mapper定义,
 	vtkSmartVolumeMapper *volumeMapper = vtkSmartVolumeMapper::New();
-	volumeMapper->SetInputData(ImageDataItkToVtk(dicomimage));//;cast_file->GetOutput());
+	
+	volumeMapper->SetInputData(itkImageData);//;cast_file->GetOutput());
 	volumeMapper->SetBlendModeToComposite();
 	volumeMapper->SetRequestedRenderModeToDefault();
 	vtkLODProp3D *lodProp3D =  vtkLODProp3D::New();
@@ -562,7 +758,7 @@ void MainWindow::on_pBVolume3D_clicked()
 	double volumeView[4] = { 0,0,0.5,1 };
 
 	vtkOutlineFilter *outlineData = vtkOutlineFilter::New();//线框；
-	outlineData->SetInputData(ImageDataItkToVtk(dicomimage));
+	outlineData->SetInputData(itkImageData);
 	vtkPolyDataMapper *mapOutline = vtkPolyDataMapper::New();
 	mapOutline->SetInputConnection(outlineData->GetOutputPort());
 	vtkActor *outline = vtkActor::New();

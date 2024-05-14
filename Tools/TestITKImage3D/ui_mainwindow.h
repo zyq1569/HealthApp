@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QListView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
@@ -31,21 +32,22 @@ public:
     QPushButton *pBITK;
     QPushButton *pBITK3D;
     QPushButton *pBVolume3D;
+    QListView *m_renderingStyleListView;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(493, 84);
+        MainWindow->resize(731, 233);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         m_dcmDir = new QTextEdit(centralwidget);
         m_dcmDir->setObjectName(QString::fromUtf8("m_dcmDir"));
-        m_dcmDir->setGeometry(QRect(0, 10, 491, 21));
+        m_dcmDir->setGeometry(QRect(5, 141, 491, 21));
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(0, 40, 320, 25));
+        layoutWidget->setGeometry(QRect(5, 171, 320, 25));
         horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -69,6 +71,16 @@ public:
 
         horizontalLayout->addWidget(pBVolume3D);
 
+        m_renderingStyleListView = new QListView(centralwidget);
+        m_renderingStyleListView->setObjectName(QString::fromUtf8("m_renderingStyleListView"));
+        m_renderingStyleListView->setGeometry(QRect(5, 5, 711, 120));
+        m_renderingStyleListView->setMaximumSize(QSize(16777215, 120));
+        m_renderingStyleListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        m_renderingStyleListView->setIconSize(QSize(96, 96));
+        m_renderingStyleListView->setMovement(QListView::Static);
+        m_renderingStyleListView->setResizeMode(QListView::Adjust);
+        m_renderingStyleListView->setViewMode(QListView::IconMode);
+        m_renderingStyleListView->setUniformItemSizes(true);
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
