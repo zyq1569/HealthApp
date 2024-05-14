@@ -14,6 +14,7 @@ namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class vtkActor;
+class QStandardItemModel;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -25,6 +26,11 @@ public:
 public:
 	void initImage3D_ITK_VTK(vtkActor *vtkactor);
 	void showImage3D_ITK_VTK();
+    void loadRenderingStyles();
+
+private:
+    /// Model that saves rendering styles.
+    QStandardItemModel *m_renderingStyleModel;
 
 private slots:
     void on_pBITK_clicked();
