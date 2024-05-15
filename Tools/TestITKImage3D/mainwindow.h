@@ -15,10 +15,21 @@ QT_END_NAMESPACE
 
 class vtkActor;
 class QStandardItemModel;
+class vtkRenderer;
+class vtkRenderWindow;
+class vtkPiecewiseFunction;
+class vtkColorTransferFunction;
+class vtkVolumeProperty;
+class vtkSmartVolumeMapper;
+class vtkVolume;
+class vtkOutlineFilter;
+class vtkPolyDataMapper;
+class vtkActor; class vtkRenderWindowInteractor;
+class vtkInteractorStyleTrackballCamera;
+class vtkLODProp3D;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -31,6 +42,25 @@ public:
 private:
     /// Model that saves rendering styles.
     QStandardItemModel *m_renderingStyleModel;
+private:
+    vtkRenderer *m_rendererViewer;
+    vtkRenderWindow *m_renderWindow;
+    vtkPiecewiseFunction *m_opacityTransform;
+    vtkColorTransferFunction *m_colorTransformFunction;
+    vtkPiecewiseFunction *m_gradientTransform;
+    vtkVolumeProperty *m_volumeProperty;
+    vtkSmartVolumeMapper *m_volumeMapper;
+    vtkVolume *m_volume;
+    vtkOutlineFilter *m_outlineData;
+    vtkPolyDataMapper *m_mapOutline;
+    vtkActor *m_outline;
+    vtkRenderWindowInteractor *m_renderWindowInteractor;
+    vtkInteractorStyleTrackballCamera *m_interactorstyle;
+    vtkLODProp3D *m_lodProp3D;
+
+    void free3Dviewer();
+private slots:
+    void applyRenderingStyle(const QModelIndex &index);
 
 private slots:
     void on_pBITK_clicked();

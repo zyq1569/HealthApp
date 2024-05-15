@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>731</width>
-    <height>233</height>
+    <width>873</width>
+    <height>193</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QTextEdit" name="m_dcmDir">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>141</y>
+      <x>10</x>
+      <y>110</y>
       <width>491</width>
       <height>21</height>
      </rect>
@@ -34,8 +34,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>171</y>
+      <x>10</x>
+      <y>140</y>
       <width>320</width>
       <height>25</height>
      </rect>
@@ -76,8 +76,8 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>5</x>
       <y>5</y>
-      <width>711</width>
-      <height>120</height>
+      <width>853</width>
+      <height>91</height>
      </rect>
     </property>
     <property name="maximumSize">
@@ -91,8 +91,8 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="iconSize">
      <size>
-      <width>96</width>
-      <height>96</height>
+      <width>64</width>
+      <height>64</height>
      </size>
     </property>
     <property name="movement">

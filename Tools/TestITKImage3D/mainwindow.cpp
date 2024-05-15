@@ -294,11 +294,30 @@ MainWindow::MainWindow(QWidget *parent)
 
 	QString dir = QCoreApplication::applicationDirPath();
 	ui->m_dcmDir->setText(dir+"/Dicom Data");
+
+    m_rendererViewer=NULL;
+    m_renderWindow=NULL;
+    m_opacityTransform=NULL;
+    m_colorTransformFunction=NULL;
+    m_gradientTransform=NULL;
+    m_volumeProperty=NULL;
+    m_volumeMapper=NULL;
+    m_volume=NULL;
+    m_outlineData=NULL;
+    m_mapOutline=NULL;
+    m_outline=NULL;
+    m_renderWindowInteractor=NULL;
+    m_interactorstyle=NULL;
+    m_lodProp3D=NULL;
+
+    loadRenderingStyles();
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    free3Dviewer();
 }
 
 //https://blog.csdn.net/Ericohe/article/details/114368594
@@ -391,6 +410,7 @@ void MainWindow::loadRenderingStyles()
     TransferFunction *transferFunction;
 
     item = new QStandardItem(QIcon(":/renderingstyles/spine2.png"), tr("Spine"));
+    item->setToolTip("Spine");
     renderingStyle.setMethod(RenderingStyle::RayCasting);
     renderingStyle.setShading(true);
     renderingStyle.setAmbientCoefficient(0.1);
@@ -404,6 +424,7 @@ void MainWindow::loadRenderingStyles()
     m_renderingStyleModel->appendRow(item);
 
     item = new QStandardItem(QIcon(":/renderingstyles/thorax1.png"), tr("Thorax"));
+    item->setToolTip("Thorax");
     renderingStyle.setMethod(RenderingStyle::RayCasting);
     renderingStyle.setShading(true);
     renderingStyle.setAmbientCoefficient(0.1);
@@ -417,6 +438,7 @@ void MainWindow::loadRenderingStyles()
     m_renderingStyleModel->appendRow(item);
 
     item = new QStandardItem(QIcon(":/renderingstyles/pelvis2.png"), tr("Pelvis"));
+    item->setToolTip("Pelvis");
     renderingStyle.setMethod(RenderingStyle::RayCasting);
     renderingStyle.setShading(true);
     renderingStyle.setAmbientCoefficient(0.1);
@@ -430,6 +452,7 @@ void MainWindow::loadRenderingStyles()
     m_renderingStyleModel->appendRow(item);
 
     item = new QStandardItem(QIcon(":/renderingstyles/cow1.png"), tr("Circle of Willis"));
+    item->setToolTip("Circle of Willis");
     renderingStyle.setMethod(RenderingStyle::RayCasting);
     renderingStyle.setShading(true);
     renderingStyle.setAmbientCoefficient(0.1);
@@ -442,6 +465,7 @@ void MainWindow::loadRenderingStyles()
     m_renderingStyleModel->appendRow(item);
 
     item = new QStandardItem(QIcon(":/renderingstyles/carotids2.png"), tr("Carotids"));
+    item->setToolTip("Carotids");
     renderingStyle.setMethod(RenderingStyle::RayCasting);
     renderingStyle.setShading(true);
     renderingStyle.setAmbientCoefficient(0.1);
@@ -455,6 +479,7 @@ void MainWindow::loadRenderingStyles()
     m_renderingStyleModel->appendRow(item);
 
     item = new QStandardItem(QIcon(":/renderingstyles/bones4.png"), tr("Bones"));
+    item->setToolTip("Bones");
     renderingStyle.setMethod(RenderingStyle::RayCasting);
     renderingStyle.setShading(true);
     renderingStyle.setAmbientCoefficient(0.1);
@@ -468,6 +493,7 @@ void MainWindow::loadRenderingStyles()
     m_renderingStyleModel->appendRow(item);
 
     item = new QStandardItem(QIcon(":/renderingstyles/bonehires.png"), tr("Bones 2"));
+    item->setToolTip("Bones 2");
     renderingStyle.setMethod(RenderingStyle::RayCasting);
     renderingStyle.setShading(true);
     renderingStyle.setAmbientCoefficient(0.1);
@@ -480,6 +506,7 @@ void MainWindow::loadRenderingStyles()
     m_renderingStyleModel->appendRow(item);
 
     item = new QStandardItem(QIcon(":/renderingstyles/abdomenbones.png"), tr("Abdomen bones"));
+    item->setToolTip("Abdomen bones");
     renderingStyle.setMethod(RenderingStyle::RayCasting);
     renderingStyle.setShading(true);
     renderingStyle.setAmbientCoefficient(0.1);
@@ -493,6 +520,7 @@ void MainWindow::loadRenderingStyles()
     m_renderingStyleModel->appendRow(item);
 
     item = new QStandardItem(QIcon(":/renderingstyles/abdomenrunoff1.png"), tr("Abdomen run-off"));
+    item->setToolTip("Abdomen run-off");
     renderingStyle.setMethod(RenderingStyle::RayCasting);
     renderingStyle.setShading(true);
     renderingStyle.setAmbientCoefficient(0.1);
@@ -506,6 +534,7 @@ void MainWindow::loadRenderingStyles()
     m_renderingStyleModel->appendRow(item);
 
     item = new QStandardItem(QIcon(":/renderingstyles/abdomenslab.png"), tr("Abdomen slab"));
+    item->setToolTip("Abdomen slab");
     renderingStyle.setMethod(RenderingStyle::RayCasting);
     renderingStyle.setShading(true);
     renderingStyle.setAmbientCoefficient(0.1);
@@ -518,11 +547,46 @@ void MainWindow::loadRenderingStyles()
     item->setData(renderingStyle.toVariant());
     m_renderingStyleModel->appendRow(item);
 
+    //ui->m_renderingStyleListView->setSpacing(6);
+    //ui->m_renderingStyleListView->setIconSize(QSize(64, 64));
     //m_renderingStyleListView->setModel(m_renderingStyleModel);
     ui->m_renderingStyleListView->setModel(m_renderingStyleModel);
 
     // Rendering styles
     connect(ui->m_renderingStyleListView, SIGNAL(activated(const QModelIndex&)), SLOT(applyRenderingStyle(const QModelIndex&)));
+}
+
+void MainWindow::applyRenderingStyle(const QModelIndex &index)
+{
+    if (m_volumeProperty)
+    {
+        QStandardItem *item = m_renderingStyleModel->itemFromIndex(index);
+        RenderingStyle renderingStyle = RenderingStyle::fromVariant(item->data());
+
+
+        m_volumeProperty->SetScalarOpacity(renderingStyle.getTransferFunction().vtkOpacityTransferFunction());
+        m_volumeProperty->SetColor(renderingStyle.getTransferFunction().vtkColorTransferFunction());
+
+        m_renderWindow->Render();
+        m_renderWindow->SetWindowName("Volume-3D");
+
+    }
+
+
+/*
+    switch (renderingStyle.getMethod())
+    {
+        case RenderingStyle::RayCasting:
+            break;
+
+        case RenderingStyle::MIP:
+            break;
+
+        case RenderingStyle::IsoSurface:
+            break;
+    }
+*/
+
 }
 
 
@@ -638,166 +702,206 @@ void MainWindow::on_pBITK3D_clicked()//return show3DIVTK(Input_Name);
 }
 
 
+void MainWindow::free3Dviewer()
+{
+    if (m_rendererViewer)
+    {
+        m_rendererViewer->Delete();
+        m_renderWindow->Delete();
+        //m_opacityTransform->Delete();
+        //m_colorTransformFunction->Delete();
+        m_gradientTransform->Delete();
+        m_volumeProperty->Delete();
+        m_volumeMapper->Delete();
+        m_volume->Delete();
+        m_outlineData->Delete();
+        m_mapOutline->Delete();
+        m_outline->Delete();
+        m_renderWindowInteractor->Delete();
+        m_interactorstyle->Delete();
+        m_lodProp3D->Delete();
+
+
+        m_rendererViewer = NULL;
+        m_renderWindow = NULL;
+        m_opacityTransform = NULL;
+        m_colorTransformFunction = NULL;
+        m_gradientTransform = NULL;
+        m_volumeProperty = NULL;
+        m_volumeMapper = NULL;
+        m_volume = NULL;
+        m_outlineData = NULL;
+        m_mapOutline = NULL;
+        m_outline = NULL;
+        m_renderWindowInteractor = NULL;
+        m_interactorstyle = NULL;
+        m_lodProp3D = NULL;
+    }
+}
+
 void MainWindow::on_pBVolume3D_clicked()
 {
-	QString DicomDir = ui->m_dcmDir->toPlainText();
-	QDir dir;
-	if (!dir.exists(DicomDir))
-	{
-		QMessageBox::information(NULL, "Dicom3D", "No dicom files!");
-		return;
-	}
+    static bool init = true;
+    if (init)
+    {
+        init = false;
+        ui->pBVolume3D->setText("Close 3DViewer");
+        QString DicomDir = ui->m_dcmDir->toPlainText();
+        QDir dir;
+        if (!dir.exists(DicomDir))
+        {
+            QMessageBox::information(NULL, "Dicom3D", "No dicom files!");
+            return;
+        }
 
-	std::string Input_Name = qPrintable(DicomDir);
-	Input3dImageType::Pointer dicomimage = GdcmRead3dImage(Input_Name, DicomDir);
-	static bool init = false;
-	if (!init)
-	{
-		vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
-		vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
-		init = true;
-	}
+        std::string Input_Name = qPrintable(DicomDir);
+        Input3dImageType::Pointer dicomimage = GdcmRead3dImage(Input_Name, DicomDir);
+        static bool init = false;
+        if (!init)
+        {
+            vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
+            vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
+            init = true;
+        }
 
-	//定义绘制器；
-	vtkRenderer *rendererViewer = vtkRenderer::New();//指向指针；
-	vtkSmartPointer<vtkRenderWindow> RenderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-	RenderWindow->AddRenderer(rendererViewer);
+        //定义绘制器；
+        m_rendererViewer = vtkRenderer::New();//指向指针；
+        m_renderWindow = vtkRenderWindow::New();
+        m_renderWindow->AddRenderer(m_rendererViewer);
 
-	//透明度映射函数定义；
-	vtkPiecewiseFunction *opacityTransform = vtkPiecewiseFunction::New();
-	opacityTransform->AddPoint(-1024, 0.0);
-	opacityTransform->AddPoint(-24, 0.0);
-	opacityTransform->AddPoint(167.00000000000000, 0.16862745098039220);
-	opacityTransform->AddPoint(218.00000000000000, 0.41960784313725491);
-	opacityTransform->AddPoint(218.00000000000000, 0.41960784313725491);
-	opacityTransform->AddPoint(445.00000000000000, 0.57254901960784310);
-	opacityTransform->AddPoint(1455.0000000000000, 0.87450980392156863);
-	opacityTransform->AddPoint(2784.0000000000000, 0.88235294117647056);
+        //透明度映射函数定义；
+        vtkPiecewiseFunction *opacityTransform = vtkPiecewiseFunction::New();
+        opacityTransform->AddPoint(-1024, 0.0);
+        opacityTransform->AddPoint(-24, 0.0);
+        opacityTransform->AddPoint(167.00000000000000, 0.16862745098039220);
+        opacityTransform->AddPoint(218.00000000000000, 0.41960784313725491);
+        opacityTransform->AddPoint(218.00000000000000, 0.41960784313725491);
+        opacityTransform->AddPoint(445.00000000000000, 0.57254901960784310);
+        opacityTransform->AddPoint(1455.0000000000000, 0.87450980392156863);
+        opacityTransform->AddPoint(2784.0000000000000, 0.88235294117647056);
 
-	//颜色映射函数定义,梯度上升的
-	vtkColorTransferFunction *colorTransformFunction = vtkColorTransferFunction::New();
-	colorTransformFunction->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-	colorTransformFunction->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-	colorTransformFunction->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-	colorTransformFunction->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
-	colorTransformFunction->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
+        //颜色映射函数定义,梯度上升的
+        vtkColorTransferFunction *colorTransformFunction = vtkColorTransferFunction::New();
+        colorTransformFunction->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+        colorTransformFunction->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+        colorTransformFunction->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+        colorTransformFunction->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
+        colorTransformFunction->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
 
-	colorTransformFunction->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
-	colorTransformFunction->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
-	colorTransformFunction->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
+        colorTransformFunction->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
+        colorTransformFunction->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
+        colorTransformFunction->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
 
-	vtkPiecewiseFunction *gradientTransform = vtkPiecewiseFunction::New();
-	gradientTransform->AddPoint(1, 0.0);
-	gradientTransform->AddPoint(70, 0.5);
-	gradientTransform->AddPoint(130, 1.0);
-	//gradientTransform->AddPoint(300, 0.1);
-
-
-	//体数据属性；
-	vtkVolumeProperty *volumeProperty = vtkVolumeProperty::New();
-	volumeProperty->SetColor(colorTransformFunction);
-	volumeProperty->SetScalarOpacity(opacityTransform);
-	volumeProperty->SetGradientOpacity(gradientTransform);
-	volumeProperty->ShadeOn();//应用
-	volumeProperty->SetInterpolationTypeToLinear();//直线间样条插值；
-	volumeProperty->SetAmbient(0.4);//环境光系数；
-	volumeProperty->SetDiffuse(0.69996);//漫反射；
-	volumeProperty->SetSpecular(0.2);
-	volumeProperty->SetSpecularPower(10);//高光强度；
-
-	vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
-	vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
-	vtkdatawrite->SetInputData(itkImageData);
-	std::string path = Input_Name + "/VTKdata.mhd";
-	vtkdatawrite->SetFileName(path.c_str());
-	path = Input_Name + "/VTKdata.raw";
-	vtkdatawrite->SetRAWFileName(path.c_str());
-	vtkdatawrite->Write();
-	vtkdatawrite->Delete();
-
-	/*
-	typedef VolumePixelData::ItkImageType ItkImageType;
-	typedef itk::ImageFileReader<Volume::ItkImageType> ReaderType;
-	ReaderType::Pointer reader = ReaderType::New();
-	reader->SetFileName(qPrintable(fileName));
-	reader->SetImageIO(m_gdcmIO);
-	emit progress(0);
-	try
-	{
-		reader->Update();
-	}
-	catch (const itk::ProcessAborted&)
-	{
-		errorCode = ReadAborted;
-	}
-	catch (itk::ExceptionObject &e)
-	{
-		WARN_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
-		//DEBUG_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
-		//We read the error message to find out what the error is
-		errorCode = identifyErrorMessage(QString(e.GetDescription()));
-	}	
-	*/
+        m_gradientTransform = vtkPiecewiseFunction::New();
+        m_gradientTransform->AddPoint(1, 0.0);
+        m_gradientTransform->AddPoint(70, 0.5);
+        m_gradientTransform->AddPoint(130, 1.0);
+        //gradientTransform->AddPoint(300, 0.1);
 
 
-	//光纤映射类型定义：
-	//Mapper定义,
-	vtkSmartVolumeMapper *volumeMapper = vtkSmartVolumeMapper::New();
-	
-	volumeMapper->SetInputData(itkImageData);//;cast_file->GetOutput());
-	volumeMapper->SetBlendModeToComposite();
-	volumeMapper->SetRequestedRenderModeToDefault();
-	vtkLODProp3D *lodProp3D =  vtkLODProp3D::New();
-	lodProp3D->AddLOD(volumeMapper, volumeProperty, 0.0);
+        //体数据属性；
+        m_volumeProperty = vtkVolumeProperty::New();
+        m_volumeProperty->SetColor(colorTransformFunction);
+        m_volumeProperty->SetScalarOpacity(opacityTransform);
+        m_volumeProperty->SetGradientOpacity(m_gradientTransform);
+        m_volumeProperty->ShadeOn();//应用
+        m_volumeProperty->SetInterpolationTypeToLinear();//直线间样条插值；
+        m_volumeProperty->SetAmbient(0.4);//环境光系数；
+        m_volumeProperty->SetDiffuse(0.69996);//漫反射；
+        m_volumeProperty->SetSpecular(0.2);
+        m_volumeProperty->SetSpecularPower(10);//高光强度；
+
+        vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
+        /*
+        vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+        vtkdatawrite->SetInputData(itkImageData);
+        std::string path = Input_Name + "/VTKdata.mhd";
+        vtkdatawrite->SetFileName(path.c_str());
+        path = Input_Name + "/VTKdata.raw";
+        vtkdatawrite->SetRAWFileName(path.c_str());
+        vtkdatawrite->Write();
+        vtkdatawrite->Delete();
+        */
 
 
-	vtkVolume *volume = vtkVolume::New();
-	volume->SetMapper(volumeMapper);
-	volume->SetProperty(volumeProperty);//设置体属性；
+        /*
+        typedef VolumePixelData::ItkImageType ItkImageType;
+        typedef itk::ImageFileReader<Volume::ItkImageType> ReaderType;
+        ReaderType::Pointer reader = ReaderType::New();
+        reader->SetFileName(qPrintable(fileName));
+        reader->SetImageIO(m_gdcmIO);
+        emit progress(0);
+        try
+        {
+            reader->Update();
+        }
+        catch (const itk::ProcessAborted&)
+        {
+            errorCode = ReadAborted;
+        }
+        catch (itk::ExceptionObject &e)
+        {
+            WARN_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
+            //DEBUG_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
+            //We read the error message to find out what the error is
+            errorCode = identifyErrorMessage(QString(e.GetDescription()));
+        }
+        */
 
-	double volumeView[4] = { 0,0,0.5,1 };
 
-	vtkOutlineFilter *outlineData = vtkOutlineFilter::New();//线框；
-	outlineData->SetInputData(itkImageData);
-	vtkPolyDataMapper *mapOutline = vtkPolyDataMapper::New();
-	mapOutline->SetInputConnection(outlineData->GetOutputPort());
-	vtkActor *outline = vtkActor::New();
-	outline->SetMapper(mapOutline);
-	outline->GetProperty()->SetColor(0, 0, 0);//背景纯黑色；
+        //光纤映射类型定义：
+        //Mapper定义,
+        m_volumeMapper = vtkSmartVolumeMapper::New();
 
-	rendererViewer->AddVolume(volume);
-	rendererViewer->AddActor(outline);
-	rendererViewer->SetBackground(1, 1, 1);
-	rendererViewer->ResetCamera();
+        m_volumeMapper->SetInputData(itkImageData);//;cast_file->GetOutput());
+        m_volumeMapper->SetBlendModeToComposite();
+        m_volumeMapper->SetRequestedRenderModeToDefault();
+        m_lodProp3D = vtkLODProp3D::New();
+        m_lodProp3D->AddLOD(m_volumeMapper, m_volumeProperty, 0.0);
 
 
-	//重设相机的剪切范围；
-	rendererViewer->ResetCameraClippingRange();
-	RenderWindow->SetSize(500, 500);
+        m_volume = vtkVolume::New();
+        m_volume->SetMapper(m_volumeMapper);
+        m_volume->SetProperty(m_volumeProperty);//设置体属性；
 
-	vtkRenderWindowInteractor *RenderWindowInteractor = vtkRenderWindowInteractor::New();
-	RenderWindowInteractor->SetRenderWindow(RenderWindow);
+        double volumeView[4] = { 0,0,0.5,1 };
 
-	//设置相机跟踪模式
-	vtkInteractorStyleTrackballCamera *Interactorstyle = vtkInteractorStyleTrackballCamera::New();
-	RenderWindowInteractor->SetInteractorStyle(Interactorstyle);
+        m_outlineData = vtkOutlineFilter::New();//线框；
+        m_outlineData->SetInputData(itkImageData);
+        m_mapOutline = vtkPolyDataMapper::New();
+        m_mapOutline->SetInputConnection(m_outlineData->GetOutputPort());
+        m_outline = vtkActor::New();
+        m_outline->SetMapper(m_mapOutline);
+        m_outline->GetProperty()->SetColor(0, 0, 0);//背景纯黑色；
 
-	RenderWindow->Render();
-	RenderWindow->SetWindowName("Volume-3D");
-	RenderWindowInteractor->Initialize();
-	RenderWindowInteractor->Start();
+        m_rendererViewer->AddVolume(m_volume);
+        m_rendererViewer->AddActor(m_outline);
+        m_rendererViewer->SetBackground(1, 1, 1);
+        m_rendererViewer->ResetCamera();
 
-	RenderWindowInteractor->Delete();
-	lodProp3D->Delete();
-	volumeMapper->Delete();
-	colorTransformFunction->Delete();
-	gradientTransform->Delete();
-	volumeProperty->Delete();
-	volume->Delete();
-	outlineData->Delete();
-	outline->Delete();
-	mapOutline->Delete();
-	Interactorstyle->Delete();
-	rendererViewer->Delete();
+
+        //重设相机的剪切范围；
+        m_rendererViewer->ResetCameraClippingRange();
+        m_renderWindow->SetSize(500, 500);
+
+        m_renderWindowInteractor = vtkRenderWindowInteractor::New();
+        m_renderWindowInteractor->SetRenderWindow(m_renderWindow);
+
+        //设置相机跟踪模式
+        m_interactorstyle = vtkInteractorStyleTrackballCamera::New();
+        m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
+
+        m_renderWindow->Render();
+        m_renderWindow->SetWindowName("Volume-3D");
+
+        //RenderWindowInteractor->Initialize();
+        //RenderWindowInteractor->Start();
+    }
+    else
+    {
+      init = true;
+      ui->pBVolume3D->setText("Volume-3D");
+      free3Dviewer();
+    }
 
 }

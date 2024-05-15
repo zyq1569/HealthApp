@@ -367,8 +367,15 @@
     <ClInclude Include="mathtools.h" />
     <ClInclude Include="opacitytransferfunction.h" />
     <ClInclude Include="renderingstyle.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="transferfunction.h" />
     <ClInclude Include="transferfunctionio.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TestITKimage.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="TestITKimage.qrc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
