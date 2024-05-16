@@ -563,29 +563,20 @@ void MainWindow::applyRenderingStyle(const QModelIndex &index)
         QStandardItem *item = m_renderingStyleModel->itemFromIndex(index);
         RenderingStyle renderingStyle = RenderingStyle::fromVariant(item->data());
 
-
         m_volumeProperty->SetScalarOpacity(renderingStyle.getTransferFunction().vtkOpacityTransferFunction());
         m_volumeProperty->SetColor(renderingStyle.getTransferFunction().vtkColorTransferFunction());
+
+        m_volumeProperty->SetAmbient(0.1);
+        m_volumeProperty->SetDiffuse(0.7);
+
+        m_volumeProperty->SetSpecular(renderingStyle.getSpecularCoefficient());
+
+        m_volumeProperty->SetSpecularPower(64.0);
 
         m_renderWindow->Render();
         m_renderWindow->SetWindowName("Volume-3D");
 
     }
-
-
-/*
-    switch (renderingStyle.getMethod())
-    {
-        case RenderingStyle::RayCasting:
-            break;
-
-        case RenderingStyle::MIP:
-            break;
-
-        case RenderingStyle::IsoSurface:
-            break;
-    }
-*/
 
 }
 
@@ -724,8 +715,8 @@ void MainWindow::free3Dviewer()
 
         m_rendererViewer = NULL;
         m_renderWindow = NULL;
-        m_opacityTransform = NULL;
-        m_colorTransformFunction = NULL;
+        //m_opacityTransform = NULL;
+        //m_colorTransformFunction = NULL;
         m_gradientTransform = NULL;
         m_volumeProperty = NULL;
         m_volumeMapper = NULL;
@@ -803,7 +794,8 @@ void MainWindow::on_pBVolume3D_clicked()
         m_volumeProperty = vtkVolumeProperty::New();
         m_volumeProperty->SetColor(colorTransformFunction);
         m_volumeProperty->SetScalarOpacity(opacityTransform);
-        m_volumeProperty->SetGradientOpacity(m_gradientTransform);
+        //m_volumeProperty->SetGradientOpacity(m_gradientTransform);
+        m_volumeProperty->SetIndependentComponents(true);
         m_volumeProperty->ShadeOn();//应用
         m_volumeProperty->SetInterpolationTypeToLinear();//直线间样条插值；
         m_volumeProperty->SetAmbient(0.4);//环境光系数；
@@ -848,7 +840,6 @@ void MainWindow::on_pBVolume3D_clicked()
         }
         */
 
-
         //光纤映射类型定义：
         //Mapper定义,
         m_volumeMapper = vtkSmartVolumeMapper::New();
@@ -859,12 +850,9 @@ void MainWindow::on_pBVolume3D_clicked()
         m_lodProp3D = vtkLODProp3D::New();
         m_lodProp3D->AddLOD(m_volumeMapper, m_volumeProperty, 0.0);
 
-
         m_volume = vtkVolume::New();
         m_volume->SetMapper(m_volumeMapper);
         m_volume->SetProperty(m_volumeProperty);//设置体属性；
-
-        double volumeView[4] = { 0,0,0.5,1 };
 
         m_outlineData = vtkOutlineFilter::New();//线框；
         m_outlineData->SetInputData(itkImageData);
@@ -882,7 +870,7 @@ void MainWindow::on_pBVolume3D_clicked()
 
         //重设相机的剪切范围；
         m_rendererViewer->ResetCameraClippingRange();
-        m_renderWindow->SetSize(500, 500);
+        m_renderWindow->SetSize(600, 600);
 
         m_renderWindowInteractor = vtkRenderWindowInteractor::New();
         m_renderWindowInteractor->SetRenderWindow(m_renderWindow);
@@ -899,9 +887,9 @@ void MainWindow::on_pBVolume3D_clicked()
     }
     else
     {
-      init = true;
-      ui->pBVolume3D->setText("Volume-3D");
-      free3Dviewer();
+          init = true;
+          ui->pBVolume3D->setText("Volume-3D");
+          free3Dviewer();
     }
 
 }
