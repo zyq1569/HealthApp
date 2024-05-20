@@ -97,6 +97,8 @@
 #include <map>
 
 ///https://shenchunxu.blog.csdn.net/article/details/53022151
+//https://blog.csdn.net/liushao1031177/article/details/118419221
+https://github.com/orgs/morphomuseum/repositories
 // On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
 #include <signal.h>
 
