@@ -100,6 +100,9 @@
 //https://blog.csdn.net/liushao1031177/article/details/118419221
 //https://github.com/orgs/morphomuseum/repositories
 // test data https://morphomuseum.com/tutorialsMorphodig
+//https://blog.csdn.net/wxflamy/article/details/86509177
+//https://examples.vtk.org/site/Cxx/PolyData/ImplicitSelectionLoop/
+//https://blog.csdn.net/weixin_42834523/article/details/108329303
 // On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
 #include <signal.h>
 
