@@ -1070,6 +1070,7 @@ void SQtree::read_file(const QString & f, const bool use_lock)
 #else
 		reader.SetFileName(f.toLocal8Bit().constData());
 #endif
+        reader.SetFileName(QDir::toNativeSeparators(f).toUtf8().constData());
 		ok = reader.Read();
 		if (!ok)
 		{

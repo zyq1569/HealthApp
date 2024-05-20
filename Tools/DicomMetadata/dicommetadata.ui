@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>978</width>
-    <height>653</height>
+    <width>899</width>
+    <height>821</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QFrame" name="metadata_frame">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>961</width>
-      <height>621</height>
+      <x>40</x>
+      <y>31</y>
+      <width>711</width>
+      <height>541</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -45,7 +45,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>978</width>
+     <width>899</width>
      <height>21</height>
     </rect>
    </property>
