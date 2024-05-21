@@ -25,8 +25,9 @@ class vtkVolume;
 class vtkOutlineFilter;
 class vtkPolyDataMapper;
 class vtkActor; class vtkRenderWindowInteractor;
-class vtkInteractorStyleTrackballCamera;
+//class vtkInteractorStyleTrackballCamera;
 class vtkLODProp3D;
+class vtkInteractorStyleTrackballCameraWindowleve;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -55,7 +56,8 @@ private:
     vtkPolyDataMapper *m_mapOutline;
     vtkActor *m_outline;
     vtkRenderWindowInteractor *m_renderWindowInteractor;
-    vtkInteractorStyleTrackballCamera *m_interactorstyle;
+    //vtkInteractorStyleTrackballCamera *m_interactorstyle;
+    vtkInteractorStyleTrackballCameraWindowleve *m_interactorstyle;
     vtkLODProp3D *m_lodProp3D;
 
     void free3Dviewer();

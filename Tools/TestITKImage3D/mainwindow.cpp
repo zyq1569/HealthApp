@@ -289,6 +289,115 @@ public:
     vtkSmartPointer<vtkImageViewer2> viewer = nullptr;
 };
 
+//QCursor g_cursor(QPixmap(":/images/cursors/contrast.svg"));
+//https://www.cnblogs.com/ybqjymy/p/14244545.html
+QPoint g_windowLevelStartPosition;
+QPoint g_windowLevelCurrentPosition;
+#include <vtkPointPicker.h>
+class vtkInteractorStyleTrackballCameraWindowleve : public vtkInteractorStyleTrackballCamera
+{
+public:
+    static vtkInteractorStyleTrackballCameraWindowleve *New()
+    {
+        return new vtkInteractorStyleTrackballCameraWindowleve;
+    }
+    void OnRightButtonDown() override
+    {
+        //if (!m_bFlagWindowLeve)
+        {
+            vtkInteractorStyleTrackballCamera::OnRightButtonDown();
+        }
+    }
+    void OnRightButtonUp() override
+    {
+        //if (!m_bFlagWindowLeve)
+        {
+            vtkInteractorStyleTrackballCamera::OnRightButtonUp();
+        }
+    }
+    void OnMouseMove() override
+    {
+        //m_viewer->getEventPosition();
+        QPoint point;
+        double p[3];
+        Interactor->GetPicker()->GetPickPosition(p);
+        if (!m_bFlagWindowLeve)
+        {
+           vtkInteractorStyleTrackballCamera::OnMouseMove();
+        }
+    }
+    void doWindowLevel()
+    {
+        /*
+        //m_viewer->setCursor(QCursor(QPixmap(":/images/cursors/contrast.svg")));
+        //m_windowLevelCurrentPosition = m_viewer->getEventPosition();
+        QPoint m_windowLevelCurrentPosition;
+        QSize size;// = m_viewer->getRenderWindowSize();
+
+        // Compute normalized delta
+        double dx = 4.0 * (m_windowLevelCurrentPosition.x() - m_windowLevelStartPosition.x()) / size.width();
+        double dy = 4.0 * (m_windowLevelStartPosition.y() - m_windowLevelCurrentPosition.y()) / size.height();
+
+        // Obtain absolute (to preserve sign of dx and dy) initial window width and ensure that it's not smaller than MinimumWindowWidth.
+        double initialWindowWidth = std::max(std::abs(m_initialWindow), MinimumWindowWidth);
+        // Scale by current values
+        dx *= initialWindowWidth;
+        dy *= initialWindowWidth;
+        // Compute new window level
+        double newWindow;
+        double newLevel;
+        computeWindowLevelValues(dx, dy, newWindow, newLevel);
+
+        VoiLut voiLut;
+
+        if (m_viewer->getCurrentVoiLut().isWindowLevel())
+        {
+            voiLut = WindowLevel(newWindow, newLevel);
+        }
+        else
+        {
+            double oldX1 = m_initialLut.keys().first();
+            double oldX2 = m_initialLut.keys().last();
+            double newX1 = newLevel - newWindow / 2.0;
+            double newX2 = newLevel + newWindow / 2.0;
+            voiLut = VoiLut(m_initialLut.toNewRange(oldX1, oldX2, newX1, newX2), m_initialLut.name());
+        }
+
+        // This is really only needed when burning (because in the other case it's eventually set in another place) but it's more consistent to do it in both cases.
+        // It ensures that the new VOI LUT is detected as custom.
+        voiLut.setExplanation(VoiLutPresetsToolData::getCustomPresetName());
+
+        if (m_state == WindowLevelling)
+        {
+            m_viewer->setVoiLut(voiLut);
+        }
+        else if (m_state == Burning)
+        {
+            m_2DViewer->setVoiLutInVolume(1, voiLut);
+        }
+        */
+    }
+    void setWindowLeve(bool b)
+    {
+        m_bFlagWindowLeve = b;
+    }
+private:
+    bool m_bFlagWindowLeve;
+protected:
+    vtkInteractorStyleTrackballCameraWindowleve()
+    {
+
+    }
+    ~vtkInteractorStyleTrackballCameraWindowleve() override
+    {
+
+    }
+
+private:
+    vtkInteractorStyleTrackballCameraWindowleve(const vtkInteractorStyleTrackballCameraWindowleve&) = delete;
+    void operator=(const vtkInteractorStyleTrackballCameraWindowleve&) = delete;
+};
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -317,7 +426,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_lodProp3D=NULL;
 
     loadRenderingStyles();
-
 }
 
 MainWindow::~MainWindow()
@@ -882,9 +990,12 @@ void MainWindow::on_pBVolume3D_clicked()
         m_renderWindowInteractor->SetRenderWindow(m_renderWindow);
 
         //设置相机跟踪模式
-        m_interactorstyle = vtkInteractorStyleTrackballCamera::New();
+        m_interactorstyle = vtkInteractorStyleTrackballCameraWindowleve::New();
+        m_interactorstyle->setWindowLeve(true);
         m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
 
+        //vtkInteractorStyle *m_interactorStyle = vtkInteractorStyle::SafeDownCast(m_renderWindowInteractor->GetInteractorStyle());
+        //m_interactorStyle->StartRotate();
         m_renderWindow->Render();
         m_renderWindow->SetWindowName("Volume-3D");
 
@@ -899,3 +1010,4 @@ void MainWindow::on_pBVolume3D_clicked()
     }
 
 }
+

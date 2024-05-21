@@ -47,7 +47,7 @@ public:
         m_dcmDir->setGeometry(QRect(10, 110, 491, 21));
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(10, 140, 320, 25));
+        layoutWidget->setGeometry(QRect(10, 140, 341, 25));
         horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
