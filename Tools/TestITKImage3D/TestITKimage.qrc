@@ -20,5 +20,6 @@
         <file>renderingstyles/spine2.xml</file>
         <file>renderingstyles/thorax1.png</file>
         <file>renderingstyles/thorax1.xml</file>
+        <file>images/cursors/contrast.svg</file>
     </qresource>
 </RCC>
