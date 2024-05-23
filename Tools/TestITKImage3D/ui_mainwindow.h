@@ -32,6 +32,7 @@ public:
     QPushButton *pBITK;
     QPushButton *pBITK3D;
     QPushButton *pBVolume3D;
+    QPushButton *pBZoomWL;
     QListView *m_renderingStyleListView;
     QStatusBar *statusbar;
 
@@ -39,7 +40,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(873, 193);
+        MainWindow->resize(873, 196);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         m_dcmDir = new QTextEdit(centralwidget);
@@ -47,7 +48,7 @@ public:
         m_dcmDir->setGeometry(QRect(10, 110, 491, 21));
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(10, 140, 341, 25));
+        layoutWidget->setGeometry(QRect(10, 140, 421, 25));
         horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -70,6 +71,11 @@ public:
         pBVolume3D->setObjectName(QString::fromUtf8("pBVolume3D"));
 
         horizontalLayout->addWidget(pBVolume3D);
+
+        pBZoomWL = new QPushButton(layoutWidget);
+        pBZoomWL->setObjectName(QString::fromUtf8("pBZoomWL"));
+
+        horizontalLayout->addWidget(pBZoomWL);
 
         m_renderingStyleListView = new QListView(centralwidget);
         m_renderingStyleListView->setObjectName(QString::fromUtf8("m_renderingStyleListView"));
@@ -103,6 +109,7 @@ public:
         pBITK->setText(QApplication::translate("MainWindow", "2DImage", nullptr));
         pBITK3D->setText(QApplication::translate("MainWindow", "March-3D", nullptr));
         pBVolume3D->setText(QApplication::translate("MainWindow", "Volume-3D", nullptr));
+        pBZoomWL->setText(QApplication::translate("MainWindow", "Zoom/WW|WL", nullptr));
     } // retranslateUi
 
 };

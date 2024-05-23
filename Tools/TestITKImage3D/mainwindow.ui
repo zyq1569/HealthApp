@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>873</width>
-    <height>193</height>
+    <height>196</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,7 +36,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>10</x>
       <y>140</y>
-      <width>341</width>
+      <width>421</width>
       <height>25</height>
      </rect>
     </property>
@@ -66,6 +66,13 @@ p, li { white-space: pre-wrap; }
       <widget class="QPushButton" name="pBVolume3D">
        <property name="text">
         <string>Volume-3D</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pBZoomWL">
+       <property name="text">
+        <string>Zoom/WW|WL</string>
        </property>
       </widget>
      </item>
