@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include "transferfunction.h"
 //https://blog.csdn.net/l1783111653/article/details/108457374
 ///
 ///
@@ -28,6 +28,10 @@ class vtkActor; class vtkRenderWindowInteractor;
 //class vtkInteractorStyleTrackballCamera;
 class vtkLODProp3D;
 class vtkInteractorStyleTrackballCameraWindowleve;
+class QVTKOpenGLNativeWidget;
+class vtkObject;
+class vtkCommand;
+using namespace udg;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -39,6 +43,7 @@ public:
 	void initImage3D_ITK_VTK(vtkActor *vtkactor);
 	void showImage3D_ITK_VTK();
     void loadRenderingStyles();
+    HCURSOR QCursorToHCursor(const QCursor &qCursor);
 
 private:
     /// Model that saves rendering styles.
@@ -59,8 +64,12 @@ private:
     //vtkInteractorStyleTrackballCamera *m_interactorstyle;
     vtkInteractorStyleTrackballCameraWindowleve *m_interactorstyle;
     vtkLODProp3D *m_lodProp3D;
-
+    /// The widget to display a vtk window with qt
+    QVTKOpenGLNativeWidget *m_vtkWidget;
+    bool m_bWL;
     void free3Dviewer();
+public:
+    TransferFunction m_transferFunction;
 private slots:
     void applyRenderingStyle(const QModelIndex &index);
 
@@ -72,6 +81,10 @@ private slots:
     void on_pBITK3D_clicked();
 
     void on_pBVolume3D_clicked();
+
+    void eventHandler(vtkObject * object, unsigned long vtkEvent, void * clientData, void * callData, vtkCommand * command);
+
+    void on_pBZoomWL_clicked();
 
 private:
     Ui::MainWindow *ui;

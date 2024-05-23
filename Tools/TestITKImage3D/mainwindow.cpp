@@ -1,89 +1,10 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
-
 #include "transferfunctionio.h"
 #include "renderingstyle.h"
 
-
 #include <QFileDialog>
-
-
-#include <itkImage.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkRescaleIntensityImageFilter.h>
-#include <itkPNGImageIOFactory.h>
-#include "itkGDCMImageIO.h"
-#include <itkJPEGImageIOFactory.h>
-#include <vtkAutoInit.h> 
-#include <vtkRenderingVolumeOpenGL2ObjectFactory.h>
-#include <vtkRenderingOpenGL2ObjectFactory.h>
-#include <vtkOutlineFilter.h>
-#include <vtkOBJExporter.h>
-#include <vtkMetaImageReader.h>
-#include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkImageData.h>
-#include <vtkProperty.h>
-#include <vtkDataSetMapper.h>
-#include <vtkRendererCollection.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkPolyData.h>
-#include <vtkPointData.h>
-#include "vtkRenderWindowInteractor.h"
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-#include "vtkMarchingCubes.h"
-#include "vtkStripper.h"
-#include "vtkSmoothPolyDataFilter.h"
-#include "vtkImageShrink3D.h"
-#include "vtkDecimatePro.h"
-#include <vtkInteractorStyleImage.h>
-
-#include <vtkDICOMImageReader.h>
-#include <vtkCamera.h>
-#include <vtkActor.h>
-#include <vtkVolumeProperty.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkImageShiftScale.h>
-#include <vtkSmartVolumeMapper.h>
-#include <vtkPiecewiseFunction.h>
-#include <vtkColorTransferFunction.h>
-#include <vtkImageCast.h>
-#include <vtkLODProp3D.h>
-#include <vtkAxesActor.h>
-#include <vtkSmartPointer.h>
-#include <vtkImageActor.h>
-#include <vtkImageViewer2.h>
-#include <vtkImageSliceMapper.h>
-#include <vtkImageFlip.h>
-#include <vtkImageGradient.h>
-#include <vtkImageMagnitude.h>
-#include <vtkImageHybridMedian2D.h>
-#include <vtkTextProperty.h>
-#include <vtkProperty2D.h>
-#include <vtkSliderWidget.h>
-#include <vtkCommand.h>
-#include <vtkWidgetEvent.h>
-#include <vtkCallbackCommand.h>
-#include <vtkWidgetEventTranslator.h>
-#include <vtkMetaImageWriter.h>
-#include <vtkSliderRepresentation2D.h>
-#include "itkImageToVTKImageFilter.h"
-#include "itkGDCMSeriesFileNames.h"
-#include "itkImageSeriesReader.h"
-#include "itkVTKImageToImageFilter.h"
-#include "itkImageSeriesWriter.h"
-#include "itkCurvatureFlowImageFilter.h"
-#include "itkCastImageFilter.h"
-#include "itksys/SystemTools.hxx"
-#include "itkImageRegionIterator.h"
-#include <itkConnectedThresholdImageFilter.h>
-#include "itkBinaryThresholdImageFilter.h"
-#include "itkBinaryFillholeImageFilter.h"
-#include "itkGrayscaleFillholeImageFilter.h"
-#include "itkMeanImageFilter.h"
-#include "itkGradientMagnitudeImageFilter.h"
-#include "itkExtractImageFilter.h"
+#include "Header.h"
 #include <string>
 
 //体绘制加速
@@ -113,15 +34,14 @@
 #include <QFileDialog>
 #include <QStandardItemModel>
 #include <QTimer>
-
-
+#include <QBitmap>
+#include <QCursor>
+#include <QPixmap>
 using namespace udg;
-
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
 VTK_MODULE_INIT(vtkRenderingFreeType);
-
 
 LPCWSTR stringLPCWSTR(std::string str)
 {
@@ -147,8 +67,6 @@ typedef itk::Image< PixelType, 3 > Input3dImageType;
 
 typedef itk::Image< PixelType, Dimension > Output2dImageType;
 typedef itk::Image< PixelType, 3 > Output3dImageType;
-
-
 
 Input3dImageType::Pointer GdcmRead3dImage(std::string path, QString dir = "");
 QStringList generateFilenames(const QString &dirPath);
@@ -253,7 +171,6 @@ Input3dImageType::Pointer GdcmRead3dImage(std::string path, QString dir)
 	return image;
 }
 
-
 vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
 {
     typedef itk::ImageToVTKImageFilter< Input3dImageType> itkTovtkFilterType;
@@ -271,7 +188,6 @@ vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
 	itkTovtkImageFilter = NULL;
 	return vtkdata;
 }
-
 
 class vtkSliderCallback : public vtkCommand
 {
@@ -294,6 +210,9 @@ public:
 QPoint g_windowLevelStartPosition;
 QPoint g_windowLevelCurrentPosition;
 #include <vtkPointPicker.h>
+#include "voilut.h"
+#include <vtkEventQtSlotConnect.h>
+static constexpr double MinimumWindowWidth = 0.0001;
 class vtkInteractorStyleTrackballCameraWindowleve : public vtkInteractorStyleTrackballCamera
 {
 public:
@@ -303,86 +222,173 @@ public:
     }
     void OnRightButtonDown() override
     {
-        //if (!m_bFlagWindowLeve)
+        if (m_bFlagWindowLeve)
         {
-            vtkInteractorStyleTrackballCamera::OnRightButtonDown();
+            m_startWindowLeve = true;
+            startWindowLevel();
         }
+        vtkInteractorStyleTrackballCamera::OnRightButtonDown();
     }
     void OnRightButtonUp() override
     {
-        //if (!m_bFlagWindowLeve)
+        if (m_bFlagWindowLeve)
         {
-            vtkInteractorStyleTrackballCamera::OnRightButtonUp();
+            m_startWindowLeve = false;
+            endWindowLevel();
         }
+        vtkInteractorStyleTrackballCamera::OnRightButtonUp();
     }
     void OnMouseMove() override
     {
-        //m_viewer->getEventPosition();
-        QPoint point;
-        double p[3];
-        Interactor->GetPicker()->GetPickPosition(p);
-        if (!m_bFlagWindowLeve)
-        {
-           vtkInteractorStyleTrackballCamera::OnMouseMove();
+        //double p[3];//Interactor->GetPicker()->GetPickPosition(p);
+        static bool first = true;
+        if (first)
+        {   
+            HWND hwnd = (HWND)m_vtkRenderWindow->GetGenericWindowId();
+            if (hwnd)
+            {
+                first = false;
+                // 设置窗口类的光标
+                LONG_PTR prevCursor = SetClassLongPtr(hwnd, GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(m_hCursor));
+                if (prevCursor == 0 && GetLastError() != 0)
+                {
+                    // 获取错误信息
+                    LPVOID lpMsgBuf;
+                    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                        NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                        (LPTSTR)&lpMsgBuf, 0, NULL);
+                    MessageBox(NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONERROR);
+                    LocalFree(lpMsgBuf);
+                }
+            }
         }
-    }
-    void doWindowLevel()
-    {
-        /*
-        //m_viewer->setCursor(QCursor(QPixmap(":/images/cursors/contrast.svg")));
-        //m_windowLevelCurrentPosition = m_viewer->getEventPosition();
-        QPoint m_windowLevelCurrentPosition;
-        QSize size;// = m_viewer->getRenderWindowSize();
-
-        // Compute normalized delta
-        double dx = 4.0 * (m_windowLevelCurrentPosition.x() - m_windowLevelStartPosition.x()) / size.width();
-        double dy = 4.0 * (m_windowLevelStartPosition.y() - m_windowLevelCurrentPosition.y()) / size.height();
-
-        // Obtain absolute (to preserve sign of dx and dy) initial window width and ensure that it's not smaller than MinimumWindowWidth.
-        double initialWindowWidth = std::max(std::abs(m_initialWindow), MinimumWindowWidth);
-        // Scale by current values
-        dx *= initialWindowWidth;
-        dy *= initialWindowWidth;
-        // Compute new window level
-        double newWindow;
-        double newLevel;
-        computeWindowLevelValues(dx, dy, newWindow, newLevel);
-
-        VoiLut voiLut;
-
-        if (m_viewer->getCurrentVoiLut().isWindowLevel())
+        if (m_bFlagWindowLeve && m_startWindowLeve)
         {
-            voiLut = WindowLevel(newWindow, newLevel);
+            doWindowLevel();          
         }
         else
         {
+            vtkInteractorStyleTrackballCamera::OnMouseMove();
+        }
+    }
+    void startWindowLevel()
+    {
+        VoiLut voiLut;
+        voiLut = m_initialLut;
+        m_initialWindow = voiLut.getWindowLevel().getWidth();
+        m_initialLevel = voiLut.getWindowLevel().getCenter();
+        m_initialLut = voiLut.getLut();
+        m_initialLut.setName(voiLut.getOriginalLutExplanation());
+        int *vtkpoint = m_vtkRenderWindow->GetInteractor()->GetEventPosition();
+        m_windowLevelStartPosition = QPoint(vtkpoint[0], vtkpoint[1]);
+    }
+    void endWindowLevel()
+    {
+        m_vtkRenderWindow->Render();
+    }
+    void doWindowLevel()
+    {
+        if (m_vtkRenderWindow)
+        {
+            //m_vtkRenderWindow->SetCurrentCursor(g_cursor);
+            //m_viewer->setCursor(QCursor(QPixmap(":/images/cursors/contrast.svg")));
+            int *vtkpoint = m_vtkRenderWindow->GetInteractor()->GetEventPosition();
+            m_windowLevelCurrentPosition = QPoint(vtkpoint[0], vtkpoint[1]);
+            int *vtksize = m_vtkRenderWindow->GetSize();
+            QSize size = QSize(vtksize[0], vtksize[1]);
+
+            double dx = 4.0 * (m_windowLevelCurrentPosition.x() - m_windowLevelStartPosition.x()) / size.width();
+            double dy = 4.0 * (m_windowLevelStartPosition.y() - m_windowLevelCurrentPosition.y()) / size.height();
+
+            double initialWindowWidth = std::max(std::abs(m_initialWindow), MinimumWindowWidth);
+
+            dx *= initialWindowWidth;
+            dy *= initialWindowWidth;
+
+            double newWindow = dx + m_initialWindow;
+
+            if (newWindow > -MinimumWindowWidth && newWindow < MinimumWindowWidth)
+            {
+                newWindow = std::copysign(MinimumWindowWidth, newWindow);
+            }
+            double newLevel = m_initialLevel - dy;
+
+            VoiLut voiLut;
             double oldX1 = m_initialLut.keys().first();
             double oldX2 = m_initialLut.keys().last();
             double newX1 = newLevel - newWindow / 2.0;
             double newX2 = newLevel + newWindow / 2.0;
+            //if (newX1 > 1024)
+            //{
+            //    newX1 = 1024;
+            //}
+            //if (newX1 < -1024)
+            //{
+            //    newX1 = -1024;
+            //}
+            //if (newX2 > 1024)
+            //{
+            //    newX2 = 1024;
+            //}
+            //if (newX2 < -1024)
+            //{
+            //    newX2 = -1024;
+            //}
             voiLut = VoiLut(m_initialLut.toNewRange(oldX1, oldX2, newX1, newX2), m_initialLut.name());
+            voiLut.setExplanation("Custom");
+            m_initialLut = voiLut.getLut();
+            m_oldTransferFunction = m_initialLut;
+            m_volumeProperty->SetScalarOpacity(voiLut.getLut().vtkOpacityTransferFunction());
+            m_volumeProperty->SetColor(voiLut.getLut().vtkColorTransferFunction());
+            m_vtkRenderWindow->Render();
         }
-
-        // This is really only needed when burning (because in the other case it's eventually set in another place) but it's more consistent to do it in both cases.
-        // It ensures that the new VOI LUT is detected as custom.
-        voiLut.setExplanation(VoiLutPresetsToolData::getCustomPresetName());
-
-        if (m_state == WindowLevelling)
-        {
-            m_viewer->setVoiLut(voiLut);
-        }
-        else if (m_state == Burning)
-        {
-            m_2DViewer->setVoiLutInVolume(1, voiLut);
-        }
-        */
+ 
     }
     void setWindowLeve(bool b)
     {
         m_bFlagWindowLeve = b;
+        m_startWindowLeve = false;
     }
+    virtual void OnKeyUp()
+    {
+        int keyCode = m_vtkRenderWindow->GetInteractor()->GetKeyCode();
+        if (keyCode == 27)
+        {
+            keyCode = 27;
+        }
+    }
+
 private:
     bool m_bFlagWindowLeve;
+    TransferFunction m_initialLut,m_oldTransferFunction;
+    QPoint m_windowLevelStartPosition;
+    QPoint m_windowLevelCurrentPosition;
+    /// Valors per controlar el mapeig del window level
+    double m_initialWindow, m_initialLevel, m_currentWindow, m_currentLevel;
+    vtkRenderWindow   *m_vtkRenderWindow;
+    vtkVolumeProperty *m_volumeProperty;
+    MainWindow        *m_MainWindow;
+    bool m_startWindowLeve;
+    vtkEventQtSlotConnect *m_vtkQtConnections;
+    HCURSOR m_hCursor;
+ public:
+     void setMainwindowsHand(MainWindow *m_main)
+     {
+         m_MainWindow = m_main;
+     }
+     void setHCURSOR(HCURSOR hcursor)
+     {
+         m_hCursor = hcursor;
+     }
+     void setMainwindowsVTKParms(vtkVolumeProperty* vp, vtkRenderWindow* vr, TransferFunction tr)
+     {
+         m_vtkRenderWindow = vr;
+         m_volumeProperty  = vp;
+         m_initialLut      = tr;
+         m_vtkQtConnections = vtkEventQtSlotConnect::New();
+         //m_MainWindow = m_main;
+         //m_vtkQtConnections->Connect(m_vtkRenderWindow->GetInteractor(), vtkCommand::AnyEvent, m_MainWindow, SLOT(eventHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)));
+     }
 protected:
     vtkInteractorStyleTrackballCameraWindowleve()
     {
@@ -397,7 +403,40 @@ private:
     vtkInteractorStyleTrackballCameraWindowleve(const vtkInteractorStyleTrackballCameraWindowleve&) = delete;
     void operator=(const vtkInteractorStyleTrackballCameraWindowleve&) = delete;
 };
+//#include <QCursor>
+HCURSOR MainWindow::QCursorToHCursor(const QCursor &qCursor)
+{
+    QPixmap pixmap = qCursor.pixmap();
 
+    // 获取光标位图和蒙版数据
+    QBitmap mask = pixmap.mask();
+    QSize size = pixmap.size();
+    int width = size.width();
+    int height = size.height();
+
+    QImage img = pixmap.toImage();
+    QImage maskImg = mask.toImage();
+
+    // 创建DIB位图
+    HBITMAP hBitmapColor = CreateBitmap(width, height, 1, 32, img.bits());
+    HBITMAP hBitmapMask = CreateBitmap(width, height, 1, 1, maskImg.bits());
+
+    ICONINFO iconinfo;
+    iconinfo.fIcon = FALSE;
+    iconinfo.xHotspot = qCursor.hotSpot().x();
+    iconinfo.yHotspot = qCursor.hotSpot().y();
+    iconinfo.hbmMask = hBitmapMask;
+    iconinfo.hbmColor = hBitmapColor;
+
+    // 创建HCURSOR
+    HCURSOR hCursor = CreateIconIndirect(&iconinfo);
+
+    // 释放资源
+    DeleteObject(hBitmapColor);
+    DeleteObject(hBitmapMask);
+
+    return hCursor;
+}
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -425,7 +464,12 @@ MainWindow::MainWindow(QWidget *parent)
     m_interactorstyle=NULL;
     m_lodProp3D=NULL;
 
+    //m_vtkWidget = new QVTKOpenGLNativeWidget(this);
+
+    QCursor g_cursor(QPixmap(":/images/cursors/contrast.svg"));
+    //setCursor(g_cursor);
     loadRenderingStyles();
+
 }
 
 MainWindow::~MainWindow()
@@ -676,9 +720,9 @@ void MainWindow::applyRenderingStyle(const QModelIndex &index)
     {
         QStandardItem *item = m_renderingStyleModel->itemFromIndex(index);
         RenderingStyle renderingStyle = RenderingStyle::fromVariant(item->data());
-
-        m_volumeProperty->SetScalarOpacity(renderingStyle.getTransferFunction().vtkOpacityTransferFunction());
-        m_volumeProperty->SetColor(renderingStyle.getTransferFunction().vtkColorTransferFunction());
+        m_transferFunction = renderingStyle.getTransferFunction();
+        m_volumeProperty->SetScalarOpacity(m_transferFunction.vtkOpacityTransferFunction());
+        m_volumeProperty->SetColor(m_transferFunction.vtkColorTransferFunction());
 
         m_volumeProperty->SetAmbient(0.1);
         m_volumeProperty->SetDiffuse(0.7);
@@ -689,11 +733,11 @@ void MainWindow::applyRenderingStyle(const QModelIndex &index)
 
         m_renderWindow->Render();
         m_renderWindow->SetWindowName("Volume-3D");
+        m_interactorstyle->setMainwindowsVTKParms( m_volumeProperty, m_renderWindow, m_transferFunction);
 
     }
 
 }
-
 
 void MainWindow::initImage3D_ITK_VTK(vtkActor *vtkactor)
 {
@@ -800,12 +844,10 @@ void MainWindow::showImage3D_ITK_VTK()
 
 }
 
-
 void MainWindow::on_pBITK3D_clicked()//return show3DIVTK(Input_Name);
 {
 	showImage3D_ITK_VTK();
 }
-
 
 void MainWindow::free3Dviewer()
 {
@@ -815,7 +857,7 @@ void MainWindow::free3Dviewer()
         m_renderWindow->Delete();
         //m_opacityTransform->Delete();
         //m_colorTransformFunction->Delete();
-        m_gradientTransform->Delete();
+        //m_gradientTransform->Delete();
         m_volumeProperty->Delete();
         m_volumeMapper->Delete();
         m_volume->Delete();
@@ -831,7 +873,7 @@ void MainWindow::free3Dviewer()
         m_renderWindow = NULL;
         //m_opacityTransform = NULL;
         //m_colorTransformFunction = NULL;
-        m_gradientTransform = NULL;
+        //m_gradientTransform = NULL;
         m_volumeProperty = NULL;
         m_volumeMapper = NULL;
         m_volume = NULL;
@@ -871,43 +913,46 @@ void MainWindow::on_pBVolume3D_clicked()
 
         //定义绘制器；
         m_rendererViewer = vtkRenderer::New();//指向指针；
-        m_renderWindow = vtkRenderWindow::New();
+        m_renderWindow = vtkRenderWindow::New(); //m_vtkWidget->GetRenderWindow();
+        //m_renderWindow->GetCurrentCursor();
+
         m_renderWindow->AddRenderer(m_rendererViewer);
 
-        //透明度映射函数定义；
-        vtkPiecewiseFunction *opacityTransform = vtkPiecewiseFunction::New();
-        opacityTransform->AddPoint(-1024, 0.0);
-        opacityTransform->AddPoint(-24, 0.0);
-        opacityTransform->AddPoint(167.00000000000000, 0.16862745098039220);
-        opacityTransform->AddPoint(218.00000000000000, 0.41960784313725491);
-        opacityTransform->AddPoint(218.00000000000000, 0.41960784313725491);
-        opacityTransform->AddPoint(445.00000000000000, 0.57254901960784310);
-        opacityTransform->AddPoint(1455.0000000000000, 0.87450980392156863);
-        opacityTransform->AddPoint(2784.0000000000000, 0.88235294117647056);
-
+        /// Funció de transferència d'opacitat escalar.
+        //OpacityTransferFunction m_scalarOpacity;
+        //m_transferFunction.colorTransferFunction = colorTransformFunction;
+        //m_transferFunction.opacityTransferFunction = opacityTransform;
+        //透明度映射函数定义；   
+        m_transferFunction.setScalarOpacity(-1024, 0.0);
+        m_transferFunction.setScalarOpacity(-24, 0.0);
+        m_transferFunction.setScalarOpacity(167.00000000000000, 0.16862745098039220);
+        m_transferFunction.setScalarOpacity(218.00000000000000, 0.41960784313725491);
+        m_transferFunction.setScalarOpacity(218.00000000000000, 0.41960784313725491);
+        m_transferFunction.setScalarOpacity(445.00000000000000, 0.57254901960784310);
+        m_transferFunction.setScalarOpacity(1455.0000000000000, 0.87450980392156863);
+        m_transferFunction.setScalarOpacity(2784.0000000000000, 0.88235294117647056);
         //颜色映射函数定义,梯度上升的
-        vtkColorTransferFunction *colorTransformFunction = vtkColorTransferFunction::New();
-        colorTransformFunction->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-        colorTransformFunction->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-        colorTransformFunction->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-        colorTransformFunction->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
-        colorTransformFunction->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
 
-        colorTransformFunction->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
-        colorTransformFunction->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
-        colorTransformFunction->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
+        m_transferFunction.setColor(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+        m_transferFunction.setColor(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+        m_transferFunction.setColor(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+        m_transferFunction.setColor(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
+        m_transferFunction.setColor(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
+        m_transferFunction.setColor(445.0, 1.0, 1.0, 1.0);
+        m_transferFunction.setColor(1455.0, 1.0, 1.0, 1.0);
+        m_transferFunction.setColor(2784.0, 1.0, 1.0, 1.0);
 
-        m_gradientTransform = vtkPiecewiseFunction::New();
-        m_gradientTransform->AddPoint(1, 0.0);
-        m_gradientTransform->AddPoint(70, 0.5);
-        m_gradientTransform->AddPoint(130, 1.0);
+        //m_gradientTransform = vtkPiecewiseFunction::New();
+        //m_gradientTransform->AddPoint(1, 0.0);
+        //m_gradientTransform->AddPoint(70, 0.5);
+        //m_gradientTransform->AddPoint(130, 1.0);
         //gradientTransform->AddPoint(300, 0.1);
-
 
         //体数据属性；
         m_volumeProperty = vtkVolumeProperty::New();
-        m_volumeProperty->SetColor(colorTransformFunction);
-        m_volumeProperty->SetScalarOpacity(opacityTransform);
+        m_volumeProperty->SetScalarOpacity(m_transferFunction.vtkOpacityTransferFunction());
+        m_volumeProperty->SetColor(m_transferFunction.vtkColorTransferFunction());
+
         //m_volumeProperty->SetGradientOpacity(m_gradientTransform);
         m_volumeProperty->SetIndependentComponents(true);
         m_volumeProperty->ShadeOn();//应用
@@ -992,12 +1037,20 @@ void MainWindow::on_pBVolume3D_clicked()
         //设置相机跟踪模式
         m_interactorstyle = vtkInteractorStyleTrackballCameraWindowleve::New();
         m_interactorstyle->setWindowLeve(true);
+        m_interactorstyle->setMainwindowsVTKParms(m_volumeProperty, m_renderWindow, m_transferFunction);
+
+        
         m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
 
         //vtkInteractorStyle *m_interactorStyle = vtkInteractorStyle::SafeDownCast(m_renderWindowInteractor->GetInteractorStyle());
         //m_interactorStyle->StartRotate();
+        QCursor qcursor(QPixmap(":/images/cursors/contrast.svg"));
+        HCURSOR hCursor = QCursorToHCursor(qcursor);
+        m_interactorstyle->setHCURSOR(hCursor);
+        bool m_bWL = true;
         m_renderWindow->Render();
-        m_renderWindow->SetWindowName("Volume-3D");
+        m_renderWindow->SetWindowName("Volume-3D: 右键WW/WL | 左键旋转");
+        SetCursor(hCursor);
 
         //RenderWindowInteractor->Initialize();
         //RenderWindowInteractor->Start();
@@ -1009,5 +1062,70 @@ void MainWindow::on_pBVolume3D_clicked()
           free3Dviewer();
     }
 
+}
+
+void MainWindow::eventHandler(vtkObject *object, unsigned long vtkEvent, void *clientData, void *callData, vtkCommand *command)
+{
+    Q_UNUSED(object);
+    Q_UNUSED(clientData);
+    Q_UNUSED(callData);
+    Q_UNUSED(command);
+
+    if (vtkEvent == vtkCommand::MouseWheelForwardEvent || vtkEvent == vtkCommand::MouseWheelBackwardEvent)
+    {
+        QWheelEvent *event = (QWheelEvent*)callData; //WARNING: I don't like that casting here, may become dangerous.
+        if (event)
+        {
+        }
+    }
+
+    switch (vtkEvent)
+    {
+        case vtkCommand::LeftButtonPressEvent:
+        {
+
+        }
+        //case QVTKInteractor::vtkCustomEvents::ContextMenuEvent:
+        //case vtkCommand::RightButtonPressEvent:
+        //case vtkCommand::MiddleButtonPressEvent:
+        //case vtkCommand::MouseWheelForwardEvent:
+        //case vtkCommand::MouseWheelBackwardEvent:
+        case vtkCommand::KeyPressEvent:
+        {
+            int keyCode = m_renderWindowInteractor->GetKeyCode();
+            if (keyCode == 27) // ESC
+            {
+
+            }
+        }
+            break;
+
+        case vtkCommand::MouseMoveEvent:
+            break;
+
+        case vtkCommand::RightButtonReleaseEvent:
+            break;
+    }
+}
+
+
+void MainWindow::on_pBZoomWL_clicked()
+{
+    if (m_renderWindow)
+    {
+        if (m_bWL)
+        {
+            m_renderWindow->SetWindowName("Volume-3D: 右键Zoom | 左键旋转");
+            m_interactorstyle->setWindowLeve(false);
+            m_bWL = false;
+        }
+        else
+        {
+            m_renderWindow->SetWindowName("Volume-3D: 右键WW/WL | 左键旋转");
+            m_interactorstyle->setWindowLeve(true);
+            m_bWL = true;
+        }
+
+    }
 }
 
