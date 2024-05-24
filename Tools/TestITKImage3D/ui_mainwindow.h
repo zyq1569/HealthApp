@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QListView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
@@ -32,15 +33,15 @@ public:
     QPushButton *pBITK;
     QPushButton *pBITK3D;
     QPushButton *pBVolume3D;
-    QPushButton *pBZoomWL;
     QListView *m_renderingStyleListView;
+    QLabel *label;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(873, 196);
+        MainWindow->resize(873, 236);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         m_dcmDir = new QTextEdit(centralwidget);
@@ -72,11 +73,6 @@ public:
 
         horizontalLayout->addWidget(pBVolume3D);
 
-        pBZoomWL = new QPushButton(layoutWidget);
-        pBZoomWL->setObjectName(QString::fromUtf8("pBZoomWL"));
-
-        horizontalLayout->addWidget(pBZoomWL);
-
         m_renderingStyleListView = new QListView(centralwidget);
         m_renderingStyleListView->setObjectName(QString::fromUtf8("m_renderingStyleListView"));
         m_renderingStyleListView->setGeometry(QRect(5, 5, 853, 91));
@@ -87,6 +83,15 @@ public:
         m_renderingStyleListView->setResizeMode(QListView::Adjust);
         m_renderingStyleListView->setViewMode(QListView::IconMode);
         m_renderingStyleListView->setUniformItemSizes(true);
+        label = new QLabel(centralwidget);
+        label->setObjectName(QString::fromUtf8("label"));
+        label->setGeometry(QRect(10, 190, 841, 20));
+        QFont font;
+        font.setFamily(QString::fromUtf8("Fixedsys"));
+        font.setPointSize(14);
+        font.setBold(true);
+        font.setWeight(75);
+        label->setFont(font);
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -109,7 +114,7 @@ public:
         pBITK->setText(QApplication::translate("MainWindow", "2DImage", nullptr));
         pBITK3D->setText(QApplication::translate("MainWindow", "March-3D", nullptr));
         pBVolume3D->setText(QApplication::translate("MainWindow", "Volume-3D", nullptr));
-        pBZoomWL->setText(QApplication::translate("MainWindow", "Zoom/WW|WL", nullptr));
+        label->setText(QApplication::translate("MainWindow", "Volume-3D:\351\274\240\346\240\207\357\274\232\344\270\255\351\224\256\347\247\273\345\212\250\345\233\276\345\203\217 \345\267\246\351\224\256\346\227\213\350\275\254\345\233\276\345\203\217  \345\217\263\351\224\256\357\274\232WW|WL\357\274\210ESC\351\224\256\350\277\230\345\216\237\357\274\211 \346\210\226\350\200\205(\344\270\255\351\224\256\345\215\225\345\207\273\345\210\207\346\215\242)\345\210\207\346\215\242 Zoom", nullptr));
     } // retranslateUi
 
 };

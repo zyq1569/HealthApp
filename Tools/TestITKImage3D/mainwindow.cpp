@@ -241,6 +241,7 @@ public:
     void OnMouseMove() override
     {
         //double p[3];//Interactor->GetPicker()->GetPickPosition(p);
+        /*
         static bool first = true;
         if (first)
         {   
@@ -261,7 +262,7 @@ public:
                     LocalFree(lpMsgBuf);
                 }
             }
-        }
+        }*/
         if (m_bFlagWindowLeve && m_startWindowLeve)
         {
             doWindowLevel();          
@@ -271,15 +272,21 @@ public:
             vtkInteractorStyleTrackballCamera::OnMouseMove();
         }
     }
+    void OnMiddleButtonUp() override
+    {
+        m_bFlagWindowLeve = !m_bFlagWindowLeve;
+        vtkInteractorStyleTrackballCamera::OnMiddleButtonUp();
+    }
+
     void startWindowLevel()
     {
         VoiLut voiLut;
-        voiLut = m_initialLut;
-        m_initialWindow = voiLut.getWindowLevel().getWidth();
-        m_initialLevel = voiLut.getWindowLevel().getCenter();
-        m_initialLut = voiLut.getLut();
+        voiLut                = m_initialLut;
+        m_initialWindow       = voiLut.getWindowLevel().getWidth();
+        m_initialLevel        = voiLut.getWindowLevel().getCenter();
+        m_initialLut          = voiLut.getLut();
         m_initialLut.setName(voiLut.getOriginalLutExplanation());
-        int *vtkpoint = m_vtkRenderWindow->GetInteractor()->GetEventPosition();
+        int *vtkpoint         = m_vtkRenderWindow->GetInteractor()->GetEventPosition();
         m_windowLevelStartPosition = QPoint(vtkpoint[0], vtkpoint[1]);
     }
     void endWindowLevel()
@@ -318,26 +325,9 @@ public:
             double oldX2 = m_initialLut.keys().last();
             double newX1 = newLevel - newWindow / 2.0;
             double newX2 = newLevel + newWindow / 2.0;
-            //if (newX1 > 1024)
-            //{
-            //    newX1 = 1024;
-            //}
-            //if (newX1 < -1024)
-            //{
-            //    newX1 = -1024;
-            //}
-            //if (newX2 > 1024)
-            //{
-            //    newX2 = 1024;
-            //}
-            //if (newX2 < -1024)
-            //{
-            //    newX2 = -1024;
-            //}
             voiLut = VoiLut(m_initialLut.toNewRange(oldX1, oldX2, newX1, newX2), m_initialLut.name());
             voiLut.setExplanation("Custom");
             m_initialLut = voiLut.getLut();
-            m_oldTransferFunction = m_initialLut;
             m_volumeProperty->SetScalarOpacity(voiLut.getLut().vtkOpacityTransferFunction());
             m_volumeProperty->SetColor(voiLut.getLut().vtkColorTransferFunction());
             m_vtkRenderWindow->Render();
@@ -349,13 +339,34 @@ public:
         m_bFlagWindowLeve = b;
         m_startWindowLeve = false;
     }
-    virtual void OnKeyUp()
+
+    virtual void OnKeyPress() override
     {
+        vtkRenderWindowInteractor *interactor = this->GetInteractor();
         int keyCode = m_vtkRenderWindow->GetInteractor()->GetKeyCode();
-        if (keyCode == 27)
+        if (keyCode == 27)//ESC
         {
-            keyCode = 27;
+            //MessageBox(NULL, "keycode 27", "Error", MB_OK);
+            m_volumeProperty->SetScalarOpacity(m_oldTransferFunction.vtkOpacityTransferFunction());
+            m_volumeProperty->SetColor(m_oldTransferFunction.vtkColorTransferFunction());
+            m_vtkRenderWindow->Render();
         }
+        /*
+            std::string key = interactor->GetKeySym();
+            // 打印按下的键
+            std::cout << "Key pressed: " << key << std::endl;
+            // 处理特定按键
+            if (key == "Up")
+            {
+                std::cout << "Up arrow key pressed." << std::endl;            
+            }
+            else if (key == "Down")
+            {
+                std::cout << "Down arrow key pressed." << std::endl;
+            }        
+        */
+        // 调用父类的 OnKeyPress 方法
+        vtkInteractorStyleTrackballCamera::OnKeyPress();
     }
 
 private:
@@ -388,6 +399,13 @@ private:
          m_vtkQtConnections = vtkEventQtSlotConnect::New();
          //m_MainWindow = m_main;
          //m_vtkQtConnections->Connect(m_vtkRenderWindow->GetInteractor(), vtkCommand::AnyEvent, m_MainWindow, SLOT(eventHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)));
+     }
+     void setSaveTransferFunction(TransferFunction tr)
+     {
+         VoiLut voiLut;
+         voiLut = tr;
+         m_oldTransferFunction = voiLut.getLut();;
+         m_oldTransferFunction.setName(voiLut.getOriginalLutExplanation());
      }
 protected:
     vtkInteractorStyleTrackballCameraWindowleve()
@@ -732,8 +750,9 @@ void MainWindow::applyRenderingStyle(const QModelIndex &index)
         m_volumeProperty->SetSpecularPower(64.0);
 
         m_renderWindow->Render();
-        m_renderWindow->SetWindowName("Volume-3D");
+        m_renderWindow->SetWindowName("鼠标左键旋转 右键:WW/WL(ESC还原）|(鼠标中间单击切换)Zoom 鼠标中键移动图像");
         m_interactorstyle->setMainwindowsVTKParms( m_volumeProperty, m_renderWindow, m_transferFunction);
+        m_interactorstyle->setSaveTransferFunction(m_transferFunction);
 
     }
 
@@ -1038,6 +1057,7 @@ void MainWindow::on_pBVolume3D_clicked()
         m_interactorstyle = vtkInteractorStyleTrackballCameraWindowleve::New();
         m_interactorstyle->setWindowLeve(true);
         m_interactorstyle->setMainwindowsVTKParms(m_volumeProperty, m_renderWindow, m_transferFunction);
+        m_interactorstyle->setSaveTransferFunction(m_transferFunction);
 
         
         m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
@@ -1049,7 +1069,7 @@ void MainWindow::on_pBVolume3D_clicked()
         m_interactorstyle->setHCURSOR(hCursor);
         bool m_bWL = true;
         m_renderWindow->Render();
-        m_renderWindow->SetWindowName("Volume-3D: 右键WW/WL | 左键旋转");
+        m_renderWindow->SetWindowName("鼠标左键旋转 右键:WW/WL(ESC还原）|(鼠标中间单击切换)Zoom 鼠标中键移动图像");
         SetCursor(hCursor);
 
         //RenderWindowInteractor->Initialize();
@@ -1115,13 +1135,13 @@ void MainWindow::on_pBZoomWL_clicked()
     {
         if (m_bWL)
         {
-            m_renderWindow->SetWindowName("Volume-3D: 右键Zoom | 左键旋转");
+            m_renderWindow->SetWindowName("鼠标左键旋转 右键:WW/WL(ESC还原）|(鼠标中间单击切换)Zoom 鼠标中键移动图像");
             m_interactorstyle->setWindowLeve(false);
             m_bWL = false;
         }
         else
         {
-            m_renderWindow->SetWindowName("Volume-3D: 右键WW/WL | 左键旋转");
+            m_renderWindow->SetWindowName("鼠标左键旋转 右键:WW/WL(ESC还原）|(鼠标中间单击切换)Zoom 鼠标中键移动图像");
             m_interactorstyle->setWindowLeve(true);
             m_bWL = true;
         }
