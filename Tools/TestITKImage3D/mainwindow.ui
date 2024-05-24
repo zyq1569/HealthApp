@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>873</width>
-    <height>196</height>
+    <height>236</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,13 +69,6 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QPushButton" name="pBZoomWL">
-       <property name="text">
-        <string>Zoom/WW|WL</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
    <widget class="QListView" name="m_renderingStyleListView">
@@ -113,6 +106,27 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="uniformItemSizes">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>190</y>
+      <width>841</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Fixedsys</family>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Volume-3D:鼠标：中键移动图像 左键旋转图像  右键：WW|WL（ESC键还原） 或者(中键单击切换)切换 Zoom</string>
     </property>
    </widget>
   </widget>
