@@ -487,6 +487,7 @@ MainWindow::MainWindow(QWidget *parent)
     QCursor g_cursor(QPixmap(":/images/cursors/contrast.svg"));
     //setCursor(g_cursor);
     loadRenderingStyles();
+    ui->m_labeltip->setStyleSheet("color:red");
 
 }
 

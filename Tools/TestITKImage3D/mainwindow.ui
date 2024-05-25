@@ -108,7 +108,7 @@ p, li { white-space: pre-wrap; }
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="m_labeltip">
     <property name="geometry">
      <rect>
       <x>10</x>
