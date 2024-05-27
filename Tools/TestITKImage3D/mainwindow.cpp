@@ -240,7 +240,6 @@ public:
     }
     void OnMouseMove() override
     {
-        //double p[3];//Interactor->GetPicker()->GetPickPosition(p);
         /*
         static bool first = true;
         if (first)
@@ -354,7 +353,6 @@ public:
         /*
             std::string key = interactor->GetKeySym();
             // 打印按下的键
-            std::cout << "Key pressed: " << key << std::endl;
             // 处理特定按键
             if (key == "Up")
             {
@@ -397,7 +395,6 @@ private:
          m_volumeProperty  = vp;
          m_initialLut      = tr;
          m_vtkQtConnections = vtkEventQtSlotConnect::New();
-         //m_MainWindow = m_main;
          //m_vtkQtConnections->Connect(m_vtkRenderWindow->GetInteractor(), vtkCommand::AnyEvent, m_MainWindow, SLOT(eventHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)));
      }
      void setSaveTransferFunction(TransferFunction tr)
@@ -414,7 +411,6 @@ protected:
     }
     ~vtkInteractorStyleTrackballCameraWindowleve() override
     {
-
     }
 
 private:
@@ -939,9 +935,6 @@ void MainWindow::on_pBVolume3D_clicked()
         m_renderWindow->AddRenderer(m_rendererViewer);
 
         /// Funció de transferència d'opacitat escalar.
-        //OpacityTransferFunction m_scalarOpacity;
-        //m_transferFunction.colorTransferFunction = colorTransformFunction;
-        //m_transferFunction.opacityTransferFunction = opacityTransform;
         //透明度映射函数定义；   
         m_transferFunction.setScalarOpacity(-1024, 0.0);
         m_transferFunction.setScalarOpacity(-24, 0.0);
@@ -1071,7 +1064,7 @@ void MainWindow::on_pBVolume3D_clicked()
         bool m_bWL = true;
         m_renderWindow->Render();
         m_renderWindow->SetWindowName("鼠标左键旋转 右键:WW/WL(ESC还原）|(鼠标中间单击切换)Zoom 鼠标中键移动图像");
-        SetCursor(hCursor);
+        //SetCursor(hCursor);
 
         //RenderWindowInteractor->Initialize();
         //RenderWindowInteractor->Start();
@@ -1091,7 +1084,6 @@ void MainWindow::eventHandler(vtkObject *object, unsigned long vtkEvent, void *c
     Q_UNUSED(clientData);
     Q_UNUSED(callData);
     Q_UNUSED(command);
-
     if (vtkEvent == vtkCommand::MouseWheelForwardEvent || vtkEvent == vtkCommand::MouseWheelBackwardEvent)
     {
         QWheelEvent *event = (QWheelEvent*)callData; //WARNING: I don't like that casting here, may become dangerous.
@@ -1116,14 +1108,12 @@ void MainWindow::eventHandler(vtkObject *object, unsigned long vtkEvent, void *c
             int keyCode = m_renderWindowInteractor->GetKeyCode();
             if (keyCode == 27) // ESC
             {
-
             }
         }
             break;
 
         case vtkCommand::MouseMoveEvent:
             break;
-
         case vtkCommand::RightButtonReleaseEvent:
             break;
     }
@@ -1146,7 +1136,6 @@ void MainWindow::on_pBZoomWL_clicked()
             m_interactorstyle->setWindowLeve(true);
             m_bWL = true;
         }
-
     }
 }
 
