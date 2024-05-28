@@ -70,6 +70,10 @@ private:
     void free3Dviewer();
 public:
     TransferFunction m_transferFunction;
+
+public:
+    void saveHDMdata(vtkSmartPointer<vtkImageData> itkImageData);
+
 private slots:
     void applyRenderingStyle(const QModelIndex &index);
 
@@ -83,8 +87,6 @@ private slots:
     void on_pBVolume3D_clicked();
 
     void eventHandler(vtkObject * object, unsigned long vtkEvent, void * clientData, void * callData, vtkCommand * command);
-
-    void on_pBZoomWL_clicked();
 
 private:
     Ui::MainWindow *ui;

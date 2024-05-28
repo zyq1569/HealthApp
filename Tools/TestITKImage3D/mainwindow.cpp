@@ -976,41 +976,6 @@ void MainWindow::on_pBVolume3D_clicked()
         m_volumeProperty->SetSpecularPower(10);//高光强度；
 
         vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
-        /*
-        vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
-        vtkdatawrite->SetInputData(itkImageData);
-        std::string path = Input_Name + "/VTKdata.mhd";
-        vtkdatawrite->SetFileName(path.c_str());
-        path = Input_Name + "/VTKdata.raw";
-        vtkdatawrite->SetRAWFileName(path.c_str());
-        vtkdatawrite->Write();
-        vtkdatawrite->Delete();
-        */
-
-
-        /*
-        typedef VolumePixelData::ItkImageType ItkImageType;
-        typedef itk::ImageFileReader<Volume::ItkImageType> ReaderType;
-        ReaderType::Pointer reader = ReaderType::New();
-        reader->SetFileName(qPrintable(fileName));
-        reader->SetImageIO(m_gdcmIO);
-        emit progress(0);
-        try
-        {
-            reader->Update();
-        }
-        catch (const itk::ProcessAborted&)
-        {
-            errorCode = ReadAborted;
-        }
-        catch (itk::ExceptionObject &e)
-        {
-            WARN_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
-            //DEBUG_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
-            //We read the error message to find out what the error is
-            errorCode = identifyErrorMessage(QString(e.GetDescription()));
-        }
-        */
 
         //光纤映射类型定义：
         //Mapper定义,
@@ -1052,8 +1017,7 @@ void MainWindow::on_pBVolume3D_clicked()
         m_interactorstyle->setWindowLeve(true);
         m_interactorstyle->setMainwindowsVTKParms(m_volumeProperty, m_renderWindow, m_transferFunction);
         m_interactorstyle->setSaveTransferFunction(m_transferFunction);
-
-        
+    
         m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
 
         //vtkInteractorStyle *m_interactorStyle = vtkInteractorStyle::SafeDownCast(m_renderWindowInteractor->GetInteractorStyle());
@@ -1119,23 +1083,46 @@ void MainWindow::eventHandler(vtkObject *object, unsigned long vtkEvent, void *c
     }
 }
 
-
-void MainWindow::on_pBZoomWL_clicked()
+void MainWindow::saveHDMdata(vtkSmartPointer<vtkImageData> itkImageData)
 {
-    if (m_renderWindow)
+    QString DicomDir = ui->m_dcmDir->toPlainText();
+    QDir dir;
+    if (!dir.exists(DicomDir))
     {
-        if (m_bWL)
-        {
-            m_renderWindow->SetWindowName("鼠标左键旋转 右键:WW/WL(ESC还原）|(鼠标中间单击切换)Zoom 鼠标中键移动图像");
-            m_interactorstyle->setWindowLeve(false);
-            m_bWL = false;
-        }
-        else
-        {
-            m_renderWindow->SetWindowName("鼠标左键旋转 右键:WW/WL(ESC还原）|(鼠标中间单击切换)Zoom 鼠标中键移动图像");
-            m_interactorstyle->setWindowLeve(true);
-            m_bWL = true;
-        }
+        QMessageBox::information(NULL, "Dicom3D", "No dicom files!");
+        return;
     }
-}
+    std::string Input_Name = qPrintable(DicomDir);
 
+    vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+    vtkdatawrite->SetInputData(itkImageData);
+    std::string path = Input_Name + "/VTKdata.mhd";
+    vtkdatawrite->SetFileName(path.c_str());
+    path = Input_Name + "/VTKdata.raw";
+    vtkdatawrite->SetRAWFileName(path.c_str());
+    vtkdatawrite->Write();
+    vtkdatawrite->Delete();
+    /*
+    typedef VolumePixelData::ItkImageType ItkImageType;
+    typedef itk::ImageFileReader<Volume::ItkImageType> ReaderType;
+    ReaderType::Pointer reader = ReaderType::New();
+    reader->SetFileName(qPrintable(fileName));
+    reader->SetImageIO(m_gdcmIO);
+    emit progress(0);
+    try
+    {
+        reader->Update();
+    }
+    catch (const itk::ProcessAborted&)
+    {
+        errorCode = ReadAborted;
+    }
+    catch (itk::ExceptionObject &e)
+    {
+        WARN_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
+        //DEBUG_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
+        //We read the error message to find out what the error is
+        errorCode = identifyErrorMessage(QString(e.GetDescription()));
+    }
+    */
+}
