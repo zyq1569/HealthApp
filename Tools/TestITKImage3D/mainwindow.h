@@ -24,6 +24,7 @@ class vtkSmartVolumeMapper;
 class vtkVolume;
 class vtkOutlineFilter;
 class vtkPolyDataMapper;
+class vtkImageData;
 class vtkActor; class vtkRenderWindowInteractor;
 //class vtkInteractorStyleTrackballCamera;
 class vtkLODProp3D;
@@ -72,7 +73,7 @@ public:
     TransferFunction m_transferFunction;
 
 public:
-    void saveHDMdata(vtkSmartPointer<vtkImageData> itkImageData);
+    void saveHDMdata(vtkImageData *itkImageData, bool read = true);
 
 private slots:
     void applyRenderingStyle(const QModelIndex &index);

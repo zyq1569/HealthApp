@@ -168,6 +168,7 @@ Input3dImageType::Pointer GdcmRead3dImage(std::string path, QString dir)
 	Input3dImageType::Pointer image = reader3d->GetOutput();
 	reader3d = NULL;
 	gdcmImageIO = NULL;
+    //using ReaderType3d = itk::ImageSeriesWriter< Input3dImageType >;
 	return image;
 }
 
@@ -919,12 +920,12 @@ void MainWindow::on_pBVolume3D_clicked()
 
         std::string Input_Name = qPrintable(DicomDir);
         Input3dImageType::Pointer dicomimage = GdcmRead3dImage(Input_Name, DicomDir);
-        static bool init = false;
-        if (!init)
+        static bool init = true ;
+        if (init)
         {
             vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
             vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
-            init = true;
+            init = false;
         }
 
         //定义绘制器；
@@ -976,7 +977,6 @@ void MainWindow::on_pBVolume3D_clicked()
         m_volumeProperty->SetSpecularPower(10);//高光强度；
 
         vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
-
         //光纤映射类型定义：
         //Mapper定义,
         m_volumeMapper = vtkSmartVolumeMapper::New();
@@ -1032,6 +1032,7 @@ void MainWindow::on_pBVolume3D_clicked()
 
         //RenderWindowInteractor->Initialize();
         //RenderWindowInteractor->Start();
+        //saveHDMdata(itkImageData);
     }
     else
     {
@@ -1083,7 +1084,7 @@ void MainWindow::eventHandler(vtkObject *object, unsigned long vtkEvent, void *c
     }
 }
 
-void MainWindow::saveHDMdata(vtkSmartPointer<vtkImageData> itkImageData)
+void MainWindow::saveHDMdata(vtkImageData * itkImageData, bool read)
 {
     QString DicomDir = ui->m_dcmDir->toPlainText();
     QDir dir;
@@ -1093,36 +1094,22 @@ void MainWindow::saveHDMdata(vtkSmartPointer<vtkImageData> itkImageData)
         return;
     }
     std::string Input_Name = qPrintable(DicomDir);
-
-    vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
-    vtkdatawrite->SetInputData(itkImageData);
     std::string path = Input_Name + "/VTKdata.mhd";
-    vtkdatawrite->SetFileName(path.c_str());
-    path = Input_Name + "/VTKdata.raw";
-    vtkdatawrite->SetRAWFileName(path.c_str());
-    vtkdatawrite->Write();
-    vtkdatawrite->Delete();
-    /*
-    typedef VolumePixelData::ItkImageType ItkImageType;
-    typedef itk::ImageFileReader<Volume::ItkImageType> ReaderType;
-    ReaderType::Pointer reader = ReaderType::New();
-    reader->SetFileName(qPrintable(fileName));
-    reader->SetImageIO(m_gdcmIO);
-    emit progress(0);
-    try
+    if (read)
     {
-        reader->Update();
+        vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+        vtkdatawrite->SetInputData(itkImageData);
+        vtkdatawrite->SetFileName(path.c_str());
+        path = Input_Name + "/VTKdata.raw";
+        vtkdatawrite->SetRAWFileName(path.c_str());
+        vtkdatawrite->Write();
+        vtkdatawrite->Delete();
     }
-    catch (const itk::ProcessAborted&)
+    else
     {
-        errorCode = ReadAborted;
+        vtkMetaImageReader *vtkdataread = vtkMetaImageReader::New();
+        vtkdataread->SetFileName(path.c_str());
+        vtkdataread->Update();
+        itkImageData = vtkdataread->GetOutput();
     }
-    catch (itk::ExceptionObject &e)
-    {
-        WARN_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
-        //DEBUG_LOG(QString("Exception reading the file [%1] Description: [%2]").arg(fileName).arg(e.GetDescription()));
-        //We read the error message to find out what the error is
-        errorCode = identifyErrorMessage(QString(e.GetDescription()));
-    }
-    */
 }
