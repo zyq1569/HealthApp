@@ -74,6 +74,7 @@ public:
 
 public:
     void saveHDMdata(vtkImageData *itkImageData, bool read = true);
+    void testAll(int n, QList<void *> list);
 
 private slots:
     void applyRenderingStyle(const QModelIndex &index);
