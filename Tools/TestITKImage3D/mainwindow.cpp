@@ -1261,9 +1261,9 @@ void MainWindow::on_pBVolume3D_clicked()
 
         //vtkInteractorStyle *m_interactorStyle = vtkInteractorStyle::SafeDownCast(m_renderWindowInteractor->GetInteractorStyle());
         //m_interactorStyle->StartRotate();
-        QCursor qcursor(QPixmap(":/images/cursors/contrast.svg"));
-        HCURSOR hCursor = QCursorToHCursor(qcursor);
-        m_interactorstyle->setHCURSOR(hCursor);
+        //QCursor qcursor(QPixmap(":/images/cursors/contrast.svg"));
+        //HCURSOR hCursor = QCursorToHCursor(qcursor);
+        //m_interactorstyle->setHCURSOR(hCursor);
         m_interactorstyle->SetCurrentRenderer(m_rendererViewer);
 
         m_renderWindow->Render();
