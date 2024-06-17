@@ -219,6 +219,7 @@ QPoint g_windowLevelCurrentPosition;
 #include <vtkPlane.h>
 #include <vtkCutter.h>
 
+#include <vtkTriangle.h>
 static constexpr double MinimumWindowWidth = 0.0001;
 class vtkInteractorStyleTrackballCameraWindowleve : public vtkInteractorStyleTrackballCamera
 {
@@ -247,6 +248,38 @@ public:
     }
     void OnLeftButtonUp() override
     {
+        if (1)
+        {
+            int* clickPos = this->GetInteractor()->GetEventPosition();
+            vtkRenderer* renderer = this->GetCurrentRenderer();
+            vtkRenderWindow* renderWindow = this->GetInteractor()->GetRenderWindow();
+
+            // 获取鼠标点击位置的世界坐标
+            double worldPos[4];
+            renderer->SetDisplayPoint(clickPos[0], clickPos[1], 0);
+            renderer->DisplayToWorld();
+            renderer->GetWorldPoint(worldPos);
+
+            if (this->PointCount < 3)
+            {
+                this->Points->InsertNextPoint(worldPos[0], worldPos[1], worldPos[2]);
+                this->PointCount++;
+
+                if (this->PointCount == 3)
+                {
+                    vtkNew<vtkTriangle> triangle;
+                    triangle->GetPointIds()->SetId(0, 0);
+                    triangle->GetPointIds()->SetId(1, 1);
+                    triangle->GetPointIds()->SetId(2, 2);
+                    this->Triangles->InsertNextCell(triangle);
+
+                    renderer->AddActor(this->TriangleActor);
+                }
+
+                this->PolyData->Modified();
+                renderWindow->Render();
+            }
+        }
         vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
     }
     void OnMouseMove() override
@@ -400,6 +433,8 @@ private:
          m_startWindowLeve = false;
          m_vtkQtConnections = NULL;
          m_void = NULL;
+
+
      }
      void setMainwindowsHand(MainWindow *m_main)
      {
@@ -432,8 +467,20 @@ private:
         
      }
 protected:
-    vtkInteractorStyleTrackballCameraWindowleve()
+    vtkInteractorStyleTrackballCameraWindowleve() : Points(vtkSmartPointer<vtkPoints>::New()),
+        Triangles(vtkSmartPointer<vtkCellArray>::New()),
+        PolyData(vtkSmartPointer<vtkPolyData>::New()),
+        TriangleMapper(vtkSmartPointer<vtkPolyDataMapper>::New()),
+        TriangleActor(vtkSmartPointer<vtkActor>::New()),
+        PointCount(0)
     {
+        this->PolyData->SetPoints(this->Points);
+        this->PolyData->SetPolys(this->Triangles);
+        this->TriangleMapper->SetInputData(this->PolyData);
+        this->TriangleActor->SetMapper(this->TriangleMapper);
+        this->TriangleActor->GetProperty()->SetEdgeColor(0.0, 1.0, 0.0); // 绿色
+        this->TriangleActor->GetProperty()->EdgeVisibilityOn();
+
         init();
     }
     ~vtkInteractorStyleTrackballCameraWindowleve() //override
@@ -444,7 +491,14 @@ protected:
 private:
     vtkInteractorStyleTrackballCameraWindowleve(const vtkInteractorStyleTrackballCameraWindowleve&) = delete;
     void operator=(const vtkInteractorStyleTrackballCameraWindowleve&) = delete;
-
+private:
+    ////
+    vtkSmartPointer<vtkPoints> Points;
+    vtkSmartPointer<vtkCellArray> Triangles;
+    vtkSmartPointer<vtkPolyData> PolyData;
+    vtkSmartPointer<vtkPolyDataMapper> TriangleMapper;
+    vtkSmartPointer<vtkActor> TriangleActor;
+    int PointCount;
    };
 //#include <QCursor>
 HCURSOR MainWindow::QCursorToHCursor(const QCursor &qCursor)
@@ -930,6 +984,19 @@ void MainWindow::free3Dviewer()
         m_lodProp3D = NULL;
     }
 }
+
+#include <vtkImageThreshold.h>
+void RemoveBed(vtkSmartPointer<vtkImageData> imageData);
+void RemoveBed(vtkSmartPointer<vtkImageData> imageData)
+{
+    vtkSmartPointer<vtkImageThreshold> threshold = vtkSmartPointer<vtkImageThreshold>::New();
+    threshold->SetInputData(imageData);
+    threshold->ThresholdByLower(400); // Adjust the threshold value based on your data
+    threshold->ReplaceInOn();
+    threshold->SetInValue(0); // Set the value of the bed pixels to 0
+    threshold->Update();
+    imageData->DeepCopy(threshold->GetOutput());
+}
 void MainWindow::on_pBVolume3D_clicked()
 {
     QList<void*> list;
@@ -1007,6 +1074,7 @@ void MainWindow::on_pBVolume3D_clicked()
         m_volumeProperty->SetSpecularPower(10);//高光强度；
 
         vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
+        //RemoveBed(itkImageData);
         //光纤映射类型定义：
         //Mapper定义,
         m_volumeMapper = vtkSmartVolumeMapper::New();
