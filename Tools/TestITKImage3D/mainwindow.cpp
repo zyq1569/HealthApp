@@ -245,35 +245,8 @@ public:
         }
         vtkInteractorStyleTrackballCamera::OnRightButtonUp();
     }
-    virtual void OnLeftButtonUp() override
+    void OnLeftButtonUp() override
     {
-        //static bool test = true;
-        if (m_void)
-        {
-            int *clickpoint = Interactor->GetEventPosition();
-            Interactor->GetPicker()->Pick(clickpoint[0], clickpoint[1], 0, GetCurrentRenderer());
-            double point[3];
-            Interactor->GetPicker()->GetPickPosition(point);
-            double x, y, z;
-            x = point[0]; y = point[1]; z = point[2];
-            static QList<double> qlist;
-            qlist.push_back(x); qlist.push_back(y); qlist.push_back(z);
-            int n = qlist.size();
-            if ( n > 21)
-            {
-                int j=0;
-                vtkNew<vtkPoints> selectionPoints;
-                for (int i = 0; i < n; )
-                {
-                    selectionPoints->InsertPoint(j++, qlist[i], qlist[i+1], qlist[i+2]);
-                    i += 3;
-                }
-                ((vtkImplicitSelectionLoop*)m_void)->SetLoop(selectionPoints);
-                Interactor->GetRenderWindow()->Render();
-                qlist.clear();
-                //test = false;
-            }
-        }
         vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
     }
     void OnMouseMove() override
@@ -427,19 +400,6 @@ private:
          m_startWindowLeve = false;
          m_vtkQtConnections = NULL;
          m_void = NULL;
-         m_PolygonPoints = vtkPoints::New();
-         m_Polygon = vtkPolyData::New();
-         m_PolygonMapper = vtkPolyDataMapper::New();
-         m_PolygonActor = vtkActor::New();
-         m_lines = vtkCellArray::New();
-         m_polygon = vtkPolygon::New();
-
-         m_LineColor[0] = 1.0;
-         m_LineColor[1] = 0.0;
-         m_LineColor[2] = 0.0;
-         m_isFirstPoint = true;
-         m_firstPointId = -1;
-
      }
      void setMainwindowsHand(MainWindow *m_main)
      {
@@ -454,7 +414,7 @@ private:
          m_vtkRenderWindow = vr;
          m_volumeProperty  = vp;
          m_initialLut      = tr;
-         m_vtkdata = vtkdata;
+
          //m_vtkQtConnections = vtkEventQtSlotConnect::New();
          //m_vtkQtConnections->Connect(m_vtkRenderWindow->GetInteractor(), vtkCommand::AnyEvent, m_MainWindow, SLOT(eventHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)));
      }
@@ -478,182 +438,14 @@ protected:
     }
     ~vtkInteractorStyleTrackballCameraWindowleve() //override
     {
-        m_PolygonPoints->Delete();
-        m_Polygon->Delete();
-        m_PolygonMapper->Delete();
-        m_PolygonActor->Delete();
+
     }
-private:
-    vtkPoints* m_PolygonPoints;
-    vtkPolyData* m_Polygon;
-    vtkPolyDataMapper* m_PolygonMapper;
-    vtkActor* m_PolygonActor;
-    vtkCellArray* m_lines;
-    vtkPolygon* m_polygon;
-    double m_LineColor[3];
-    bool m_isFirstPoint;
-    vtkIdType m_firstPointId;
-    int m_firstPoint[2], m_lastPoint[2];
-    vtkDataObject *m_vtkdata;
+
 private:
     vtkInteractorStyleTrackballCameraWindowleve(const vtkInteractorStyleTrackballCameraWindowleve&) = delete;
     void operator=(const vtkInteractorStyleTrackballCameraWindowleve&) = delete;
 
- public:
-    bool IsPointNear(int *p1, int *p2, double threshold)
-    {
-        double dis = (p1[0] -p2[0])*(p1[0] - p2[0]) + (p1[1] - p2[1])*(p1[1] - p2[1]);
-        return dis <= threshold * threshold;
-    }
-    virtual void OnLeftButtonDown() override
-    {
-        static bool init = true;
-        if (0)
-        {
-            int* clickPos = this->GetInteractor()->GetEventPosition();
-            //vtkPointPicker* pointPicker = vtkPointPicker::SafeDownCast(this->GetInteractor()->GetPicker());
-            vtkSmartPointer<vtkPointPicker> pointPicker = vtkSmartPointer<vtkPointPicker>::New();
-            //if (!pointPicker)
-            //{
-            //    pointPicker = vtkPointPicker::New();//vtkSmartPointer<vtkPointPicker>::New();// 
-            //    this->GetInteractor()->SetPicker(pointPicker);
-            //}
-
-            pointPicker->Pick(clickPos[0], clickPos[1], 0, this->GetCurrentRenderer());
-            double* pos = pointPicker->GetPickPosition();
-
-            m_PolygonPoints->InsertNextPoint(pos);
-            if (m_isFirstPoint)
-            {
-                m_firstPoint[0] = clickPos[0];
-                m_firstPoint[1] = clickPos[1];
-                m_isFirstPoint = false;
-            }
-            else
-            {
-                m_lastPoint[0] = clickPos[0];
-                m_lastPoint[1] = clickPos[1];
-            }
-
-            if (m_firstPointId == -1)
-            {
-                m_firstPointId = m_PolygonPoints->GetNumberOfPoints() - 1;
-            }
-            if (m_PolygonPoints->GetNumberOfPoints() > 1)
-            {
-                m_lines->InsertNextCell(2);
-                m_lines->InsertCellPoint(m_PolygonPoints->GetNumberOfPoints() - 2);
-                m_lines->InsertCellPoint(m_PolygonPoints->GetNumberOfPoints() - 1);
-                UpdateLineActor();
-            }
-            if (m_PolygonPoints->GetNumberOfPoints() > 3 && !m_isFirstPoint)
-            if (IsPointNear(m_firstPoint, m_lastPoint,5))
-            {
-                /*
-                m_polygon->GetPointIds()->SetNumberOfIds(m_PolygonPoints->GetNumberOfPoints());
-                for (vtkIdType i = 0; i < m_PolygonPoints->GetNumberOfPoints(); ++i)
-                {
-                    m_polygon->GetPointIds()->SetId(i, i);
-                }            
-                */
-                m_isFirstPoint = true;
-                CreateCutPlane();
-                init = false;
-            }
-        }
-        
-
-        vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
-    }
-
-    void UpdatePolygon()
-    {
-        vtkIdType numPoints = m_PolygonPoints->GetNumberOfPoints();
-        if (numPoints > 1)
-        {
-            vtkCellArray* lines = vtkCellArray::New();
-            for (vtkIdType i = 0; i < numPoints - 1; ++i)
-            {
-                vtkIdType line[2] = { i, i + 1 };
-                lines->InsertNextCell(2, line);
-            }
-            vtkIdType lastLine[2] = { numPoints - 1, 0 };
-            lines->InsertNextCell(2, lastLine);
-
-            m_Polygon->SetPoints(m_PolygonPoints);
-            m_Polygon->SetLines(lines);
-            m_PolygonMapper->SetInputData(m_Polygon);
-            m_PolygonActor->SetMapper(m_PolygonMapper);
-            m_PolygonActor->GetProperty()->SetColor(m_LineColor);
-            this->GetCurrentRenderer()->AddActor(m_PolygonActor);
-            this->GetInteractor()->GetRenderWindow()->Render();
-            lines->Delete();
-        }
-    }
-    void UpdateLineActor()
-    {
-        static bool init = true;
-        if (init)
-        {
-            init = false;
-            GetCurrentRenderer()->AddActor(m_PolygonActor);
-        }
-        vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-        polyData->SetPoints(m_PolygonPoints);
-        polyData->SetLines(m_lines);
-
-        vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-        mapper->SetInputData(polyData);
-
-        m_PolygonActor->SetMapper(mapper);
-        m_PolygonActor->GetProperty()->SetColor(0, 0, 1);  // Set line color
-        GetInteractor()->Render();
-    }
-    vtkPoints* GetPolygonPoints()
-    {
-        return m_PolygonPoints;
-    }
-
-    void ClearPolygon()
-    {
-        m_PolygonPoints->Reset();
-        m_Polygon->Modified();
-    }
-    void SetLineColor(double r, double g, double b)
-    {
-        m_LineColor[0] = r;
-        m_LineColor[1] = g;
-        m_LineColor[2] = b;
-        if (m_PolygonActor)
-        {
-            m_PolygonActor->GetProperty()->SetColor(m_LineColor);
-        }
-    }
-    void CreateCutPlane()
-    {
-        // Create a cutting plane
-        vtkSmartPointer<vtkPlane> plane = vtkSmartPointer<vtkPlane>::New();
-        double center[3];
-        m_PolygonPoints->GetPoint(m_firstPointId, center);
-        plane->SetOrigin(center);
-        plane->SetNormal(0, 0, 1);  // Assuming the normal direction is along the z-axis
-
-        // Create a cutter and set the cutting plane
-        vtkSmartPointer<vtkCutter> cutter = vtkSmartPointer<vtkCutter>::New();
-        cutter->SetCutFunction(plane);
-        // Here, you need to set your actual 3D data to be cut
-        cutter->SetInputData(m_vtkdata);
-        vtkSmartPointer<vtkPolyDataMapper> cutterMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-        cutterMapper->SetInputConnection(cutter->GetOutputPort());
-
-        vtkSmartPointer<vtkActor> cutActor = vtkSmartPointer<vtkActor>::New();
-        cutActor->SetMapper(cutterMapper);
-        cutActor->GetProperty()->SetColor(0, 1, 0);  // Set cutting plane color
-
-        this->GetCurrentRenderer()->AddActor(cutActor);
-        this->GetInteractor()->Render();
-    }
-};
+   };
 //#include <QCursor>
 HCURSOR MainWindow::QCursorToHCursor(const QCursor &qCursor)
 {
@@ -1142,7 +934,7 @@ void MainWindow::on_pBVolume3D_clicked()
 {
     QList<void*> list;
     //return test();
-    return testAll(0, list);
+    //return testAll(0, list);
     static bool init = true;
     if (init)
     {
