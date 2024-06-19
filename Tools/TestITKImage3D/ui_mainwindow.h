@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListView>
@@ -35,13 +36,15 @@ public:
     QPushButton *pBVolume3D;
     QListView *m_renderingStyleListView;
     QLabel *m_labeltip;
+    QGroupBox *groupBox;
+    QPushButton *pBRemoveBed;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(873, 236);
+        MainWindow->resize(873, 332);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         m_dcmDir = new QTextEdit(centralwidget);
@@ -85,13 +88,19 @@ public:
         m_renderingStyleListView->setUniformItemSizes(true);
         m_labeltip = new QLabel(centralwidget);
         m_labeltip->setObjectName(QString::fromUtf8("m_labeltip"));
-        m_labeltip->setGeometry(QRect(10, 190, 841, 20));
+        m_labeltip->setGeometry(QRect(0, 260, 841, 20));
         QFont font;
         font.setFamily(QString::fromUtf8("Fixedsys"));
         font.setPointSize(14);
         font.setBold(true);
         font.setWeight(75);
         m_labeltip->setFont(font);
+        groupBox = new QGroupBox(centralwidget);
+        groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        groupBox->setGeometry(QRect(10, 180, 271, 80));
+        pBRemoveBed = new QPushButton(groupBox);
+        pBRemoveBed->setObjectName(QString::fromUtf8("pBRemoveBed"));
+        pBRemoveBed->setGeometry(QRect(190, 40, 75, 23));
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -115,6 +124,8 @@ public:
         pBITK3D->setText(QApplication::translate("MainWindow", "March-3D", nullptr));
         pBVolume3D->setText(QApplication::translate("MainWindow", "Volume-3D", nullptr));
         m_labeltip->setText(QApplication::translate("MainWindow", "Volume-3D:\351\274\240\346\240\207\357\274\232\344\270\255\351\224\256\347\247\273\345\212\250\345\233\276\345\203\217 \345\267\246\351\224\256\346\227\213\350\275\254\345\233\276\345\203\217  \345\217\263\351\224\256\357\274\232WW|WL\357\274\210ESC\351\224\256\350\277\230\345\216\237\357\274\211 \346\210\226\350\200\205(\344\270\255\351\224\256\345\215\225\345\207\273\345\210\207\346\215\242)\345\210\207\346\215\242 Zoom", nullptr));
+        groupBox->setTitle(QApplication::translate("MainWindow", "Volume-3D", nullptr));
+        pBRemoveBed->setText(QApplication::translate("MainWindow", "RemoveBed", nullptr));
     } // retranslateUi
 
 };

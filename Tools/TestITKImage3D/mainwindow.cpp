@@ -568,6 +568,26 @@ MainWindow::MainWindow(QWidget *parent)
     loadRenderingStyles();
     ui->m_labeltip->setStyleSheet("color:red");
 
+    //透明度映射函数定义；   
+    m_transferFunction.setScalarOpacity(-1024, 0.0);
+    m_transferFunction.setScalarOpacity(-24, 0.0);
+    m_transferFunction.setScalarOpacity(167.00000000000000, 0.16862745098039220);
+    m_transferFunction.setScalarOpacity(218.00000000000000, 0.41960784313725491);
+    m_transferFunction.setScalarOpacity(218.00000000000000, 0.41960784313725491);
+    m_transferFunction.setScalarOpacity(445.00000000000000, 0.57254901960784310);
+    m_transferFunction.setScalarOpacity(1455.0000000000000, 0.87450980392156863);
+    m_transferFunction.setScalarOpacity(2784.0000000000000, 0.88235294117647056);
+    //颜色映射函数定义,梯度上升的
+
+    m_transferFunction.setColor(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+    m_transferFunction.setColor(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+    m_transferFunction.setColor(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+    m_transferFunction.setColor(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
+    m_transferFunction.setColor(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
+    m_transferFunction.setColor(445.0, 1.0, 1.0, 1.0);
+    m_transferFunction.setColor(1455.0, 1.0, 1.0, 1.0);
+    m_transferFunction.setColor(2784.0, 1.0, 1.0, 1.0);
+
 }
 
 MainWindow::~MainWindow()
@@ -985,18 +1005,6 @@ void MainWindow::free3Dviewer()
     }
 }
 
-#include <vtkImageThreshold.h>
-void RemoveBed(vtkSmartPointer<vtkImageData> imageData);
-void RemoveBed(vtkSmartPointer<vtkImageData> imageData)
-{
-    vtkSmartPointer<vtkImageThreshold> threshold = vtkSmartPointer<vtkImageThreshold>::New();
-    threshold->SetInputData(imageData);
-    threshold->ThresholdByLower(400); // Adjust the threshold value based on your data
-    threshold->ReplaceInOn();
-    threshold->SetInValue(0); // Set the value of the bed pixels to 0
-    threshold->Update();
-    imageData->DeepCopy(threshold->GetOutput());
-}
 void MainWindow::on_pBVolume3D_clicked()
 {
     QList<void*> list;
@@ -1024,46 +1032,31 @@ void MainWindow::on_pBVolume3D_clicked()
             vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
             init = false;
         }
+        
+        vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
+        /*
+        vtkImageThreshold* threshold = vtkImageThreshold::New();
+        threshold->SetInputData(itkImageData);
+        threshold->ThresholdBetween(100,400); // Adjust the threshold value based on your data
+        threshold->ReplaceInOn();
+        threshold->SetInValue(0); // Set the value of the bed pixels to 0
+        threshold->Update();
+        itkImageData->DeepCopy(threshold->GetOutput());
+        threshold->Delete();        
+        */
 
         //定义绘制器；
         m_rendererViewer = vtkRenderer::New();//指向指针；
-        m_renderWindow = vtkRenderWindow::New(); //m_vtkWidget->GetRenderWindow();
-        //m_renderWindow->GetCurrentCursor();
+        m_renderWindow = vtkRenderWindow::New(); 
+
 
         m_renderWindow->AddRenderer(m_rendererViewer);
 
-        /// Funció de transferència d'opacitat escalar.
-        //透明度映射函数定义；   
-        m_transferFunction.setScalarOpacity(-1024, 0.0);
-        m_transferFunction.setScalarOpacity(-24, 0.0);
-        m_transferFunction.setScalarOpacity(167.00000000000000, 0.16862745098039220);
-        m_transferFunction.setScalarOpacity(218.00000000000000, 0.41960784313725491);
-        m_transferFunction.setScalarOpacity(218.00000000000000, 0.41960784313725491);
-        m_transferFunction.setScalarOpacity(445.00000000000000, 0.57254901960784310);
-        m_transferFunction.setScalarOpacity(1455.0000000000000, 0.87450980392156863);
-        m_transferFunction.setScalarOpacity(2784.0000000000000, 0.88235294117647056);
-        //颜色映射函数定义,梯度上升的
-
-        m_transferFunction.setColor(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-        m_transferFunction.setColor(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-        m_transferFunction.setColor(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-        m_transferFunction.setColor(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
-        m_transferFunction.setColor(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
-        m_transferFunction.setColor(445.0, 1.0, 1.0, 1.0);
-        m_transferFunction.setColor(1455.0, 1.0, 1.0, 1.0);
-        m_transferFunction.setColor(2784.0, 1.0, 1.0, 1.0);
-
-        //m_gradientTransform = vtkPiecewiseFunction::New();
-        //m_gradientTransform->AddPoint(1, 0.0);
-        //m_gradientTransform->AddPoint(70, 0.5);
-        //m_gradientTransform->AddPoint(130, 1.0);
-        //gradientTransform->AddPoint(300, 0.1);
-
         //体数据属性；
         m_volumeProperty = vtkVolumeProperty::New();
+        
         m_volumeProperty->SetScalarOpacity(m_transferFunction.vtkOpacityTransferFunction());
         m_volumeProperty->SetColor(m_transferFunction.vtkColorTransferFunction());
-
         //m_volumeProperty->SetGradientOpacity(m_gradientTransform);
         m_volumeProperty->SetIndependentComponents(true);
         m_volumeProperty->ShadeOn();//应用
@@ -1072,9 +1065,7 @@ void MainWindow::on_pBVolume3D_clicked()
         m_volumeProperty->SetDiffuse(0.69996);//漫反射；
         m_volumeProperty->SetSpecular(0.2);
         m_volumeProperty->SetSpecularPower(10);//高光强度；
-
-        vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
-        //RemoveBed(itkImageData);
+        /**/
         //光纤映射类型定义：
         //Mapper定义,
         m_volumeMapper = vtkSmartVolumeMapper::New();
@@ -1119,20 +1110,10 @@ void MainWindow::on_pBVolume3D_clicked()
     
         m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
 
-        //vtkInteractorStyle *m_interactorStyle = vtkInteractorStyle::SafeDownCast(m_renderWindowInteractor->GetInteractorStyle());
-        //m_interactorStyle->StartRotate();
-        //QCursor qcursor(QPixmap(":/images/cursors/contrast.svg"));
-        //HCURSOR hCursor = QCursorToHCursor(qcursor);
-        //m_interactorstyle->setHCURSOR(hCursor);
         m_interactorstyle->SetCurrentRenderer(m_rendererViewer);
 
         m_renderWindow->Render();
         m_renderWindow->SetWindowName("鼠标左键旋转 右键:WW/WL(ESC还原）|(鼠标中间单击切换)Zoom 鼠标中键移动图像");
-        //SetCursor(hCursor);
-
-        //RenderWindowInteractor->Initialize();
-        //RenderWindowInteractor->Start();
-        //saveHDMdata(itkImageData);
     }
     else
     {
@@ -1299,3 +1280,36 @@ void MainWindow::testAll(int n, QList<void *> list)
     renderWindow->Render();
     interactor->Start();
 }
+void MainWindow::on_pBRemoveBed_clicked()
+{
+    if (m_volumeMapper && m_renderWindow)
+    {
+        vtkImageData* imageData = m_volumeMapper->GetInput();
+        if (m_removeBed != imageData)
+        {   
+            m_removeBed == imageData;
+            vtkImageThreshold* threshold = vtkImageThreshold::New();
+            threshold->SetInputData(imageData);
+            threshold->ThresholdBetween(-700, 700); // Adjust the threshold value based on your data
+            threshold->ReplaceInOn();
+            threshold->SetInValue(-100); // Set the value of the bed pixels to 0
+            threshold->Update();
+            imageData->DeepCopy(threshold->GetOutput());
+            m_renderWindow->Render();
+            threshold->Delete();
+        }
+    }
+
+}
+
+//void RemoveBed(vtkSmartPointer<vtkImageData> imageData);
+//void RemoveBed(vtkSmartPointer<vtkImageData> imageData)
+//{
+//    vtkSmartPointer<vtkImageThreshold> threshold = vtkSmartPointer<vtkImageThreshold>::New();
+//    threshold->SetInputData(imageData);
+//    threshold->ThresholdByLower(400); // Adjust the threshold value based on your data
+//    threshold->ReplaceInOn();
+//    threshold->SetInValue(0); // Set the value of the bed pixels to 0
+//    threshold->Update();
+//    imageData->DeepCopy(threshold->GetOutput());
+//}

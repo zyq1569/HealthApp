@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>873</width>
-    <height>236</height>
+    <height>332</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -111,8 +111,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="m_labeltip">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>190</y>
+      <x>0</x>
+      <y>260</y>
       <width>841</width>
       <height>20</height>
      </rect>
@@ -128,6 +128,32 @@ p, li { white-space: pre-wrap; }
     <property name="text">
      <string>Volume-3D:鼠标：中键移动图像 左键旋转图像  右键：WW|WL（ESC键还原） 或者(中键单击切换)切换 Zoom</string>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>180</y>
+      <width>271</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Volume-3D</string>
+    </property>
+    <widget class="QPushButton" name="pBRemoveBed">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>40</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>RemoveBed</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

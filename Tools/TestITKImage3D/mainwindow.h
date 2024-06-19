@@ -69,6 +69,7 @@ private:
     QVTKOpenGLNativeWidget *m_vtkWidget;
     bool m_bWL;
     void free3Dviewer();
+    vtkImageData* m_removeBed;
 public:
     TransferFunction m_transferFunction;
 
@@ -89,6 +90,8 @@ private slots:
     void on_pBVolume3D_clicked();
 
     void eventHandler(vtkObject * object, unsigned long vtkEvent, void * clientData, void * callData, vtkCommand * command);
+
+    void on_pBRemoveBed_clicked();
 
 private:
     Ui::MainWindow *ui;
