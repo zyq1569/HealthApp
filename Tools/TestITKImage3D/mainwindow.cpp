@@ -248,7 +248,7 @@ public:
     }
     void OnLeftButtonUp() override
     {
-        if (1)
+        if (0)
         {
             int* clickPos = this->GetInteractor()->GetEventPosition();
             vtkRenderer* renderer = this->GetCurrentRenderer();
@@ -1034,27 +1034,14 @@ void MainWindow::on_pBVolume3D_clicked()
         }
         
         vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
-        /*
-        vtkImageThreshold* threshold = vtkImageThreshold::New();
-        threshold->SetInputData(itkImageData);
-        threshold->ThresholdBetween(100,400); // Adjust the threshold value based on your data
-        threshold->ReplaceInOn();
-        threshold->SetInValue(0); // Set the value of the bed pixels to 0
-        threshold->Update();
-        itkImageData->DeepCopy(threshold->GetOutput());
-        threshold->Delete();        
-        */
 
         //定义绘制器；
         m_rendererViewer = vtkRenderer::New();//指向指针；
         m_renderWindow = vtkRenderWindow::New(); 
-
-
         m_renderWindow->AddRenderer(m_rendererViewer);
 
         //体数据属性；
-        m_volumeProperty = vtkVolumeProperty::New();
-        
+        m_volumeProperty = vtkVolumeProperty::New();      
         m_volumeProperty->SetScalarOpacity(m_transferFunction.vtkOpacityTransferFunction());
         m_volumeProperty->SetColor(m_transferFunction.vtkColorTransferFunction());
         //m_volumeProperty->SetGradientOpacity(m_gradientTransform);
@@ -1069,7 +1056,6 @@ void MainWindow::on_pBVolume3D_clicked()
         //光纤映射类型定义：
         //Mapper定义,
         m_volumeMapper = vtkSmartVolumeMapper::New();
-
         m_volumeMapper->SetInputData(itkImageData);//;cast_file->GetOutput());
         m_volumeMapper->SetBlendModeToComposite();
         m_volumeMapper->SetRequestedRenderModeToDefault();
@@ -1092,8 +1078,6 @@ void MainWindow::on_pBVolume3D_clicked()
         m_rendererViewer->AddActor(m_outline);
         m_rendererViewer->SetBackground(1, 1, 1);
         m_rendererViewer->ResetCamera();
-
-
         //重设相机的剪切范围；
         m_rendererViewer->ResetCameraClippingRange();
         m_renderWindow->SetSize(600, 600);
