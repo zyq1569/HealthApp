@@ -284,28 +284,6 @@ public:
     }
     void OnMouseMove() override
     {
-        /*
-        static bool first = true;
-        if (first)
-        {   
-            HWND hwnd = (HWND)m_vtkRenderWindow->GetGenericWindowId();
-            if (hwnd)
-            {
-                first = false;
-                // 设置窗口类的光标
-                LONG_PTR prevCursor = SetClassLongPtr(hwnd, GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(m_hCursor));
-                if (prevCursor == 0 && GetLastError() != 0)
-                {
-                    // 获取错误信息
-                    LPVOID lpMsgBuf;
-                    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                        NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                        (LPTSTR)&lpMsgBuf, 0, NULL);
-                    MessageBox(NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONERROR);
-                    LocalFree(lpMsgBuf);
-                }
-            }
-        }*/
         if (m_bFlagWindowLeve && m_startWindowLeve)
         {
             doWindowLevel();          
@@ -433,8 +411,6 @@ private:
          m_startWindowLeve = false;
          m_vtkQtConnections = NULL;
          m_void = NULL;
-
-
      }
      void setMainwindowsHand(MainWindow *m_main)
      {
