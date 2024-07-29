@@ -118,7 +118,7 @@ public:
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">D:/log/ITK_VTK_3D/A Aorta w-c  3.0  SPO  cor  55%</span></p></body></html>", nullptr));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">D:/Test_DICOM/TestDicomData/3D/\345\244\264/1Zi XiaoHong\345\205\250 \345\216\273\345\272\212\344\270\215\345\256\214\346\225\264</span></p></body></html>", nullptr));
         pBDir->setText(QApplication::translate("MainWindow", "SelectDir", nullptr));
         pBITK->setText(QApplication::translate("MainWindow", "2DImage", nullptr));
         pBITK3D->setText(QApplication::translate("MainWindow", "March-3D", nullptr));

@@ -221,6 +221,8 @@ QPoint g_windowLevelCurrentPosition;
 
 #include <vtkTriangle.h>
 static constexpr double MinimumWindowWidth = 0.0001;
+#include <vtkLineSource.h>
+#include <vtkLine.h>
 class vtkInteractorStyleTrackballCameraWindowleve : public vtkInteractorStyleTrackballCamera
 {
 public:
@@ -248,39 +250,38 @@ public:
     }
     void OnLeftButtonUp() override
     {
-        if (0)
+      
+        //---------------------------------------------------------------------------------------------
+        // 获取点击位置
+        int* clickPos = GetInteractor()->GetEventPosition();
+        //FindPokedRenderer(clickPos[0], clickPos[1]);
+        double pointPicked[3];
+        vtkPointPicker* pointPicker = vtkPointPicker::New();
+        GetInteractor()->SetPicker(pointPicker);
+        pointPicker->Pick(clickPos[0], clickPos[1], 0, CurrentRenderer);
+        pointPicker->GetPickPosition(pointPicked);
+        pointPicker->Delete();
+
+        vtkIdType id = PolygonPoints->InsertNextPoint(pointPicked);
+        //vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
+        //vtkIdType numPoints = this->PolygonPoints->GetNumberOfPoints();
+
+        if (PreviousPointId >= 0)
         {
-            int* clickPos = this->GetInteractor()->GetEventPosition();
-            vtkRenderer* renderer = this->GetCurrentRenderer();
-            vtkRenderWindow* renderWindow = this->GetInteractor()->GetRenderWindow();
-
-            // 获取鼠标点击位置的世界坐标
-            double worldPos[4];
-            renderer->SetDisplayPoint(clickPos[0], clickPos[1], 0);
-            renderer->DisplayToWorld();
-            renderer->GetWorldPoint(worldPos);
-
-            if (this->PointCount < 3)
-            {
-                this->Points->InsertNextPoint(worldPos[0], worldPos[1], worldPos[2]);
-                this->PointCount++;
-
-                if (this->PointCount == 3)
-                {
-                    vtkNew<vtkTriangle> triangle;
-                    triangle->GetPointIds()->SetId(0, 0);
-                    triangle->GetPointIds()->SetId(1, 1);
-                    triangle->GetPointIds()->SetId(2, 2);
-                    this->Triangles->InsertNextCell(triangle);
-
-                    renderer->AddActor(this->TriangleActor);
-                }
-
-                this->PolyData->Modified();
-                renderWindow->Render();
-            }
+            vtkSmartPointer<vtkLine> line = vtkSmartPointer<vtkLine>::New();
+            line->GetPointIds()->SetId(0, this->PreviousPointId);
+            line->GetPointIds()->SetId(1, id);
+            Lines->InsertNextCell(line);
         }
-        vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
+        PreviousPointId = id;
+        Polygon->SetPoints(PolygonPoints);
+        Polygon->SetLines(Lines);
+        PolygonMapper->SetInputData(Polygon);
+        PolygonActor->SetMapper(PolygonMapper);
+        GetCurrentRenderer()->AddActor(PolygonActor);
+        GetInteractor()->GetRenderWindow()->Render();
+
+       vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
     }
     void OnMouseMove() override
     {
@@ -402,6 +403,7 @@ private:
     vtkEventQtSlotConnect *m_vtkQtConnections;
     HCURSOR m_hCursor;
     void *m_void;
+    vtkImageData *m_imageData;
  public:
      void init()
      {
@@ -410,7 +412,17 @@ private:
          m_MainWindow = NULL;
          m_startWindowLeve = false;
          m_vtkQtConnections = NULL;
+         m_imageData = NULL;
          m_void = NULL;
+
+
+         PointPicker = vtkSmartPointer<vtkPointPicker>::New();
+         PolygonPoints = vtkSmartPointer<vtkPoints>::New();
+         Polygon = vtkSmartPointer<vtkPolyData>::New();
+         PolygonMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+         PolygonActor = vtkSmartPointer<vtkActor>::New();
+         Lines = vtkSmartPointer<vtkCellArray>::New();
+         PolygonActor->GetProperty()->SetColor(0.0, 1.0, 0.0);
      }
      void setMainwindowsHand(MainWindow *m_main)
      {
@@ -420,12 +432,15 @@ private:
      {
          m_hCursor = hcursor;
      }
-     void setMainwindowsVTKParms(vtkVolumeProperty* vp, vtkRenderWindow* vr, TransferFunction tr, vtkDataObject *vtkdata)
+     void setMainwindowsVTKParms(vtkVolumeProperty* vp, vtkRenderWindow* vr, TransferFunction tr, vtkImageData *vtkdata)
      {
          m_vtkRenderWindow = vr;
          m_volumeProperty  = vp;
          m_initialLut      = tr;
-
+         if (vtkdata)
+         {
+         m_imageData       = vtkdata;
+         }
          //m_vtkQtConnections = vtkEventQtSlotConnect::New();
          //m_vtkQtConnections->Connect(m_vtkRenderWindow->GetInteractor(), vtkCommand::AnyEvent, m_MainWindow, SLOT(eventHandler(vtkObject*, unsigned long, void*, void*, vtkCommand*)));
      }
@@ -443,20 +458,8 @@ private:
         
      }
 protected:
-    vtkInteractorStyleTrackballCameraWindowleve() : Points(vtkSmartPointer<vtkPoints>::New()),
-        Triangles(vtkSmartPointer<vtkCellArray>::New()),
-        PolyData(vtkSmartPointer<vtkPolyData>::New()),
-        TriangleMapper(vtkSmartPointer<vtkPolyDataMapper>::New()),
-        TriangleActor(vtkSmartPointer<vtkActor>::New()),
-        PointCount(0)
+    vtkInteractorStyleTrackballCameraWindowleve()
     {
-        this->PolyData->SetPoints(this->Points);
-        this->PolyData->SetPolys(this->Triangles);
-        this->TriangleMapper->SetInputData(this->PolyData);
-        this->TriangleActor->SetMapper(this->TriangleMapper);
-        this->TriangleActor->GetProperty()->SetEdgeColor(0.0, 1.0, 0.0); // 绿色
-        this->TriangleActor->GetProperty()->EdgeVisibilityOn();
-
         init();
     }
     ~vtkInteractorStyleTrackballCameraWindowleve() //override
@@ -469,12 +472,13 @@ private:
     void operator=(const vtkInteractorStyleTrackballCameraWindowleve&) = delete;
 private:
     ////
-    vtkSmartPointer<vtkPoints> Points;
-    vtkSmartPointer<vtkCellArray> Triangles;
-    vtkSmartPointer<vtkPolyData> PolyData;
-    vtkSmartPointer<vtkPolyDataMapper> TriangleMapper;
-    vtkSmartPointer<vtkActor> TriangleActor;
-    int PointCount;
+    vtkSmartPointer<vtkPointPicker> PointPicker;
+    vtkSmartPointer<vtkPoints> PolygonPoints;
+    vtkSmartPointer<vtkPolyData> Polygon;
+    vtkSmartPointer<vtkPolyDataMapper> PolygonMapper;
+    vtkSmartPointer<vtkActor> PolygonActor;
+    vtkSmartPointer<vtkCellArray> Lines;
+    vtkIdType PreviousPointId = -1;
    };
 //#include <QCursor>
 HCURSOR MainWindow::QCursorToHCursor(const QCursor &qCursor)
@@ -1247,10 +1251,10 @@ void MainWindow::on_pBRemoveBed_clicked()
         vtkImageData* imageData = m_volumeMapper->GetInput();
         if (m_removeBed != imageData)
         {   
-            m_removeBed == imageData;
+            m_removeBed = imageData;
             vtkImageThreshold* threshold = vtkImageThreshold::New();
             threshold->SetInputData(imageData);
-            threshold->ThresholdBetween(-700, 700); // Adjust the threshold value based on your data
+            threshold->ThresholdBetween(-700, 500); // Adjust the threshold value based on your data
             threshold->ReplaceInOn();
             threshold->SetInValue(-100); // Set the value of the bed pixels to 0
             threshold->Update();
