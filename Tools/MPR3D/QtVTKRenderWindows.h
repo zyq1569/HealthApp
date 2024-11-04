@@ -40,6 +40,8 @@ protected:
   vtkSmartPointer< vtkDistanceWidget > DistanceWidget[3];
   vtkSmartPointer< vtkResliceImageViewerMeasurements > ResliceMeasurements;
 
+public:
+	void MprInit();
 protected slots:
 
 private slots:
