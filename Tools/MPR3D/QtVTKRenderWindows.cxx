@@ -1,5 +1,6 @@
 #include "ui_QtVTKRenderWindows.h"
 #include "QtVTKRenderWindows.h"
+#include <QDir>
 
 #include "vtkBoundedPlanePointPlacer.h"
 #include "vtkCellPicker.h"
@@ -35,6 +36,8 @@
 #include <vtkImageFlip.h>
 #include "vtkAutoInit.h"
 #include "vtkMarchingCubes.h"
+#include "vtkMetaImageReader.h"
+#include "vtkMetaImageWriter.h"
 ///
 #include "itkImageToVTKImageFilter.h"
 #include "itkGDCMSeriesFileNames.h"
@@ -181,8 +184,9 @@ bool getFileNames(QString dir, std::vector< std::string > &fileNames)
 	return true;
 }
 
-Input3dImageType::Pointer GdcmRead3dImage(std::string path, QString dir)
+Input3dImageType::Pointer GdcmRead3dImage(std::string path)
 {
+	QString dir;
 	std::vector< std::string > fileNames;
 	dir = path.c_str();
 	getFileNames(dir, fileNames);
@@ -221,13 +225,31 @@ vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
 	return vtkdata;
 }
 
-#include "vtkMetaImageReader.h"
+void saveHDMdata(QString DicomDir)
+{
+	Input3dImageType::Pointer image = GdcmRead3dImage(qPrintable(DicomDir));
+	vtkSmartPointer<vtkImageData> ImageVTKData = ImageDataItkToVtk(image);
+
+	vtkImageData * itkImageData = ImageVTKData;
+	std::string Input_Name = qPrintable(DicomDir);
+	std::string path = Input_Name + "/VTKMetaData.mhd";
+
+	vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+	vtkdatawrite->SetInputData(itkImageData);
+	vtkdatawrite->SetFileName(path.c_str());
+	path = Input_Name + "/VTKMetaData.raw";
+	vtkdatawrite->SetRAWFileName(path.c_str());
+	vtkdatawrite->Write();
+	vtkdatawrite->Delete();
+
+}
+
 QtVTKRenderWindows::QtVTKRenderWindows( int vtkNotUsed(argc), char *argv[])
 {
   this->ui = new Ui_QtVTKRenderWindows;
   this->ui->setupUi(this);
 
-  //MprInit();
+  MprInit();
 };
 
 void QtVTKRenderWindows::slotExit()
@@ -358,9 +380,18 @@ void QtVTKRenderWindows::AddDistanceMeasurementToView(int i)
 void QtVTKRenderWindows::MprInit()
 {
 	vtkNew<vtkMetaImageReader> reader;
-	std::string dir = qPrintable(this->ui->m_dcmDIR->toPlainText());//argv[1];
-	dir += "\\VTKdata.mhd";
-	reader->SetFileName(dir.c_str());
+	//std::string dir = qPrintable());//argv[1];
+	
+	QString dir = this->ui->m_dcmDIR->toPlainText();
+	dir += "\\VTKMetaData.mhd";
+	QDir mhdDir;
+	QFileInfo file(dir);
+	if (!file.isFile())
+	{
+		saveHDMdata(this->ui->m_dcmDIR->toPlainText());
+	}
+	std::string stddir = qPrintable(dir);
+	reader->SetFileName(stddir.c_str());
 	reader->Update();
 	int imageDims[3];
 	reader->GetOutput()->GetDimensions(imageDims);
