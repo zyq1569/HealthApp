@@ -72,11 +72,13 @@ class vtkResliceCursorCallback : public vtkCommand
 {
 public:
   static vtkResliceCursorCallback *New()
-  { return new vtkResliceCursorCallback; }
+  {
+      return new vtkResliceCursorCallback; 
+  }
 
   void Execute( vtkObject *caller, unsigned long ev, void *callData ) override
   {
-	 if (ev == vtkCommand::MouseWheelBackwardEvent || ev == vtkCommand::MouseWheelForwardEvent)
+	 if (ev == vtkCommand::MouseWheelBackwardEvent )
 	 {
 		 vtkSmartPointer<vtkInteractorStyleImage> interator = vtkInteractorStyleImage::SafeDownCast(caller);
 		 interator->OnMouseWheelBackward();
@@ -88,6 +90,18 @@ public:
 			 }
 		 }
 	 }
+     else if (ev == vtkCommand::MouseWheelForwardEvent)
+     {
+         vtkSmartPointer<vtkInteractorStyleImage> interator = vtkInteractorStyleImage::SafeDownCast(caller);
+         interator->OnMouseWheelForward();
+         for (int i = 0; i < 3; i++)
+         {
+             if (SIV[i])
+             {
+                 SIV[i]->GetRenderWindow()->Render();
+             }
+         }
+     }
 	 else if (ev == vtkCommand::MouseMoveEvent )
 	 {
 		 for (int i = 0; i < 3; i++)
@@ -395,7 +409,77 @@ void QtVTKRenderWindows::AddDistanceMeasurementToView(int i)
   this->DistanceWidget[i]->CreateDefaultRepresentation();
   this->DistanceWidget[i]->EnabledOn();
 }
+#include <QEnterEvent>
+void QtVTKRenderWindows::viewRender(QEvent* event)
+{
+    //if (event-> == Qt::mousemi)
+    QPoint delt;// = event->angleDelta();
+    if (event->type() == QEvent::Wheel)
+    {
+        //qDebug() << "delt:" << delt.y();
+        int a = delt.y();
+    }
+}
+void QtVTKRenderWindows::mouseEvent(QMouseEvent* event)
+{
+    QPoint delt;// = event->angleDelta();
+    if (event->type() == QEvent::Wheel)
+    {
+        //qDebug() << "delt:" << delt.y();
+        int a = delt.y();
+    }
+}
+bool QtVTKRenderWindows::eventFilter(QObject *object, QEvent *event)
+{
+    switch (event->type())
+    {
+        if (event->type() == QEvent::Wheel)
+        {
+            //qDebug() << "delt:" << delt.y();
+            int a = 0;
+        }
+    }
 
+    return true;
+}
+class QeventMouse:public QObject
+{
+public:
+    QeventMouse();
+    ~QeventMouse();
+    bool eventFilter(QObject *object, QEvent *event)
+    {
+        //switch (event->type())
+        {
+            if (event->type() == QEvent::Wheel)
+            {
+                //qDebug() << "delt:" << delt.y();
+                QString name = object->objectName();
+                for (int i = 0; i < 3; i++)
+                {
+                    if (SIV[i])
+                    {
+                        SIV[i]->GetRenderWindow()->Render();
+                    }
+                }
+            }
+        }
+
+        return 0;
+    }
+public:
+    vtkResliceImageViewer *SIV[3];
+private:
+
+};
+
+QeventMouse::QeventMouse()
+{
+}
+
+QeventMouse::~QeventMouse()
+{
+}
 void QtVTKRenderWindows::MprInit()
 {
 	vtkNew<vtkMetaImageReader> reader;
@@ -421,6 +505,7 @@ void QtVTKRenderWindows::MprInit()
 		vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
 		riw[i]->SetRenderWindow(renderWindow);
 	}
+
 
 	this->ui->view1->SetRenderWindow(riw[0]->GetRenderWindow());
 	riw[0]->SetupInteractor(this->ui->view1->GetRenderWindow()->GetInteractor());
@@ -486,8 +571,19 @@ void QtVTKRenderWindows::MprInit()
 		planeWidget[i]->InteractionOn();
 	}
 
+    //add
+    //connect(ui->view1, SIGNAL(widgetEvent(QEvent*)), this, SLOT(viewRender(QEvent*)));
+    //connect(ui->view1, SIGNAL(mouseEvent(QMouseEvent*)), this, SLOT(mouseEvent(QMouseEvent*)));
+    static QeventMouse filter;
+    for (int i = 0; i < 3; i++)
+    {
+        filter.SIV[i] = riw[i];
+    }
+    ui->view1->installEventFilter(&filter);
+    ui->view2->installEventFilter(&filter);
+    ui->view3->installEventFilter(&filter);
+    //
 	vtkSmartPointer<vtkResliceCursorCallback> cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
-
 	for (int i = 0; i < 3; i++)
 	{
 		cbk->IPW[i] = planeWidget[i];
@@ -497,9 +593,9 @@ void QtVTKRenderWindows::MprInit()
 		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceThicknessChangedEvent, cbk);
 		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResetCursorEvent, cbk);
 		riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, cbk);
-		riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseMoveEvent, cbk);
-		riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelForwardEvent, cbk);
-		riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelBackwardEvent, cbk);
+		//riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseMoveEvent, cbk);
+		//riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelForwardEvent, cbk);
+		//riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelBackwardEvent, cbk);
 
 		// Make them all share the same color map.
 		riw[i]->SetLookupTable(riw[0]->GetLookupTable());

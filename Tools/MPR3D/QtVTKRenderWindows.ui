@@ -30,7 +30,7 @@
       <x>9</x>
       <y>10</y>
       <width>911</width>
-      <height>31</height>
+      <height>73</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -192,6 +192,16 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </widget>
+       <widget class="QOpenGLWidget" name="openGLWidget">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>340</y>
+          <width>151</width>
+          <height>111</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -210,9 +220,6 @@ p, li { white-space: pre-wrap; }
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="1" column="0">
-          <widget class="QVTKOpenGLWidget" name="view2" native="true"/>
-         </item>
          <item row="0" column="1">
           <widget class="QVTKOpenGLWidget" name="view4" native="true"/>
          </item>
@@ -221,6 +228,9 @@ p, li { white-space: pre-wrap; }
          </item>
          <item row="0" column="0">
           <widget class="QVTKOpenGLWidget" name="view1" native="true"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QVTKOpenGLWidget" name="view2" native="true"/>
          </item>
         </layout>
        </item>
@@ -282,7 +292,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>QVTKOpenGLWidget</class>
    <extends>QWidget</extends>
-   <header>QVTKOpenGLWidget.h</header>
+   <header location="global">QVTKOpenGLWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

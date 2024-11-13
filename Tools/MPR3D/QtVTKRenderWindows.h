@@ -42,6 +42,10 @@ protected:
 
 public:
 	void MprInit();
+    bool eventFilter(QObject *object, QEvent *event);
+public slots:
+    void viewRender(QEvent* event);
+    void mouseEvent(QMouseEvent* event);
 protected slots:
 
 private slots:
