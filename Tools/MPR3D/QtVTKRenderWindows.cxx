@@ -79,94 +79,94 @@ VTK_MODULE_INIT(vtkRenderingFreeType);
 class vtkResliceCursorCallback : public vtkCommand
 {
 public:
-  static vtkResliceCursorCallback *New()
-  {
-      return new vtkResliceCursorCallback; 
-  }
+	static vtkResliceCursorCallback *New()
+	{
+		return new vtkResliceCursorCallback;
+	}
 
-  void Execute( vtkObject *caller, unsigned long ev, void *callData ) override
-  {
-	 if (ev == vtkCommand::MouseMoveEvent )
-	 {
-		 for (int i = 0; i < 3; i++)
-		 {
-			 if (SIV[i])
-			 {
-				 SIV[i]->GetRenderWindow()->Render();
-			 }
-		 }
-		 vtkSmartPointer<vtkInteractorStyleImage> interator = vtkInteractorStyleImage::SafeDownCast(caller);
-		 interator->OnMouseMove();
-	 }
-	 else if (ev == vtkCommand::MiddleButtonPressEvent)
-	 {
-		 vtkSmartPointer<vtkInteractorStyleImage> interator = vtkInteractorStyleImage::SafeDownCast(caller);
-		 interator->OnMiddleButtonDown();
-	 }
-	else  if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent || ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent)
-    {
-      // Render everything
-      for (int i = 0; i < 3; i++)
-      {
-        this->RCW[i]->Render();
-      }
-      this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
-      return;
-    }
+	void Execute(vtkObject *caller, unsigned long ev, void *callData) override
+	{
+		if (ev == vtkCommand::MouseMoveEvent)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				if (SIV[i])
+				{
+					SIV[i]->GetRenderWindow()->Render();
+				}
+			}
+			vtkSmartPointer<vtkInteractorStyleImage> interator = vtkInteractorStyleImage::SafeDownCast(caller);
+			interator->OnMouseMove();
+		}
+		else if (ev == vtkCommand::MiddleButtonPressEvent)
+		{
+			vtkSmartPointer<vtkInteractorStyleImage> interator = vtkInteractorStyleImage::SafeDownCast(caller);
+			interator->OnMiddleButtonDown();
+		}
+		else  if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent || ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent)
+		{
+			// Render everything
+			for (int i = 0; i < 3; i++)
+			{
+				this->RCW[i]->Render();
+			}
+			this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+			return;
+		}
 
-    vtkImagePlaneWidget* ipw = dynamic_cast< vtkImagePlaneWidget* >( caller );
-    if (ipw)
-    {
-      double* wl = static_cast<double*>( callData );
+		vtkImagePlaneWidget* ipw = dynamic_cast<vtkImagePlaneWidget*>(caller);
+		if (ipw)
+		{
+			double* wl = static_cast<double*>(callData);
 
-      if ( ipw == this->IPW[0] )
-      {
-        this->IPW[1]->SetWindowLevel(wl[0],wl[1],1);
-        this->IPW[2]->SetWindowLevel(wl[0],wl[1],1);
-      }
-      else if( ipw == this->IPW[1] )
-      {
-        this->IPW[0]->SetWindowLevel(wl[0],wl[1],1);
-        this->IPW[2]->SetWindowLevel(wl[0],wl[1],1);
-      }
-      else if (ipw == this->IPW[2])
-      {
-        this->IPW[0]->SetWindowLevel(wl[0],wl[1],1);
-        this->IPW[1]->SetWindowLevel(wl[0],wl[1],1);
-      }
-    }
+			if (ipw == this->IPW[0])
+			{
+				this->IPW[1]->SetWindowLevel(wl[0], wl[1], 1);
+				this->IPW[2]->SetWindowLevel(wl[0], wl[1], 1);
+			}
+			else if (ipw == this->IPW[1])
+			{
+				this->IPW[0]->SetWindowLevel(wl[0], wl[1], 1);
+				this->IPW[2]->SetWindowLevel(wl[0], wl[1], 1);
+			}
+			else if (ipw == this->IPW[2])
+			{
+				this->IPW[0]->SetWindowLevel(wl[0], wl[1], 1);
+				this->IPW[1]->SetWindowLevel(wl[0], wl[1], 1);
+			}
+		}
 
-    vtkResliceCursorWidget *rcw = dynamic_cast< vtkResliceCursorWidget * >(caller);
-    if (rcw)
-    {
-      vtkResliceCursorLineRepresentation *rep = dynamic_cast<vtkResliceCursorLineRepresentation * >(rcw->GetRepresentation());
-      // Although the return value is not used, we keep the get calls
-      // in case they had side-effects
-      rep->GetResliceCursorActor()->GetCursorAlgorithm()->GetResliceCursor();
-      for (int i = 0; i < 3; i++)
-      {
-        vtkPlaneSource *ps = static_cast< vtkPlaneSource * >( this->IPW[i]->GetPolyDataAlgorithm());
-        ps->SetOrigin(this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetOrigin());
-        ps->SetPoint1(this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint1());
-        ps->SetPoint2(this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint2());
+		vtkResliceCursorWidget *rcw = dynamic_cast<vtkResliceCursorWidget *>(caller);
+		if (rcw)
+		{
+			vtkResliceCursorLineRepresentation *rep = dynamic_cast<vtkResliceCursorLineRepresentation *>(rcw->GetRepresentation());
+			// Although the return value is not used, we keep the get calls
+			// in case they had side-effects
+			rep->GetResliceCursorActor()->GetCursorAlgorithm()->GetResliceCursor();
+			for (int i = 0; i < 3; i++)
+			{
+				vtkPlaneSource *ps = static_cast<vtkPlaneSource *>(this->IPW[i]->GetPolyDataAlgorithm());
+				ps->SetOrigin(this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetOrigin());
+				ps->SetPoint1(this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint1());
+				ps->SetPoint2(this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint2());
 
-        // If the reslice plane has modified, update it on the 3D widget
-        this->IPW[i]->UpdatePlacement();
-      }
-    }
+				// If the reslice plane has modified, update it on the 3D widget
+				this->IPW[i]->UpdatePlacement();
+			}
+		}
 
-    // Render everything
-    for (int i = 0; i < 3; i++)
-    {
-      this->RCW[i]->Render();
-    }
-    this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
-  }
+		// Render everything
+		for (int i = 0; i < 3; i++)
+		{
+			this->RCW[i]->Render();
+		}
+		this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+	}
 
-  vtkResliceCursorCallback() {}
-  vtkImagePlaneWidget* IPW[3];
-  vtkResliceCursorWidget *RCW[3];
-  vtkResliceImageViewer *SIV[3];
+	vtkResliceCursorCallback() {}
+	vtkImagePlaneWidget* IPW[3];
+	vtkResliceCursorWidget *RCW[3];
+	vtkResliceImageViewer *SIV[3];
 };
 
 
@@ -233,14 +233,14 @@ vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
 
 	//vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
 	//ImageFlip->SetInputData(itkTovtkImageFilter->GetOutput());
-    //
+	//
 	//ImageFlip->SetFilteredAxes(1);
 	//ImageFlip->Update();
 	//vtkSmartPointer<vtkImageData> vtkdata = ImageFlip->GetOutput();
 	//ImageFlip = NULL;
 	//itkTovtkImageFilter = NULL;
 	//return vtkdata;
-    return itkTovtkImageFilter->GetOutput();
+	return itkTovtkImageFilter->GetOutput();
 }
 
 void saveHDMdata(QString DicomDir)
@@ -262,208 +262,196 @@ void saveHDMdata(QString DicomDir)
 
 }
 
-QtVTKRenderWindows::QtVTKRenderWindows( int vtkNotUsed(argc), char *argv[])
+QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char *argv[])
 {
-  this->ui = new Ui_QtVTKRenderWindows;
-  this->ui->setupUi(this);
+	this->ui = new Ui_QtVTKRenderWindows;
+	this->ui->setupUi(this);
 
-  MprInit();
+	MprInit();
 };
 
 void QtVTKRenderWindows::slotExit()
 {
-  qApp->exit();
+	qApp->exit();
 }
 
 void QtVTKRenderWindows::resliceMode(int mode)
 {
-  this->ui->thickModeCheckBox->setEnabled(mode ? 1 : 0);
-  this->ui->blendModeGroupBox->setEnabled(mode ? 1 : 0);
+	this->ui->thickModeCheckBox->setEnabled(mode ? 1 : 0);
+	this->ui->blendModeGroupBox->setEnabled(mode ? 1 : 0);
 
-  for (int i = 0; i < 3; i++)
-  {
-    riw[i]->SetResliceMode(mode ? 1 : 0);
-    riw[i]->GetRenderer()->ResetCamera();
-    riw[i]->Render();
-  }
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i]->SetResliceMode(mode ? 1 : 0);
+		riw[i]->GetRenderer()->ResetCamera();
+		riw[i]->Render();
+	}
 }
 
 void QtVTKRenderWindows::thickMode(int mode)
 {
-  for (int i = 0; i < 3; i++)
-  {
-    riw[i]->SetThickMode(mode ? 1 : 0);
-    riw[i]->Render();
-  }
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i]->SetThickMode(mode ? 1 : 0);
+		riw[i]->Render();
+	}
 }
 
 void QtVTKRenderWindows::SetBlendMode(int m)
 {
-  for (int i = 0; i < 3; i++)
-  {
-	vtkWidgetRepresentation *tation              = riw[i]->GetResliceCursorWidget()->GetRepresentation();
-	vtkResliceCursorThickLineRepresentation *rep = vtkResliceCursorThickLineRepresentation::SafeDownCast(tation);
-	vtkImageSlabReslice *thickSlabReslice        = vtkImageSlabReslice::SafeDownCast(rep->GetReslice());
-	vtkResliceCursorThickLineRepresentation::SafeDownCast( riw[i]->GetResliceCursorWidget()->GetRepresentation())->GetReslice();
-    thickSlabReslice->SetBlendMode(m);
-    riw[i]->Render();
-  }
+	for (int i = 0; i < 3; i++)
+	{
+		vtkWidgetRepresentation *tation = riw[i]->GetResliceCursorWidget()->GetRepresentation();
+		vtkResliceCursorThickLineRepresentation *rep = vtkResliceCursorThickLineRepresentation::SafeDownCast(tation);
+		vtkImageSlabReslice *thickSlabReslice = vtkImageSlabReslice::SafeDownCast(rep->GetReslice());
+		vtkResliceCursorThickLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation())->GetReslice();
+		thickSlabReslice->SetBlendMode(m);
+		riw[i]->Render();
+	}
 }
 
 void QtVTKRenderWindows::SetBlendModeToMaxIP()
 {
-  this->SetBlendMode(VTK_IMAGE_SLAB_MAX);
+	this->SetBlendMode(VTK_IMAGE_SLAB_MAX);
 }
 
 void QtVTKRenderWindows::SetBlendModeToMinIP()
 {
-  this->SetBlendMode(VTK_IMAGE_SLAB_MIN);
+	this->SetBlendMode(VTK_IMAGE_SLAB_MIN);
 }
 
 void QtVTKRenderWindows::SetBlendModeToMeanIP()
 {
-  this->SetBlendMode(VTK_IMAGE_SLAB_MEAN);
+	this->SetBlendMode(VTK_IMAGE_SLAB_MEAN);
 }
 
 void QtVTKRenderWindows::ResetViews()
 {
-  // Reset the reslice image views
-  for (int i = 0; i < 3; i++)
-  {
-    riw[i]->Reset();
-    riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
-  }
+	// Reset the reslice image views
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i]->Reset();
+		riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
+	}
 
-  // Also sync the Image plane widget on the 3D top right view with any
-  // changes to the reslice cursor.
-  for (int i = 0; i < 3; i++)
-  {
-    vtkPlaneSource *ps = static_cast< vtkPlaneSource * >( planeWidget[i]->GetPolyDataAlgorithm());
-    ps->SetNormal(riw[0]->GetResliceCursor()->GetPlane(i)->GetNormal());
-    ps->SetCenter(riw[0]->GetResliceCursor()->GetPlane(i)->GetOrigin());
+	// Also sync the Image plane widget on the 3D top right view with any
+	// changes to the reslice cursor.
+	for (int i = 0; i < 3; i++)
+	{
+		vtkPlaneSource *ps = static_cast<vtkPlaneSource *>(planeWidget[i]->GetPolyDataAlgorithm());
+		ps->SetNormal(riw[0]->GetResliceCursor()->GetPlane(i)->GetNormal());
+		ps->SetCenter(riw[0]->GetResliceCursor()->GetPlane(i)->GetOrigin());
 
-    // If the reslice plane has modified, update it on the 3D widget
-    this->planeWidget[i]->UpdatePlacement();
-  }
+		// If the reslice plane has modified, update it on the 3D widget
+		this->planeWidget[i]->UpdatePlacement();
+	}
 
-  // Render in response to changes.
-  this->Render();
+	// Render in response to changes.
+	this->Render();
 }
 
 void QtVTKRenderWindows::Render()
 {
-  for (int i = 0; i < 3; i++)
-  {
-    riw[i]->Render();
-  }
-  this->ui->view3->GetRenderWindow()->Render();
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i]->Render();
+	}
+	this->ui->view3->GetRenderWindow()->Render();
 }
 
 void QtVTKRenderWindows::AddDistanceMeasurementToView1()
 {
-  this->AddDistanceMeasurementToView(1);
+	this->AddDistanceMeasurementToView(1);
 }
 
 void QtVTKRenderWindows::AddDistanceMeasurementToView(int i)
 {
-  // remove existing widgets.
-  if (this->DistanceWidget[i])
-  {
-    this->DistanceWidget[i]->SetEnabled(0);
-    this->DistanceWidget[i] = nullptr;
-  }
+	// remove existing widgets.
+	if (this->DistanceWidget[i])
+	{
+		this->DistanceWidget[i]->SetEnabled(0);
+		this->DistanceWidget[i] = nullptr;
+	}
 
-  // add new widget
-  this->DistanceWidget[i] = vtkSmartPointer< vtkDistanceWidget >::New();
-  this->DistanceWidget[i]->SetInteractor( this->riw[i]->GetResliceCursorWidget()->GetInteractor());
+	// add new widget
+	this->DistanceWidget[i] = vtkSmartPointer< vtkDistanceWidget >::New();
+	this->DistanceWidget[i]->SetInteractor(this->riw[i]->GetResliceCursorWidget()->GetInteractor());
 
-  // Set a priority higher than our reslice cursor widget
-  this->DistanceWidget[i]->SetPriority( this->riw[i]->GetResliceCursorWidget()->GetPriority() + 0.01);
+	// Set a priority higher than our reslice cursor widget
+	this->DistanceWidget[i]->SetPriority(this->riw[i]->GetResliceCursorWidget()->GetPriority() + 0.01);
 
-  vtkSmartPointer< vtkPointHandleRepresentation2D > handleRep =   vtkSmartPointer< vtkPointHandleRepresentation2D >::New();
-  vtkSmartPointer< vtkDistanceRepresentation2D > distanceRep  =   vtkSmartPointer< vtkDistanceRepresentation2D >::New();
-  distanceRep->SetHandleRepresentation(handleRep);
-  this->DistanceWidget[i]->SetRepresentation(distanceRep);
-  distanceRep->InstantiateHandleRepresentation();
-  distanceRep->GetPoint1Representation()->SetPointPlacer(riw[i]->GetPointPlacer());
-  distanceRep->GetPoint2Representation()->SetPointPlacer(riw[i]->GetPointPlacer());
+	vtkSmartPointer< vtkPointHandleRepresentation2D > handleRep = vtkSmartPointer< vtkPointHandleRepresentation2D >::New();
+	vtkSmartPointer< vtkDistanceRepresentation2D > distanceRep = vtkSmartPointer< vtkDistanceRepresentation2D >::New();
+	distanceRep->SetHandleRepresentation(handleRep);
+	this->DistanceWidget[i]->SetRepresentation(distanceRep);
+	distanceRep->InstantiateHandleRepresentation();
+	distanceRep->GetPoint1Representation()->SetPointPlacer(riw[i]->GetPointPlacer());
+	distanceRep->GetPoint2Representation()->SetPointPlacer(riw[i]->GetPointPlacer());
 
-  // Add the distance to the list of widgets whose visibility is managed based
-  // on the reslice plane by the ResliceImageViewerMeasurements class
-  this->riw[i]->GetMeasurements()->AddItem(this->DistanceWidget[i]);
+	// Add the distance to the list of widgets whose visibility is managed based
+	// on the reslice plane by the ResliceImageViewerMeasurements class
+	this->riw[i]->GetMeasurements()->AddItem(this->DistanceWidget[i]);
 
-  this->DistanceWidget[i]->CreateDefaultRepresentation();
-  this->DistanceWidget[i]->EnabledOn();
+	this->DistanceWidget[i]->CreateDefaultRepresentation();
+	this->DistanceWidget[i]->EnabledOn();
 }
 
 void QtVTKRenderWindows::viewRender(QEvent* event)
 {
-    //if (event-> == Qt::mousemi)
-    QPoint delt;// = event->angleDelta();
-    if (event->type() == QEvent::Wheel)
-    {
-        //qDebug() << "delt:" << delt.y();
-        int a = delt.y();
-    }
+	//if (event-> == Qt::mousemi)
+	QPoint delt;// = event->angleDelta();
+	if (event->type() == QEvent::Wheel)
+	{
+		//qDebug() << "delt:" << delt.y();
+		int a = delt.y();
+	}
 }
 void QtVTKRenderWindows::mouseEvent(QMouseEvent* event)
 {
-    QPoint delt;// = event->angleDelta();
-    if (event->type() == QEvent::Wheel)
-    {
-        //qDebug() << "delt:" << delt.y();
-        int a = delt.y();
-    }
+	QPoint delt;// = event->angleDelta();
+	if (event->type() == QEvent::Wheel)
+	{
+		//qDebug() << "delt:" << delt.y();
+		int a = delt.y();
+	}
 }
 bool QtVTKRenderWindows::eventFilter(QObject *object, QEvent *event)
 {
-    switch (event->type())
-    {
-        if (event->type() == QEvent::Wheel)
-        {
-            //qDebug() << "delt:" << delt.y();
-            int a = 0;
-        }
-    }
+	switch (event->type())
+	{
+		if (event->type() == QEvent::Wheel)
+		{
+			//qDebug() << "delt:" << delt.y();
+			int a = 0;
+		}
+	}
 
-    return true;
+	return true;
 }
-class QeventMouse:public QObject
+class QeventMouse :public QObject
 {
 public:
-    QeventMouse();
-    ~QeventMouse();
-    bool eventFilter(QObject *object, QEvent *event)
-    {
-        //switch (event->type())
-        {
-            if (event->type() == QEvent::Wheel)
-            {
-                //qDebug() << "delt:" << delt.y();               
-                for (int i = 0; i < 3; i++)
-                {
-                    if (m_riw[i])
-                    {
-                        m_riw[i]->GetRenderWindow()->Render();
-                    }
-                }
-                QString name = object->objectName();
-                if (name.contains("view"))
-                {                    
-                    int i = name.replace("view", "").toInt() - 1;
-                    
-                    int now = m_riw[i]->GetSlice()+1;
-                    int max = m_riw[i]->GetSliceMax()+1;
-                    QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
-                    m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
-                }
-            }
-        }
-        return 0;
-    }
+	QeventMouse();
+	~QeventMouse();
+	bool eventFilter(QObject *object, QEvent *event)
+	{
+		if (event->type() == QEvent::Wheel)
+		{
+			QString name = object->objectName();
+			if (name.contains("view"))
+			{
+				int i = name.replace("view", "").toInt() - 1;
+				int now = m_riw[i]->GetSlice() + 1;
+				int max = m_riw[i]->GetSliceMax() + 1;
+				QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+				m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
+			}
+		}
+		return 0;
+	}
 public:
-    vtkCornerAnnotation *m_cornerAnnotations[3];
-    vtkResliceImageViewer *m_riw[3];
+	vtkCornerAnnotation *m_cornerAnnotations[3];
+	vtkResliceImageViewer *m_riw[3];
 private:
 
 };
@@ -517,7 +505,7 @@ void QtVTKRenderWindows::MprInit()
 		vtkResliceCursorLineRepresentation *rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
 		riw[i]->SetResliceCursor(riw[0]->GetResliceCursor());
 		rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
-        riw[i]->SetInputData(reader->GetOutput());
+		riw[i]->SetInputData(reader->GetOutput());
 		riw[i]->SetSliceOrientation(i);
 		riw[i]->SetResliceModeToAxisAligned();
 	}
@@ -563,29 +551,29 @@ void QtVTKRenderWindows::MprInit()
 		planeWidget[i]->InteractionOn();
 	}
 
-    //add
-    static QeventMouse filter;
-    for (int i = 0; i < 3; i++)
-    {
-        filter.m_cornerAnnotations[i] = m_cornerAnnotations[i];
-        filter.m_riw[i] = riw[i];
-    }
-    int w, h;
-    w = ui->view1->size().width();
-    h = ui->view1->size().height();
-    ui->view1->installEventFilter(&filter);
-    ui->view2->installEventFilter(&filter);
-    ui->view3->installEventFilter(&filter);
+	//add
+	static QeventMouse filter;
+	for (int i = 0; i < 3; i++)
+	{
+		filter.m_cornerAnnotations[i] = m_cornerAnnotations[i];
+		filter.m_riw[i] = riw[i];
+	}
+	int w, h;
+	w = ui->view1->size().width();
+	h = ui->view1->size().height();
+	ui->view1->installEventFilter(&filter);
+	ui->view2->installEventFilter(&filter);
+	ui->view3->installEventFilter(&filter);
 
-    for (int i = 0; i < 3; i++)
-    {
-        riw[i]->SetResliceMode(1);
-        riw[i]->GetRenderer()->ResetCamera();
-        riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
-        riw[i]->Render();
-    }
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i]->SetResliceMode(1);
+		riw[i]->GetRenderer()->ResetCamera();
+		riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
+		riw[i]->Render();
+	}
 
-    ////////////////////////
+	////////////////////////
 	vtkSmartPointer<vtkResliceCursorCallback> cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
 	for (int i = 0; i < 3; i++)
 	{
@@ -596,6 +584,8 @@ void QtVTKRenderWindows::MprInit()
 		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceThicknessChangedEvent, cbk);
 		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResetCursorEvent, cbk);
 		riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, cbk);
+
+		riw[i]->AddObserver(vtkResliceImageViewer::SliceChangedEvent, cbk);
 
 		// Make them all share the same color map.
 		riw[i]->SetLookupTable(riw[0]->GetLookupTable());
@@ -608,10 +598,10 @@ void QtVTKRenderWindows::MprInit()
 	this->ui->view1->show();
 	this->ui->view2->show();
 	this->ui->view3->show();
-    ///
-    this->ui->thickModeCheckBox->setEnabled( 1 );
-    this->ui->blendModeGroupBox->setEnabled( 1 );
-    ///
+	///
+	this->ui->thickModeCheckBox->setEnabled(1);
+	this->ui->blendModeGroupBox->setEnabled(1);
+	///
 	static bool init = true;
 	if (init)
 	{
@@ -630,25 +620,22 @@ void QtVTKRenderWindows::MprInit()
 		connect(this->ui->resetButton, SIGNAL(pressed()), this, SLOT(ResetViews()));
 		connect(this->ui->AddDistance1Button, SIGNAL(pressed()), this, SLOT(AddDistanceMeasurementToView1()));
 
-        ///---
-        //m_cornerAnnotations = vtkCornerAnnotation::New();
-        //m_cornerAnnotations->GetTextProperty()->SetFontFamilyToArial();
-        //m_cornerAnnotations->GetTextProperty()->ShadowOn();
-        QString sliceInfo;
-        for (int i = 0; i < 3; i++)
-        {
-            m_cornerAnnotations[i] = vtkCornerAnnotation::New();
-            filter.m_cornerAnnotations[i] = m_cornerAnnotations[i];
-            m_cornerAnnotations[i]->GetTextProperty()->SetFontFamilyToArial();
-            m_cornerAnnotations[i]->GetTextProperty()->ShadowOn();
-            riw[i]->GetRenderer()->AddViewProp(m_cornerAnnotations[i]);
-            //riw[i]->SetSliceScrollOnMouseWheel(true);
-            int now = riw[i]->GetSlice() + 1;
-            int max = riw[i]->GetSliceMax() + 1;
-            sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
-            m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
-        }
-        //---------------------------------------------------------------
+		///---
+		QString sliceInfo;
+		for (int i = 0; i < 3; i++)
+		{
+			m_cornerAnnotations[i] = vtkCornerAnnotation::New();
+			filter.m_cornerAnnotations[i] = m_cornerAnnotations[i];
+			m_cornerAnnotations[i]->GetTextProperty()->SetFontFamilyToArial();
+			m_cornerAnnotations[i]->GetTextProperty()->ShadowOn();
+			riw[i]->GetRenderer()->AddViewProp(m_cornerAnnotations[i]);
+			//riw[i]->SetSliceScrollOnMouseWheel(true);
+			int now = riw[i]->GetSlice() + 1;
+			int max = riw[i]->GetSliceMax() + 1;
+			sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+			m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
+		}
+		//---------------------------------------------------------------
 	}
 }
 void QtVTKRenderWindows::on_DcmDIr_clicked()
