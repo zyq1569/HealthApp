@@ -479,8 +479,7 @@ QeventMouse::~QeventMouse()
 void QtVTKRenderWindows::MprInit()
 {
 	vtkNew<vtkMetaImageReader> reader;
-	//std::string dir = qPrintable());//argv[1];
-	
+	//std::string dir = qPrintable());//argv[1];	
 	QString dir = this->ui->m_dcmDIR->toPlainText();
 	dir += "\\VTKMetaData.mhd";
 	QDir mhdDir;
@@ -518,94 +517,6 @@ void QtVTKRenderWindows::MprInit()
 		vtkResliceCursorLineRepresentation *rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
 		riw[i]->SetResliceCursor(riw[0]->GetResliceCursor());
 		rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
-        //if (i <2)
-        //{
-           //// 创建vtkImageReslice
-           //vtkSmartPointer<vtkImageReslice> reslice = vtkSmartPointer<vtkImageReslice>::New();
-           //reslice->SetInputData(reader->GetOutput());
-           
-           //// 设置插值方式为线性插值
-           //reslice->SetInterpolationModeToLinear();
-           //
-           //// 创建绕X轴旋转180度的矩阵
-          // vtkSmartPointer<vtkMatrix4x4> rotationMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
-           //rotationMatrix->Identity();  // 初始化为单位矩阵
-           //
-           //// 绕X轴旋转180度（变换Y轴和Z轴）
-           //rotationMatrix->SetElement(1, 1, -1);  // Y轴翻转
-           //rotationMatrix->SetElement(2, 2, -1);  // Z轴翻转
-
-            //vtkSmartPointer<vtkImageReslice> reslice = vtkSmartPointer<vtkImageReslice>::New();
-            //reslice->SetInputData(reader->GetOutput());
-            //reslice->SetInterpolationModeToLinear();  // 设置插值方式为线性插值
-            //// 创建 vtkTransform 对象
-            //vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
-            //
-            //// 设置绕 X 轴旋转 180 度
-            //transform->RotateX(180);
-            //
-            //// 获取旋转矩阵
-            //vtkSmartPointer<vtkMatrix4x4> transformMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
-            //transformMatrix->Identity();
-            //transformMatrix->DeepCopy(transform->GetMatrix());
-            //
-            //// 将变换应用到 vtkImageReslice
-            //reslice->SetResliceAxes(transformMatrix);
-           
-            //
-            //riw[i]->SetInputData(reslice->GetOutput());
-
-            //vtkSmartPointer<vtkMatrix4x4> rotationMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
-            //rotationMatrix->Identity();  // 初始化为单位矩阵
-            //
-            //// 绕 X 轴旋转 180 度（Y 和 Z 翻转）
-            //rotationMatrix->SetElement(1, 1, -1);  // Y轴翻转
-            //rotationMatrix->SetElement(2, 2, -1);  // Z轴翻转
-            //
-            //// 获取 vtkImageReslice 对象（通过内部的 vtkResliceImageViewer）
-            //riw[i]->GetRenderer()->ResetCamera();
-
-            // 应用旋转矩阵到 vtkResliceImageViewer
-            //riw[i]->SetResliceAxes(rotationMatrix);  // 设置旋转矩阵
-            //riw[i]->SetReslice()
-            //typedef itk::ImageToVTKImageFilter< Input3dImageType> itkTovtkFilterType;
-            //itkTovtkFilterType::Pointer itkTovtkImageFilter = itkTovtkFilterType::New();
-            ////itkTovtkImageFilter->SetInput(image);//设置图像数据从ITK转向VTK
-            //itkTovtkImageFilter->Update();
-
-            //vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
-            ////vtkSmartPointer<vtkImageData>  data = vtkSmartPointer <vtkImageData>::New();
-            ////data->CopyStructure((vtkDataSet*)(reader->GetOutputPort()));           
-            ////ImageFlip->SetInputConnection(reader->GetOutputPort());
-            //ImageFlip->SetInputData(reader->GetOutput());
-            ////int x = ImageFlip->GetFilteredAxes();
-            //ImageFlip->SetFilteredAxes(1);
-            //ImageFlip->Update();
-            ////x = ImageFlip->GetFilteredAxes();
-            ////ImageFlip->Update();
-            //vtkSmartPointer<vtkImageData> vtkdata =  ImageFlip->GetOutput();
-            //riw[i]->SetInputData(vtkdata);
-            ////vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
-            ////ImageFlip->SetInputData(reader->GetOutput());
-            ////ImageFlip->SetFilteredAxes(2);
-            ////ImageFlip->Update();
-            ////riw[i]->SetInputData(ImageFlip->GetOutput());
-            //
-            //vtkSmartPointer<vtkImageReslice> ImageReslice = vtkSmartPointer<vtkImageReslice >::New();
-            //vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
-            //
-            //// 设置绕 X 轴旋转 180 度
-            //transform->RotateX(180);
-            //ImageReslice->SetInputData(reader->GetInput());
-            //ImageReslice->SetResliceTransform(transform);
-            //ImageReslice->SetOutputDimensionality(3);
-            //ImageReslice->Update();
-            //riw[i]->SetInputData(reader->GetOutput());
-        //}
-        //else
-        //{
-		//   riw[i]->SetInputData(reader->GetOutput());
-        //}
         riw[i]->SetInputData(reader->GetOutput());
 		riw[i]->SetSliceOrientation(i);
 		riw[i]->SetResliceModeToAxisAligned();
@@ -653,8 +564,6 @@ void QtVTKRenderWindows::MprInit()
 	}
 
     //add
-    //connect(ui->view1, SIGNAL(widgetEvent(QEvent*)), this, SLOT(viewRender(QEvent*)));
-    //connect(ui->view1, SIGNAL(mouseEvent(QMouseEvent*)), this, SLOT(mouseEvent(QMouseEvent*)));
     static QeventMouse filter;
     for (int i = 0; i < 3; i++)
     {
@@ -665,12 +574,9 @@ void QtVTKRenderWindows::MprInit()
     w = ui->view1->size().width();
     h = ui->view1->size().height();
     ui->view1->installEventFilter(&filter);
-    //riw[0]->GetRenderWindow()->SetSize(w, h);
-    //riw[0]->GetRenderer()->GetActiveCamera()->Zoom(1);
     ui->view2->installEventFilter(&filter);
-    //riw[1]->SetSize(w, h);
     ui->view3->installEventFilter(&filter);
-    //riw[2]->SetSize(w, h);
+
     for (int i = 0; i < 3; i++)
     {
         riw[i]->SetResliceMode(1);
@@ -678,40 +584,7 @@ void QtVTKRenderWindows::MprInit()
         riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
         riw[i]->Render();
     }
-    //riw[2]->GetRenderer()->GetActiveCamera()->SetViewUp(1, 0, 0);
-    //riw[2]->GetRenderer()->GetActiveCamera()->Azimuth(-90.0);
-    //riw[2]->GetRenderer()->GetActiveCamera()->Azimuth(-90.0);
-    //riw[2]->GetRenderer()->GetActiveCamera()->Pitch(90.0);
-    
-    //riw[2]->GetRenderer()->GetActiveCamera()->Roll(90.0);
-    //riw[2]->GetRenderer()->GetActiveCamera()->Elevation(360.0);
-    //vtkNew<vtkTransform> vtktransform;
-    //vtktransform->RotateX(180);
-    //vtkNew<vtkActor> vtkactor;
-    //vtkactor->RotateX(180);
-    //riw[0]->GetRenderer()->AddActor(vtkactor);
-    //riw[0]->GetImageActor()->SetUserTransform(vtktransform);
-    //riw[0]->GetImageActor()->RotateX(180);
-    //riw[0]->GetRenderer()->GetActiveCamera()->Roll(270);
-    //riw[0]->GetRenderer()->GetActiveCamera()->Azimuth(180);
-    //vtkImageReslice
-    //riw[0]->GetImageActor()->Update();
-    //riw[0]->GetRenderer()->AddViewProp(vtktransform);
-    //riw[0]->GetImageActor()->SetUserMatrix();
-    //vtkVolume *m_vtkVolume;
-    //m_vtkVolume = vtkVolume::New();
-    //riw[0]->GetRenderer()->AddViewProp(m_vtkVolume);
-    //vtkMatrix4x4 *projectionMatrix = vtkMatrix4x4::New();
-    //projectionMatrix->Identity();
-    //int x[3] = { 1,0,0 }, y[3] = { 0,1,0 }, z[3] = { 0,0,1 };
-    //for (int row = 0; row < 3; row++)
-    //{
-    //    projectionMatrix->SetElement(row, 0, x[row]);
-    //    projectionMatrix->SetElement(row, 1, y[row]);
-    //    projectionMatrix->SetElement(row, 2, z[row]);
-    //}
-    //m_vtkVolume->SetUserMatrix(projectionMatrix);
-    //vtkSmartPointer<vtkImageReslice> reslice =  riw[0]->GetReslice();
+
     ////////////////////////
 	vtkSmartPointer<vtkResliceCursorCallback> cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
 	for (int i = 0; i < 3; i++)
