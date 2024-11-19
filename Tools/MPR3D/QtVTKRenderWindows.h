@@ -10,7 +10,7 @@
 
 // Forward Qt class declarations
 class Ui_QtVTKRenderWindows;
-
+class vtkCornerAnnotation;
 class QtVTKRenderWindows : public QMainWindow
 {
   Q_OBJECT
@@ -35,11 +35,14 @@ public slots:
   virtual void AddDistanceMeasurementToView( int );
 
 protected:
-  vtkSmartPointer< vtkResliceImageViewer > riw[3];
+  vtkSmartPointer< vtkResliceImageViewer > riw[3]; 
+  //  vtkSmartPointer< vtkImageReslice > riw[3];
   vtkSmartPointer< vtkImagePlaneWidget > planeWidget[3];
   vtkSmartPointer< vtkDistanceWidget > DistanceWidget[3];
   vtkSmartPointer< vtkResliceImageViewerMeasurements > ResliceMeasurements;
 
+public:
+  vtkCornerAnnotation *m_cornerAnnotations[3];
 public:
 	void MprInit();
     bool eventFilter(QObject *object, QEvent *event);

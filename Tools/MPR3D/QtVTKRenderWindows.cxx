@@ -1,6 +1,7 @@
 #include "ui_QtVTKRenderWindows.h"
 #include "QtVTKRenderWindows.h"
 #include <QDir>
+#include <QEnterEvent>
 
 #include "vtkBoundedPlanePointPlacer.h"
 #include "vtkCellPicker.h"
@@ -38,6 +39,13 @@
 #include "vtkMarchingCubes.h"
 #include "vtkMetaImageReader.h"
 #include "vtkMetaImageWriter.h"
+#include <vtkCamera.h>
+#include <vtkCornerAnnotation.h>
+#include <vtkTextActor.h>
+#include <vtkTextProperty.h>
+#include <vtkTransform.h>
+#include <vtkImageActor.h>
+#include <vtkImageReslice.h>
 ///
 #include "itkImageToVTKImageFilter.h"
 #include "itkGDCMSeriesFileNames.h"
@@ -78,31 +86,7 @@ public:
 
   void Execute( vtkObject *caller, unsigned long ev, void *callData ) override
   {
-	 if (ev == vtkCommand::MouseWheelBackwardEvent )
-	 {
-		 vtkSmartPointer<vtkInteractorStyleImage> interator = vtkInteractorStyleImage::SafeDownCast(caller);
-		 interator->OnMouseWheelBackward();
-		 for (int i = 0; i < 3; i++)
-		 {
-			 if (SIV[i])
-			 {
-				 SIV[i]->GetRenderWindow()->Render();
-			 }
-		 }
-	 }
-     else if (ev == vtkCommand::MouseWheelForwardEvent)
-     {
-         vtkSmartPointer<vtkInteractorStyleImage> interator = vtkInteractorStyleImage::SafeDownCast(caller);
-         interator->OnMouseWheelForward();
-         for (int i = 0; i < 3; i++)
-         {
-             if (SIV[i])
-             {
-                 SIV[i]->GetRenderWindow()->Render();
-             }
-         }
-     }
-	 else if (ev == vtkCommand::MouseMoveEvent )
+	 if (ev == vtkCommand::MouseMoveEvent )
 	 {
 		 for (int i = 0; i < 3; i++)
 		 {
@@ -247,15 +231,16 @@ vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
 	itkTovtkImageFilter->SetInput(image);//设置图像数据从ITK转向VTK
 	itkTovtkImageFilter->Update();
 
-	vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
-	ImageFlip->SetInputData(itkTovtkImageFilter->GetOutput());
-
-	ImageFlip->SetFilteredAxes(1);
-	ImageFlip->Update();
-	vtkSmartPointer<vtkImageData> vtkdata = ImageFlip->GetOutput();
-	ImageFlip = NULL;
-	itkTovtkImageFilter = NULL;
-	return vtkdata;
+	//vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
+	//ImageFlip->SetInputData(itkTovtkImageFilter->GetOutput());
+    //
+	//ImageFlip->SetFilteredAxes(1);
+	//ImageFlip->Update();
+	//vtkSmartPointer<vtkImageData> vtkdata = ImageFlip->GetOutput();
+	//ImageFlip = NULL;
+	//itkTovtkImageFilter = NULL;
+	//return vtkdata;
+    return itkTovtkImageFilter->GetOutput();
 }
 
 void saveHDMdata(QString DicomDir)
@@ -346,6 +331,7 @@ void QtVTKRenderWindows::ResetViews()
   for (int i = 0; i < 3; i++)
   {
     riw[i]->Reset();
+    riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
   }
 
   // Also sync the Image plane widget on the 3D top right view with any
@@ -409,7 +395,7 @@ void QtVTKRenderWindows::AddDistanceMeasurementToView(int i)
   this->DistanceWidget[i]->CreateDefaultRepresentation();
   this->DistanceWidget[i]->EnabledOn();
 }
-#include <QEnterEvent>
+
 void QtVTKRenderWindows::viewRender(QEvent* event)
 {
     //if (event-> == Qt::mousemi)
@@ -453,22 +439,31 @@ public:
         {
             if (event->type() == QEvent::Wheel)
             {
-                //qDebug() << "delt:" << delt.y();
-                QString name = object->objectName();
+                //qDebug() << "delt:" << delt.y();               
                 for (int i = 0; i < 3; i++)
                 {
-                    if (SIV[i])
+                    if (m_riw[i])
                     {
-                        SIV[i]->GetRenderWindow()->Render();
+                        m_riw[i]->GetRenderWindow()->Render();
                     }
+                }
+                QString name = object->objectName();
+                if (name.contains("view"))
+                {                    
+                    int i = name.replace("view", "").toInt() - 1;
+                    
+                    int now = m_riw[i]->GetSlice()+1;
+                    int max = m_riw[i]->GetSliceMax()+1;
+                    QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+                    m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
                 }
             }
         }
-
         return 0;
     }
 public:
-    vtkResliceImageViewer *SIV[3];
+    vtkCornerAnnotation *m_cornerAnnotations[3];
+    vtkResliceImageViewer *m_riw[3];
 private:
 
 };
@@ -480,6 +475,7 @@ QeventMouse::QeventMouse()
 QeventMouse::~QeventMouse()
 {
 }
+
 void QtVTKRenderWindows::MprInit()
 {
 	vtkNew<vtkMetaImageReader> reader;
@@ -521,14 +517,99 @@ void QtVTKRenderWindows::MprInit()
 		// make them all share the same reslice cursor object.
 		vtkResliceCursorLineRepresentation *rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
 		riw[i]->SetResliceCursor(riw[0]->GetResliceCursor());
-
 		rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
+        //if (i <2)
+        //{
+           //// 创建vtkImageReslice
+           //vtkSmartPointer<vtkImageReslice> reslice = vtkSmartPointer<vtkImageReslice>::New();
+           //reslice->SetInputData(reader->GetOutput());
+           
+           //// 设置插值方式为线性插值
+           //reslice->SetInterpolationModeToLinear();
+           //
+           //// 创建绕X轴旋转180度的矩阵
+          // vtkSmartPointer<vtkMatrix4x4> rotationMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
+           //rotationMatrix->Identity();  // 初始化为单位矩阵
+           //
+           //// 绕X轴旋转180度（变换Y轴和Z轴）
+           //rotationMatrix->SetElement(1, 1, -1);  // Y轴翻转
+           //rotationMatrix->SetElement(2, 2, -1);  // Z轴翻转
 
-		riw[i]->SetInputData(reader->GetOutput());
+            //vtkSmartPointer<vtkImageReslice> reslice = vtkSmartPointer<vtkImageReslice>::New();
+            //reslice->SetInputData(reader->GetOutput());
+            //reslice->SetInterpolationModeToLinear();  // 设置插值方式为线性插值
+            //// 创建 vtkTransform 对象
+            //vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+            //
+            //// 设置绕 X 轴旋转 180 度
+            //transform->RotateX(180);
+            //
+            //// 获取旋转矩阵
+            //vtkSmartPointer<vtkMatrix4x4> transformMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
+            //transformMatrix->Identity();
+            //transformMatrix->DeepCopy(transform->GetMatrix());
+            //
+            //// 将变换应用到 vtkImageReslice
+            //reslice->SetResliceAxes(transformMatrix);
+           
+            //
+            //riw[i]->SetInputData(reslice->GetOutput());
+
+            //vtkSmartPointer<vtkMatrix4x4> rotationMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
+            //rotationMatrix->Identity();  // 初始化为单位矩阵
+            //
+            //// 绕 X 轴旋转 180 度（Y 和 Z 翻转）
+            //rotationMatrix->SetElement(1, 1, -1);  // Y轴翻转
+            //rotationMatrix->SetElement(2, 2, -1);  // Z轴翻转
+            //
+            //// 获取 vtkImageReslice 对象（通过内部的 vtkResliceImageViewer）
+            //riw[i]->GetRenderer()->ResetCamera();
+
+            // 应用旋转矩阵到 vtkResliceImageViewer
+            //riw[i]->SetResliceAxes(rotationMatrix);  // 设置旋转矩阵
+            //riw[i]->SetReslice()
+            //typedef itk::ImageToVTKImageFilter< Input3dImageType> itkTovtkFilterType;
+            //itkTovtkFilterType::Pointer itkTovtkImageFilter = itkTovtkFilterType::New();
+            ////itkTovtkImageFilter->SetInput(image);//设置图像数据从ITK转向VTK
+            //itkTovtkImageFilter->Update();
+
+            //vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
+            ////vtkSmartPointer<vtkImageData>  data = vtkSmartPointer <vtkImageData>::New();
+            ////data->CopyStructure((vtkDataSet*)(reader->GetOutputPort()));           
+            ////ImageFlip->SetInputConnection(reader->GetOutputPort());
+            //ImageFlip->SetInputData(reader->GetOutput());
+            ////int x = ImageFlip->GetFilteredAxes();
+            //ImageFlip->SetFilteredAxes(1);
+            //ImageFlip->Update();
+            ////x = ImageFlip->GetFilteredAxes();
+            ////ImageFlip->Update();
+            //vtkSmartPointer<vtkImageData> vtkdata =  ImageFlip->GetOutput();
+            //riw[i]->SetInputData(vtkdata);
+            ////vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
+            ////ImageFlip->SetInputData(reader->GetOutput());
+            ////ImageFlip->SetFilteredAxes(2);
+            ////ImageFlip->Update();
+            ////riw[i]->SetInputData(ImageFlip->GetOutput());
+            //
+            //vtkSmartPointer<vtkImageReslice> ImageReslice = vtkSmartPointer<vtkImageReslice >::New();
+            //vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+            //
+            //// 设置绕 X 轴旋转 180 度
+            //transform->RotateX(180);
+            //ImageReslice->SetInputData(reader->GetInput());
+            //ImageReslice->SetResliceTransform(transform);
+            //ImageReslice->SetOutputDimensionality(3);
+            //ImageReslice->Update();
+            //riw[i]->SetInputData(reader->GetOutput());
+        //}
+        //else
+        //{
+		//   riw[i]->SetInputData(reader->GetOutput());
+        //}
+        riw[i]->SetInputData(reader->GetOutput());
 		riw[i]->SetSliceOrientation(i);
 		riw[i]->SetResliceModeToAxisAligned();
 	}
-	//riw[0]->SetSliceOrientationToXY();
 
 	vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
 	picker->SetTolerance(0.005);
@@ -566,7 +647,7 @@ void QtVTKRenderWindows::MprInit()
 		planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
 		planeWidget[i]->DisplayTextOn();
 		planeWidget[i]->SetDefaultRenderer(ren);
-		planeWidget[i]->SetWindowLevel(1358, -27);
+		planeWidget[i]->SetWindowLevel(250, 50);
 		planeWidget[i]->On();
 		planeWidget[i]->InteractionOn();
 	}
@@ -577,12 +658,61 @@ void QtVTKRenderWindows::MprInit()
     static QeventMouse filter;
     for (int i = 0; i < 3; i++)
     {
-        filter.SIV[i] = riw[i];
+        filter.m_cornerAnnotations[i] = m_cornerAnnotations[i];
+        filter.m_riw[i] = riw[i];
     }
+    int w, h;
+    w = ui->view1->size().width();
+    h = ui->view1->size().height();
     ui->view1->installEventFilter(&filter);
+    //riw[0]->GetRenderWindow()->SetSize(w, h);
+    //riw[0]->GetRenderer()->GetActiveCamera()->Zoom(1);
     ui->view2->installEventFilter(&filter);
+    //riw[1]->SetSize(w, h);
     ui->view3->installEventFilter(&filter);
-    //
+    //riw[2]->SetSize(w, h);
+    for (int i = 0; i < 3; i++)
+    {
+        riw[i]->SetResliceMode(1);
+        riw[i]->GetRenderer()->ResetCamera();
+        riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
+        riw[i]->Render();
+    }
+    //riw[2]->GetRenderer()->GetActiveCamera()->SetViewUp(1, 0, 0);
+    //riw[2]->GetRenderer()->GetActiveCamera()->Azimuth(-90.0);
+    //riw[2]->GetRenderer()->GetActiveCamera()->Azimuth(-90.0);
+    //riw[2]->GetRenderer()->GetActiveCamera()->Pitch(90.0);
+    
+    //riw[2]->GetRenderer()->GetActiveCamera()->Roll(90.0);
+    //riw[2]->GetRenderer()->GetActiveCamera()->Elevation(360.0);
+    //vtkNew<vtkTransform> vtktransform;
+    //vtktransform->RotateX(180);
+    //vtkNew<vtkActor> vtkactor;
+    //vtkactor->RotateX(180);
+    //riw[0]->GetRenderer()->AddActor(vtkactor);
+    //riw[0]->GetImageActor()->SetUserTransform(vtktransform);
+    //riw[0]->GetImageActor()->RotateX(180);
+    //riw[0]->GetRenderer()->GetActiveCamera()->Roll(270);
+    //riw[0]->GetRenderer()->GetActiveCamera()->Azimuth(180);
+    //vtkImageReslice
+    //riw[0]->GetImageActor()->Update();
+    //riw[0]->GetRenderer()->AddViewProp(vtktransform);
+    //riw[0]->GetImageActor()->SetUserMatrix();
+    //vtkVolume *m_vtkVolume;
+    //m_vtkVolume = vtkVolume::New();
+    //riw[0]->GetRenderer()->AddViewProp(m_vtkVolume);
+    //vtkMatrix4x4 *projectionMatrix = vtkMatrix4x4::New();
+    //projectionMatrix->Identity();
+    //int x[3] = { 1,0,0 }, y[3] = { 0,1,0 }, z[3] = { 0,0,1 };
+    //for (int row = 0; row < 3; row++)
+    //{
+    //    projectionMatrix->SetElement(row, 0, x[row]);
+    //    projectionMatrix->SetElement(row, 1, y[row]);
+    //    projectionMatrix->SetElement(row, 2, z[row]);
+    //}
+    //m_vtkVolume->SetUserMatrix(projectionMatrix);
+    //vtkSmartPointer<vtkImageReslice> reslice =  riw[0]->GetReslice();
+    ////////////////////////
 	vtkSmartPointer<vtkResliceCursorCallback> cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
 	for (int i = 0; i < 3; i++)
 	{
@@ -593,24 +723,22 @@ void QtVTKRenderWindows::MprInit()
 		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceThicknessChangedEvent, cbk);
 		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResetCursorEvent, cbk);
 		riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, cbk);
-		//riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseMoveEvent, cbk);
-		//riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelForwardEvent, cbk);
-		//riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelBackwardEvent, cbk);
 
 		// Make them all share the same color map.
 		riw[i]->SetLookupTable(riw[0]->GetLookupTable());
 		planeWidget[i]->GetColorMap()->SetLookupTable(riw[0]->GetLookupTable());
 		//planeWidget[i]->GetColorMap()->SetInput(riw[i]->GetResliceCursorWidget()->GetResliceCursorRepresentation()->GetColorMap()->GetInput());
 		planeWidget[i]->SetColorMap(riw[i]->GetResliceCursorWidget()->GetResliceCursorRepresentation()->GetColorMap());
-
 		cbk->SIV[i] = riw[i];
-
 	}
 
 	this->ui->view1->show();
 	this->ui->view2->show();
 	this->ui->view3->show();
-
+    ///
+    this->ui->thickModeCheckBox->setEnabled( 1 );
+    this->ui->blendModeGroupBox->setEnabled( 1 );
+    ///
 	static bool init = true;
 	if (init)
 	{
@@ -628,6 +756,26 @@ void QtVTKRenderWindows::MprInit()
 
 		connect(this->ui->resetButton, SIGNAL(pressed()), this, SLOT(ResetViews()));
 		connect(this->ui->AddDistance1Button, SIGNAL(pressed()), this, SLOT(AddDistanceMeasurementToView1()));
+
+        ///---
+        //m_cornerAnnotations = vtkCornerAnnotation::New();
+        //m_cornerAnnotations->GetTextProperty()->SetFontFamilyToArial();
+        //m_cornerAnnotations->GetTextProperty()->ShadowOn();
+        QString sliceInfo;
+        for (int i = 0; i < 3; i++)
+        {
+            m_cornerAnnotations[i] = vtkCornerAnnotation::New();
+            filter.m_cornerAnnotations[i] = m_cornerAnnotations[i];
+            m_cornerAnnotations[i]->GetTextProperty()->SetFontFamilyToArial();
+            m_cornerAnnotations[i]->GetTextProperty()->ShadowOn();
+            riw[i]->GetRenderer()->AddViewProp(m_cornerAnnotations[i]);
+            //riw[i]->SetSliceScrollOnMouseWheel(true);
+            int now = riw[i]->GetSlice() + 1;
+            int max = riw[i]->GetSliceMax() + 1;
+            sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+            m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
+        }
+        //---------------------------------------------------------------
 	}
 }
 void QtVTKRenderWindows::on_DcmDIr_clicked()
