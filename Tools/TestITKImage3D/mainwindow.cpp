@@ -178,11 +178,12 @@ vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
     itkTovtkFilterType::Pointer itkTovtkImageFilter = itkTovtkFilterType::New();
     itkTovtkImageFilter->SetInput(image);//设置图像数据从ITK转向VTK
     itkTovtkImageFilter->Update();
+	return itkTovtkImageFilter->GetOutput();
 
     vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
 	ImageFlip->SetInputData(itkTovtkImageFilter->GetOutput());
 
-	ImageFlip->SetFilteredAxes(1);
+	ImageFlip->SetFilteredAxes(0);
 	ImageFlip->Update();
 	vtkSmartPointer<vtkImageData> vtkdata = ImageFlip->GetOutput();
 	ImageFlip = NULL;
@@ -520,8 +521,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-	vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
-	vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
+	//vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
+	//vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
 
 	QString dir = QCoreApplication::applicationDirPath();
 	ui->m_dcmDir->setText(dir+"/Dicom Data");
@@ -1006,12 +1007,12 @@ void MainWindow::on_pBVolume3D_clicked()
         std::string Input_Name = qPrintable(DicomDir);
         Input3dImageType::Pointer dicomimage = GdcmRead3dImage(Input_Name, DicomDir);
         static bool init = true ;
-        if (init)
-        {
-            vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
-            vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
-            init = false;
-        }
+        //if (init)
+        //{
+        //    vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
+        //    vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
+        //    init = false;
+        //}
         
         vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
 
@@ -1078,6 +1079,7 @@ void MainWindow::on_pBVolume3D_clicked()
 
         m_renderWindow->Render();
         m_renderWindow->SetWindowName("鼠标左键旋转 右键:WW/WL(ESC还原）|(鼠标中间单击切换)Zoom 鼠标中键移动图像");
+		//saveHDMdata(itkImageData);
     }
     else
     {
