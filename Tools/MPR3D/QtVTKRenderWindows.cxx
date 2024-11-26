@@ -169,6 +169,76 @@ public:
 	vtkResliceImageViewer *SIV[3];
 };
 
+class vtkRCLP :public vtkResliceCursorLineRepresentation {
+
+public:
+	//vtkRCLP()
+	//{
+	//
+	//}
+
+	static vtkRCLP* New()
+	{
+		return new vtkRCLP;
+	}
+	//irtual void CreateDefaultResliceAlgorithm() override
+	//
+	//	// Allows users to optionally use their own reslice filters or other
+	//	// algorithms here.
+	//	if (!this->Reslice)
+	//	{
+	//		this->Reslice = vtkImageReslice::New();			
+	//	}
+	//	auto flip = vtkSmartPointer< vtkImageFlip>::New();
+	//	flip->SetFilteredAxis(1);
+	//	flip->SetInputConnection(this->Reslice->GetOutputPort());
+	//	this->Reslice->SetInputConnection(flip->GetOutputPort());
+	//
+	void SetResliceParameters(double outputSpacingX, double outputSpacingY, int extentX, int extentY)override
+	{
+		vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(this->Reslice);
+	
+		if (reslice)
+		{
+			// Set the default color the minimum scalar value
+			double range[2];
+			vtkImageData::SafeDownCast(reslice->GetInput())->GetScalarRange(range);
+			reslice->SetBackgroundLevel(range[0]);
+			//-------------------------
+			auto flip = vtkSmartPointer< vtkImageFlip>::New();
+			flip->SetFilteredAxis(1);
+			flip->SetInputConnection(reslice->GetOutputPort());
+			flip->Update();
+			//reslice->SetInputConnection(flip->GetOutputPort());
+			//--------------------------
+
+			//???
+			//???
+			if (0)	this->ColorMap->SetInputConnection(flip->GetOutputPort());
+			else    this->ColorMap->SetInputConnection(reslice->GetOutputPort());
+
+			reslice->TransformInputSamplingOff();
+			reslice->AutoCropOutputOn();
+			if (1)
+			{
+				vtkSmartPointer<vtkMatrix4x4> sagittalMatrix =	vtkSmartPointer<vtkMatrix4x4>::New();
+				sagittalMatrix->DeepCopy(this->ResliceAxes);
+				// 设置 X 轴镜像翻转
+				//sagittalMatrix->SetElement(0, 0, -1);  // 水平镜像
+				//sagittalMatrix->SetElement(0, 3, sagittalMatrix->GetElement(0, 3));  // 调整偏移
+				reslice->SetResliceAxes(sagittalMatrix);
+			}
+			else
+			reslice->SetResliceAxes(this->ResliceAxes);
+
+			//reslice->SetResliceTransform(Transform);
+			reslice->SetOutputSpacing(outputSpacingX, outputSpacingY, 1);
+			reslice->SetOutputOrigin(0.5 * outputSpacingX, 0.5 * outputSpacingY, 0);
+			reslice->SetOutputExtent(0, extentX - 1, 0, extentY - 1, 0, 0);		
+		}
+	}
+
+};
 
 using namespace std;
 typedef short PixelType;
@@ -230,6 +300,7 @@ vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
 	itkTovtkFilterType::Pointer itkTovtkImageFilter = itkTovtkFilterType::New();
 	itkTovtkImageFilter->SetInput(image);//设置图像数据从ITK转向VTK
 	itkTovtkImageFilter->Update();
+	return itkTovtkImageFilter->GetOutput();
 
 	//vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
 	//ImageFlip->SetInputData(itkTovtkImageFilter->GetOutput());
@@ -240,7 +311,7 @@ vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
 	//ImageFlip = NULL;
 	//itkTovtkImageFilter = NULL;
 	//return vtkdata;
-	return itkTovtkImageFilter->GetOutput();
+
 }
 
 void saveHDMdata(QString DicomDir)
@@ -431,8 +502,8 @@ bool QtVTKRenderWindows::eventFilter(QObject *object, QEvent *event)
 class QeventMouse :public QObject
 {
 public:
-	QeventMouse();
-	~QeventMouse();
+	QeventMouse() {	};
+	~QeventMouse() { };
 	bool eventFilter(QObject *object, QEvent *event)
 	{
 		if (event->type() == QEvent::Wheel)
@@ -453,19 +524,11 @@ public:
 	vtkCornerAnnotation *m_cornerAnnotations[3];
 	vtkResliceImageViewer *m_riw[3];
 private:
-
 };
-
-QeventMouse::QeventMouse()
-{
-}
-
-QeventMouse::~QeventMouse()
-{
-}
 
 void QtVTKRenderWindows::MprInit()
 {
+	//return GPTMRP3D();
 	vtkNew<vtkMetaImageReader> reader;
 	//std::string dir = qPrintable());//argv[1];	
 	QString dir = this->ui->m_dcmDIR->toPlainText();
@@ -499,16 +562,141 @@ void QtVTKRenderWindows::MprInit()
 	this->ui->view3->SetRenderWindow(riw[2]->GetRenderWindow());
 	riw[2]->SetupInteractor(this->ui->view3->GetRenderWindow()->GetInteractor());
 
-	for (int i = 0; i < 3; i++)
+	///012  021 120 102  201 210  
+	vtkImageData *imageData  = reader->GetOutput();
+	//if (10)
+	//{
+		vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
+		ImageFlip->SetInputData(reader->GetOutput());
+		ImageFlip->SetFilteredAxes(0);
+		ImageFlip->Update();
+		imageData = ImageFlip->GetOutput();
+	//}
+	//vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
+	//ImageFlip->SetInputData(imageData);
+	//ImageFlip->SetFilteredAxes(2);
+	//ImageFlip->Update();
+	//imageData = ImageFlip->GetOutput();
+	//vtkSmartPointer< vtkImageFlip > ImageFlip1 = vtkSmartPointer< vtkImageFlip >::New();
+	//ImageFlip1->SetInputData(imageData);
+	//ImageFlip1->SetFilteredAxes(1);
+	//ImageFlip1->Update();
+	//imageData = ImageFlip1->GetOutput();
+	//vtkSmartPointer< vtkImageFlip > ImageFlip2 = vtkSmartPointer< vtkImageFlip >::New();
+	//ImageFlip2->SetInputData(imageData);
+	//ImageFlip2->SetFilteredAxes(0);
+	//ImageFlip2->Update();
+	//imageData = ImageFlip2->GetOutput();
+	//vtkSmartPointer< vtkImageFlip > ImageFlip3 = vtkSmartPointer< vtkImageFlip >::New();
+	//ImageFlip3->SetInputData(imageData);
+	//ImageFlip3->SetFilteredAxes(2);
+	//ImageFlip3->Update();
+	//imageData = ImageFlip3->GetOutput();
+
+
+	//vtkTransform* transform = vtkTransform::New();
+	//transform->RotateZ(180);
+	//vtkImageReslice* reslice = vtkImageReslice::New();
+	//reslice->SetInputData(imageData);
+	//reslice->SetInformationInput(imageData);
+	//reslice->SetResliceTransform(transform);
+	//reslice->SetOutputDimensionality(3);
+	//reslice->Update();
+
+	///https://gitlab.kitware.com/vtk/vtk/-/issues/18726
+	///https://discourse.vtk.org/t/flip-mpr-image-become-abnormal/9931
+	vtkSmartPointer< vtkRenderWindowInteractor >renderWindowInteractor[3];
+	vtkSmartPointer< vtkResliceCursorLineRepresentation > vtkrclp[3];
+	vtkSmartPointer< vtkResliceCursor > resliceCursor = vtkSmartPointer< vtkResliceCursor >::New();
+	///
+	if (0)
 	{
-		// make them all share the same reslice cursor object.
-		vtkResliceCursorLineRepresentation *rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
-		riw[i]->SetResliceCursor(riw[0]->GetResliceCursor());
-		rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
-		riw[i]->SetInputData(reader->GetOutput());
-		riw[i]->SetSliceOrientation(i);
-		riw[i]->SetResliceModeToAxisAligned();
+		for (int i = 0; i < 3; i++)
+		{
+			riw[i] = vtkSmartPointer< vtkResliceImageViewer >::New();
+			if (i == 2)
+			{
+				vtkrclp[i] = vtkSmartPointer< vtkRCLP >::New();
+			}
+			else
+			{
+				vtkrclp[i] = vtkSmartPointer< vtkResliceCursorLineRepresentation >::New();
+			}
+
+			renderWindowInteractor[i] = vtkSmartPointer< vtkRenderWindowInteractor >::New();
+			riw[i]->SetupInteractor(renderWindowInteractor[i]);
+		}
+
+		for (int i = 0; i < 3; i++)
+		{
+			riw[i]->GetResliceCursorWidget()->SetRepresentation(vtkrclp[i]);
+			riw[i]->SetResliceCursor(resliceCursor);
+			vtkrclp[i]->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
+
+			vtkrclp[i]->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
+			vtkrclp[i]->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
+			vtkrclp[i]->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
+
+			riw[i]->SetInputData(reader->GetOutput());
+
+			riw[i]->GetRenderWindow()->SetSize(500, 500);
+			riw[i]->GetRenderWindow()->SetPosition(800 + i * 500, 500);
+			if (i == 2)
+				riw[i]->GetRenderWindow()->SetPosition(800, 0);
+			riw[i]->SetSliceOrientation(1);
+			riw[i]->SetSliceOrientation(i);
+		}
+
+		for (int i = 0; i < 3; i++)
+		{
+			riw[i]->SetResliceMode(1);
+			riw[i]->GetRenderer()->ResetCamera();
+			riw[i]->Render();
+		}
 	}
+	else
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			// make them all share the same reslice cursor object.
+			vtkResliceCursorLineRepresentation *rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
+			riw[i]->SetResliceCursor(riw[0]->GetResliceCursor());
+			rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
+			riw[i]->SetInputData(imageData);
+			//riw[i]->SetInputData(reslice->GetOutput());
+			riw[i]->SetSliceOrientation(i);
+			riw[i]->SetResliceModeToAxisAligned();
+			if (10)
+			{
+				// 假设你已经有了 resliceImageViewer 的实例
+				vtkSmartPointer<vtkResliceImageViewer> resliceImageViewer = riw[i];
+
+				// 获取 vtkResliceCursor 对象
+				vtkSmartPointer<vtkResliceCursor> resliceCursor = resliceImageViewer->GetResliceCursor();
+
+				// 获取当前光标矩阵
+				vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+				// 获取当前切片平面方向
+				double xAxis[3], yAxis[3], zAxis[3];
+				resliceCursor->GetXAxis(xAxis);
+				resliceCursor->GetYAxis(yAxis);
+				resliceCursor->GetZAxis(zAxis);
+
+				// 创建一个新的旋转矩阵（绕Z轴旋转90度）
+				// 旋转X轴和Y轴 90 度（绕Z轴旋转）
+				double newXAxis[3] = { -yAxis[0], -yAxis[1], -yAxis[2] };
+				double newYAxis[3] = { xAxis[0], xAxis[1], xAxis[2] };
+
+				// 更新轴方向
+				resliceCursor->SetXAxis(newXAxis);
+				resliceCursor->SetYAxis(newYAxis);
+
+				// 通知视图更新
+				//resliceImageViewer->Render();
+			}
+		}
+	}
+
 
 	vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
 	picker->SetTolerance(0.005);
@@ -565,6 +753,38 @@ void QtVTKRenderWindows::MprInit()
 	ui->view2->installEventFilter(&filter);
 	ui->view3->installEventFilter(&filter);
 
+	if (0)
+	{
+		vtkSmartPointer<vtkImageReslice> reslicer =	vtkSmartPointer<vtkImageReslice>::New();
+		reslicer->SetInputConnection(reader->GetOutputPort());
+		vtkSmartPointer<vtkMatrix4x4> flipMatrix =	vtkSmartPointer<vtkMatrix4x4>::New();
+		flipMatrix->Identity();            // 初始化为单位矩阵
+		flipMatrix->SetElement(0, 0, -1);  // X 轴镜像翻转
+		// flipMatrix->SetElement(1, 1, -1);  // Y 轴镜像翻转（如果需要）
+
+		reslicer->SetResliceAxes(flipMatrix);
+		reslicer->SetInterpolationModeToLinear();
+		reslicer->Update();
+		riw[2]->SetInputConnection(reslicer->GetOutputPort());
+	//}
+	//{
+		
+		// 获取相机
+		vtkCamera* camera = riw[2]->GetRenderer()->GetActiveCamera();
+
+		// 设置相机的位置到图像正后方
+		double focalPoint[3] = { 0.0, 0.0, 0.0 };  // 图像中心
+		double backPosition[3] = { 0.0, 0.0, -10.0 };  // 图像正后方
+
+		camera->SetFocalPoint(focalPoint);
+		camera->SetPosition(backPosition);
+		camera->SetViewUp(0.0, 1.0, 0.0);  // 设置 "向上" 的方向
+
+		// 渲染并启动交互
+		riw[2]->GetRenderer()->ResetCamera();  // 自动调整相机视角以适应数据
+		riw[2]->GetRenderer()->GetRenderWindow()->Render();
+		//m_renderWindow->Render();
+	}
 	for (int i = 0; i < 3; i++)
 	{
 		riw[i]->SetResliceMode(1);
@@ -573,6 +793,10 @@ void QtVTKRenderWindows::MprInit()
 		riw[i]->Render();
 	}
 
+	//riw[2]->GetRenderer()->GetActiveCamera()->SetViewUp(0, 1, 0);
+	//riw[2]->GetRenderer()->GetActiveCamera()->Azimuth(180);
+	//riw[2]->GetRenderer()->GetActiveCamera()->SetViewUp(0,-1, 0);
+	//riw[2]->GetRenderer()->GetActiveCamera()->Elevation(180);
 	////////////////////////
 	vtkSmartPointer<vtkResliceCursorCallback> cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
 	for (int i = 0; i < 3; i++)
@@ -643,5 +867,265 @@ void QtVTKRenderWindows::on_DcmDIr_clicked()
 	this->hide();
 	MprInit();
 	this->show();
+}
+
+///--------------------------------------------------------VTK9.2
+class MPRvtkResliceCursorCallback : public vtkCommand
+{
+public:
+	static MPRvtkResliceCursorCallback* New()
+	{
+		return new MPRvtkResliceCursorCallback;
+	}
+	void Execute(vtkObject* caller, unsigned long ev,
+		void* callData) override
+	{
+		if (ev == vtkResliceCursorWidget::WindowLevelEvent ||
+			ev == vtkCommand::WindowLevelEvent ||
+			ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent)
+		{
+			// Render everything
+			for (int i = 0; i < 3; i++)
+			{
+				this->RCW[i]->Render();
+			}
+			this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+			//return;
+
+		}
+
+		vtkResliceCursorWidget* rcw = dynamic_cast<
+			vtkResliceCursorWidget*>(caller);
+		if (rcw)
+		{
+			vtkResliceCursorLineRepresentation* rep = dynamic_cast<
+				vtkResliceCursorLineRepresentation*>(rcw->GetRepresentation());
+			double window[2];
+			rep->GetWindowLevel(window);
+
+			//同步的前提下才能实现
+			for (size_t i = 0; i < 3; i++)
+			{
+				RCW[i]->GetResliceCursorRepresentation()->SetWindowLevel(window[0], window[1]);
+			}
+			rep->GetResliceCursorActor()->GetCursorAlgorithm()->GetResliceCursor();
+			for (int i = 0; i < 3; i++)
+			{
+				vtkPlaneSource* ps = static_cast<vtkPlaneSource*>(
+					this->IPW[i]->GetPolyDataAlgorithm());
+				ps->SetOrigin(this->RCW[i]->GetResliceCursorRepresentation()->
+					GetPlaneSource()->GetOrigin());
+				ps->SetPoint1(this->RCW[i]->GetResliceCursorRepresentation()->
+					GetPlaneSource()->GetPoint1());
+				ps->SetPoint2(this->RCW[i]->GetResliceCursorRepresentation()->
+					GetPlaneSource()->GetPoint2());
+
+				// If the reslice plane has modified, update it on the 3D widget
+				this->IPW[i]->UpdatePlacement();
+			}
+		}
+
+
+		// Render everything
+		for (int i = 0; i < 3; i++)
+		{
+			this->RCW[i]->Render();
+		}
+		this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+	}
+
+	MPRvtkResliceCursorCallback() {}
+	vtkImagePlaneWidget* IPW[3];
+	vtkResliceCursorWidget* RCW[3];
+
+	vtkResliceImageViewer* RIW[3];
+};
+
+
+void QtVTKRenderWindows::GPTMRP3D()
+{
+	// 1. 读取 DICOM 图像
+	vtkNew<vtkMetaImageReader> reader;
+	//std::string dir = qPrintable());//argv[1];	
+	QString dir = this->ui->m_dcmDIR->toPlainText();
+	dir += "\\VTKMetaData.mhd";
+	QDir mhdDir;
+	QFileInfo file(dir);
+	if (!file.isFile())
+	{
+		saveHDMdata(this->ui->m_dcmDIR->toPlainText());
+	}
+	std::string stddir = qPrintable(dir);
+	reader->SetFileName(stddir.c_str());
+	reader->Update();
+	int imageDims[3];
+	reader->GetOutput()->GetDimensions(imageDims);
+
+
+	// 2. 使用 vtkImageReslice 实现矢状面镜像
+	vtkSmartPointer<vtkImageReslice> sagittalReslice =
+		vtkSmartPointer<vtkImageReslice>::New();
+	sagittalReslice->SetInputConnection(reader->GetOutputPort());
+
+	// 获取图像方向的初始轴
+	vtkSmartPointer<vtkMatrix4x4> sagittalMatrix =
+		vtkSmartPointer<vtkMatrix4x4>::New();
+	sagittalMatrix->DeepCopy(sagittalReslice->GetResliceAxes());
+
+	// 设置 X 轴镜像翻转
+	sagittalMatrix->SetElement(0, 0, -1);  // 水平镜像
+	sagittalMatrix->SetElement(0, 3, sagittalMatrix->GetElement(0, 3));  // 调整偏移
+
+	sagittalReslice->SetResliceAxes(sagittalMatrix);
+	sagittalReslice->SetInterpolationModeToLinear();  // 设置插值模式
+	sagittalReslice->Update();
+
+	// 3. 创建 vtkResliceImageViewer 用于矢状面
+	vtkSmartPointer<vtkResliceImageViewer> sagittalViewer =
+		vtkSmartPointer<vtkResliceImageViewer>::New();
+	sagittalViewer->SetInputConnection(sagittalReslice->GetOutputPort());
+	sagittalViewer->SetSliceOrientationToYZ();  // 矢状面
+
+	// 4. 配置渲染窗口和交互器
+	vtkSmartPointer<vtkRenderWindowInteractor> sagittalInteractor =
+		vtkSmartPointer<vtkRenderWindowInteractor>::New();
+	sagittalViewer->SetupInteractor(sagittalInteractor);
+	sagittalViewer->GetRenderWindow()->SetSize(400, 400);
+
+	// 5. 渲染并启动交互
+	sagittalViewer->Render();
+	sagittalInteractor->Start();
+
+}
+void QtVTKRenderWindows::MRP3D()
+{
+	vtkNew<vtkMetaImageReader> reader;
+	//std::string dir = qPrintable());//argv[1];	
+	QString dir = this->ui->m_dcmDIR->toPlainText();
+	dir += "\\VTKMetaData.mhd";
+	QDir mhdDir;
+	QFileInfo file(dir);
+	if (!file.isFile())
+	{
+		saveHDMdata(this->ui->m_dcmDIR->toPlainText());
+	}
+	std::string stddir = qPrintable(dir);
+	reader->SetFileName(stddir.c_str());
+	reader->Update();
+	int imageDims[3];
+	reader->GetOutput()->GetDimensions(imageDims);
+
+	vtkSmartPointer< vtkResliceImageViewer >riw[3];
+	vtkSmartPointer< vtkRenderWindow >renderWindow[3];
+	vtkSmartPointer< vtkRenderWindowInteractor >renderWindowInteractor[3];
+	vtkSmartPointer< vtkResliceCursor > resliceCursor = vtkSmartPointer< vtkResliceCursor >::New();
+	vtkSmartPointer< vtkRCLP > rep[3];
+
+	resliceCursor->SetCenter(reader->GetOutput()->GetCenter());
+
+	resliceCursor->SetImage(reader->GetOutput());
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i] = vtkSmartPointer< vtkResliceImageViewer >::New();
+		rep[i] = vtkSmartPointer< vtkRCLP >::New();
+		renderWindowInteractor[i] = vtkSmartPointer< vtkRenderWindowInteractor >::New();
+		riw[i]->SetupInteractor(renderWindowInteractor[i]);
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i]->GetResliceCursorWidget()->SetRepresentation(rep[i]);
+		riw[i]->SetResliceCursor(resliceCursor);
+		rep[i]->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
+
+		rep[i]->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
+		rep[i]->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
+		rep[i]->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
+
+		riw[i]->SetInputData(reader->GetOutput());
+
+		riw[i]->GetRenderWindow()->SetSize(500, 500);
+		riw[i]->GetRenderWindow()->SetPosition(800 + i * 500, 500);
+		if (i == 2)
+			riw[i]->GetRenderWindow()->SetPosition(800, 0);
+		riw[i]->SetSliceOrientation(1);
+		riw[i]->SetSliceOrientation(i);
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		riw[i]->SetResliceMode(1);
+		riw[i]->GetRenderer()->ResetCamera();
+		riw[i]->Render();
+	}
+
+	vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+	vtkSmartPointer<vtkProperty> ipwProp = vtkSmartPointer<vtkProperty>::New();
+	vtkSmartPointer< vtkRenderer > ren = vtkSmartPointer< vtkRenderer >::New();
+	auto renderWindow4 = vtkSmartPointer<vtkRenderWindow>::New();;//第四个窗口
+	auto iren = vtkSmartPointer<vtkRenderWindowInteractor>::New();//第四个窗口的vtkRenderWindowInteractor
+
+	renderWindow4->SetInteractor(iren);
+	renderWindow4->AddRenderer(ren);
+	vtkSmartPointer<vtkImagePlaneWidget>planeWidget[3];
+	for (int i = 0; i < 3; i++)
+	{
+		planeWidget[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
+		planeWidget[i]->SetInteractor(iren);
+		planeWidget[i]->SetPicker(picker);
+		planeWidget[i]->RestrictPlaneToVolumeOn();
+		double color[3] = { 0, 0, 0 };
+		color[i] = 1;
+		planeWidget[i]->GetPlaneProperty()->SetColor(color);
+
+		color[0] /= 4.0;
+		color[1] /= 4.0;
+		color[2] /= 4.0;
+		riw[i]->GetRenderer()->SetBackground(0, 0, 0);
+
+		planeWidget[i]->SetTexturePlaneProperty(ipwProp);
+		planeWidget[i]->TextureInterpolateOff();
+		planeWidget[i]->SetResliceInterpolateToLinear();
+		planeWidget[i]->SetInputConnection(reader->GetOutputPort());
+		planeWidget[i]->SetPlaneOrientation(i);
+		planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
+		planeWidget[i]->DisplayTextOn();
+		planeWidget[i]->SetDefaultRenderer(ren);
+		planeWidget[i]->SetWindowLevel(1358, -27);
+		planeWidget[i]->On();
+		planeWidget[i]->InteractionOn();
+	}
+	auto cbk = vtkSmartPointer<MPRvtkResliceCursorCallback>::New();
+
+	for (int i = 0; i < 3; i++)
+	{
+		cbk->RIW[i] = riw[i];
+		cbk->IPW[i] = planeWidget[i];
+		cbk->RCW[i] = riw[i]->GetResliceCursorWidget();
+
+		vtkWidgetEventTranslator* WidgetTrans = riw[i]->GetResliceCursorWidget()->GetEventTranslator();
+
+		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceAxesChangedEvent, cbk);
+
+		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::WindowLevelEvent, cbk);
+
+		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceThicknessChangedEvent, cbk);
+		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResetCursorEvent, cbk);
+
+		riw[i]->SetLookupTable(riw[0]->GetLookupTable());
+		planeWidget[i]->GetColorMap()->SetLookupTable(riw[0]->GetLookupTable());
+		// planeWidget[i]->GetColorMap()->(riw[i]->GetResliceCursorWidget()->GetResliceCursorRepresentation()->GetColorMap()->GetInput());
+		planeWidget[i]->SetColorMap(riw[i]->GetResliceCursorWidget()->GetResliceCursorRepresentation()->GetColorMap());
+
+	}
+
+	auto style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+	iren->SetInteractorStyle(style);
+	renderWindow4->SetSize(500, 500);
+	renderWindow4->SetPosition(1300, 0);
+	renderWindow4->Render();
+
+	iren->Initialize();
+	iren->Start();
 }
 

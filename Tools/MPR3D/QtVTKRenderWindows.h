@@ -46,6 +46,8 @@ public:
 public:
 	void MprInit();
     bool eventFilter(QObject *object, QEvent *event);
+	void MRP3D();
+	void GPTMRP3D();
 public slots:
     void viewRender(QEvent* event);
     void mouseEvent(QMouseEvent* event);
