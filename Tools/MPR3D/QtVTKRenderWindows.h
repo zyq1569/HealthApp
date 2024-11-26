@@ -45,6 +45,7 @@ public:
   vtkCornerAnnotation *m_cornerAnnotations[3];
 public:
 	void MprInit();
+	void MPRVTK();
     bool eventFilter(QObject *object, QEvent *event);
 	void MRP3D();
 	void GPTMRP3D();
