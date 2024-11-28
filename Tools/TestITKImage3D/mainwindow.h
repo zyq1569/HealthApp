@@ -93,6 +93,8 @@ private slots:
 
     void on_pBRemoveBed_clicked();
 
+    void on_m_TestAll_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

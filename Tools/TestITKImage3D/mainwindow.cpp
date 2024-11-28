@@ -1279,3 +1279,53 @@ void MainWindow::on_pBRemoveBed_clicked()
 //    threshold->Update();
 //    imageData->DeepCopy(threshold->GetOutput());
 //}
+
+void MainWindow::on_m_TestAll_clicked()
+{
+//riw[2]->GetRenderer()->GetActiveCamera()->SetViewUp(0, 1, 0);
+//riw[2]->GetRenderer()->GetActiveCamera()->Azimuth(180);
+//riw[2]->GetRenderer()->GetActiveCamera()->SetViewUp(0,-1, 0);
+//riw[2]->GetRenderer()->GetActiveCamera()->Elevation(180);
+	if (m_rendererViewer)
+	{
+		//vtkSmartPointer<vtkSphereSource> sphereSource =	vtkSmartPointer<vtkSphereSource>::New();
+		//sphereSource->Update();
+		//
+		//// 创建一个映射器和演员
+		//vtkSmartPointer<vtkPolyDataMapper> mapper = 	vtkSmartPointer<vtkPolyDataMapper>::New();
+		//mapper->SetInputConnection(sphereSource->GetOutputPort());
+		//
+		//vtkSmartPointer<vtkActor> actor =	vtkSmartPointer<vtkActor>::New();
+		//actor->SetMapper(mapper);
+		//
+		//// 创建渲染器和渲染窗口
+		//vtkSmartPointer<vtkRenderer> renderer = m_rendererViewer;//vtkSmartPointer<vtkRenderer>::New();
+		//vtkSmartPointer<vtkRenderWindow> renderWindow = m_renderWindow;// vtkSmartPointer<vtkRenderWindow>::New();
+		//renderWindow->AddRenderer(renderer);
+		//
+		//// 创建交互器
+		//vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =	vtkSmartPointer<vtkRenderWindowInteractor>::New();
+		//renderWindowInteractor->SetRenderWindow(renderWindow);
+		//
+		//// 添加演员到渲染器
+		//renderer->AddActor(actor);
+
+		// 获取相机
+		vtkCamera* camera = m_rendererViewer->GetActiveCamera();
+
+		// 设置相机的位置到图像正后方
+		double focalPoint[3] = { 0.0, 0.0, 0.0 };  // 图像中心
+		double backPosition[3] = { 0.0, 0.0, -10.0 };  // 图像正后方
+
+		camera->SetFocalPoint(focalPoint);
+		camera->SetPosition(backPosition);
+		camera->SetViewUp(0.0, 1.0, 0.0);  // 设置 "向上" 的方向
+
+		// 渲染并启动交互
+		m_rendererViewer->ResetCamera();  // 自动调整相机视角以适应数据
+		m_renderWindow->Render();
+
+		//m_rendererViewer->GetActiveCamera()->Elevation(180);
+	}
+}
+
