@@ -102,6 +102,9 @@
       <string>Blend mode</string>
      </property>
      <widget class="QRadioButton" name="radioButton_Min">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -115,6 +118,9 @@
       </property>
      </widget>
      <widget class="QRadioButton" name="radioButton_Max">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -128,6 +134,9 @@
       </property>
      </widget>
      <widget class="QRadioButton" name="radioButton_Mean">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>10</x>
