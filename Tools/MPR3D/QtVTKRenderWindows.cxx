@@ -320,8 +320,8 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char *argv[])
 {
 	this->ui = new Ui_QtVTKRenderWindows;
 	this->ui->setupUi(this);
-	MPRVTK();
-	return;
+	//MPRVTK();
+	//return;
 	MprInit();
 };
 
@@ -692,11 +692,11 @@ void QtVTKRenderWindows::MprInit()
 
 	///012  021 120 102  201 210  
 	vtkImageData *imageData  = reader->GetOutput();
-	//vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
-	//ImageFlip->SetInputData(reader->GetOutput());
-	//ImageFlip->SetFilteredAxes(0);
-	//ImageFlip->Update();
-	//imageData = ImageFlip->GetOutput();
+	vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
+	ImageFlip->SetInputData(reader->GetOutput());
+	ImageFlip->SetFilteredAxes(0);
+	ImageFlip->Update();
+	imageData = ImageFlip->GetOutput();
 
 
 	///https://blog.csdn.net/fanhenghui/article/details/106912486
@@ -856,9 +856,9 @@ void QtVTKRenderWindows::MprInit()
 	}
 	for (int i = 0; i < 3; i++)
 	{
-		riw[i]->SetResliceMode(1);
+		//riw[i]->SetResliceMode(1);
 		riw[i]->GetRenderer()->ResetCamera();
-		riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
+		riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.2);
 		riw[i]->Render();
 	}
 

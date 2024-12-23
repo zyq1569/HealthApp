@@ -50,6 +50,111 @@
 #include <vtkImageActor.h>
 #include <vtkImageReslice.h>
 
+
+#include <qevent.h>
+
+const double PI = -3.141592653589793238462643383279502884197169399375105820974944;
+
+class QeventMouse :public QObject
+{
+public:
+	QeventMouse() {	};
+	~QeventMouse() { };
+	bool eventFilter(QObject *object, QEvent *event)
+	{
+		if (event->type() == QEvent::Wheel)
+		{
+			QWheelEvent *wheelEvent = (QWheelEvent*)(event);
+			QString name = object->objectName();
+			int delta = wheelEvent->delta();
+			if (delta  > 0)
+			{
+				name = object->objectName();
+			}
+			else
+			{
+				name = object->objectName();
+			}
+			if (name.contains("view"))
+			{
+				int i = name.replace("view", "").toInt() - 1;
+				int now = m_riw[i]->GetSlice() + 1;
+				int max = m_riw[i]->GetSliceMax() + 1;
+				QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+				m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
+			}
+		}
+		return 0;
+	}
+public:
+	vtkCornerAnnotation *m_cornerAnnotations[3];
+	vtkResliceImageViewer *m_riw[3];
+private:
+};
+class vtkResliceImageViewerScrollCallback : public vtkCommand
+{
+public:
+	static vtkResliceImageViewerScrollCallback* New()
+	{
+		return new vtkResliceImageViewerScrollCallback;
+	}
+
+	void Execute(vtkObject*, unsigned long ev, void*) override
+	{
+		if (!this->Viewer->GetSliceScrollOnMouseWheel())
+		{
+			return;
+		}
+
+		// Do not process if any modifiers are ON
+		if (this->Viewer->GetInteractor()->GetShiftKey() ||
+			this->Viewer->GetInteractor()->GetControlKey() || this->Viewer->GetInteractor()->GetAltKey())
+		{
+			return;
+		}
+
+		// forwards or backwards
+		//int sign = (ev == vtkCommand::MouseWheelForwardEvent) ? 1 : -1;
+		int sign = (ev == vtkCommand::MouseWheelForwardEvent) ? SliceInc : -SliceInc;
+
+		this->Viewer->IncrementSlice(sign);
+
+		//this->Viewer->SetSlice(this->Viewer->GetSlice() + static_cast<int>(std::round(sign * 1.0)));
+		// Abort further event processing for the scroll.
+		this->SetAbortFlag(1);
+	}
+
+	vtkResliceImageViewerScrollCallback()
+		: Viewer(nullptr), SliceInc (1)
+	{
+
+	}
+	void ChangeSliceScrollOnMouseWheel(bool ChangeSliceScrollOnMouseWheel = false)
+	{
+		SliceInc = (ChangeSliceScrollOnMouseWheel) ? -1 : 1;
+	}
+	vtkResliceImageViewer* Viewer;
+	int SliceInc;
+};
+class vtkMPRResliceImageViewer :public vtkResliceImageViewer
+{
+public:
+	static vtkMPRResliceImageViewer* New()
+	{
+		return new vtkMPRResliceImageViewer;
+	}
+	vtkMPRResliceImageViewer()
+	{
+		init();
+	}
+	void init(bool ChangeSliceScrollOnMouseWheel = false)
+	{
+		this->ScrollCallback = vtkResliceImageViewerScrollCallback::New();
+		this->ScrollCallback->Viewer = this;
+		this->ScrollCallback->ChangeSliceScrollOnMouseWheel(ChangeSliceScrollOnMouseWheel);
+	}
+
+};
 class vtkRCLP :public vtkResliceCursorLineRepresentation
 {
 public:
@@ -88,22 +193,22 @@ public:
 	}
 	void RotateASC(int axis, double angle)
 	{
-//		vtkResliceCursor* rc = this->GetResliceCursor();
-//		vtkPlane* planeToBeRotated = rc->GetPlane(axis);
-//		double* viewUp = rc->GetViewUp(axis);
-//
-//		const int rcPlaneIdx = this->ResliceCursorActor->GetCursorAlgorithm()->GetReslicePlaneNormal();
-//
-//		vtkPlane* normalPlane = rc->GetPlane(rcPlaneIdx);
-//
-//		double vectorToBeRotated[3], aboutAxis[3], rotatedVector[3];
-//		planeToBeRotated->GetNormal(vectorToBeRotated);
-//		normalPlane->GetNormal(aboutAxis);
-//
-//		this->RotateVectorAboutVector(vectorToBeRotated, aboutAxis, angle, rotatedVector);
-//		this->RotateVectorAboutVector(viewUp, aboutAxis, angle, viewUp);
-//		planeToBeRotated->SetNormal(rotatedVector);
-		//RotateAxis
+		//		vtkResliceCursor* rc = this->GetResliceCursor();
+		//		vtkPlane* planeToBeRotated = rc->GetPlane(axis);
+		//		double* viewUp = rc->GetViewUp(axis);
+		//
+		//		const int rcPlaneIdx = this->ResliceCursorActor->GetCursorAlgorithm()->GetReslicePlaneNormal();
+		//
+		//		vtkPlane* normalPlane = rc->GetPlane(rcPlaneIdx);
+		//
+		//		double vectorToBeRotated[3], aboutAxis[3], rotatedVector[3];
+		//		planeToBeRotated->GetNormal(vectorToBeRotated);
+		//		normalPlane->GetNormal(aboutAxis);
+		//
+		//		this->RotateVectorAboutVector(vectorToBeRotated, aboutAxis, angle, rotatedVector);
+		//		this->RotateVectorAboutVector(viewUp, aboutAxis, angle, viewUp);
+		//		planeToBeRotated->SetNormal(rotatedVector);
+				//RotateAxis
 		this->RotateAxis(axis, angle);
 	}
 };
@@ -115,7 +220,7 @@ public:
 
 	void Execute(vtkObject* caller, unsigned long ev, void* callData) override
 	{
-
+		AbortFlagOff();
 		if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent ||
 			ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent)
 		{
@@ -129,7 +234,13 @@ public:
 		}
 		else if (ev == vtkResliceImageViewer::SliceChangedEvent)//vtkResliceCursorWidget::ResliceAxesChangedEvent)
 		{
-
+			for (int i = 0; i < 3; i++)
+			{
+				int now = m_riw[i]->GetSlice() + 1;
+				int max = m_riw[i]->GetSliceMax() + 1;
+				QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+				m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
+			}
 		}
 		else if (ev == vtkCommand::MouseMoveEvent)//vtkResliceCursorWidget::ResliceAxesChangedEvent)
 		{
@@ -141,7 +252,7 @@ public:
 				m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
 			}
 		}
-		else if(ev == vtkCommand::MouseWheelForwardEvent || ev == vtkCommand::MouseWheelBackwardEvent)
+		else if (ev == vtkCommand::MouseWheelForwardEvent || ev == vtkCommand::MouseWheelBackwardEvent)
 		{
 			for (int i = 0; i < 3; i++)
 			{
@@ -184,9 +295,9 @@ public:
 			for (int i = 0; i < 3; i++)
 			{
 				vtkPlaneSource* ps = static_cast<vtkPlaneSource*>(this->IPW[i]->GetPolyDataAlgorithm());
-				ps->SetOrigin(	this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetOrigin());
-				ps->SetPoint1(	this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint1());
-				ps->SetPoint2(	this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint2());
+				ps->SetOrigin(this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetOrigin());
+				ps->SetPoint1(this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint1());
+				ps->SetPoint2(this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint2());
 
 				// If the reslice plane has modified, update it on the 3D widget
 				this->IPW[i]->UpdatePlacement();
@@ -234,101 +345,64 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 	vtkImageData *imageData = reader->GetOutput();
 	vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
 	ImageFlip->SetInputData(reader->GetOutput());
-	ImageFlip->SetFilteredAxes(1);
+	ImageFlip->SetFilteredAxes(0);
 	ImageFlip->Update();
 	imageData = ImageFlip->GetOutput();
 
-	//--
+
 	for (int i = 0; i < 3; i++)
 	{
-	    m_cornerAnnotations[i] = vtkCornerAnnotation::New();
+		riw[i] = vtkSmartPointer<vtkMPRResliceImageViewer>::New();
+		//
+		if (i == 1)
+		{
+			riw[i]->init(true);
+		}
+		else
+		{
+			riw[i]->init();
+		}
+		//
+		vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
+		riw[i]->SetRenderWindow(renderWindow);
 	}
 
-	vtkSmartPointer< vtkRenderWindowInteractor >renderWindowInteractor[3];
-	vtkSmartPointer< vtkResliceCursor > resliceCursor;
-	//
-	if (0)
+	////
+		//--
+	for (int i = 0; i < 3; i++)
 	{
-		resliceCursor = vtkSmartPointer< vtkResliceCursor >::New();
-		for (int i = 0; i < 3; i++)
-		{
-			riw[i] = vtkSmartPointer< vtkResliceImageViewer >::New();
-			vtkrclp[i] = vtkSmartPointer< vtkRCLP >::New();
-			renderWindowInteractor[i] = vtkSmartPointer< vtkRenderWindowInteractor >::New();
-			riw[i]->SetupInteractor(renderWindowInteractor[i]);
-		}
-
-		this->ui->view2->setRenderWindow(riw[0]->GetRenderWindow());
-
-		this->ui->view3->setRenderWindow(riw[1]->GetRenderWindow());
-
-		this->ui->view1->setRenderWindow(riw[2]->GetRenderWindow());
-
-		for (int i = 0; i < 3; i++)
-		{
-			riw[i]->GetResliceCursorWidget()->SetRepresentation(vtkrclp[i]);
-			riw[i]->SetResliceCursor(resliceCursor);
-			vtkrclp[i]->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
-
-			vtkrclp[i]->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
-			vtkrclp[i]->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
-			vtkrclp[i]->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
-
-			riw[i]->SetInputData(imageData/*reader->GetOutput()*/);
-			riw[i]->GetRenderWindow()->SetSize(500, 500);
-			riw[i]->GetRenderWindow()->SetPosition(800 + i * 500, 500);
-			if (i == 2)
-				riw[i]->GetRenderWindow()->SetPosition(800, 0);
-			riw[i]->SetSliceOrientation(1);
-			riw[i]->SetSliceOrientation(i);
-			riw[i]->SetResliceModeToAxisAligned();
-		}
-
-		for (int i = 0; i < 3; i++)
-		{
-			riw[i]->SetResliceMode(1);
-			riw[i]->GetRenderer()->ResetCamera();
-			riw[i]->Render();
-		}
-		ui->resetButton->setDisabled(true);
+		m_cornerAnnotations[i] = vtkCornerAnnotation::New();
+		m_cornerAnnotations[i]->GetTextProperty()->SetFontFamilyToArial();
+		m_cornerAnnotations[i]->GetTextProperty()->ShadowOn();
+		riw[i]->GetRenderer()->AddViewProp(m_cornerAnnotations[i]);
 	}
-	else 
+
+	////
+	this->ui->view2->setRenderWindow(riw[0]->GetRenderWindow());
+	riw[0]->SetupInteractor(this->ui->view2->renderWindow()->GetInteractor());
+
+	this->ui->view3->setRenderWindow(riw[1]->GetRenderWindow());
+	riw[1]->SetupInteractor(this->ui->view3->renderWindow()->GetInteractor());
+
+	this->ui->view1->setRenderWindow(riw[2]->GetRenderWindow());
+	riw[2]->SetupInteractor(this->ui->view1->renderWindow()->GetInteractor());
+	for (int i = 0; i < 3; i++)
 	{
-		for (int i = 0; i < 3; i++)
-		{
-			riw[i] = vtkSmartPointer<vtkResliceImageViewer>::New();
-			vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-			riw[i]->SetRenderWindow(renderWindow);
-		}
-		this->ui->view2->setRenderWindow(riw[0]->GetRenderWindow());
-		riw[0]->SetupInteractor(this->ui->view2->renderWindow()->GetInteractor());
+		// make them all share the same reslice cursor object.
+		vtkResliceCursorLineRepresentation* rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
 
-		this->ui->view3->setRenderWindow(riw[1]->GetRenderWindow());
-		riw[1]->SetupInteractor(this->ui->view3->renderWindow()->GetInteractor());
-
-		this->ui->view1->setRenderWindow(riw[2]->GetRenderWindow());
-		riw[2]->SetupInteractor(this->ui->view1->renderWindow()->GetInteractor());
-		for (int i = 0; i < 3; i++)
-		{
-			// make them all share the same reslice cursor object.
-			vtkResliceCursorLineRepresentation* rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
-
-			riw[i]->SetResliceCursor(riw[0]->GetResliceCursor());
-			rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
-			//
-			rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
-			rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
-			rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
-			//
-			riw[i]->SetInputData(imageData/*reader->GetOutput()*/);
-			riw[i]->SetSliceOrientation(i);
-			riw[i]->SetResliceModeToAxisAligned();
-		}
+		riw[i]->SetResliceCursor(riw[0]->GetResliceCursor());
+		rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
+		//
+		rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
+		rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
+		rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
+		//
+		riw[i]->SetInputData(imageData/*reader->GetOutput()*/);
+		riw[i]->SetSliceOrientation(i);
+		riw[i]->SetResliceModeToAxisAligned();
 	}
-
-
-
-
+	vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, PI);
 	vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
 	picker->SetTolerance(0.005);
 
@@ -355,7 +429,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 		color[1] /= 4.0;
 		color[2] /= 4.0;
 		double black[3] = { 0, 0, 0 };
-		riw[i]->GetRenderer()->SetBackground(black/*color*/);
+		riw[i]->GetRenderer()->SetBackground(color);// black/*color*/);
 
 		planeWidget[i]->SetTexturePlaneProperty(ipwProp);
 		planeWidget[i]->TextureInterpolateOff();
@@ -373,8 +447,15 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 		riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
 	}
 
+	///
+	double bounds[6];
+	imageData->GetCellBounds(imageData->GetNumberOfCells(), bounds);
+	double w = bounds[0] - bounds[0];
+
+	///
+
 	vtkSmartPointer<vtkResliceCursorCallback> cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
-	
+
 	for (int i = 0; i < 3; i++)
 	{
 		///------------------
@@ -383,23 +464,37 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 		///----------------
 		cbk->IPW[i] = planeWidget[i];
 		cbk->RCW[i] = riw[i]->GetResliceCursorWidget();
+
 		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceAxesChangedEvent, cbk);
 		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::WindowLevelEvent, cbk);
 		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceThicknessChangedEvent, cbk);
 		riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResetCursorEvent, cbk);
 		riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, cbk);
-		riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseWheelForwardEvent, cbk);
-		riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseMoveEvent, cbk);
 		riw[i]->AddObserver(vtkResliceImageViewer::SliceChangedEvent, cbk);
+
+		riw[i]->GetInteractor()->AddObserver(vtkCommand::MouseWheelForwardEvent, cbk);
+		riw[i]->GetInteractor()->AddObserver(vtkCommand::MouseWheelBackwardEvent, cbk);
 		riw[i]->AddObserver(vtkCommand::MouseWheelForwardEvent, cbk);
 
 		// Make them all share the same color map.
 		riw[i]->SetLookupTable(riw[0]->GetLookupTable());
 		planeWidget[i]->GetColorMap()->SetLookupTable(riw[0]->GetLookupTable());
 		// planeWidget[i]->GetColorMap()->SetInput(riw[i]->GetResliceCursorWidget()->GetResliceCursorRepresentation()->GetColorMap()->GetInput());
-		planeWidget[i]->SetColorMap( riw[i]->GetResliceCursorWidget()->GetResliceCursorRepresentation()->GetColorMap());
+		planeWidget[i]->SetColorMap(riw[i]->GetResliceCursorWidget()->GetResliceCursorRepresentation()->GetColorMap());
 	}
 
+	/////
+		//add
+	static QeventMouse filter;
+	for (int i = 0; i < 3; i++)
+	{
+		filter.m_cornerAnnotations[i] = m_cornerAnnotations[i];
+		filter.m_riw[i] = riw[i];
+	}
+	ui->view1->installEventFilter(&filter);
+	ui->view2->installEventFilter(&filter);
+	ui->view3->installEventFilter(&filter);
+	////
 	this->ui->view1->show();
 	this->ui->view2->show();
 	this->ui->view3->show();
@@ -417,6 +512,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 
 	connect(this->ui->resetButton, SIGNAL(pressed()), this, SLOT(ResetViews()));
 	connect(this->ui->AddDistance1Button, SIGNAL(pressed()), this, SLOT(AddDistanceMeasurementToView1()));
+	//resliceMode(2);
 };
 
 void QtVTKRenderWindows::slotExit()
@@ -444,15 +540,16 @@ void QtVTKRenderWindows::thickMode(int mode)
 		riw[i]->SetThickMode(mode ? 1 : 0);
 		riw[i]->Render();
 	}
+	ui->radioButton_Max->setEnabled(mode);
+	ui->radioButton_Min->setEnabled(mode);
+	ui->radioButton_Mean->setEnabled(mode);
 }
 
 void QtVTKRenderWindows::SetBlendMode(int m)
 {
 	for (int i = 0; i < 3; i++)
 	{
-		vtkImageSlabReslice* thickSlabReslice =	vtkImageSlabReslice::
-			                                    SafeDownCast(vtkResliceCursorThickLineRepresentation::
-												SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation())->GetReslice());
+		vtkImageSlabReslice* thickSlabReslice = vtkImageSlabReslice::SafeDownCast(vtkResliceCursorThickLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation())->GetReslice());
 		thickSlabReslice->SetBlendMode(m);
 		riw[i]->Render();
 	}
@@ -527,8 +624,8 @@ void QtVTKRenderWindows::AddDistanceMeasurementToView(int i)
 	// Set a priority higher than our reslice cursor widget
 	this->DistanceWidget[i]->SetPriority(this->riw[i]->GetResliceCursorWidget()->GetPriority() + 0.01);
 
-	vtkSmartPointer<vtkPointHandleRepresentation2D> handleRep =		vtkSmartPointer<vtkPointHandleRepresentation2D>::New();
-	vtkSmartPointer<vtkDistanceRepresentation2D> distanceRep  =	vtkSmartPointer<vtkDistanceRepresentation2D>::New();
+	vtkSmartPointer<vtkPointHandleRepresentation2D> handleRep = vtkSmartPointer<vtkPointHandleRepresentation2D>::New();
+	vtkSmartPointer<vtkDistanceRepresentation2D> distanceRep = vtkSmartPointer<vtkDistanceRepresentation2D>::New();
 	distanceRep->SetHandleRepresentation(handleRep);
 	this->DistanceWidget[i]->SetRepresentation(distanceRep);
 	distanceRep->InstantiateHandleRepresentation();
@@ -543,32 +640,6 @@ void QtVTKRenderWindows::AddDistanceMeasurementToView(int i)
 	this->DistanceWidget[i]->EnabledOn();
 }
 
-class QeventMouse :public QObject
-{
-public:
-	QeventMouse() {	};
-	~QeventMouse() { };
-	bool eventFilter(QObject *object, QEvent *event)
-	{
-		if (event->type() == QEvent::Wheel)
-		{
-			QString name = object->objectName();
-			if (name.contains("view"))
-			{
-				int i = name.replace("view", "").toInt() - 1;
-				int now = m_riw[i]->GetSlice() + 1;
-				int max = m_riw[i]->GetSliceMax() + 1;
-				QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
-				m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
-			}
-		}
-		return 0;
-	}
-public:
-	vtkCornerAnnotation *m_cornerAnnotations[3];
-	vtkResliceImageViewer *m_riw[3];
-private:
-};
 void QtVTKRenderWindows::MprInit()
 {
 	//return GPTMRP3D();
@@ -590,7 +661,7 @@ void QtVTKRenderWindows::MprInit()
 
 	for (int i = 0; i < 3; i++)
 	{
-		riw[i] = vtkSmartPointer< vtkResliceImageViewer >::New();
+		riw[i] = vtkSmartPointer< vtkMPRResliceImageViewer >::New();
 		vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
 		riw[i]->SetRenderWindow(renderWindow);
 	}
@@ -761,7 +832,7 @@ void QtVTKRenderWindows::on_pushButton_clicked()
 	double a = -0.12037446071029209*26.1;//-3.1417734245386240 ~~~
 	a = -3.1415926535897931;//pi
 	const double pi = -3.141592653589793238462643383279502884197169399375105820974944;
-	vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, pi);
+	vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, pi);
 	riw[0]->GetRenderWindow()->Render();
 }
 
@@ -770,7 +841,19 @@ void QtVTKRenderWindows::on_Sagittal_clicked()
 {
 	//    //m_Sagittal
 	const double pi = -3.141592653589793238462643383279502884197169399375105820974944;
-	vtkResliceCursorLineRepresentation::SafeDownCast(riw[0]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, pi);
+	vtkResliceCursorLineRepresentation::SafeDownCast(riw[0]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, pi);
 	riw[2]->GetRenderWindow()->Render();
 }
 
+//常见人体组织的CT值（HU）
+//
+//组织          CT值            组织        CT值
+//骨组织      ＞400              肝脏      50～70
+//钙值       80～300             脾脏      35～60
+//血块       64～84             胰腺      30～55
+//脑白质     25～34              肾脏      25～50
+//脑灰质     28～44              肌肉      40～55
+//脑脊液      3～8               胆囊      10～30
+//血液       13～32            甲状腺      50～90
+//血浆       3～14              脂肪     －20～－100
+//渗出液      ＞15                水           0

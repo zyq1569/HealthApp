@@ -12,6 +12,7 @@
 
 class vtkCornerAnnotation;
 class vtkResliceCursorLineRepresentation;
+class vtkMPRResliceImageViewer;
 // Forward Qt class declarations
 class Ui_QtVTKRenderWindows;
 
@@ -42,7 +43,9 @@ public Q_SLOTS:
   virtual void AddDistanceMeasurementToView(int);
 
 protected:
-  vtkSmartPointer<vtkResliceImageViewer> riw[3];
+  //vtkSmartPointer<vtkResliceImageViewer> riw[3];
+  vtkSmartPointer<vtkMPRResliceImageViewer> riw[3];
+	
   vtkSmartPointer<vtkImagePlaneWidget> planeWidget[3];
   vtkSmartPointer<vtkDistanceWidget> DistanceWidget[3];
   vtkSmartPointer<vtkResliceImageViewerMeasurements> ResliceMeasurements;
