@@ -103,7 +103,16 @@ public:
    * Set the user matrix on all the internal actors.
    */
   virtual void SetUserMatrix(vtkMatrix4x4* matrix);
-  void UserRotateAxis(int axis, double angle){RotateAxis(axis,angle);};
+
+  /**
+   * Re-implemented to set the tolerance of the picker.
+   */
+  void SetTolerance(int t) override;
+
+   void UserRotateAxis(int axis, double angle)
+   {
+	   RotateAxis(axis,angle);
+   };
 protected:
   vtkResliceCursorLineRepresentation();
   ~vtkResliceCursorLineRepresentation() override;
@@ -111,6 +120,7 @@ protected:
   vtkResliceCursorPolyDataAlgorithm* GetCursorAlgorithm() override;
 
   double RotateAxis(double evenPos[2], int axis);
+  double TranslateAxis(double evenPos[2], int axis);
 
   void RotateAxis(int axis, double angle);
 
@@ -119,6 +129,8 @@ protected:
     double angle,   // angle in radians
     double o[3]);
   int DisplayToReslicePlaneIntersection(double displayPos[2], double intersectionPos[3]);
+
+  void ApplyTolerance();
 
   vtkResliceCursorActor* ResliceCursorActor;
   vtkResliceCursorPicker* Picker;

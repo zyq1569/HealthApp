@@ -119,6 +119,7 @@ protected:
   // These are the callbacks for this widget
   static void SelectAction(vtkAbstractWidget*);
   static void RotateAction(vtkAbstractWidget*);
+  static void TranslateAction(vtkAbstractWidget*);
   static void EndSelectAction(vtkAbstractWidget*);
   static void ResizeThicknessAction(vtkAbstractWidget*);
   static void EndResizeThicknessAction(vtkAbstractWidget*);
@@ -136,7 +137,7 @@ protected:
 
   // Manage the state of the widget
   int WidgetState;
-  enum _WidgetState
+  enum WidgetStateType
   {
     Start = 0,
     Active

@@ -229,7 +229,11 @@ void vtkResliceCursorActor::UpdateHoleSize(vtkViewport* v)
 
     const double holeWidth =
       2.0 * sqrt(vtkMath::Distance2BetweenPoints(wCenter, wCenterHoleWidthAway));
+
+    if (fabs(r->GetHoleWidth() - holeWidth) > 1e-5)
+    {
     r->SetHoleWidth(holeWidth);
+    }
 
     // MTime checks ensure that this will update only if the hole width
     // has actually changed.
@@ -261,7 +265,7 @@ void vtkResliceCursorActor::UpdateViewProps(vtkViewport* v)
   this->CursorCenterlineMapper[axis1]->SetInputConnection(this->CursorAlgorithm->GetOutputPort(0));
   this->CursorCenterlineMapper[axis2]->SetInputConnection(this->CursorAlgorithm->GetOutputPort(1));
 
-  const bool thickMode = this->CursorAlgorithm->GetResliceCursor()->GetThickMode() ? true : false;
+  const bool thickMode = this->CursorAlgorithm->GetResliceCursor()->GetThickMode() != 0;
 
   if (thickMode)
   {
@@ -309,6 +313,8 @@ vtkActor* vtkResliceCursorActor::GetCenterlineActor(int axis)
 //------------------------------------------------------------------------------
 // Prints an object if it exists.
 #define vtkPrintMemberObjectMacro(obj, os, indent)                                                 \
+  do                                                                                               \
+  {                                                                                                \
   os << (indent) << #obj << ": ";                                                                  \
   if (this->obj)                                                                                   \
   {                                                                                                \
@@ -317,7 +323,8 @@ vtkActor* vtkResliceCursorActor::GetCenterlineActor(int axis)
   else                                                                                             \
   {                                                                                                \
     os << "(null)\n";                                                                              \
-  }
+    }                                                                                              \
+  } while (false)
 
 //------------------------------------------------------------------------------
 void vtkResliceCursorActor::PrintSelf(ostream& os, vtkIndent indent)
