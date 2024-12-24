@@ -17,6 +17,10 @@
       <Configuration>RelWithDebInfo</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="VTK91|x64">
+      <Configuration>VTK91</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{72084B5C-C986-3356-A706-A00E50EE8AE3}</ProjectGuid>
@@ -49,6 +53,11 @@
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VTK91|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
@@ -63,6 +72,14 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.exe</TargetExt>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VTK91|x64'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
@@ -95,6 +112,10 @@
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <QtInstall>msvc2017_64</QtInstall>
+    <QtModules>core;xml;sql;opengl;network;gui;xmlpatterns;widgets;qml;positioning;printsupport;webchannel;quickwidgets;quick;concurrent;webenginewidgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VTK91|x64'" Label="QtSettings">
     <QtInstall>msvc2017_64</QtInstall>
     <QtModules>core;xml;sql;opengl;network;gui;xmlpatterns;widgets;qml;positioning;printsupport;webchannel;quickwidgets;quick;concurrent;webenginewidgets</QtModules>
   </PropertyGroup>
@@ -297,6 +318,54 @@
     </PreBuildEvent>
     <Link>
       <AdditionalDependencies>D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmpstat.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmnet.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmdata.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmimgle.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmimage.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmsr.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmqrdb.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmtls.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmdsig.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmjpeg.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\dcmjpls.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\ijg8.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\ijg12.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\ijg16.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\oflog.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\ofstd.lib;D:\SDK\starviewer-win64-5.0.1-8.2.0-3.0.0\dcmtk\3.6.5\lib\gdcmopenjp2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkDICOMParser-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkIOExport-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkFiltersModeling-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkCommonCore-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkCommonDataModel-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkCommonExecutionModel-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkCommonMath-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkCommonMisc-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkCommonSystem-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkCommonTransforms-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkFiltersCore-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkFiltersGeneral-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkFiltersSources-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkGUISupportQt-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkImagingCore-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkImagingGeneral-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkImagingHybrid-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkImagingMath-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkInteractionStyle-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkInteractionWidgets-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkIOImage-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkRenderingAnnotation-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkRenderingCore-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkRenderingFreeType-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkRenderingImage-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkRenderingOpenGL2-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkRenderingVolume-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkRenderingVolumeOpenGL2-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtksys-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtktiff-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkjpeg-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkpng-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkmetaio-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkglew-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkfreetype-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkFiltersGeometry-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkCommonColor-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkzlib-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkChartsCore-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkInteractionImage-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkImagingColor-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkRenderingLOD-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkImagingStencil-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkIOXML-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkIOCore-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtklz4-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtklzma-8.2.lib;D:\SDK\VTK-8.2.0_VS17Static\lib\RelWithDebInfo\vtkdoubleconversion-8.2.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKCommon-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKMetaIO-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKNrrdIO-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKSpatialObjects-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKStatistics-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkjpeg-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkvnl_algo-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkvnl-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkvcl-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkv3p_netlib-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKVNLInstantiation-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKniftiio-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKznz-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKOptimizers-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKVTK-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKIOGDCM-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKIOJPEG-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKIOImageBase-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKSmoothing-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKRegionGrowing-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itksys-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkdouble-conversion-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKTransform-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkzlib-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\ITKEXPAT-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkgdcmcharls-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkgdcmCommon-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkgdcmDICT-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkgdcmDSED-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkgdcmIOD-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkgdcmjpeg8-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkgdcmjpeg12-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkgdcmjpeg16-5.3.lib;D:\SDK\ITK-5.3.0_vc17\lib\RelWithDebInfo\itkgdcmMSFF-5.3.lib;opengl32.lib;glu32.lib;gdi32.lib;shell32.lib;ws2_32.lib;NetAPI32.lib;WSock32.lib;SnmpAPI.lib;advapi32.lib;Rpcrt4.lib;wbemuuid.lib;Iphlpapi.lib;Shell32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>
+      </ImportLibrary>
+      <ProgramDataBaseFile>
+      </ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VTK91|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\SDK\VTK\VTK-9.1.0VC17\Common\Core;D:\SDK\VTK\VTK-9.1.0\Common\Core;D:\SDK\VTK\VTK-9.1.0VC17\Utilities\KWIML;D:\SDK\VTK\VTK-9.1.0\Utilities\KWIML;D:\SDK\VTK\VTK-9.1.0VC17\Utilities\KWSys;D:\SDK\VTK\VTK-9.1.0\Utilities\KWSys;D:\SDK\VTK\VTK-9.1.0VC17\GUISupport\Qt;D:\SDK\VTK\VTK-9.1.0\GUISupport\Qt;D:\SDK\VTK\VTK-9.1.0VC17\Rendering\Core;D:\SDK\VTK\VTK-9.1.0\Rendering\Core;D:\SDK\VTK\VTK-9.1.0VC17\Common\DataModel;D:\SDK\VTK\VTK-9.1.0\Common\DataModel;D:\SDK\VTK\VTK-9.1.0VC17\Common\Math;D:\SDK\VTK\VTK-9.1.0\Common\Math;D:\SDK\VTK\VTK-9.1.0VC17\ThirdParty\kissfft\vtkkissfft;D:\SDK\VTK\VTK-9.1.0\ThirdParty\kissfft\vtkkissfft;D:\SDK\VTK\VTK-9.1.0VC17\ThirdParty\kissfft;D:\SDK\VTK\VTK-9.1.0\ThirdParty\kissfft;D:\SDK\VTK\VTK-9.1.0VC17\Common\Transforms;D:\SDK\VTK\VTK-9.1.0\Common\Transforms;D:\SDK\VTK\VTK-9.1.0VC17\Common\ExecutionModel;D:\SDK\VTK\VTK-9.1.0\Common\ExecutionModel;D:\SDK\VTK\VTK-9.1.0VC17\Filters\Core;D:\SDK\VTK\VTK-9.1.0\Filters\Core;D:\SDK\VTK\VTK-9.1.0VC17\Common\Misc;D:\SDK\VTK\VTK-9.1.0\Common\Misc;D:\SDK\VTK\VTK-9.1.0VC17\Rendering\OpenGL2;D:\SDK\VTK\VTK-9.1.0\Rendering\OpenGL2;D:\SDK\VTK\VTK-9.1.0VC17\Filters\General;D:\SDK\VTK\VTK-9.1.0\Filters\General;D:\SDK\VTK\VTK-9.1.0VC17\Rendering\UI;D:\SDK\VTK\VTK-9.1.0\Rendering\UI;D:\SDK\VTK\VTK-9.1.0VC17\ThirdParty\glew\vtkglew;D:\SDK\VTK\VTK-9.1.0\ThirdParty\glew\vtkglew;D:\SDK\VTK\VTK-9.1.0VC17\ThirdParty\glew;D:\SDK\VTK\VTK-9.1.0\ThirdParty\glew;D:\SDK\VTK\VTK-9.1.0VC17\Interaction\Widgets;D:\SDK\VTK\VTK-9.1.0\Interaction\Widgets;D:\SDK\VTK\VTK-9.1.0VC17\Filters\Sources;D:\SDK\VTK\VTK-9.1.0\Filters\Sources;D:\SDK\VTK\VTK-9.1.0VC17\Rendering\Context2D;D:\SDK\VTK\VTK-9.1.0\Rendering\Context2D;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtOpenGL;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\SDK\VTK\VTK-9.1.0VC17\IO\Image;D:\SDK\VTK\VTK-9.1.0\IO\Image;D:\SDK\VTK\VTK-9.1.0VC17\Imaging\Core;D:\SDK\VTK\VTK-9.1.0\Imaging\Core;D:\SDK\VTK\VTK-9.1.0VC17\Imaging\Color;D:\SDK\VTK\VTK-9.1.0\Imaging\Color;D:\SDK\VTK\VTK-9.1.0VC17\Imaging\General;D:\SDK\VTK\VTK-9.1.0\Imaging\General;D:\SDK\VTK\VTK-9.1.0VC17\Interaction\Image;D:\SDK\VTK\VTK-9.1.0\Interaction\Image;D:\SDK\VTK\VTK-9.1.0VC17\Interaction\Style;D:\SDK\VTK\VTK-9.1.0\Interaction\Style;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;QT_NO_DEBUG;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;QT_NO_DEBUG;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PreBuildEvent>
+      <Message>Automatic MOC for target QtVTKRenderWindows</Message>
+    </PreBuildEvent>
+    <Link>
+      <AdditionalDependencies>D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkCommonCore-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkGUISupportQt-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkIOImage-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkImagingColor-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkImagingGeneral-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkInteractionImage-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkInteractionStyle-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkInteractionWidgets-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkRenderingOpenGL2-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkRenderingUI-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkglew-9.1.lib;opengl32.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5OpenGL.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Widgets.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Gui.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Core.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkFiltersExtraction-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkFiltersStatistics-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkParallelDIY-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkParallelCore-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkIOLegacy-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkIOXML-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkIOXMLParser-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkexpat-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkIOCore-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkdoubleconversion-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtklz4-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtklzma-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkRenderingContext2D-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkFiltersHybrid-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkImagingSources-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkFiltersModeling-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkFiltersTexture-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkImagingHybrid-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkDICOMParser-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkmetaio-9.1.lib;comctl32.lib;wsock32.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkpng-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtktiff-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkjpeg-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkRenderingAnnotation-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkRenderingFreeType-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkfreetype-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkzlib-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkRenderingVolume-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkRenderingCore-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkFiltersSources-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkFiltersGeneral-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkfmt-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkCommonComputationalGeometry-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkCommonColor-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkFiltersGeometry-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkFiltersCore-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkImagingCore-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkCommonExecutionModel-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkCommonDataModel-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkpugixml-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkCommonSystem-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkCommonMisc-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkCommonTransforms-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkCommonMath-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtksys-9.1.lib;ws2_32.lib;dbghelp.lib;psapi.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkloguru-9.1.lib;D:\SDK\VTK\VTK-9.1.0VC17\lib\RelWithDebInfo\vtkkissfft-9.1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>

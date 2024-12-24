@@ -759,7 +759,17 @@ void QtVTKRenderWindows::MprInit()
 			vtkResliceCursorLineRepresentation *rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
 			riw[i]->SetResliceCursor(riw[0]->GetResliceCursor());
 			rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
-			riw[i]->SetInputData(imageData);
+#ifdef VTK91
+			//https://gitlab.kitware.com/vtk/vtk/-/merge_requests/8879
+			rep->GetResliceCursorActor()->GetCenterlineProperty(0)->RenderLinesAsTubesOn();
+			rep->GetResliceCursorActor()->GetCenterlineProperty(1)->RenderLinesAsTubesOn();
+			rep->GetResliceCursorActor()->GetCenterlineProperty(2)->RenderLinesAsTubesOn();
+			rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetLineWidth(2);
+			rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetLineWidth(2);
+			rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetLineWidth(2);
+			//-----------------------------
+#endif // VTK91
+    		riw[i]->SetInputData(imageData);
 			//riw[i]->SetInputData(reslice->GetOutput());
 			riw[i]->SetSliceOrientation(i);
 			riw[i]->SetResliceModeToAxisAligned();
