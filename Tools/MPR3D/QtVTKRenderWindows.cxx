@@ -47,6 +47,7 @@
 #include <vtkImageActor.h>
 #include <vtkImageReslice.h>
 ///
+#ifndef VTK91
 #include "itkImageToVTKImageFilter.h"
 #include "itkGDCMSeriesFileNames.h"
 #include "itkImageSeriesReader.h"
@@ -70,9 +71,71 @@
 #include <itkPNGImageIOFactory.h>
 #include "itkGDCMImageIO.h"
 #include <itkJPEGImageIOFactory.h>
+
+using namespace std;
+typedef short PixelType;
+const unsigned int   Dimension = 3;
+typedef itk::Image< PixelType, Dimension > Input2dImageType;
+typedef itk::Image< PixelType, 3 > Input3dImageType;
+
+typedef itk::Image< PixelType, Dimension > Output2dImageType;
+typedef itk::Image< PixelType, 3 > Output3dImageType;
+
+
+bool getFileNames(QString dir, std::vector< std::string > &fileNames);
+
+Input3dImageType::Pointer GdcmRead3dImage(std::string path)
+{
+	QString dir;
+	std::vector< std::string > fileNames;
+	dir = path.c_str();
+	getFileNames(dir, fileNames);
+
+	using ReaderType3d = itk::ImageSeriesReader< Input3dImageType >;
+	ReaderType3d::Pointer reader3d = ReaderType3d::New();
+
+	typedef itk::GDCMImageIO   ImageIOType;//GDCMImageIO读DICOM
+	ImageIOType::Pointer gdcmImageIO = ImageIOType::New();
+
+	reader3d->SetImageIO(gdcmImageIO);
+	reader3d->SetFileNames(fileNames);
+	reader3d->Update();
+	Input3dImageType::Pointer image = reader3d->GetOutput();
+	reader3d = NULL;
+	gdcmImageIO = NULL;
+	//using ReaderType3d = itk::ImageSeriesWriter< Input3dImageType >;
+	return image;
+}
+
+vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
+{
+	typedef itk::ImageToVTKImageFilter< Input3dImageType> itkTovtkFilterType;
+	itkTovtkFilterType::Pointer itkTovtkImageFilter = itkTovtkFilterType::New();
+	itkTovtkImageFilter->SetInput(image);//设置图像数据从ITK转向VTK
+	itkTovtkImageFilter->Update();
+	return itkTovtkImageFilter->GetOutput();
+
+	//vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
+	//ImageFlip->SetInputData(itkTovtkImageFilter->GetOutput());
+	//
+	//ImageFlip->SetFilteredAxes(1);
+	//ImageFlip->Update();
+	//vtkSmartPointer<vtkImageData> vtkdata = ImageFlip->GetOutput();
+	//ImageFlip = NULL;
+	//itkTovtkImageFilter = NULL;
+	//return vtkdata;
+
+}
+
+
+#endif // VTK91
+
+
 ///
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
+#ifndef VTK91
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
+#endif
 VTK_MODULE_INIT(vtkInteractionStyle);
 VTK_MODULE_INIT(vtkRenderingFreeType);
 //----------------------------------------------------------------------------
@@ -86,7 +149,7 @@ public:
 
 	void Execute(vtkObject *caller, unsigned long ev, void *callData) override
 	{
-        if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent || ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent)
+		if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent || ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent)
 		{
 			// Render everything
 			for (int i = 0; i < 3; i++)
@@ -180,7 +243,7 @@ public:
 	void SetResliceParameters(double outputSpacingX, double outputSpacingY, int extentX, int extentY)override
 	{
 		vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(this->Reslice);
-	
+
 		if (reslice)
 		{
 			// Set the default color the minimum scalar value
@@ -204,7 +267,7 @@ public:
 			reslice->AutoCropOutputOn();
 			if (1)
 			{
-				vtkSmartPointer<vtkMatrix4x4> sagittalMatrix =	vtkSmartPointer<vtkMatrix4x4>::New();
+				vtkSmartPointer<vtkMatrix4x4> sagittalMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
 				sagittalMatrix->DeepCopy(this->ResliceAxes);
 				// 设置 X 轴镜像翻转
 				//sagittalMatrix->SetElement(0, 0, -1);  // 水平镜像
@@ -212,28 +275,21 @@ public:
 				reslice->SetResliceAxes(sagittalMatrix);
 			}
 			else
-			reslice->SetResliceAxes(this->ResliceAxes);
+				reslice->SetResliceAxes(this->ResliceAxes);
 
 			//reslice->SetResliceTransform(Transform);
 			reslice->SetOutputSpacing(outputSpacingX, outputSpacingY, 1);
 			reslice->SetOutputOrigin(0.5 * outputSpacingX, 0.5 * outputSpacingY, 0);
-			reslice->SetOutputExtent(0, extentX - 1, 0, extentY - 1, 0, 0);		
+			reslice->SetOutputExtent(0, extentX - 1, 0, extentY - 1, 0, 0);
 		}
 	}
 
 };
 
-using namespace std;
-typedef short PixelType;
-const unsigned int   Dimension = 3;
-typedef itk::Image< PixelType, Dimension > Input2dImageType;
-typedef itk::Image< PixelType, 3 > Input3dImageType;
-
-typedef itk::Image< PixelType, Dimension > Output2dImageType;
-typedef itk::Image< PixelType, 3 > Output3dImageType;
 
 bool getFileNames(QString dir, std::vector< std::string > &fileNames)
 {
+#ifndef VTK91
 	using NamesGeneratorType = itk::GDCMSeriesFileNames;
 	NamesGeneratorType::Pointer nameGenerator = NamesGeneratorType::New();
 	nameGenerator->SetUseSeriesDetails(true);
@@ -251,54 +307,15 @@ bool getFileNames(QString dir, std::vector< std::string > &fileNames)
 		++seriesItr;
 	}
 	nameGenerator = NULL;
+#endif // !VTK91
+
+
 	return true;
-}
-
-Input3dImageType::Pointer GdcmRead3dImage(std::string path)
-{
-	QString dir;
-	std::vector< std::string > fileNames;
-	dir = path.c_str();
-	getFileNames(dir, fileNames);
-
-	using ReaderType3d = itk::ImageSeriesReader< Input3dImageType >;
-	ReaderType3d::Pointer reader3d = ReaderType3d::New();
-
-	typedef itk::GDCMImageIO   ImageIOType;//GDCMImageIO读DICOM
-	ImageIOType::Pointer gdcmImageIO = ImageIOType::New();
-
-	reader3d->SetImageIO(gdcmImageIO);
-	reader3d->SetFileNames(fileNames);
-	reader3d->Update();
-	Input3dImageType::Pointer image = reader3d->GetOutput();
-	reader3d = NULL;
-	gdcmImageIO = NULL;
-	//using ReaderType3d = itk::ImageSeriesWriter< Input3dImageType >;
-	return image;
-}
-
-vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
-{
-	typedef itk::ImageToVTKImageFilter< Input3dImageType> itkTovtkFilterType;
-	itkTovtkFilterType::Pointer itkTovtkImageFilter = itkTovtkFilterType::New();
-	itkTovtkImageFilter->SetInput(image);//设置图像数据从ITK转向VTK
-	itkTovtkImageFilter->Update();
-	return itkTovtkImageFilter->GetOutput();
-
-	//vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
-	//ImageFlip->SetInputData(itkTovtkImageFilter->GetOutput());
-	//
-	//ImageFlip->SetFilteredAxes(1);
-	//ImageFlip->Update();
-	//vtkSmartPointer<vtkImageData> vtkdata = ImageFlip->GetOutput();
-	//ImageFlip = NULL;
-	//itkTovtkImageFilter = NULL;
-	//return vtkdata;
-
 }
 
 void saveHDMdata(QString DicomDir)
 {
+#ifndef VTK91
 	Input3dImageType::Pointer image = GdcmRead3dImage(qPrintable(DicomDir));
 	vtkSmartPointer<vtkImageData> ImageVTKData = ImageDataItkToVtk(image);
 
@@ -313,7 +330,7 @@ void saveHDMdata(QString DicomDir)
 	vtkdatawrite->SetRAWFileName(path.c_str());
 	vtkdatawrite->Write();
 	vtkdatawrite->Delete();
-
+#endif // !VTK91
 }
 
 QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char *argv[])
@@ -356,10 +373,8 @@ void QtVTKRenderWindows::SetBlendMode(int m)
 {
 	for (int i = 0; i < 3; i++)
 	{
-		vtkWidgetRepresentation *tation = riw[i]->GetResliceCursorWidget()->GetRepresentation();
-		vtkResliceCursorThickLineRepresentation *rep = vtkResliceCursorThickLineRepresentation::SafeDownCast(tation);
-		vtkImageSlabReslice *thickSlabReslice = vtkImageSlabReslice::SafeDownCast(rep->GetReslice());
-		vtkResliceCursorThickLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation())->GetReslice();
+		vtkImageSlabReslice* thickSlabReslice = vtkImageSlabReslice::SafeDownCast(vtkResliceCursorThickLineRepresentation::SafeDownCast(
+			riw[i]->GetResliceCursorWidget()->GetRepresentation())->GetReslice());
 		thickSlabReslice->SetBlendMode(m);
 		riw[i]->Render();
 	}
@@ -537,7 +552,16 @@ void QtVTKRenderWindows::MPRVTK()
 		vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
 		riw[i]->SetRenderWindow(renderWindow);
 	}
+#ifdef VTK91
+	this->ui->view1->setRenderWindow(riw[0]->GetRenderWindow());
+	riw[0]->SetupInteractor(this->ui->view1->GetRenderWindow()->GetInteractor());
 
+	this->ui->view2->setRenderWindow(riw[1]->GetRenderWindow());
+	riw[1]->SetupInteractor(this->ui->view2->GetRenderWindow()->GetInteractor());
+
+	this->ui->view3->setRenderWindow(riw[2]->GetRenderWindow());
+	riw[2]->SetupInteractor(this->ui->view3->GetRenderWindow()->GetInteractor());
+#else
 	this->ui->view1->SetRenderWindow(riw[0]->GetRenderWindow());
 	riw[0]->SetupInteractor(this->ui->view1->GetRenderWindow()->GetInteractor());
 
@@ -546,6 +570,9 @@ void QtVTKRenderWindows::MPRVTK()
 
 	this->ui->view3->SetRenderWindow(riw[2]->GetRenderWindow());
 	riw[2]->SetupInteractor(this->ui->view3->GetRenderWindow()->GetInteractor());
+#endif // VTK91
+
+
 
 	///----
 	//vtkSmartPointer< vtkResliceCursorLineRepresentation > vtkrclp[3];
@@ -691,7 +718,7 @@ void QtVTKRenderWindows::MprInit()
 	riw[2]->SetupInteractor(this->ui->view3->GetRenderWindow()->GetInteractor());
 
 	///012  021 120 102  201 210  
-	vtkImageData *imageData  = reader->GetOutput();
+	vtkImageData *imageData = reader->GetOutput();
 	vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
 	ImageFlip->SetInputData(reader->GetOutput());
 	ImageFlip->SetFilteredAxes(0);
@@ -761,6 +788,9 @@ void QtVTKRenderWindows::MprInit()
 			rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
 #ifdef VTK91
 			//https://gitlab.kitware.com/vtk/vtk/-/merge_requests/8879
+			rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
+			rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
+			rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
 			rep->GetResliceCursorActor()->GetCenterlineProperty(0)->RenderLinesAsTubesOn();
 			rep->GetResliceCursorActor()->GetCenterlineProperty(1)->RenderLinesAsTubesOn();
 			rep->GetResliceCursorActor()->GetCenterlineProperty(2)->RenderLinesAsTubesOn();
@@ -769,7 +799,7 @@ void QtVTKRenderWindows::MprInit()
 			rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetLineWidth(2);
 			//-----------------------------
 #endif // VTK91
-    		riw[i]->SetInputData(imageData);
+			riw[i]->SetInputData(imageData);
 			//riw[i]->SetInputData(reslice->GetOutput());
 			riw[i]->SetSliceOrientation(i);
 			riw[i]->SetResliceModeToAxisAligned();
@@ -834,9 +864,9 @@ void QtVTKRenderWindows::MprInit()
 
 	if (0)
 	{
-		vtkSmartPointer<vtkImageReslice> reslicer =	vtkSmartPointer<vtkImageReslice>::New();
+		vtkSmartPointer<vtkImageReslice> reslicer = vtkSmartPointer<vtkImageReslice>::New();
 		reslicer->SetInputConnection(reader->GetOutputPort());
-		vtkSmartPointer<vtkMatrix4x4> flipMatrix =	vtkSmartPointer<vtkMatrix4x4>::New();
+		vtkSmartPointer<vtkMatrix4x4> flipMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
 		flipMatrix->Identity();            // 初始化为单位矩阵
 		flipMatrix->SetElement(0, 0, -1);  // X 轴镜像翻转
 		// flipMatrix->SetElement(1, 1, -1);  // Y 轴镜像翻转（如果需要）
@@ -845,10 +875,10 @@ void QtVTKRenderWindows::MprInit()
 		reslicer->SetInterpolationModeToLinear();
 		reslicer->Update();
 		riw[2]->SetInputConnection(reslicer->GetOutputPort());
-	//}
-	//{
-		
-		// 获取相机
+		//}
+		//{
+
+			// 获取相机
 		vtkCamera* camera = riw[2]->GetRenderer()->GetActiveCamera();
 
 		// 设置相机的位置到图像正后方
@@ -1126,7 +1156,10 @@ void QtVTKRenderWindows::MRP3D()
 		riw[i]->GetRenderWindow()->SetSize(500, 500);
 		riw[i]->GetRenderWindow()->SetPosition(800 + i * 500, 500);
 		if (i == 2)
+		{
 			riw[i]->GetRenderWindow()->SetPosition(800, 0);
+		}
+
 		riw[i]->SetSliceOrientation(1);
 		riw[i]->SetSliceOrientation(i);
 	}

@@ -335,7 +335,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 	vtkNew<vtkMetaImageReader> reader;
 	//std::string dir = qPrintable());//argv[1];	
 	QString dir = argv[1];
-	dir += "\\VTKMetaData.mhd";
+	dir = "D:\\Test_DICOM\\jp2k\\VTKMetaData.mhd";
 	std::string stddir = qPrintable(dir);
 	reader->SetFileName(stddir.c_str());
 	reader->Update();
@@ -343,11 +343,11 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 	reader->GetOutput()->GetDimensions(imageDims);
 
 	vtkImageData *imageData = reader->GetOutput();
-	vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
-	ImageFlip->SetInputData(reader->GetOutput());
-	ImageFlip->SetFilteredAxes(0);
-	ImageFlip->Update();
-	imageData = ImageFlip->GetOutput();
+	//vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
+	//ImageFlip->SetInputData(reader->GetOutput());
+	//ImageFlip->SetFilteredAxes(0);
+	//ImageFlip->Update();
+	//imageData = ImageFlip->GetOutput();
 
 
 	for (int i = 0; i < 3; i++)
@@ -377,7 +377,6 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 		riw[i]->GetRenderer()->AddViewProp(m_cornerAnnotations[i]);
 	}
 
-	////
 	this->ui->view2->setRenderWindow(riw[0]->GetRenderWindow());
 	riw[0]->SetupInteractor(this->ui->view2->renderWindow()->GetInteractor());
 
@@ -402,6 +401,14 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 		riw[i]->SetSliceOrientation(i);
 		riw[i]->SetResliceModeToAxisAligned();
 	}
+	//----adjust ---
+	double a = -0.12037446071029209*26.1;//-3.1417734245386240 ~~~
+	a = -3.1415926535897931;//pi
+	const double pi = -3.141592653589793238462643383279502884197169399375105820974944;
+	vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, pi);
+	riw[0]->GetRenderWindow()->Render();
+	//---
+	////
 	vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, PI);
 	vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
 	picker->SetTolerance(0.005);
@@ -448,6 +455,8 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 	}
 
 	///
+
+	resliceMode(1);
 	double bounds[6];
 	imageData->GetCellBounds(imageData->GetNumberOfCells(), bounds);
 	double w = bounds[0] - bounds[0];
@@ -557,16 +566,46 @@ void QtVTKRenderWindows::SetBlendMode(int m)
 
 void QtVTKRenderWindows::SetBlendModeToMaxIP()
 {
+	for (int i = 0; i < 3; i++)
+	{
+		// make them all share the same reslice cursor object.
+		vtkResliceCursorLineRepresentation* rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
+		//
+		rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
+		rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
+		rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
+		//
+	}
 	this->SetBlendMode(VTK_IMAGE_SLAB_MAX);
 }
 
 void QtVTKRenderWindows::SetBlendModeToMinIP()
 {
+	for (int i = 0; i < 3; i++)
+	{
+		// make them all share the same reslice cursor object.
+		vtkResliceCursorLineRepresentation* rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
+		//
+		rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
+		rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
+		rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
+		//
+	}
 	this->SetBlendMode(VTK_IMAGE_SLAB_MIN);
 }
 
 void QtVTKRenderWindows::SetBlendModeToMeanIP()
 {
+	for (int i = 0; i < 3; i++)
+	{
+		// make them all share the same reslice cursor object.
+		vtkResliceCursorLineRepresentation* rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
+		//
+		rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
+		rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
+		rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
+		//
+	}
 	this->SetBlendMode(VTK_IMAGE_SLAB_MEAN);
 }
 
