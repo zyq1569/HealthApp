@@ -57,7 +57,7 @@ protected Q_SLOTS:
 private slots:
   void on_pushButton_clicked();
   void on_Sagittal_clicked();
-
+  void raw2mhd();
 private:
   // Designer form
   Ui_QtVTKRenderWindows* ui;

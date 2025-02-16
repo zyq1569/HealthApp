@@ -334,31 +334,11 @@ public:
 #include <vtkByteSwap.h>
 #include <fstream>
 #include <iostream>
-//#include <cstdio>
-//#include <cstdlib>
-#include <vtkSmartPointer.h>
-#include <vtkImageData.h>
-#include <vtkImageImport.h>
-#include <vtkImageViewer2.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <vtkVolume.h>
-#include <vtkSmartVolumeMapper.h>
-#include <vtkPiecewiseFunction.h>
-#include <vtkColorTransferFunction.h>
-#include <vtkVolumeProperty.h>
-#include <fstream>
-#include <vtkImageImport.h>
-
-
-
-
-
 
 #include<Qdir>
-void raw2mhd()
+void QtVTKRenderWindows::raw2mhd()
 {	
+	QString dir = ui->m_dcmDIR->toPlainText();
 	int width = 1536;
 	int height = 1536;
 	int depth = 600;  // 0~200 共 201 张
@@ -408,7 +388,6 @@ void raw2mhd()
 		//std::cerr << "无法创建 .mhd 文件！" << std::endl;
 		return ;
 	}
-
 	mhdFile << "ObjectType = Image\n";
 	mhdFile << "NDims = 3\n";
 	mhdFile << "DimSize = " << width << " " << height << " " << depth << "\n";
@@ -419,15 +398,14 @@ void raw2mhd()
 
 	//std::cout << "MHD 文件已生成：" << mhdFilename << std::endl;
 
-	//-------------------------
-	//QString RmhdDir = "D:\\TEMP\\dingliang\\volume_1\\VG_VTKdata.mhd";// ui->m_dcmDir->toPlainText();// +"/VTKdata.mhd";
-	//std::string cstr = qPrintable(RmhdDir);
 }
 
 QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 {
 	this->ui = new Ui_QtVTKRenderWindows;
 	this->ui->setupUi(this);
+
+
 
 	ui->Sagittal->hide();
 	ui->pushButton->hide();
@@ -440,7 +418,10 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 	ui->pushButton->hide();
 	ui->pushButton->hide();
 
+	connect(ui->m_pbRaw2Mhd, SIGNAL(clicked()), this, SLOT(raw2mhd()));
 
+	QString dir = QCoreApplication::applicationDirPath() + "/slice0.bin";
+	ui->m_dcmDIR->setText(dir);
 };
 
 void QtVTKRenderWindows::slotExit()
