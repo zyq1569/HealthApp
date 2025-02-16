@@ -339,22 +339,48 @@ public:
 void QtVTKRenderWindows::raw2mhd()
 {	
 	QString dir = ui->m_dcmDIR->toPlainText();
-	int width = 1536;
-	int height = 1536;
-	int depth = 600;  // 0~200 共 201 张
+	QString w = ui->m_width->toPlainText();
+	QString h = ui->m_height->toPlainText();
+	QString number = ui->m_number->toPlainText();
+	QString filenameExtra="";
+	if (ui->m_extraCheck->isChecked())
+	{
+		filenameExtra = ui->m_extra->toPlainText();
+	}
+	int width = w.toInt();
+	int height = h.toInt();
+	int depth = number.toInt();  // 0~200 共 201 张
 	// 逐个读取 0～200 的 RAW 文件
-	std::string rawFilename = "D:/TEMP/dingliang/volume_1/volume_VTKData600.raw";  // `.raw` 文件
-	std::string mhdFilename = "D:/TEMP/dingliang/volume_1/volume_VTKData600.mhd";  // `.mhd` 文件
+	QString raw = dir + "VTK_Data.raw";
+	std::string rawFilename = qPrintable(raw);// "D:/TEMP/dingliang/volume_1/volume_VTKData600.raw";  // `.raw` 文件
+	QString mhd = dir + "VTK_Data.mhd";
+	std::string mhdFilename = qPrintable(mhd);// "D:/TEMP/dingliang/volume_1/volume_VTKData600.mhd";  // `.mhd` 文件
 	std::ofstream rawFile(rawFilename, std::ios::binary | std::ios::out | std::ios::trunc);
 	if (!rawFile.is_open())
 	{
 		//std::cerr << "无法打开 .raw 文件进行写入！" << std::endl;
 		return ;
 	}
-	for (int i = 0; i < depth; i++)
-	//for (int i = 0; i < 972; i++)
+	QString fn = ui->m_filename->toPlainText();
+	QString fa = ui->m_fmn->toPlainText();
+	int formateN = fa.toInt();
+	int index_s = ui->m_start->toPlainText().toInt();
+	int index_e = index_s + depth - 1;
+
+	for (int i = index_s; i < index_e; i++)
 	{
-		QString index = "D:\\TEMP\\dingliang\\volume_1\\VG" + QString("%1").arg(i, 5, 10, QLatin1Char('0'));
+		QString index = dir + "\\" + fn;//
+		if (ui->m_formate->isChecked())
+		{
+			index += QString("%1").arg(i, formateN, 10, QLatin1Char('0'));
+			index += filenameExtra;
+		}
+		else
+		{
+			index += QString("%1").arg(i);
+			index += filenameExtra;
+		}
+
 		std::string filename = qPrintable(index);
 		QFileInfo file(index);
 		if (!file.isFile())
@@ -405,8 +431,6 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 	this->ui = new Ui_QtVTKRenderWindows;
 	this->ui->setupUi(this);
 
-
-
 	ui->Sagittal->hide();
 	ui->pushButton->hide();
 	ui->frame->hide();
@@ -420,7 +444,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 
 	connect(ui->m_pbRaw2Mhd, SIGNAL(clicked()), this, SLOT(raw2mhd()));
 
-	QString dir = QCoreApplication::applicationDirPath() + "/slice0.bin";
+	QString dir = QCoreApplication::applicationDirPath();
 	ui->m_dcmDIR->setText(dir);
 };
 
