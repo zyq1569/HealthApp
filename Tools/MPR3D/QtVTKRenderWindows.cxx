@@ -687,7 +687,7 @@ void QtVTKRenderWindows::MprInit()
 	vtkNew<vtkMetaImageReader> reader;
 	//std::string dir = qPrintable());//argv[1];	
 	QString dir = this->ui->m_dcmDIR->toPlainText();
-	dir += "\\VTKMetaData.mhd";
+	//dir += "\\VTKMetaData.mhd";
 	QDir mhdDir;
 	QFileInfo file(dir);
 	if (!file.isFile())

@@ -36,7 +36,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>10</x>
       <y>140</y>
-      <width>421</width>
+      <width>482</width>
       <height>25</height>
      </rect>
     </property>
@@ -66,6 +66,13 @@ p, li { white-space: pre-wrap; }
       <widget class="QPushButton" name="pBVolume3D">
        <property name="text">
         <string>Volume-3D</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pBCT3D">
+       <property name="text">
+        <string>CT-3D</string>
        </property>
       </widget>
      </item>

@@ -34,6 +34,7 @@ public:
     QPushButton *pBITK;
     QPushButton *pBITK3D;
     QPushButton *pBVolume3D;
+    QPushButton *pBCT3D;
     QPushButton *m_TestAll;
     QListView *m_renderingStyleListView;
     QLabel *m_labeltip;
@@ -53,7 +54,7 @@ public:
         m_dcmDir->setGeometry(QRect(10, 110, 491, 21));
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(10, 140, 421, 25));
+        layoutWidget->setGeometry(QRect(10, 140, 482, 25));
         horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -76,6 +77,11 @@ public:
         pBVolume3D->setObjectName(QString::fromUtf8("pBVolume3D"));
 
         horizontalLayout->addWidget(pBVolume3D);
+
+        pBCT3D = new QPushButton(layoutWidget);
+        pBCT3D->setObjectName(QString::fromUtf8("pBCT3D"));
+
+        horizontalLayout->addWidget(pBCT3D);
 
         m_TestAll = new QPushButton(layoutWidget);
         m_TestAll->setObjectName(QString::fromUtf8("m_TestAll"));
@@ -129,6 +135,7 @@ public:
         pBITK->setText(QApplication::translate("MainWindow", "2DImage", nullptr));
         pBITK3D->setText(QApplication::translate("MainWindow", "March-3D", nullptr));
         pBVolume3D->setText(QApplication::translate("MainWindow", "Volume-3D", nullptr));
+        pBCT3D->setText(QApplication::translate("MainWindow", "CT-3D", nullptr));
         m_TestAll->setText(QApplication::translate("MainWindow", "Test All", nullptr));
         m_labeltip->setText(QApplication::translate("MainWindow", "Volume-3D:\351\274\240\346\240\207\357\274\232\344\270\255\351\224\256\347\247\273\345\212\250\345\233\276\345\203\217 \345\267\246\351\224\256\346\227\213\350\275\254\345\233\276\345\203\217  \345\217\263\351\224\256\357\274\232WW|WL\357\274\210ESC\351\224\256\350\277\230\345\216\237\357\274\211 \346\210\226\350\200\205(\344\270\255\351\224\256\345\215\225\345\207\273\345\210\207\346\215\242)\345\210\207\346\215\242 Zoom", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "Volume-3D", nullptr));

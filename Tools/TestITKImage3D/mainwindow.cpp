@@ -7,6 +7,7 @@
 #include "Header.h"
 #include <string>
 
+#include <vtkImageAppend.h>
 //体绘制加速
 //Gpu光照映射
 #include<vtkGPUVolumeRayCastMapper.h>
@@ -190,6 +191,7 @@ vtkSmartPointer<vtkImageData> ImageDataItkToVtk(Input3dImageType::Pointer image)
 	itkTovtkImageFilter = NULL;
 	return vtkdata;
 }
+
 
 class vtkSliderCallback : public vtkCommand
 {
@@ -568,7 +570,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_transferFunction.setColor(445.0, 1.0, 1.0, 1.0);
     m_transferFunction.setColor(1455.0, 1.0, 1.0, 1.0);
     m_transferFunction.setColor(2784.0, 1.0, 1.0, 1.0);
-
+	connect(ui->pBCT3D, SIGNAL(clicked()), this, SLOT(CT3D()));
 }
 
 MainWindow::~MainWindow()
@@ -841,13 +843,43 @@ void MainWindow::applyRenderingStyle(const QModelIndex &index)
 
 void MainWindow::initImage3D_ITK_VTK(vtkActor *vtkactor)
 {
+	//
+	//
+	int width = 1024;
+	int height = 1024;
+	int depth = 200;  // 0~200 共 201 张
+
+	vtkSmartPointer<vtkImageAppend> imageStack = vtkSmartPointer<vtkImageAppend>::New();
+	imageStack->SetAppendAxis(2);  // 沿 Z 轴堆叠
+	const char* filename = "D:\\TEMP\\dingliang\\Slice\\slice"; // 裸数据文件路径
+	// 逐个读取 0～200 的 RAW 文件
+	for (int i = 0; i < depth; i++)
+	{
+		std::string filename = "D:\\TEMP\\dingliang\\Slice\\slice" + std::to_string(i) + ".bin";
+		vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
+		reader->SetFileName(filename.c_str());
+		reader->SetFileDimensionality(2);  // 2D 图像
+		reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
+		reader->SetDataScalarTypeToUnsignedShort();  // 16-bit 无符号整型
+		reader->SetNumberOfScalarComponents(1);
+		reader->SetFileLowerLeft(true);  // 数据从左下角开始
+
+		// 设置像素间距
+		reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
+
+		reader->Update();
+		imageStack->AddInputConnection(reader->GetOutputPort());  // 组合
+	}
+	imageStack->Update();
+	//
+	//
 	//https://developer.aliyun.com/article/933543
 	QString dir = ui->m_dcmDir->toPlainText();
 
 	Input3dImageType::Pointer image = GdcmRead3dImage(qPrintable(dir), dir);
 
 	vtkMarchingCubes *marchingcube = vtkMarchingCubes::New();
-	vtkSmartPointer<vtkImageData> ImageVTKData = ImageDataItkToVtk(image);
+	vtkSmartPointer<vtkImageData> ImageVTKData = imageStack->GetOutput();//ImageDataItkToVtk(image);
 	image = NULL;
 
 	marchingcube->SetInputData(ImageVTKData);
@@ -986,8 +1018,38 @@ void MainWindow::free3Dviewer()
     }
 }
 
+
 void MainWindow::on_pBVolume3D_clicked()
 {
+
+	//
+	int width = 1024;
+	int height = 1024;
+	int depth = 200;  // 0~200 共 201 张
+
+	vtkSmartPointer<vtkImageAppend> imageStack = vtkSmartPointer<vtkImageAppend>::New();
+	imageStack->SetAppendAxis(2);  // 沿 Z 轴堆叠
+	const char* filename = "D:\\TEMP\\dingliang\\Slice\\slice"; // 裸数据文件路径
+	// 逐个读取 0～200 的 RAW 文件
+	for (int i = 0; i < depth; i++)
+	{
+		std::string filename = "D:\\TEMP\\dingliang\\Slice\\slice" + std::to_string(i) + ".bin";
+		vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
+		reader->SetFileName(filename.c_str());
+		reader->SetFileDimensionality(2);  // 2D 图像
+		reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
+		reader->SetDataScalarTypeToUnsignedShort();  // 16-bit 无符号整型
+		reader->SetNumberOfScalarComponents(1);
+		reader->SetFileLowerLeft(true);  // 数据从左下角开始
+
+		// 设置像素间距
+		reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
+
+		reader->Update();
+		imageStack->AddInputConnection(reader->GetOutputPort());  // 组合
+	}
+	imageStack->Update();
+	//
     QList<void*> list;
     //return test();
     //return testAll(0, list);
@@ -1014,7 +1076,7 @@ void MainWindow::on_pBVolume3D_clicked()
         //    init = false;
         //}
         
-        vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
+        vtkSmartPointer<vtkImageData> itkImageData = imageStack->GetOutput();//ImageDataItkToVtk(dicomimage);
 
         //定义绘制器；
         m_rendererViewer = vtkRenderer::New();//指向指针；
@@ -1265,6 +1327,120 @@ void MainWindow::on_pBRemoveBed_clicked()
             threshold->Delete();
         }
     }
+
+}
+
+
+void MainWindow::CT3D()
+{
+	//vtkSmartPointer<vtkImageAppend> imageStack = vtkSmartPointer<vtkImageAppend>::New();
+	//imageStack->SetAppendAxis(2);  // 沿 Z 轴堆叠
+	//int width = 1024;
+	//int height = 1024;
+	//int depth = 200;  // 0~200 共 201 张
+	// 逐个读取 0～200 的 RAW 文件
+	//for (int i = 0; i < depth; i++)
+	//{
+	//	std::string filename = "D:\\TEMP\\dingliang\\Slice\\slice" + std::to_string(i) + ".bin";
+	//	vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
+	//	reader->SetFileName(filename.c_str());
+	//	reader->SetFileDimensionality(2);  // 2D 图像
+	//	reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
+	//	reader->SetDataScalarTypeToUnsignedShort();  // 16-bit 无符号整型
+	//	reader->SetNumberOfScalarComponents(1);
+	//	reader->SetFileLowerLeft(true);  // 数据从左下角开始
+	//
+	//	// 设置像素间距
+	//	reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
+	//
+	//	reader->Update();
+	//	imageStack->AddInputConnection(reader->GetOutputPort());  // 组合
+	//}
+	//imageStack->Update();
+	const char* filename = "D:\\TEMP\\dingliang\\Slice\\VTKdata.mhd"; // 裸数据文件路径
+	vtkMetaImageReader *vtkdataread = vtkMetaImageReader::New();
+	vtkdataread->SetFileName(filename);
+	vtkdataread->Update();
+
+	static bool init = true;
+	if (init)
+	{
+		init = false;
+		ui->pBVolume3D->setText("Close 3DViewer");
+
+		vtkSmartPointer<vtkImageData> itkImageData = vtkdataread->GetOutput();// imageStack->GetOutput();//ImageDataItkToVtk(dicomimage);
+
+		//定义绘制器；
+		m_rendererViewer = vtkRenderer::New();//指向指针；
+		m_renderWindow = vtkRenderWindow::New();
+		m_renderWindow->AddRenderer(m_rendererViewer);
+
+		//体数据属性；
+		m_volumeProperty = vtkVolumeProperty::New();
+		m_volumeProperty->SetScalarOpacity(m_transferFunction.vtkOpacityTransferFunction());
+		m_volumeProperty->SetColor(m_transferFunction.vtkColorTransferFunction());
+		//m_volumeProperty->SetGradientOpacity(m_gradientTransform);
+		m_volumeProperty->SetIndependentComponents(true);
+		m_volumeProperty->ShadeOn();//应用
+		m_volumeProperty->SetInterpolationTypeToLinear();//直线间样条插值；
+		m_volumeProperty->SetAmbient(0.4);//环境光系数；
+		m_volumeProperty->SetDiffuse(0.69996);//漫反射；
+		m_volumeProperty->SetSpecular(0.2);
+		m_volumeProperty->SetSpecularPower(10);//高光强度；
+		/**/
+		//光纤映射类型定义：
+		//Mapper定义,
+		m_volumeMapper = vtkSmartVolumeMapper::New();
+		m_volumeMapper->SetInputData(itkImageData);//;cast_file->GetOutput());
+		m_volumeMapper->SetBlendModeToComposite();
+		m_volumeMapper->SetRequestedRenderModeToDefault();
+		m_lodProp3D = vtkLODProp3D::New();
+		m_lodProp3D->AddLOD(m_volumeMapper, m_volumeProperty, 0.0);
+
+		m_volume = vtkVolume::New();
+		m_volume->SetMapper(m_volumeMapper);
+		m_volume->SetProperty(m_volumeProperty);//设置体属性；
+
+		//m_outlineData = vtkOutlineFilter::New();//线框；
+		//m_outlineData->SetInputData(itkImageData);
+		//m_mapOutline = vtkPolyDataMapper::New();
+		//m_mapOutline->SetInputConnection(m_outlineData->GetOutputPort());
+		//m_outline = vtkActor::New();
+		//m_outline->SetMapper(m_mapOutline);
+		//m_outline->GetProperty()->SetColor(0, 0, 0);//背景纯黑色；
+
+		m_rendererViewer->AddVolume(m_volume);
+		//m_rendererViewer->AddActor(m_outline);
+		m_rendererViewer->SetBackground(1, 1, 1);
+		m_rendererViewer->ResetCamera();
+		//重设相机的剪切范围；
+		m_rendererViewer->ResetCameraClippingRange();
+		m_renderWindow->SetSize(600, 600);
+
+		m_renderWindowInteractor = vtkRenderWindowInteractor::New();
+		m_renderWindowInteractor->SetRenderWindow(m_renderWindow);
+
+		//设置相机跟踪模式
+		m_interactorstyle = vtkInteractorStyleTrackballCameraWindowleve::New();
+		m_interactorstyle->init();
+		m_interactorstyle->setWindowLeve(true);
+		m_interactorstyle->setMainwindowsVTKParms(m_volumeProperty, m_renderWindow, m_transferFunction, itkImageData);
+		m_interactorstyle->setSaveTransferFunction(m_transferFunction);
+
+		m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
+
+		m_interactorstyle->SetCurrentRenderer(m_rendererViewer);
+
+		m_renderWindow->Render();
+		m_renderWindow->SetWindowName("鼠标左键旋转 右键:WW/WL(ESC还原）|(鼠标中间单击切换)Zoom 鼠标中键移动图像");
+		//saveHDMdata(itkImageData);
+	}
+	else
+	{
+		init = true;
+		ui->pBVolume3D->setText("Volume-3D");
+		free3Dviewer();
+	}
 
 }
 
