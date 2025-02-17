@@ -2,15 +2,15 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
-    <QtLastBackgroundBuild>2025-02-16T14:33:33.4780085Z</QtLastBackgroundBuild>
+    <QtLastBackgroundBuild>2025-02-16T15:04:26.1699967Z</QtLastBackgroundBuild>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtLastBackgroundBuild>2025-02-16T14:33:33.9108505Z</QtLastBackgroundBuild>
+    <QtLastBackgroundBuild>2025-02-16T15:04:26.9798642Z</QtLastBackgroundBuild>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtLastBackgroundBuild>2025-02-16T14:33:34.0963559Z</QtLastBackgroundBuild>
+    <QtLastBackgroundBuild>2025-02-16T15:04:27.1454386Z</QtLastBackgroundBuild>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
-    <QtLastBackgroundBuild>2025-02-16T14:33:34.4074059Z</QtLastBackgroundBuild>
+    <QtLastBackgroundBuild>2025-02-16T15:04:28.8029325Z</QtLastBackgroundBuild>
   </PropertyGroup>
 </Project>
