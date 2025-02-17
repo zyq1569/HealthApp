@@ -6,6 +6,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) :
     ui(new Ui::QFourpaneviewer)
 {
     ui->setupUi(this);
+
 }
 
 QFourpaneviewer::~QFourpaneviewer()

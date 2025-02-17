@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "qfourpaneviewer.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -70,6 +71,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::showImage3D()
 {
-	m_image3D = new QWidget(this);
+	m_image3D = new QFourpaneviewer(this);
 	m_workspace->addTab(m_image3D, "3D");
 }
