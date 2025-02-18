@@ -11,19 +11,30 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QWidget>
+#include "qvtkrenderwidget.h"
 
 QT_BEGIN_NAMESPACE
 
 class Ui_Q3dviewer
 {
 public:
+    QHBoxLayout *horizontalLayout;
+    QVTKRenderWidget *m_3DView;
 
     void setupUi(QWidget *Q3dviewer)
     {
         if (Q3dviewer->objectName().isEmpty())
             Q3dviewer->setObjectName(QString::fromUtf8("Q3dviewer"));
-        Q3dviewer->resize(400, 300);
+        Q3dviewer->resize(464, 356);
+        horizontalLayout = new QHBoxLayout(Q3dviewer);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        m_3DView = new QVTKRenderWidget(Q3dviewer);
+        m_3DView->setObjectName(QString::fromUtf8("m_3DView"));
+
+        horizontalLayout->addWidget(m_3DView);
+
 
         retranslateUi(Q3dviewer);
 
