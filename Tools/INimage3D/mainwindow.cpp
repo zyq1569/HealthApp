@@ -3,6 +3,9 @@
 
 #include "qfourpaneviewer.h"
 
+
+#include <QFileDialog>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -71,6 +74,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::showImage3D()
 {
+	QString filename = QFileDialog::getOpenFileName(NULL, "Mhd", ".", "*.mhd");
+	QFileInfo finfo(filename);
+	if (!finfo.exists())
+	{
+		return;
+	}
+
+
+
 	m_image3D = new QFourpaneviewer(this);
 	m_workspace->addTab(m_image3D, "3D");
 }
