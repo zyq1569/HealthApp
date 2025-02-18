@@ -83,6 +83,6 @@ void MainWindow::showImage3D()
 
 
 
-	m_image3D = new QFourpaneviewer(this);
+	m_image3D = new QFourpaneviewer(this, filename);
 	m_workspace->addTab(m_image3D, "3D");
 }
