@@ -120,8 +120,8 @@ public:
 
 //--------------
 
-QFourpaneviewer::QFourpaneviewer(QWidget *parent, QString fileMhd) :
-    QWidget(parent), m_fileNameMhd(fileMhd), ui(new Ui::QFourpaneviewer)
+QFourpaneviewer::QFourpaneviewer(QWidget *parent, vtkMetaImageReader* metaReader) :
+    QWidget(parent), m_MetaReader(metaReader), ui(new Ui::QFourpaneviewer)
 {
     ui->setupUi(this);
 
@@ -155,14 +155,17 @@ void QFourpaneviewer::ResetViewer()
 
 void QFourpaneviewer::INimage3D()
 {
-	QString fileMhd = m_fileNameMhd;
-	std::string filename = qPrintable(fileMhd);
-
-	vtkNew<vtkMetaImageReader> reader;
-	reader->SetFileName(filename.c_str());
-	reader->Update();
+	if (!m_MetaReader)
+		return;
+	//QString fileMhd = m_fileNameMhd;
+	//std::string filename = qPrintable(fileMhd);
+	//
+	//vtkNew<vtkMetaImageReader> reader;
+	//reader->SetFileName(filename.c_str());
+	//reader->Update();
 	int imageDims[3];
-	reader->GetOutput()->GetDimensions(imageDims);
+	vtkImageData *imageData = m_MetaReader->GetOutput();
+	imageData->GetDimensions(imageDims);
 
 	//vtkImageData *imageData = reader->GetOutput();
 	for (int i = 0; i < 3; i++)
@@ -199,7 +202,7 @@ void QFourpaneviewer::INimage3D()
 		rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetLineWidth(2);
 		rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetLineWidth(2);
 		//-------------------------------------------------------------------------------------------------------
-		m_resliceImageViewer[i]->SetInputData(reader->GetOutput());
+		m_resliceImageViewer[i]->SetInputData(imageData);
 		m_resliceImageViewer[i]->SetSliceOrientation(i);
 		m_resliceImageViewer[i]->SetResliceModeToAxisAligned();
 		//DefaultLevel = 862		DefaultWindow = 1528
@@ -236,7 +239,7 @@ void QFourpaneviewer::INimage3D()
 		m_planeWidget[i]->SetTexturePlaneProperty(ipwProp);
 		m_planeWidget[i]->TextureInterpolateOff();
 		m_planeWidget[i]->SetResliceInterpolateToLinear();
-		m_planeWidget[i]->SetInputConnection(reader->GetOutputPort());
+		m_planeWidget[i]->SetInputConnection(m_MetaReader->GetOutputPort());
 		m_planeWidget[i]->SetPlaneOrientation(i);
 		m_planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
 		m_planeWidget[i]->DisplayTextOn();

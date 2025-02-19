@@ -10,7 +10,9 @@ class vtkSmartVolumeMapper;
 class vtkVolume;
 class vtkVolumeProperty;
 class vtkRenderer;
-
+class vtkPiecewiseFunction;
+class vtkColorTransferFunction;
+class vtkMetaImageReader;
 
 #include <QWidget>
 
@@ -23,7 +25,7 @@ class Q3dviewer : public QWidget
     Q_OBJECT
 
 public:
-    explicit Q3dviewer(QWidget *parent = nullptr, QString fileMhd = "");
+    explicit Q3dviewer(QWidget *parent = nullptr, vtkMetaImageReader* metaReader = nullptr);
     ~Q3dviewer();
 
 private:
@@ -46,6 +48,10 @@ public:
 
 	/// Renderer per defecte
 	vtkRenderer *m_renderer;
+	vtkPiecewiseFunction *m_pieceF, *m_pieceGradF;
+	vtkColorTransferFunction *m_colorTranF;
+
+	vtkMetaImageReader* m_MetaReader;
 
 	void INimage3D();
 };

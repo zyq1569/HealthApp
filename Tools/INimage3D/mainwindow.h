@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+class vtkMetaImageReader;
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -17,15 +18,20 @@ public:
 
 public slots:
 	void showImage3D();
+	void showImage4Plane();
+	void setEnabledQAction();
 
 private:
     Ui::MainWindow *ui;
 
 public:
 	QTabWidget *m_workspace;
-	QWidget *m_image3D;
-	//QAction *m_openAction;
-	//QMenu *m_fileMenu;
-	//QToolBar *m_mainToolbar;
+	QWidget *m_image3D, *m_image4Plane;
+
+	QAction *m_openAction, *m_show3D, *m_show4Plane;
+	QMenu *m_fileMenu;
+	vtkMetaImageReader *m_MetaReader;
+	QToolBar *m_mainToolbar;
+	int m_index3D, m_index4P;
 };
 #endif // MAINWINDOW_H

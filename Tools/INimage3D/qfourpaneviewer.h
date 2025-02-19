@@ -9,6 +9,7 @@
 #include "vtkSmartPointer.h"
 
 class vtkGenericOpenGLRenderWindow;
+class vtkMetaImageReader;
 
 #include <QWidget>
 
@@ -21,7 +22,7 @@ class QFourpaneviewer : public QWidget
     Q_OBJECT
 
 public:
-    explicit QFourpaneviewer(QWidget *parent = nullptr, QString fileMhd = "");
+    explicit QFourpaneviewer(QWidget *parent = nullptr, vtkMetaImageReader* metaReader = nullptr);
 
     ~QFourpaneviewer();
 
@@ -37,6 +38,7 @@ public:
 	vtkImagePlaneWidget*          m_planeWidget[3];
 	vtkGenericOpenGLRenderWindow* m_renderWindow[3];
 	QAction *m_actionReset;
+	vtkMetaImageReader* m_MetaReader;
 	void INimage3D();
 };
 
