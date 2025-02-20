@@ -37,23 +37,28 @@
 #include <vtkCamera.h>
 
 #include <QAction>
+
+#define vtkREP vtkResliceCursorLineRepresentation 
+
 class vtkResliceCursorCallback : public vtkCommand
 {
 public:
-	static vtkResliceCursorCallback* New() { return new vtkResliceCursorCallback; }
+	static vtkResliceCursorCallback* New()
+	{ 
+		return new vtkResliceCursorCallback; 
+	}
 
 	void Execute(vtkObject* caller, unsigned long ev, void* callData) override
 	{
-
 		if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent ||
 			ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent)
 		{
 			// Render everything
 			for (int i = 0; i < 3; i++)
 			{
-				this->RCW[i]->Render();
+				RCW[i]->Render();
 			}
-			this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+			IPW[0]->GetInteractor()->GetRenderWindow()->Render();
 			return;
 		}
 
@@ -62,61 +67,54 @@ public:
 		{
 			double* wl = static_cast<double*>(callData);
 
-			if (ipw == this->IPW[0])
+			if (ipw == IPW[0])
 			{
-				this->IPW[1]->SetWindowLevel(wl[0], wl[1], 1);
-				this->IPW[2]->SetWindowLevel(wl[0], wl[1], 1);
+				IPW[1]->SetWindowLevel(wl[0], wl[1], 1);
+				IPW[2]->SetWindowLevel(wl[0], wl[1], 1);
 			}
-			else if (ipw == this->IPW[1])
+			else if (ipw == IPW[1])
 			{
-				this->IPW[0]->SetWindowLevel(wl[0], wl[1], 1);
-				this->IPW[2]->SetWindowLevel(wl[0], wl[1], 1);
+				IPW[0]->SetWindowLevel(wl[0], wl[1], 1);
+				IPW[2]->SetWindowLevel(wl[0], wl[1], 1);
 			}
-			else if (ipw == this->IPW[2])
+			else if (ipw == IPW[2])
 			{
-				this->IPW[0]->SetWindowLevel(wl[0], wl[1], 1);
-				this->IPW[1]->SetWindowLevel(wl[0], wl[1], 1);
+				IPW[0]->SetWindowLevel(wl[0], wl[1], 1);
+				IPW[1]->SetWindowLevel(wl[0], wl[1], 1);
 			}
 		}
 
 		vtkResliceCursorWidget* rcw = dynamic_cast<vtkResliceCursorWidget*>(caller);
 		if (rcw)
 		{
-			vtkResliceCursorLineRepresentation* rep =
-				dynamic_cast<vtkResliceCursorLineRepresentation*>(rcw->GetRepresentation());
+			vtkREP* rep =	dynamic_cast<vtkREP*>(rcw->GetRepresentation());
 			// Although the return value is not used, we keep the get calls
 			// in case they had side-effects
 			rep->GetResliceCursorActor()->GetCursorAlgorithm()->GetResliceCursor();
 			for (int i = 0; i < 3; i++)
 			{
-				vtkPlaneSource* ps = static_cast<vtkPlaneSource*>(this->IPW[i]->GetPolyDataAlgorithm());
-				ps->SetOrigin(
-					this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetOrigin());
-				ps->SetPoint1(
-					this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint1());
-				ps->SetPoint2(
-					this->RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint2());
+				vtkPlaneSource* ps = static_cast<vtkPlaneSource*>(IPW[i]->GetPolyDataAlgorithm());
+				ps->SetOrigin(RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetOrigin());
+				ps->SetPoint1(RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint1());
+				ps->SetPoint2(RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint2());
 
 				// If the reslice plane has modified, update it on the 3D widget
-				this->IPW[i]->UpdatePlacement();
+				IPW[i]->UpdatePlacement();
 			}
 		}
 
 		// Render everything
 		for (int i = 0; i < 3; i++)
 		{
-			this->RCW[i]->Render();
+			RCW[i]->Render();
 		}
-		this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+		IPW[0]->GetInteractor()->GetRenderWindow()->Render();
 	}
 
 	vtkResliceCursorCallback() {}
 	vtkImagePlaneWidget* IPW[3];
 	vtkResliceCursorWidget* RCW[3];
 };
-
-
-
 
 //--------------
 
@@ -141,7 +139,7 @@ void QFourpaneviewer::ResetViewer()
 		m_resliceImageViewer[i]->SetResliceMode(1);
 		//m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
 	    //DefaultLevel = 862		DefaultWindow = 1528
-		vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation())->SetWindowLevel(1528, 862);
+		vtkREP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation())->SetWindowLevel(1528, 862);
 	}
 	for (int i = 0; i < 3; i++)
 	{
@@ -171,7 +169,7 @@ void QFourpaneviewer::INimage3D()
 	for (int i = 0; i < 3; i++)
 	{
 		m_resliceImageViewer[i] = vtkResliceImageViewer::New();
-		m_renderWindow[i] = vtkGenericOpenGLRenderWindow::New(); //vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
+		m_renderWindow[i]       = vtkGenericOpenGLRenderWindow::New(); //vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
 		m_resliceImageViewer[i]->SetRenderWindow(m_renderWindow[i]);
 	}
 
@@ -187,8 +185,7 @@ void QFourpaneviewer::INimage3D()
 	for (int i = 0; i < 3; i++)
 	{
 		// make them all share the same reslice cursor object.
-		vtkResliceCursorLineRepresentation* rep;
-		rep  = vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation());
+		vtkREP *rep  = vtkREP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation());
 		m_resliceImageViewer[i]->SetResliceCursor(m_resliceImageViewer[0]->GetResliceCursor());
 		rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
 		//-----------------------------------------------------------------------------------------------------
@@ -209,23 +206,22 @@ void QFourpaneviewer::INimage3D()
 		rep->SetWindowLevel(1528, 862);
 	}
 
-	vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
-	picker->SetTolerance(0.005);
+	m_cellPicker = vtkCellPicker::New();
+	m_cellPicker->SetTolerance(0.005);
 
-	vtkSmartPointer<vtkProperty> ipwProp = vtkSmartPointer<vtkProperty>::New();
+	m_ipwProp = vtkProperty::New();
+	m_ren     = vtkRenderer::New();
 
-	vtkSmartPointer<vtkRenderer> ren = vtkSmartPointer<vtkRenderer>::New();
-
-	vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-	ui->m_mpr2DView->setRenderWindow(renderWindow);
-	ui->m_mpr2DView->renderWindow()->AddRenderer(ren);
+	m_2DViewRenderWindow = vtkGenericOpenGLRenderWindow::New();
+	ui->m_mpr2DView->setRenderWindow(m_2DViewRenderWindow);
+	ui->m_mpr2DView->renderWindow()->AddRenderer(m_ren);
 	vtkRenderWindowInteractor* iren = ui->m_mpr2DView->interactor();
 
 	for (int i = 0; i < 3; i++)
 	{
 		m_planeWidget[i] = vtkImagePlaneWidget::New();
 		m_planeWidget[i]->SetInteractor(iren);
-		m_planeWidget[i]->SetPicker(picker);
+		m_planeWidget[i]->SetPicker(m_cellPicker);
 		m_planeWidget[i]->RestrictPlaneToVolumeOn();
 		double color[3] = { 0, 0, 0 };
 		color[i] = 1;
@@ -236,35 +232,36 @@ void QFourpaneviewer::INimage3D()
 		color[2] /= 4.0;
 		m_resliceImageViewer[i]->GetRenderer()->SetBackground(color);
 
-		m_planeWidget[i]->SetTexturePlaneProperty(ipwProp);
+		m_planeWidget[i]->SetTexturePlaneProperty(m_ipwProp);
 		m_planeWidget[i]->TextureInterpolateOff();
 		m_planeWidget[i]->SetResliceInterpolateToLinear();
 		m_planeWidget[i]->SetInputConnection(m_MetaReader->GetOutputPort());
 		m_planeWidget[i]->SetPlaneOrientation(i);
 		m_planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
 		m_planeWidget[i]->DisplayTextOn();
-		m_planeWidget[i]->SetDefaultRenderer(ren);
+		m_planeWidget[i]->SetDefaultRenderer(m_ren);
 		m_planeWidget[i]->SetWindowLevel(1528, 862);//DefaultLevel = 862		DefaultWindow = 1528
 		m_planeWidget[i]->On();
 		m_planeWidget[i]->InteractionOn();
 	}
 
-	vtkSmartPointer<vtkResliceCursorCallback> cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
+	m_resliceCallback = vtkResliceCursorCallback::New();
 
+	vtkScalarsToColors *LookupTablecolor = m_resliceImageViewer[0]->GetLookupTable();
 	for (int i = 0; i < 3; i++)
 	{
-		cbk->IPW[i] = m_planeWidget[i];
-		cbk->RCW[i] = m_resliceImageViewer[i]->GetResliceCursorWidget();
-		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceAxesChangedEvent, cbk);
-		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::WindowLevelEvent, cbk);
-		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceThicknessChangedEvent, cbk);
-		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResetCursorEvent, cbk);
-		m_resliceImageViewer[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, cbk);
-		m_resliceImageViewer[i]->AddObserver(vtkResliceImageViewer::SliceChangedEvent, cbk);
+		m_resliceCallback->IPW[i] = m_planeWidget[i];
+		m_resliceCallback->RCW[i] = m_resliceImageViewer[i]->GetResliceCursorWidget();
+		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceAxesChangedEvent, m_resliceCallback);
+		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::WindowLevelEvent, m_resliceCallback);
+		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceThicknessChangedEvent, m_resliceCallback);
+		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResetCursorEvent, m_resliceCallback);
+		m_resliceImageViewer[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, m_resliceCallback);
+		m_resliceImageViewer[i]->AddObserver(vtkResliceImageViewer::SliceChangedEvent, m_resliceCallback);
 
 		// Make them all share the same color map.
-		m_resliceImageViewer[i]->SetLookupTable(m_resliceImageViewer[0]->GetLookupTable());
-		m_planeWidget[i]->GetColorMap()->SetLookupTable(m_resliceImageViewer[0]->GetLookupTable());
+		m_resliceImageViewer[i]->SetLookupTable(LookupTablecolor);
+		m_planeWidget[i]->GetColorMap()->SetLookupTable(LookupTablecolor);
 		m_planeWidget[i]->SetColorMap(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetResliceCursorRepresentation()->GetColorMap());
 	}
 	for (int i = 0; i < 3; i++)
@@ -287,5 +284,17 @@ void QFourpaneviewer::INimage3D()
 }
 QFourpaneviewer::~QFourpaneviewer()
 {
+	for (int i = 0; i < 3; i++)
+	{
+		m_resliceImageViewer[i]->Delete();
+		m_planeWidget[i]->Delete();
+		m_renderWindow[i]->Delete();
+	}
+	m_resliceCallback->Delete();
+	m_cellPicker->Delete();
+	m_ipwProp->Delete();
+	m_ren->Delete();
+	m_2DViewRenderWindow->Delete();
+
     delete ui;
 }

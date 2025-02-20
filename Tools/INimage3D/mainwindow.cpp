@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
 	m_image3D = nullptr;
 	m_image4Plane = nullptr;
 	m_MetaReader = nullptr;
+	m_closeMetaFile = false;
 
 	m_index3D = m_index4P = -1;
 
@@ -102,24 +103,12 @@ MainWindow::MainWindow(QWidget *parent)
 	m_mainToolbar->setMovable(false);
 	m_mainToolbar->setToolButtonStyle(Qt::ToolButtonTextOnly);
 	//
-	QAction *actionFile = new QAction("文件(&O)", this);
-	actionFile->setShortcut(QKeySequence("Ctrl+O"));
-	m_mainToolbar->addAction(actionFile);
-	connect(actionFile, &QAction::triggered, [this] 
+	m_openAction = new QAction("文件(&O)", this);
+	m_openAction->setShortcut(QKeySequence("Ctrl+O"));
+	m_mainToolbar->addAction(m_openAction);
+	connect(m_openAction, &QAction::triggered, [this]
 	{ 
-		QString Mhdfilename = QFileDialog::getOpenFileName(this, "Mhd", QString(), "*.mhd");
-		QFileInfo finfo(Mhdfilename);
-		if (!finfo.exists())
-		{
-			return;
-		}
-		std::string filename = qPrintable(Mhdfilename);
-		m_MetaReader = vtkMetaImageReader::New();
-		m_MetaReader->SetFileName(filename.c_str());
-		m_MetaReader->Update();
-
-		m_show3D->setEnabled(true);
-		m_show4Plane->setEnabled(true);
+		initMetaFile();
 	});
 
 	m_show3D = new QAction("三维", this);
@@ -139,6 +128,58 @@ MainWindow::MainWindow(QWidget *parent)
 	m_show4Plane->setEnabled(false);
 
 	//m_mainToolbar->insertSeparator(actionFile);
+}
+
+void MainWindow::initMetaFile()
+{
+	if (m_MetaReader)
+	{
+		m_MetaReader->Delete();
+		m_MetaReader = nullptr;
+
+		if (m_image3D)
+		{
+			//delete m_workspace->widget(m_index3D);// ->deleteLater();
+			delete m_image3D;
+			m_image3D = nullptr;
+		    m_workspace->removeTab(m_index3D);
+		    m_index3D  = -1;
+		}
+		if (m_image4Plane)
+		{
+			//delete m_workspace->widget(m_index4P);// ->deleteLater();
+			delete m_image4Plane;
+			m_image4Plane = nullptr;
+			m_workspace->removeTab(m_index4P);
+			m_index4P = -1;
+		}
+
+		m_openAction->setText("文件(&O)");
+		m_openAction->setShortcut(QKeySequence("Ctrl+O"));
+
+		m_show3D->setEnabled(false);
+		m_show4Plane->setEnabled(false);
+
+		return;
+	}
+
+	QString Mhdfilename = QFileDialog::getOpenFileName(this, "Mhd", QString(), "*.mhd");
+	QFileInfo finfo(Mhdfilename);
+	if (!finfo.exists())
+	{
+		return;
+	}
+	std::string filename = qPrintable(Mhdfilename);
+	m_MetaReader = vtkMetaImageReader::New();
+	m_MetaReader->SetFileName(filename.c_str());
+	m_MetaReader->Update();
+
+	m_show3D->setEnabled(true);
+	m_show4Plane->setEnabled(true);
+
+	m_openAction->setText("关闭(&C)");
+	m_openAction->setShortcut(QKeySequence("Ctrl+C"));
+
 }
 
 void MainWindow::setEnabledQAction()

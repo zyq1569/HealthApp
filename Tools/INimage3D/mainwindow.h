@@ -20,6 +20,7 @@ public slots:
 	void showImage3D();
 	void showImage4Plane();
 	void setEnabledQAction();
+	void initMetaFile();
 
 private:
     Ui::MainWindow *ui;
@@ -33,5 +34,6 @@ public:
 	vtkMetaImageReader *m_MetaReader;
 	QToolBar *m_mainToolbar;
 	int m_index3D, m_index4P;
+	bool m_closeMetaFile;
 };
 #endif // MAINWINDOW_H

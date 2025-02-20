@@ -10,6 +10,8 @@
 
 class vtkGenericOpenGLRenderWindow;
 class vtkMetaImageReader;
+class vtkResliceCursorCallback;
+class vtkCellPicker;
 
 #include <QWidget>
 
@@ -36,7 +38,11 @@ public:
 	QString m_fileNameMhd;
 	vtkResliceImageViewer*        m_resliceImageViewer[3];
 	vtkImagePlaneWidget*          m_planeWidget[3];
-	vtkGenericOpenGLRenderWindow* m_renderWindow[3];
+	vtkGenericOpenGLRenderWindow* m_renderWindow[3], *m_2DViewRenderWindow;
+	vtkResliceCursorCallback*     m_resliceCallback;
+	vtkCellPicker*                m_cellPicker;
+	vtkProperty*                  m_ipwProp;
+    vtkRenderer*                  m_ren;
 	QAction *m_actionReset;
 	vtkMetaImageReader* m_MetaReader;
 	void INimage3D();

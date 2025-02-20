@@ -33,6 +33,10 @@ Q3dviewer::Q3dviewer(QWidget *parent, vtkMetaImageReader* metaReader) :
 {
     ui->setupUi(this);
 
+	m_pieceF = nullptr;
+	m_pieceGradF = nullptr;
+	m_colorTranF = nullptr;
+
 	m_volumeMapper = vtkSmartVolumeMapper::New();
 
 	m_isosurfaceFilter = vtkImageMarchingCubes::New();
@@ -66,6 +70,10 @@ Q3dviewer::~Q3dviewer()
 	m_isosurfaceFilter->Delete();
 	m_isosurfaceActor->Delete();
 	m_renderer->Delete();
+
+	m_pieceF ? m_pieceF->Delete(): m_pieceF = nullptr;
+	m_pieceF ? m_pieceGradF->Delete() : m_pieceF = nullptr;
+	m_pieceF ? m_colorTranF->Delete() : m_pieceF = nullptr;
 
     delete ui;
 }
