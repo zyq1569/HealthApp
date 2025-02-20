@@ -139,7 +139,7 @@ MainWindow::MainWindow(QWidget *parent)
 		//ConfigForm a;
 		//m_configForm->setAttribute(Qt::WA_ShowModal, true);
 		m_configForm->show();
-		m_configForm->InitConfig(this);
+		//m_configForm->InitConfig(this);
 	});
 
 	//m_mainToolbar->insertSeparator(actionFile);
