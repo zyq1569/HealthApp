@@ -9,17 +9,20 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ConfigForm.cpp \
     main.cpp \
     mainwindow.cpp \
     q3dviewer.cpp \
     qfourpaneviewer.cpp
 
 HEADERS += \
+    ConfigForm.h \
     mainwindow.h \
     q3dviewer.h \
     qfourpaneviewer.h
 
 FORMS += \
+    ConfigForm.ui \
     mainwindow.ui \
     q3dviewer.ui \
     qfourpaneviewer.ui

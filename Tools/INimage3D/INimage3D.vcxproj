@@ -185,6 +185,7 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConfigForm.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="q3dviewer.cpp" />
@@ -195,6 +196,7 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="onfigForm.ui" />
     <QtUic Include="mainwindow.ui">
     </QtUic>
     <QtUic Include="q3dviewer.ui" />
@@ -210,6 +212,7 @@
     <QtMoc Include="q3dviewer.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="ConfigForm.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

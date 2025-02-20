@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "configForm.h"
 
 class vtkMetaImageReader;
 QT_BEGIN_NAMESPACE
@@ -29,11 +30,14 @@ public:
 	QTabWidget *m_workspace;
 	QWidget *m_image3D, *m_image4Plane;
 
-	QAction *m_openAction, *m_show3D, *m_show4Plane;
+	QAction *m_openAction, *m_show3D, *m_show4Plane, *m_cfigQA;
 	QMenu *m_fileMenu;
 	vtkMetaImageReader *m_MetaReader;
 	QToolBar *m_mainToolbar;
 	int m_index3D, m_index4P;
 	bool m_closeMetaFile;
+
+
+	ConfigForm *m_configForm;
 };
 #endif // MAINWINDOW_H

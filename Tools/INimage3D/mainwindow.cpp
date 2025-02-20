@@ -127,6 +127,15 @@ MainWindow::MainWindow(QWidget *parent)
 	});
 	m_show4Plane->setEnabled(false);
 
+	m_cfigQA = new QAction("ÅäÖÃ", this);
+	m_mainToolbar->addAction(m_cfigQA);
+	connect(m_cfigQA, &QAction::triggered, [this]
+	{
+		m_configForm = new ConfigForm(this);
+		m_configForm->show();
+		//delete m_configForm;
+	});
+
 	//m_mainToolbar->insertSeparator(actionFile);
 }
 
