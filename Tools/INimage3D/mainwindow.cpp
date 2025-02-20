@@ -127,13 +127,19 @@ MainWindow::MainWindow(QWidget *parent)
 	});
 	m_show4Plane->setEnabled(false);
 
+	m_checkStart3D  =  m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
+	m_configForm = new ConfigForm(this);
 	m_cfigQA = new QAction("ÅäÖÃ", this);
 	m_mainToolbar->addAction(m_cfigQA);
 	connect(m_cfigQA, &QAction::triggered, [this]
 	{
-		m_configForm = new ConfigForm(this);
-		m_configForm->show();
+		
+		//m_configForm->show();
 		//delete m_configForm;
+		//ConfigForm a;
+		//m_configForm->setAttribute(Qt::WA_ShowModal, true);
+		m_configForm->show();
+		m_configForm->InitConfig(this);
 	});
 
 	//m_mainToolbar->insertSeparator(actionFile);
@@ -203,6 +209,7 @@ MainWindow::~MainWindow()
 		delete m_workspace;
 	}
 
+	delete m_configForm;
     delete ui;
 }
 

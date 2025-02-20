@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+class MainWindow;
+
 namespace Ui {
 class ConfigForm;
 }
@@ -15,6 +17,7 @@ public:
     explicit ConfigForm(QWidget *parent = nullptr);
     ~ConfigForm();
 
+	void InitConfig(MainWindow* mainwindow);
 private:
     Ui::ConfigForm *ui;
 };

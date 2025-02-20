@@ -39,5 +39,7 @@ public:
 
 
 	ConfigForm *m_configForm;
+	bool m_checkStart3D, m_checkStart4Plane, m_check3Dcolor, m_checkDefaultWL;
+	int m_DefaultLevel, m_DefaultWindow;// = 862 = 1528
 };
 #endif // MAINWINDOW_H
