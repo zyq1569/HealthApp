@@ -18,8 +18,10 @@ public:
     ~ConfigForm();
 
 	void InitConfig(MainWindow* mainwindow);
+
 private:
     Ui::ConfigForm *ui;
+	MainWindow* m_mainwindow;
 };
 
 #endif // CONFIGFORM_H

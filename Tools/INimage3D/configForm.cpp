@@ -4,19 +4,53 @@
 #include "mainwindow.h"
 
 
+#include <QSettings>
+
 ConfigForm::ConfigForm(QWidget *parent) :
 	QWidget(parent),
     ui(new Ui::ConfigForm)
 {
 	ui->setupUi(this);
-	//setWindowFlags(Qt::WindowCloseButtonHint| Qt::FramelessWindowHint | Qt::Dialog);
+	setWindowFlags(Qt::WindowTitleHint | Qt::CustomizeWindowHint);
 	setWindowFlags(Qt::Dialog);
 	setWindowModality(Qt::WindowModal);
 	setAttribute(Qt::WA_ShowModal);
+
+
+
+	QSettings settings("config.ini", QSettings::IniFormat);
+
+	ui->m_ck3D->setChecked(settings.value("start/start3D").toBool());
+	ui->m_ck4Plane->setChecked(settings.value("start/start4P").toBool());
+	ui->m_ckColor->setChecked(settings.value("start/3Dcolor").toBool());
+
+	ui->m_ckWL->setChecked(settings.value("wl/check").toBool());
+	ui->m_window->setPlainText(settings.value("wl/win").toString());
+	ui->m_level->setPlainText(settings.value("wl/lel").toString());
+
+	m_mainwindow = (MainWindow*)parent;
+
+
+	connect(ui->m_pbSave, &QPushButton::clicked, [this]
+	{
+		InitConfig(m_mainwindow);
+	});
 }
 
 ConfigForm::~ConfigForm()
 {
+	QSettings settings("config.ini", QSettings::IniFormat);
+	settings.setValue("start/start3D", ui->m_ck3D->isChecked());
+	settings.setValue("start/start4P", ui->m_ck4Plane->isChecked());
+	settings.setValue("start/3Dcolor", ui->m_ckColor->isChecked());
+
+	settings.setValue("wl/check", ui->m_ckWL->isChecked());
+	settings.setValue("wl/win", ui->m_window->toPlainText().toInt());
+	settings.setValue("wl/lel", ui->m_level->toPlainText().toInt());
+
+
+	settings.sync();
+
     delete ui;
 }
 
@@ -27,6 +61,6 @@ void ConfigForm::InitConfig(MainWindow* mainwindow)
 	mainwindow->m_checkStart4Plane = ui->m_ck4Plane->isChecked();
 	mainwindow->m_check3Dcolor     = ui->m_ckColor->isChecked();
 	mainwindow->m_checkDefaultWL   = ui->m_ckWL->isChecked();
-	mainwindow->m_DefaultWindow = ui->m_window->toPlainText().toInt();
-	mainwindow->m_DefaultLevel  = ui->m_level->toPlainText().toInt();
+	mainwindow->m_DefaultWindow    = ui->m_window->toPlainText().toInt();
+	mainwindow->m_DefaultLevel     = ui->m_level->toPlainText().toInt();
 }
