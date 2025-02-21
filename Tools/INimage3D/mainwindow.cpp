@@ -26,6 +26,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 	m_index3D = m_index4P = -1;
 
+	m_checkStart3D = m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
+	m_DefaultLevel = m_DefaultWindow = 0;// = 862 = 1528
+
 	showMaximized();
 	this->setWindowIcon(QIcon(":images/icons/pyramid.png"));
 	
