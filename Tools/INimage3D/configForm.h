@@ -17,7 +17,7 @@ public:
     explicit ConfigForm(QWidget *parent = nullptr);
     ~ConfigForm();
 
-	void InitConfig(MainWindow* mainwindow);
+	void InitConfig();
 
 private:
     Ui::ConfigForm *ui;
