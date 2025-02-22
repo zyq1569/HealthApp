@@ -119,9 +119,16 @@ MainWindow::MainWindow(QWidget *parent)
 	m_mainToolbar->addAction(m_show3D);
 	connect(m_show3D, &QAction::triggered, [this]
 	{
-		m_qProgressBar->setVisible(true);
-		showImage3D();
-		m_qProgressBar->setVisible(false);
+		if (!m_image3D)
+		{
+			m_qProgressBar->show();
+			showImage3D();
+			m_qProgressBar->hide();
+		}
+		else
+		{
+			showImage3D();
+		}
 	});
 	m_show3D->setEnabled(false);
 
@@ -129,9 +136,16 @@ MainWindow::MainWindow(QWidget *parent)
 	m_mainToolbar->addAction(m_show4Plane);
 	connect(m_show4Plane, &QAction::triggered, [this]
 	{
-		m_qProgressBar->setVisible(true);
-		showImage4Plane();
-		m_qProgressBar->setVisible(false);
+		if (m_image4Plane)
+		{
+			m_qProgressBar->show();
+			showImage4Plane();
+			m_qProgressBar->hide();
+		}
+		else
+		{
+			showImage4Plane();
+		}
 	});
 	m_show4Plane->setEnabled(false);
 
@@ -147,18 +161,17 @@ MainWindow::MainWindow(QWidget *parent)
 	});
 
 	m_qProgressBar = new QProgressDialog(this);// (m_workspace);
-	m_qProgressBar->setVisible(false);
-	//m_qProgressBar->setWindowFlags(Qt::FramelessWindowHint);
+	m_qProgressBar->setVisible(true);
+	m_qProgressBar->setWindowFlags(Qt::FramelessWindowHint);
 	m_qProgressBar->setCancelButton(0);
 	m_qProgressBar->setRange(0, 0);
 	m_qProgressBar->setMinimum(0);
 	m_qProgressBar->setMaximum(0);
 	m_qProgressBar->setOrientation(Qt::Horizontal);
 	m_qProgressBar->setFixedSize(300, 50);
+	m_qProgressBar->hide();
 	//m_qProgressBar->setInvertedAppearance(true);
 	
-
-	//m_mainToolbar->insertSeparator(actionFile);
 }
 
 void MainWindow::starViewer()
@@ -217,6 +230,7 @@ void MainWindow::initMetaFile()
 	m_openAction->setShortcut(QKeySequence("Ctrl+C"));
 
 	m_qProgressBar->setVisible(true);
+	m_qProgressBar->show();
 	if (m_checkStart3D)
 	{
 		showImage3D();
@@ -225,8 +239,7 @@ void MainWindow::initMetaFile()
 	{
 		showImage4Plane();
 	}
-	m_qProgressBar->setVisible(false);
-	m_qProgressBar->reset();
+	m_qProgressBar->hide();
 
 }
 
