@@ -1,7 +1,7 @@
 #include "qfourpaneviewer.h"
 #include "ui_qfourpaneviewer.h"
 
-
+#include "mainwindow.h"
 ///---------------------------
 #include "vtkBoundedPlanePointPlacer.h"
 #include "vtkCellPicker.h"
@@ -122,6 +122,20 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent, vtkMetaImageReader* metaReader
     QWidget(parent), m_MetaReader(metaReader), ui(new Ui::QFourpaneviewer)
 {
     ui->setupUi(this);
+
+	m_mainwindow    = (MainWindow*)parent;
+
+	if (m_mainwindow->m_checkDefaultWL)
+	{
+		m_defaultLevel  = m_mainwindow->m_DefaultLevel;
+		m_defaultWindow = m_mainwindow->m_DefaultWindow;
+	}
+	else
+	{
+		m_defaultLevel  = 862;
+		m_defaultWindow = 1528;
+	}
+
 
 	INimage3D();
 
