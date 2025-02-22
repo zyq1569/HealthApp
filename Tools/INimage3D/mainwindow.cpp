@@ -132,6 +132,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	m_checkStart3D  =  m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
 	m_configForm = new ConfigForm(this);
+	m_configForm->InitConfig();
 	m_cfigQA = new QAction("ÅäÖÃ", this);
 	m_mainToolbar->addAction(m_cfigQA);
 	connect(m_cfigQA, &QAction::triggered, [this]
@@ -198,6 +199,15 @@ void MainWindow::initMetaFile()
 	m_openAction->setText("¹Ø±Õ(&C)");
 	m_openAction->setShortcut(QKeySequence("Ctrl+C"));
 
+	if (m_checkStart3D)
+	{
+		showImage3D();
+	}
+	if (m_checkStart4Plane)
+	{
+		showImage4Plane();
+	}
+
 }
 
 void MainWindow::setEnabledQAction()
@@ -246,7 +256,12 @@ void MainWindow::showImage4Plane()
 	{
 		m_image4Plane = new QFourpaneviewer(this, m_MetaReader);
 		m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
-		m_workspace->setCurrentIndex(m_index4P);
+
+		if (!m_checkStart3D)
+		{
+		    m_workspace->setCurrentIndex(m_index4P);
+		}
+
 	}
 	else if (m_index4P >= 0)
 	{
