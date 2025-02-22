@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QTabBar>
 #include <QToolBar>
+#include <QProgressDialog>
 #pragma execution_character_set("utf-8")
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -118,7 +119,9 @@ MainWindow::MainWindow(QWidget *parent)
 	m_mainToolbar->addAction(m_show3D);
 	connect(m_show3D, &QAction::triggered, [this]
 	{
+		m_qProgressBar->setVisible(true);
 		showImage3D();
+		m_qProgressBar->setVisible(false);
 	});
 	m_show3D->setEnabled(false);
 
@@ -126,27 +129,41 @@ MainWindow::MainWindow(QWidget *parent)
 	m_mainToolbar->addAction(m_show4Plane);
 	connect(m_show4Plane, &QAction::triggered, [this]
 	{
+		m_qProgressBar->setVisible(true);
 		showImage4Plane();
+		m_qProgressBar->setVisible(false);
 	});
 	m_show4Plane->setEnabled(false);
 
 	m_checkStart3D  =  m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
 	m_configForm = new ConfigForm(this);
 	m_configForm->InitConfig();
+
 	m_cfigQA = new QAction("ÅäÖÃ", this);
 	m_mainToolbar->addAction(m_cfigQA);
 	connect(m_cfigQA, &QAction::triggered, [this]
-	{
-		
-		//m_configForm->show();
-		//delete m_configForm;
-		//ConfigForm a;
-		//m_configForm->setAttribute(Qt::WA_ShowModal, true);
+	{	
 		m_configForm->show();
-		//m_configForm->InitConfig(this);
 	});
 
+	m_qProgressBar = new QProgressDialog(this);// (m_workspace);
+	m_qProgressBar->setVisible(false);
+	//m_qProgressBar->setWindowFlags(Qt::FramelessWindowHint);
+	m_qProgressBar->setCancelButton(0);
+	m_qProgressBar->setRange(0, 0);
+	m_qProgressBar->setMinimum(0);
+	m_qProgressBar->setMaximum(0);
+	m_qProgressBar->setOrientation(Qt::Horizontal);
+	m_qProgressBar->setFixedSize(300, 50);
+	//m_qProgressBar->setInvertedAppearance(true);
+	
+
 	//m_mainToolbar->insertSeparator(actionFile);
+}
+
+void MainWindow::starViewer()
+{
+
 }
 
 void MainWindow::initMetaFile()
@@ -199,6 +216,7 @@ void MainWindow::initMetaFile()
 	m_openAction->setText("¹Ø±Õ(&C)");
 	m_openAction->setShortcut(QKeySequence("Ctrl+C"));
 
+	m_qProgressBar->setVisible(true);
 	if (m_checkStart3D)
 	{
 		showImage3D();
@@ -207,6 +225,8 @@ void MainWindow::initMetaFile()
 	{
 		showImage4Plane();
 	}
+	m_qProgressBar->setVisible(false);
+	m_qProgressBar->reset();
 
 }
 

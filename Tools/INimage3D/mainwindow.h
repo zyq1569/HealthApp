@@ -5,6 +5,8 @@
 #include "configForm.h"
 
 class vtkMetaImageReader;
+class QProgressDialog;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -23,6 +25,9 @@ public slots:
 	void setEnabledQAction();
 	void initMetaFile();
 
+public:
+	void starViewer();
+
 private:
     Ui::MainWindow *ui;
 
@@ -33,6 +38,7 @@ public:
 	QAction *m_openAction, *m_show3D, *m_show4Plane, *m_cfigQA;
 	QMenu *m_fileMenu;
 	vtkMetaImageReader *m_MetaReader;
+	QProgressDialog *m_qProgressBar;
 	QToolBar *m_mainToolbar;
 	int m_index3D, m_index4P;
 	bool m_closeMetaFile;
