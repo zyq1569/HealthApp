@@ -1,6 +1,8 @@
 #include "q3dviewer.h"
 #include "ui_q3dviewer.h"
 
+#include "mainwindow.h"
+
 #include <vtkImageData.h>
 #include <vtkActor.h>
 #include <vtkImageMarchingCubes.h>
@@ -33,20 +35,21 @@ Q3dviewer::Q3dviewer(QWidget *parent, vtkMetaImageReader* metaReader) :
 {
     ui->setupUi(this);
 
-	m_pieceF = nullptr;
+	m_pieceF     = nullptr;
 	m_pieceGradF = nullptr;
 	m_colorTranF = nullptr;
+	m_mainwindow = (MainWindow*)parent;
 
-	m_volumeMapper = vtkSmartVolumeMapper::New();
+	m_volumeMapper     = vtkSmartVolumeMapper::New();
 
 	m_isosurfaceFilter = vtkImageMarchingCubes::New();
 
-	m_volumeProperty = vtkVolumeProperty::New();
+	m_volumeProperty   = vtkVolumeProperty::New();
 	
 
-	m_isosurfaceActor = vtkActor::New();
+	m_isosurfaceActor  = vtkActor::New();
 
-	m_renderer = vtkRenderer::New();
+	m_renderer  = vtkRenderer::New();
 
 	m_vtkVolume = vtkVolume::New();
 	m_vtkVolume->SetProperty(m_volumeProperty);
@@ -130,7 +133,11 @@ void Q3dviewer::INimage3D()
 	m_pieceGradF->AddPoint(130,1.0);
 	m_pieceGradF->AddPoint(300,0.1);
 
-	m_volumeProperty->SetColor(m_colorTranF);
+	if (m_mainwindow->m_check3Dcolor)
+	{
+		m_volumeProperty->SetColor(m_colorTranF);
+	}
+
 	m_volumeProperty->SetScalarOpacity(m_pieceF);
 	m_volumeProperty->SetGradientOpacity(m_pieceGradF);
 	m_volumeProperty->ShadeOn();

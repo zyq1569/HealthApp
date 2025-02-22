@@ -13,6 +13,7 @@ class vtkRenderer;
 class vtkPiecewiseFunction;
 class vtkColorTransferFunction;
 class vtkMetaImageReader;
+class MainWindow;
 
 #include <QWidget>
 
@@ -52,6 +53,7 @@ public:
 	vtkColorTransferFunction *m_colorTranF;
 
 	vtkMetaImageReader* m_MetaReader;
+	MainWindow* m_mainwindow;
 
 	void INimage3D();
 };
