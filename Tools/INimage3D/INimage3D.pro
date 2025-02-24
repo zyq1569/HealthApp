@@ -13,19 +13,22 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     q3dviewer.cpp \
-    qfourpaneviewer.cpp
+    qfourpaneviewer.cpp \
+    qprogressdata.cpp
 
 HEADERS += \
     ConfigForm.h \
     mainwindow.h \
     q3dviewer.h \
-    qfourpaneviewer.h
+    qfourpaneviewer.h \
+    qprogressdata.h
 
 FORMS += \
     ConfigForm.ui \
     mainwindow.ui \
     q3dviewer.ui \
-    qfourpaneviewer.ui
+    qfourpaneviewer.ui \
+    qprogressdata.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

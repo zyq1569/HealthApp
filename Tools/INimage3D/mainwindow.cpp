@@ -3,6 +3,7 @@
 
 #include "qfourpaneviewer.h"
 #include "q3dviewer.h"
+#include "qprogressData.h"
 #include <vtkMetaImageReader.h>
 
 #include <QFileDialog>
@@ -136,7 +137,7 @@ MainWindow::MainWindow(QWidget *parent)
 	m_mainToolbar->addAction(m_show4Plane);
 	connect(m_show4Plane, &QAction::triggered, [this]
 	{
-		if (m_image4Plane)
+		if (!m_image4Plane)
 		{
 			m_qProgressBar->show();
 			showImage4Plane();
@@ -160,18 +161,8 @@ MainWindow::MainWindow(QWidget *parent)
 		m_configForm->show();
 	});
 
-	m_qProgressBar = new QProgressDialog(this);// (m_workspace);
-	m_qProgressBar->setVisible(true);
-	m_qProgressBar->setWindowFlags(Qt::FramelessWindowHint);
-	m_qProgressBar->setCancelButton(0);
-	m_qProgressBar->setRange(0, 0);
-	m_qProgressBar->setMinimum(0);
-	m_qProgressBar->setMaximum(0);
-	m_qProgressBar->setOrientation(Qt::Horizontal);
-	m_qProgressBar->setFixedSize(300, 50);
-	m_qProgressBar->hide();
-	//m_qProgressBar->setInvertedAppearance(true);
-	
+	m_qProgressBar = new QProgressData(this);// (m_workspace);
+
 }
 
 void MainWindow::starViewer()
@@ -229,7 +220,6 @@ void MainWindow::initMetaFile()
 	m_openAction->setText("¹Ø±Õ(&C)");
 	m_openAction->setShortcut(QKeySequence("Ctrl+C"));
 
-	m_qProgressBar->setVisible(true);
 	m_qProgressBar->show();
 	if (m_checkStart3D)
 	{

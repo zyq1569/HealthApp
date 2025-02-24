@@ -190,6 +190,7 @@
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="q3dviewer.cpp" />
     <ClCompile Include="qfourpaneviewer.cpp" />
+    <ClCompile Include="qprogressdata.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -201,6 +202,7 @@
     </QtUic>
     <QtUic Include="q3dviewer.ui" />
     <QtUic Include="qfourpaneviewer.ui" />
+    <QtUic Include="qprogressdata.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="main.qrc" />
@@ -213,6 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="configForm.h" />
+    <QtMoc Include="qprogressdata.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

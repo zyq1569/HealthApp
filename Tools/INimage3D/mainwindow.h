@@ -5,7 +5,7 @@
 #include "configForm.h"
 
 class vtkMetaImageReader;
-class QProgressDialog;
+class QProgressData;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,7 +38,7 @@ public:
 	QAction *m_openAction, *m_show3D, *m_show4Plane, *m_cfigQA;
 	QMenu *m_fileMenu;
 	vtkMetaImageReader *m_MetaReader;
-	QProgressDialog *m_qProgressBar;
+	QProgressData *m_qProgressBar;
 	QToolBar *m_mainToolbar;
 	int m_index3D, m_index4P;
 	bool m_closeMetaFile;
