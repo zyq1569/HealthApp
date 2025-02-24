@@ -12,10 +12,10 @@
 #include <QProgressDialog>
 #pragma execution_character_set("utf-8")
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+	: QMainWindow(parent)
+	, ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
 	this->setAttribute(Qt::WA_DeleteOnClose);
 	setStatusBar(nullptr);
@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	showMaximized();
 	this->setWindowIcon(QIcon(":images/icons/pyramid.png"));
-	
+
 
 	//QPalette pal;
 	//pal.setColor(QPalette::Window, QColor(48, 48, 48));
@@ -112,7 +112,7 @@ MainWindow::MainWindow(QWidget *parent)
 	m_openAction->setShortcut(QKeySequence("Ctrl+O"));
 	m_mainToolbar->addAction(m_openAction);
 	connect(m_openAction, &QAction::triggered, [this]
-	{ 
+	{
 		initMetaFile();
 	});
 
@@ -150,14 +150,14 @@ MainWindow::MainWindow(QWidget *parent)
 	});
 	m_show4Plane->setEnabled(false);
 
-	m_checkStart3D  =  m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
+	m_checkStart3D = m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
 	m_configForm = new ConfigForm(this);
 	m_configForm->InitConfig();
 
 	m_cfigQA = new QAction("ÅäÖÃ", this);
 	m_mainToolbar->addAction(m_cfigQA);
 	connect(m_cfigQA, &QAction::triggered, [this]
-	{	
+	{
 		m_configForm->show();
 	});
 
@@ -182,8 +182,8 @@ void MainWindow::initMetaFile()
 			//delete m_workspace->widget(m_index3D);// ->deleteLater();
 			delete m_image3D;
 			m_image3D = nullptr;
-		    m_workspace->removeTab(m_index3D);
-		    m_index3D  = -1;
+			m_workspace->removeTab(m_index3D);
+			m_index3D = -1;
 		}
 		if (m_image4Plane)
 		{
@@ -221,6 +221,7 @@ void MainWindow::initMetaFile()
 	m_openAction->setShortcut(QKeySequence("Ctrl+C"));
 
 	m_qProgressBar->show();
+
 	if (m_checkStart3D)
 	{
 		showImage3D();
@@ -246,7 +247,7 @@ MainWindow::~MainWindow()
 	}
 
 	delete m_configForm;
-    delete ui;
+	delete ui;
 }
 
 
@@ -262,7 +263,7 @@ void MainWindow::showImage3D()
 		m_index3D = m_workspace->addTab(m_image3D, "image3D");
 		m_workspace->setCurrentIndex(m_index3D);
 	}
-	else if(m_index3D>=0)
+	else if (m_index3D >= 0)
 	{
 		m_workspace->setCurrentIndex(m_index3D);
 	}
@@ -280,10 +281,10 @@ void MainWindow::showImage4Plane()
 		m_image4Plane = new QFourpaneviewer(this, m_MetaReader);
 		m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
 
-		if (!m_checkStart3D)
-		{
-		    m_workspace->setCurrentIndex(m_index4P);
-		}
+		//if (!m_checkStart3D)
+		//{
+		m_workspace->setCurrentIndex(m_index4P);
+		//}
 
 	}
 	else if (m_index4P >= 0)
