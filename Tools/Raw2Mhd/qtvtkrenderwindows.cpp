@@ -10,9 +10,7 @@
 
 #include<Qdir>
 
-QtVTKRenderWindows::QtVTKRenderWindows(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::QtVTKRenderWindows)
+QtVTKRenderWindows::QtVTKRenderWindows(QWidget *parent) : QMainWindow(parent), ui(new Ui::QtVTKRenderWindows)
 {
     ui->setupUi(this);
 
