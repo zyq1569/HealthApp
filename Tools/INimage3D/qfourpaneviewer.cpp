@@ -123,7 +123,23 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent, vtkMetaImageReader* metaReader
 {
     ui->setupUi(this);
 
-	m_mainwindow    = (MainWindow*)parent;
+	for (int i = 0; i < 3; i++)
+	{
+		m_planeWidget[i]        = nullptr;
+		m_resliceImageViewer[i] = nullptr;
+		m_renderWindow[i]       = nullptr;
+	}
+	m_2DViewRenderWindow = nullptr;
+	m_resliceCallback    = nullptr;
+	m_cellPicker         = nullptr;
+
+	m_ipwProp            = nullptr;
+	m_ren                = nullptr;
+	m_actionReset        = nullptr;
+				         
+	m_MetaReader         = nullptr;
+
+	m_mainwindow         = (MainWindow*)parent;
 
 	if (m_mainwindow->m_checkDefaultWL)
 	{
@@ -220,6 +236,7 @@ void QFourpaneviewer::INimage3D()
 		rep->SetWindowLevel(1528, 862);
 	}
 
+	//show mpr2DView
 	m_cellPicker = vtkCellPicker::New();
 	m_cellPicker->SetTolerance(0.005);
 
@@ -300,15 +317,46 @@ QFourpaneviewer::~QFourpaneviewer()
 {
 	for (int i = 0; i < 3; i++)
 	{
-		m_resliceImageViewer[i]->Delete();
-		m_planeWidget[i]->Delete();
-		m_renderWindow[i]->Delete();
+		if (m_resliceImageViewer[i])
+		{
+			m_resliceImageViewer[i]->Delete();
+		}
+
+		if (m_planeWidget[i])
+		{
+			m_planeWidget[i]->Delete();
+		}
+
+		if (m_renderWindow[i])
+		{
+			m_renderWindow[i]->Delete();
+		}
 	}
-	m_resliceCallback->Delete();
-	m_cellPicker->Delete();
-	m_ipwProp->Delete();
-	m_ren->Delete();
-	m_2DViewRenderWindow->Delete();
+
+	if (m_resliceCallback)
+	{
+		m_resliceCallback->Delete();
+	}
+
+	if (m_cellPicker)
+	{
+		m_cellPicker->Delete();
+	}
+
+	if (m_ipwProp)
+	{
+		m_ipwProp->Delete();
+	}
+
+	if (m_ren)
+	{
+		m_ren->Delete();
+	}
+
+	if (m_2DViewRenderWindow)
+	{
+		m_2DViewRenderWindow->Delete();
+	}
 
     delete ui;
 }
