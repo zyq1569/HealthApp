@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
-    <height>222</height>
+    <width>429</width>
+    <height>171</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QCheckBox" name="m_ck3D">
    <property name="geometry">
     <rect>
-     <x>34</x>
-     <y>45</y>
+     <x>270</x>
+     <y>26</y>
      <width>51</width>
      <height>31</height>
     </rect>
@@ -26,11 +26,11 @@
     <string>三维</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="m_lable">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>20</y>
+     <x>266</x>
+     <y>1</y>
      <width>121</width>
      <height>21</height>
     </rect>
@@ -42,8 +42,8 @@
   <widget class="QCheckBox" name="m_ck4Plane">
    <property name="geometry">
     <rect>
-     <x>34</x>
-     <y>75</y>
+     <x>270</x>
+     <y>56</y>
      <width>51</width>
      <height>31</height>
     </rect>
@@ -55,21 +55,21 @@
   <widget class="QCheckBox" name="m_ckWL">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>140</y>
-     <width>91</width>
+     <x>29</x>
+     <y>58</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>默认窗宽位：</string>
+    <string>切面默认窗宽位：</string>
    </property>
   </widget>
   <widget class="QTextEdit" name="m_window">
    <property name="geometry">
     <rect>
-     <x>55</x>
-     <y>170</y>
+     <x>54</x>
+     <y>88</y>
      <width>91</width>
      <height>21</height>
     </rect>
@@ -91,8 +91,8 @@ p, li { white-space: pre-wrap; }
   <widget class="QTextEdit" name="m_level">
    <property name="geometry">
     <rect>
-     <x>178</x>
-     <y>170</y>
+     <x>177</x>
+     <y>88</y>
      <width>91</width>
      <height>21</height>
     </rect>
@@ -114,8 +114,8 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>31</x>
-     <y>172</y>
+     <x>30</x>
+     <y>90</y>
      <width>21</width>
      <height>16</height>
     </rect>
@@ -127,8 +127,8 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>172</y>
+     <x>159</x>
+     <y>90</y>
      <width>21</width>
      <height>16</height>
     </rect>
@@ -140,21 +140,21 @@ p, li { white-space: pre-wrap; }
   <widget class="QCheckBox" name="m_ckColor">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>46</y>
-     <width>51</width>
+     <x>54</x>
+     <y>23</y>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>伪彩</string>
+    <string>默认添加伪彩</string>
    </property>
   </widget>
   <widget class="QLabel" name="m_lableRedme">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>200</y>
+     <x>19</x>
+     <y>118</y>
      <width>151</width>
      <height>16</height>
     </rect>
@@ -166,14 +166,46 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="m_pbSave">
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>170</y>
+     <x>309</x>
+     <y>88</y>
      <width>51</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
     <string>保存</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>29</x>
+     <y>28</y>
+     <width>41</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>三维</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="m_lableRedme_2">
+   <property name="geometry">
+    <rect>
+     <x>3</x>
+     <y>150</y>
+     <width>431</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>MS Shell Dlg 2</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string> 切面：ctrl /alt + 鼠标右键可以旋转/平移轴线；ctrl+s 恢复切面初始</string>
    </property>
   </widget>
  </widget>
