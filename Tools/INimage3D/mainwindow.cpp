@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
 	setStatusBar(nullptr);
 	setMenuBar(nullptr);
 
-	m_image3D = nullptr;
+	//m_image3D = nullptr;
 	m_image4Plane = nullptr;
 	m_MetaReader = nullptr;
 	m_closeMetaFile = false;
@@ -116,39 +116,39 @@ MainWindow::MainWindow(QWidget *parent)
 		initMetaFile();
 	});
 
-	m_show3D = new QAction("三维", this);
-	m_mainToolbar->addAction(m_show3D);
-	connect(m_show3D, &QAction::triggered, [this]
-	{
-		if (!m_image3D)
-		{
-			m_qProgressBar->show();
-			showImage3D();
-			m_qProgressBar->hide();
-		}
-		else
-		{
-			showImage3D();
-		}
-	});
-	m_show3D->setEnabled(false);
-
-	m_show4Plane = new QAction("切面", this);
-	m_mainToolbar->addAction(m_show4Plane);
-	connect(m_show4Plane, &QAction::triggered, [this]
-	{
-		if (!m_image4Plane)
-		{
-			m_qProgressBar->show();
-			showImage4Plane();
-			m_qProgressBar->hide();
-		}
-		else
-		{
-			showImage4Plane();
-		}
-	});
-	m_show4Plane->setEnabled(false);
+	//m_show3D = new QAction("三维", this);
+	//m_mainToolbar->addAction(m_show3D);
+	//connect(m_show3D, &QAction::triggered, [this]
+	//{
+	//	if (!m_image3D)
+	//	{
+	//		m_qProgressBar->show();
+	//		showImage3D();
+	//		m_qProgressBar->hide();
+	//	}
+	//	else
+	//	{
+	//		showImage3D();
+	//	}
+	//});
+	//m_show3D->setEnabled(false);
+	//
+	//m_show4Plane = new QAction("切面", this);
+	//m_mainToolbar->addAction(m_show4Plane);
+	//connect(m_show4Plane, &QAction::triggered, [this]
+	//{
+	//	if (!m_image4Plane)
+	//	{
+	//		m_qProgressBar->show();
+	//		showImage4Plane();
+	//		m_qProgressBar->hide();
+	//	}
+	//	else
+	//	{
+	//		showImage4Plane();
+	//	}
+	//});
+	//m_show4Plane->setEnabled(false);
 
 	m_checkStart3D = m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
 	m_configForm = new ConfigForm(this);
@@ -177,17 +177,17 @@ void MainWindow::initMetaFile()
 		m_MetaReader->Delete();
 		m_MetaReader = nullptr;
 
-		if (m_image3D)
-		{
-			//delete m_workspace->widget(m_index3D);// ->deleteLater();
-			delete m_image3D;
-			m_image3D = nullptr;
-			m_workspace->removeTab(m_index3D);
-			m_index3D = -1;
-		}
+		//if (m_image3D)
+		//{
+		//	//delete m_workspace->widget(m_index3D);// ->deleteLater();
+		//	delete m_image3D;
+		//	m_image3D = nullptr;
+		//	m_workspace->removeTab(m_index3D);
+		//	m_index3D = -1;
+		//}
 		if (m_image4Plane)
 		{
-			//delete m_workspace->widget(m_index4P);// ->deleteLater();
+		//	//delete m_workspace->widget(m_index4P);// ->deleteLater();
 			delete m_image4Plane;
 			m_image4Plane = nullptr;
 			m_workspace->removeTab(m_index4P);
@@ -197,8 +197,8 @@ void MainWindow::initMetaFile()
 		m_openAction->setText("文件(&O)");
 		m_openAction->setShortcut(QKeySequence("Ctrl+O"));
 
-		m_show3D->setEnabled(false);
-		m_show4Plane->setEnabled(false);
+		//m_show3D->setEnabled(false);
+		//m_show4Plane->setEnabled(false);
 
 		return;
 	}
@@ -214,22 +214,22 @@ void MainWindow::initMetaFile()
 	m_MetaReader->SetFileName(filename.c_str());
 	m_MetaReader->Update();
 
-	m_show3D->setEnabled(true);
-	m_show4Plane->setEnabled(true);
+	//m_show3D->setEnabled(true);
+	//m_show4Plane->setEnabled(true);
 
 	m_openAction->setText("关闭(&C)");
 	m_openAction->setShortcut(QKeySequence("Ctrl+C"));
 
 	m_qProgressBar->show();
 
-	if (m_checkStart3D)
-	{
-		showImage3D();
-	}
-	if (m_checkStart4Plane)
-	{
-		showImage4Plane();
-	}
+	//if (m_checkStart3D)
+	//{
+	//	showImage3D();
+	//}
+	//if (m_checkStart4Plane)
+	//{
+    showImage4Plane();
+	//}
 	m_qProgressBar->hide();
 
 }
@@ -253,6 +253,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::showImage3D()
 {
+/*
 	if (!m_MetaReader)
 	{
 		return;
@@ -267,7 +268,7 @@ void MainWindow::showImage3D()
 	{
 		m_workspace->setCurrentIndex(m_index3D);
 	}
-
+ */
 }
 
 void MainWindow::showImage4Plane()
@@ -276,19 +277,19 @@ void MainWindow::showImage4Plane()
 	{
 		return;
 	}
-	if (!m_image4Plane)
-	{
-		m_image4Plane = new QFourpaneviewer(this, m_MetaReader);
-		m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
+	//if (!m_image4Plane)
+	//{
+	m_image4Plane = new QFourpaneviewer(this, m_MetaReader);
+	m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
 
-		//if (!m_checkStart3D)
-		//{
-		m_workspace->setCurrentIndex(m_index4P);
-		//}
+	//if (!m_checkStart3D)
+	//{
+	m_workspace->setCurrentIndex(m_index4P);
+	//}
 
-	}
-	else if (m_index4P >= 0)
-	{
-		m_workspace->setCurrentIndex(m_index4P);
-	}
+//}
+//else if (m_index4P >= 0)
+//{
+//	m_workspace->setCurrentIndex(m_index4P);
+//}
 }

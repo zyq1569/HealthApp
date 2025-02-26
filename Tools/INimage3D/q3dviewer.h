@@ -14,6 +14,7 @@ class vtkPiecewiseFunction;
 class vtkColorTransferFunction;
 class vtkMetaImageReader;
 class MainWindow;
+class vtkPolyDataMapper;
 
 #include <QWidget>
 
@@ -51,7 +52,7 @@ public:
 	vtkRenderer *m_renderer;
 	vtkPiecewiseFunction *m_pieceF, *m_pieceGradF;
 	vtkColorTransferFunction *m_colorTranF;
-
+	vtkPolyDataMapper* m_isosurfaceMapper;
 	vtkMetaImageReader* m_MetaReader;
 	MainWindow* m_mainwindow;
 

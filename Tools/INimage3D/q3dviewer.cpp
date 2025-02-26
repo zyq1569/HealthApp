@@ -41,23 +41,17 @@ Q3dviewer::Q3dviewer(QWidget *parent, vtkMetaImageReader* metaReader) :
 	m_mainwindow = (MainWindow*)parent;
 
 	m_volumeMapper     = vtkSmartVolumeMapper::New();
-
 	m_isosurfaceFilter = vtkImageMarchingCubes::New();
-
 	m_volumeProperty   = vtkVolumeProperty::New();
-	
-
 	m_isosurfaceActor  = vtkActor::New();
-
-	m_renderer  = vtkRenderer::New();
-
-	m_vtkVolume = vtkVolume::New();
+	m_renderer         = vtkRenderer::New();			       
+	m_vtkVolume        = vtkVolume::New();
 	m_vtkVolume->SetProperty(m_volumeProperty);
 	m_vtkVolume->SetMapper(m_volumeMapper);
 
-	vtkNew<vtkPolyDataMapper> isosurfaceMapper;
-	isosurfaceMapper->SetInputConnection(m_isosurfaceFilter->GetOutputPort());
-	m_isosurfaceActor->SetMapper(isosurfaceMapper);
+	m_isosurfaceMapper = vtkPolyDataMapper::New();// isosurfaceMapper;
+	m_isosurfaceMapper->SetInputConnection(m_isosurfaceFilter->GetOutputPort());
+	m_isosurfaceActor->SetMapper(m_isosurfaceMapper);
 
 	m_renderer->AddViewProp(m_vtkVolume);
 
@@ -74,10 +68,14 @@ Q3dviewer::~Q3dviewer()
 	m_isosurfaceActor->Delete();
 	m_renderer->Delete();
 
-	m_pieceF ? m_pieceF->Delete(): m_pieceF = nullptr;
-	m_pieceF ? m_pieceGradF->Delete() : m_pieceF = nullptr;
-	m_pieceF ? m_colorTranF->Delete() : m_pieceF = nullptr;
+	m_pieceF ? m_pieceF->Delete(): m_pieceF          = nullptr;
+	m_pieceGradF ? m_pieceGradF->Delete() : m_pieceF = nullptr;
+	m_colorTranF ? m_colorTranF->Delete() : m_pieceF = nullptr;
 
+	if (m_isosurfaceMapper)
+	{
+		m_isosurfaceMapper->Delete();
+	}
     delete ui;
 }
 
@@ -86,22 +84,10 @@ void Q3dviewer::INimage3D()
 	if (!m_MetaReader)
 		return;
 
-	//QString fileMhd = m_fileMHd;
-	//std::string filename = qPrintable(fileMhd);
-	//
-	//vtkNew<vtkMetaImageReader> reader;
-	//reader->SetFileName(filename.c_str());
-	//reader->Update();
-	int imageDims[3];
-
-
 	vtkImageData *imageData = m_MetaReader->GetOutput();
-	imageData->GetDimensions(imageDims);
-
 
 	m_pieceF = vtkPiecewiseFunction::New();//	m_pieceF->AddPoint(20.0, 0.0);	m_pieceF->AddPoint(255, 0.0);
-	//m_pieceF->AddPoint(-1024, 0.0);
-	//m_pieceF->AddPoint(-24, 0.0);
+	//m_pieceF->AddPoint(-1024, 0.0);//m_pieceF->AddPoint(-24, 0.0);
 	m_pieceF->AddPoint(167.00000000000000, 0.16862745098039220);
 	m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491);
 	m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491);
@@ -111,11 +97,8 @@ void Q3dviewer::INimage3D()
 
 	m_colorTranF = vtkColorTransferFunction::New();
 	/*
-	m_colorTranF->AddRGBPoint(0.0, 0.0, 0.0, 0.0);
-	m_colorTranF->AddRGBPoint(64.0, 1.0, 0.0, 0.0);
-	m_colorTranF->AddRGBPoint(128.0, 0.0, 0.0, 1.0);
-	m_colorTranF->AddRGBPoint(192.0, 0.0, 1.0, 0.0);
-	m_colorTranF->AddRGBPoint(255.0, 0.0, 0.2, 0.0);	
+	m_colorTranF->AddRGBPoint(0.0, 0.0, 0.0, 0.0);	m_colorTranF->AddRGBPoint(64.0, 1.0, 0.0, 0.0);
+	m_colorTranF->AddRGBPoint(128.0, 0.0, 0.0, 1.0);m_colorTranF->AddRGBPoint(192.0, 0.0, 1.0, 0.0); m_colorTranF->AddRGBPoint(255.0, 0.0, 0.2, 0.0);	
 	*/
 
 	m_colorTranF->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
@@ -146,8 +129,6 @@ void Q3dviewer::INimage3D()
 	m_volumeProperty->SetDiffuse(0.69996);//漫反射
 	m_volumeProperty->SetSpecular(0.2);
 	m_volumeProperty->SetSpecularPower(10);//高光强度
-	
-
 
 	m_volumeMapper->SetInputData(imageData);
 	m_volumeMapper->SetBlendModeToComposite();

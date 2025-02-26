@@ -33,7 +33,7 @@ private:
 
 public:
 	QTabWidget *m_workspace;
-	QWidget *m_image3D, *m_image4Plane;
+	QWidget  *m_image4Plane;//*m_image3D,
 
 	QAction *m_openAction, *m_show3D, *m_show4Plane, *m_cfigQA;
 	QMenu *m_fileMenu;

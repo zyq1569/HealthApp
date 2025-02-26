@@ -14,6 +14,15 @@ class vtkResliceCursorCallback;
 class vtkCellPicker;
 class MainWindow;
 
+class vtkImageMarchingCubes;
+class vtkSmartVolumeMapper;
+class vtkColorTransferFunction;
+class vtkPolyDataMapper;
+class vtkVolumeProperty;
+class vtkVolume;
+class vtkPiecewiseFunction;
+
+
 #include <QWidget>
 
 namespace Ui {
@@ -52,6 +61,26 @@ public:
 	int m_defaultWindow;
 
 	void INimage3D();
+
+	//show 3D
+public:
+	/// The main mapper for volume rendering.
+	vtkSmartVolumeMapper *m_volumeMapper;
+	/// Properties of volume rendering.
+	vtkVolumeProperty *m_volumeProperty;
+	/// The volume actor.
+	vtkVolume *m_vtkVolume;
+
+	/// The filter to compute isosurfaces.
+	vtkImageMarchingCubes *m_isosurfaceFilter;
+	/// The actor for isosurfaces.
+	vtkActor *m_isosurfaceActor;
+	vtkRenderer *m_renderer;
+	vtkPolyDataMapper* m_isosurfaceMapper;
+	vtkPiecewiseFunction *m_pieceF, *m_pieceGradF;
+	vtkColorTransferFunction *m_colorTranF;
+
+	void INshowVolume3D();
 };
 
 #endif // QFOURPANEVIEWER_H

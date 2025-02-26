@@ -33,6 +33,11 @@ ConfigForm::ConfigForm(QWidget *parent) :QWidget(parent), ui(new Ui::ConfigForm)
 	{
 		InitConfig();
 	});
+
+	ui->m_ck3D->hide();
+	ui->m_ck4Plane->hide();
+	ui->m_lable->hide();
+	
 }
 
 ConfigForm::~ConfigForm()
