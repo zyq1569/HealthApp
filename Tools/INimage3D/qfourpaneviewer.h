@@ -22,7 +22,7 @@ class vtkVolumeProperty;
 class vtkVolume;
 class vtkPiecewiseFunction;
 
-
+//class vtkGPUVolumeRayCastMapper;
 #include <QWidget>
 
 namespace Ui {

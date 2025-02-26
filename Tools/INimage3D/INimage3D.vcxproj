@@ -1,6 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|x64">
+      <Configuration>Profile</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -28,6 +36,24 @@
     <IntermediateDirectory>release\</IntermediateDirectory>
     <PrimaryOutput>INimage3D</PrimaryOutput>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="Configuration">
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputDirectory>release\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>INimage3D</PrimaryOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputDirectory>release\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>INimage3D</PrimaryOutput>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <PlatformToolset>v141</PlatformToolset>
     <OutputDirectory>debug\</OutputDirectory>
@@ -43,6 +69,12 @@
   </Target>
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
@@ -65,11 +97,33 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
+    <OutDir>profile\</OutDir>
+    <IntDir>profile\</IntDir>
+    <TargetName>INimage3D</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <OutDir>MinSizeRel\</OutDir>
+    <IntDir>MinSizeRel\</IntDir>
+    <TargetName>INimage3D</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <QtInstall>msvc2017_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtInstall>msvc2017_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="QtSettings">
+    <QtInstall>msvc2017_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="QtSettings">
     <QtInstall>msvc2017_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
@@ -97,7 +151,117 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
+      <AdditionalDependencies>D:\SDK\VTK-9.4.0VC17\lib\Release\vtkCommonCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkGUISupportQt-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkIOImage-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkImagingColor-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkImagingGeneral-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkInteractionImage-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkInteractionStyle-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkInteractionWidgets-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersExtraction-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersStatistics-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkParallelDIY-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkParallelCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkIOLegacy-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkIOCellGrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersCellGrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkIOXML-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkIOXMLParser-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkexpat-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkIOCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtklz4-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtklzma-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkRenderingOpenGL2-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkRenderingHyperTreeGrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersHyperTree-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkRenderingUI-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkglad-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkRenderingContext2D-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersHybrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkImagingSources-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersModeling-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersTexture-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkImagingHybrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkDICOMParser-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkmetaio-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkpng-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtktiff-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkjpeg-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkRenderingAnnotation-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkRenderingFreeType-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkfreetype-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkzlib-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkRenderingVolume-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkRenderingCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersSources-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersGeneral-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersVerdict-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkverdict-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkfmt-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkCommonComputationalGeometry-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkCommonColor-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersGeometry-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkFiltersReduction-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkImagingCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkCommonExecutionModel-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkCommonDataModel-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkpugixml-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkCommonSystem-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkCommonMisc-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkCommonTransforms-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkCommonMath-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtksys-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtktoken-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkdoubleconversion-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkloguru-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkkissfft-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkRenderingVolumeOpenGL2-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\Release\vtkImagingMath-9.4.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5OpenGL.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Widgets.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Gui.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Core.lib;ws2_32.lib;dbghelp.lib;psapi.lib;comctl32.lib;wsock32.lib;opengl32.lib;d3d11.lib;dxgi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OutputFile>$(OutDir)\INimage3D.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;debug;/include;D:\SDK\VTK-9.4.0\Rendering\Volume;D:\SDK\VTK-9.4.0\Common\Core;D:\SDK\VTK-9.4.0VC17\Common\Core;D:\SDK\VTK-9.4.0VC17\Utilities\KWIML;D:\SDK\VTK-9.4.0\Utilities\KWIML;D:\SDK\VTK-9.4.0VC17\Utilities\KWSys;D:\SDK\VTK-9.4.0\Utilities\KWSys;D:\SDK\VTK-9.4.0\ThirdParty\token\vtktoken\token;D:\SDK\VTK-9.4.0VC17\ThirdParty\token\vtktoken\token;D:\SDK\VTK-9.4.0\ThirdParty\token\vtktoken;D:\SDK\VTK-9.4.0VC17\ThirdParty\token\vtktoken;D:\SDK\VTK-9.4.0VC17\ThirdParty\token;D:\SDK\VTK-9.4.0\ThirdParty\token;D:\SDK\VTK-9.4.0\ThirdParty\nlohmannjson\vtknlohmannjson;D:\SDK\VTK-9.4.0VC17\ThirdParty\nlohmannjson\vtknlohmannjson;D:\SDK\VTK-9.4.0\ThirdParty\nlohmannjson\vtknlohmannjson\include;D:\SDK\VTK-9.4.0VC17\ThirdParty\nlohmannjson;D:\SDK\VTK-9.4.0\ThirdParty\nlohmannjson;D:\SDK\VTK-9.4.0\GUISupport\Qt;D:\SDK\VTK-9.4.0VC17\GUISupport\Qt;D:\SDK\VTK-9.4.0\Rendering\Core;D:\SDK\VTK-9.4.0VC17\Rendering\Core;D:\SDK\VTK-9.4.0\Common\DataModel;D:\SDK\VTK-9.4.0VC17\Common\DataModel;D:\SDK\VTK-9.4.0\Common\Math;D:\SDK\VTK-9.4.0VC17\Common\Math;D:\SDK\VTK-9.4.0\ThirdParty\kissfft\vtkkissfft;D:\SDK\VTK-9.4.0VC17\ThirdParty\kissfft\vtkkissfft;D:\SDK\VTK-9.4.0VC17\ThirdParty\kissfft;D:\SDK\VTK-9.4.0\ThirdParty\kissfft;D:\SDK\VTK-9.4.0\Common\Transforms;D:\SDK\VTK-9.4.0VC17\Common\Transforms;D:\SDK\VTK-9.4.0\Common\ExecutionModel;D:\SDK\VTK-9.4.0VC17\Common\ExecutionModel;D:\SDK\VTK-9.4.0\Filters\Core;D:\SDK\VTK-9.4.0VC17\Filters\Core;D:\SDK\VTK-9.4.0\Common\Misc;D:\SDK\VTK-9.4.0VC17\Common\Misc;D:\SDK\VTK-9.4.0\Rendering\OpenGL2;D:\SDK\VTK-9.4.0VC17\Rendering\OpenGL2;D:\SDK\VTK-9.4.0\Filters\General;D:\SDK\VTK-9.4.0VC17\Filters\General;D:\SDK\VTK-9.4.0\IO\Image;D:\SDK\VTK-9.4.0VC17\IO\Image;D:\SDK\VTK-9.4.0\Imaging\Core;D:\SDK\VTK-9.4.0VC17\Imaging\Core;D:\SDK\VTK-9.4.0\Rendering\HyperTreeGrid;D:\SDK\VTK-9.4.0VC17\Rendering\HyperTreeGrid;D:\SDK\VTK-9.4.0\Rendering\UI;D:\SDK\VTK-9.4.0VC17\Rendering\UI;D:\SDK\VTK-9.4.0\ThirdParty\glad\vtkglad;D:\SDK\VTK-9.4.0VC17\ThirdParty\glad\vtkglad;D:\SDK\VTK-9.4.0\ThirdParty\glad\vtkglad\include;D:\SDK\VTK-9.4.0VC17\ThirdParty\glad;D:\SDK\VTK-9.4.0\ThirdParty\glad;D:\SDK\VTK-9.4.0\Interaction\Widgets;D:\SDK\VTK-9.4.0VC17\Interaction\Widgets;D:\SDK\VTK-9.4.0\Filters\Sources;D:\SDK\VTK-9.4.0VC17\Filters\Sources;D:\SDK\VTK-9.4.0\Rendering\Context2D;D:\SDK\VTK-9.4.0VC17\Rendering\Context2D;D:\SDK\VTK-9.4.0\Rendering\VolumeOpenGL2;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtOpenGL;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\SDK\VTK-9.4.0\Imaging\Color;D:\SDK\VTK-9.4.0VC17\Imaging\Color;D:\SDK\VTK-9.4.0\Imaging\General;D:\SDK\VTK-9.4.0VC17\Imaging\General;D:\SDK\VTK-9.4.0\Interaction\Image;D:\SDK\VTK-9.4.0VC17\Interaction\Image;D:\SDK\VTK-9.4.0\Interaction\Style;D:\SDK\VTK-9.4.0VC17\Interaction\Style;D:\SDK\VTK-9.4.0\Rendering\Annotation;D:\SDK\VTK-9.4.0VC17\Rendering\Annotation;D:\SDK\VTK-9.4.0VC17\Rendering\VolumeOpenGL2;D:\SDK\VTK-9.4.0VC17\Rendering\Volume;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zc:referenceBinding -Zc:__cplusplus -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>release\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>release\</ObjectFileName>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_NO_DEBUG;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>INimage3D</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
       <AdditionalDependencies>D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkCommonCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkGUISupportQt-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkIOImage-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkImagingColor-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkImagingGeneral-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkInteractionImage-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkInteractionStyle-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkInteractionWidgets-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersExtraction-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersStatistics-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkParallelDIY-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkParallelCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkIOLegacy-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkIOCellGrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersCellGrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkIOXML-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkIOXMLParser-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkexpat-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkIOCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtklz4-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtklzma-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkRenderingOpenGL2-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkRenderingHyperTreeGrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersHyperTree-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkRenderingUI-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkglad-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkRenderingContext2D-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersHybrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkImagingSources-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersModeling-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersTexture-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkImagingHybrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkDICOMParser-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkmetaio-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkpng-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtktiff-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkjpeg-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkRenderingAnnotation-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkRenderingFreeType-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkfreetype-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkzlib-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkRenderingVolume-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkRenderingCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersSources-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersGeneral-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersVerdict-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkverdict-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkfmt-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkCommonComputationalGeometry-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkCommonColor-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersGeometry-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkFiltersReduction-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkImagingCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkCommonExecutionModel-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkCommonDataModel-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkpugixml-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkCommonSystem-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkCommonMisc-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkCommonTransforms-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkCommonMath-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtksys-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtktoken-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkdoubleconversion-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkloguru-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkkissfft-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkRenderingVolumeOpenGL2-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\RelWithDebInfo\vtkImagingMath-9.4.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5OpenGL.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Widgets.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Gui.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Core.lib;ws2_32.lib;dbghelp.lib;psapi.lib;comctl32.lib;wsock32.lib;opengl32.lib;d3d11.lib;dxgi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OutputFile>$(OutDir)\INimage3D.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;debug;/include;D:\SDK\VTK-9.4.0\Rendering\Volume;D:\SDK\VTK-9.4.0\Common\Core;D:\SDK\VTK-9.4.0VC17\Common\Core;D:\SDK\VTK-9.4.0VC17\Utilities\KWIML;D:\SDK\VTK-9.4.0\Utilities\KWIML;D:\SDK\VTK-9.4.0VC17\Utilities\KWSys;D:\SDK\VTK-9.4.0\Utilities\KWSys;D:\SDK\VTK-9.4.0\ThirdParty\token\vtktoken\token;D:\SDK\VTK-9.4.0VC17\ThirdParty\token\vtktoken\token;D:\SDK\VTK-9.4.0\ThirdParty\token\vtktoken;D:\SDK\VTK-9.4.0VC17\ThirdParty\token\vtktoken;D:\SDK\VTK-9.4.0VC17\ThirdParty\token;D:\SDK\VTK-9.4.0\ThirdParty\token;D:\SDK\VTK-9.4.0\ThirdParty\nlohmannjson\vtknlohmannjson;D:\SDK\VTK-9.4.0VC17\ThirdParty\nlohmannjson\vtknlohmannjson;D:\SDK\VTK-9.4.0\ThirdParty\nlohmannjson\vtknlohmannjson\include;D:\SDK\VTK-9.4.0VC17\ThirdParty\nlohmannjson;D:\SDK\VTK-9.4.0\ThirdParty\nlohmannjson;D:\SDK\VTK-9.4.0\GUISupport\Qt;D:\SDK\VTK-9.4.0VC17\GUISupport\Qt;D:\SDK\VTK-9.4.0\Rendering\Core;D:\SDK\VTK-9.4.0VC17\Rendering\Core;D:\SDK\VTK-9.4.0\Common\DataModel;D:\SDK\VTK-9.4.0VC17\Common\DataModel;D:\SDK\VTK-9.4.0\Common\Math;D:\SDK\VTK-9.4.0VC17\Common\Math;D:\SDK\VTK-9.4.0\ThirdParty\kissfft\vtkkissfft;D:\SDK\VTK-9.4.0VC17\ThirdParty\kissfft\vtkkissfft;D:\SDK\VTK-9.4.0VC17\ThirdParty\kissfft;D:\SDK\VTK-9.4.0\ThirdParty\kissfft;D:\SDK\VTK-9.4.0\Common\Transforms;D:\SDK\VTK-9.4.0VC17\Common\Transforms;D:\SDK\VTK-9.4.0\Common\ExecutionModel;D:\SDK\VTK-9.4.0VC17\Common\ExecutionModel;D:\SDK\VTK-9.4.0\Filters\Core;D:\SDK\VTK-9.4.0VC17\Filters\Core;D:\SDK\VTK-9.4.0\Common\Misc;D:\SDK\VTK-9.4.0VC17\Common\Misc;D:\SDK\VTK-9.4.0\Rendering\OpenGL2;D:\SDK\VTK-9.4.0VC17\Rendering\OpenGL2;D:\SDK\VTK-9.4.0\Filters\General;D:\SDK\VTK-9.4.0VC17\Filters\General;D:\SDK\VTK-9.4.0\IO\Image;D:\SDK\VTK-9.4.0VC17\IO\Image;D:\SDK\VTK-9.4.0\Imaging\Core;D:\SDK\VTK-9.4.0VC17\Imaging\Core;D:\SDK\VTK-9.4.0\Rendering\HyperTreeGrid;D:\SDK\VTK-9.4.0VC17\Rendering\HyperTreeGrid;D:\SDK\VTK-9.4.0\Rendering\UI;D:\SDK\VTK-9.4.0VC17\Rendering\UI;D:\SDK\VTK-9.4.0\ThirdParty\glad\vtkglad;D:\SDK\VTK-9.4.0VC17\ThirdParty\glad\vtkglad;D:\SDK\VTK-9.4.0\ThirdParty\glad\vtkglad\include;D:\SDK\VTK-9.4.0VC17\ThirdParty\glad;D:\SDK\VTK-9.4.0\ThirdParty\glad;D:\SDK\VTK-9.4.0\Interaction\Widgets;D:\SDK\VTK-9.4.0VC17\Interaction\Widgets;D:\SDK\VTK-9.4.0\Filters\Sources;D:\SDK\VTK-9.4.0VC17\Filters\Sources;D:\SDK\VTK-9.4.0\Rendering\Context2D;D:\SDK\VTK-9.4.0VC17\Rendering\Context2D;D:\SDK\VTK-9.4.0\Rendering\VolumeOpenGL2;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtOpenGL;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\SDK\VTK-9.4.0\Imaging\Color;D:\SDK\VTK-9.4.0VC17\Imaging\Color;D:\SDK\VTK-9.4.0\Imaging\General;D:\SDK\VTK-9.4.0VC17\Imaging\General;D:\SDK\VTK-9.4.0\Interaction\Image;D:\SDK\VTK-9.4.0VC17\Interaction\Image;D:\SDK\VTK-9.4.0\Interaction\Style;D:\SDK\VTK-9.4.0VC17\Interaction\Style;D:\SDK\VTK-9.4.0\Rendering\Annotation;D:\SDK\VTK-9.4.0VC17\Rendering\Annotation;D:\SDK\VTK-9.4.0VC17\Rendering\VolumeOpenGL2;D:\SDK\VTK-9.4.0VC17\Rendering\Volume;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zc:referenceBinding -Zc:__cplusplus -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>release\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>release\</ObjectFileName>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_NO_DEBUG;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>INimage3D</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkCommonCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkGUISupportQt-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkIOImage-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkImagingColor-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkImagingGeneral-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkInteractionImage-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkInteractionStyle-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkInteractionWidgets-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersExtraction-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersStatistics-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkParallelDIY-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkParallelCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkIOLegacy-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkIOCellGrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersCellGrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkIOXML-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkIOXMLParser-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkexpat-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkIOCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtklz4-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtklzma-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkRenderingOpenGL2-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkRenderingHyperTreeGrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersHyperTree-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkRenderingUI-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkglad-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkRenderingContext2D-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersHybrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkImagingSources-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersModeling-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersTexture-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkImagingHybrid-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkDICOMParser-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkmetaio-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkpng-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtktiff-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkjpeg-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkRenderingAnnotation-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkRenderingFreeType-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkfreetype-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkzlib-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkRenderingVolume-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkRenderingCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersSources-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersGeneral-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersVerdict-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkverdict-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkfmt-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkCommonComputationalGeometry-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkCommonColor-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersGeometry-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkFiltersReduction-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkImagingCore-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkCommonExecutionModel-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkCommonDataModel-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkpugixml-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkCommonSystem-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkCommonMisc-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkCommonTransforms-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkCommonMath-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtksys-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtktoken-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkdoubleconversion-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkloguru-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkkissfft-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkRenderingVolumeOpenGL2-9.4.lib;D:\SDK\VTK-9.4.0VC17\lib\MinSizeRel\vtkImagingMath-9.4.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5OpenGL.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Widgets.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Gui.lib;C:\Qt\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Core.lib;ws2_32.lib;dbghelp.lib;psapi.lib;comctl32.lib;wsock32.lib;opengl32.lib;d3d11.lib;dxgi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>

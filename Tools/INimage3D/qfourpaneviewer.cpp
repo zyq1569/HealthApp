@@ -1,4 +1,4 @@
-#include "qfourpaneviewer.h"
+﻿#include "qfourpaneviewer.h"
 #include "ui_qfourpaneviewer.h"
 
 #include "mainwindow.h"
@@ -262,9 +262,9 @@ void QFourpaneviewer::INimage3D()
 		m_resliceImageViewer[i]->SetResliceCursor(m_resliceImageViewer[0]->GetResliceCursor());
 		rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
 		//-----------------------------------------------------------------------------------------------------
-		rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//����12��������
-		rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0���ߣ�2����
-		rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01����
+		rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
+		rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
+		rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
 		rep->GetResliceCursorActor()->GetCenterlineProperty(0)->RenderLinesAsTubesOn();
 		rep->GetResliceCursorActor()->GetCenterlineProperty(1)->RenderLinesAsTubesOn();
 		rep->GetResliceCursorActor()->GetCenterlineProperty(2)->RenderLinesAsTubesOn();
@@ -364,56 +364,65 @@ void QFourpaneviewer::INshowVolume3D()
 
 	vtkImageData *imageData = m_MetaReader->GetOutput();
 
-	m_pieceF = vtkPiecewiseFunction::New();
+	m_pieceF = vtkPiecewiseFunction::New();//	m_pieceF->AddPoint(0, 1.0); m_pieceF->AddPoint(255, 1.0);  // 低梯度区域完全不透明 // 高梯度区域同样不透明（相当于禁用梯度影响）
+	
 	m_pieceF->AddPoint(167.00000000000000, 0.16862745098039220);
 	m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491);
-	m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491);
-	m_pieceF->AddPoint(445.00000000000000, 0.57254901960784310);
+	//m_pieceF->AddPoint(445.00000000000000, 0.57254901960784310);
 	m_pieceF->AddPoint(1455.0000000000000, 0.87450980392156863);
-	m_pieceF->AddPoint(2784.0000000000000, 0.88235294117647056);
+	//m_pieceF->AddPoint(2784.0000000000000, 0.88235294117647056);
+	/**/
+	m_volumeProperty->SetScalarOpacity(m_pieceF);
 
-	m_colorTranF = vtkColorTransferFunction::New();
+	if (m_mainwindow->m_check3Dcolor)
+	{
+		m_colorTranF = vtkColorTransferFunction::New();	//m_colorTranF->AddRGBPoint(0, 0.0, 0.0, 0.0);  m_colorTranF->AddRGBPoint(255, 1.0, 1.0, 1.0);  // 黑色// 白色
+		m_colorTranF->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+		m_colorTranF->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+		m_colorTranF->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+		m_colorTranF->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
+		m_colorTranF->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
+		m_colorTranF->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
+		m_colorTranF->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
+		m_colorTranF->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
+		m_volumeProperty->SetColor(m_colorTranF);
+	}
 
-	m_colorTranF->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-	m_colorTranF->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-	m_colorTranF->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-	m_colorTranF->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
-	m_colorTranF->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
-	m_colorTranF->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
-	m_colorTranF->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
-	m_colorTranF->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
 
 	m_pieceGradF = vtkPiecewiseFunction::New();
 	m_pieceGradF->AddPoint(1, 0.0);
 	m_pieceGradF->AddPoint(70, 0.5);
 	m_pieceGradF->AddPoint(130, 1.0);
 	m_pieceGradF->AddPoint(300, 0.1);
-
-	if (m_mainwindow->m_check3Dcolor)
-	{
-		m_volumeProperty->SetColor(m_colorTranF);
-	}
-
-	m_volumeProperty->SetScalarOpacity(m_pieceF);
 	m_volumeProperty->SetGradientOpacity(m_pieceGradF);
-	m_volumeProperty->ShadeOn();
-	m_volumeProperty->SetInterpolationTypeToLinear();
-	m_volumeProperty->SetAmbient(0.4);//������ϵ��
-	m_volumeProperty->SetDiffuse(0.69996);//������
+	//m_volumeProperty->ShadeOn();
+	m_volumeProperty->ShadeOff();
+	m_volumeProperty->SetInterpolationTypeToNearest();
+	//m_volumeProperty->SetInterpolationTypeToLinear();
+	//m_volumeProperty->SetInterpolationTypeToCubic();
+
+	m_volumeProperty->SetAmbient(0.4);//环境光系数
+	m_volumeProperty->SetDiffuse(0.69996);//漫反射
 	m_volumeProperty->SetSpecular(0.2);
-	m_volumeProperty->SetSpecularPower(10);//�߹�ǿ��
+	m_volumeProperty->SetSpecularPower(10);//高光强度
 
 	m_volumeMapper->SetInputData(imageData);
 	m_volumeMapper->SetBlendModeToComposite();
 	m_volumeMapper->SetRequestedRenderModeToDefault();
 	// force the mapper to compute a sample distance based on data spacing
 	m_volumeMapper->SetSampleDistance(-1.0);
+	//m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
 	m_isosurfaceFilter->SetInputData(imageData);
 
 	m_renderer->SetBackground(0, 0, 0);
 	m_renderer->ResetCamera();
-	//��������ļ��з�Χ��
+	//重设相机的剪切范围；
 	m_renderer->ResetCameraClippingRange();
+	//gpt
+	m_renderer->SetUseDepthPeeling(1);
+	m_renderer->SetMaximumNumberOfPeels(100);
+	m_renderer->SetOcclusionRatio(0.1);
+	//gpt
 	ui->m_mpr2DView->renderWindow()->AddRenderer(m_renderer);
 	ui->m_mpr2DView->show();
 }
@@ -486,3 +495,71 @@ QFourpaneviewer::~QFourpaneviewer()
 	//----------------------------------
     delete ui;
 }
+
+/*
+1️⃣ 插值方式（Interpolation）
+SetInterpolationTypeToNearest()（最近邻插值） → 速度最快 🚀
+SetInterpolationTypeToLinear()（线性插值） → 较慢，但图像更平滑
+SetInterpolationTypeToCubic()（三次插值） → 最慢，但质量最好
+💡 优化建议：
+对于 实时交互（旋转 / 缩放），可以使用 Nearest 提高速度；最终静态渲染可以用 Linear 或 Cubic 以提升质量。
+
+volumeProperty->SetInterpolationTypeToNearest();  // 速度最快
+2️⃣ 光照（Shading）
+ShadeOff()（关闭光照） → 速度快 ✅
+ShadeOn()（开启光照） → 速度较慢，但效果更真实 🔴
+💡 优化建议：
+光照计算涉及 法线计算、环境光、漫反射、镜面反射，增加 GPU 计算量。如果追求 高性能，可以 关闭光照 提高渲染速度。
+
+volumeProperty->ShadeOff();  // 速度最快（建议实时交互时使用）
+3️⃣ 透明度映射（Opacity Transfer Function）
+透明度（不透明度）映射函数决定了 不同灰度值的透明程度，如果映射表过于复杂，计算开销会增加。
+
+💡 优化建议：
+
+减少透明度映射点的数量，减少 GPU 插值计算
+尽可能少用全透明区域，以降低透明度计算负担
+
+vtkSmartPointer<vtkPiecewiseFunction> opacity =
+vtkSmartPointer<vtkPiecewiseFunction>::New();
+opacity->AddPoint(0, 0.0);  // 完全透明
+opacity->AddPoint(255, 1.0); // 完全不透明
+volumeProperty->SetScalarOpacity(opacity);
+4️⃣ 梯度透明度（Gradient Opacity）
+梯度透明度(SetGradientOpacity()) 影响边缘锐利度，但计算量较大：
+
+禁用梯度透明度 → 速度快
+启用梯度透明度 → 速度较慢，但能增强细节（如骨骼）
+💡 优化建议： 如果数据较为平滑，如 MRI 扫描数据，可以 禁用梯度透明度 提高渲染速度。
+volumeProperty->DisableGradientOpacityOn(); // 关闭梯度透明度，提升性能
+5️⃣ 颜色映射（Color Transfer Function）
+颜色映射影响 色彩插值计算，如果映射点过多，可能会降低性能。
+
+💡 优化建议：
+减少颜色映射点的数量，避免 GPU 过多插值计算
+使用简单线性渐变，而非复杂非线性颜色映射
+
+vtkSmartPointer<vtkColorTransferFunction> color =
+vtkSmartPointer<vtkColorTransferFunction>::New();
+color->AddRGBPoint(0, 0.0, 0.0, 0.0);    // 黑色
+color->AddRGBPoint(255, 1.0, 1.0, 1.0);  // 白色
+volumeProperty->SetColor(color);
+🎯 性能优化总结
+参数	影响	优化建议
+插值方式	Cubic 最慢, Nearest 最快	实时交互用 Nearest，最终渲染用 Linear / Cubic
+光照(Shading)	计算光照增加 GPU 负担	交互时关闭光照 ShadeOff()，最终渲染开启 ShadeOn()
+透明度映射(Opacity Transfer)	复杂映射增加计算量	减少映射点，避免全透明区域
+梯度透明度(Gradient Opacity)	影响边缘锐利度，计算量大	关闭 DisableGradientOpacityOn() 提高性能
+颜色映射(Color Transfer)	复杂颜色渐变降低性能	减少颜色映射点，使用简单渐变
+🎯 推荐优化方案
+如果你的目标是 实时交互（旋转、缩放），建议使用以下优化设置：
+
+volumeProperty->SetInterpolationTypeToNearest();  // 最近邻插值，最快
+volumeProperty->ShadeOff();  // 关闭光照，加速渲染
+volumeProperty->  // 关闭梯度透明度，减少计算量
+当交互结束后，恢复更高质量设置：
+
+volumeProperty->SetInterpolationTypeToLinear();  // 线性插值，平滑显示
+volumeProperty->ShadeOn();  // 开启光照，增强立体感
+volumeProperty->();  // 开启梯度透明度，增强边缘
+*/
