@@ -172,10 +172,10 @@ public:
 
 //--------------
 
-QFourpaneviewer::QFourpaneviewer(QWidget *parent, vtkMetaImageReader* metaReader) :
-    QWidget(parent), m_MetaReader(metaReader), ui(new Ui::QFourpaneviewer)
+QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui::QFourpaneviewer)
 {
     ui->setupUi(this);
+	m_MainWindow = (MainWindow*)parent;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -243,17 +243,18 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent, vtkMetaImageReader* metaReader
 	m_renderer->AddViewProp(m_vtkVolume);
 	//-----------------------------------------------------------
 	//Volume3DJob job(this);
-	Queue queue3D, queuePlane;
-	QSharedPointer<Job> job(new Volume3DJob(this));
-    // 将任务加入队列
-	queue3D.enqueue(job);
-	// 等待所有任务完成
-	//queue.finish();  // 确保任务执行完成
+	Queue  queuePlane;//queue.finish();// 等待所有任务完成
 	QSharedPointer<Job> jobplane(new VolumePlaneJob(this));
 	queuePlane.enqueue(jobplane);
-	//INshowVolume3D();
 }
 
+void QFourpaneviewer::Show3DPlane()
+{
+	Queue queue3D;
+	QSharedPointer<Job> job(new Volume3DJob(this));
+	// 将任务加入队列
+	queue3D.enqueue(job);
+}
 void QFourpaneviewer::ResetViewer()
 {
 	for (int i = 0; i < 3; i++)
@@ -275,11 +276,11 @@ void QFourpaneviewer::ResetViewer()
 
 void QFourpaneviewer::INimage3D()
 {
-	if (!m_MetaReader)
+	if (!m_MainWindow->m_vtkImageData)
 		return;
 
 	int imageDims[3];
-	vtkImageData *imageData = m_MetaReader->GetOutput();
+	vtkImageData *imageData = m_MainWindow->m_vtkImageData;
 	imageData->GetDimensions(imageDims);
 
 	for (int i = 0; i < 3; i++)
@@ -352,7 +353,7 @@ void QFourpaneviewer::INimage3D()
 		//m_planeWidget[i]->SetTexturePlaneProperty(m_ipwProp);
 		m_planeWidget[i]->TextureInterpolateOff();
 		m_planeWidget[i]->SetResliceInterpolateToLinear();
-		m_planeWidget[i]->SetInputConnection(m_MetaReader->GetOutputPort());
+		m_planeWidget[i]->SetInputConnection(m_MainWindow->m_vtkAlgorithmOutput);
 		m_planeWidget[i]->SetPlaneOrientation(i);
 		m_planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
 		m_planeWidget[i]->DisplayTextOn();
@@ -402,10 +403,10 @@ void QFourpaneviewer::INimage3D()
 
 void QFourpaneviewer::INshowVolume3D()
 {
-	if (!m_MetaReader)
+	if (!m_MainWindow->m_vtkImageData)
 		return;
 
-	vtkImageData *imageData = m_MetaReader->GetOutput();
+	vtkImageData *imageData = m_MainWindow->m_vtkImageData;
 
 	m_pieceF = vtkPiecewiseFunction::New();//	m_pieceF->AddPoint(0, 1.0); m_pieceF->AddPoint(255, 1.0);  // 低梯度区域完全不透明 // 高梯度区域同样不透明（相当于禁用梯度影响）
 	

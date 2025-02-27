@@ -9,7 +9,6 @@
 #include "vtkSmartPointer.h"
 
 class vtkGenericOpenGLRenderWindow;
-class vtkMetaImageReader;
 class vtkResliceCursorCallback;
 class vtkCellPicker;
 class MainWindow;
@@ -21,7 +20,7 @@ class vtkPolyDataMapper;
 class vtkVolumeProperty;
 class vtkVolume;
 class vtkPiecewiseFunction;
-
+class MainWindow;
 //class vtkGPUVolumeRayCastMapper;
 #include <QWidget>
 
@@ -34,7 +33,7 @@ class QFourpaneviewer : public QWidget
     Q_OBJECT
 
 public:
-    explicit QFourpaneviewer(QWidget *parent = nullptr, vtkMetaImageReader* metaReader = nullptr);
+    explicit QFourpaneviewer(QWidget *parent = nullptr);
 
     ~QFourpaneviewer();
 
@@ -54,13 +53,16 @@ public:
 	vtkProperty*                  m_ipwProp;
     vtkRenderer*                  m_ren;
 	QAction *m_actionReset;
-	vtkMetaImageReader* m_MetaReader;
 
 	MainWindow* m_mainwindow;
 	int m_defaultLevel;
 	int m_defaultWindow;
 
 	void INimage3D();
+
+	void Show3DPlane();
+
+	MainWindow *m_MainWindow;
 
 	//show 3D
 public:
