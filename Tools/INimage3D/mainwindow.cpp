@@ -277,19 +277,8 @@ void MainWindow::showImage4Plane()
 	{
 		return;
 	}
-	//if (!m_image4Plane)
-	//{
 	m_image4Plane = new QFourpaneviewer(this, m_MetaReader);
 	m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
-
-	//if (!m_checkStart3D)
-	//{
 	m_workspace->setCurrentIndex(m_index4P);
-	//}
 
-//}
-//else if (m_index4P >= 0)
-//{
-//	m_workspace->setCurrentIndex(m_index4P);
-//}
 }
