@@ -52,7 +52,6 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 
 ///////////////////////////////////
 #include <ThreadWeaver/ThreadWeaver>
-#include <ThreadWeaver/Weaver>
 //--------------
 #include <QAction>
 
