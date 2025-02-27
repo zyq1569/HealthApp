@@ -6,6 +6,9 @@
 
 class vtkMetaImageReader;
 class QProgressData;
+class vtkImageData;
+class vtkXMLImageDataReader;
+class vtkAlgorithmOutput;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,6 +41,9 @@ public:
 	QAction *m_openAction, *m_show3D, *m_show4Plane, *m_cfigQA;
 	QMenu *m_fileMenu;
 	vtkMetaImageReader *m_MetaReader;
+	vtkXMLImageDataReader *m_XMLImageDataReader;
+	vtkImageData *m_vtkImageData;
+	vtkAlgorithmOutput *m_vtkAlgorithmOutput;
 	QProgressData *m_qProgressBar;
 	QToolBar *m_mainToolbar;
 	int m_index3D, m_index4P;

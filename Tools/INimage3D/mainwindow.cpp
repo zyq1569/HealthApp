@@ -5,6 +5,8 @@
 #include "q3dviewer.h"
 #include "qprogressData.h"
 #include <vtkMetaImageReader.h>
+//#include <vtkXMLImageDataWriter.h>
+#include <vtkXMLImageDataReader.h>
 
 #include <QFileDialog>
 #include <QTabBar>
@@ -24,7 +26,11 @@ MainWindow::MainWindow(QWidget *parent)
 	//m_image3D = nullptr;
 	m_image4Plane = nullptr;
 	m_MetaReader = nullptr;
+	m_XMLImageDataReader = nullptr;
 	m_closeMetaFile = false;
+
+	m_vtkImageData = nullptr;
+	m_vtkAlgorithmOutput = nullptr;
 
 	m_index3D = m_index4P = -1;
 
@@ -170,21 +176,25 @@ void MainWindow::starViewer()
 
 }
 
+#include <vtkSmartPointer.h>
 void MainWindow::initMetaFile()
 {
-	if (m_MetaReader)
+	if (m_vtkImageData)
 	{
-		m_MetaReader->Delete();
-		m_MetaReader = nullptr;
+		m_vtkImageData = nullptr;
+		m_vtkAlgorithmOutput = nullptr;
+		if (m_MetaReader)
+		{
+			m_MetaReader->Delete();
+			m_MetaReader = nullptr;
+		}
+		if (m_XMLImageDataReader)
+		{
+			m_XMLImageDataReader->Delete();
+			m_XMLImageDataReader = nullptr;
+		}
 
-		//if (m_image3D)
-		//{
-		//	//delete m_workspace->widget(m_index3D);// ->deleteLater();
-		//	delete m_image3D;
-		//	m_image3D = nullptr;
-		//	m_workspace->removeTab(m_index3D);
-		//	m_index3D = -1;
-		//}
+
 		if (m_image4Plane)
 		{
 		//	//delete m_workspace->widget(m_index4P);// ->deleteLater();
@@ -196,42 +206,47 @@ void MainWindow::initMetaFile()
 
 		m_openAction->setText("文件(&O)");
 		m_openAction->setShortcut(QKeySequence("Ctrl+O"));
-
-		//m_show3D->setEnabled(false);
-		//m_show4Plane->setEnabled(false);
-
 		return;
 	}
 
-	QString Mhdfilename = QFileDialog::getOpenFileName(this, "Mhd", QString(), "*.mhd");
+	QString Mhdfilename = QFileDialog::getOpenFileName(this, "mhd|vti file", QString(), "*.mhd;*.vti");
+	//QString Mhdfilename = QFileDialog::getOpenFileName(this, "mhd file", QString(), "*.mhd");
 	QFileInfo finfo(Mhdfilename);
 	if (!finfo.exists())
 	{
 		return;
 	}
+	m_qProgressBar->show();
 	std::string filename = qPrintable(Mhdfilename);
-	m_MetaReader = vtkMetaImageReader::New();
-	m_MetaReader->SetFileName(filename.c_str());
-	m_MetaReader->Update();
 
-	//m_show3D->setEnabled(true);
-	//m_show4Plane->setEnabled(true);
+	if (Mhdfilename.contains(".mhd"))
+	{
+		m_MetaReader = vtkMetaImageReader::New();
+		m_MetaReader->SetFileName(filename.c_str());
+		m_MetaReader->Update();
+		m_vtkImageData = m_MetaReader->GetOutput();
+		m_vtkAlgorithmOutput = m_MetaReader->GetOutputPort();
+	}
+	else
+	{
+		m_XMLImageDataReader = vtkXMLImageDataReader::New();
+		m_XMLImageDataReader->SetFileName(filename.c_str());  // 输入的压缩 VTI 文件名
+		m_XMLImageDataReader->Update();
+		m_vtkImageData = m_XMLImageDataReader->GetOutput();
+		m_vtkAlgorithmOutput = m_XMLImageDataReader->GetOutputPort();
+	}
 
 	m_openAction->setText("关闭(&C)");
 	m_openAction->setShortcut(QKeySequence("Ctrl+C"));
 
-	m_qProgressBar->show();
-
-	//if (m_checkStart3D)
-	//{
-	//	showImage3D();
-	//}
-	//if (m_checkStart4Plane)
-	//{
     showImage4Plane();
-	//}
 	m_qProgressBar->hide();
 
+	//vtkSmartPointer<vtkXMLImageDataWriter> writer = vtkSmartPointer<vtkXMLImageDataWriter>::New();
+	//writer->SetFileName("output.vti");  // 输出的 VTI 文件名
+	//writer->SetInputData((vtkDataObject*)m_MetaReader->GetOutput());
+	//writer->Write();
+	//writer->Delete();
 }
 
 void MainWindow::setEnabledQAction()
@@ -246,6 +261,17 @@ MainWindow::~MainWindow()
 		delete m_workspace;
 	}
 
+	if (m_MetaReader)
+	{
+		m_MetaReader->Delete();
+		m_MetaReader = nullptr;
+	}
+	if (m_XMLImageDataReader)
+	{
+		m_XMLImageDataReader->Delete();
+		m_XMLImageDataReader = nullptr;
+	}
+
 	delete m_configForm;
 	delete ui;
 }
@@ -253,32 +279,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::showImage3D()
 {
-/*
-	if (!m_MetaReader)
-	{
-		return;
-	}
-	if (!m_image3D)//m_index3D,
-	{
-		m_image3D = new Q3dviewer(this, m_MetaReader);
-		m_index3D = m_workspace->addTab(m_image3D, "image3D");
-		m_workspace->setCurrentIndex(m_index3D);
-	}
-	else if (m_index3D >= 0)
-	{
-		m_workspace->setCurrentIndex(m_index3D);
-	}
- */
+
 }
 
 void MainWindow::showImage4Plane()
 {
-	if (!m_MetaReader)
+	if (!m_vtkImageData)
 	{
 		return;
 	}
-	m_image4Plane = new QFourpaneviewer(this, m_MetaReader);
+	m_image4Plane = new QFourpaneviewer(this);
 	m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
 	m_workspace->setCurrentIndex(m_index4P);
+	((QFourpaneviewer*)m_image4Plane)->Show3DPlane();
 
 }
