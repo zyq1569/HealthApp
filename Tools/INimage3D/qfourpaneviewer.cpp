@@ -36,9 +36,6 @@
 #include <vtkMetaImageReader.h>
 #include <vtkCamera.h>
 
-#include <QAction>
-
-
 //-------------showVolume3D
 #include <vtkSmartVolumeMapper.h>
 #include <vtkRayCastImageDisplayHelper.h>
@@ -53,7 +50,92 @@ VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
 
+///////////////////////////////////
+#include <ThreadWeaver/ThreadWeaver>
 //--------------
+#include <QAction>
+
+
+using namespace ThreadWeaver;
+
+//@@snippet_begin(sample-helloworldraw-class)
+class Volume3DJob : public Job {
+public:
+	Volume3DJob(QFourpaneviewer *Fourpaneviewer = nullptr) : m_Fourpaneviewer(Fourpaneviewer)
+	{}
+protected:
+	void run(JobPointer, Thread*) Q_DECL_OVERRIDE
+	{
+		if (!m_Fourpaneviewer)
+			return;
+
+		vtkImageData *imageData = m_Fourpaneviewer->m_MetaReader->GetOutput();
+
+		m_Fourpaneviewer->m_pieceF = vtkPiecewiseFunction::New();//	m_pieceF->AddPoint(0, 1.0); m_pieceF->AddPoint(255, 1.0);  // 低梯度区域完全不透明 // 高梯度区域同样不透明（相当于禁用梯度影响）
+
+		m_Fourpaneviewer->m_pieceF->AddPoint(167.00000000000000, 0.16862745098039220);
+		m_Fourpaneviewer->m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491);
+		//m_pieceF->AddPoint(445.00000000000000, 0.57254901960784310);
+		m_Fourpaneviewer->m_pieceF->AddPoint(1455.0000000000000, 0.87450980392156863);
+		//m_pieceF->AddPoint(2784.0000000000000, 0.88235294117647056);
+		/**/
+		m_Fourpaneviewer->m_volumeProperty->SetScalarOpacity(m_Fourpaneviewer->m_pieceF);
+
+		if (m_Fourpaneviewer->m_mainwindow->m_check3Dcolor)
+		{
+			m_Fourpaneviewer->m_colorTranF = vtkColorTransferFunction::New();	//m_colorTranF->AddRGBPoint(0, 0.0, 0.0, 0.0);  m_colorTranF->AddRGBPoint(255, 1.0, 1.0, 1.0);  // 黑色// 白色
+			m_Fourpaneviewer->m_colorTranF->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+			m_Fourpaneviewer->m_colorTranF->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+			m_Fourpaneviewer->m_colorTranF->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+			m_Fourpaneviewer->m_colorTranF->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
+			m_Fourpaneviewer->m_colorTranF->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
+			m_Fourpaneviewer->m_colorTranF->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
+			m_Fourpaneviewer->m_colorTranF->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
+			m_Fourpaneviewer->m_colorTranF->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
+			m_Fourpaneviewer->m_volumeProperty->SetColor(m_Fourpaneviewer->m_colorTranF);
+		}
+
+
+		m_Fourpaneviewer->m_pieceGradF = vtkPiecewiseFunction::New();
+		m_Fourpaneviewer->m_pieceGradF->AddPoint(1, 0.0);
+		m_Fourpaneviewer->m_pieceGradF->AddPoint(70, 0.5);
+		m_Fourpaneviewer->m_pieceGradF->AddPoint(130, 1.0);
+		m_Fourpaneviewer->m_pieceGradF->AddPoint(300, 0.1);
+		m_Fourpaneviewer->m_volumeProperty->SetGradientOpacity(m_Fourpaneviewer->m_pieceGradF);
+		//m_volumeProperty->ShadeOn();
+		m_Fourpaneviewer->m_volumeProperty->ShadeOff();
+		m_Fourpaneviewer->m_volumeProperty->SetInterpolationTypeToNearest();
+		//m_volumeProperty->SetInterpolationTypeToLinear();
+		//m_volumeProperty->SetInterpolationTypeToCubic();
+
+		m_Fourpaneviewer->m_volumeProperty->SetAmbient(0.4);//环境光系数
+		m_Fourpaneviewer->m_volumeProperty->SetDiffuse(0.69996);//漫反射
+		m_Fourpaneviewer->m_volumeProperty->SetSpecular(0.2);
+		m_Fourpaneviewer->m_volumeProperty->SetSpecularPower(10);//高光强度
+		
+		m_Fourpaneviewer->m_volumeMapper->SetInputData(imageData);
+		m_Fourpaneviewer->m_volumeMapper->SetBlendModeToComposite();
+		m_Fourpaneviewer->m_volumeMapper->SetRequestedRenderModeToDefault();
+		// force the mapper to compute a sample distance based on data spacing
+		m_Fourpaneviewer->m_volumeMapper->SetSampleDistance(-1.0);
+		//m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
+		m_Fourpaneviewer->m_isosurfaceFilter->SetInputData(imageData);
+
+		m_Fourpaneviewer->m_renderer->SetBackground(0, 0, 0);
+		m_Fourpaneviewer->m_renderer->ResetCamera();
+		//重设相机的剪切范围；
+		m_Fourpaneviewer->m_renderer->ResetCameraClippingRange();
+		//gpt
+		m_Fourpaneviewer->m_renderer->SetUseDepthPeeling(1);
+		m_Fourpaneviewer->m_renderer->SetMaximumNumberOfPeels(100);
+		m_Fourpaneviewer->m_renderer->SetOcclusionRatio(0.1);
+		//gpt
+		//ui->m_mpr2DView->renderWindow()->AddRenderer(m_Fourpaneviewer->m_renderer);
+		//ui->m_mpr2DView->show();
+	}
+private:
+	QFourpaneviewer *m_Fourpaneviewer;
+};
 
 
 #define vtkREP vtkResliceCursorLineRepresentation 
@@ -205,10 +287,9 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent, vtkMetaImageReader* metaReader
 	m_isosurfaceActor->SetMapper(m_isosurfaceMapper);
 
 	m_renderer->AddViewProp(m_vtkVolume);
+	//-----------------------------------------------------------
 
 	INshowVolume3D();
-
-	//-----------------------------------------------------------
 }
 
 void QFourpaneviewer::ResetViewer()
@@ -361,7 +442,12 @@ void QFourpaneviewer::INshowVolume3D()
 {
 	if (!m_MetaReader)
 		return;
-
+	Volume3DJob job(this);
+	Queue::instance()->finish();
+	ui->m_mpr2DView->renderWindow()->AddRenderer(m_renderer);
+	ui->m_mpr2DView->show();
+	return;
+	///thread----->
 	vtkImageData *imageData = m_MetaReader->GetOutput();
 
 	m_pieceF = vtkPiecewiseFunction::New();//	m_pieceF->AddPoint(0, 1.0); m_pieceF->AddPoint(255, 1.0);  // 低梯度区域完全不透明 // 高梯度区域同样不透明（相当于禁用梯度影响）
