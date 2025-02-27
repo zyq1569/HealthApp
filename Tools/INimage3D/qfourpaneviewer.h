@@ -81,6 +81,8 @@ public:
 	vtkColorTransferFunction *m_colorTranF;
 
 	void INshowVolume3D();
+
+	Ui::QFourpaneviewer * GetUI() { return ui; };
 };
 
 #endif // QFOURPANEVIEWER_H
