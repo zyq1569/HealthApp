@@ -242,7 +242,6 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 	m_renderer->AddViewProp(m_vtkVolume);
 	//-----------------------------------------------------------
-	//Volume3DJob job(this);
 	Queue  queuePlane;//queue.finish();// 等待所有任务完成
 	QSharedPointer<Job> jobplane(new VolumePlaneJob(this));
 	queuePlane.enqueue(jobplane);
@@ -252,8 +251,7 @@ void QFourpaneviewer::Show3DPlane()
 {
 	Queue queue3D;
 	QSharedPointer<Job> job(new Volume3DJob(this));
-	// 将任务加入队列
-	queue3D.enqueue(job);
+	queue3D.enqueue(job);// 将任务加入队列
 }
 void QFourpaneviewer::ResetViewer()
 {
