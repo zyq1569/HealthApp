@@ -53,10 +53,8 @@ public:
 	vtkProperty*                  m_ipwProp;
     vtkRenderer*                  m_ren;
 	QAction *m_actionReset;
-
-	MainWindow* m_mainwindow;
-	int m_defaultLevel;
-	int m_defaultWindow;
+	double m_defaultLevel;
+	double m_defaultWindow;
 
 	void INimage3D();
 
@@ -82,6 +80,7 @@ public:
 	vtkPiecewiseFunction *m_pieceF, *m_pieceGradF;
 	vtkColorTransferFunction *m_colorTranF;
 
+public:
 	void INshowVolume3D();
 
 	Ui::QFourpaneviewer * GetUI() { return ui; };

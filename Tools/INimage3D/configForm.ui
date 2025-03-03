@@ -160,7 +160,7 @@ p, li { white-space: pre-wrap; }
     </rect>
    </property>
    <property name="text">
-    <string>所有配置在下次加载数据生效</string>
+    <string>配置在下次加载数据生效</string>
    </property>
   </widget>
   <widget class="QPushButton" name="m_pbSave">

@@ -188,15 +188,12 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	//
 	m_ipwProp            = nullptr;
 	m_ren                = nullptr;
-	m_actionReset        = nullptr;
-				         
+	m_actionReset        = nullptr;	         
 
-	m_mainwindow         = (MainWindow*)parent;
-
-	if (m_mainwindow->m_checkDefaultWL)
+	if (m_MainWindow->m_checkDefaultWL)
 	{
-		m_defaultLevel  = m_mainwindow->m_DefaultLevel;
-		m_defaultWindow = m_mainwindow->m_DefaultWindow;
+		m_defaultLevel  = m_MainWindow->m_DefaultLevel;
+		m_defaultWindow = m_MainWindow->m_DefaultWindow;
 	}
 	else
 	{
@@ -214,7 +211,6 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_pieceF = nullptr;
 	m_pieceGradF = nullptr;
 	m_colorTranF = nullptr;
-	m_mainwindow = (MainWindow*)parent;
 
 	m_volumeMapper = vtkSmartVolumeMapper::New();
 
@@ -246,6 +242,7 @@ void QFourpaneviewer::Show3DPlane()
 	queue3D.enqueue(job);// 将任务加入队列
 
 	INimage3D();
+	ResetViewer();
 	ui->m_mpr2DView->renderWindow()->Render();
 }
 void QFourpaneviewer::ResetViewer()
@@ -253,9 +250,7 @@ void QFourpaneviewer::ResetViewer()
 	for (int i = 0; i < 3; i++)
 	{
 		m_resliceImageViewer[i]->SetResliceMode(1);
-		//m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
-	    //DefaultLevel = 862		DefaultWindow = 1528
-		vtkREP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation())->SetWindowLevel(1528, 862);
+		vtkREP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation())->SetWindowLevel(m_defaultWindow, m_defaultLevel);
 	}
 	for (int i = 0; i < 3; i++)
 	{
@@ -264,7 +259,6 @@ void QFourpaneviewer::ResetViewer()
 		m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.2);
 		m_resliceImageViewer[i]->Render();
 	}
-
 }
 
 void QFourpaneviewer::INimage3D()
@@ -273,7 +267,6 @@ void QFourpaneviewer::INimage3D()
 	{
 		return;
 	}
-
 
 	int imageDims[3];
 	vtkImageData *imageData = m_MainWindow->m_vtkImageData;
@@ -305,38 +298,24 @@ void QFourpaneviewer::INimage3D()
 		rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetRepresentationToWireframe();//代表12窗口竖线
 		rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetRepresentationToWireframe();//0竖线，2横线
 		rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetRepresentationToWireframe();//01横线
-		//version < VTK9.4
-		//rep->GetResliceCursorActor()->GetCenterlineProperty(0)->RenderLinesAsTubesOn();
-		//rep->GetResliceCursorActor()->GetCenterlineProperty(1)->RenderLinesAsTubesOn();
-		//rep->GetResliceCursorActor()->GetCenterlineProperty(2)->RenderLinesAsTubesOn();
-		//rep->GetResliceCursorActor()->GetCenterlineProperty(1)->SetLineWidth(2);
-		//rep->GetResliceCursorActor()->GetCenterlineProperty(0)->SetLineWidth(2);
-		//rep->GetResliceCursorActor()->GetCenterlineProperty(2)->SetLineWidth(2);
 		//-------------------------------------------------------------------------------------------------------
 		m_resliceImageViewer[i]->SetInputData(imageData);
 		m_resliceImageViewer[i]->SetSliceOrientation(i);
 		m_resliceImageViewer[i]->SetResliceModeToAxisAligned();
 		//DefaultLevel = 862		DefaultWindow = 1528
-		rep->SetWindowLevel(1528, 862);
+		rep->SetWindowLevel(m_defaultWindow, m_defaultLevel);
 	}
 
 	//mpr2DView--->hide- to->showVolume3D
-	//m_cellPicker = vtkCellPicker::New();
-	//m_cellPicker->SetTolerance(0.005);
-
-	//m_ipwProp = vtkProperty::New();
-	//m_ren     = vtkRenderer::New();
-
-	//m_2DViewRenderWindow = vtkGenericOpenGLRenderWindow::New();
-	//ui->m_mpr2DView->setRenderWindow(m_2DViewRenderWindow);
-	//ui->m_mpr2DView->renderWindow()->AddRenderer(m_ren);
-	//vtkRenderWindowInteractor* iren = ui->m_mpr2DView->interactor();
+	//m_cellPicker = vtkCellPicker::New();	//m_cellPicker->SetTolerance(0.005);
+	//m_ipwProp = vtkProperty::New();	//m_ren     = vtkRenderer::New();
+	//m_2DViewRenderWindow = vtkGenericOpenGLRenderWindow::New();	//ui->m_mpr2DView->setRenderWindow(m_2DViewRenderWindow);
+	//ui->m_mpr2DView->renderWindow()->AddRenderer(m_ren);	//vtkRenderWindowInteractor* iren = ui->m_mpr2DView->interactor();
 
 	for (int i = 0; i < 3; i++)
 	{
 		m_planeWidget[i] = vtkImagePlaneWidget::New();
-		//m_planeWidget[i]->SetInteractor(iren);
-		//m_planeWidget[i]->SetPicker(m_cellPicker);
+		//m_planeWidget[i]->SetInteractor(iren);//m_planeWidget[i]->SetPicker(m_cellPicker);
 		m_planeWidget[i]->RestrictPlaneToVolumeOn();
 		double color[3] = { 0, 0, 0 };
 		color[i] = 1;
@@ -355,9 +334,8 @@ void QFourpaneviewer::INimage3D()
 		m_planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
 		m_planeWidget[i]->DisplayTextOn();
 		//m_planeWidget[i]->SetDefaultRenderer(m_ren);
-		m_planeWidget[i]->SetWindowLevel(1528, 862);//DefaultLevel = 862		DefaultWindow = 1528
-		//m_planeWidget[i]->On();
-		//m_planeWidget[i]->InteractionOn();
+		m_planeWidget[i]->SetWindowLevel(m_defaultWindow, m_defaultLevel);
+		//m_planeWidget[i]->On();//m_planeWidget[i]->InteractionOn();
 	}
 
 	m_resliceCallback = vtkResliceCursorCallback::New();
@@ -381,21 +359,15 @@ void QFourpaneviewer::INimage3D()
 	}
 	for (int i = 0; i < 3; i++)
 	{
+		m_resliceImageViewer[i]->Reset();
 		m_resliceImageViewer[i]->SetResliceMode(1);
 		m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
 		m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.2);
 		m_resliceImageViewer[i]->Render();
 	}
-	ui->m_axial2DView->show();
-	ui->m_sagital2DView->show();
-	ui->m_coronal2DView->show();
-
-	for (int i = 0; i < 3; i++)
-	{
-		m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
-		m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.2);
-		m_resliceImageViewer[i]->Render();
-	}
+	//ui->m_axial2DView->show();
+	//ui->m_sagital2DView->show();
+	//ui->m_coronal2DView->show();
 }
 
 void QFourpaneviewer::INshowVolume3D()
@@ -406,7 +378,6 @@ void QFourpaneviewer::INshowVolume3D()
 	vtkImageData *imageData = m_MainWindow->m_vtkImageData;
 
 	m_pieceF = vtkPiecewiseFunction::New();//	m_pieceF->AddPoint(0, 1.0); m_pieceF->AddPoint(255, 1.0);  // 低梯度区域完全不透明 // 高梯度区域同样不透明（相当于禁用梯度影响）
-	
 	m_pieceF->AddPoint(167.00000000000000, 0.16862745098039220);
 	m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491);
 	//m_pieceF->AddPoint(445.00000000000000, 0.57254901960784310);
@@ -415,7 +386,7 @@ void QFourpaneviewer::INshowVolume3D()
 	/**/
 	m_volumeProperty->SetScalarOpacity(m_pieceF);
 
-	if (m_mainwindow->m_check3Dcolor)
+	if (m_MainWindow->m_check3Dcolor)
 	{
 		m_colorTranF = vtkColorTransferFunction::New();	//m_colorTranF->AddRGBPoint(0, 0.0, 0.0, 0.0);  m_colorTranF->AddRGBPoint(255, 1.0, 1.0, 1.0);  // 黑色// 白色
 		m_colorTranF->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
@@ -429,7 +400,6 @@ void QFourpaneviewer::INshowVolume3D()
 		m_volumeProperty->SetColor(m_colorTranF);
 	}
 
-
 	m_pieceGradF = vtkPiecewiseFunction::New();
 	m_pieceGradF->AddPoint(1, 0.0);
 	m_pieceGradF->AddPoint(70, 0.5);
@@ -441,12 +411,10 @@ void QFourpaneviewer::INshowVolume3D()
 	m_volumeProperty->SetInterpolationTypeToNearest();
 	//m_volumeProperty->SetInterpolationTypeToLinear();
 	//m_volumeProperty->SetInterpolationTypeToCubic();
-
 	m_volumeProperty->SetAmbient(0.4);//环境光系数
 	m_volumeProperty->SetDiffuse(0.69996);//漫反射
 	m_volumeProperty->SetSpecular(0.2);
 	m_volumeProperty->SetSpecularPower(10);//高光强度
-
 	m_volumeMapper->SetInputData(imageData);
 	m_volumeMapper->SetBlendModeToComposite();
 	m_volumeMapper->SetRequestedRenderModeToDefault();
@@ -457,6 +425,7 @@ void QFourpaneviewer::INshowVolume3D()
 
 	m_renderer->SetBackground(0, 0, 0);
 	m_renderer->ResetCamera();
+	m_renderer->GetActiveCamera()->Zoom(1.5);
 	//重设相机的剪切范围；
 	m_renderer->ResetCameraClippingRange();
 	//gpt
@@ -464,8 +433,7 @@ void QFourpaneviewer::INshowVolume3D()
 	m_renderer->SetMaximumNumberOfPeels(100);
 	m_renderer->SetOcclusionRatio(0.1);
 	//gpt
-	ui->m_mpr2DView->renderWindow()->AddRenderer(m_renderer);
-	//ui->m_mpr2DView->show();
+	ui->m_mpr2DView->renderWindow()->AddRenderer(m_renderer);//ui->m_mpr2DView->show();
 }
 
 QFourpaneviewer::~QFourpaneviewer()
