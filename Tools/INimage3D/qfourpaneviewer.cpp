@@ -55,7 +55,6 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 //--------------
 #include <QAction>
 
-
 using namespace ThreadWeaver;
 
 class Volume3DJob : public Job 
@@ -75,23 +74,23 @@ private:
 	QFourpaneviewer *m_Fourpaneviewer;
 };
 
-class VolumePlaneJob : public Job
-{
-public:
-	VolumePlaneJob(QFourpaneviewer *Fourpaneviewer = nullptr) : m_Fourpaneviewer(Fourpaneviewer)
-	{}
-protected:
-	void run(JobPointer, Thread*) Q_DECL_OVERRIDE
-	{
-		if (!m_Fourpaneviewer)
-			return;
-
-		m_Fourpaneviewer->INimage3D();
-	}
-private:
-	QFourpaneviewer *m_Fourpaneviewer;
-};
-
+//class VolumePlaneJob : public Job
+//{
+//public:
+//	VolumePlaneJob(QFourpaneviewer *Fourpaneviewer = nullptr) : m_Fourpaneviewer(Fourpaneviewer)
+//	{}
+//protected:
+//	void run(JobPointer, Thread*) Q_DECL_OVERRIDE
+//	{
+//		if (!m_Fourpaneviewer)
+//			return;
+//
+//		m_Fourpaneviewer->INimage3D();
+//	}
+//private:
+//	QFourpaneviewer *m_Fourpaneviewer;
+//};
+//
 #define vtkREP vtkResliceCursorLineRepresentation 
 
 class vtkResliceCursorCallback : public vtkCommand
@@ -204,8 +203,6 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 		m_defaultLevel  = 862;
 		m_defaultWindow = 1528;
 	}
-
-
 	//
 
 	m_actionReset = new QAction(this);
@@ -213,8 +210,6 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_actionReset->setShortcut(tr("ctrl+s"));
 
 	connect(m_actionReset, SIGNAL(triggered()), SLOT(ResetViewer()));//Open an existing DICOM folder
-
-
 	//---------------------showVolume3D----------------------------------
 	m_pieceF = nullptr;
 	m_pieceGradF = nullptr;
@@ -226,7 +221,6 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_isosurfaceFilter = vtkImageMarchingCubes::New();
 
 	m_volumeProperty = vtkVolumeProperty::New();
-
 
 	m_isosurfaceActor = vtkActor::New();
 
@@ -242,9 +236,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 	m_renderer->AddViewProp(m_vtkVolume);
 	//-----------------------------------------------------------
-	Queue  queuePlane;//queue.finish();// 等待所有任务完成
-	QSharedPointer<Job> jobplane(new VolumePlaneJob(this));
-	queuePlane.enqueue(jobplane);
+
 }
 
 void QFourpaneviewer::Show3DPlane()
@@ -252,6 +244,9 @@ void QFourpaneviewer::Show3DPlane()
 	Queue queue3D;
 	QSharedPointer<Job> job(new Volume3DJob(this));
 	queue3D.enqueue(job);// 将任务加入队列
+
+	INimage3D();
+	ui->m_mpr2DView->renderWindow()->Render();
 }
 void QFourpaneviewer::ResetViewer()
 {
@@ -275,7 +270,10 @@ void QFourpaneviewer::ResetViewer()
 void QFourpaneviewer::INimage3D()
 {
 	if (!m_MainWindow->m_vtkImageData)
+	{
 		return;
+	}
+
 
 	int imageDims[3];
 	vtkImageData *imageData = m_MainWindow->m_vtkImageData;
@@ -467,7 +465,7 @@ void QFourpaneviewer::INshowVolume3D()
 	m_renderer->SetOcclusionRatio(0.1);
 	//gpt
 	ui->m_mpr2DView->renderWindow()->AddRenderer(m_renderer);
-	ui->m_mpr2DView->show();
+	//ui->m_mpr2DView->show();
 }
 
 QFourpaneviewer::~QFourpaneviewer()
