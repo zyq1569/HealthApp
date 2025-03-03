@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
 	setStatusBar(nullptr);
 	setMenuBar(nullptr);
 
-	//m_image3D = nullptr;
 	m_image4Plane = nullptr;
 	m_MetaReader = nullptr;
 	m_XMLImageDataReader = nullptr;
@@ -35,17 +34,10 @@ MainWindow::MainWindow(QWidget *parent)
 	m_index3D = m_index4P = -1;
 
 	m_checkStart3D = m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
-	m_DefaultLevel = m_DefaultWindow = 0;// = 862 = 1528
+	m_DefaultLevel = m_DefaultWindow = 0;
 
 	showMaximized();
 	this->setWindowIcon(QIcon(":images/icons/pyramid.png"));
-
-
-	//QPalette pal;
-	//pal.setColor(QPalette::Window, QColor(48, 48, 48));
-	//this->setPalette(pal);
-	//this->setStyleSheet("background-color:rgb(48,48,48)}");
-	//this->setStyleSheet("background-color:rgb(30,30,30)}");
 
 	m_workspace = new QTabWidget(this);
 
@@ -54,62 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 	m_workspace->findChildren<QTabBar*>().at(0)->hide();
 
-
-	//m_fileMenu = menuBar()->addMenu(tr("菜单(&F)"));
-	////m_fileMenu = menuBar()->addMenu(tr("Files(&F)"));
-	//m_openAction = new QAction(this);
-	//m_openAction->setText(tr("文件(&O)"));
-	////connect(m_openAction, &QAction::triggered, [this] { showImage3D(); });//Open an existing DICOM folder
-	//connect(m_openAction, &QAction::triggered, [this]
-	//{
-	//	QString Mhdfilename = QFileDialog::getOpenFileName(this, "Mhd", QString(), "*.mhd");
-	//	QFileInfo finfo(Mhdfilename);
-	//	if (!finfo.exists())
-	//	{
-	//		return;
-	//	}
-	//	std::string filename = qPrintable(Mhdfilename);
-	//	m_MetaReader = vtkMetaImageReader::New();
-	//	m_MetaReader->SetFileName(filename.c_str());
-	//	m_MetaReader->Update();
-	//}
-	//);
-	//m_fileMenu->addAction(m_openAction);
-	//
-	//m_show3D = new QAction(this);
-	//m_show3D->setText(tr("三维(&D)"));
-	//connect(m_show3D, &QAction::triggered, [this] { showImage3D(); });//Open an existing DICOM folder
-	//m_fileMenu->addAction(m_show3D);
-	//
-	//m_show4Plane = new QAction(this);
-	//m_show4Plane->setText(tr("三面(&P)"));
-	//connect(m_show4Plane, &QAction::triggered, [this] { showImage4Plane(); });//Open an existing DICOM folder
-	//m_fileMenu->addAction(m_show4Plane);
-	//
-	//QAction *qaClose = new QAction(this);
-	//qaClose->setText(tr("关闭(&P)"));
-	//connect(qaClose, &QAction::triggered, [this] 
-	//{ 
-	//	delete m_image4Plane;
-	//	m_image4Plane = nullptr;
-	//	delete m_image3D;
-	//	m_image3D = nullptr;
-	//	m_workspace->removeTab(0);
-	//	m_workspace->removeTab(1);
-	//	m_MetaReader->Delete();
-	//	m_MetaReader = nullptr;
-	//
-	//});//Open an existing DICOM folder
-	//m_fileMenu->addAction(qaClose);
-
-	//QPalette menupal = m_fileMenu->palette();
-	//menupal.setColor(QPalette::WindowText, QColor(255, 255, 255));// Qt::black);
-	//m_fileMenu->setPalette(menupal);
-	//showImage3D();
-
 	m_mainToolbar = new QToolBar(this);
 	this->addToolBar(Qt::TopToolBarArea, m_mainToolbar);
-	//m_mainToolbar->layout()->setSpacing(10);
 	m_mainToolbar->setFloatable(false);
 	m_mainToolbar->setMovable(false);
 	m_mainToolbar->setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -143,16 +81,9 @@ MainWindow::MainWindow(QWidget *parent)
 	//m_mainToolbar->addAction(m_show4Plane);
 	//connect(m_show4Plane, &QAction::triggered, [this]
 	//{
-	//	if (!m_image4Plane)
-	//	{
-	//		m_qProgressBar->show();
-	//		showImage4Plane();
-	//		m_qProgressBar->hide();
-	//	}
-	//	else
-	//	{
-	//		showImage4Plane();
-	//	}
+	//
+	//	showImage4Plane();
+	//
 	//});
 	//m_show4Plane->setEnabled(false);
 
@@ -176,7 +107,6 @@ void MainWindow::starViewer()
 
 }
 
-#include <vtkSmartPointer.h>
 void MainWindow::initMetaFile()
 {
 	if (m_vtkImageData)
@@ -193,7 +123,6 @@ void MainWindow::initMetaFile()
 			m_XMLImageDataReader->Delete();
 			m_XMLImageDataReader = nullptr;
 		}
-
 
 		if (m_image4Plane)
 		{
@@ -216,9 +145,14 @@ void MainWindow::initMetaFile()
 	{
 		return;
 	}
+	// ------------------show UI-----------------------------------------
+	m_image4Plane = new QFourpaneviewer(this);
+	m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
+	m_workspace->setCurrentIndex(m_index4P);
+
+	//----------ProgressBar--start---------------------------------
 	m_qProgressBar->show();
 	std::string filename = qPrintable(Mhdfilename);
-
 	if (Mhdfilename.contains(".mhd"))
 	{
 		m_MetaReader = vtkMetaImageReader::New();
@@ -239,14 +173,9 @@ void MainWindow::initMetaFile()
 	m_openAction->setText("关闭(&C)");
 	m_openAction->setShortcut(QKeySequence("Ctrl+C"));
 
+	//-------------ProgressBar-----end---------------------------------------
     showImage4Plane();
 	m_qProgressBar->hide();
-
-	//vtkSmartPointer<vtkXMLImageDataWriter> writer = vtkSmartPointer<vtkXMLImageDataWriter>::New();
-	//writer->SetFileName("output.vti");  // 输出的 VTI 文件名
-	//writer->SetInputData((vtkDataObject*)m_MetaReader->GetOutput());
-	//writer->Write();
-	//writer->Delete();
 }
 
 void MainWindow::setEnabledQAction()
@@ -288,9 +217,11 @@ void MainWindow::showImage4Plane()
 	{
 		return;
 	}
-	m_image4Plane = new QFourpaneviewer(this);
-	m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
-	m_workspace->setCurrentIndex(m_index4P);
 	((QFourpaneviewer*)m_image4Plane)->Show3DPlane();
-
 }
+
+//vtkSmartPointer<vtkXMLImageDataWriter> writer = vtkSmartPointer<vtkXMLImageDataWriter>::New();
+//writer->SetFileName("output.vti");  // 输出的 VTI 文件名
+//writer->SetInputData((vtkDataObject*)m_MetaReader->GetOutput());
+//writer->Write();
+//writer->Delete();
