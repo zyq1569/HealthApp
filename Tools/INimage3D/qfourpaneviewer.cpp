@@ -242,7 +242,7 @@ void QFourpaneviewer::Show3DPlane()
 	queue3D.enqueue(job);// 将任务加入队列
 
 	INimage3D();
-	ResetViewer();
+	ResetViewer();//???第一个切图窗口非常小
 	ui->m_mpr2DView->renderWindow()->Render();
 }
 void QFourpaneviewer::ResetViewer()
