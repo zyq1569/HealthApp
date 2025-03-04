@@ -364,10 +364,7 @@ void QFourpaneviewer::INimage3D()
 		m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
 		m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.2);
 		m_resliceImageViewer[i]->Render();
-	}
-	//ui->m_axial2DView->show();
-	//ui->m_sagital2DView->show();
-	//ui->m_coronal2DView->show();
+	}	//ui->m_axial2DView->show();	//ui->m_sagital2DView->show();	//ui->m_coronal2DView->show();
 }
 
 void QFourpaneviewer::INshowVolume3D()
