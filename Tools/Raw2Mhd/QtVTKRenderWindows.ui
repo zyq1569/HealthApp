@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>724</width>
-    <height>128</height>
+    <height>138</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,10 +27,10 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>160</y>
-      <width>691</width>
-      <height>231</height>
+      <x>30</x>
+      <y>200</y>
+      <width>321</width>
+      <height>91</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
@@ -219,8 +219,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>24</x>
-      <y>130</y>
+      <x>30</x>
+      <y>170</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -232,8 +232,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="Sagittal">
     <property name="geometry">
      <rect>
-      <x>114</x>
-      <y>130</y>
+      <x>120</x>
+      <y>170</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -338,9 +338,9 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="m_pbRaw2Mhd">
     <property name="geometry">
      <rect>
-      <x>34</x>
+      <x>350</x>
       <y>99</y>
-      <width>75</width>
+      <width>71</width>
       <height>23</height>
      </rect>
     </property>
@@ -392,7 +392,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>44</y>
+      <y>43</y>
       <width>21</width>
       <height>16</height>
      </rect>
@@ -418,7 +418,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>70</y>
+      <y>73</y>
       <width>21</width>
       <height>16</height>
      </rect>
@@ -517,6 +517,42 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;5&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="m_tsavefname">
+    <property name="geometry">
+     <rect>
+      <x>134</x>
+      <y>100</y>
+      <width>201</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;VTKData&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="m_saveFilename">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>102</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save filename:</string>
     </property>
    </widget>
   </widget>

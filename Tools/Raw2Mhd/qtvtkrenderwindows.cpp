@@ -28,34 +28,39 @@ QtVTKRenderWindows::~QtVTKRenderWindows()
 
 void QtVTKRenderWindows::raw2mhd()
 {
-    QString dir = ui->m_dcmDIR->toPlainText();
-    QString w = ui->m_width->toPlainText();
-    QString h = ui->m_height->toPlainText();
+    QString dir    = ui->m_dcmDIR->toPlainText();
+    QString w      = ui->m_width->toPlainText();
+    QString h      = ui->m_height->toPlainText();
     QString number = ui->m_number->toPlainText();
-    QString filenameExtra="";
+    QString filenameExtra;
     if (ui->m_extraCheck->isChecked())
     {
         filenameExtra = ui->m_extra->toPlainText();
     }
-    int width = w.toInt();
+    int width  = w.toInt();
     int height = h.toInt();
-    int depth = number.toInt();  // 0~200 共 201 张
+    int depth  = number.toInt();  // 0~200 共 201 张
     // 逐个读取 0～200 的 RAW 文件
-    QString raw = dir + "VTK_Data.raw";
+	QString raw, savefname= "/VTK_Data";
+	if (ui->m_saveFilename->isChecked())
+	{
+		savefname = "/"+ui->m_tsavefname->toPlainText();
+	}
+	raw = dir + savefname + ".raw";
+
     std::string rawFilename = qPrintable(raw);// "D:/TEMP/dingliang/volume_1/volume_VTKData600.raw";  // `.raw` 文件
-    QString mhd = dir + "VTK_Data.mhd";
+    QString mhd             = dir + savefname +".mhd";
     std::string mhdFilename = qPrintable(mhd);// "D:/TEMP/dingliang/volume_1/volume_VTKData600.mhd";  // `.mhd` 文件
     std::ofstream rawFile(rawFilename, std::ios::binary | std::ios::out | std::ios::trunc);
     if (!rawFile.is_open())
     {
-        //std::cerr << "无法打开 .raw 文件进行写入！" << std::endl;
         return ;
     }
     QString fn = ui->m_filename->toPlainText();
     QString fa = ui->m_fmn->toPlainText();
     int formateN = fa.toInt();
-    int index_s = ui->m_start->toPlainText().toInt();
-    int index_e = index_s + depth - 1;
+    int index_s  = ui->m_start->toPlainText().toInt();
+    int index_e  = index_s + depth;
 
     for (int i = index_s; i < index_e; i++)
     {
@@ -91,9 +96,7 @@ void QtVTKRenderWindows::raw2mhd()
         vtkSmartPointer<vtkImageData> imageData = reader->GetOutput();
         int* dims = imageData->GetDimensions();
         int dataSize = dims[0] * dims[1] * sizeof(unsigned short);
-
         rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
-        //std::cout << "已写入切片 " << 10 << " 到 " << std::endl;
 
     }
 
@@ -101,7 +104,6 @@ void QtVTKRenderWindows::raw2mhd()
     std::ofstream mhdFile(mhdFilename);
     if (!mhdFile.is_open())
     {
-        //std::cerr << "无法创建 .mhd 文件！" << std::endl;
         return ;
     }
     mhdFile << "ObjectType = Image\n";
@@ -111,8 +113,5 @@ void QtVTKRenderWindows::raw2mhd()
     mhdFile << "ElementType = MET_USHORT\n";
     mhdFile << "ElementDataFile = " << rawFilename << "\n";
     mhdFile.close();
-
-    //std::cout << "MHD 文件已生成：" << mhdFilename << std::endl;
-
 }
 
