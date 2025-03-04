@@ -100,6 +100,8 @@ void QtVTKRenderWindows::raw2mhd()
 
     }
 	rawFile.close();
+
+
     // 生成 MHD 头文件（只执行一次）
     std::ofstream mhdFile(mhdFilename);
     if (!mhdFile.is_open())
