@@ -311,19 +311,15 @@ void QFourpaneviewer::INimage3D()
 	//m_ipwProp = vtkProperty::New();	//m_ren     = vtkRenderer::New();
 	//m_2DViewRenderWindow = vtkGenericOpenGLRenderWindow::New();	//ui->m_mpr2DView->setRenderWindow(m_2DViewRenderWindow);
 	//ui->m_mpr2DView->renderWindow()->AddRenderer(m_ren);	//vtkRenderWindowInteractor* iren = ui->m_mpr2DView->interactor();
-
+	double color[3] = { 0, 0, 0 };
 	for (int i = 0; i < 3; i++)
 	{
 		m_planeWidget[i] = vtkImagePlaneWidget::New();
 		//m_planeWidget[i]->SetInteractor(iren);//m_planeWidget[i]->SetPicker(m_cellPicker);
 		m_planeWidget[i]->RestrictPlaneToVolumeOn();
-		double color[3] = { 0, 0, 0 };
-		color[i] = 1;
+		//color[i] = 1;
 		m_planeWidget[i]->GetPlaneProperty()->SetColor(color);
-
-		color[0] /= 4.0;
-		color[1] /= 4.0;
-		color[2] /= 4.0;
+		//color[0] /= 4.0;		color[1] /= 4.0;		color[2] /= 4.0;
 		m_resliceImageViewer[i]->GetRenderer()->SetBackground(color);
 
 		//m_planeWidget[i]->SetTexturePlaneProperty(m_ipwProp);

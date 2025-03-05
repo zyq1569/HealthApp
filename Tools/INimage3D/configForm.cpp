@@ -5,7 +5,7 @@
 
 
 #include <QSettings>
-
+#include <QColorDialog>
 ConfigForm::ConfigForm(QWidget *parent) :QWidget(parent), ui(new Ui::ConfigForm)
 {
 	ui->setupUi(this);
@@ -66,4 +66,9 @@ void ConfigForm::InitConfig()
 	m_mainwindow->m_checkDefaultWL   = ui->m_ckWL->isChecked();
 	m_mainwindow->m_DefaultWindow    = ui->m_window->toPlainText().toInt();
 	m_mainwindow->m_DefaultLevel     = ui->m_level->toPlainText().toInt();
+
+	//QColor color;
+	//bool ok;
+	//color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &ok, this));
+
 }
