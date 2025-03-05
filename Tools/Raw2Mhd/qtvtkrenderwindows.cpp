@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include<Qdir>
+#include<QMessageBox>
 
 QtVTKRenderWindows::QtVTKRenderWindows(QWidget *parent) : QMainWindow(parent), ui(new Ui::QtVTKRenderWindows)
 {
@@ -31,9 +32,13 @@ QtVTKRenderWindows::~QtVTKRenderWindows()
 void QtVTKRenderWindows::raw2mhd()
 {
     QString dir    = ui->m_dcmDIR->toPlainText();
+	if (!QDir(dir).exists())
+	{
+		return;
+	}
+
     QString w      = ui->m_width->toPlainText();
     QString h      = ui->m_height->toPlainText();
-    QString number = ui->m_number->toPlainText();
     QString filenameExtra;
     if (ui->m_extraCheck->isChecked())
     {
@@ -41,7 +46,6 @@ void QtVTKRenderWindows::raw2mhd()
     }
     int width  = w.toInt();
     int height = h.toInt();
-    int depth  = number.toInt();  // 0~200 共 201 张
 
 	bool bzipdata = ui->m_ckzipdata->isChecked();
     // 逐个读取 0～200 的 RAW 文件
@@ -82,8 +86,8 @@ void QtVTKRenderWindows::raw2mhd()
     QString fa = ui->m_fmn->toPlainText();
     int formateN = fa.toInt();
     int index_s  = ui->m_start->toPlainText().toInt();
-    int index_e  = index_s + depth;
-
+    int index_e  = ui->m_end->toPlainText().toInt()+1;
+	int depth = index_e - index_s;
     for (int i = index_s; i < index_e; i++)
     {
         QString index = dir + "\\" + fn;//
@@ -102,7 +106,11 @@ void QtVTKRenderWindows::raw2mhd()
         QFileInfo file(index);
         if (!file.isFile())
         {
-            return;
+			rawFile.close();
+			QFile::remove(rawFilename.c_str());
+			QString info = index +"读取的数据文件不存在";//;//tr("文件不存在")
+			QMessageBox::warning(NULL, "No file", info, QMessageBox::Yes, QMessageBox::Yes);
+			return;
         }
         vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
         reader->SetFileName(filename.c_str());
@@ -145,17 +153,16 @@ void QtVTKRenderWindows::raw2mhd()
 		metaReader->SetFileName(mhdFilename.c_str());
 		metaReader->Update();
 
-		raw = dir + savefname + ".raw";
-		std::string rawFilename_new = qPrintable(raw);
 		mhd = dir + savefname + ".mhd";
 		std::string mhdFilename_new = qPrintable(mhd);
 		vtkSmartPointer<vtkMetaImageWriter> writer = vtkSmartPointer<vtkMetaImageWriter>::New();
 		writer->SetFileName(mhdFilename_new.c_str());
-		writer->SetRAWFileName(rawFilename_new.c_str());  // 让 MHD 指向 RAW
 		writer->SetInputData(metaReader->GetOutput());
 		writer->Write();
-		metaReader->Delete();
-		writer->Delete();
+
+		//--delete
+		QFile::remove(mhdFilename.c_str());
+		QFile::remove(rawFilename.c_str());
 	}
 
 	//SetMemoryBuffer
