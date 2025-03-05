@@ -555,7 +555,7 @@ p, li { white-space: pre-wrap; }
      <string>Save filename:</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="m_extraCheck_2">
+   <widget class="QCheckBox" name="m_ckzipdata">
     <property name="geometry">
      <rect>
       <x>274</x>

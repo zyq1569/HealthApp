@@ -5,6 +5,8 @@
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
 #include <vtkImageReader2.h>
+#include <vtkMetaImageWriter.h>
+#include <vtkMetaImageReader.h>
 #include <fstream>
 #include <iostream>
 
@@ -40,22 +42,42 @@ void QtVTKRenderWindows::raw2mhd()
     int width  = w.toInt();
     int height = h.toInt();
     int depth  = number.toInt();  // 0~200 共 201 张
+
+	bool bzipdata = ui->m_ckzipdata->isChecked();
     // 逐个读取 0～200 的 RAW 文件
 	QString raw, savefname= "/VTK_Data";
 	if (ui->m_saveFilename->isChecked())
 	{
 		savefname = "/"+ui->m_tsavefname->toPlainText();
 	}
-	raw = dir + savefname + ".raw";
+	if (bzipdata)
+	{
+		raw = dir + savefname + "_temp.raw";
+	}
+	else
+	{
+		raw = dir + savefname + ".raw";
+	}
 
     std::string rawFilename = qPrintable(raw);// `.raw` 文件
-    QString mhd             = dir + savefname +".mhd";
+	QString mhd;
+	if (bzipdata)
+	{
+		mhd = dir + savefname + "_temp.mhd";
+	}
+	else
+	{
+		mhd = dir + savefname + ".mhd";
+	}
+
     std::string mhdFilename = qPrintable(mhd);// `.mhd` 文件
     std::ofstream rawFile(rawFilename, std::ios::binary | std::ios::out | std::ios::trunc);
     if (!rawFile.is_open())
     {
         return ;
     }
+	
+
     QString fn = ui->m_filename->toPlainText();
     QString fa = ui->m_fmn->toPlainText();
     int formateN = fa.toInt();
@@ -115,5 +137,27 @@ void QtVTKRenderWindows::raw2mhd()
     mhdFile << "ElementType = MET_USHORT\n";
     mhdFile << "ElementDataFile = " << rawFilename << "\n";
     mhdFile.close();
+
+
+	if (bzipdata)
+	{
+		vtkSmartPointer<vtkMetaImageReader> metaReader = vtkSmartPointer<vtkMetaImageReader>::New();
+		metaReader->SetFileName(mhdFilename.c_str());
+		metaReader->Update();
+
+		raw = dir + savefname + ".raw";
+		std::string rawFilename_new = qPrintable(raw);
+		mhd = dir + savefname + ".mhd";
+		std::string mhdFilename_new = qPrintable(mhd);
+		vtkSmartPointer<vtkMetaImageWriter> writer = vtkSmartPointer<vtkMetaImageWriter>::New();
+		writer->SetFileName(mhdFilename_new.c_str());
+		writer->SetRAWFileName(rawFilename_new.c_str());  // 让 MHD 指向 RAW
+		writer->SetInputData(metaReader->GetOutput());
+		writer->Write();
+		metaReader->Delete();
+		writer->Delete();
+	}
+
+	//SetMemoryBuffer
 }
 
