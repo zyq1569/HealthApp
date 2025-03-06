@@ -237,9 +237,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QComboBox" name="m_cbInterType">
    <property name="geometry">
     <rect>
-     <x>198</x>
+     <x>200</x>
      <y>28</y>
-     <width>121</width>
+     <width>131</width>
      <height>22</height>
     </rect>
    </property>

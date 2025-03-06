@@ -23,22 +23,8 @@ ConfigForm::ConfigForm(QWidget *parent) :QWidget(parent), ui(new Ui::ConfigForm)
 	ui->m_ck4Plane->setChecked(settings.value("start/start4P").toBool());
 	ui->m_ckColor->setChecked(settings.value("start/3Dcolor", false).toBool());
 	ui->m_ckOpacity->setChecked(settings.value("start/3Dopacity",false).toBool());
-	int index = settings.value("start/3DInterType", 0).toInt();
-	QString text;
-	if (index == 0)
-	{
-		text = "近邻插值(速度快)";	
-	}
-	else if (index == 1)
-	{
-		text = "线性插值(平滑)";
-	}
-	else
-	{
-		text = "三次插值(质量好,慢)";
-	}
-	ui->m_cbInterType->setItemText(index, text);
-	//ui->m_cbInterType->seti(settings.value("start/3DInterType", false).toBool());
+	ui->m_cbInterType->setCurrentIndex(settings.value("start/3DInterType", 0).toInt());
+
 
 
 	ui->m_ckWL->setChecked(settings.value("wl/check").toBool());
