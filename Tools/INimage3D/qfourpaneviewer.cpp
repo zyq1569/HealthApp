@@ -371,8 +371,8 @@ void QFourpaneviewer::INshowVolume3D()
 	vtkImageData *imageData = m_MainWindow->m_vtkImageData;
 
 	m_pieceF = vtkPiecewiseFunction::New();//	m_pieceF->AddPoint(0, 1.0); m_pieceF->AddPoint(255, 1.0);  // 低梯度区域完全不透明 // 高梯度区域同样不透明（相当于禁用梯度影响）
-	m_pieceF->AddPoint(167.00000000000000, 0.16862745098039220);
-	m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491);
+	m_MainWindow->m_checkOpacity ?(m_pieceF->AddPoint(167.00000000000000, 0.16862745098039220),m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491)):(m_pieceF->AddPoint(255, 1.0));
+	 // 完全不透明	m_pieceF->AddPoint(167.00000000000000, 0.16862745098039220);	m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491);
 	//m_pieceF->AddPoint(445.00000000000000, 0.57254901960784310);
 	m_pieceF->AddPoint(1455.0000000000000, 0.87450980392156863);
 	//m_pieceF->AddPoint(2784.0000000000000, 0.88235294117647056);
@@ -401,8 +401,11 @@ void QFourpaneviewer::INshowVolume3D()
 	m_volumeProperty->SetGradientOpacity(m_pieceGradF);
 	//m_volumeProperty->ShadeOn();
 	m_volumeProperty->ShadeOff();
-	m_volumeProperty->SetInterpolationTypeToNearest();
+	//m_volumeProperty->SetInterpolationTypeToNearest();
 	//m_volumeProperty->SetInterpolationTypeToLinear();
+	//m_volumeProperty->SetInterpolationType(VTK_CUBIC_INTERPOLATION);
+	//if (m_MainWindow->m_cbInterType < 3 && m_MainWindow->m_cbInterType > 0)
+	m_volumeProperty->SetInterpolationType(m_MainWindow->m_cbInterType);
 	//m_volumeProperty->SetInterpolationTypeToCubic();
 	m_volumeProperty->SetAmbient(0.4);//环境光系数
 	m_volumeProperty->SetDiffuse(0.69996);//漫反射
