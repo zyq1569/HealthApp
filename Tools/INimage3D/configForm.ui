@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>429</width>
+    <width>364</width>
     <height>171</height>
    </rect>
   </property>
@@ -16,8 +16,8 @@
   <widget class="QCheckBox" name="m_ck3D">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>26</y>
+     <x>350</x>
+     <y>30</y>
      <width>51</width>
      <height>31</height>
     </rect>
@@ -29,8 +29,8 @@
   <widget class="QLabel" name="m_lable">
    <property name="geometry">
     <rect>
-     <x>266</x>
-     <y>1</y>
+     <x>346</x>
+     <y>5</y>
      <width>121</width>
      <height>21</height>
     </rect>
@@ -42,8 +42,8 @@
   <widget class="QCheckBox" name="m_ck4Plane">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>56</y>
+     <x>350</x>
+     <y>60</y>
      <width>51</width>
      <height>31</height>
     </rect>
@@ -56,19 +56,19 @@
    <property name="geometry">
     <rect>
      <x>29</x>
-     <y>58</y>
+     <y>62</y>
      <width>111</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>切面默认窗宽位：</string>
+    <string>默认窗宽位：</string>
    </property>
   </widget>
   <widget class="QTextEdit" name="m_window">
    <property name="geometry">
     <rect>
-     <x>54</x>
+     <x>51</x>
      <y>88</y>
      <width>91</width>
      <height>21</height>
@@ -140,34 +140,34 @@ p, li { white-space: pre-wrap; }
   <widget class="QCheckBox" name="m_ckColor">
    <property name="geometry">
     <rect>
-     <x>54</x>
+     <x>28</x>
      <y>23</y>
-     <width>91</width>
+     <width>61</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>默认添加伪彩</string>
+    <string>增加伪彩</string>
    </property>
   </widget>
   <widget class="QLabel" name="m_lableRedme">
    <property name="geometry">
     <rect>
-     <x>19</x>
-     <y>118</y>
+     <x>10</x>
+     <y>130</y>
      <width>151</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>配置在下次加载数据生效</string>
+    <string>配置保存后在下次加载数据生效</string>
    </property>
   </widget>
   <widget class="QPushButton" name="m_pbSave">
    <property name="geometry">
     <rect>
-     <x>309</x>
-     <y>88</y>
+     <x>290</x>
+     <y>90</y>
      <width>51</width>
      <height>23</height>
     </rect>
@@ -180,8 +180,8 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>29</x>
-     <y>28</y>
-     <width>41</width>
+     <y>8</y>
+     <width>31</width>
      <height>21</height>
     </rect>
    </property>
@@ -206,6 +206,70 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string> 切面：ctrl /alt + 鼠标右键可以旋转/平移轴线；ctrl+s 恢复切面初始</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="m_ckOpacity">
+   <property name="geometry">
+    <rect>
+     <x>97</x>
+     <y>23</y>
+     <width>51</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>透明</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>50</y>
+     <width>31</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>切面</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="m_cbInterType">
+   <property name="geometry">
+    <rect>
+     <x>198</x>
+     <y>28</y>
+     <width>121</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>近邻插值(速度快)</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>线性插值(平滑)</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>三次插值(质量好,慢)</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>28</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>交互插值：</string>
    </property>
   </widget>
  </widget>
