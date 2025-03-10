@@ -60,10 +60,12 @@ public:
 
 	void Show3DPlane();
 
-	MainWindow *m_MainWindow;
+	void ShowEditorsWidget();
+
 
 	//show 3D
 public:
+	MainWindow *m_MainWindow;
 	/// The main mapper for volume rendering.
 	vtkSmartVolumeMapper *m_volumeMapper;
 	/// Properties of volume rendering.
@@ -79,6 +81,8 @@ public:
 	vtkPolyDataMapper* m_isosurfaceMapper;
 	vtkPiecewiseFunction *m_pieceF, *m_pieceGradF;
 	vtkColorTransferFunction *m_colorTranF;
+
+	bool m_showEditors;
 
 public:
 	void INshowVolume3D();
