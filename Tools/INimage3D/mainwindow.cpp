@@ -91,6 +91,16 @@ MainWindow::MainWindow(QWidget *parent)
 	m_configForm = new ConfigForm(this);
 	m_configForm->InitConfig();
 
+	m_editor = new QAction("调参", this);
+	m_mainToolbar->addAction(m_editor);
+	connect(m_editor, &QAction::triggered, [this]
+	{
+		if (m_image4Plane)
+		{
+			((QFourpaneviewer*)m_image4Plane)->ShowEditorsWidget();
+		}
+	});
+
 	m_cfigQA = new QAction("配置", this);
 	m_mainToolbar->addAction(m_cfigQA);
 	connect(m_cfigQA, &QAction::triggered, [this]
@@ -100,6 +110,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	m_qProgressBar = new QProgressData(this);// (m_workspace);
 
+	m_editor->setEnabled(false);
 }
 
 void MainWindow::starViewer()
@@ -131,6 +142,7 @@ void MainWindow::initMetaFile()
 			m_image4Plane = nullptr;
 			m_workspace->removeTab(m_index4P);
 			m_index4P = -1;
+			m_editor->setEnabled(false);
 		}
 
 		m_openAction->setText("文件(&O)");
@@ -176,6 +188,7 @@ void MainWindow::initMetaFile()
 	//-------------ProgressBar-----end---------------------------------------
     showImage4Plane();
 	m_qProgressBar->hide();
+	m_editor->setEnabled(true);
 }
 
 void MainWindow::setEnabledQAction()
