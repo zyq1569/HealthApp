@@ -54,6 +54,7 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 #include <ThreadWeaver/ThreadWeaver>
 //--------------
 #include <QAction>
+#include <QList>
 
 using namespace ThreadWeaver;
 
@@ -232,7 +233,20 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 	m_renderer->AddViewProp(m_vtkVolume);
 	//-----------------------------------------------------------
+	QList<int> sizes;
+	sizes << 225 << 20;
+	ui->m_SplitterLR->setSizes(sizes);
+	ui->m_SplitterLR->widget(1)->setMaximumWidth(255);
+	ui->m_SplitterLR->widget(1)->setMinimumWidth(248);
+	ui->m_editorsWidget->hide();
+	m_showEditors = false;
+}
 
+
+void QFourpaneviewer::ShowEditorsWidget()
+{
+	m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
+	m_showEditors = !m_showEditors;
 }
 
 void QFourpaneviewer::Show3DPlane()
@@ -245,6 +259,7 @@ void QFourpaneviewer::Show3DPlane()
 	ResetViewer();//???第一个切图窗口非常小
 	ui->m_mpr2DView->renderWindow()->Render();
 }
+
 void QFourpaneviewer::ResetViewer()
 {
 	for (int i = 0; i < 3; i++)
@@ -393,24 +408,35 @@ void QFourpaneviewer::INshowVolume3D()
 		m_volumeProperty->SetColor(m_colorTranF);
 	}
 
-	m_pieceGradF = vtkPiecewiseFunction::New();
-	m_pieceGradF->AddPoint(1, 0.0);
-	m_pieceGradF->AddPoint(70, 0.5);
-	m_pieceGradF->AddPoint(130, 1.0);
-	m_pieceGradF->AddPoint(300, 0.1);
-	m_volumeProperty->SetGradientOpacity(m_pieceGradF);
-	//m_volumeProperty->ShadeOn();
-	m_volumeProperty->ShadeOff();
+	//关闭梯度透明
+	if (0)
+	{
+		m_pieceGradF = vtkPiecewiseFunction::New();
+		m_pieceGradF->AddPoint(1, 0.0);
+		m_pieceGradF->AddPoint(70, 0.5);
+		m_pieceGradF->AddPoint(130, 1.0);
+		m_pieceGradF->AddPoint(300, 0.1);
+		m_volumeProperty->SetGradientOpacity(m_pieceGradF);
+	}
+
+	m_volumeProperty->ShadeOn();
+	//m_volumeProperty->ShadeOff();
 	//m_volumeProperty->SetInterpolationTypeToNearest();
 	//m_volumeProperty->SetInterpolationTypeToLinear();
 	//m_volumeProperty->SetInterpolationType(VTK_CUBIC_INTERPOLATION);
 	//if (m_MainWindow->m_cbInterType < 3 && m_MainWindow->m_cbInterType > 0)
 	m_volumeProperty->SetInterpolationType(m_MainWindow->m_cbInterType);
 	//m_volumeProperty->SetInterpolationTypeToCubic();
-	m_volumeProperty->SetAmbient(0.4);//环境光系数
-	m_volumeProperty->SetDiffuse(0.69996);//漫反射
-	m_volumeProperty->SetSpecular(0.2);
-	m_volumeProperty->SetSpecularPower(10);//高光强度
+
+	if (0)
+	{
+		m_volumeProperty->SetAmbient(0.4);//环境光系数
+		m_volumeProperty->SetDiffuse(0.69996);//漫反射
+		m_volumeProperty->SetSpecular(0.2);
+		m_volumeProperty->SetSpecularPower(10);//高光强度
+	}
+
+
 	m_volumeMapper->SetInputData(imageData);
 	m_volumeMapper->SetBlendModeToComposite();
 	m_volumeMapper->SetRequestedRenderModeToDefault();
@@ -419,7 +445,7 @@ void QFourpaneviewer::INshowVolume3D()
 	//m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
 	m_isosurfaceFilter->SetInputData(imageData);
 
-	m_renderer->SetBackground(0, 0, 0);
+	m_renderer->SetBackground(0.01, 0.01, 0.01);//m_renderer->SetBackground(0, 0, 0);
 	m_renderer->ResetCamera();
 	m_renderer->GetActiveCamera()->Zoom(1.5);
 	//重设相机的剪切范围；
