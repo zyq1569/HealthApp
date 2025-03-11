@@ -54,7 +54,6 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 #include <ThreadWeaver/ThreadWeaver>
 //--------------
 #include <QAction>
-#include <QList>
 
 using namespace ThreadWeaver;
 
@@ -233,11 +232,9 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 	m_renderer->AddViewProp(m_vtkVolume);
 	//-----------------------------------------------------------
-	QList<int> sizes;
-	sizes << 225 << 20;
-	ui->m_SplitterLR->setSizes(sizes);
-	ui->m_SplitterLR->widget(1)->setMaximumWidth(255);
-	ui->m_SplitterLR->widget(1)->setMinimumWidth(248);
+	ui->m_SplitterLR->widget(1)->setMaximumWidth(246);
+	ui->m_SplitterLR->widget(1)->setMinimumWidth(246);
+	ui->m_SplitterLR->setDisabled(true);
 	ui->m_editorsWidget->hide();
 	m_showEditors = false;
 }
