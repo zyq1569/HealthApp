@@ -232,9 +232,13 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 	m_renderer->AddViewProp(m_vtkVolume);
 	//-----------------------------------------------------------
-	ui->m_SplitterLR->widget(1)->setMaximumWidth(246);
-	ui->m_SplitterLR->widget(1)->setMinimumWidth(246);
-	ui->m_SplitterLR->setDisabled(true);
+	ui->m_SplitterLR->widget(1)->setMaximumWidth(315);
+	QSplitterHandle* hand = ui->m_SplitterLR->handle(1);
+	if (hand)
+	{
+		hand->setDisabled(true);
+	}
+
 	ui->m_editorsWidget->hide();
 	m_showEditors = false;
 }
