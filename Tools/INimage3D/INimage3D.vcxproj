@@ -353,6 +353,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="qcolorspinbox.cpp" />
+    <ClCompile Include="qeditorbyvalues.cpp" />
     <ClCompile Include="qfourpaneviewer.cpp" />
     <ClCompile Include="qintervaleditor.cpp" />
     <ClCompile Include="qprogressdata.cpp" />
@@ -362,6 +363,7 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="addvaluesbase.ui" />
     <QtUic Include="configForm.ui" />
     <QtUic Include="editorbase.ui" />
     <QtUic Include="mainwindow.ui">
@@ -380,6 +382,7 @@
     <QtMoc Include="qprogressdata.h" />
     <QtMoc Include="qcolorspinbox.h" />
     <QtMoc Include="qintervaleditor.h" />
+    <QtMoc Include="qeditorbyvalues.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
