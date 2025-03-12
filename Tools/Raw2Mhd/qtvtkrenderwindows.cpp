@@ -106,10 +106,10 @@ void QtVTKRenderWindows::raw2mhd()
         QFileInfo file(index);
         if (!file.isFile())
         {
-			rawFile.close();
-			QFile::remove(rawFilename.c_str());
 			QString info = index +"读取的数据文件不存在";//;//tr("文件不存在")
 			QMessageBox::warning(NULL, "No file", info, QMessageBox::Yes, QMessageBox::Yes);
+			rawFile.close();
+			QFile::remove(rawFilename.c_str());
 			return;
         }
         vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
