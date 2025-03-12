@@ -407,10 +407,11 @@ void QFourpaneviewer::INshowVolume3D()
 		m_colorTranF->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
 		m_colorTranF->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
 		m_volumeProperty->SetColor(m_colorTranF);
+
 	}
 
 	//关闭梯度透明
-	if (0)
+	//if (0)
 	{
 		m_pieceGradF = vtkPiecewiseFunction::New();
 		m_pieceGradF->AddPoint(1, 0.0);
@@ -429,13 +430,14 @@ void QFourpaneviewer::INshowVolume3D()
 	m_volumeProperty->SetInterpolationType(m_MainWindow->m_cbInterType);
 	//m_volumeProperty->SetInterpolationTypeToCubic();
 
-	if (0)
+	//if (0)
 	{
 		m_volumeProperty->SetAmbient(0.4);//环境光系数
 		m_volumeProperty->SetDiffuse(0.69996);//漫反射
 		m_volumeProperty->SetSpecular(0.2);
 		m_volumeProperty->SetSpecularPower(10);//高光强度
 	}
+	m_volumeProperty->DisableGradientOpacityOn();//关闭梯度透明度
 
 
 	m_volumeMapper->SetInputData(imageData);
