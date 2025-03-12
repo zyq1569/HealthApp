@@ -57,6 +57,18 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 
 using namespace ThreadWeaver;
 
+class VtkColorPoint
+{
+public:
+	double m_X, m_Opacity;
+	QColor m_Color;
+};
+
+class VtkColorManger
+{
+public:
+	QList<VtkColorPoint> m_colorPoint;
+};
 class Volume3DJob : public Job 
 {
 public:
@@ -406,6 +418,12 @@ void QFourpaneviewer::INshowVolume3D()
 		m_colorTranF->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
 		m_colorTranF->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
 		m_colorTranF->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
+
+		//气孔 半透明/黑色，可见但不影响主体观察。		//金属正常区域 白色，结构清晰可见。		//夹杂物 红色 + 高不透明度，突出异常区域。
+		//m_colorTranF->AddRGBPoint(-1000.0, 0.0, 0.0, 0.0); // 空气 -> 黑色
+		//m_colorTranF->AddRGBPoint(200.0, 0.8, 0.8, 0.8);   // 低密度区域 -> 灰色
+		//m_colorTranF->AddRGBPoint(800.0, 1.0, 1.0, 1.0);   // 金属主体 -> 白色
+		//m_colorTranF->AddRGBPoint(1500.0, 1.0, 0.0, 0.0);  // 夹杂物 -> 红色（高密度）
 		m_volumeProperty->SetColor(m_colorTranF);
 
 	}
@@ -432,9 +450,11 @@ void QFourpaneviewer::INshowVolume3D()
 
 	//if (0)
 	{
+		//一般 环境光系数+散射光系数+反射光系数=1.0,  提供亮度可以大于1.0
 		m_volumeProperty->SetAmbient(0.4);//环境光系数
-		m_volumeProperty->SetDiffuse(0.69996);//漫反射
-		m_volumeProperty->SetSpecular(0.2);
+		m_volumeProperty->SetDiffuse(0.5);//散射光系数
+		m_volumeProperty->SetSpecular(0.2);//反射光系数
+
 		m_volumeProperty->SetSpecularPower(10);//高光强度
 	}
 	m_volumeProperty->DisableGradientOpacityOn();//关闭梯度透明度
@@ -596,4 +616,14 @@ volumeProperty->  // 关闭梯度透明度，减少计算量
 volumeProperty->SetInterpolationTypeToLinear();  // 线性插值，平滑显示
 volumeProperty->ShadeOn();  // 开启光照，增强立体感
 volumeProperty->();  // 开启梯度透明度，增强边缘
+
+SetColor 和 SetScalarOpacity 配合使用
+函数	                作用	                            主要影响	                       适用场景
+SetScalarOpacity	体素值（Density）→ 不透明度     	控制不同组织的可见性	           基本体渲染，如骨骼、器官分离
+SetGradientOpacity	体素梯度（边界变化）→ 不透明度	控制边缘和低梯度区域的透明度	   边缘增强，减少均匀区域的影响
+
+colorTransferFunction->AddRGBPoint(-1000.0, 0.0, 0.0, 0.0); // 空气 -> 黑色
+colorTransferFunction->AddRGBPoint(200.0, 0.8, 0.8, 0.8);   // 低密度区域 -> 灰色
+colorTransferFunction->AddRGBPoint(800.0, 1.0, 1.0, 1.0);   // 金属主体 -> 白色
+colorTransferFunction->AddRGBPoint(1500.0, 1.0, 0.0, 0.0);  // 夹杂物 -> 红色（高密度）
 */
