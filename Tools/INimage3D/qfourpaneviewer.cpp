@@ -410,20 +410,20 @@ void QFourpaneviewer::INshowVolume3D()
 	if (m_MainWindow->m_check3Dcolor)
 	{
 		m_colorTranF = vtkColorTransferFunction::New();	//m_colorTranF->AddRGBPoint(0, 0.0, 0.0, 0.0);  m_colorTranF->AddRGBPoint(255, 1.0, 1.0, 1.0);  // 黑色// 白色
-		m_colorTranF->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-		m_colorTranF->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-		m_colorTranF->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-		m_colorTranF->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
-		m_colorTranF->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
-		m_colorTranF->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
-		m_colorTranF->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
-		m_colorTranF->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
+		//m_colorTranF->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+		//m_colorTranF->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+		//m_colorTranF->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+		//m_colorTranF->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
+		//m_colorTranF->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
+		//m_colorTranF->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
+		//m_colorTranF->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
+		//m_colorTranF->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
 
 		//气孔 半透明/黑色，可见但不影响主体观察。		//金属正常区域 白色，结构清晰可见。		//夹杂物 红色 + 高不透明度，突出异常区域。
-		//m_colorTranF->AddRGBPoint(-1000.0, 0.0, 0.0, 0.0); // 空气 -> 黑色
-		//m_colorTranF->AddRGBPoint(200.0, 0.8, 0.8, 0.8);   // 低密度区域 -> 灰色
-		//m_colorTranF->AddRGBPoint(800.0, 1.0, 1.0, 1.0);   // 金属主体 -> 白色
-		//m_colorTranF->AddRGBPoint(1500.0, 1.0, 0.0, 0.0);  // 夹杂物 -> 红色（高密度）
+		m_colorTranF->AddRGBPoint(-1000.0, 0.0, 0.0, 0.0); // 空气 -> 黑色
+		m_colorTranF->AddRGBPoint(200.0, 0.8, 0.8, 0.8);   // 低密度区域 -> 灰色
+		m_colorTranF->AddRGBPoint(800.0, 1.0, 1.0, 1.0);   // 金属主体 -> 白色
+		m_colorTranF->AddRGBPoint(1500.0, 1.0, 0.0, 0.0);  // 夹杂物 -> 红色（高密度）
 		m_volumeProperty->SetColor(m_colorTranF);
 
 	}
@@ -441,12 +441,8 @@ void QFourpaneviewer::INshowVolume3D()
 
 	m_volumeProperty->ShadeOn();
 	//m_volumeProperty->ShadeOff();
-	//m_volumeProperty->SetInterpolationTypeToNearest();
-	//m_volumeProperty->SetInterpolationTypeToLinear();
-	//m_volumeProperty->SetInterpolationType(VTK_CUBIC_INTERPOLATION);
-	//if (m_MainWindow->m_cbInterType < 3 && m_MainWindow->m_cbInterType > 0)
-	m_volumeProperty->SetInterpolationType(m_MainWindow->m_cbInterType);
-	//m_volumeProperty->SetInterpolationTypeToCubic();
+	
+	m_volumeProperty->SetInterpolationType(m_MainWindow->m_cbInterType);//m_volumeProperty->SetInterpolationTypeToNearest();m_volumeProperty->SetInterpolationTypeToLinear();//m_volumeProperty->SetInterpolationTypeToCubic();
 
 	//if (0)
 	{
@@ -455,7 +451,7 @@ void QFourpaneviewer::INshowVolume3D()
 		m_volumeProperty->SetDiffuse(0.5);//散射光系数
 		m_volumeProperty->SetSpecular(0.2);//反射光系数
 
-		m_volumeProperty->SetSpecularPower(10);//高光强度
+		m_volumeProperty->SetSpecularPower(1.0);//高光强度
 	}
 	m_volumeProperty->DisableGradientOpacityOn();//关闭梯度透明度
 
@@ -468,7 +464,8 @@ void QFourpaneviewer::INshowVolume3D()
 	//m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
 	m_isosurfaceFilter->SetInputData(imageData);
 
-	m_renderer->SetBackground(0.01, 0.01, 0.01);//m_renderer->SetBackground(0, 0, 0);
+	//m_renderer->SetBackground(0.01, 0.01, 0.01);//
+	m_renderer->SetBackground(0, 0, 0);
 	m_renderer->ResetCamera();
 	m_renderer->GetActiveCamera()->Zoom(1.5);
 	//重设相机的剪切范围；
