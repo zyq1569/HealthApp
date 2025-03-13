@@ -1,7 +1,7 @@
 #ifndef QFOURPANEVIEWER_H
 #define QFOURPANEVIEWER_H
 
-
+#include "qeditorbyvalues.h"
 #include "vtkDistanceWidget.h"
 #include "vtkImagePlaneWidget.h"
 #include "vtkResliceImageViewer.h"
@@ -21,6 +21,7 @@ class vtkVolumeProperty;
 class vtkVolume;
 class vtkPiecewiseFunction;
 class MainWindow;
+
 //class vtkGPUVolumeRayCastMapper;
 #include <QWidget>
 
@@ -42,6 +43,7 @@ private:
 
 public slots:
 	void ResetViewer();
+	void ResetColor3D(VtkColorStyle colorValue);
 
 public:
 	QString m_fileNameMhd;

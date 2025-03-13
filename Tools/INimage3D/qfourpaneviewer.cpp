@@ -200,7 +200,10 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 		m_defaultLevel  = 862;
 		m_defaultWindow = 1528;
 	}
-	//
+	//////////////////////////////////////////////////////////////////
+	connect(ui->m_editorByValues, SIGNAL(setColorValue(VtkColorStyle colorValue)), SLOT(setValues3D(VtkColorStyle colorValue)));
+
+	/////////////////////////////////////////////////////////////////////
 
 	m_actionReset = new QAction(this);
 	addAction(m_actionReset);
@@ -277,6 +280,16 @@ void QFourpaneviewer::ResetViewer()
 	}
 }
 
+
+void QFourpaneviewer::ResetColor3D(VtkColorStyle colorValue)
+{
+	if (m_volumeProperty)
+	{
+		//m_volumeProperty->DisableGradientOpacityOn();//关闭梯度透明度
+		m_volumeProperty->DisableGradientOpacityOff();
+		ui->m_mpr2DView->renderWindow()->Render();
+	}
+}
 void QFourpaneviewer::INimage3D()
 {
 	if (!m_MainWindow->m_vtkImageData)
