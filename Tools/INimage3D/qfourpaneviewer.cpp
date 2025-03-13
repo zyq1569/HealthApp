@@ -57,18 +57,6 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 
 using namespace ThreadWeaver;
 
-class VtkColorPoint
-{
-public:
-	double m_X, m_Opacity;
-	QColor m_Color;
-};
-
-class VtkColorManger
-{
-public:
-	QList<VtkColorPoint> m_colorPoint;
-};
 class Volume3DJob : public Job 
 {
 public:
