@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>259</width>
+    <width>338</width>
     <height>94</height>
    </rect>
   </property>
@@ -57,10 +57,20 @@
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="checkBox">
-     <property name="text">
-      <string>颜色透明</string>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
+     <widget class="QCheckBox" name="m_colorOpacityCK">
+      <property name="text">
+       <string>渲染透明</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="m_colorAddCK">
+      <property name="text">
+       <string>渲染颜色</string>
+      </property>
+     </widget>
     </widget>
    </item>
    <item>
