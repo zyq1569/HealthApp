@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>338</width>
+    <width>312</width>
     <height>94</height>
    </rect>
   </property>
@@ -108,6 +108,13 @@
       <widget class="QPushButton" name="m_setValuesPB">
        <property name="text">
         <string>应用</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_loadFilesPB">
+       <property name="text">
+        <string>加载</string>
        </property>
       </widget>
      </item>
