@@ -201,7 +201,8 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 		m_defaultWindow = 1528;
 	}
 	//////////////////////////////////////////////////////////////////
-	connect(ui->m_editorByValues, SIGNAL(setColorValue(VtkColorStyle colorValue)), SLOT(setValues3D(VtkColorStyle colorValue)));
+	//color 窗体颜色编辑值信号
+	connect(ui->m_editorByValues, &QEditorByValues::signalsColorValue,this, &QFourpaneviewer::ResetColor3D);
 
 	/////////////////////////////////////////////////////////////////////
 

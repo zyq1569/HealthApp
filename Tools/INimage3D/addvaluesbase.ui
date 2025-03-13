@@ -101,6 +101,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="m_saveColorPB">
+       <property name="text">
+        <string>保存</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>
