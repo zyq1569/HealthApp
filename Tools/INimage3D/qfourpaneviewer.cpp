@@ -244,7 +244,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 	m_renderer->AddViewProp(m_vtkVolume);
 	//-----------------------------------------------------------
-	ui->m_SplitterLR->widget(1)->setMaximumWidth(345);
+	ui->m_SplitterLR->widget(1)->setMaximumWidth(350);
 	QSplitterHandle* hand = ui->m_SplitterLR->handle(1);
 	if (hand)
 	{

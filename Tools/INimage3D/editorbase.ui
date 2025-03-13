@@ -1,47 +1,66 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QEditorBase</class>
- <widget class="QWidget" name="QEditorBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="QEditorBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>284</width>
+    <width>295</width>
     <height>25</height>
    </rect>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="leftMargin">
     <number>0</number>
    </property>
-   <property name="spacing" >
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QCheckBox" name="m_isIntervalCheckBox" >
-      <property name="text" >
-        <string>Interval</string>
-      </property>
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="m_isIntervalCheckBox">
+     <property name="text">
+      <string>使用间距</string>
+     </property>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <widget class="QWidget" native="1" >
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
+   <item row="0" column="1">
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
-       <widget class="QSpinBox" name="m_intervalStartSpinBox" >
-        <property name="maximum" >
+       <widget class="QSpinBox" name="m_intervalStartSpinBox">
+        <property name="maximum">
          <number>2000</number>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="m_intervalEndSpinBox" >
-        <property name="maximum" >
+       <widget class="QSpinBox" name="m_intervalEndSpinBox">
+        <property name="maximum">
          <number>2000</number>
         </property>
        </widget>
@@ -49,19 +68,19 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="2" >
-    <widget class="QPushButton" name="m_selectColorPushButton" >
-     <property name="text" >
-      <string>Select color...</string>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="m_selectColorPushButton">
+     <property name="text">
+      <string>选择颜色...</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="3" >
-    <widget class="QColorSpinBox" name="m_colorSpinBox" />
+   <item row="0" column="3">
+    <widget class="QColorSpinBox" name="m_colorSpinBox"/>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="9" />
+ <layoutdefault spacing="6" margin="9"/>
  <customwidgets>
   <customwidget>
    <class>QColorSpinBox</class>
@@ -77,11 +96,11 @@
    <receiver>m_intervalEndSpinBox</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>39</x>
      <y>98</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>167</x>
      <y>101</y>
     </hint>
