@@ -18,7 +18,8 @@ class VtkColorStyle
 public:
 	QList<VtkColorPoint> m_colorPoint;
 	QString m_styleName;
-	bool m_colorOpacity,m_colorAdd;
+	bool m_colorOpacity,m_colorAdd,m_lightShade;
+	double m_Ambient, m_Diffuse, m_Specular, m_SpecularPower;
 	void clearAll()
 	{
 		m_colorPoint.clear();

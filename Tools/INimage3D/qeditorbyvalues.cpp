@@ -293,6 +293,21 @@ void QEditorByValues::setValues3D()
 	}
 	m_vtkColorStyle.m_colorOpacity = m_colorOpacityCK->isChecked();
 	m_vtkColorStyle.m_colorAdd = m_colorAddCK->isChecked();
+	//m_lightShade;
+	//double m_Ambient, m_Diffuse, m_Specular, m_SpecularPower;
+	if (m_shadingGroupBox->isChecked())
+	{
+		m_vtkColorStyle.m_lightShade = true;
+		m_vtkColorStyle.m_Ambient = m_ambientCoefficientDoubleSpinBox->value();
+		m_vtkColorStyle.m_Diffuse = m_diffuseCoefficientDoubleSpinBox->value();
+		m_vtkColorStyle.m_Specular = m_specularCoefficientDoubleSpinBox->value();
+		m_vtkColorStyle.m_SpecularPower = m_specularPowerDoubleSpinBox->value();
+	}
+	else
+	{
+		m_vtkColorStyle.m_lightShade = false;
+	}
+	m_vtkColorStyle.m_Ambient = m_ambientCoefficientDoubleSpinBox->value();
 	emit signalsColorValue(m_vtkColorStyle);
 }
 

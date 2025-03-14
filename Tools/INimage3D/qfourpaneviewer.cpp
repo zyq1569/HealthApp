@@ -346,7 +346,19 @@ void QFourpaneviewer::ResetColor3D(VtkColorStyle colorValue)
 			m_volumeProperty->SetColor(m_colorTranF);
 		}
 
-
+		//lightShade
+		if (colorValue.m_lightShade)
+		{
+			m_volumeProperty->ShadeOn();
+			m_volumeProperty->SetAmbient(colorValue.m_Ambient);//环境光系数
+			m_volumeProperty->SetDiffuse(colorValue.m_Diffuse);//散射光系数
+			m_volumeProperty->SetSpecular(colorValue.m_Specular);//反射光系数
+			m_volumeProperty->SetSpecularPower(colorValue.m_SpecularPower);//高光强度
+		}
+		else
+		{
+			m_volumeProperty->ShadeOff();
+		}
 		ui->m_mpr2DView->renderWindow()->Render();
 	}
 }
@@ -498,7 +510,6 @@ void QFourpaneviewer::INshowVolume3D()
 	m_volumeProperty->SetAmbient(0.4);//环境光系数
 	m_volumeProperty->SetDiffuse(0.5);//散射光系数
 	m_volumeProperty->SetSpecular(0.2);//反射光系数
-
 	m_volumeProperty->SetSpecularPower(1.0);//高光强度
 	//------------------------------------------------------------------
 	if (m_MainWindow->m_checkOpacity)
