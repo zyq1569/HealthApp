@@ -60,6 +60,7 @@ QEditorByValues::QEditorByValues(QWidget *parent): QWidget(parent), m_minimum(-2
 	m_nameLabel->hide();
 	m_nameLineEdit->hide();
 
+	//--------------load config.ini-----------start--------------------------------------------------------------//
 	QSettings settings("config.ini", QSettings::IniFormat);//settings.value("start/3DInterType", 0).toInt()
 	QString str = settings.value("VtkColorStyle/points", "").toString();
 	m_vtkColorStyle.clearAll();
@@ -80,6 +81,9 @@ QEditorByValues::QEditorByValues(QWidget *parent): QWidget(parent), m_minimum(-2
 			m_vtkColorStyle.m_colorPoint.append(point);
 		}
 	}
+	//---------------load config.ini-----------end------------------------------------------------------------------\\\
+
+
 }
 
 QEditorByValues::~QEditorByValues()
@@ -279,11 +283,13 @@ void QEditorByValues::saveValues3D()
 }
 void QEditorByValues::setValues3D()
 {
-	getValues();
-	m_vtkColorStyle.m_colorOpacity = m_colorOpacityCK->isChecked();
-	m_vtkColorStyle.m_colorAdd     = m_colorAddCK->isChecked();
-	emit signalsColorValue(m_vtkColorStyle);
-
+	if (m_colorOpacityCK->isChecked() || m_colorAddCK->isChecked())
+	{
+		getValues();
+		m_vtkColorStyle.m_colorOpacity = m_colorOpacityCK->isChecked();
+		m_vtkColorStyle.m_colorAdd     = m_colorAddCK->isChecked();
+		emit signalsColorValue(m_vtkColorStyle);
+	}
 }
 
 void QEditorByValues::addInterval()

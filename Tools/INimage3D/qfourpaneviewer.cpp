@@ -485,7 +485,6 @@ void QFourpaneviewer::INshowVolume3D()
 		m_colorTranF->AddRGBPoint(200.0, 0.8, 0.8, 0.8);   // 低密度区域 -> 灰色
 		m_colorTranF->AddRGBPoint(800.0, 1.0, 1.0, 1.0);   // 金属主体 -> 白色
 		m_colorTranF->AddRGBPoint(1500.0, 1.0, 0.0, 0.0);  // 夹杂物 -> 红色（高密度）
-		//m_colorTranF->RemoveAllPoints();
 		m_volumeProperty->SetColor(m_colorTranF);
 
 	}
