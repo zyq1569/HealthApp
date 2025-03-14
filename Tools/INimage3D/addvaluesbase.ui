@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>460</width>
-    <height>184</height>
+    <height>195</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -76,7 +76,7 @@
    <item>
     <widget class="QGroupBox" name="m_shadingGroupBox">
      <property name="title">
-      <string>Shadi&amp;ng</string>
+      <string>光照</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -88,7 +88,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="m_ambientCoefficientLabel">
         <property name="text">
-         <string>Ambient coefficient</string>
+         <string>环境光系数</string>
         </property>
        </widget>
       </item>
@@ -108,7 +108,7 @@
       <item row="0" column="2">
        <widget class="QLabel" name="m_diffuseCoefficientLabel">
         <property name="text">
-         <string>Diffuse coefficient</string>
+         <string>散射光系数</string>
         </property>
        </widget>
       </item>
@@ -128,7 +128,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="m_specularCoefficientLabel">
         <property name="text">
-         <string>Specular coefficient</string>
+         <string>反射光系数</string>
         </property>
        </widget>
       </item>
@@ -148,7 +148,7 @@
       <item row="1" column="2">
        <widget class="QLabel" name="m_specularPowerLabel">
         <property name="text">
-         <string>Specular power</string>
+         <string>高光强度系数</string>
         </property>
        </widget>
       </item>
@@ -206,14 +206,14 @@
      <item>
       <widget class="QPushButton" name="m_loadFilesPB">
        <property name="text">
-        <string>加载</string>
+        <string>加载配置</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="m_saveColorPB">
        <property name="text">
-        <string>保存</string>
+        <string>保存配置</string>
        </property>
       </widget>
      </item>
