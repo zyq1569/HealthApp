@@ -151,6 +151,7 @@ void QEditorByValues::getValues() const
 void QEditorByValues::loadFileValues()
 {
 	//setValues(&m_vtkColorStyle);
+	removeInterval();
 	QIntervalEditor *current = m_intervalEditorsWidget->findChild<QIntervalEditor*>("interval0");
 
 	QIntervalEditor *next = addIntervalAndReturnIt();
@@ -286,10 +287,10 @@ void QEditorByValues::setValues3D()
 	if (m_colorOpacityCK->isChecked() || m_colorAddCK->isChecked())
 	{
 		getValues();
-		m_vtkColorStyle.m_colorOpacity = m_colorOpacityCK->isChecked();
-		m_vtkColorStyle.m_colorAdd     = m_colorAddCK->isChecked();
-		emit signalsColorValue(m_vtkColorStyle);
 	}
+	m_vtkColorStyle.m_colorOpacity = m_colorOpacityCK->isChecked();
+	m_vtkColorStyle.m_colorAdd = m_colorAddCK->isChecked();
+	emit signalsColorValue(m_vtkColorStyle);
 }
 
 void QEditorByValues::addInterval()

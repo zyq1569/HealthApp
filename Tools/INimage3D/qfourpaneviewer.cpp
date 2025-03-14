@@ -471,15 +471,6 @@ void QFourpaneviewer::INshowVolume3D()
 	if (m_MainWindow->m_check3Dcolor)
 	{
 		m_colorTranF = vtkColorTransferFunction::New();	//m_colorTranF->AddRGBPoint(0, 0.0, 0.0, 0.0);  m_colorTranF->AddRGBPoint(255, 1.0, 1.0, 1.0);  // 黑色// 白色
-		//m_colorTranF->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-		//m_colorTranF->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-		//m_colorTranF->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
-		//m_colorTranF->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
-		//m_colorTranF->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
-		//m_colorTranF->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
-		//m_colorTranF->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
-		//m_colorTranF->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
-
 		//气孔 半透明/黑色，可见但不影响主体观察。		//金属正常区域 白色，结构清晰可见。		//夹杂物 红色 + 高不透明度，突出异常区域。
 		m_colorTranF->AddRGBPoint(-1000.0, 0.0, 0.0, 0.0); // 空气 -> 黑色
 		m_colorTranF->AddRGBPoint(200.0, 0.8, 0.8, 0.8);   // 低密度区域 -> 灰色
@@ -490,31 +481,35 @@ void QFourpaneviewer::INshowVolume3D()
 	}
 
 	//关闭梯度透明
-	//if (0)
-	{
-		m_pieceGradF = vtkPiecewiseFunction::New();
-		m_pieceGradF->AddPoint(1, 0.0);
-		m_pieceGradF->AddPoint(70, 0.5);
-		m_pieceGradF->AddPoint(130, 1.0);
-		m_pieceGradF->AddPoint(300, 0.1);
-		m_volumeProperty->SetGradientOpacity(m_pieceGradF);
-	}
+	m_pieceGradF = vtkPiecewiseFunction::New();
+	m_pieceGradF->AddPoint(1, 0.0);
+	m_pieceGradF->AddPoint(70, 0.5);
+	m_pieceGradF->AddPoint(130, 1.0);
+	m_pieceGradF->AddPoint(300, 0.1);
+	m_volumeProperty->SetGradientOpacity(m_pieceGradF);
+
 
 	m_volumeProperty->ShadeOn();
 	//m_volumeProperty->ShadeOff();
-	
 	m_volumeProperty->SetInterpolationType(m_MainWindow->m_cbInterType);//m_volumeProperty->SetInterpolationTypeToNearest();m_volumeProperty->SetInterpolationTypeToLinear();//m_volumeProperty->SetInterpolationTypeToCubic();
 
-	//if (0)
-	{
-		//一般 环境光系数+散射光系数+反射光系数=1.0,  提供亮度可以大于1.0
-		m_volumeProperty->SetAmbient(0.4);//环境光系数
-		m_volumeProperty->SetDiffuse(0.5);//散射光系数
-		m_volumeProperty->SetSpecular(0.2);//反射光系数
 
-		m_volumeProperty->SetSpecularPower(1.0);//高光强度
+	//-----一般 环境光系数+散射光系数+反射光系数=1.0,  提供亮度可以大于1.0
+	m_volumeProperty->SetAmbient(0.4);//环境光系数
+	m_volumeProperty->SetDiffuse(0.5);//散射光系数
+	m_volumeProperty->SetSpecular(0.2);//反射光系数
+
+	m_volumeProperty->SetSpecularPower(1.0);//高光强度
+	//------------------------------------------------------------------
+	if (m_MainWindow->m_checkOpacity)
+	{
+		m_volumeProperty->DisableGradientOpacityOff();//关闭梯度透明度
 	}
-	m_volumeProperty->DisableGradientOpacityOn();//关闭梯度透明度
+	else
+	{
+		m_volumeProperty->DisableGradientOpacityOn();//关闭梯度透明度
+	}
+
 
 
 	m_volumeMapper->SetInputData(imageData);
@@ -609,6 +604,15 @@ QFourpaneviewer::~QFourpaneviewer()
 }
 
 /*
+//m_colorTranF->AddRGBPoint(-1024.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+//m_colorTranF->AddRGBPoint(24.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+//m_colorTranF->AddRGBPoint(163.0, 1.0, 0.13725490196078433, 0.17254901960784313);
+//m_colorTranF->AddRGBPoint(167.0, 1.0, 0.35294117647058826, 0.16862745098039217);
+//m_colorTranF->AddRGBPoint(218.0, 1.0, 0.63921568627450975, 0.11372549019607843);
+//m_colorTranF->AddRGBPoint(445.0, 1.0, 1.0, 1.0);
+//m_colorTranF->AddRGBPoint(1455.0, 1.0, 1.0, 1.0);
+//m_colorTranF->AddRGBPoint(2784.0, 1.0, 1.0, 1.0);
+
 1️⃣ 插值方式（Interpolation）
 SetInterpolationTypeToNearest()（最近邻插值） → 速度最快 🚀
 SetInterpolationTypeToLinear()（线性插值） → 较慢，但图像更平滑
