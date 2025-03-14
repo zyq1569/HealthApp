@@ -151,7 +151,10 @@ void QEditorByValues::getValues() const
 void QEditorByValues::loadFileValues()
 {
 	//setValues(&m_vtkColorStyle);
-	removeInterval();
+	while (m_numberOfIntervals > 1)
+	{
+		removeInterval();
+	}
 	QIntervalEditor *current = m_intervalEditorsWidget->findChild<QIntervalEditor*>("interval0");
 
 	QIntervalEditor *next = addIntervalAndReturnIt();
