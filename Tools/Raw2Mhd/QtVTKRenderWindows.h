@@ -15,6 +15,13 @@ public:
     QtVTKRenderWindows(QWidget *parent = nullptr);
     ~QtVTKRenderWindows();
 
+public:
+	QString m_fileDir, m_filesName, m_extraName, m_numberStyle,m_saveFileName,m_argvstr;
+	int m_width, m_hight, m_start, m_end, m_bzip;
+
+public:
+	void raw2vtkmhd();
+
 private slots:
   void raw2mhd();
 
