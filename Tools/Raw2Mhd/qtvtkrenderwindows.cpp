@@ -158,7 +158,7 @@ void QtVTKRenderWindows::raw2vtkmhd()
 	{
 		//++++++++++++++++++++++++++++
 		settings.setValue("start/progress", 98);
-		settings.setValue("start/zipdata", 0);
+		settings.setValue("start/zipdata", 1);
 		settings.sync();
 		//+++++++++++++++++++++++++++++++
 		vtkSmartPointer<vtkMetaImageReader> metaReader = vtkSmartPointer<vtkMetaImageReader>::New();

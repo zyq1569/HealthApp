@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>724</width>
+    <width>735</width>
     <height>132</height>
    </rect>
   </property>
@@ -285,7 +285,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextEdit" name="m_filename">
     <property name="geometry">
      <rect>
-      <x>275</x>
+      <x>259</x>
       <y>70</y>
       <width>61</width>
       <height>21</height>
@@ -305,7 +305,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="m_extraCheck">
     <property name="geometry">
      <rect>
-      <x>351</x>
+      <x>326</x>
       <y>73</y>
       <width>51</width>
       <height>17</height>
@@ -318,7 +318,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextEdit" name="m_extra">
     <property name="geometry">
      <rect>
-      <x>400</x>
+      <x>375</x>
       <y>70</y>
       <width>71</width>
       <height>21</height>
@@ -443,7 +443,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>204</x>
       <y>70</y>
       <width>51</width>
       <height>20</height>
@@ -456,20 +456,20 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="m_formate">
     <property name="geometry">
      <rect>
-      <x>477</x>
+      <x>452</x>
       <y>73</y>
       <width>61</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>数字格式</string>
+     <string>数字个数</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="m_fmn">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>515</x>
       <y>70</y>
       <width>61</width>
       <height>21</height>
@@ -538,14 +538,14 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>602</x>
+      <x>578</x>
       <y>70</y>
-      <width>71</width>
+      <width>161</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>eg:VG00000</string>
+     <string>5-&gt;保留5个数格式eg:VG00000</string>
     </property>
    </widget>
   </widget>
