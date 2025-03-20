@@ -27,6 +27,7 @@ ShadeWidget::ShadeWidget(QWidget *parent): QWidget(parent), m_shade_type(BlackSh
 
 ShadeWidget::ShadeWidget(ShadeType type, QWidget *parent): QWidget(parent), m_shade_type(type), m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
 {
+	//setMaximumSize(300,100);
 	// Checkers background
 	if (m_shade_type == ARGBShade)
 	{

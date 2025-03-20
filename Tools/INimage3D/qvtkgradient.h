@@ -30,10 +30,7 @@ private slots:
 
 private:
     QLineEdit *m_nameLineEdit;
-    ShadeWidget *m_red_shade;
-    ShadeWidget *m_green_shade;
-    ShadeWidget *m_blue_shade;
-    ShadeWidget *m_alpha_shade;
+	ShadeWidget *m_gradientShade, *m_colorShade;
 
     /// Funció de transferència actual.
     //TransferFunction m_transferFunction;
