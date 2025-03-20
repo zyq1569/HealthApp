@@ -245,6 +245,10 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 	ui->m_editorsWidget->hide();
 	m_showEditors = false;
+
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	ui->m_editorsWidget->setCurrentIndex(0);
+	//ui->m_editorsWidget->widget(1)->hide();
 }
 
 
