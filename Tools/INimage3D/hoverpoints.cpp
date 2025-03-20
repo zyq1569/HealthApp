@@ -27,6 +27,8 @@ HoverPoints::HoverPoints(QWidget *widget, PointShape shape) : QObject(widget)
 
 	m_width = m_height = -1;
 
+	m_colorBar = false;
+
 	m_graPoints.clear();
 }
 
@@ -41,6 +43,11 @@ void HoverPoints::setEnabled(bool enabled)
 
 bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 {
+	if (m_colorBar)
+	{
+		return false;
+	}
+
 	if (object == m_widget && m_enabled)
 	{
 		switch (event->type())

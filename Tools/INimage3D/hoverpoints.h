@@ -125,6 +125,10 @@ signals:
 
 public:
     void firePointChange();
+	void setColorBar(bool flag)
+	{
+		m_colorBar = flag;
+	}
 
 private:
     inline QRectF pointBoundingRect(int i) const;
@@ -148,6 +152,7 @@ private:
     QPen m_pointPen;
     QBrush m_pointBrush;
     QPen m_connectionPen;
+	bool m_colorBar;
 
     int m_width, m_height;
 };

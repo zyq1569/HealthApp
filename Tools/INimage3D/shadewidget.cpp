@@ -42,6 +42,10 @@ ShadeWidget::ShadeWidget(ShadeType type, QWidget *parent): QWidget(parent), m_sh
 		setPalette(pal);
 
 	}
+	else if(m_shade_type == ColorShade)
+	{
+		setAttribute(Qt::WA_NoBackground);
+	}
 	else
 	{
 		setAttribute(Qt::WA_NoBackground);
@@ -57,6 +61,11 @@ ShadeWidget::ShadeWidget(ShadeType type, QWidget *parent): QWidget(parent), m_sh
 	m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
 
 	m_hoverPoints->setSortType(HoverPoints::XSort);
+
+	if (m_shade_type == ColorShade)
+	{
+		m_hoverPoints->setColorBar(true);
+	}
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
