@@ -16,7 +16,8 @@ public:
         GreenShade,
         BlueShade,
         BlackShade,
-        ARGBShade
+        ARGBShade,
+		GradientShade
     };
 
     ShadeWidget(QWidget *parent);

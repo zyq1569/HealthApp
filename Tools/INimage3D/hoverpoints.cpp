@@ -26,6 +26,8 @@ HoverPoints::HoverPoints(QWidget *widget, PointShape shape) : QObject(widget)
 	connect(this, SIGNAL(pointsChanged(const QPolygonF &)), m_widget, SLOT(update()));
 
 	m_width = m_height = -1;
+
+	m_graPoints.clear();
 }
 
 void HoverPoints::setEnabled(bool enabled)
@@ -223,13 +225,15 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 
 void HoverPoints::paintPoints()
 {
-	QPainter p(m_widget);
+	QPainter painter(m_widget),grdP(m_widget);
 
-	p.setRenderHint(QPainter::Antialiasing);
+	painter.setRenderHint(QPainter::Antialiasing);
+	grdP.setRenderHint(QPainter::Antialiasing);
 
 	if (m_connectionPen.style() != Qt::NoPen && m_connectionType != NoConnection)
 	{
-		p.setPen(m_connectionPen);
+		painter.setPen(m_connectionPen);
+		grdP.setPen(m_connectionPen);
 
 		if (m_connectionType == CurveConnection)
 		{
@@ -240,32 +244,38 @@ void HoverPoints::paintPoints()
 				QPointF p1 = m_points.at(i - 1);
 				QPointF p2 = m_points.at(i);
 				double distance = p2.x() - p1.x();
-
 				path.cubicTo(p1.x() + distance / 2, p1.y(), p1.x() + distance / 2, p2.y(), p2.x(), p2.y());
 			}
-			p.drawPath(path);
+			painter.drawPath(path);
 		}
 		else
 		{
-			p.drawPolyline(m_points);
+			painter.drawPolyline(m_points);
+			m_graPoints.clear();
+			for (int i = 0; i < m_points.size(); ++i)
+			{
+				QPointF p2 = m_points.at(i);
+				m_graPoints.append( QPointF(p2.x(), p2.y() + 12));
+			}
+			grdP.drawPolyline(m_graPoints);
 		}
 	}
 
-	p.setPen(m_pointPen);
-	p.setBrush(m_pointBrush);
+	painter.setPen(m_pointPen);
+	painter.setBrush(m_pointBrush);
 
 	for (int i = 0; i < m_points.size(); ++i)
 	{
 		QRectF bounds = pointBoundingRect(i);
 		if (m_shape == CircleShape)
 		{
-			p.drawEllipse(bounds);
+			painter.drawEllipse(bounds);
 		}
 		else
 		{
 			if (m_shape == RectangleShape)
 			{
-				p.drawRect(bounds);
+				painter.drawRect(bounds);
 			}
 		}
 	}
@@ -304,6 +314,7 @@ static QPointF bound_point(const QPointF &point, const QRectF &bounds, int lock)
 void HoverPoints::setPoints(const QPolygonF &points)
 {
 	m_points.clear();
+	m_graPoints.clear();
 	for (int i = 0; i < points.size(); ++i)
 	{
 		m_points << bound_point(points.at(i), boundingRect(), 0);

@@ -2,6 +2,9 @@
 
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QScrollArea>
+#include <QScrollBar>
+
 #include "shadewidget.h"
 #include "hoverpoints.h"
 
@@ -24,13 +27,52 @@ QvtkGradient::QvtkGradient(QWidget *parent)
     hbox->addWidget(nameLabel);
     hbox->addWidget(m_nameLineEdit);
 
-	m_gradientShade = new ShadeWidget(ShadeWidget::ARGBShade, this);
+	m_gradientShade = new ShadeWidget(ShadeWidget::GradientShade, this);
+	m_gradientShade->setFixedHeight(200);
 	m_colorShade = new ShadeWidget(ShadeWidget::ARGBShade, this);
+	m_colorShade->setFixedHeight(50);
 
-    vbox->addLayout(hbox);
+
     vbox->addWidget(m_gradientShade);
 	vbox->addWidget(m_colorShade);
+    vbox->addLayout(hbox);
+	vbox->addStretch(0);	
 
+
+	/*/++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    QScrollArea *scrollArea = new QScrollArea(this);
+	qobject_cast<QBoxLayout*>(this->layout())->insertWidget(1, scrollArea);
+
+	m_gradientShade = new ShadeWidget(ShadeWidget::GradientShade, this);
+	m_colorShade = new ShadeWidget(ShadeWidget::ARGBShade, this);
+	m_colorShade->setFixedHeight(50);
+
+	QBoxLayout *layout = new QVBoxLayout(parent);
+	QVBoxLayout *vbox = new QVBoxLayout(this);
+
+	QHBoxLayout *hbox = new QHBoxLayout();
+	hbox->setSpacing(6);
+	hbox->setMargin(0);
+	QLabel *nameLabel = new QLabel(tr("Name"), this);
+	m_nameLineEdit = new QLineEdit(this);
+	hbox->addWidget(nameLabel);
+	hbox->addWidget(m_nameLineEdit);
+
+	layout->addLayout(vbox);
+	layout->addStretch();
+	layout->setMargin(0);
+
+	vbox->addWidget(m_gradientShade);
+	vbox->addWidget(m_colorShade);
+	vbox->addLayout(hbox);
+	vbox->addStretch(0);
+
+	scrollArea->setWidget(this);
+	scrollArea->setWidgetResizable(true);
+	scrollArea->setFrameShape(QFrame::NoFrame);
+	scrollArea->verticalScrollBar()->setValue(scrollArea->verticalScrollBar()->value() / 2); */
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
 
     connect(m_nameLineEdit, SIGNAL(textChanged(const QString&)), SLOT(setTransferFunctionName(const QString&)));
     connect(m_gradientShade, SIGNAL(colorsChanged()), SLOT(pointsUpdated()));

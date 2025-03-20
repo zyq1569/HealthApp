@@ -132,7 +132,7 @@ private:
 
     QWidget *m_widget;
 
-    QPolygonF m_points;
+    QPolygonF m_points,m_graPoints;
     QRectF m_bounds;
     PointShape m_shape;
     SortType m_sortType;
