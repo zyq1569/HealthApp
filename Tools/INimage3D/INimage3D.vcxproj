@@ -353,7 +353,6 @@
     <ClCompile Include="hoverpoints.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
-    <ClCompile Include="qcolorgraphicalview.cpp" />
     <ClCompile Include="qcolorspinbox.cpp" />
     <ClCompile Include="qeditorbyvalues.cpp" />
     <ClCompile Include="qfourpaneviewer.cpp" />
@@ -373,7 +372,6 @@
     <QtUic Include="mainwindow.ui">
     </QtUic>
     <QtUic Include="qfourpaneviewer.ui" />
-    <QtUic Include="qgraphicalviewbase.ui" />
     <QtUic Include="qprogressdata.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -389,7 +387,6 @@
     <QtMoc Include="qcolorspinbox.h" />
     <QtMoc Include="qintervaleditor.h" />
     <QtMoc Include="qeditorbyvalues.h" />
-    <QtMoc Include="qcolorgraphicalview.h" />
     <QtMoc Include="hoverpoints.h" />
     <QtMoc Include="qvtkgradient.h" />
     <ClInclude Include="resource.h" />
