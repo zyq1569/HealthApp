@@ -46,6 +46,7 @@ public:
 	vtkAlgorithmOutput *m_vtkAlgorithmOutput;
 	QProgressData *m_qProgressBar;
 	QToolBar *m_mainToolbar;
+	QString m_commdFilePath;
 	int m_index3D, m_index4P;
 	bool m_closeMetaFile;
 

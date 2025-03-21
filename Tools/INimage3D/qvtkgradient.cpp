@@ -29,7 +29,7 @@ QvtkGradient::QvtkGradient(QWidget *parent)
 
 
 	m_widget = new QWidget(this);
-	int totalLength = 120;
+	int totalLength   = 120;
 	int visibleLength = 100;
 	QScrollBar *VscrollArea = new QScrollBar(Qt::Vertical, m_widget);
 	VscrollArea->setFixedWidth(20);

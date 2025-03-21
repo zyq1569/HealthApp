@@ -115,7 +115,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::starViewer()
 {
-
+	initMetaFile();
+	m_commdFilePath = "";
 }
 
 void MainWindow::initMetaFile()
@@ -150,7 +151,16 @@ void MainWindow::initMetaFile()
 		return;
 	}
 
-	QString Mhdfilename = QFileDialog::getOpenFileName(this, "mhd|vti file", QString(), "*.mhd;*.vti");
+	QString Mhdfilename;
+	if (m_commdFilePath.length() < 1)
+	{
+		Mhdfilename  = QFileDialog::getOpenFileName(this, "mhd|vti file", QString(), "*.mhd;*.vti");
+	}
+	else
+	{
+		Mhdfilename = m_commdFilePath;
+	}
+
 	//QString Mhdfilename = QFileDialog::getOpenFileName(this, "mhd file", QString(), "*.mhd");
 	QFileInfo finfo(Mhdfilename);
 	if (!finfo.exists())
