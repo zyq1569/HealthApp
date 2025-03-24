@@ -4,13 +4,13 @@
 
 #include <QPainter>
 
-ShadeWidget::ShadeWidget(QWidget *parent): QWidget(parent), m_shade_type(BlackShade), m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
+ShadeWidget::ShadeWidget(QWidget *parent) : QWidget(parent), m_shade_type(BlackShade), m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
 {
 	// Checkers background
 	setAttribute(Qt::WA_NoBackground);
 
 	QPolygonF points;
-	points << QPointF(0, sizeHint().height())<< QPointF(sizeHint().width(), 0);
+	points << QPointF(0, sizeHint().height()) << QPointF(sizeHint().width(), 0);
 
 	m_hoverPoints = new HoverPoints(this, HoverPoints::NoShape);
 	m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
@@ -25,7 +25,7 @@ ShadeWidget::ShadeWidget(QWidget *parent): QWidget(parent), m_shade_type(BlackSh
 	connect(m_hoverPoints, SIGNAL(pointsChanged(const QPolygonF &)), this, SIGNAL(colorsChanged()));
 }
 
-ShadeWidget::ShadeWidget(ShadeType type, QWidget *parent): QWidget(parent), m_shade_type(type), m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
+ShadeWidget::ShadeWidget(ShadeType type, QWidget *parent) : QWidget(parent), m_shade_type(type), m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
 {
 	if (m_shade_type == ARGBShade)
 	{
@@ -40,36 +40,69 @@ ShadeWidget::ShadeWidget(ShadeType type, QWidget *parent): QWidget(parent), m_sh
 		pal.setBrush(backgroundRole(), QBrush(pm));
 		setAutoFillBackground(true);
 		setPalette(pal);
-
+	
 	}
 	else if(m_shade_type == ColorShade)
 	{
-		setAttribute(Qt::WA_NoBackground);
+		this->setStyleSheet("background-color:rgb(255,255,255)}");
 	}
 	else
 	{
-		setAttribute(Qt::WA_NoBackground);
+		//setAttribute(Qt::WA_NoBackground);
+		QPixmap pm(20, 20);
+		QPainter pmp(&pm);
+		pmp.fillRect(0, 0, 10, 10, Qt::lightGray);
+		pmp.fillRect(10, 10, 10, 10, Qt::lightGray);
+		pmp.fillRect(0, 10, 10, 10, Qt::darkGray);
+		pmp.fillRect(10, 0, 10, 10, Qt::darkGray);
+		pmp.end();
+		QPalette pal = palette();
+		pal.setBrush(backgroundRole(), QBrush(pm));
+		setAutoFillBackground(true);
+		setPalette(pal);
 	}
 
 	QPolygonF points;
-	points << QPointF(0, sizeHint().height())<< QPointF(sizeHint().width(), 0);
+	if (m_shade_type == ColorShade)
+	{
+		points << QPointF(0, sizeHint().height()) << QPointF(sizeHint().width(), sizeHint().height());
+	}
+	else
+	{
+		points << QPointF(0, sizeHint().height()) << QPointF(sizeHint().width(), 0);
+	}
+
 
 	m_hoverPoints = new HoverPoints(this, HoverPoints::CircleShape);
+
 	m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
+
 	m_hoverPoints->setPoints(points);
 	m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
 	m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
+
 
 	m_hoverPoints->setSortType(HoverPoints::XSort);
 
 	if (m_shade_type == ColorShade)
 	{
 		m_hoverPoints->setColorBar(true);
+		QColor color;
+		color.setRgb(255, 255, 255);
+		m_hoverPoints->m_colors.append(color);
+		color.setRgb(255, 255, 255);
+		m_hoverPoints->m_colors.append(color);
+
 	}
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
 	connect(m_hoverPoints, SIGNAL(pointsChanged(const QPolygonF &)), this, SIGNAL(colorsChanged()));
+
+	if (m_shade_type == ColorShade)
+	{
+		m_hoverPoints->setPointShape(HoverPoints::RectangleShape);
+	}
 }
 
 QPolygonF ShadeWidget::points() const
@@ -168,6 +201,10 @@ void ShadeWidget::generateShade()
 			else if (m_shade_type == BlueShade)
 			{
 				shade.setColorAt(0, Qt::blue);
+			}
+			else if (m_shade_type == GradientShade || m_shade_type == ColorShade)
+			{
+				shade.setColorAt(0, Qt::white);
 			}
 			else
 			{

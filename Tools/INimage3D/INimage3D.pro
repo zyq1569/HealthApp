@@ -14,21 +14,24 @@ SOURCES += \
     mainwindow.cpp \
     q3dviewer.cpp \
     qfourpaneviewer.cpp \
-    qprogressdata.cpp
+    qprogressdata.cpp \
+    vtkcolorgradient.cpp
 
 HEADERS += \
     ConfigForm.h \
     mainwindow.h \
     q3dviewer.h \
     qfourpaneviewer.h \
-    qprogressdata.h
+    qprogressdata.h \
+    vtkcolorgradient.h
 
 FORMS += \
     ConfigForm.ui \
     mainwindow.ui \
     q3dviewer.ui \
     qfourpaneviewer.ui \
-    qprogressdata.ui
+    qprogressdata.ui \
+    vtkcolorgradient.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -21,21 +21,21 @@ QvtkGradient::QvtkGradient(QWidget *parent)
     hbox->setMargin(0);
 
     QLabel *nameLabel = new QLabel(tr("Name"), this);
-    m_nameLineEdit = new QLineEdit(this);
+    m_nameLineEdit    = new QLineEdit(this);
 
     hbox->addWidget(nameLabel);
     hbox->addWidget(m_nameLineEdit);
 
 
 
-	m_widget = new QWidget(this);
-	int totalLength   = 120;
-	int visibleLength = 100;
+	m_widget                = new QWidget(this);
+	int totalLength         = 120;
+	int visibleLength       = 100;
 	QScrollBar *VscrollArea = new QScrollBar(Qt::Vertical, m_widget);
 	VscrollArea->setFixedWidth(20);
 	VscrollArea->setValue(60);
 
-	m_gradientShade = new ShadeWidget(ShadeWidget::GradientShade, m_widget);
+	m_gradientShade      = new ShadeWidget(ShadeWidget::GradientShade, m_widget);
 	m_gradientShade->setFixedHeight(200);
 	QHBoxLayout *vLayout = new QHBoxLayout(m_widget);
 	vLayout->setMargin(0);

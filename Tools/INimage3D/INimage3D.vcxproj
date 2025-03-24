@@ -360,6 +360,7 @@
     <ClCompile Include="qprogressdata.cpp" />
     <ClCompile Include="qvtkgradient.cpp" />
     <ClCompile Include="shadewidget.cpp" />
+    <ClCompile Include="vtkcolorgradient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -373,6 +374,7 @@
     </QtUic>
     <QtUic Include="qfourpaneviewer.ui" />
     <QtUic Include="qprogressdata.ui" />
+    <QtUic Include="vtkcolorgradient.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="main.qrc" />
@@ -381,6 +383,7 @@
     <QtMoc Include="qfourpaneviewer.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="vtkcolorgradient.h" />
     <QtMoc Include="shadewidget.h" />
     <QtMoc Include="configForm.h" />
     <QtMoc Include="qprogressdata.h" />

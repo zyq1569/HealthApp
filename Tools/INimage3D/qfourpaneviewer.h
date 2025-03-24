@@ -21,6 +21,7 @@ class vtkVolumeProperty;
 class vtkVolume;
 class vtkPiecewiseFunction;
 class MainWindow;
+class VtkColorGradient;
 
 //class vtkGPUVolumeRayCastMapper;
 #include <QWidget>
@@ -83,6 +84,7 @@ public:
 	vtkPolyDataMapper* m_isosurfaceMapper;
 	vtkPiecewiseFunction *m_pieceF, *m_pieceGradF;
 	vtkColorTransferFunction *m_colorTranF;
+	VtkColorGradient *m_vtkColorGradient;
 
 	bool m_showEditors;
 

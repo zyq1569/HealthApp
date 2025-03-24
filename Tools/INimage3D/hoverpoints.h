@@ -112,6 +112,11 @@ public:
     {
         return m_editable;
     }
+	
+	void setPointShape(PointShape shape)
+	{
+		m_shape = shape;
+	}
 
 public slots:
     void setEnabled(bool enabled);
@@ -130,6 +135,8 @@ public:
 		m_colorBar = flag;
 	}
 
+public:
+		QList<QColor> m_colors;
 private:
     inline QRectF pointBoundingRect(int i) const;
     inline void movePoint(int i, const QPointF &newPos, bool emitChange = true);
@@ -154,16 +161,16 @@ private:
     QPen m_connectionPen;
 	bool m_colorBar;
 
-    int m_width, m_height;
+    int m_width, m_height,m_fixH;
 };
 
 inline QRectF HoverPoints::pointBoundingRect(int i) const
 {
     QPointF p = m_points.at(i);
-    double w = m_pointSize.width();
-    double h = m_pointSize.height();
-    double x = p.x() - w / 2;
-    double y = p.y() - h / 2;
+    double w  = m_pointSize.width();
+    double h  = m_pointSize.height();
+    double x  = p.x() - w / 2;
+    double y  = p.y() - h / 2;
     return QRectF(x, y, w, h);
 }
 

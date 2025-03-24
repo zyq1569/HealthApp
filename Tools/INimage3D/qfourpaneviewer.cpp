@@ -55,6 +55,7 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 //--------------
 #include <QAction>
 
+#include "vtkcolorgradient.h"
 using namespace ThreadWeaver;
 
 class Volume3DJob : public Job 
@@ -236,7 +237,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 	m_renderer->AddViewProp(m_vtkVolume);
 	//-----------------------------------------------------------
-	ui->m_SplitterLR->widget(1)->setMaximumWidth(450);
+	ui->m_SplitterLR->widget(1)->setMaximumWidth(650);
 	ui->m_SplitterLR->widget(1)->setMinimumWidth(320);
 	//QSplitterHandle* hand = ui->m_SplitterLR->handle(1);
 	//if (hand)
@@ -256,8 +257,11 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 void QFourpaneviewer::ShowEditorsWidget()
 {
-	m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
-	m_showEditors = !m_showEditors;
+	//m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
+	//m_showEditors = !m_showEditors;
+
+	m_vtkColorGradient = new VtkColorGradient(this);
+	m_vtkColorGradient->show();
 }
 
 void QFourpaneviewer::Show3DPlane()

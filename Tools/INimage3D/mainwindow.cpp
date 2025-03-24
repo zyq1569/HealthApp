@@ -23,13 +23,13 @@ MainWindow::MainWindow(QWidget *parent)
 	setStatusBar(nullptr);
 	setMenuBar(nullptr);
 
-	m_image4Plane = nullptr;
-	m_MetaReader = nullptr;
-	m_XMLImageDataReader = nullptr;
-	m_closeMetaFile = false;
-
-	m_vtkImageData = nullptr;
-	m_vtkAlgorithmOutput = nullptr;
+	m_image4Plane         = nullptr;
+	m_MetaReader          = nullptr;
+	m_XMLImageDataReader  = nullptr;
+	m_closeMetaFile       = false;
+						 
+	m_vtkImageData        = nullptr;
+	m_vtkAlgorithmOutput  = nullptr;
 
 	m_index3D = m_index4P = -1;
 
