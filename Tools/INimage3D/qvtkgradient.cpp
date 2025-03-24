@@ -50,7 +50,6 @@ QvtkGradient::QvtkGradient(QWidget *parent)
     vbox->addLayout(hbox);
 	vbox->addStretch(0);	
 	
-
     connect(m_nameLineEdit, SIGNAL(textChanged(const QString&)), SLOT(setTransferFunctionName(const QString&)));
     connect(m_gradientShade, SIGNAL(colorsChanged()), SLOT(pointsUpdated()));
     connect(m_colorShade, SIGNAL(colorsChanged()), SLOT(pointsUpdated()));

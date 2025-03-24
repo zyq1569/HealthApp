@@ -248,8 +248,8 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_showEditors = false;
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	ui->m_editorsWidget->setCurrentIndex(1);//设置坐标系方式选择点,另外一个是具体点坐标输入方式设置颜色及透明度
-	//ui->m_editorsWidget->setStyleSheet("background-color:rgb(240,240,240)}");
+	ui->m_editorsWidget->setCurrentIndex(0);//设置坐标系方式选择点,另外一个是具体点坐标输入方式设置颜色及透明度
+	ui->m_editorsWidget->setStyleSheet("background-color:rgb(240,240,240)}");
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
