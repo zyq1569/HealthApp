@@ -13,15 +13,15 @@ HoverPoints::HoverPoints(QWidget *widget, PointShape shape) : QObject(widget)
 	widget->installEventFilter(this);
 
 	m_connectionType = CurveConnection;
-	m_sortType = NoSort;
-	m_shape = shape;
-	m_pointPen = QPen(QColor(255, 255, 255, 191), 1);
-	m_connectionPen = QPen(QColor(255, 255, 255, 127), 2);
-	m_pointBrush = QBrush(QColor(191, 191, 191, 127));
-	m_pointSize = QSize(11, 11);
-	m_currentIndex = -1;
-	m_editable = true;
-	m_enabled = true;
+	m_sortType       = NoSort;
+	m_shape          = shape;
+	m_pointPen       = QPen(QColor(255, 255, 255, 191), 1);
+	m_connectionPen  = QPen(QColor(255, 255, 255, 127), 2);
+	m_pointBrush     = QBrush(QColor(191, 191, 191, 127));
+	m_pointSize      = QSize(11, 11);
+	m_currentIndex   = -1;
+	m_editable       = true;
+	m_enabled        = true;
 
 	connect(this, SIGNAL(pointsChanged(const QPolygonF &)), m_widget, SLOT(update()));
 
@@ -49,8 +49,6 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 		{
 			case QEvent::MouseButtonPress:
 			{
-				if (m_colorBar)
-					break;
 				QMouseEvent *me = (QMouseEvent *)event;
 
 				QPointF clickPos = me->pos();
@@ -79,6 +77,8 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 
 				if (me->button() == Qt::LeftButton)
 				{
+					if (m_colorBar)
+						break;
 					if (index == -1)
 					{
 						if (!m_editable)
