@@ -25,8 +25,12 @@ public:
 	bool eventFilter(QObject *obj, QEvent *event);
 	void paintRuler();
     void paintPointsLines();
+    void movePoints(int index, const QPointF &point, bool update);
+
+
     inline QRectF getPointRect(int i)const;
     inline QRectF PointInRectX(int i)const;
+
 public:
 	QWidget *m_parent;
 
@@ -36,6 +40,7 @@ private:
 	QPen m_linePen;
 	QList<QColor> m_colors;
     ShapeStyle m_shapeStyle;
+    QRectF m_xyRect;
 	
 };
 //++++++++++++++++++++++++++

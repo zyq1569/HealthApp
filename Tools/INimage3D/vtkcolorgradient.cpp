@@ -25,6 +25,7 @@ GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
         int deltaX = 30, deltaY = 0;
         int delta = (m_maxH - 2 * deltaY) / 12;
         m_points << QPointF(35, m_maxH - 7) << QPointF(m_maxW - 35, m_maxH - deltaY - 10 * delta);
+        m_xyRect = QRectF(QPointF(35, m_maxH - 7), QPointF(m_maxW - 35, m_maxH - deltaY - 10 * delta));
     }
     else
     {
@@ -36,6 +37,7 @@ GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
         QColor color(255, 255, 255);
         m_colors.push_back(color);
         m_colors.push_back(color);
+        m_xyRect = QRectF(QPointF(deltaX, Y), QPointF(deltaX + 10 * delta, Y));
     }
 }
 
@@ -53,6 +55,38 @@ inline QRectF GradientShape::getPointRect(int i)const
     double x = point.x() - w / 2;
     double y = point.y() - h / 2;
     return QRectF(x, y, w, h);
+}
+
+void GradientShape::movePoints(int index, const QPointF &point, bool update)
+{
+    if (index >= 0 && index < m_points.size())
+    {
+        QPointF pt    = point;
+        double left   = m_xyRect.left();
+        double right  = m_xyRect.right();
+        double top    = m_xyRect.top();
+        double bottom = m_xyRect.bottom();
+        if (pt.x() < left)
+        {
+            pt.setX(left);
+        }
+        else if (pt.x() > right)
+        {
+            pt.setX(right);
+        }
+        if (pt.y() < top)
+        {
+            pt.setY(top);
+        }
+        else if (pt.y() > bottom)
+        {
+            pt.setY(bottom);
+        }
+
+        m_points[index] = pt;
+        m_parent->update();
+    }
+    
 }
 
 void GradientShape::paintPointsLines()
@@ -233,7 +267,17 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
         }
         case QEvent::MouseButtonPress:
         case QEvent::MouseButtonRelease:
+        {
+            m_currentIndex = -1;
+            break;
+        }
         case QEvent::MouseMove:
+            if (m_currentIndex > -1)
+            {
+                QMouseEvent *mouseEvent = (QMouseEvent *)event;
+                QPointF clickPoint = mouseEvent->pos();
+                movePoints(m_currentIndex, clickPoint, true);
+            }
         case QEvent::Resize:
         {
             m_maxH = m_parent->height();
