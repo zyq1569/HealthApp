@@ -9,16 +9,16 @@
 
 GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
 {
-	if (widget)
-	{
-		m_parent = widget;
-		m_parent->installEventFilter(this);
+    if (widget)
+    {
+        m_parent = widget;
+        m_parent->installEventFilter(this);
         widget->setStyleSheet("background-color:rgb(255,255,255)}");
         m_maxH = m_parent->height();
         m_maxW = m_parent->width();
-	}
+    }
     m_shapeStyle = style;
-	m_linePen = QPen(QColor(5, 5, 5, 255),2 /*SolidLine*/);
+    m_linePen = QPen(QColor(5, 5, 5, 255), 2 /*SolidLine*/);
     if (style == ShapeStyle::Default)
     {
         m_points.clear();
@@ -49,7 +49,7 @@ inline QRectF GradientShape::PointInRect(int i)const
 inline QRectF GradientShape::getPointRect(int i)const
 {
     QPointF point = m_points.at(i);
-    double w = 10,h = 10;
+    double w = 10, h = 10;
     double x = point.x() - w / 2;
     double y = point.y() - h / 2;
     return QRectF(x, y, w, h);
@@ -98,9 +98,9 @@ void GradientShape::paintPointsLines()
 
 void GradientShape::paintRuler()
 {
-	QPainter painter(m_parent);
-	painter.setRenderHint(QPainter::Antialiasing);
-	
+    QPainter painter(m_parent);
+    painter.setRenderHint(QPainter::Antialiasing);
+
     //XY¿Ì¶È
     //Y
     if (m_shapeStyle == ShapeStyle::Default)
@@ -109,21 +109,21 @@ void GradientShape::paintRuler()
         QPolygonF points;
         int deltaX = 30, deltaY = 0;
         int delta = (m_maxH - 2 * deltaY) / 12;
-        QPointF pointO(deltaX,m_maxH- deltaY), pointX(m_maxW- deltaX,m_maxH- deltaY), pointY(deltaX, deltaY+ delta);
+        QPointF pointO(deltaX, m_maxH - deltaY), pointX(m_maxW - deltaX, m_maxH - deltaY), pointY(deltaX, deltaY + delta);
         points << pointY << pointO << pointX;
         painter.setPen(m_linePen);
         painter.drawPolyline(points);
         for (int i = 0; i < 11; i++)
         {
             painter.drawLine(QPointF(deltaX, m_maxH - deltaY - i * delta), QPointF(deltaX / 2, m_maxH - deltaY - i * delta));
-            painter.drawText(QPointF(deltaX /2-10, m_maxH - deltaY - i * delta - delta / 2+7), QString::number(i/10.00, 'f', 2));
+            painter.drawText(QPointF(deltaX / 2 - 10, m_maxH - deltaY - i * delta - delta / 2 + 7), QString::number(i / 10.00, 'f', 2));
         }
     }
     else
     {
         //color bar
         QPolygonF points;
-        int deltaX = 35, deltaY = 0, deltaH = 20;        
+        int deltaX = 35, deltaY = 0, deltaH = 20;
         QPointF point0(deltaX, deltaY), point1(deltaX, m_maxH - deltaY - deltaH), point2(m_maxW - deltaX, m_maxH - deltaY - deltaH), point3(m_maxW - deltaX, deltaY);
         points << point0 << point1 << point2 << point3 << point0;
         painter.setPen(m_linePen);
@@ -133,8 +133,8 @@ void GradientShape::paintRuler()
         int j = -2000, dis = 2000 / 5;
         for (int i = 0; i < 11; i++)
         {
-            painter.drawLine(QPointF(deltaX+i* delta, m_maxH - deltaY - deltaH), QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH+7));
-            painter.drawText(QPointF(deltaX + i * delta -3, m_maxH - deltaY - deltaH + 18), QString::number(j));
+            painter.drawLine(QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH), QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH + 7));
+            painter.drawText(QPointF(deltaX + i * delta - 3, m_maxH - deltaY - deltaH + 18), QString::number(j));
             j += dis;
         }
     }
@@ -143,110 +143,120 @@ void GradientShape::paintRuler()
 
 bool GradientShape::eventFilter(QObject *obj, QEvent *event)
 {
-	if (obj == m_parent)
-	{
-		switch (event->type())
-		{
-		    case QEvent::MouseButtonDblClick:
-		    {
-                //if (m_shapeStyle == ShapeStyle::ColorStyle)
+    if (obj == m_parent)
+    {
+        switch (event->type())
+        {
+        case QEvent::MouseButtonDblClick:
+        {
+            //if (m_shapeStyle == ShapeStyle::ColorStyle){//}
+            QMouseEvent *mouseEvent = (QMouseEvent *)event;
+            QPointF clickPoint = mouseEvent->pos();
+            int index = -1, removeindex = -1, len = m_points.size();
+            for (int i = 0; i < len; i++)
+            {
+                QPainterPath path, pathPoint;
+                path.addRect(PointInRect(i));
+                pathPoint.addRect(getPointRect(i));
+
+                if (path.contains(clickPoint))
                 {
-			        QMouseEvent *mouseEvent = (QMouseEvent *)event;
-			        QPointF clickPoint = mouseEvent->pos();
-                    int index = -1, len = m_points.size();
+                    index = i;
+                    removeindex = i;
+                }
+                else if (pathPoint.contains(clickPoint))
+                {
+                    index = i;
+                }
+                if (index > 0)
+                {
+                    if (m_shapeStyle == ShapeStyle::ColorStyle)
+                    {
+                        bool bok;
+                        QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
+                        if (bok)
+                        {
+                            color.setAlpha(255);
+                            m_colors.replace(i, color);
+                        }
+                    }
+                    break;
+                }
+            }
+            if (mouseEvent->button() == Qt::LeftButton)
+            {
+                if (index == -1)
+                {
+                    int pos = 0;
                     for (int i = 0; i < len; i++)
                     {
-                        QPainterPath path,pathPoint;
-                        path.addRect(PointInRect(i));
-                        pathPoint.addRect(getPointRect(i));
-                        if (pathPoint.contains(clickPoint))
+                        if (m_points.at(i).x() > clickPoint.x())
                         {
-                            index = i;
-                            if (m_shapeStyle == ShapeStyle::ColorStyle)
-                            {
-                                bool bok;
-                                QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
-                                if (bok)
-                                {
-                                    color.setAlpha(255);
-                                    m_colors.replace(i, color);
-                                }
-                            }
-                            break;
-                        }
-                        else if (path.contains(clickPoint))
-                        {
-                            index = i;
+                            pos = i;
                             break;
                         }
                     }
-                    if (mouseEvent->button() == Qt::LeftButton)
+                    if (m_shapeStyle == ShapeStyle::ColorStyle)
                     {
-                        if (index == -1)
+                        bool bok;
+                        QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
+                        if (bok)
                         {
-                            int pos = 0;
-                            for (int i = 0; i < len; i++)
-                            {
-                                if (m_points.at(i).x() > clickPoint.x())
-                                {
-                                    pos = i;
-                                    break;
-                                }
-                            }
-                            if (m_shapeStyle == ShapeStyle::ColorStyle)
-                            {
-                                bool bok;
-                                QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
-                                if (bok)
-                                {
-                                    color.setAlpha(255);
-                                    m_colors.insert(pos, color);
-                                }
-                                m_points.insert(pos, QPointF(clickPoint.x(), m_points.at(0).y()));
-                            }
-                            else
-                            {
-                                m_points.insert(pos, clickPoint);
-                            }
-                            
-                            m_parent->update();
-                            m_currentIndex = pos;
-                        } 
-                        else
-                        {
-                            m_currentIndex = index;
+                            color.setAlpha(255);
+                            m_colors.insert(pos, color);
                         }
-                    }              
-                    return true;
+                        m_points.insert(pos, QPointF(clickPoint.x(), m_points.at(0).y()));
+                    }
+                    else
+                    {
+                        m_points.insert(pos, clickPoint);
+                    }
+                    m_parent->update();
+                    m_currentIndex = pos;
                 }
-			    break;
-		    }
-		    case QEvent::MouseButtonPress:
-		    case QEvent::MouseButtonRelease:
-		    case QEvent::MouseMove:
-		    case QEvent::Resize:
-		    {
-			    m_maxH = m_parent->height();
-			    m_maxW = m_parent->width();
-		    }
-		    case QEvent::Show:
-		    {
-			    m_maxH = m_parent->height();
-			    m_maxW = m_parent->width();
-		    }
-		    case QEvent::Paint:
-		    {
-			    //QMouseEvent *mousePoint = (QMouseEvent *)event;
-			    //QPointF point = mousePoint->pos();
-			    paintRuler();
-                paintPointsLines();
-                return true;
-		    }
-		    default:
-			    break;
-		}
-	}
-	return false;
+                else
+                {
+                    m_currentIndex = index;
+                }
+            }
+            else if(mouseEvent->button() == Qt::RightButton)
+            {
+                if (removeindex > 0 && removeindex < len - 1)
+                {
+                    m_points.remove(removeindex);
+                    m_colors.removeAt(removeindex);
+                    m_parent->update();
+                }
+            }
+            return true;
+            break;
+        }
+        case QEvent::MouseButtonPress:
+        case QEvent::MouseButtonRelease:
+        case QEvent::MouseMove:
+        case QEvent::Resize:
+        {
+            m_maxH = m_parent->height();
+            m_maxW = m_parent->width();
+        }
+        case QEvent::Show:
+        {
+            m_maxH = m_parent->height();
+            m_maxW = m_parent->width();
+        }
+        case QEvent::Paint:
+        {
+            //QMouseEvent *mousePoint = (QMouseEvent *)event;
+            //QPointF point = mousePoint->pos();
+            paintRuler();
+            paintPointsLines();
+            return true;
+        }
+        default:
+            break;
+        }
+    }
+    return false;
 }
 
 
@@ -259,7 +269,7 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) :
     ui->setupUi(this);
 
     //setStyleSheet("background-color:rgb(255,255,255)}");
-	m_gradientShape = new GradientShape(ui->m_gwidget);
+    m_gradientShape = new GradientShape(ui->m_gwidget);
     m_colorBar = new GradientShape(ui->m_colorWidget, ShapeStyle::ColorStyle);
 }
 
