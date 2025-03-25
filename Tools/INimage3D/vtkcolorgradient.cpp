@@ -167,7 +167,7 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                                     break;
                                 }
                             }
-                            m_points.insert(pos, clickPoint);
+                            m_points.insert(pos, QPointF( clickPoint.x(), m_points.at(0).y()));
                             m_currentIndex = pos;
                         } 
                         else

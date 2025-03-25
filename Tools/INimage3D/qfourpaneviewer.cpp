@@ -621,6 +621,12 @@ QFourpaneviewer::~QFourpaneviewer()
 		m_isosurfaceMapper->Delete();
 	}
 	//----------------------------------
+
+    if (m_vtkColorGradient)
+    {
+        m_vtkColorGradient->hide();
+        delete m_vtkColorGradient;
+    }
     delete ui;
 }
 
