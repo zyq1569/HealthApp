@@ -1,27 +1,38 @@
 #ifndef VTKCOLORGRADIENT_H
 #define VTKCOLORGRADIENT_H
 
-#include <QWidget>
-
-namespace Ui {
-class VtkColorGradient;
+#include<QWidget>
+#include<Qpen>
+namespace Ui 
+{
+	class VtkColorGradient;
 }
 
 //++++++++++++++++++++++++++
-class GradientShape :    public QObject
+enum ShapeStyle
+{
+    Default,
+    ColorStyle
+};
+
+class GradientShape :public QObject
 {
 	Q_OBJECT
 public:
-	GradientShape(QWidget *widget);
-	bool eventFilter(QObject *obj, QEvent *event);
 
+public:
+	GradientShape(QWidget *widget, ShapeStyle style = ShapeStyle::Default);
+	bool eventFilter(QObject *obj, QEvent *event);
+	void paintRuler();
 public:
 	QWidget *m_parent;
 
 private:
 	QPolygonF m_points;
-	int m_delta, m_currentIndex;
+	int m_delta, m_currentIndex,m_maxH,m_maxW;
+	QPen m_linePen;
 	QList<QColor> m_colors;
+    ShapeStyle m_shapeStyle;
 	
 };
 //++++++++++++++++++++++++++

@@ -260,7 +260,7 @@ void QFourpaneviewer::ShowEditorsWidget()
 	//m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
 	//m_showEditors = !m_showEditors;
 
-	m_vtkColorGradient = new VtkColorGradient(this);
+	m_vtkColorGradient = new VtkColorGradient();
 	m_vtkColorGradient->show();
 }
 

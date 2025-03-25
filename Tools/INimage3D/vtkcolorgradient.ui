@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>644</width>
-    <height>444</height>
+    <width>650</width>
+    <height>476</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,11 +19,23 @@
   <widget class="QScrollArea" name="scrollArea">
    <property name="geometry">
     <rect>
-     <x>610</x>
-     <y>54</y>
-     <width>31</width>
-     <height>331</height>
+     <x>608</x>
+     <y>34</y>
+     <width>30</width>
+     <height>308</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>30</width>
+     <height>308</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>30</width>
+     <height>308</height>
+    </size>
    </property>
    <property name="widgetResizable">
     <bool>true</bool>
@@ -33,8 +45,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>29</width>
-      <height>329</height>
+      <width>28</width>
+      <height>306</height>
      </rect>
     </property>
    </widget>
@@ -43,10 +55,22 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>415</y>
-     <width>611</width>
-     <height>21</height>
+     <y>430</y>
+     <width>601</width>
+     <height>30</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>601</width>
+     <height>30</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>601</width>
+     <height>30</height>
+    </size>
    </property>
    <property name="widgetResizable">
     <bool>true</bool>
@@ -56,8 +80,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>609</width>
-      <height>19</height>
+      <width>599</width>
+      <height>28</height>
      </rect>
     </property>
    </widget>
@@ -65,97 +89,90 @@
   <widget class="QWidget" name="m_gwidget" native="true">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>85</y>
-     <width>591</width>
-     <height>291</height>
+     <x>0</x>
+     <y>35</y>
+     <width>601</width>
+     <height>308</height>
     </rect>
    </property>
   </widget>
-  <widget class="QWidget" name="widget_2" native="true">
+  <widget class="QWidget" name="m_colorWidget" native="true">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>379</y>
-     <width>591</width>
-     <height>31</height>
+     <x>0</x>
+     <y>343</y>
+     <width>601</width>
+     <height>55</height>
     </rect>
    </property>
   </widget>
-  <widget class="QScrollArea" name="scrollArea_3">
+  <widget class="QSplitter" name="splitter">
    <property name="geometry">
     <rect>
-     <x>9</x>
-     <y>45</y>
-     <width>561</width>
-     <height>31</height>
+     <x>10</x>
+     <y>10</y>
+     <width>631</width>
+     <height>20</height>
     </rect>
    </property>
-   <property name="widgetResizable">
-    <bool>true</bool>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
    </property>
-   <widget class="QWidget" name="scrollAreaWidgetContents_3">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>559</width>
-      <height>29</height>
-     </rect>
+   <widget class="QScrollArea" name="scrollArea_4">
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents_4">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>545</width>
+       <height>18</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QSpinBox" name="spinBox">
+    <property name="minimumSize">
+     <size>
+      <width>37</width>
+      <height>20</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>37</width>
+      <height>20</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBox_3">
+    <property name="minimumSize">
+     <size>
+      <width>37</width>
+      <height>20</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>37</width>
+      <height>20</height>
+     </size>
     </property>
    </widget>
   </widget>
-  <widget class="QScrollArea" name="scrollArea_4">
+  <widget class="QSplitter" name="splitter_2">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
-     <width>561</width>
-     <height>31</height>
+     <y>34</y>
+     <width>37</width>
+     <height>20</height>
     </rect>
    </property>
-   <property name="widgetResizable">
-    <bool>true</bool>
-   </property>
-   <widget class="QWidget" name="scrollAreaWidgetContents_4">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>559</width>
-      <height>29</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QSpinBox" name="spinBox">
-   <property name="geometry">
-    <rect>
-     <x>570</x>
-     <y>10</y>
-     <width>31</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="spinBox_2">
-   <property name="geometry">
-    <rect>
-     <x>570</x>
-     <y>51</y>
-     <width>31</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="spinBox_3">
-   <property name="geometry">
-    <rect>
-     <x>610</x>
-     <y>10</y>
-     <width>31</width>
-     <height>31</height>
-    </rect>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
    </property>
   </widget>
  </widget>

@@ -95,10 +95,20 @@ MainWindow::MainWindow(QWidget *parent)
 	m_mainToolbar->addAction(m_editor);
 	connect(m_editor, &QAction::triggered, [this]
 	{
+        //--------
+        //for test
+        if (!m_image4Plane)
+        {
+            m_image4Plane = new QFourpaneviewer(this);
+            m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
+            m_workspace->setCurrentIndex(m_index4P);
+        }
+        ///----------------------
 		if (m_image4Plane)
 		{
 			((QFourpaneviewer*)m_image4Plane)->ShowEditorsWidget();
 		}
+
 	});
 
 	m_cfigQA = new QAction("ÅäÖÃ", this);
@@ -110,7 +120,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	m_qProgressBar = new QProgressData(this);// (m_workspace);
 
-	m_editor->setEnabled(false);
+	m_editor->setEnabled(true);
 }
 
 void MainWindow::starViewer()
