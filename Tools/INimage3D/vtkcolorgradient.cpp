@@ -149,7 +149,7 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
 		{
 		    case QEvent::MouseButtonDblClick:
 		    {
-                if (m_shapeStyle == ShapeStyle::ColorStyle)
+                //if (m_shapeStyle == ShapeStyle::ColorStyle)
                 {
 			        QMouseEvent *mouseEvent = (QMouseEvent *)event;
 			        QPointF clickPoint = mouseEvent->pos();
@@ -162,12 +162,15 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                         if (pathPoint.contains(clickPoint))
                         {
                             index = i;
-                            bool bok;
-                            QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
-                            if (bok)
+                            if (m_shapeStyle == ShapeStyle::ColorStyle)
                             {
-                                color.setAlpha(255);
-                                m_colors.replace(i, color);
+                                bool bok;
+                                QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
+                                if (bok)
+                                {
+                                    color.setAlpha(255);
+                                    m_colors.replace(i, color);
+                                }
                             }
                             break;
                         }
@@ -190,15 +193,23 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                                     break;
                                 }
                             }
-                            bool bok;
-                            QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
-                            if (bok)
+                            if (m_shapeStyle == ShapeStyle::ColorStyle)
                             {
-                                color.setAlpha(255);
-                                m_colors.insert(pos, color);
+                                bool bok;
+                                QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
+                                if (bok)
+                                {
+                                    color.setAlpha(255);
+                                    m_colors.insert(pos, color);
+                                }
+                                m_points.insert(pos, QPointF(clickPoint.x(), m_points.at(0).y()));
                             }
-                            m_points.insert(pos, QPointF( clickPoint.x(), m_points.at(0).y()));
-                            m_parent->update();//u
+                            else
+                            {
+                                m_points.insert(pos, clickPoint);
+                            }
+                            
+                            m_parent->update();
                             m_currentIndex = pos;
                         } 
                         else
@@ -207,10 +218,6 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                         }
                     }              
                     return true;
-                }
-                else
-                {
-                     return true;
                 }
 			    break;
 		    }
