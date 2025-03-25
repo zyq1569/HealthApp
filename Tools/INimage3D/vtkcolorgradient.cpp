@@ -39,7 +39,7 @@ GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
     }
 }
 
-inline QRectF GradientShape::PointInRect(int i)const
+inline QRectF GradientShape::PointInRectX(int i)const
 {
     QPointF point = m_points.at(i);
     double w = 10;
@@ -155,31 +155,20 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
             int index = -1, removeindex = -1, len = m_points.size();
             for (int i = 0; i < len; i++)
             {
-                QPainterPath path, pathPoint;
-                path.addRect(PointInRect(i));
-                pathPoint.addRect(getPointRect(i));
-
+                QPainterPath path, pathPointX;
+                path.addRect(getPointRect(i));
+                pathPointX.addRect(PointInRectX(i));
                 if (path.contains(clickPoint))
                 {
                     index = i;
                     removeindex = i;
                 }
-                else if (pathPoint.contains(clickPoint))
+                else if (pathPointX.contains(clickPoint))
                 {
                     index = i;
                 }
-                if (index > 0)
-                {
-                    if (m_shapeStyle == ShapeStyle::ColorStyle)
-                    {
-                        bool bok;
-                        QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
-                        if (bok)
-                        {
-                            color.setAlpha(255);
-                            m_colors.replace(i, color);
-                        }
-                    }
+                if (index > -1)
+                {                  
                     break;
                 }
             }
@@ -216,6 +205,17 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                 }
                 else
                 {
+                    if (m_shapeStyle == ShapeStyle::ColorStyle)
+                    {
+                        bool bok;
+                        QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
+                        if (bok)
+                        {
+                            color.setAlpha(255);
+                            m_colors.replace(index, color);
+                            m_parent->update();
+                        }
+                    }
                     m_currentIndex = index;
                 }
             }

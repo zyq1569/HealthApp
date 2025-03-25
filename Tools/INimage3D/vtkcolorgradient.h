@@ -26,7 +26,7 @@ public:
 	void paintRuler();
     void paintPointsLines();
     inline QRectF getPointRect(int i)const;
-    inline QRectF PointInRect(int i)const;
+    inline QRectF PointInRectX(int i)const;
 public:
 	QWidget *m_parent;
 
