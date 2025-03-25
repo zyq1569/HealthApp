@@ -200,7 +200,6 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                             m_points.insert(pos, QPointF( clickPoint.x(), m_points.at(0).y()));
                             m_parent->update();//u
                             m_currentIndex = pos;
-
                         } 
                         else
                         {
@@ -211,7 +210,7 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                 }
                 else
                 {
-                     return false;
+                     return true;
                 }
 			    break;
 		    }
