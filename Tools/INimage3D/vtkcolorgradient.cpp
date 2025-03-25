@@ -266,6 +266,34 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
             break;
         }
         case QEvent::MouseButtonPress:
+        {
+            QMouseEvent *mouseEvent = (QMouseEvent *)event;
+            QPointF clickPoint = mouseEvent->pos();
+            int index = -1, removeindex = -1, len = m_points.size();
+            for (int i = 0; i < len; i++)
+            {
+                QPainterPath path, pathPointX;
+                path.addRect(getPointRect(i));
+                pathPointX.addRect(PointInRectX(i));
+                if (path.contains(clickPoint))
+                {
+                    index = i;
+                    removeindex = i;
+                }
+                else if (pathPointX.contains(clickPoint))
+                {
+                    index = i;
+                }
+                if (index > -1)
+                {                  
+                    break;
+                }
+            }
+            if (mouseEvent->button() == Qt::LeftButton)
+            {
+                m_currentIndex = index;
+            }
+        }
         case QEvent::MouseButtonRelease:
         {
             m_currentIndex = -1;
