@@ -24,6 +24,8 @@ public:
 	GradientShape(QWidget *widget, ShapeStyle style = ShapeStyle::Default);
 	bool eventFilter(QObject *obj, QEvent *event);
 	void paintRuler();
+    void paintPointsLines();
+    inline QRectF getPointRect(int i)const;
 public:
 	QWidget *m_parent;
 
