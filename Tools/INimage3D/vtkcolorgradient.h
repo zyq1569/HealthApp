@@ -57,6 +57,8 @@ class VtkColorGradient : public QWidget
 public:
     explicit VtkColorGradient(QWidget *parent = nullptr);
     ~VtkColorGradient();
+protected:
+    //virtual void closeEvent(QCloseEvent *event);
 
 private:
     Ui::VtkColorGradient *ui;

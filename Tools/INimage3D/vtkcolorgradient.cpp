@@ -6,6 +6,7 @@
 #include<QPainter>
 #include<QPainterPath>
 #include<QColorDialog>
+#include<QMessageBox>
 
 GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
 {
@@ -404,16 +405,16 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
 void (QSpinBox:: *spinBoxSignal)(int) = &QSpinBox::valueChanged;
 //fix : W:601 H:308
 //    : W:601 H:55
-VtkColorGradient::VtkColorGradient(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::VtkColorGradient)
+VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui::VtkColorGradient)
 {
     ui->setupUi(this);
-
+    setWindowFlags(Qt::WindowStaysOnTopHint);
+    setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint & ~Qt::WindowMaximizeButtonHint & ~Qt::WindowMinimizeButtonHint);//& ~Qt::WindowCloseButtonHint
     setStyleSheet("background-color:rgb(255,255,255)}");
     m_gradientShape = new GradientShape(ui->m_gwidget);
     m_colorBar = new GradientShape(ui->m_colorWidget, ShapeStyle::ColorStyle);
 
+    setFixedSize(this->width(), this->height());
     ui->m_setslope->setValue(80);
     ui->m_sliderslope->setValue(80);
     //connect(ui->m_editorByValues, &QEditorByValues::signalsColorValue,this, &QFourpaneviewer::ResetColor3D);
@@ -421,6 +422,12 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) :
     connect(ui->m_sliderslope, &QSlider::valueChanged, ui->m_setslope, &QSpinBox::setValue);
     connect(ui->m_setslope, spinBoxSignal, ui->m_sliderslope, &QSlider::setValue);
 }
+//void VtkColorGradient::closeEvent(QCloseEvent *event)
+//{
+//    hide();
+//    //event->accept();//不发送给组件的父组件
+//    event->ignore();//事件继续发送
+//}
 
 VtkColorGradient::~VtkColorGradient()
 {
