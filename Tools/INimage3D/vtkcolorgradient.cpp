@@ -283,6 +283,22 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                         }
                         else
                         {
+                            if (clickPoint.rx() <= m_xyRect.topLeft().rx())
+                            {
+                                clickPoint.setX(m_xyRect.topLeft().rx() + 5);
+                            }
+                            else if (clickPoint.rx() >= m_xyRect.bottomRight().rx())
+                            {
+                                clickPoint.setX(m_xyRect.bottomRight().rx() - 5);
+                            }
+                            if (clickPoint.ry() <= m_xyRect.topLeft().ry())
+                            {
+                                clickPoint.setY(m_xyRect.topLeft().ry() + 5);
+                            }
+                            else if(clickPoint.ry() >= m_xyRect.bottomRight().ry())
+                            {
+                                clickPoint.setY(m_xyRect.bottomRight().ry() - 5);
+                            }
                             m_points.insert(pos, clickPoint);
                         }
                         m_parent->update();
@@ -404,7 +420,6 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) :
     connect(ui->m_sliderslope, &QSlider::valueChanged, m_gradientShape, &GradientShape::updateslope);
     connect(ui->m_sliderslope, &QSlider::valueChanged, ui->m_setslope, &QSpinBox::setValue);
     connect(ui->m_setslope, spinBoxSignal, ui->m_sliderslope, &QSlider::setValue);
-    //connect(ui->m_sliderslope, &QSlider::valueChanged, m_gradientShape, &GradientShape::updateslope);
 }
 
 VtkColorGradient::~VtkColorGradient()
