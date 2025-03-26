@@ -385,6 +385,7 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
 
 //++++++++++++++++++++++++++++++++++++++++++++++++
 
+void (QSpinBox:: *spinBoxSignal)(int) = &QSpinBox::valueChanged;
 //fix : W:601 H:308
 //    : W:601 H:55
 VtkColorGradient::VtkColorGradient(QWidget *parent) :
@@ -400,8 +401,11 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) :
     ui->m_scolloffset->hide();
     ui->m_offset->hide();
     ui->m_setslope->setValue(80);
+    ui->m_sliderslope->setValue(80);
     //connect(ui->m_editorByValues, &QEditorByValues::signalsColorValue,this, &QFourpaneviewer::ResetColor3D);
     connect(ui->m_sliderslope, &QSlider::valueChanged, m_gradientShape, &GradientShape::updateslope);
+    connect(ui->m_sliderslope, &QSlider::valueChanged, ui->m_setslope, &QSpinBox::setValue);
+    connect(ui->m_setslope, spinBoxSignal, ui->m_sliderslope, &QSlider::setValue);
     //connect(ui->m_sliderslope, &QSlider::valueChanged, m_gradientShape, &GradientShape::updateslope);
 }
 

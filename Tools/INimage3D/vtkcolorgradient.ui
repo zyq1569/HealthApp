@@ -162,6 +162,12 @@ QSlider::handle:vertical
 	background: white;
 }</string>
    </property>
+   <property name="maximum">
+    <number>100</number>
+   </property>
+   <property name="sliderPosition">
+    <number>80</number>
+   </property>
    <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
