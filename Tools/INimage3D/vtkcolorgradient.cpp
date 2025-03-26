@@ -25,7 +25,8 @@ GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
         int deltaX = 30, deltaY = 0;
         int delta = (m_maxH - 2 * deltaY) / 12;
         m_points << QPointF(35, m_maxH - 7) << QPointF(m_maxW - 35, m_maxH - deltaY - 10 * delta);
-        m_xyRect = QRectF(QPointF(35, m_maxH - 7), QPointF(m_maxW - 35, m_maxH - deltaY - 10 * delta));
+        //左上点 右下点
+        m_xyRect = QRectF(QPointF(35, m_maxH - deltaY - 10 * delta), QPointF(m_maxW - 35, m_maxH));
     }
     else
     {
@@ -59,13 +60,15 @@ inline QRectF GradientShape::getPointRect(int i)const
 
 void GradientShape::movePoints(int index, const QPointF &point, bool update)
 {
-    if (index >= 0 && index < m_points.size())
+    int len = m_points.size();
+    if (index >= 0 && index < len)
     {
         QPointF pt    = point;
         double left   = m_xyRect.left();
         double right  = m_xyRect.right();
         double top    = m_xyRect.top();
         double bottom = m_xyRect.bottom();
+
         if (pt.x() < left)
         {
             pt.setX(left);
@@ -73,6 +76,17 @@ void GradientShape::movePoints(int index, const QPointF &point, bool update)
         else if (pt.x() > right)
         {
             pt.setX(right);
+        }
+        if (index > 0 && index < len - 1)
+        {
+            if (pt.x() > m_points[index + 1].x())
+            {
+                pt.setX(m_points[index + 1].x() - 2);
+            }
+            else if (pt.x() < m_points[index - 1].x())
+            {
+                pt.setX(m_points[index -1].x() + 2);
+            }
         }
         if (pt.y() < top)
         {
@@ -127,6 +141,11 @@ void GradientShape::paintPointsLines()
             painter.fillRect(bounds, QBrush(m_colors.at(i)));
         }
     }
+    // test 和绘制XY坐标系的范围
+    //QColor red(255, 0, 0);
+    //QPen pen(red);
+    //painter.setPen(red);
+    //painter.drawRect(m_xyRect);
 
 }
 
@@ -180,10 +199,10 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
     if (obj == m_parent)
     {
         QMouseEvent *mouseEvent = (QMouseEvent *)event;
+        int index = -1, removeindex = -1, len = m_points.size();
+        QPointF clickPoint = mouseEvent->pos();
         switch (event->type())
         {
-            QPointF clickPoint = mouseEvent->pos();
-            int index = -1, removeindex = -1, len = m_points.size();
             case QEvent::MouseButtonDblClick:
             {
                 //if (m_shapeStyle == ShapeStyle::ColorStyle){//}
@@ -262,56 +281,59 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                         m_parent->update();
                     }
                 }
-                return true;
                 break;
             }
             case QEvent::MouseButtonPress:
             {
-                for (int i = 0; i < len; i++)
-                {
-                    QPainterPath path, pathPointX;
-                    path.addRect(getPointRect(i));
-                    pathPointX.addRect(PointInRectX(i));
-                    if (path.contains(clickPoint))
-                    {
-                        index = i;
-                        removeindex = i;
-                    }
-                    else if (pathPointX.contains(clickPoint))
-                    {
-                        index = i;
-                    }
-                    if (index > -1)
-                    {                  
-                        break;
-                    }
-                }
                 if (mouseEvent->button() == Qt::LeftButton)
                 {
+                    for (int i = 0; i < len; i++)
+                    {
+                        QPainterPath path, pathPointX;
+                        path.addRect(getPointRect(i));
+                        pathPointX.addRect(PointInRectX(i));
+                        if (path.contains(clickPoint))
+                        {
+                            index = i;
+                            removeindex = i;
+                        }
+                        else if (pathPointX.contains(clickPoint))
+                        {
+                            index = i;
+                        }
+                        if (index > -1)
+                        {                  
+                            break;
+                        }
+                    }
                     m_currentIndex = index;
                 }
+                break;
             }
+            case QEvent::MouseMove:
+                if (m_currentIndex > -1)
+                {
+                    QMouseEvent *mouseEvent = (QMouseEvent *)event;
+                    movePoints(m_currentIndex, clickPoint, true);
+                }
+                break;
             case QEvent::MouseButtonRelease:
             {
                 m_currentIndex = -1;
                 break;
             }
-            case QEvent::MouseMove:
-                if (m_currentIndex > -1 && mouseEvent->button() == Qt::LeftButton)
-                {
-                    QMouseEvent *mouseEvent = (QMouseEvent *)event;
-                    QPointF clickPoint = mouseEvent->pos();
-                    movePoints(m_currentIndex, clickPoint, true);
-                }
+
             case QEvent::Resize:
             {
                 m_maxH = m_parent->height();
                 m_maxW = m_parent->width();
+                break;
             }
             case QEvent::Show:
             {
                 m_maxH = m_parent->height();
                 m_maxW = m_parent->width();
+                break;
             }
             case QEvent::Paint:
             {
