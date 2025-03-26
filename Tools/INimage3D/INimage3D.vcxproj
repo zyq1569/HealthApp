@@ -358,8 +358,6 @@
     <ClCompile Include="qfourpaneviewer.cpp" />
     <ClCompile Include="qintervaleditor.cpp" />
     <ClCompile Include="qprogressdata.cpp" />
-    <ClCompile Include="qvtkgradient.cpp" />
-    <ClCompile Include="shadewidget.cpp" />
     <ClCompile Include="vtkcolorgradient.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -384,14 +382,12 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="vtkcolorgradient.h" />
-    <QtMoc Include="shadewidget.h" />
     <QtMoc Include="configForm.h" />
     <QtMoc Include="qprogressdata.h" />
     <QtMoc Include="qcolorspinbox.h" />
     <QtMoc Include="qintervaleditor.h" />
     <QtMoc Include="qeditorbyvalues.h" />
     <QtMoc Include="hoverpoints.h" />
-    <QtMoc Include="qvtkgradient.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

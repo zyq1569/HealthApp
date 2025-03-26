@@ -41,6 +41,7 @@ GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
         m_xyRect = QRectF(QPointF(deltaX, Y), QPointF(deltaX + 10 * delta, Y));
     }
     m_slope = 80;
+
 }
 
 inline QRectF GradientShape::PointInRectX(int i)const
@@ -376,15 +377,21 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
 
 //++++++++++++++++++++++++++++++++++++++++++++++++
 
+//fix : W:601 H:308
+//    : W:601 H:55
 VtkColorGradient::VtkColorGradient(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::VtkColorGradient)
 {
     ui->setupUi(this);
 
-    //setStyleSheet("background-color:rgb(255,255,255)}");
+    setStyleSheet("background-color:rgb(255,255,255)}");
     m_gradientShape = new GradientShape(ui->m_gwidget);
     m_colorBar = new GradientShape(ui->m_colorWidget, ShapeStyle::ColorStyle);
+
+    ui->m_scolloffset->hide();
+    ui->m_offset->hide();
+    ui->m_setslope->setValue(80);
 }
 
 VtkColorGradient::~VtkColorGradient()

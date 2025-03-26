@@ -9,14 +9,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>650</width>
-    <height>476</height>
+    <width>643</width>
+    <height>405</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QScrollArea" name="scrollArea">
+  <widget class="QScrollArea" name="m_scollslope">
    <property name="geometry">
     <rect>
      <x>608</x>
@@ -51,41 +51,6 @@
     </property>
    </widget>
   </widget>
-  <widget class="QScrollArea" name="scrollArea_2">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>430</y>
-     <width>601</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>601</width>
-     <height>30</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>601</width>
-     <height>30</height>
-    </size>
-   </property>
-   <property name="widgetResizable">
-    <bool>true</bool>
-   </property>
-   <widget class="QWidget" name="scrollAreaWidgetContents_2">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>599</width>
-      <height>28</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
   <widget class="QWidget" name="m_gwidget" native="true">
    <property name="geometry">
     <rect>
@@ -106,62 +71,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QSplitter" name="splitter">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>631</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <widget class="QScrollArea" name="scrollArea_4">
-    <property name="widgetResizable">
-     <bool>true</bool>
-    </property>
-    <widget class="QWidget" name="scrollAreaWidgetContents_4">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>545</width>
-       <height>18</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QSpinBox" name="spinBox">
-    <property name="minimumSize">
-     <size>
-      <width>37</width>
-      <height>20</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>37</width>
-      <height>20</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBox_3">
-    <property name="minimumSize">
-     <size>
-      <width>37</width>
-      <height>20</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>37</width>
-      <height>20</height>
-     </size>
-    </property>
-   </widget>
-  </widget>
   <widget class="QSplitter" name="splitter_2">
    <property name="geometry">
     <rect>
@@ -173,6 +82,82 @@
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QScrollArea" name="m_scolloffset">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>551</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="widgetResizable">
+    <bool>true</bool>
+   </property>
+   <widget class="QWidget" name="scrollAreaWidgetContents_4">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>549</width>
+      <height>19</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QSpinBox" name="m_offset">
+   <property name="geometry">
+    <rect>
+     <x>562</x>
+     <y>10</y>
+     <width>37</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>37</width>
+     <height>20</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>37</width>
+     <height>20</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="m_setslope">
+   <property name="geometry">
+    <rect>
+     <x>604</x>
+     <y>10</y>
+     <width>37</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>37</width>
+     <height>20</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>37</width>
+     <height>20</height>
+    </size>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>100</number>
+   </property>
+   <property name="value">
+    <number>1</number>
    </property>
   </widget>
  </widget>

@@ -216,7 +216,7 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QvtkGradient" name="m_gradientEditor"/>
+      <widget class="QWidget" name="m_gradientEditor"/>
       <widget class="QEditorByValues" name="m_editorByValues"/>
      </widget>
     </widget>
@@ -233,12 +233,6 @@
    <class>QEditorByValues</class>
    <extends>QWidget</extends>
    <header>qeditorbyvalues.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QvtkGradient</class>
-   <extends>QWidget</extends>
-   <header>QvtkGradient.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
