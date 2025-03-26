@@ -109,6 +109,14 @@ void GradientShape::movePoints(int index, const QPointF &point, bool update)
     
 }
 
+void GradientShape::updateslope(int vl)
+{
+    if (m_slope != vl)
+    {
+        m_slope = vl;
+        m_parent->update();
+    }
+}
 void GradientShape::paintPointsLines()
 {
     QPainter painter(m_parent);
@@ -392,6 +400,9 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) :
     ui->m_scolloffset->hide();
     ui->m_offset->hide();
     ui->m_setslope->setValue(80);
+    //connect(ui->m_editorByValues, &QEditorByValues::signalsColorValue,this, &QFourpaneviewer::ResetColor3D);
+    connect(ui->m_sliderslope, &QSlider::valueChanged, m_gradientShape, &GradientShape::updateslope);
+    //connect(ui->m_sliderslope, &QSlider::valueChanged, m_gradientShape, &GradientShape::updateslope);
 }
 
 VtkColorGradient::~VtkColorGradient()

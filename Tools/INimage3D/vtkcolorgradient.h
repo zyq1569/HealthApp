@@ -31,6 +31,9 @@ public:
     inline QRectF getPointRect(int i)const;
     inline QRectF PointInRectX(int i)const;
 
+public slots:
+    void updateslope(int vl);
+
 public:
 	QWidget *m_parent;
 
