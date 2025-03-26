@@ -189,7 +189,8 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	//
 	m_ipwProp            = nullptr;
 	m_ren                = nullptr;
-	m_actionReset        = nullptr;	         
+	m_actionReset        = nullptr;	  
+    m_vtkColorGradient   = nullptr;
 
 	if (m_MainWindow->m_checkDefaultWL)
 	{
@@ -259,9 +260,15 @@ void QFourpaneviewer::ShowEditorsWidget()
 {
 	//m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
 	//m_showEditors = !m_showEditors;
+    if (!m_vtkColorGradient)
+    {
+	    m_vtkColorGradient = new VtkColorGradient();
+    }
+    if (m_vtkColorGradient)
+    {
+        (m_vtkColorGradient->isHidden())?(m_vtkColorGradient->show()):(m_vtkColorGradient->hide());
+    }
 
-	m_vtkColorGradient = new VtkColorGradient();
-	m_vtkColorGradient->show();
 }
 
 void QFourpaneviewer::Show3DPlane()
