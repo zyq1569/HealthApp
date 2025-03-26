@@ -79,11 +79,11 @@ void GradientShape::movePoints(int index, const QPointF &point, bool update)
         }
         if (index > 0 && index < len - 1)
         {
-            if (pt.x() > m_points[index + 1].x())
+            if (pt.x() >= m_points[index + 1].x())
             {
                 pt.setX(m_points[index + 1].x() - 5);
             }
-            else if (pt.x() < m_points[index - 1].x())
+            else if (pt.x() <= m_points[index - 1].x())
             {
                 pt.setX(m_points[index -1].x() + 5);
             }
