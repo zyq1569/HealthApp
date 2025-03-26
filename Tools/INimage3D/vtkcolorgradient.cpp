@@ -148,7 +148,8 @@ void GradientShape::paintPointsLines()
         {
             m_slope = 100;
         }
-        QPolygonF slopePoints;
+
+        m_gradientPoints.clear();
         for (int i = 0; i < len; i++)
         {
             QRectF bounds = getPointRect(i);
@@ -160,9 +161,9 @@ void GradientShape::paintPointsLines()
             {
                 ptH.setY(m_xyRect.bottomRight().y() - deltH*m_slope/100);
             }
-            slopePoints.append(ptH);
+            m_gradientPoints.append(ptH);
         }
-        painter.drawPolyline(slopePoints);
+        painter.drawPolyline(m_gradientPoints);
     }
     else
     {
