@@ -14,13 +14,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>3D</string>
   </property>
   <widget class="QWidget" name="m_gwidget" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>35</y>
+     <y>11</y>
      <width>601</width>
      <height>308</height>
     </rect>
@@ -30,55 +30,10 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>343</y>
+     <y>319</y>
      <width>601</width>
      <height>55</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QScrollArea" name="m_scolloffset">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>551</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="widgetResizable">
-    <bool>true</bool>
-   </property>
-   <widget class="QWidget" name="scrollAreaWidgetContents_4">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>549</width>
-      <height>19</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QSpinBox" name="m_offset">
-   <property name="geometry">
-    <rect>
-     <x>562</x>
-     <y>10</y>
-     <width>37</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>37</width>
-     <height>20</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>37</width>
-     <height>20</height>
-    </size>
    </property>
   </widget>
   <widget class="QSpinBox" name="m_setslope">
@@ -106,7 +61,7 @@
     <string notr="true"/>
    </property>
    <property name="minimum">
-    <number>1</number>
+    <number>0</number>
    </property>
    <property name="maximum">
     <number>100</number>
@@ -121,7 +76,7 @@
      <x>611</x>
      <y>39</y>
      <width>31</width>
-     <height>301</height>
+     <height>281</height>
     </rect>
    </property>
    <property name="styleSheet">

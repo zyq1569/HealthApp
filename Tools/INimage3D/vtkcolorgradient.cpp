@@ -141,7 +141,7 @@ void GradientShape::paintPointsLines()
         int len = m_points.size();
         if (m_slope < 0)
         {
-            m_slope = 1;
+            m_slope = 0;
         }
         else if (m_slope > 100)
         {
@@ -398,8 +398,6 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) :
     m_gradientShape = new GradientShape(ui->m_gwidget);
     m_colorBar = new GradientShape(ui->m_colorWidget, ShapeStyle::ColorStyle);
 
-    ui->m_scolloffset->hide();
-    ui->m_offset->hide();
     ui->m_setslope->setValue(80);
     ui->m_sliderslope->setValue(80);
     //connect(ui->m_editorByValues, &QEditorByValues::signalsColorValue,this, &QFourpaneviewer::ResetColor3D);
