@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>11</y>
+     <y>4</y>
      <width>601</width>
      <height>308</height>
     </rect>
@@ -30,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>319</y>
+     <y>312</y>
      <width>601</width>
      <height>55</height>
     </rect>
@@ -40,7 +40,7 @@
    <property name="geometry">
     <rect>
      <x>604</x>
-     <y>10</y>
+     <y>3</y>
      <width>37</width>
      <height>20</height>
     </rect>
@@ -73,10 +73,10 @@
   <widget class="QSlider" name="m_sliderslope">
    <property name="geometry">
     <rect>
-     <x>611</x>
-     <y>39</y>
-     <width>31</width>
-     <height>281</height>
+     <x>604</x>
+     <y>23</y>
+     <width>37</width>
+     <height>290</height>
     </rect>
    </property>
    <property name="styleSheet">

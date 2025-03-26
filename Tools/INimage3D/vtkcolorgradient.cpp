@@ -139,7 +139,7 @@ void GradientShape::paintPointsLines()
         painter.drawPolyline(m_points);
 
         int len = m_points.size();
-        if (m_slope < 0)
+        if (m_slope <= 0)
         {
             m_slope = 0;
         }
@@ -154,10 +154,10 @@ void GradientShape::paintPointsLines()
             painter.drawEllipse(bounds);
 
             QPointF ptH = m_points.at(i);
-            int deltH = m_xyRect.height() - ptH.y();
-            if (deltH > 0)
+            int deltH = m_xyRect.bottomRight().y() - ptH.y();
+            if (deltH >= 0)
             {
-                ptH.setY(m_xyRect.height() - deltH*m_slope/100);
+                ptH.setY(m_xyRect.bottomRight().y() - deltH*m_slope/100);
             }
             slopePoints.append(ptH);
         }
