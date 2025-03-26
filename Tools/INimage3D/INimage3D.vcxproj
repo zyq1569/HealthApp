@@ -350,7 +350,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="configForm.cpp" />
-    <ClCompile Include="hoverpoints.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="qcolorspinbox.cpp" />
@@ -387,7 +386,6 @@
     <QtMoc Include="qcolorspinbox.h" />
     <QtMoc Include="qintervaleditor.h" />
     <QtMoc Include="qeditorbyvalues.h" />
-    <QtMoc Include="hoverpoints.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

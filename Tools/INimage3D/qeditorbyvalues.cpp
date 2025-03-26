@@ -11,7 +11,6 @@ QEditorByValues::QEditorByValues(QWidget *parent): QWidget(parent), m_minimum(-2
     setupUi(this);
 
 	this->setStyleSheet("background-color:rgb(240,240,240)}");
-    //  We create a scroll area in case there are many intervals (it cannot be created from Qt Designer)
 
     QScrollArea *scrollArea = new QScrollArea(this);
     qobject_cast<QBoxLayout*>(this->layout())->insertWidget(1, scrollArea);
