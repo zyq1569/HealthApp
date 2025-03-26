@@ -35,8 +35,9 @@ public:
 	QWidget *m_parent;
 
 private:
-	QPolygonF m_points;
-	int m_delta, m_currentIndex,m_maxH,m_maxW;
+	QPolygonF m_points, m_gradientPoints;
+    int m_delta, m_currentIndex, m_maxH, m_maxW;
+    int m_slope;//1--->100
 	QPen m_linePen;
 	QList<QColor> m_colors;
     ShapeStyle m_shapeStyle;

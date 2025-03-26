@@ -40,6 +40,7 @@ GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
         m_colors.push_back(color);
         m_xyRect = QRectF(QPointF(deltaX, Y), QPointF(deltaX + 10 * delta, Y));
     }
+    m_slope = 80;
 }
 
 inline QRectF GradientShape::PointInRectX(int i)const
@@ -129,11 +130,29 @@ void GradientShape::paintPointsLines()
         painter.drawPolyline(m_points);
 
         int len = m_points.size();
+        if (m_slope < 0)
+        {
+            m_slope = 1;
+        }
+        else if (m_slope > 100)
+        {
+            m_slope = 100;
+        }
+        QPolygonF slopePoints;
         for (int i = 0; i < len; i++)
         {
             QRectF bounds = getPointRect(i);
             painter.drawEllipse(bounds);
+
+            QPointF ptH = m_points.at(i);
+            int deltH = m_xyRect.height() - ptH.y();
+            if (deltH > 0)
+            {
+                ptH.setY(m_xyRect.height() - deltH*m_slope/100);
+            }
+            slopePoints.append(ptH);
         }
+        painter.drawPolyline(slopePoints);
     }
     else
     {
