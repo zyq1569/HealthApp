@@ -412,7 +412,7 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint & ~Qt::WindowMaximizeButtonHint & ~Qt::WindowMinimizeButtonHint);//& ~Qt::WindowCloseButtonHint
     setStyleSheet("background-color:rgb(255,255,255)}");
     m_gradientShape = new GradientShape(ui->m_gwidget);
-    m_colorBar = new GradientShape(ui->m_colorWidget, ShapeStyle::ColorStyle);
+    m_colorBar      = new GradientShape(ui->m_colorWidget, ShapeStyle::ColorStyle);
 
     setFixedSize(this->width(), this->height());
     ui->m_setslope->setValue(80);
