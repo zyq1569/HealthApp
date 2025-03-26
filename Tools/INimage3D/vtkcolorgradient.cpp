@@ -398,3 +398,42 @@ VtkColorGradient::~VtkColorGradient()
 {
     delete ui;
 }
+
+/*
+QSlider
+{
+    background-color: rgba(22, 22, 22, 0.7);
+    padding-top: 15px;  //上面端点离顶部的距离
+    padding - bottom: 15px;
+    border - radius: 5px; //外边框矩形倒角
+}
+
+QSlider::add - page:vertical
+{
+    background - color: #FF7826;
+    width:5px;
+    border - radius: 2px;
+}
+
+QSlider::sub - page:vertical
+{
+    background - color: #7A7B79;
+    width:5px;
+    border - radius: 2px;
+}
+
+QSlider::groove:vertical
+{
+    background:transparent;
+    width:6px;
+}
+
+QSlider::handle:vertical
+{
+    height: 14px;
+    width: 14px;
+    margin: 0px - 4px 0px - 4px;
+    border - radius: 7px;
+    background: white;
+}
+*/
