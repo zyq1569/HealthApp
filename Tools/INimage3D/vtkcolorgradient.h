@@ -53,6 +53,11 @@ public:
     {
         return m_colors;
     }
+    inline void setGrayMaxMin(int max, int min)
+    {
+        m_grayMax = max;
+        m_grayMin = min;
+    }
 private:
 	QPolygonF m_points, m_gradientPoints;
     int m_delta, m_currentIndex, m_maxH, m_maxW;
@@ -60,6 +65,7 @@ private:
 	QPen m_linePen;
 	QList<QColor> m_colors;
     ShapeStyle m_shapeStyle;
+    int m_grayMax, m_grayMin;
 	
 };
 //++++++++++++++++++++++++++

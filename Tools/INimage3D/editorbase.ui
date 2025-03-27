@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>295</width>
+    <width>301</width>
     <height>25</height>
    </rect>
   </property>
@@ -54,14 +54,14 @@
       <item>
        <widget class="QSpinBox" name="m_intervalStartSpinBox">
         <property name="maximum">
-         <number>2000</number>
+         <number>10000</number>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QSpinBox" name="m_intervalEndSpinBox">
         <property name="maximum">
-         <number>2000</number>
+         <number>10000</number>
         </property>
        </widget>
       </item>
