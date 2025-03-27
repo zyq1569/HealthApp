@@ -503,8 +503,10 @@ void VtkColorGradient::updateDataVtkColorStyle()
 {
     //m_vtkColorStyle.m_slope = ui->m_sliderslope->value();
     m_vtkColorStyle.clearAll();
-    m_vtkColorStyle.m_slope = ui->m_setslope->value();
-    double graydelta        = m_grayMax - m_grayMin;
+    m_vtkColorStyle.m_colorOpacity = true;
+    m_vtkColorStyle.m_colorAdd     = true;
+    m_vtkColorStyle.m_slope        = ui->m_setslope->value();
+    double graydelta               = m_grayMax - m_grayMin;
 
     QPolygonF points = m_gradientShape->getPoints();
     int sizeGra      = points.size();
@@ -550,10 +552,7 @@ void VtkColorGradient::updateDataVtkColorStyle()
         m_vtkColorStyle.m_Diffuse        = ui->m_diffuseSpinBox->value();
         m_vtkColorStyle.m_Specular       = ui->m_specularSpinBox->value();
         m_vtkColorStyle.m_SpecularPower  = ui->m_specularPowerSpinBox->value();
-
     }
-
-
 }
 
 void VtkColorGradient::update3D()
