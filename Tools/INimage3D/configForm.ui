@@ -55,7 +55,7 @@
   <widget class="QCheckBox" name="m_ckWL">
    <property name="geometry">
     <rect>
-     <x>29</x>
+     <x>17</x>
      <y>62</y>
      <width>111</width>
      <height>31</height>
@@ -68,7 +68,7 @@
   <widget class="QTextEdit" name="m_window">
    <property name="geometry">
     <rect>
-     <x>51</x>
+     <x>36</x>
      <y>88</y>
      <width>91</width>
      <height>21</height>
@@ -91,7 +91,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QTextEdit" name="m_level">
    <property name="geometry">
     <rect>
-     <x>177</x>
+     <x>165</x>
      <y>88</y>
      <width>91</width>
      <height>21</height>
@@ -114,7 +114,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>18</x>
      <y>90</y>
      <width>21</width>
      <height>16</height>
@@ -127,7 +127,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>159</x>
+     <x>147</x>
      <y>90</y>
      <width>21</width>
      <height>16</height>
@@ -140,7 +140,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QCheckBox" name="m_ckColor">
    <property name="geometry">
     <rect>
-     <x>28</x>
+     <x>78</x>
      <y>23</y>
      <width>61</width>
      <height>31</height>
@@ -167,7 +167,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>90</y>
+     <y>87</y>
      <width>51</width>
      <height>23</height>
     </rect>
@@ -179,7 +179,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>29</x>
+     <x>8</x>
      <y>8</y>
      <width>31</width>
      <height>21</height>
@@ -211,9 +211,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QCheckBox" name="m_ckOpacity">
    <property name="geometry">
     <rect>
-     <x>97</x>
+     <x>147</x>
      <y>23</y>
-     <width>51</width>
+     <width>41</width>
      <height>31</height>
     </rect>
    </property>
@@ -224,7 +224,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>9</x>
      <y>50</y>
      <width>31</width>
      <height>21</height>
@@ -237,9 +237,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QComboBox" name="m_cbInterType">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>251</x>
      <y>28</y>
-     <width>131</width>
+     <width>111</width>
      <height>22</height>
     </rect>
    </property>
@@ -262,7 +262,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>192</x>
      <y>28</y>
      <width>51</width>
      <height>21</height>
@@ -270,6 +270,19 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>交互插值：</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="m_colorGradientCK">
+   <property name="geometry">
+    <rect>
+     <x>12</x>
+     <y>30</y>
+     <width>61</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>坐标调色</string>
    </property>
   </widget>
  </widget>
