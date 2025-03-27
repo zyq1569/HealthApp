@@ -429,6 +429,9 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     connect(ui->m_sliderslope, &QSlider::valueChanged, m_gradientShape, &GradientShape::updateslope);
     connect(ui->m_sliderslope, &QSlider::valueChanged, ui->m_setslope, &QSpinBox::setValue);
     connect(ui->m_setslope, spinBoxSignal, ui->m_sliderslope, &QSlider::setValue);
+
+    //checkbox
+    connect(ui->m_synUpdate3D, &QCheckBox::clicked, [=](bool check) { ui->m_pbUdate3D->setEnabled(!check); });
 }
 //void VtkColorGradient::closeEvent(QCloseEvent *event)
 //{
