@@ -258,17 +258,31 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 void QFourpaneviewer::ShowEditorsWidget()
 {
-	m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
-	m_showEditors = !m_showEditors;
-    if (!m_vtkColorGradient)
+    if (m_MainWindow->m_check3Dcolor)
     {
-	    m_vtkColorGradient = new VtkColorGradient(this);
-        m_vtkColorGradient->setGeometry(this->width()/2, 5, m_vtkColorGradient->width(), m_vtkColorGradient->height());
+        if (!m_vtkColorGradient)
+        {
+	        m_vtkColorGradient = new VtkColorGradient(this);
+            m_vtkColorGradient->setGeometry(this->width()/2, 5, m_vtkColorGradient->width(), m_vtkColorGradient->height());
+        }
+        if (m_vtkColorGradient)
+        {
+            (m_vtkColorGradient->isHidden())?(m_vtkColorGradient->show()):(m_vtkColorGradient->hide());
+        }
+        ui->m_editorsWidget->hide();
     }
-    if (m_vtkColorGradient)
+    else
     {
-        (m_vtkColorGradient->isHidden())?(m_vtkColorGradient->show()):(m_vtkColorGradient->hide());
+	    m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
+	    m_showEditors = !m_showEditors;
+
+        if (m_vtkColorGradient)
+        {
+            m_vtkColorGradient->hide();
+        }
     }
+
+
 
 }
 

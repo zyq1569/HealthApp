@@ -23,17 +23,17 @@ MainWindow::MainWindow(QWidget *parent)
     setStatusBar(nullptr);
     setMenuBar(nullptr);
 
-    m_image4Plane = nullptr;
-    m_MetaReader = nullptr;
-    m_XMLImageDataReader = nullptr;
-    m_closeMetaFile = false;
-
-    m_vtkImageData = nullptr;
-    m_vtkAlgorithmOutput = nullptr;
+    m_image4Plane         = nullptr;
+    m_MetaReader          = nullptr;
+    m_XMLImageDataReader  = nullptr;
+    m_closeMetaFile       = false;
+                          
+    m_vtkImageData        = nullptr;
+    m_vtkAlgorithmOutput  = nullptr;
 
     m_index3D = m_index4P = -1;
 
-    m_checkStart3D = m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
+    m_checkStart3D = m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = m_colorGradient = false;
     m_DefaultLevel = m_DefaultWindow = 0;
 
     showMaximized();

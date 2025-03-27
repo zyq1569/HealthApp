@@ -75,6 +75,7 @@ void ConfigForm::InitConfig()
 	m_mainwindow->m_DefaultLevel     = ui->m_level->toPlainText().toInt();
 	m_mainwindow->m_checkOpacity     = ui->m_ckOpacity->isChecked();
 	m_mainwindow->m_cbInterType      = ui->m_cbInterType->currentIndex();
+    m_mainwindow->m_colorGradient    = ui->m_colorGradientCK->isCheckable();
 
 	//QColor color;
 	//bool ok;
