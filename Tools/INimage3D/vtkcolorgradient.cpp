@@ -220,7 +220,7 @@ void GradientShape::paintRuler()
         painter.drawPolyline(points);
 
         int delta = (m_maxW - 2 * deltaX) / 10;
-        int j = 0, dis = 4000 / 5;
+        int j = -100, dis = 2000 / 5;
         for (int i = 0; i < 11; i++)
         {
             painter.drawLine(QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH), QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH + 7));
