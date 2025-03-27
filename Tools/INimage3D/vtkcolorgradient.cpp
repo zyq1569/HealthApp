@@ -386,6 +386,10 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                 {
                     QMouseEvent *mouseEvent = (QMouseEvent *)event;
                     movePoints(m_currentIndex, clickPoint, true);
+                    if (m_synData)
+                    {
+                        emit update3D();
+                    }
                 }
                 break;
             case QEvent::MouseButtonRelease:
