@@ -10,6 +10,8 @@
 #include<QColorDialog>
 #include<QMessageBox>
 
+class VtkColorStyle;
+
 GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
 {
     if (widget)
@@ -464,7 +466,8 @@ void VtkColorGradient::update3D()
     //ui->m_synUpdate3D->setEnabled(false);
     if (m_parentViewer)
     {
-        //(QFourpaneviewer*)m_parentViewer->ResetColor3D(/*VtkColorStyle colorValue*/);
+        VtkColorStyle *style;
+        ((QFourpaneviewer*)m_parentViewer)->ResetColor3D(*style/*VtkColorStyle colorValue*/);
     }
 }
 
