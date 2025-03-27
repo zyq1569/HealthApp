@@ -19,12 +19,38 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QSplitter" name="m_SplitterLR">
+     <property name="styleSheet">
+      <string notr="true">QSplitter {
+    background-color: #f0f0f0;
+    border: 0px solid #d0d0d0;
+}
+
+QSplitter::handle {
+    width: 0px;
+    background-color: #e0e0e0;
+    border: 0px solid #c0c0c0;
+}
+</string>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QSplitter" name="m_horizontalSplitter">
       <property name="layoutDirection">
        <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QSplitter {
+    background-color: #f0f0f0;
+    border: 0px solid #d0d0d0;
+}
+
+QSplitter::handle {
+    width: 0px;
+    background-color: #e0e0e0;
+    border: 0px solid #c0c0c0;
+}
+</string>
       </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -33,6 +59,19 @@
        <number>1</number>
       </property>
       <widget class="QSplitter" name="m_vSplitterL">
+       <property name="styleSheet">
+        <string notr="true">QSplitter {
+    background-color: #f0f0f0;
+    border: 0px solid #d0d0d0;
+}
+
+QSplitter::handle {
+    width: 0px;
+    background-color: #e0e0e0;
+    border: 0px solid #c0c0c0;
+}
+</string>
+       </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -115,6 +154,19 @@
        </widget>
       </widget>
       <widget class="QSplitter" name="m_vSplitterR">
+       <property name="styleSheet">
+        <string notr="true">QSplitter {
+    background-color: #f0f0f0;
+    border: 0px solid #d0d0d0;
+}
+
+QSplitter::handle {
+    width: 0px;
+    background-color: #e0e0e0;
+    border: 0px solid #c0c0c0;
+}
+</string>
+       </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
