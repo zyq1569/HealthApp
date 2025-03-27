@@ -66,6 +66,7 @@ public:
     ~VtkColorGradient();
 protected:
     //virtual void closeEvent(QCloseEvent *event);
+    void updateDataVtkColorStyle();
 
 protected slots:
     void update3D();

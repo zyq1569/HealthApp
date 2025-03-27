@@ -499,14 +499,27 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
 //    event->ignore();//事件继续发送
 //}
 
+void VtkColorGradient::updateDataVtkColorStyle()
+{
+    if (m_vtkColorStyle.m_gradientPoinst.size() < 1)
+    {
+
+    }
+}
+
 void VtkColorGradient::update3D()
 {
     ui->m_synUpdate3D->setEnabled(false);
-    //if (m_parentViewer)
-    //{
-    //    ((QFourpaneviewer*)m_parentViewer)->ResetColor3D(m_vtkColorStyle);
-    //    m_vtkColorStyle.clearAll();
-    //}
+    if (m_parentViewer)
+    {
+        if (!m_vtkColorStyle.m_bpointValue)
+        {
+            updateDataVtkColorStyle();
+            ((QFourpaneviewer*)m_parentViewer)->ResetColor3D(m_vtkColorStyle);
+            m_vtkColorStyle.clearAll();
+        }
+
+    }
 }
 
 VtkColorGradient::~VtkColorGradient()
