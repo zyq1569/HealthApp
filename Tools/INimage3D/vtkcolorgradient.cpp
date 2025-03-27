@@ -495,6 +495,10 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
                                                         update3D();
                                                     }
                                                                     });
+    connect(ui->m_ambientSpinBox,       SIGNAL(valueChanged(double)), this, SLOT(update3D()));
+    connect(ui->m_diffuseSpinBox,       SIGNAL(valueChanged(double)), this, SLOT(update3D()));
+    connect(ui->m_specularSpinBox,      SIGNAL(valueChanged(double)), this, SLOT(update3D()));
+    connect(ui->m_specularPowerSpinBox, SIGNAL(valueChanged(double)), this, SLOT(update3D()));
     m_vtkColorStyle.m_bpointValue = false;
     m_vtkColorStyle.clearAll();
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
