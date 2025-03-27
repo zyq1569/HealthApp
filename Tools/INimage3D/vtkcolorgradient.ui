@@ -247,10 +247,10 @@ QSlider::handle:vertical
     </layout>
    </widget>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="m_pbUdate3D">
    <property name="geometry">
     <rect>
-     <x>600</x>
+     <x>601</x>
      <y>373</y>
      <width>46</width>
      <height>65</height>
@@ -293,13 +293,13 @@ border-radius: 20px;
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox">
+  <widget class="QCheckBox" name="m_synUpdate3D">
    <property name="geometry">
     <rect>
      <x>598</x>
      <y>316</y>
      <width>47</width>
-     <height>60</height>
+     <height>58</height>
     </rect>
    </property>
    <property name="font">

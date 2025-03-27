@@ -1,6 +1,8 @@
 #include "vtkcolorgradient.h"
 #include "ui_vtkcolorgradient.h"
 
+#include"qfourpaneviewer.h"
+
 #include<QEvent>
 #include<QMouseEvent>
 #include<QPainter>
@@ -414,6 +416,11 @@ void (QSpinBox:: *spinBoxSignal)(int) = &QSpinBox::valueChanged;
 //    : W:601 H:55
 VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui::VtkColorGradient)
 {
+    m_parentViewer = nullptr;
+    if (parent)
+    {
+        m_parentViewer = parent;
+    }
     ui->setupUi(this);
     setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint & ~Qt::WindowMaximizeButtonHint & ~Qt::WindowMinimizeButtonHint);//& ~Qt::WindowCloseButtonHint
@@ -430,8 +437,20 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     connect(ui->m_sliderslope, &QSlider::valueChanged, ui->m_setslope, &QSpinBox::setValue);
     connect(ui->m_setslope, spinBoxSignal, ui->m_sliderslope, &QSlider::setValue);
 
-    //checkbox
-    connect(ui->m_synUpdate3D, &QCheckBox::clicked, [=](bool check) { ui->m_pbUdate3D->setEnabled(!check); });
+    //checkbox ->syn --->updateData3D
+    connect(ui->m_synUpdate3D, &QCheckBox::clicked, [=](bool check) { 
+                                                    ui->m_pbUdate3D->setEnabled(!check); 
+                                                    if (m_gradientShape)
+                                                    {
+                                                        m_gradientShape->m_synData = check;
+                                                    }
+                                                    if (m_colorBar)
+                                                    {
+                                                        m_colorBar->m_synData = check;
+                                                    }
+                                                                     });
+
+    connect(ui->m_pbUdate3D, &QPushButton::pressed, this,&VtkColorGradient::update3D);
 }
 //void VtkColorGradient::closeEvent(QCloseEvent *event)
 //{
@@ -440,11 +459,22 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
 //    event->ignore();//事件继续发送
 //}
 
+void VtkColorGradient::update3D()
+{
+    //ui->m_synUpdate3D->setEnabled(false);
+    if (m_parentViewer)
+    {
+        //(QFourpaneviewer*)m_parentViewer->ResetColor3D(/*VtkColorStyle colorValue*/);
+    }
+}
+
 VtkColorGradient::~VtkColorGradient()
 {
     delete ui;
 }
 
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 /*
 QSlider
 {

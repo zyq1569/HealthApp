@@ -36,6 +36,7 @@ public slots:
 
 public:
 	QWidget *m_parent;
+    bool m_synData;
 
 private:
 	QPolygonF m_points, m_gradientPoints;
@@ -60,11 +61,15 @@ public:
 protected:
     //virtual void closeEvent(QCloseEvent *event);
 
+protected slots:
+    void update3D();
+
 private:
     Ui::VtkColorGradient *ui;
 
 public:
 	GradientShape *m_gradientShape, *m_colorBar;
+    QWidget *m_parentViewer;
 };
 
 #endif // VTKCOLORGRADIENT_H
