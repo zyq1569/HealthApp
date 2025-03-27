@@ -10,8 +10,6 @@
 #include<QColorDialog>
 #include<QMessageBox>
 
-class VtkColorStyle;
-
 GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
 {
     if (widget)
@@ -46,6 +44,7 @@ GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
         m_xyRect = QRectF(QPointF(deltaX, Y), QPointF(deltaX + 10 * delta, Y));
     }
     m_slope = 80;
+    m_synData = false;
 
 }
 
@@ -312,6 +311,10 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                             m_points.insert(pos, clickPoint);
                         }
                         m_parent->update();
+                        if (m_synData)
+                        {
+                            emit update3D();
+                        }
                         m_currentIndex = pos;
                     }
                     else
@@ -326,6 +329,10 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                                 color.setAlpha(255);
                                 m_colors.replace(index, color);
                                 m_parent->update();
+                                if (m_synData)
+                                {
+                                    emit update3D();
+                                }
                             }
                             m_parent->setWindowFlags(Qt::WindowStaysOnTopHint);
                         }
@@ -339,6 +346,10 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                         m_points.remove(removeindex);
                         m_colors.removeAt(removeindex);
                         m_parent->update();
+                        if (m_synData)
+                        {
+                            emit update3D();
+                        }
                     }
                 }
                 break;
@@ -434,12 +445,31 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     setFixedSize(this->width(), this->height());
     ui->m_setslope->setValue(80);
     ui->m_sliderslope->setValue(80);
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //滑动消息和选框消息变化事件通知
     //connect(ui->m_editorByValues, &QEditorByValues::signalsColorValue,this, &QFourpaneviewer::ResetColor3D);
     connect(ui->m_sliderslope, &QSlider::valueChanged, m_gradientShape, &GradientShape::updateslope);
     connect(ui->m_sliderslope, &QSlider::valueChanged, ui->m_setslope, &QSpinBox::setValue);
     connect(ui->m_setslope, spinBoxSignal, ui->m_sliderslope, &QSlider::setValue);
+    connect(ui->m_sliderslope, &QSlider::valueChanged, [=](int vlue) {
+                                                        if (ui->m_synUpdate3D->isChecked())
+                                                        {
+                                                            m_vtkColorStyle.m_slope = ui->m_sliderslope->value();
+                                                            update3D();
+                                                        }  
+                                                                      });
+    connect(ui->m_setslope, spinBoxSignal, [=](int vlue)  {
+                                                        if (ui->m_synUpdate3D->isChecked())
+                                                        {
+                                                            m_vtkColorStyle.m_slope = ui->m_setslope->value();
+                                                            update3D();
+                                                        }
+                                                          });
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    //checkbox ->syn --->updateData3D
+
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //三维刷新事情通知checkbox ->syn --->updateData3D
     connect(ui->m_synUpdate3D, &QCheckBox::clicked, [=](bool check) { 
                                                     ui->m_pbUdate3D->setEnabled(!check); 
                                                     if (m_gradientShape)
@@ -453,6 +483,14 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
                                                                      });
 
     connect(ui->m_pbUdate3D, &QPushButton::pressed, this,&VtkColorGradient::update3D);
+
+    connect(m_gradientShape, &GradientShape::update3D, this, &VtkColorGradient::update3D);
+    connect(m_colorBar, &GradientShape::update3D, this, &VtkColorGradient::update3D);
+
+    m_vtkColorStyle.m_bpointValue = false;
+    m_vtkColorStyle.clearAll();
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 }
 //void VtkColorGradient::closeEvent(QCloseEvent *event)
 //{
@@ -463,12 +501,12 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
 
 void VtkColorGradient::update3D()
 {
-    //ui->m_synUpdate3D->setEnabled(false);
-    if (m_parentViewer)
-    {
-        VtkColorStyle *style;
-        ((QFourpaneviewer*)m_parentViewer)->ResetColor3D(*style/*VtkColorStyle colorValue*/);
-    }
+    ui->m_synUpdate3D->setEnabled(false);
+    //if (m_parentViewer)
+    //{
+    //    ((QFourpaneviewer*)m_parentViewer)->ResetColor3D(m_vtkColorStyle);
+    //    m_vtkColorStyle.clearAll();
+    //}
 }
 
 VtkColorGradient::~VtkColorGradient()

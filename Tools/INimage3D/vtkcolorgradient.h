@@ -1,8 +1,11 @@
 #ifndef VTKCOLORGRADIENT_H
 #define VTKCOLORGRADIENT_H
 
+#include"qeditorbyvalues.h"
+
 #include<QWidget>
 #include<Qpen>
+
 namespace Ui 
 {
 	class VtkColorGradient;
@@ -33,6 +36,9 @@ public:
 
 public slots:
     void updateslope(int vl);
+
+signals:
+    void update3D();
 
 public:
 	QWidget *m_parent;
@@ -70,6 +76,7 @@ private:
 public:
 	GradientShape *m_gradientShape, *m_colorBar;
     QWidget *m_parentViewer;
+    VtkColorStyle m_vtkColorStyle;
 };
 
 #endif // VTKCOLORGRADIENT_H

@@ -16,13 +16,24 @@ struct VtkColorPoint
 class VtkColorStyle
 {
 public:
+    VtkColorStyle()
+    {
+        m_bpointValue = true;
+    };
 	QList<VtkColorPoint> m_colorPoint;
 	QString m_styleName;
-	bool m_colorOpacity,m_colorAdd,m_lightShade;
+	bool m_colorOpacity, m_colorAdd, m_lightShade;
 	double m_Ambient, m_Diffuse, m_Specular, m_SpecularPower;
+
+    //++++++
+    QList<QPointF>m_gradientPoinst;
+    bool m_bpointValue;
+    int m_slope;
+    //++++++
 	void clearAll()
 	{
 		m_colorPoint.clear();
+        m_gradientPoinst.clear();
 	}
 };
 
