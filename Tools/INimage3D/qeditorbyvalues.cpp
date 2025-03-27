@@ -81,7 +81,9 @@ QEditorByValues::QEditorByValues(QWidget *parent): QWidget(parent), m_minimum(-2
 		}
 	}
 	//---------------load config.ini-----------end------------------------------------------------------------------\\\
-
+    //
+    connect(this, &QWidget::show,this, &QEditorByValues::loadFileValues);
+    //show
 
 }
 

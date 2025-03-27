@@ -25,8 +25,6 @@ ConfigForm::ConfigForm(QWidget *parent) :QWidget(parent), ui(new Ui::ConfigForm)
 	ui->m_ckOpacity->setChecked(settings.value("start/3Dopacity",false).toBool());
 	ui->m_cbInterType->setCurrentIndex(settings.value("start/3DInterType", 0).toInt());
 
-
-
 	ui->m_ckWL->setChecked(settings.value("wl/check").toBool());
 	ui->m_window->setPlainText(settings.value("wl/win").toString());
 	ui->m_level->setPlainText(settings.value("wl/lel").toString());

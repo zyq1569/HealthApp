@@ -47,6 +47,9 @@ public slots:
 	void ResetColor3D(VtkColorStyle colorValue);
     void UpdateColorGradient3D(VtkColorStyle colorValue);
 
+signals:
+    void LoadConfigFiles();
+
 public:
 	QString m_fileNameMhd;
 	vtkResliceImageViewer*        m_resliceImageViewer[3];

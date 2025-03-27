@@ -205,7 +205,9 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	//////////////////////////////////////////////////////////////////
 	//color 窗体颜色编辑值信号
 	connect(ui->m_editorByValues, &QEditorByValues::signalsColorValue,this, &QFourpaneviewer::ResetColor3D);
-
+    //connect(ui->m_editorByValues, &QEditorByValues::show, ui->m_editorByValues, &QFourpaneviewer::ResetColor3D);
+    connect(this, &QFourpaneviewer::LoadConfigFiles, ui->m_editorByValues, &QEditorByValues::loadFileValues);
+    
 	/////////////////////////////////////////////////////////////////////
 
 	m_actionReset = new QAction(this);
@@ -250,7 +252,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_showEditors = false;
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	ui->m_editorsWidget->setCurrentIndex(0);//设置坐标系方式选择点,另外一个是具体点坐标输入方式设置颜色及透明度
+	ui->m_editorsWidget->setCurrentIndex(1);//设置坐标系方式选择点,另外一个是具体点坐标输入方式设置颜色及透明度
 	ui->m_editorsWidget->setStyleSheet("background-color:rgb(240,240,240)}");
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
@@ -273,17 +275,28 @@ void QFourpaneviewer::ShowEditorsWidget()
     }
     else
     {
-	    m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
+        m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
 	    m_showEditors = !m_showEditors;
+
+        //+++++++++++++++++++++++++++++++++++
+        //只有第一次加载文件,需要时再修改
+        static bool bfirst = true;
+        if (bfirst)
+        {
+            if (m_showEditors)
+            {
+                emit LoadConfigFiles();
+                bfirst = false;
+            }
+        }
+        //++++++++++++++++++++++++++++++++++++++++
+
 
         if (m_vtkColorGradient)
         {
             m_vtkColorGradient->hide();
         }
     }
-
-
-
 }
 
 void QFourpaneviewer::Show3DPlane()
