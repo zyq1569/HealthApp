@@ -277,8 +277,6 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                         }
                         if (m_shapeStyle == ShapeStyle::ColorStyle)
                         {
-                            //setWindowFlags(Qt::WindowStaysOnTopHint);
-                            m_parent->setWindowFlags(Qt::Widget);
                             bool bok;
                             QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
                             if (bok)
@@ -286,8 +284,10 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                                 color.setAlpha(255);
                                 m_colors.insert(pos, color);
                             }
-                            m_parent->setWindowFlags(Qt::WindowStaysOnTopHint);
-
+                            else
+                            {
+                                return false;
+                            }
                             m_points.insert(pos, QPointF(clickPoint.x(), m_points.at(0).y()));
                         }
                         else
@@ -321,7 +321,6 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                     {
                         if (m_shapeStyle == ShapeStyle::ColorStyle)
                         {
-                            m_parent->setWindowFlags(Qt::Widget);
                             bool bok = false;
                             QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
                             if (bok)
@@ -334,7 +333,10 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                                     emit update3D();
                                 }
                             }
-                            m_parent->setWindowFlags(Qt::WindowStaysOnTopHint);
+                            else
+                            {
+                                return false;
+                            }
                         }
                         m_currentIndex = index;
                     }
