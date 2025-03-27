@@ -171,8 +171,20 @@ void GradientShape::paintPointsLines()
     else
     {
         int len = m_points.size();
+        int y = m_points.at(0).y();
+        int colorH = 20;
+        int colorW = 6;
         for (int i = 0; i < len; i++)
         {
+            if (i < len - 1)
+            {
+                QLinearGradient gradient(m_points.at(i), m_points.at(i+1));
+                gradient.setColorAt(0.0, m_colors.at(i));
+                gradient.setColorAt(1.0, m_colors.at(i+1));
+                QPoint top(m_points.at(i).x() + colorW, y- colorH);
+                QPoint bottom(m_points.at(i+1).x() - colorW, y+ colorH);
+                painter.fillRect(QRect(top, bottom), gradient);
+            }
             QRectF bounds = getPointRect(i);
             painter.drawRect(bounds);
             painter.fillRect(bounds, QBrush(m_colors.at(i)));
@@ -221,6 +233,7 @@ void GradientShape::paintRuler()
 
         int delta = (m_maxW - 2 * deltaX) / 10;
         int j = m_grayMin, dis = (m_grayMax - m_grayMin) / 10;
+        QLinearGradient gradient();
         for (int i = 0; i < 11; i++)
         {
             painter.drawLine(QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH), QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH + 7));
