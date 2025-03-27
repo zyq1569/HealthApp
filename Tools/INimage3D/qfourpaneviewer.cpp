@@ -302,6 +302,86 @@ void QFourpaneviewer::ResetViewer()
 	}
 }
 
+void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
+{
+    if(m_volumeProperty)
+    {
+        if (colorValue.m_colorOpacity)
+        {
+            m_volumeProperty->DisableGradientOpacityOff();
+            QList<VtkColorPoint> points = colorValue.m_colorPoint;
+            if (m_pieceGradF)
+            {
+                m_pieceGradF->RemoveAllPoints();
+                for (unsigned short i = 0; i < points.size(); i++)
+                {
+                    double x = points.at(i).m_X;
+                    QColor color = points.at(i).m_Color;
+                    m_pieceGradF->AddPoint(x, color.alphaF());
+                }
+                m_volumeProperty->SetGradientOpacity(m_pieceGradF);
+            }
+            if (m_pieceF)
+            {
+                m_pieceF->RemoveAllPoints();
+                for (unsigned short i = 0; i < points.size(); i++)
+                {
+                    double x = points.at(i).m_X;
+                    QColor color = points.at(i).m_Color;
+                    m_pieceF->AddPoint(x, color.alphaF());
+                }
+                m_volumeProperty->SetScalarOpacity(m_pieceF);
+            }
+        }
+        else
+        {
+            m_pieceGradF->RemoveAllPoints();
+            m_pieceF->RemoveAllPoints();
+            m_pieceF->AddPoint(-2000, 1.0); m_pieceF->AddPoint(2000, 1.0);  // 低梯度区域完全不透明
+
+            m_volumeProperty->SetGradientOpacity(m_pieceGradF);
+            m_volumeProperty->SetScalarOpacity(m_pieceF);
+
+            m_volumeProperty->DisableGradientOpacityOn();//关闭梯度透明度
+        }
+
+        if (colorValue.m_colorAdd)
+        {
+            QList<VtkColorPoint> points = colorValue.m_colorPoint;
+            if (m_colorTranF)
+            {
+                m_colorTranF->RemoveAllPoints();
+                for (unsigned short i = 0; i < points.size(); i++)
+                {
+                    double x = points.at(i).m_X;
+                    QColor color = points.at(i).m_Color;
+                    m_colorTranF->AddRGBPoint(x, color.redF(), color.greenF(), color.blueF());
+                }
+                m_volumeProperty->SetColor(m_colorTranF);
+            }
+        }
+        else
+        {
+            m_colorTranF->RemoveAllPoints();
+            m_volumeProperty->SetColor(m_colorTranF);
+        }
+
+        //lightShade
+        if (colorValue.m_lightShade)
+        {
+            m_volumeProperty->ShadeOn();
+            m_volumeProperty->SetAmbient(colorValue.m_Ambient);//环境光系数
+            m_volumeProperty->SetDiffuse(colorValue.m_Diffuse);//散射光系数
+            m_volumeProperty->SetSpecular(colorValue.m_Specular);//反射光系数
+            m_volumeProperty->SetSpecularPower(colorValue.m_SpecularPower);//高光强度
+        }
+        else
+        {
+            m_volumeProperty->ShadeOff();
+        }
+        ui->m_mpr2DView->renderWindow()->Render();
+    }
+}
 
 void QFourpaneviewer::ResetColor3D(VtkColorStyle colorValue)
 {

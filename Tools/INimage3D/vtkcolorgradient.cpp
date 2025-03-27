@@ -442,6 +442,9 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     m_gradientShape = new GradientShape(ui->m_gwidget);
     m_colorBar      = new GradientShape(ui->m_colorWidget, ShapeStyle::ColorStyle);
 
+    //初始化部分参数值
+    m_grayMin = -200;
+    m_grayMax = 2000;
     setFixedSize(this->width(), this->height());
     ui->m_setslope->setValue(80);
     ui->m_sliderslope->setValue(80);
@@ -486,7 +489,12 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
 
     connect(m_gradientShape, &GradientShape::update3D, this, &VtkColorGradient::update3D);
     connect(m_colorBar, &GradientShape::update3D, this, &VtkColorGradient::update3D);
-
+    connect(ui->m_shadingGBox, &QGroupBox::clicked, [=](bool check) {
+                                                    if (ui->m_synUpdate3D->isChecked())
+                                                    {
+                                                        update3D();
+                                                    }
+                                                                    });
     m_vtkColorStyle.m_bpointValue = false;
     m_vtkColorStyle.clearAll();
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -557,15 +565,13 @@ void VtkColorGradient::updateDataVtkColorStyle()
 
 void VtkColorGradient::update3D()
 {
-    ui->m_synUpdate3D->setEnabled(false);
     if (m_parentViewer)
     {
         if (!m_vtkColorStyle.m_bpointValue)
         {
             updateDataVtkColorStyle();
-            ((QFourpaneviewer*)m_parentViewer)->ResetColor3D(m_vtkColorStyle);           
+            ((QFourpaneviewer*)m_parentViewer)->UpdateColorGradient3D(m_vtkColorStyle);
         }
-
     }
 }
 

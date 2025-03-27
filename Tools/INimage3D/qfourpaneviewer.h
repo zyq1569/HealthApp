@@ -45,6 +45,7 @@ private:
 public slots:
 	void ResetViewer();
 	void ResetColor3D(VtkColorStyle colorValue);
+    void UpdateColorGradient3D(VtkColorStyle colorValue);
 
 public:
 	QString m_fileNameMhd;
