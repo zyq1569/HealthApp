@@ -334,15 +334,15 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
         if (colorValue.m_colorOpacity)
         {
             m_volumeProperty->DisableGradientOpacityOff();
-            QList<VtkColorPoint> points = colorValue.m_colorPoint;
+            QList<QPointF> points = colorValue.m_gradientPoinst;
             if (m_pieceGradF)
             {
                 m_pieceGradF->RemoveAllPoints();
-                for (unsigned short i = 0; i < points.size(); i++)
+                int size = points.size();
+                int slope = colorValue.m_slope;
+                for (unsigned short i = 0; i < size; i++)
                 {
-                    double x = points.at(i).m_X;
-                    QColor color = points.at(i).m_Color;
-                    m_pieceGradF->AddPoint(x, color.alphaF());
+                    m_pieceGradF->AddPoint(points[i].rx(), (points[i].ry()*slope)/100.0);
                 }
                 /**
                  * Set the opacity of a volume to an opacity transfer function based
@@ -353,11 +353,10 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
             if (m_pieceF)
             {
                 m_pieceF->RemoveAllPoints();
-                for (unsigned short i = 0; i < points.size(); i++)
+                int size = points.size();
+                for (unsigned short i = 0; i < size; i++)
                 {
-                    double x = points.at(i).m_X;
-                    QColor color = points.at(i).m_Color;
-                    m_pieceF->AddPoint(x, color.alphaF());
+                    m_pieceF->AddPoint(points[i].rx(), points[i].ry());
                 }
                 /**
                  * Set the opacity of a volume to an opacity transfer function based
