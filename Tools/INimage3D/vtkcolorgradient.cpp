@@ -220,7 +220,7 @@ void GradientShape::paintRuler()
         painter.drawPolyline(points);
 
         int delta = (m_maxW - 2 * deltaX) / 10;
-        int j = -1000, dis = 2000 / 5;
+        int j = -2000, dis = 6000 / 5;
         for (int i = 0; i < 11; i++)
         {
             painter.drawLine(QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH), QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH + 7));
@@ -449,8 +449,8 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     m_colorBar      = new GradientShape(ui->m_colorWidget, ShapeStyle::ColorStyle);
 
     //初始化部分参数值
-    m_grayMin = -1000;
-    m_grayMax = 3000;
+    m_grayMin = -2000;
+    m_grayMax = 4000;
     setFixedSize(this->width(), this->height());
     ui->m_setslope->setValue(80);
     ui->m_sliderslope->setValue(80);
