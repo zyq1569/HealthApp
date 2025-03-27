@@ -330,6 +330,7 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
 {
     if(m_volumeProperty)
     {
+        //设置透明度和梯度透明度
         if (colorValue.m_colorOpacity)
         {
             m_volumeProperty->DisableGradientOpacityOff();
@@ -343,6 +344,10 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
                     QColor color = points.at(i).m_Color;
                     m_pieceGradF->AddPoint(x, color.alphaF());
                 }
+                /**
+                 * Set the opacity of a volume to an opacity transfer function based
+                 * on gradient magnitude for the given component.
+                 */
                 m_volumeProperty->SetGradientOpacity(m_pieceGradF);
             }
             if (m_pieceF)
@@ -354,6 +359,10 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
                     QColor color = points.at(i).m_Color;
                     m_pieceF->AddPoint(x, color.alphaF());
                 }
+                /**
+                 * Set the opacity of a volume to an opacity transfer function based
+                 * on scalar value for the component indicated by index.
+                 */
                 m_volumeProperty->SetScalarOpacity(m_pieceF);
             }
         }
