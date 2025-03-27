@@ -274,6 +274,8 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                         }
                         if (m_shapeStyle == ShapeStyle::ColorStyle)
                         {
+                            //setWindowFlags(Qt::WindowStaysOnTopHint);
+                            m_parent->setWindowFlags(Qt::Widget);
                             bool bok;
                             QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
                             if (bok)
@@ -281,6 +283,8 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                                 color.setAlpha(255);
                                 m_colors.insert(pos, color);
                             }
+                            m_parent->setWindowFlags(Qt::WindowStaysOnTopHint);
+
                             m_points.insert(pos, QPointF(clickPoint.x(), m_points.at(0).y()));
                         }
                         else
@@ -310,7 +314,8 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                     {
                         if (m_shapeStyle == ShapeStyle::ColorStyle)
                         {
-                            bool bok;
+                            m_parent->setWindowFlags(Qt::Widget);
+                            bool bok = false;
                             QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
                             if (bok)
                             {
@@ -318,6 +323,7 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
                                 m_colors.replace(index, color);
                                 m_parent->update();
                             }
+                            m_parent->setWindowFlags(Qt::WindowStaysOnTopHint);
                         }
                         m_currentIndex = index;
                     }
@@ -412,6 +418,7 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint & ~Qt::WindowMaximizeButtonHint & ~Qt::WindowMinimizeButtonHint);//& ~Qt::WindowCloseButtonHint
     setStyleSheet("background-color:rgb(255,255,255)}");
+    //ui->m_colorWidget->
     m_gradientShape = new GradientShape(ui->m_gwidget);
     m_colorBar      = new GradientShape(ui->m_colorWidget, ShapeStyle::ColorStyle);
 
