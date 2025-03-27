@@ -258,14 +258,11 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 void QFourpaneviewer::ShowEditorsWidget()
 {
-	//m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
-	//m_showEditors = !m_showEditors;
+	m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
+	m_showEditors = !m_showEditors;
     if (!m_vtkColorGradient)
     {
 	    m_vtkColorGradient = new VtkColorGradient(this);
-        //QPoint glPos = this->mapToGlobal(QPoint(0, 0));
-        //int x = glPos.x() + (this->width() - m_vtkColorGradient->width()) / 2;
-        //int y = glPos.y() + (this->height() - m_vtkColorGradient->height()) / 2;
         m_vtkColorGradient->setGeometry(this->width()/2, 5, m_vtkColorGradient->width(), m_vtkColorGradient->height());
     }
     if (m_vtkColorGradient)
