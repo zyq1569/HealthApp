@@ -258,7 +258,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 void QFourpaneviewer::ShowEditorsWidget()
 {
-    if (m_MainWindow->m_check3Dcolor)
+    if (m_MainWindow->m_colorGradient)
     {
         if (!m_vtkColorGradient)
         {
