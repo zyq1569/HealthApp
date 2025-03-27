@@ -136,7 +136,7 @@ QSlider::handle:vertical
     <enum>QSlider::TicksBothSides</enum>
    </property>
   </widget>
-  <widget class="QGroupBox" name="m_shadingGroupBox">
+  <widget class="QGroupBox" name="m_shadingGBox">
    <property name="geometry">
     <rect>
      <x>-1</x>

@@ -43,7 +43,16 @@ signals:
 public:
 	QWidget *m_parent;
     bool m_synData;
-
+    QRectF m_xyRect;
+public:
+    inline QPolygonF getPoints()
+    {
+        return m_points;
+    }
+    inline QList<QColor> getColors()
+    {
+        return m_colors;
+    }
 private:
 	QPolygonF m_points, m_gradientPoints;
     int m_delta, m_currentIndex, m_maxH, m_maxW;
@@ -51,7 +60,6 @@ private:
 	QPen m_linePen;
 	QList<QColor> m_colors;
     ShapeStyle m_shapeStyle;
-    QRectF m_xyRect;
 	
 };
 //++++++++++++++++++++++++++
@@ -78,6 +86,9 @@ public:
 	GradientShape *m_gradientShape, *m_colorBar;
     QWidget *m_parentViewer;
     VtkColorStyle m_vtkColorStyle;
+
+private:
+    int m_grayMax, m_grayMin;
 };
 
 #endif // VTKCOLORGRADIENT_H

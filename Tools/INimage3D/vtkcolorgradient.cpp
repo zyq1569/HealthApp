@@ -454,14 +454,14 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     connect(ui->m_sliderslope, &QSlider::valueChanged, [=](int vlue) {
                                                         if (ui->m_synUpdate3D->isChecked())
                                                         {
-                                                            m_vtkColorStyle.m_slope = ui->m_sliderslope->value();
+                                                            //m_vtkColorStyle.m_slope = ui->m_sliderslope->value();
                                                             update3D();
                                                         }  
                                                                       });
     connect(ui->m_setslope, spinBoxSignal, [=](int vlue)  {
                                                         if (ui->m_synUpdate3D->isChecked())
                                                         {
-                                                            m_vtkColorStyle.m_slope = ui->m_setslope->value();
+                                                            //m_vtkColorStyle.m_slope = ui->m_setslope->value();
                                                             update3D();
                                                         }
                                                           });
@@ -501,10 +501,59 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
 
 void VtkColorGradient::updateDataVtkColorStyle()
 {
-    if (m_vtkColorStyle.m_gradientPoinst.size() < 1)
+    //m_vtkColorStyle.m_slope = ui->m_sliderslope->value();
+    m_vtkColorStyle.clearAll();
+    m_vtkColorStyle.m_slope = ui->m_setslope->value();
+    double graydelta        = m_grayMax - m_grayMin;
+
+    QPolygonF points = m_gradientShape->getPoints();
+    int sizeGra      = points.size();
+    double x_delta   = points[sizeGra - 1].rx()- points[0].rx();
+    double y_delta   = m_gradientShape->m_xyRect.height();
+    double x_min     = m_gradientShape->m_xyRect.bottomLeft().rx();
+    double y_max     = m_gradientShape->m_xyRect.bottomRight().ry();
+
+    //透明度系数读取
+    for (int i = 0; i < sizeGra; i++)
     {
+        QPointF pt;
+        pt.setX(m_grayMin + (points[i].rx() - x_min)*graydelta / x_delta);
+        pt.setY((y_max - points[i].ry()) / y_delta);
+        m_vtkColorStyle.m_gradientPoinst.append(pt);
+    }
+
+    
+    QList<QColor> colors = m_colorBar->getColors();
+    QPolygonF clpoints   = m_colorBar->getPoints();
+    int sizeColor        = clpoints.size();
+    double x_cldelta     = clpoints[sizeColor - 1].rx() - clpoints[0].rx();
+
+    VtkColorPoint pt;
+    pt.m_X     = m_grayMin;
+    pt.m_Color = colors[0];
+    m_vtkColorStyle.m_colorPoint.append(pt);
+    //颜色系数读取
+    for (int i = 1; i < sizeColor-1; i++)
+    {
+        pt.m_X     = m_grayMin + (clpoints[i].rx() - clpoints[0].rx())*graydelta / x_cldelta;
+        pt.m_Color = colors[i];
+    }
+    pt.m_X     = m_grayMax;
+    pt.m_Color = colors[sizeColor - 1];
+    m_vtkColorStyle.m_colorPoint.append(pt);
+
+    m_vtkColorStyle.m_lightShade = false;
+    if (ui->m_shadingGBox->isChecked())
+    {
+        m_vtkColorStyle.m_lightShade     = true;
+        m_vtkColorStyle.m_Ambient        = ui->m_ambientSpinBox->value();
+        m_vtkColorStyle.m_Diffuse        = ui->m_diffuseSpinBox->value();
+        m_vtkColorStyle.m_Specular       = ui->m_specularSpinBox->value();
+        m_vtkColorStyle.m_SpecularPower  = ui->m_specularPowerSpinBox->value();
 
     }
+
+
 }
 
 void VtkColorGradient::update3D()
@@ -515,8 +564,7 @@ void VtkColorGradient::update3D()
         if (!m_vtkColorStyle.m_bpointValue)
         {
             updateDataVtkColorStyle();
-            ((QFourpaneviewer*)m_parentViewer)->ResetColor3D(m_vtkColorStyle);
-            m_vtkColorStyle.clearAll();
+            ((QFourpaneviewer*)m_parentViewer)->ResetColor3D(m_vtkColorStyle);           
         }
 
     }
