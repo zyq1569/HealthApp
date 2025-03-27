@@ -9,12 +9,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>645</width>
-    <height>451</height>
+    <width>652</width>
+    <height>446</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>3D</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color:rgb(255,255,255)</string>
   </property>
   <widget class="QWidget" name="m_gwidget" native="true">
    <property name="geometry">
@@ -34,6 +37,9 @@
      <width>601</width>
      <height>55</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(255,255,255)</string>
    </property>
   </widget>
   <widget class="QSpinBox" name="m_setslope">
@@ -75,7 +81,7 @@
     <rect>
      <x>604</x>
      <y>23</y>
-     <width>37</width>
+     <width>40</width>
      <height>290</height>
     </rect>
    </property>
@@ -133,11 +139,14 @@ QSlider::handle:vertical
   <widget class="QGroupBox" name="m_shadingGroupBox">
    <property name="geometry">
     <rect>
-     <x>6</x>
-     <y>372</y>
-     <width>611</width>
+     <x>-1</x>
+     <y>367</y>
+     <width>602</width>
      <height>71</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(255,255,255)</string>
    </property>
    <property name="title">
     <string>光照</string>
@@ -148,13 +157,13 @@ QSlider::handle:vertical
    <property name="checked">
     <bool>false</bool>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>13</y>
-      <width>591</width>
-      <height>51</height>
+      <x>10</x>
+      <y>20</y>
+      <width>571</width>
+      <height>41</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -237,6 +246,73 @@ QSlider::handle:vertical
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>373</y>
+     <width>46</width>
+     <height>65</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background-color:  #ecf5ff;
+border: 1px solid #dcdfe6;
+padding: 10px;
+border-radius: 5px;
+}
+
+QPushButton:hover {
+background-color: #ecf5ff;
+color: #409eff;
+}
+
+QPushButton:pressed, QPushButton:checked {
+border: 1px solid #3a8ee6;
+color: #409eff;
+}
+
+#button3 {
+border-radius: 20px;
+}</string>
+   </property>
+   <property name="text">
+    <string notr="true">应用</string>
+   </property>
+   <property name="autoDefault">
+    <bool>false</bool>
+   </property>
+   <property name="default">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox">
+   <property name="geometry">
+    <rect>
+     <x>598</x>
+     <y>316</y>
+     <width>47</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>同步</string>
+   </property>
   </widget>
  </widget>
  <resources/>
