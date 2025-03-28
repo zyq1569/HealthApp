@@ -184,13 +184,13 @@ void GradientShape::paintPointsLines()
                 QPoint bottom(m_points.at(i+1).x() - colorW, y+ colorH);
                 painter.fillRect(QRect(top, bottom), gradient);
             }
-            QRectF bounds = getPointRect(i,20,20);
+            QRectF bounds = getPointRect(i,15,15);
             painter.drawRect(bounds);
             QBrush brush(QColor(255, 255, 255));
             painter.setBrush(brush);
             painter.drawEllipse(bounds);
 
-            bounds = getPointRect(i);
+            bounds = getPointRect(i,8,8);
             painter.drawRect(bounds);
             painter.fillRect(bounds, QBrush(m_colors.at(i)));
         }
