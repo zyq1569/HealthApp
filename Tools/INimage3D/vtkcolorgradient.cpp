@@ -55,10 +55,9 @@ inline QRectF GradientShape::PointInRectX(int i)const
     double x = point.x() - w / 2;
     return QRectF(x, 0, w, m_maxH);
 }
-inline QRectF GradientShape::getPointRect(int i)const
+inline QRectF GradientShape::getPointRect(int i, double w , double h)const
 {
     QPointF point = m_points.at(i);
-    double w = 10, h = 10;
     double x = point.x() - w / 2;
     double y = point.y() - h / 2;
     return QRectF(x, y, w, h);
@@ -172,8 +171,8 @@ void GradientShape::paintPointsLines()
     {
         int len = m_points.size();
         int y = m_points.at(0).y();
-        int colorH = 20;
-        int colorW = 6;
+        int colorH = 18;
+        int colorW = 0;
         for (int i = 0; i < len; i++)
         {
             if (i < len - 1)
@@ -185,7 +184,13 @@ void GradientShape::paintPointsLines()
                 QPoint bottom(m_points.at(i+1).x() - colorW, y+ colorH);
                 painter.fillRect(QRect(top, bottom), gradient);
             }
-            QRectF bounds = getPointRect(i);
+            QRectF bounds = getPointRect(i,20,20);
+            painter.drawRect(bounds);
+            QBrush brush(QColor(255, 255, 255));
+            painter.setBrush(brush);
+            painter.drawEllipse(bounds);
+
+            bounds = getPointRect(i);
             painter.drawRect(bounds);
             painter.fillRect(bounds, QBrush(m_colors.at(i)));
         }

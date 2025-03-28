@@ -31,7 +31,7 @@ public:
     void movePoints(int index, const QPointF &point, bool update);
 
 
-    inline QRectF getPointRect(int i)const;
+    inline QRectF getPointRect(int i, double w = 10, double h = 10)const;
     inline QRectF PointInRectX(int i)const;
 
 public slots:
