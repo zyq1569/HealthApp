@@ -212,6 +212,7 @@ void GradientShape::paintRuler()
     //Y
     if (m_shapeStyle == ShapeStyle::Default)
     {
+        //to do：目前坐标位置需要后期优化为边缘自动 (0,4) h:601 w:308
         //XY轴线
         QPolygonF points;
         int deltaX = 30, deltaY = 0;
@@ -228,6 +229,7 @@ void GradientShape::paintRuler()
     }
     else
     {
+        //to do：目前坐标位置需要后期优化为边缘自动 (0,312) h:601 w:55
         //color bar
         QPolygonF points;
         int deltaX = 35, deltaY = -1, deltaH = 20;
