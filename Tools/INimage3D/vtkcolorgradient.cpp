@@ -230,7 +230,7 @@ void GradientShape::paintRuler()
     {
         //color bar
         QPolygonF points;
-        int deltaX = 35, deltaY = 0, deltaH = 20;
+        int deltaX = 35, deltaY = -1, deltaH = 20;
         QPointF point0(deltaX, deltaY), point1(deltaX, m_maxH - deltaY - deltaH), point2(m_maxW - deltaX, m_maxH - deltaY - deltaH), point3(m_maxW - deltaX, deltaY);
         points << point0 << point1 << point2 << point3 << point0;
         painter.setPen(m_linePen);
