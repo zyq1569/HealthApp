@@ -34,6 +34,12 @@ ConfigForm::ConfigForm(QWidget *parent) :QWidget(parent), ui(new Ui::ConfigForm)
 	{
 		InitConfig();
 	});	
+
+    connect(ui->m_pbSaveExit, &QPushButton::clicked, [this]
+    {
+        InitConfig();
+        hide();
+    });
 }
 
 ConfigForm::~ConfigForm()

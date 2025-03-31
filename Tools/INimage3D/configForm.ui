@@ -246,7 +246,7 @@ p, li { white-space: pre-wrap; }
     <string>坐标调色</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="m_pbSave_2">
+  <widget class="QPushButton" name="m_pbSaveExit">
    <property name="geometry">
     <rect>
      <x>301</x>
