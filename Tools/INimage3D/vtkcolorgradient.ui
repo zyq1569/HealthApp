@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>3D</string>
+   <string>3D-color</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color:rgb(255,255,255)</string>
@@ -155,7 +155,7 @@ QSlider::handle:vertical
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
