@@ -6,52 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>364</width>
+    <width>368</width>
     <height>171</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>配置</string>
   </property>
-  <widget class="QCheckBox" name="m_ck3D">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>30</y>
-     <width>51</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>三维</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="m_lable">
-   <property name="geometry">
-    <rect>
-     <x>346</x>
-     <y>5</y>
-     <width>121</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>加载文件同时默认启动：</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="m_ck4Plane">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>60</y>
-     <width>51</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>切面</string>
-   </property>
-  </widget>
   <widget class="QCheckBox" name="m_ckWL">
    <property name="geometry">
     <rect>
@@ -91,7 +52,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QTextEdit" name="m_level">
    <property name="geometry">
     <rect>
-     <x>165</x>
+     <x>151</x>
      <y>88</y>
      <width>91</width>
      <height>21</height>
@@ -127,7 +88,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>147</x>
+     <x>133</x>
      <y>90</y>
      <width>21</width>
      <height>16</height>
@@ -166,7 +127,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="m_pbSave">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>244</x>
      <y>87</y>
      <width>51</width>
      <height>23</height>
@@ -283,6 +244,19 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>坐标调色</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="m_pbSave_2">
+   <property name="geometry">
+    <rect>
+     <x>301</x>
+     <y>87</y>
+     <width>51</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>保存退出</string>
    </property>
   </widget>
  </widget>

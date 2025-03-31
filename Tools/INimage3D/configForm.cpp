@@ -19,8 +19,6 @@ ConfigForm::ConfigForm(QWidget *parent) :QWidget(parent), ui(new Ui::ConfigForm)
 
 	QSettings settings("config.ini", QSettings::IniFormat);
 
-	ui->m_ck3D->setChecked(settings.value("start/start3D").toBool());
-	ui->m_ck4Plane->setChecked(settings.value("start/start4P").toBool());
 	ui->m_ckColor->setChecked(settings.value("start/3Dcolor", false).toBool());
 	ui->m_ckOpacity->setChecked(settings.value("start/3Dopacity",false).toBool());
 	ui->m_cbInterType->setCurrentIndex(settings.value("start/3DInterType", 0).toInt());
@@ -35,19 +33,12 @@ ConfigForm::ConfigForm(QWidget *parent) :QWidget(parent), ui(new Ui::ConfigForm)
 	connect(ui->m_pbSave, &QPushButton::clicked, [this]
 	{
 		InitConfig();
-	});
-
-	ui->m_ck3D->hide();
-	ui->m_ck4Plane->hide();
-	ui->m_lable->hide();
-	
+	});	
 }
 
 ConfigForm::~ConfigForm()
 {
 	QSettings settings("config.ini", QSettings::IniFormat);
-	settings.setValue("start/start3D", ui->m_ck3D->isChecked());
-	settings.setValue("start/start4P", ui->m_ck4Plane->isChecked());
 	settings.setValue("start/3Dcolor", ui->m_ckColor->isChecked());
 	settings.setValue("start/3Dopacity", ui->m_ckOpacity->isChecked()); 
 	settings.setValue("start/3DInterType", ui->m_cbInterType->currentIndex());
@@ -65,8 +56,6 @@ ConfigForm::~ConfigForm()
 void ConfigForm::InitConfig()
 {
 	//m_checkStart3D  =  m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
-	m_mainwindow->m_checkStart3D     = ui->m_ck3D->isChecked();
-	m_mainwindow->m_checkStart4Plane = ui->m_ck4Plane->isChecked();
 	m_mainwindow->m_check3Dcolor     = ui->m_ckColor->isChecked();
 	m_mainwindow->m_checkDefaultWL   = ui->m_ckWL->isChecked();
 	m_mainwindow->m_DefaultWindow    = ui->m_window->toPlainText().toInt();
