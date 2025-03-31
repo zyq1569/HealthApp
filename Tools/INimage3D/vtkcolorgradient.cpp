@@ -230,7 +230,7 @@ void GradientShape::paintRuler()
     else
     {
         //to do：目前坐标位置需要后期优化为边缘自动 (0,312) h:601 w:55
-        //color bar
+        //color bar VTK9.4 C++ QT  体数据 vtkImageData 如何绘制灰度直方图
         QPolygonF points;
         int deltaX = 35, deltaY = -1, deltaH = 20;
         QPointF point0(deltaX, deltaY), point1(deltaX, m_maxH - deltaY - deltaH), point2(m_maxW - deltaX, m_maxH - deltaY - deltaH), point3(m_maxW - deltaX, deltaY);
