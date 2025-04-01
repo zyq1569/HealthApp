@@ -456,9 +456,31 @@ void (QSpinBox:: *spinBoxSignal)(int) = &QSpinBox::valueChanged;
 VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui::VtkColorGradient)
 {
     m_parentViewer = nullptr;
+
+    m_grayMin = 0;
+    m_grayMax = 8000;
+
     if (parent)
     {
         m_parentViewer = parent;
+        QFourpaneviewer* pane = (QFourpaneviewer*)parent;
+        m_grayMax = pane->m_maxGray;
+        m_grayMin = pane->m_minGray;
+        m_lValue = pane->m_lValue;
+        m_hValue = pane->m_hValue;
+        //+++++++++++++[0 , 4096]
+        if (m_lValue > 200) //<0
+        {
+            m_grayMin -= 100;
+        }
+        if (m_hValue > 200)//>4096
+        {
+            m_grayMax += 100;
+        }
+        //+++++++++++++
+        int len = sizeof(m_imageGrayHis) / sizeof(m_imageGrayHis[0]);
+        memcpy(m_imageGrayHis, pane->m_imageGrayHis, len*sizeof(int));
+
     }
     ui->setupUi(this);
     setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -469,8 +491,6 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     m_colorBar      = new GradientShape(ui->m_colorWidget, ShapeStyle::ColorStyle);
 
     //初始化部分参数值
-    m_grayMin = 0;
-    m_grayMax = 8000;
     m_colorBar->setGrayMaxMin(m_grayMax, m_grayMin);
 
     setFixedSize(this->width(), this->height());
@@ -532,16 +552,9 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 }
-//void VtkColorGradient::closeEvent(QCloseEvent *event)
-//{
-//    hide();
-//    //event->accept();//不发送给组件的父组件
-//    event->ignore();//事件继续发送
-//}
 
 void VtkColorGradient::updateDataVtkColorStyle()
 {
-    //m_vtkColorStyle.m_slope = ui->m_sliderslope->value();
     m_vtkColorStyle.clearAll();
     m_vtkColorStyle.m_colorOpacity = true;
     m_vtkColorStyle.m_colorAdd     = true;
@@ -611,44 +624,3 @@ VtkColorGradient::~VtkColorGradient()
 {
     delete ui;
 }
-
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-/*
-QSlider
-{
-    background-color: rgba(22, 22, 22, 0.7);
-    padding-top: 15px;  //上面端点离顶部的距离
-    padding - bottom: 15px;
-    border - radius: 5px; //外边框矩形倒角
-}
-
-QSlider::add - page:vertical
-{
-    background - color: #FF7826;
-    width:5px;
-    border - radius: 2px;
-}
-
-QSlider::sub - page:vertical
-{
-    background - color: #7A7B79;
-    width:5px;
-    border - radius: 2px;
-}
-
-QSlider::groove:vertical
-{
-    background:transparent;
-    width:6px;
-}
-
-QSlider::handle:vertical
-{
-    height: 14px;
-    width: 14px;
-    margin: 0px - 4px 0px - 4px;
-    border - radius: 7px;
-    background: white;
-}
-*/

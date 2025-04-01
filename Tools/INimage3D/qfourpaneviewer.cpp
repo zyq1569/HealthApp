@@ -373,7 +373,7 @@ void QFourpaneviewer::Show3DPlane()
 	ui->m_mpr2DView->renderWindow()->Render();
 
     //读取灰度值信息
-    QSharedPointer<Job> jobgray(new VolumeGrayHistogramJob(this));
+    QSharedPointer<Job> jobgray(new VolumeGrayHistogramJob(this,m_MainWindow->m_vtkImageData));
     queue3D.enqueue(jobgray);// 将任务加入队列
 }
 

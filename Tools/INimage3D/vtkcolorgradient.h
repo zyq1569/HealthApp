@@ -95,6 +95,8 @@ public:
 
 private:
     int m_grayMax, m_grayMin;
+    int m_imageGrayHis[4096] = { 0 };
+    int m_lValue = -1, m_hValue = -1;
 };
 
 #endif // VTKCOLORGRADIENT_H
