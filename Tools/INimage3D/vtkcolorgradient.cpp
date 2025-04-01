@@ -251,18 +251,22 @@ void GradientShape::paintRuler()
         if (m_vtkcolor)
         {
             double ratio = 0;
-            double disX = (double)m_maxW / (start - end);
+            double disX = (double)m_maxW / (end - start);
             for (int i = start; i < end; i++)
             {
                 QPointF pt1, pt2;
                 if (m_vtkcolor->m_imageGrayHis[i] > 1)
                 {
-                    ratio = m_vtkcolor->m_imageGrayHis[i] / m_numberPixels;
-                    pt1.setX((static_cast<int> (disX*i)) + 35);
-                    pt1.setY(m_maxH - deltaY - ratio*delta*10);
-                    pt2.setX((static_cast<int> (disX*i)) + 35);
-                    pt2.setY(m_maxH - deltaY);
-                    painter.drawLine(pt1, pt2);
+                    ratio = (double)m_vtkcolor->m_imageGrayHis[i] / m_numberPixels;
+                    if (ratio > 0.01)
+                    {
+                        int x = 35 + i;// (static_cast<int> (disX*i)) + 35;
+                        pt1.setX(x);
+                        pt1.setY(m_maxH - deltaY - ratio*delta*10);
+                        pt2.setX(x);
+                        pt2.setY(m_maxH - deltaY);
+                        painter.drawLine(pt1, pt2);
+                    }
                 }
             }
         }
