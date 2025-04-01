@@ -226,6 +226,9 @@ void GradientShape::paintRuler()
             painter.drawLine(QPointF(deltaX, m_maxH - deltaY - i * delta), QPointF(deltaX / 2, m_maxH - deltaY - i * delta));
             painter.drawText(QPointF(deltaX / 2 - 10, m_maxH - deltaY - i * delta - delta / 2 + 7), QString::number(i / 10.00, 'f', 2));
         }
+
+        //ªÊ÷∆ª“∂»Õº
+
     }
     else
     {
