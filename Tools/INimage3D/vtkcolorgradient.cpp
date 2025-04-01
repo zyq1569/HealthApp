@@ -245,7 +245,7 @@ void GradientShape::paintRuler()
         {
             painter.drawLine(QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH), QPointF(deltaX + i * delta, m_maxH - deltaY - deltaH + 7));
             painter.drawText(QPointF(deltaX + i * delta - 3, m_maxH - deltaY - deltaH + 18), QString::number(j));
-            j += dis;
+            (9 == i) ? (j = m_grayMax) : (j += dis);
         }
     }
 
@@ -466,9 +466,9 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
         QFourpaneviewer* pane = (QFourpaneviewer*)parent;
         m_grayMax = pane->m_maxGray;
         m_grayMin = pane->m_minGray;
-        m_lValue = pane->m_lValue;
-        m_hValue = pane->m_hValue;
-        //+++++++++++++[0 , 4096]
+        m_lValue  = pane->m_lValue;
+        m_hValue  = pane->m_hValue;
+        //+++++++++++++[0 , 4096]//范围值外的灰度值 后期考虑处理
         if (m_lValue > 200) //<0
         {
             m_grayMin -= 100;
