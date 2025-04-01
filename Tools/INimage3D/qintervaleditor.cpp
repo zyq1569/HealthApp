@@ -3,7 +3,7 @@
 #include <QColorDialog>
 
 QIntervalEditor::QIntervalEditor(QWidget *parent)
- : QWidget(parent), m_minimum(-1000), m_maximum(10000)
+ : QWidget(parent), m_minimum(-100), m_maximum(5000)
 {
     setupUi(this);
 

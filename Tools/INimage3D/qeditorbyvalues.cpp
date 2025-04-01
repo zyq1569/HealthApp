@@ -6,7 +6,7 @@
 #include <QStyle>
 
 #include <QSettings>
-QEditorByValues::QEditorByValues(QWidget *parent): QWidget(parent), m_minimum(-1000), m_maximum(10000)
+QEditorByValues::QEditorByValues(QWidget *parent): QWidget(parent), m_minimum(-100), m_maximum(5000)
 {
     setupUi(this);
 

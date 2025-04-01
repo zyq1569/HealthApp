@@ -348,6 +348,8 @@ void QFourpaneviewer::ShowEditorsWidget()
         {
             if (m_showEditors)
             {
+                ui->m_editorByValues->setMaximum(m_maxGray + 1);
+                ui->m_editorByValues->setMinimum(m_minGray - 1);
                 emit LoadConfigFiles();
                 bfirst = false;
             }
