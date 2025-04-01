@@ -48,6 +48,10 @@ GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
 
 }
 
+void GradientShape::setVtkColor(VtkColorGradient *vtkcolor)
+{
+    m_vtkcolor = vtkcolor;
+}
 inline QRectF GradientShape::PointInRectX(int i)const
 {
     QPointF point = m_points.at(i);
@@ -228,6 +232,40 @@ void GradientShape::paintRuler()
         }
 
         //绘制灰度图
+        //int m_grayMax, m_grayMin;
+        //int m_imageGrayHis[4096] = { 0 };
+        //int m_lValue = -1, m_hValue = -1;
+        //计算出对应灰度值XY值 绘制线
+        int start = m_grayMin;
+        int end   = m_grayMax;
+        if (start < 0)
+        {
+            start = 0;
+        }
+        if (end > 4095)
+        {
+            end = 4095;
+        }
+
+        //m_points << QPointF(35, m_maxH - 7) << QPointF(m_maxW - 35, m_maxH - deltaY - 10 * delta);
+        if (m_vtkcolor)
+        {
+            double ratio = 0;
+            double disX = (double)m_maxW / (start - end);
+            for (int i = start; i < end; i++)
+            {
+                QPointF pt1, pt2;
+                if (m_vtkcolor->m_imageGrayHis[i] > 1)
+                {
+                    ratio = m_vtkcolor->m_imageGrayHis[i] / m_numberPixels;
+                    pt1.setX((static_cast<int> (disX*i)) + 35);
+                    pt1.setY(m_maxH - deltaY - ratio*delta*10);
+                    pt2.setX((static_cast<int> (disX*i)) + 35);
+                    pt2.setY(m_maxH - deltaY);
+                    painter.drawLine(pt1, pt2);
+                }
+            }
+        }
 
     }
     else
@@ -467,10 +505,11 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     {
         m_parentViewer = parent;
         QFourpaneviewer* pane = (QFourpaneviewer*)parent;
-        m_grayMax = pane->m_maxGray;
-        m_grayMin = pane->m_minGray;
-        m_lValue  = pane->m_lValue;
-        m_hValue  = pane->m_hValue;
+        m_grayMax             = pane->m_maxGray;
+        m_grayMin             = pane->m_minGray;
+        m_lValue              = pane->m_lValue;
+        m_hValue              = pane->m_hValue;
+        m_numberPixels        = pane->m_numberPixels;
         //+++++++++++++[0 , 4096]//范围值外的灰度值 后期考虑处理
         if (m_lValue > 200) //<0
         {
@@ -495,6 +534,8 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
 
     //初始化部分参数值
     m_colorBar->setGrayMaxMin(m_grayMax, m_grayMin);
+    m_gradientShape->setGrayMaxMin(m_grayMax, m_grayMin, ((QFourpaneviewer*) parent)->m_numberPixels);
+    m_gradientShape->setVtkColor(this);
 
     setFixedSize(this->width(), this->height());
     ui->m_setslope->setValue(80);

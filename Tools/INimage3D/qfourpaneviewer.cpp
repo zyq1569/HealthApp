@@ -92,8 +92,8 @@ protected:
 
         int vl, L = 0, H = 0, max = 0, min = 0;
         double pixelvalue;
-        int *dims    = image->GetDimensions();
-        int nupixels = dims[0] * dims[1] * dims[2];
+        int *dims  = image->GetDimensions();
+        m_fourPaneviewer->m_numberPixels = dims[0] * dims[1] * dims[2];;
         for (int z = 0; z < dims[2]; z++)
         {
             for (int y = 0; y < dims[1]; y++)
@@ -255,6 +255,8 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_actionReset        = nullptr;	  
     m_vtkColorGradient   = nullptr;
 
+    m_numberPixels = 0;
+
 	if (m_MainWindow->m_checkDefaultWL)
 	{
 		m_defaultLevel  = m_MainWindow->m_DefaultLevel;
@@ -366,7 +368,12 @@ void QFourpaneviewer::ShowEditorsWidget()
 
 void QFourpaneviewer::Show3DPlane()
 {
-	Queue queue3D;
+    Queue queue3D;
+
+    //读取灰度值信息
+    QSharedPointer<Job> jobgray(new VolumeGrayHistogramJob(this, m_MainWindow->m_vtkImageData));
+    queue3D.enqueue(jobgray);// 将任务加入队列
+
 	QSharedPointer<Job> job(new Volume3DJob(this));
 	queue3D.enqueue(job);// 将任务加入队列
 
@@ -374,9 +381,6 @@ void QFourpaneviewer::Show3DPlane()
 	ResetViewer();//第一个切图窗口
 	ui->m_mpr2DView->renderWindow()->Render();
 
-    //读取灰度值信息
-    QSharedPointer<Job> jobgray(new VolumeGrayHistogramJob(this,m_MainWindow->m_vtkImageData));
-    queue3D.enqueue(jobgray);// 将任务加入队列
 }
 
 void QFourpaneviewer::ResetViewer()

@@ -17,6 +17,7 @@ enum ShapeStyle
     Default,
     ColorStyle
 };
+class VtkColorGradient;
 
 class GradientShape :public QObject
 {
@@ -29,7 +30,6 @@ public:
 	void paintRuler();
     void paintPointsLines();
     void movePoints(int index, const QPointF &point, bool update);
-
 
     inline QRectF getPointRect(int i, double w = 10, double h = 10)const;
     inline QRectF PointInRectX(int i)const;
@@ -53,11 +53,13 @@ public:
     {
         return m_colors;
     }
-    inline void setGrayMaxMin(int max, int min)
+    inline void setGrayMaxMin(int max, int min, int numberPixels = 0)
     {
-        m_grayMax = max;
-        m_grayMin = min;
+        m_grayMax      = max;
+        m_grayMin      = min;
+        m_numberPixels = numberPixels;
     }
+    void setVtkColor(VtkColorGradient *vtkcolor);
 private:
 	QPolygonF m_points, m_gradientPoints;
     int m_delta, m_currentIndex, m_maxH, m_maxW;
@@ -65,7 +67,8 @@ private:
 	QPen m_linePen;
 	QList<QColor> m_colors;
     ShapeStyle m_shapeStyle;
-    int m_grayMax, m_grayMin;
+    int m_grayMax, m_grayMin, m_numberPixels;
+    VtkColorGradient *m_vtkcolor;
 	
 };
 //++++++++++++++++++++++++++
@@ -93,10 +96,11 @@ public:
     QWidget *m_parentViewer;
     VtkColorStyle m_vtkColorStyle;
 
-private:
+public:
     int m_grayMax, m_grayMin;
     int m_imageGrayHis[4096] = { 0 };
     int m_lValue = -1, m_hValue = -1;
+    int m_numberPixels;
 };
 
 #endif // VTKCOLORGRADIENT_H
