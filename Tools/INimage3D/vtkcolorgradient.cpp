@@ -246,21 +246,27 @@ void GradientShape::paintRuler()
         {
             end = 4095;
         }
-
-        //m_points << QPointF(35, m_maxH - 7) << QPointF(m_maxW - 35, m_maxH - deltaY - 10 * delta);
+        //to do:灰度值 大部分数据集中在某一段中.
         if (m_vtkcolor)
         {
-            double ratio = 0;
-            double disX = (double)m_maxW / (end - start);
+            int pixels   = m_numberPixels;
+            double ratio = (double)m_vtkcolor->m_imageGrayHis[0] / m_numberPixels;
+            double disX  = (double)m_maxW / (end - start);
+            if (ratio > 0.3)
+            {
+                start  = 1;
+                pixels = m_numberPixels - m_vtkcolor->m_imageGrayHis[0];
+                pixels = pixels / 10;
+            }
             for (int i = start; i < end; i++)
             {
                 QPointF pt1, pt2;
                 if (m_vtkcolor->m_imageGrayHis[i] > 1)
                 {
-                    ratio = (double)m_vtkcolor->m_imageGrayHis[i] / m_numberPixels;
+                    ratio = (double)m_vtkcolor->m_imageGrayHis[i] / pixels;
                     if (ratio > 0.01)
                     {
-                        int x = 35 + i;// (static_cast<int> (disX*i)) + 35;
+                        int x = (static_cast<int> (disX*i)) + 35;
                         pt1.setX(x);
                         pt1.setY(m_maxH - deltaY - ratio*delta*10);
                         pt2.setX(x);

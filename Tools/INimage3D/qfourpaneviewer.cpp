@@ -911,4 +911,61 @@ colorTransferFunction->AddRGBPoint(-1000.0, 0.0, 0.0, 0.0); // 空气 -> 黑色
 colorTransferFunction->AddRGBPoint(200.0, 0.8, 0.8, 0.8);   // 低密度区域 -> 灰色
 colorTransferFunction->AddRGBPoint(800.0, 1.0, 1.0, 1.0);   // 金属主体 -> 白色
 colorTransferFunction->AddRGBPoint(1500.0, 1.0, 0.0, 0.0);  // 夹杂物 -> 红色（高密度）
+
+ ////
+    // 获取图像维度和像素数据
+    vtkImageData *imageData = m_MainWindow->m_vtkImageData;
+    int* dims = imageData->GetDimensions();
+    int numPixels = dims[0] * dims[1] * dims[2];
+    // 初始化直方图数组
+    std::vector<int> histogram(256, 0);
+
+    // 遍历图像数据
+    for (int z = 0; z < dims[2]; ++z) {
+        for (int y = 0; y < dims[1]; ++y) {
+            for (int x = 0; x < dims[0]; ++x) {
+                double pixelValue = imageData->GetScalarComponentAsDouble(x, y, z, 0);
+                int grayValue = static_cast<int>(pixelValue);
+                if (grayValue < 0)
+                {
+                    grayValue = 0;
+                }
+                if (grayValue > 0)
+                {
+                    grayValue = 255;
+                }
+                histogram[grayValue]++;
+            }
+        }
+    }
+
+    // 转换为 VTK Table 数据
+    vtkSmartPointer<vtkFloatArray> xArr = vtkSmartPointer<vtkFloatArray>::New();
+    xArr->SetName("Gray Value");
+
+    vtkSmartPointer<vtkFloatArray> yArr = vtkSmartPointer<vtkFloatArray>::New();
+    yArr->SetName("Frequency");
+
+    for (int i = 0; i < 256; ++i) {
+        xArr->InsertNextValue(i);
+        yArr->InsertNextValue(histogram[i]);
+    }
+    vtkSmartPointer<vtkTable> table = vtkSmartPointer<vtkTable>::New();
+    table->AddColumn(xArr);
+    table->AddColumn(yArr);
+
+    // 使用 vtkChartXY 绘制直方图
+    vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();;
+    vtkSmartPointer<vtkContextView> view = vtkSmartPointer<vtkContextView>::New();
+    view->SetRenderWindow(renderWindow);
+    vtkSmartPointer<vtkChartXY> chart = vtkSmartPointer<vtkChartXY>::New();
+    view->GetScene()->AddItem(chart);
+
+    // 添加柱状图
+    vtkSmartPointer<vtkPlot> line = chart->AddPlot(vtkChart::LINE);
+    line->SetInputData(table, 0, 1);
+    line->SetColor(0, 255, 0, 255);  // 绿色
+    line->SetWidth(2.0);
+
+    renderWindow->Render();
 */
