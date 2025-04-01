@@ -60,33 +60,6 @@ MainWindow::MainWindow(QWidget *parent)
         initMetaFile();
     });
 
-    //m_show3D = new QAction("三维", this);
-    //m_mainToolbar->addAction(m_show3D);
-    //connect(m_show3D, &QAction::triggered, [this]
-    //{
-    //	if (!m_image3D)
-    //	{
-    //		m_qProgressBar->show();
-    //		showImage3D();
-    //		m_qProgressBar->hide();
-    //	}
-    //	else
-    //	{
-    //		showImage3D();
-    //	}
-    //});
-    //m_show3D->setEnabled(false);
-    //
-    //m_show4Plane = new QAction("切面", this);
-    //m_mainToolbar->addAction(m_show4Plane);
-    //connect(m_show4Plane, &QAction::triggered, [this]
-    //{
-    //
-    //	showImage4Plane();
-    //
-    //});
-    //m_show4Plane->setEnabled(false);
-
     m_checkStart3D = m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = false;
     m_configForm = new ConfigForm(this);
     m_configForm->InitConfig();
@@ -243,9 +216,3 @@ void MainWindow::showImage4Plane()
     }
     ((QFourpaneviewer*)m_image4Plane)->Show3DPlane();
 }
-
-//vtkSmartPointer<vtkXMLImageDataWriter> writer = vtkSmartPointer<vtkXMLImageDataWriter>::New();
-//writer->SetFileName("output.vti");  // 输出的 VTI 文件名
-//writer->SetInputData((vtkDataObject*)m_MetaReader->GetOutput());
-//writer->Write();
-//writer->Delete();

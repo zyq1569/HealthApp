@@ -61,18 +61,81 @@ using namespace ThreadWeaver;
 class Volume3DJob : public Job 
 {
 public:
-	Volume3DJob(QFourpaneviewer *Fourpaneviewer = nullptr) : m_Fourpaneviewer(Fourpaneviewer)
+	Volume3DJob(QFourpaneviewer *fourpaneviewer = nullptr) : m_fourPaneviewer(fourpaneviewer)
 	{}
 protected:
 	void run(JobPointer, Thread*) Q_DECL_OVERRIDE
 	{
-		if (!m_Fourpaneviewer)
+		if (!m_fourPaneviewer)
 			return;
 
-		m_Fourpaneviewer->INshowVolume3D();
+        m_fourPaneviewer->INshowVolume3D();
 	}
 private:
-	QFourpaneviewer *m_Fourpaneviewer;
+	QFourpaneviewer *m_fourPaneviewer;
+};
+
+class VolumeGrayHistogramJob :public Job
+{
+public:
+    VolumeGrayHistogramJob(QFourpaneviewer *parent = nullptr, vtkImageData *imageData = nullptr):m_fourPaneviewer(parent), m_imageData(imageData)
+    {}
+
+protected:
+    void run(JobPointer, Thread*) Q_DECL_OVERRIDE
+    {
+        if (!m_fourPaneviewer || !m_imageData)
+            return;
+
+        //加载灰值数据--[-1,4096]
+        vtkImageData *image = m_imageData;
+
+        int vl, L = 0, H = 0, max = 0, min = 0;
+        double pixelvalue;
+        int *dims    = image->GetDimensions();
+        int nupixels = dims[0] * dims[1] * dims[2];
+        for (int z = 0; z < dims[2]; z++)
+        {
+            for (int y = 0; y < dims[1]; y++)
+            {
+                for (int x = 0; x < dims[0]; x++)
+                {
+                    pixelvalue = image->GetScalarComponentAsDouble(x, y, z, 0);
+                    vl = static_cast<int>(pixelvalue);
+
+                    if (vl < min)
+                    {  
+                        min = vl;
+                    }
+                        
+                    if (vl > max)
+                    {
+                        max = vl;
+                    }
+
+                    if (vl < 0)
+                    {
+                        L++;
+                    }
+                    else if (vl > 4096)
+                    {
+                        H++;
+                    }
+                    else
+                    {
+                        m_fourPaneviewer->m_imageGrayHis[vl]++;
+                    }
+                }
+            }
+        }
+        m_fourPaneviewer->m_lValue  = L;
+        m_fourPaneviewer->m_hValue  = H;
+        m_fourPaneviewer->m_maxGray = max;
+        m_fourPaneviewer->m_minGray = min;
+    };
+private:
+    QFourpaneviewer *m_fourPaneviewer;
+    vtkImageData *m_imageData;
 };
 
 //class VolumePlaneJob : public Job
@@ -306,8 +369,12 @@ void QFourpaneviewer::Show3DPlane()
 	queue3D.enqueue(job);// 将任务加入队列
 
 	INimage3D();
-	ResetViewer();//???第一个切图窗口非常小
+	ResetViewer();//第一个切图窗口
 	ui->m_mpr2DView->renderWindow()->Render();
+
+    //读取灰度值信息
+    QSharedPointer<Job> jobgray(new VolumeGrayHistogramJob(this));
+    queue3D.enqueue(jobgray);// 将任务加入队列
 }
 
 void QFourpaneviewer::ResetViewer()

@@ -93,6 +93,11 @@ public:
 	bool m_showEditors;
 
 public:
+    //绘制灰度直方图的读取参数
+    int m_imageGrayHis[4096] = { 0 };
+    int m_lValue = -1,m_hValue = -1, m_maxGray = -1, m_minGray = -1;
+
+public:
 	void INshowVolume3D();
 
 	Ui::QFourpaneviewer * GetUI() { return ui; };
