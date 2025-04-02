@@ -221,7 +221,7 @@ void GradientShape::paintRuler()
         QPolygonF points;
         int deltaX = 30, deltaY = 0;
         int delta = (m_maxH - 2 * deltaY) / 12;
-        QPointF pointO(deltaX, m_maxH - deltaY), pointX(m_maxW - deltaX, m_maxH - deltaY), pointY(deltaX, deltaY + delta);
+        QPointF pointY(deltaX, deltaY + delta), pointO(deltaX, m_maxH - deltaY), pointX(m_maxW - deltaX, m_maxH - deltaY);
         points << pointY << pointO << pointX;
         painter.setPen(m_linePen);
         painter.drawPolyline(points);
@@ -246,37 +246,54 @@ void GradientShape::paintRuler()
         {
             end = 4095;
         }
-        //to do:灰度值 大部分数据集中在某一段中.
+        //to do:灰度值 大部分数据集中在某一段中(XY坐标系几乎无法好的效果显示, 灰度等距加显示 如: 灰度20-25 这个段的点数总和 占比绘制)
         if (m_vtkcolor)
         {
             int pixels   = m_numberPixels;
             double ratio = (double)m_vtkcolor->m_imageGrayHis[0] / m_numberPixels;
-            double disX  = (double)m_maxW / (end - start);
+            double disX  = (end - start)/(double)(m_maxW-35 -35);
+            int graydis  = disX;//划分灰度段. 最后部分灰度可以忽略
             if (ratio > 0.3)
             {
                 start  = 1;
                 pixels = m_numberPixels - m_vtkcolor->m_imageGrayHis[0];
                 pixels = pixels / 10;
+                
+                QPointF pt1, pt2;
+                pt1.setX(35);
+                pt1.setY(m_maxH - 7);
+                pt2.setX(35);
+                pt2.setY(m_maxH - deltaY - delta*8);//QPointF(35, m_maxH - 7) << QPointF(m_maxW - 35, m_maxH - deltaY - 10 * delta);
+                painter.drawLine(pt1, pt2);
             }
-            for (int i = start; i < end; i++)
+            for (int i = start, x = 35 + start; i < end; i++, x++)
             {
                 QPointF pt1, pt2;
-                if (m_vtkcolor->m_imageGrayHis[i] > 1)
+                int gray = 0;
+                for (int j = 0; j < graydis; j++)
                 {
-                    ratio = (double)m_vtkcolor->m_imageGrayHis[i] / pixels;
+                    gray += m_vtkcolor->m_imageGrayHis[i + j];
+                }
+                i += graydis;
+
+                if (gray > 1)
+                {
+                    ratio = (double)gray / pixels;
                     if (ratio > 0.01)
                     {
-                        int x = (static_cast<int> (disX*i)) + 35;
                         pt1.setX(x);
-                        pt1.setY(m_maxH - deltaY - ratio*delta*10);
+                        pt1.setY(m_maxH - deltaY - ratio*delta*3);
                         pt2.setX(x);
                         pt2.setY(m_maxH - deltaY);
                         painter.drawLine(pt1, pt2);
                     }
                 }
+                if (i > end -1 - graydis)
+                {
+                    int a = i;
+                }
             }
         }
-
     }
     else
     {
