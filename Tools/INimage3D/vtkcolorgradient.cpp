@@ -236,6 +236,7 @@ void GradientShape::paintRuler()
         //int m_imageGrayHis[4096] = { 0 };
         //int m_lValue = -1, m_hValue = -1;
         //计算出对应灰度值XY值 绘制线
+        painter.setPen(QColor(0,0, 0, 200));
         int start = m_grayMin;
         int end   = m_grayMax;
         if (start < 0)
