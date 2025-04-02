@@ -231,7 +231,7 @@ void GradientShape::paintRuler()
             painter.drawText(QPointF(deltaX / 2 - 10, m_maxH - deltaY - i * delta - delta / 2 + 7), QString::number(i / 10.00, 'f', 2));
         }
 
-        //绘制灰度图
+        //++++++++++++++++++绘制灰度图方法需要结合更多的数据优化++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         //int m_grayMax, m_grayMin;
         //int m_imageGrayHis[4096] = { 0 };
         //int m_lValue = -1, m_hValue = -1;
@@ -249,22 +249,28 @@ void GradientShape::paintRuler()
         //to do:灰度值 大部分数据集中在某一段中(XY坐标系几乎无法好的效果显示, 灰度等距加显示 如: 灰度20-25 这个段的点数总和 占比绘制)
         if (m_vtkcolor)
         {
+            int zoom     = 15;
             int pixels   = m_numberPixels;
             double ratio = (double)m_vtkcolor->m_imageGrayHis[0] / m_numberPixels;
             double disX  = (end - start)/(double)(m_maxW-35 -35);
             int graydis  = disX;//划分灰度段. 最后部分灰度可以忽略
             if (ratio > 0.3)
             {
+                //--->灰度为0 的值数量太大，故只考虑0值上的数量比例,同时将pixels 数量除Z 以放大后面像素的灰值比例
                 start  = 1;
-                pixels = m_numberPixels - m_vtkcolor->m_imageGrayHis[0];
-                pixels = pixels / 10;
+                pixels = (m_numberPixels - m_vtkcolor->m_imageGrayHis[0]) / zoom;
                 
                 QPointF pt1, pt2;
                 pt1.setX(35);
                 pt1.setY(m_maxH - 7);
                 pt2.setX(35);
-                pt2.setY(m_maxH - deltaY - delta*8);//QPointF(35, m_maxH - 7) << QPointF(m_maxW - 35, m_maxH - deltaY - 10 * delta);
+                pt2.setY(m_maxH - deltaY - (10 * delta)* ratio);// Y:[0.0 - 1.0] ratio占比
                 painter.drawLine(pt1, pt2);
+            }
+            else
+            {
+                zoom = 300;
+                pixels = m_numberPixels / zoom;
             }
             for (int i = start, x = 35 + start; i < end; i++, x++)
             {
@@ -279,21 +285,18 @@ void GradientShape::paintRuler()
                 if (gray > 1)
                 {
                     ratio = (double)gray / pixels;
-                    if (ratio > 0.01)
+                    if (ratio > 0.0001)//占比太小忽略,已经zoom放大了15倍
                     {
                         pt1.setX(x);
-                        pt1.setY(m_maxH - deltaY - ratio*delta*3);
+                        pt1.setY(m_maxH - 7 - ratio*delta);
                         pt2.setX(x);
-                        pt2.setY(m_maxH - deltaY);
+                        pt2.setY(m_maxH - 7);
                         painter.drawLine(pt1, pt2);
                     }
                 }
-                if (i > end -1 - graydis)
-                {
-                    int a = i;
-                }
             }
         }
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     }
     else
     {
