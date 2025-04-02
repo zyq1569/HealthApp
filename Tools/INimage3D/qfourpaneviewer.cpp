@@ -44,6 +44,7 @@
 #include <vtkImageMarchingCubes.h>
 #include <vtkVolumeProperty.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkPNGWriter.h>
 
 #include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
@@ -54,7 +55,7 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 #include <ThreadWeaver/ThreadWeaver>
 //--------------
 #include <QAction>
-
+#include <QDateTime>
 #include "vtkcolorgradient.h"
 using namespace ThreadWeaver;
 
@@ -322,6 +323,41 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
+void QFourpaneviewer::SavePaneImage()
+{
+    QString dir = QCoreApplication::applicationDirPath()+"\\";
+    vtkSmartPointer<vtkPNGWriter> writer = vtkSmartPointer<vtkPNGWriter>::New();
+    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+    lookupTable->SetTableRange(0.0, 2048.0);  // 适用于 8 位灰度图像 (0-255)
+    // 设置颜色范围 (黑 -> 白)
+    lookupTable->SetValueRange(0.0, 1.0);   // 0 = 黑色, 1 = 白色
+    lookupTable->SetSaturationRange(0.0, 0.0); // 0 = 无彩色 (纯灰度)
+    lookupTable->Build();
+    vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
+    for (int i = 0; i < 3; i++)
+    {
+        ////////////////////////////
+        if (vtkResliceCursorRepresentation* rep = vtkResliceCursorRepresentation::SafeDownCast(
+            m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation()))
+        {
+            if (vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice()))
+            {
+
+                // default background color is the min value of the image scalar range
+                vtkImageData* data = reslice->GetOutput();
+                mapToColors->SetInputData(data);
+                mapToColors->SetLookupTable(lookupTable); // 需要提前设置适当的查找表
+                mapToColors->Update();
+                QString fileName = dir + QString::number(QDateTime::currentDateTime().toTime_t())+ QString::number(i)+".png";
+                std::string str = qPrintable(fileName);
+                writer->SetFileName(str.c_str());
+                writer->SetInputData(mapToColors->GetOutput());
+                writer->Update();
+                writer->Write();
+            }
+        }
+    }
+}
 
 void QFourpaneviewer::ShowEditorsWidget()
 {

@@ -69,6 +69,8 @@ public:
 
 	void ShowEditorsWidget();
 
+    void SavePaneImage();
+
 
 	//show 3D
 public:

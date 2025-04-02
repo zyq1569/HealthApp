@@ -75,6 +75,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     });
 
+    m_saveImage = new QAction("µ¼Í¼", this);
+    m_mainToolbar->addAction(m_saveImage);
+    connect(m_saveImage, &QAction::triggered, [this]
+    {
+        if (m_image4Plane)
+        {
+            ((QFourpaneviewer*)m_image4Plane)->SavePaneImage();
+        }
+    });
+
     m_cfigQA = new QAction("ÅäÖÃ", this);
     m_mainToolbar->addAction(m_cfigQA);
     connect(m_cfigQA, &QAction::triggered, [this]
@@ -85,6 +95,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_qProgressBar = new QProgressData(this);// (m_workspace);
 
     m_editor->setEnabled(false);
+    m_saveImage->setEnabled(false);
 }
 
 void MainWindow::starViewer()
@@ -118,6 +129,7 @@ void MainWindow::initMetaFile()
             m_workspace->removeTab(m_index4P);
             m_index4P = -1;
             m_editor->setEnabled(false);
+            m_saveImage->setEnabled(false);
         }
 
         m_openAction->setText("ÎÄ¼þ(&O)");
@@ -173,6 +185,7 @@ void MainWindow::initMetaFile()
     showImage4Plane();
     m_qProgressBar->hide();
     m_editor->setEnabled(true);
+    m_saveImage->setEnabled(true);
 }
 
 void MainWindow::setEnabledQAction()
