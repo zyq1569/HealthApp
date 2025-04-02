@@ -250,7 +250,7 @@ void GradientShape::paintRuler()
         if (m_vtkcolor)
         {
             int Ymin     = m_maxH - deltaY - 10 * delta-1;//Y方向的最高点Y值
-            int zoom     = 300;
+            int zoom     = 200;
             int pixels   = m_numberPixels;
             double ratio = (double)m_vtkcolor->m_imageGrayHis[0] / m_numberPixels;
             double disX  = (end - start)/(double)(m_maxW-35 -35);
@@ -265,7 +265,7 @@ void GradientShape::paintRuler()
                 pt1.setX(35);
                 pt1.setY(m_maxH - 7);
                 pt2.setX(35);              
-                pt2.setY(m_maxH - deltaY - (10 * delta)* ratio);// Y:[0.0 - 1.0] ratio占比
+                pt2.setY(m_maxH - deltaY - (10 * delta)* ratio*zoom);// Y:[0.0 - 1.0] ratio占比
                 if (pt2.y() < Ymin )
                 {
                     pt2.setY(Ymin);
@@ -274,7 +274,7 @@ void GradientShape::paintRuler()
             }
             else
             {
-                zoom = 300;
+                zoom = 500;
                 pixels = m_numberPixels / zoom;
             }
             for (int i = start, x = 35 + start; i < end; i++, x++)
