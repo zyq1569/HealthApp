@@ -249,7 +249,8 @@ void GradientShape::paintRuler()
         //to do:灰度值 大部分数据集中在某一段中(XY坐标系几乎无法好的效果显示, 灰度等距加显示 如: 灰度20-25 这个段的点数总和 占比绘制)
         if (m_vtkcolor)
         {
-            int zoom     = 15;
+            int Ymin     = m_maxH - deltaY - 10 * delta-1;//Y方向的最高点Y值
+            int zoom     = 300;
             int pixels   = m_numberPixels;
             double ratio = (double)m_vtkcolor->m_imageGrayHis[0] / m_numberPixels;
             double disX  = (end - start)/(double)(m_maxW-35 -35);
@@ -263,8 +264,12 @@ void GradientShape::paintRuler()
                 QPointF pt1, pt2;
                 pt1.setX(35);
                 pt1.setY(m_maxH - 7);
-                pt2.setX(35);
+                pt2.setX(35);              
                 pt2.setY(m_maxH - deltaY - (10 * delta)* ratio);// Y:[0.0 - 1.0] ratio占比
+                if (pt2.y() < Ymin )
+                {
+                    pt2.setY(Ymin);
+                }
                 painter.drawLine(pt1, pt2);
             }
             else
@@ -285,10 +290,14 @@ void GradientShape::paintRuler()
                 if (gray > 1)
                 {
                     ratio = (double)gray / pixels;
-                    if (ratio > 0.0001)//占比太小忽略,已经zoom放大了15倍
+                    if (ratio > 0.0001)//占比太小忽略,已经zoom放大了15倍  m_maxH - deltaY - 10 * delta
                     {
                         pt1.setX(x);
-                        pt1.setY(m_maxH - 7 - ratio*delta);
+                        pt1.setY(m_maxH - 7 - ratio*delta);                      
+                        if (pt1.y() < Ymin)// 如果放大后高度超过最大高度,则最大高度
+                        {
+                            pt1.setY(Ymin);
+                        }
                         pt2.setX(x);
                         pt2.setY(m_maxH - 7);
                         painter.drawLine(pt1, pt2);
