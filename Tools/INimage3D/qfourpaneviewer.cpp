@@ -360,6 +360,7 @@ void QFourpaneviewer::SavePaneImage()
     {
         fileName = dir + QString::number(QDateTime::currentDateTime().toTime_t()) + ".png";
     }
+    int pos = fileName.length()-4;
     for (int i = 0; i < 3; i++)
     {
         if (VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation()))
@@ -372,9 +373,9 @@ void QFourpaneviewer::SavePaneImage()
                 mapToColors->SetLookupTable(lookupTable); // 需要提前设置适当的查找表
                 mapToColors->Update();
                 QString imagefileName = fileName;// dir + QString::number(QDateTime::currentDateTime().toTime_t()) + QString::number(i) + ".png";
-                QString insertStr     = QString::number(i) + ".";
-                imagefileName = imagefileName.replace('.', insertStr);
-                std::string str  = qPrintable(fileName);
+                QString insertStr     = "_" + QString::number(i) + ".";
+                imagefileName = imagefileName.replace(pos,1, insertStr);
+                std::string str  = qPrintable(imagefileName);
                 writer->SetFileName(str.c_str());
                 writer->SetInputData(mapToColors->GetOutput());
                 writer->Update();
