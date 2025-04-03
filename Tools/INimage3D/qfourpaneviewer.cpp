@@ -56,6 +56,8 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 //--------------
 #include <QAction>
 #include <QDateTime>
+#include <QFileDialog>
+
 #include "vtkcolorgradient.h"
 using namespace ThreadWeaver;
 
@@ -334,6 +336,7 @@ void QFourpaneviewer::SavePaneImage()
     lookupTable->SetSaturationRange(0.0, 0.0); // 0 = 无彩色 (纯灰度)
     lookupTable->Build();
     vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "",  tr("Images (*.png *.bmp *.jpg)"));
     for (int i = 0; i < 3; i++)
     {
         if (VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation()))
