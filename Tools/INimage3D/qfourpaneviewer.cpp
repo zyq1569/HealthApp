@@ -45,6 +45,8 @@
 #include <vtkVolumeProperty.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPNGWriter.h>
+#include <vtkJPEGWriter.h>
+#include <vtkBMPWriter.h>
 
 #include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
@@ -330,6 +332,10 @@ void QFourpaneviewer::SavePaneImage()
 {
     QString dir = QCoreApplication::applicationDirPath()+"\\";
     vtkSmartPointer<vtkPNGWriter> writer        = vtkSmartPointer<vtkPNGWriter>::New();
+    vtkSmartPointer<vtkJPEGWriter> writerJ      = vtkSmartPointer<vtkJPEGWriter>::New();
+    vtkSmartPointer<vtkBMPWriter> writerB       = vtkSmartPointer<vtkBMPWriter>::New();
+    vtkSmartPointer<vtkImageWriter> imagewriter;
+
     vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
     lookupTable->SetTableRange(0.0, 2048.0);  // 适用于 8 位灰度图像 (0-255)
     lookupTable->SetValueRange(0.0, 1.0);   // 0 = 黑色, 1 = 白色// 设置颜色范围 (黑 -> 白)
@@ -337,6 +343,23 @@ void QFourpaneviewer::SavePaneImage()
     lookupTable->Build();
     vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "",  tr("Images(*.png );;Images(*.bmp);;images(*.jpg)"));
+    QString upperstr = fileName.toUpper();
+    if (upperstr.contains("PNG"))
+    {
+        imagewriter = writer;
+    }
+    else if (upperstr.contains("BMP"))
+    {
+        imagewriter = writerB;
+    }
+    else if (upperstr.contains("JPG"))
+    {
+        imagewriter = writerJ;
+    }
+    else
+    {
+        fileName = dir + QString::number(QDateTime::currentDateTime().toTime_t()) + ".png";
+    }
     for (int i = 0; i < 3; i++)
     {
         if (VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation()))
@@ -348,7 +371,9 @@ void QFourpaneviewer::SavePaneImage()
                 mapToColors->SetInputData(data);
                 mapToColors->SetLookupTable(lookupTable); // 需要提前设置适当的查找表
                 mapToColors->Update();
-                QString fileName = dir + QString::number(QDateTime::currentDateTime().toTime_t())+ QString::number(i)+".png";
+                QString imagefileName = fileName;// dir + QString::number(QDateTime::currentDateTime().toTime_t()) + QString::number(i) + ".png";
+                QString insertStr     = QString::number(i) + ".";
+                imagefileName = imagefileName.replace('.', insertStr);
                 std::string str  = qPrintable(fileName);
                 writer->SetFileName(str.c_str());
                 writer->SetInputData(mapToColors->GetOutput());
