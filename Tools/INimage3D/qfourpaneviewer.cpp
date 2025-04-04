@@ -142,9 +142,14 @@ protected:
         {
             if (m_fourPaneviewer->m_imageGrayHis[i] > grayNumbers)
             {
-                m_fourPaneviewer->m_grayNumbersIndex = i;
+                m_fourPaneviewer->m_grayMaxOfNumbersIndex = i;
                 grayNumbers = m_fourPaneviewer->m_imageGrayHis[i];
             }
+        }
+        m_fourPaneviewer->m_grayMaxOfNumbers = grayNumbers;
+        if (m_fourPaneviewer->m_imageGrayHis[0] > grayNumbers)
+        {
+            m_fourPaneviewer->m_grayMaxOfNumbers = m_fourPaneviewer->m_imageGrayHis[0] + grayNumbers/10;
         }
         m_fourPaneviewer->m_lValue  = L;
         m_fourPaneviewer->m_hValue  = H;

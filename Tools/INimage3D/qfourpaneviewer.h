@@ -99,7 +99,7 @@ public:
     int m_imageGrayHis[4096] = { 0 };
     int m_imageGrayHisMaxValue, m_imageGrayHisMaxindex;
     //灰值小于0的数量,  大于4096数量,    灰度值最大,       灰度最小值       灰度值中灰度值数量最大数及灰度值
-    int m_lValue = -1,m_hValue = -1, m_maxGray = -1, m_minGray = -1, m_grayNumbers = 0, m_grayNumbersIndex = 0;
+    int m_lValue = -1,m_hValue = -1, m_maxGray = -1, m_minGray = -1, m_grayMaxOfNumbers = 0, m_grayMaxOfNumbersIndex = 0;
 
     //像素总点数
     int m_numberPixels;
