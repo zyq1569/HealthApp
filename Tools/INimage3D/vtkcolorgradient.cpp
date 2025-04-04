@@ -256,28 +256,28 @@ void GradientShape::paintRuler()
             double ratio = (double)m_vtkcolor->m_imageGrayHis[0] / m_numberPixels;
             double disX  = (end - start)/(double)(m_maxW-35 -35);
             int graydis  = disX;//划分灰度段. 最后部分灰度可以忽略
-            //if (ratio > 0.3)
-            //{
-            //    //--->灰度为0 的值数量太大，故只考虑0值上的数量比例,同时将pixels 数量除Z 以放大后面像素的灰值比例
-            //    start  = 1;
-            //    pixels = (m_numberPixels - m_vtkcolor->m_imageGrayHis[0]) / zoom;
-            //    
-            //    QPointF pt1, pt2;
-            //    pt1.setX(35);
-            //    pt1.setY(m_maxH - 7);
-            //    pt2.setX(35);              
-            //    pt2.setY(m_maxH - deltaY - (10 * delta)* ratio*zoom);// Y:[0.0 - 1.0] ratio占比
-            //    if (pt2.y() < Ymin )
-            //    {
-            //        pt2.setY(Ymin);
-            //    }
-            //    painter.drawLine(pt1, pt2);
-            //}
-            //else
-            //{
-            //    zoom = 500;
-            //    pixels = m_numberPixels / zoom;
-            //}
+            if (ratio > 0.3)
+            {
+                //--->灰度为0 的值数量太大，故只考虑0值上的数量比例,同时将pixels 数量除Z 以放大后面像素的灰值比例
+                start  = 1;
+                pixels = (m_numberPixels - m_vtkcolor->m_imageGrayHis[0]) / zoom;
+                
+                QPointF pt1, pt2;
+                pt1.setX(35);
+                pt1.setY(m_maxH - 7);
+                pt2.setX(35);              
+                pt2.setY(m_maxH - deltaY - (10 * delta)* ratio*zoom);// Y:[0.0 - 1.0] ratio占比
+                if (pt2.y() < Ymin )
+                {
+                    pt2.setY(Ymin);
+                }
+                painter.drawLine(pt1, pt2);
+            }
+            else
+            {
+                zoom = 500;
+                pixels = m_numberPixels / zoom;
+            }
             for (int i = start, x = 35 + start; i < end; i++, x++)
             {
                 QPointF pt1, pt2;
