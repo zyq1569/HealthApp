@@ -133,6 +133,19 @@ protected:
                 }
             }
         }
+        int star = min, end = max + 1,grayNumbers = 0;
+        if (min < 1)
+        {
+            star = 1;
+        }
+        for (int i = star; i < end; i++)
+        {
+            if (m_fourPaneviewer->m_imageGrayHis[i] > grayNumbers)
+            {
+                m_fourPaneviewer->m_grayNumbersIndex = i;
+                grayNumbers = m_fourPaneviewer->m_imageGrayHis[i];
+            }
+        }
         m_fourPaneviewer->m_lValue  = L;
         m_fourPaneviewer->m_hValue  = H;
         m_fourPaneviewer->m_maxGray = max;
