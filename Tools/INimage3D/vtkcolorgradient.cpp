@@ -252,6 +252,10 @@ void GradientShape::paintRuler()
         {
             int Ymin     = m_maxH - deltaY - 10 * delta-1;//Y方向的最高点Y值
             int zoom     = 1;
+            if (m_grayZoom > 1)
+            {
+                zoom = m_grayZoom;
+            }
             int pixels   = m_numberPixels;
             double ratio = (double)m_vtkcolor->m_imageGrayHis[0] / m_numberPixels;
             double disX  = (end - start)/(double)(m_maxW-35 -35);
@@ -275,13 +279,9 @@ void GradientShape::paintRuler()
             }
             else
             {
-                zoom = 1;
                 pixels = m_numberPixels / zoom;
             }
-            if (m_grayZoom > 1)
-            {
-                zoom = m_grayZoom;
-            }
+
             for (int i = start, x = 35 + start; i < end; i++, x++)
             {
                 QPointF pt1, pt2;
