@@ -645,6 +645,19 @@ void QFourpaneviewer::ResetColor3D(VtkColorStyle colorValue)
 		{
 			m_volumeProperty->ShadeOff();
 		}
+
+        //++++++++++++++++++++++++++++
+        if (m_MainWindow->m_sampleDistanceCheck)
+        {
+            m_volumeMapper->SetRequestedRenderModeToRayCast();
+            m_volumeMapper->SetSampleDistance(m_MainWindow->m_sampleDistance);
+        }
+        else///ToDefault
+        {
+            m_volumeMapper->SetRequestedRenderModeToDefault();
+            m_volumeMapper->SetSampleDistance(-1.0);
+        }
+        //+++++++++++++++++++++++++++
 		ui->m_mpr2DView->renderWindow()->Render();
 	}
 }
@@ -812,10 +825,17 @@ void QFourpaneviewer::INshowVolume3D()
 	m_volumeMapper->SetInputData(imageData);
 	m_volumeMapper->SetBlendModeToComposite();
 	m_volumeMapper->SetRequestedRenderModeToDefault();
+
 	// force the mapper to compute a sample distance based on data spacing
 	m_volumeMapper->SetSampleDistance(-1.0);
+
 	//m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
 	m_isosurfaceFilter->SetInputData(imageData);
+    if (m_MainWindow->m_sampleDistanceCheck)
+    {
+        m_volumeMapper->SetRequestedRenderModeToRayCast();
+        m_volumeMapper->SetSampleDistance(m_MainWindow->m_sampleDistance);
+    }
 
 	//m_renderer->SetBackground(0.01, 0.01, 0.01);//
 	m_renderer->SetBackground(0, 0, 0);
