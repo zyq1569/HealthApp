@@ -9,15 +9,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>652</width>
-    <height>446</height>
+    <width>645</width>
+    <height>447</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>3D-color</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:rgb(255,255,255)</string>
+   <string notr="true">background-color: rgba(255, 255, 255, 1);</string>
   </property>
   <widget class="QWidget" name="m_gwidget" native="true">
    <property name="geometry">
@@ -141,8 +141,8 @@ QSlider::handle:vertical
     <rect>
      <x>-1</x>
      <y>367</y>
-     <width>602</width>
-     <height>71</height>
+     <width>251</width>
+     <height>75</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -157,24 +157,19 @@ QSlider::handle:vertical
    <property name="checked">
     <bool>true</bool>
    </property>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>571</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="m_ambientLabel">
-       <property name="text">
-        <string>环境光系数</string>
-       </property>
-      </widget>
-     </item>
-     <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="m_ambientLabel">
+      <property name="text">
+       <string>环境光系数</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
       <widget class="QDoubleSpinBox" name="m_ambientSpinBox">
        <property name="maximum">
         <double>1.000000000000000</double>
@@ -186,15 +181,38 @@ QSlider::handle:vertical
         <double>0.100000000000000</double>
        </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="m_diffuseLabel">
+      <widget class="QLabel" name="m_specularLabel">
        <property name="text">
-        <string>散射光系数</string>
+        <string>反射光系数</string>
        </property>
       </widget>
-     </item>
-     <item>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QDoubleSpinBox" name="m_specularSpinBox">
+      <property name="maximum">
+       <double>1.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.010000000000000</double>
+      </property>
+      <property name="value">
+       <double>0.200000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="m_diffuseLabel">
+      <property name="text">
+       <string>散射光系数</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QSplitter" name="splitter_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
       <widget class="QDoubleSpinBox" name="m_diffuseSpinBox">
        <property name="maximum">
         <double>1.000000000000000</double>
@@ -206,92 +224,24 @@ QSlider::handle:vertical
         <double>0.700000000000000</double>
        </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="m_specularLabel">
-       <property name="text">
-        <string>反射光系数</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDoubleSpinBox" name="m_specularSpinBox">
-       <property name="maximum">
-        <double>1.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.010000000000000</double>
-       </property>
-       <property name="value">
-        <double>0.200000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLabel" name="m_specularPowerLabel">
        <property name="text">
-        <string>高光强度系数</string>
+        <string>光强度系数</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QDoubleSpinBox" name="m_specularPowerSpinBox">
-       <property name="maximum">
-        <double>128.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>10.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QPushButton" name="m_pbUdate3D">
-   <property name="geometry">
-    <rect>
-     <x>601</x>
-     <y>373</y>
-     <width>46</width>
-     <height>65</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QPushButton {
-background-color:  #ecf5ff;
-border: 1px solid #dcdfe6;
-padding: 10px;
-border-radius: 5px;
-}
-
-QPushButton:hover {
-background-color: #ecf5ff;
-color: #409eff;
-}
-
-QPushButton:pressed, QPushButton:checked {
-border: 1px solid #3a8ee6;
-color: #409eff;
-}
-
-#button3 {
-border-radius: 20px;
-}</string>
-   </property>
-   <property name="text">
-    <string notr="true">应用</string>
-   </property>
-   <property name="autoDefault">
-    <bool>false</bool>
-   </property>
-   <property name="default">
-    <bool>false</bool>
-   </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QDoubleSpinBox" name="m_specularPowerSpinBox">
+      <property name="maximum">
+       <double>128.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>10.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QCheckBox" name="m_synUpdate3D">
    <property name="geometry">
@@ -313,6 +263,170 @@ border-radius: 20px;
    <property name="text">
     <string>同步</string>
    </property>
+  </widget>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>367</y>
+     <width>401</width>
+     <height>75</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 1);</string>
+   </property>
+   <widget class="QLabel" name="m_ambientLabel_2">
+    <property name="geometry">
+     <rect>
+      <x>2</x>
+      <y>10</y>
+      <width>71</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>灰值图放大</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="m_grayZoom">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>10</y>
+      <width>121</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <double>1.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>500.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>20.000000000000000</double>
+    </property>
+    <property name="stepType">
+     <enum>QAbstractSpinBox::DefaultStepType</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>2</x>
+      <y>30</y>
+      <width>66</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+background-color:  #ecf5ff;
+border: 1px solid #dcdfe6;
+padding: 10px;
+border-radius: 5px;
+}
+
+QPushButton:hover {
+background-color: #ecf5ff;
+color: #409eff;
+}
+
+QPushButton:pressed, QPushButton:checked {
+border: 1px solid #3a8ee6;
+color: #409eff;
+}
+
+#button3 {
+border-radius: 20px;
+}</string>
+    </property>
+    <property name="text">
+     <string>加载配置</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>71</x>
+      <y>30</y>
+      <width>66</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+background-color:  #ecf5ff;
+border: 1px solid #dcdfe6;
+padding: 10px;
+border-radius: 5px;
+}
+
+QPushButton:hover {
+background-color: #ecf5ff;
+color: #409eff;
+}
+
+QPushButton:pressed, QPushButton:checked {
+border: 1px solid #3a8ee6;
+color: #409eff;
+}
+
+#button3 {
+border-radius: 20px;
+}</string>
+    </property>
+    <property name="text">
+     <string>保存配置</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="m_pbUdate3D">
+    <property name="geometry">
+     <rect>
+      <x>142</x>
+      <y>30</y>
+      <width>66</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+background-color:  #ecf5ff;
+border: 1px solid #dcdfe6;
+padding: 10px;
+border-radius: 5px;
+}
+
+QPushButton:hover {
+background-color: #ecf5ff;
+color: #409eff;
+}
+
+QPushButton:pressed, QPushButton:checked {
+border: 1px solid #3a8ee6;
+color: #409eff;
+}
+
+#button3 {
+border-radius: 20px;
+}</string>
+    </property>
+    <property name="text">
+     <string notr="true">应用</string>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
