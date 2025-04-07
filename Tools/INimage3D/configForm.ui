@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>171</height>
+    <width>374</width>
+    <height>234</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>17</x>
-     <y>62</y>
+     <y>120</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -30,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>36</x>
-     <y>88</y>
+     <y>146</y>
      <width>91</width>
      <height>21</height>
     </rect>
@@ -53,7 +53,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>151</x>
-     <y>88</y>
+     <y>146</y>
      <width>91</width>
      <height>21</height>
     </rect>
@@ -76,7 +76,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>18</x>
-     <y>90</y>
+     <y>148</y>
      <width>21</width>
      <height>16</height>
     </rect>
@@ -89,7 +89,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>133</x>
-     <y>90</y>
+     <y>148</y>
      <width>21</width>
      <height>16</height>
     </rect>
@@ -115,7 +115,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>130</y>
+     <y>188</y>
      <width>151</width>
      <height>16</height>
     </rect>
@@ -128,7 +128,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>244</x>
-     <y>87</y>
+     <y>145</y>
      <width>51</width>
      <height>23</height>
     </rect>
@@ -154,7 +154,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>3</x>
-     <y>150</y>
+     <y>208</y>
      <width>431</width>
      <height>16</height>
     </rect>
@@ -186,7 +186,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>9</x>
-     <y>50</y>
+     <y>108</y>
      <width>31</width>
      <height>21</height>
     </rect>
@@ -250,7 +250,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>301</x>
-     <y>87</y>
+     <y>145</y>
      <width>51</width>
      <height>23</height>
     </rect>
@@ -258,6 +258,60 @@ p, li { white-space: pre-wrap; }
    <property name="text">
     <string>保存退出</string>
    </property>
+  </widget>
+  <widget class="QGroupBox" name="m_SampleDistanceGroup">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>51</y>
+     <width>171</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>高质量体绘制（显卡性能高）</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>21</y>
+      <width>91</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>采样步长（0.01-1）:</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="m_SampleDistance">
+    <property name="geometry">
+     <rect>
+      <x>103</x>
+      <y>20</y>
+      <width>61</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <double>0.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>1.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.001000000000000</double>
+    </property>
+    <property name="value">
+     <double>0.500000000000000</double>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

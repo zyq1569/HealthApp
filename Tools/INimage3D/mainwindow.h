@@ -52,7 +52,8 @@ public:
 
 
 	ConfigForm *m_configForm;
-	bool m_checkStart3D, m_checkStart4Plane, m_check3Dcolor, m_checkDefaultWL, m_checkOpacity,m_colorGradient;
+	bool m_checkStart3D, m_checkStart4Plane, m_check3Dcolor, m_checkDefaultWL, m_checkOpacity,m_colorGradient,m_sampleDistanceCheck;
 	int m_DefaultLevel, m_DefaultWindow, m_cbInterType;
+    double m_sampleDistance;
 };
 #endif // MAINWINDOW_H
