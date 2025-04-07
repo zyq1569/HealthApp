@@ -60,6 +60,11 @@ public:
         m_numberPixels = numberPixels;
     }
     void setVtkColor(VtkColorGradient *vtkcolor);
+
+    inline void setgrayZoom(double zoom)
+    {
+        m_grayZoom = zoom;
+    }
 private:
 	QPolygonF m_points, m_gradientPoints;
     int m_delta, m_currentIndex, m_maxH, m_maxW;
@@ -69,6 +74,7 @@ private:
     ShapeStyle m_shapeStyle;
     int m_grayMax, m_grayMin, m_numberPixels;
     VtkColorGradient *m_vtkcolor;
+    double m_grayZoom = 1;
 	
 };
 //++++++++++++++++++++++++++

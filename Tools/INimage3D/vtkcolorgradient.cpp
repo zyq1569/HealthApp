@@ -275,8 +275,12 @@ void GradientShape::paintRuler()
             }
             else
             {
-                zoom = 500;
+                zoom = 1;
                 pixels = m_numberPixels / zoom;
+            }
+            if (m_grayZoom > 1)
+            {
+                zoom = m_grayZoom;
             }
             for (int i = start, x = 35 + start; i < end; i++, x++)
             {
@@ -532,6 +536,8 @@ bool GradientShape::eventFilter(QObject *obj, QEvent *event)
 //++++++++++++++++++++++++++++++++++++++++++++++++
 
 void (QSpinBox:: *spinBoxSignal)(int) = &QSpinBox::valueChanged;
+void (QDoubleSpinBox:: *spinDBoxSignal)(double) = &QDoubleSpinBox::valueChanged;
+
 //fix : W:601 H:308
 //    : W:601 H:55
 VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui::VtkColorGradient)
@@ -626,11 +632,22 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
                                                     {
                                                         update3D();
                                                     }
+
                                                                     });
     connect(ui->m_ambientSpinBox,       SIGNAL(valueChanged(double)), this, SLOT(update3D()));
     connect(ui->m_diffuseSpinBox,       SIGNAL(valueChanged(double)), this, SLOT(update3D()));
     connect(ui->m_specularSpinBox,      SIGNAL(valueChanged(double)), this, SLOT(update3D()));
     connect(ui->m_specularPowerSpinBox, SIGNAL(valueChanged(double)), this, SLOT(update3D()));
+
+    //灰值图放大倍数
+    connect(ui->m_grayZoom, spinDBoxSignal, [=](double vlue) {
+                                                            if (ui->m_synUpdate3D->isChecked())
+                                                            {
+                                                                m_gradientShape->setgrayZoom(vlue);
+                                                                m_gradientShape->paintRuler();
+                                                            }
+                                                        });
+
     m_vtkColorStyle.m_bpointValue = false;
     m_vtkColorStyle.clearAll();
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
