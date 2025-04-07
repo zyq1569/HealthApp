@@ -65,11 +65,6 @@ public:
     {
         m_grayZoom = zoom;
     }
-
-    inline void resetGrayZoom()
-    {
-        emit  update3D();
-    }
 private:
 	QPolygonF m_points, m_gradientPoints;
     int m_delta, m_currentIndex, m_maxH, m_maxW;

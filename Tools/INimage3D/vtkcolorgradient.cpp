@@ -593,18 +593,18 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     connect(ui->m_sliderslope, &QSlider::valueChanged, ui->m_setslope, &QSpinBox::setValue);
     connect(ui->m_setslope, spinBoxSignal, ui->m_sliderslope, &QSlider::setValue);
     connect(ui->m_sliderslope, &QSlider::valueChanged, [=](int vlue) {
-                                                        if (ui->m_synUpdate3D->isChecked())
-                                                        {
-                                                            //m_vtkColorStyle.m_slope = ui->m_sliderslope->value();
-                                                            update3D();
-                                                        }  
+                                                                        if (ui->m_synUpdate3D->isChecked())
+                                                                        {
+                                                                            //m_vtkColorStyle.m_slope = ui->m_sliderslope->value();
+                                                                            update3D();
+                                                                        }  
                                                                       });
     connect(ui->m_setslope, spinBoxSignal, [=](int vlue)  {
-                                                        if (ui->m_synUpdate3D->isChecked())
-                                                        {
-                                                            //m_vtkColorStyle.m_slope = ui->m_setslope->value();
-                                                            update3D();
-                                                        }
+                                                            if (ui->m_synUpdate3D->isChecked())
+                                                            {
+                                                                //m_vtkColorStyle.m_slope = ui->m_setslope->value();
+                                                                update3D();
+                                                            }
                                                           });
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -612,28 +612,29 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //三维刷新事情通知checkbox ->syn --->updateData3D
     connect(ui->m_synUpdate3D, &QCheckBox::clicked, [=](bool check) { 
-                                                    ui->m_pbUdate3D->setEnabled(!check); 
-                                                    if (m_gradientShape)
-                                                    {
-                                                        m_gradientShape->m_synData = check;
-                                                    }
-                                                    if (m_colorBar)
-                                                    {
-                                                        m_colorBar->m_synData = check;
-                                                    }
+                                                                        ui->m_pbUdate3D->setEnabled(!check); 
+                                                                        if (m_gradientShape)
+                                                                        {
+                                                                            m_gradientShape->m_synData = check;
+                                                                        }
+                                                                        if (m_colorBar)
+                                                                        {
+                                                                            m_colorBar->m_synData = check;
+                                                                        }
                                                                      });
 
     connect(ui->m_pbUdate3D, &QPushButton::pressed, this,&VtkColorGradient::update3D);
 
     connect(m_gradientShape, &GradientShape::update3D, this, &VtkColorGradient::update3D);
     connect(m_colorBar, &GradientShape::update3D, this, &VtkColorGradient::update3D);
-    connect(ui->m_shadingGBox, &QGroupBox::clicked, [=](bool check) {
-                                                    if (ui->m_synUpdate3D->isChecked())
-                                                    {
-                                                        update3D();
-                                                    }
 
+    connect(ui->m_shadingGBox, &QGroupBox::clicked, [=](bool check) {
+                                                                        if (ui->m_synUpdate3D->isChecked())
+                                                                        {
+                                                                            update3D();
+                                                                        }
                                                                     });
+
     connect(ui->m_ambientSpinBox,       SIGNAL(valueChanged(double)), this, SLOT(update3D()));
     connect(ui->m_diffuseSpinBox,       SIGNAL(valueChanged(double)), this, SLOT(update3D()));
     connect(ui->m_specularSpinBox,      SIGNAL(valueChanged(double)), this, SLOT(update3D()));
