@@ -641,12 +641,9 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
 
     //灰值图放大倍数
     connect(ui->m_grayZoom, spinDBoxSignal, [=](double vlue) {
-                                                            if (ui->m_synUpdate3D->isChecked())
-                                                            {
                                                                 m_gradientShape->setgrayZoom(vlue);
-                                                                m_gradientShape->paintRuler();
-                                                            }
-                                                        });
+                                                                ui->m_gwidget->update();
+                                                              });
 
     m_vtkColorStyle.m_bpointValue = false;
     m_vtkColorStyle.clearAll();
