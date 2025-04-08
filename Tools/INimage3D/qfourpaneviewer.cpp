@@ -318,6 +318,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_volumeProperty = vtkVolumeProperty::New();
 
 	m_isosurfaceActor = vtkActor::New();
+    m_isosurfaceActor->GetProperty()->SetColor(1.0, 0.85, 0.7);  // 设置皮肤色（RGB）
 
 	m_renderer = vtkRenderer::New();
 
@@ -571,6 +572,7 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
         {
             m_volumeProperty->ShadeOff();
         }
+
         ui->m_mpr2DView->renderWindow()->Render();
     }
 }
@@ -665,6 +667,8 @@ void QFourpaneviewer::ResetColor3D(VtkColorStyle colorValue)
             m_volumeMapper->SetSampleDistance(-1.0);
         }
         //+++++++++++++++++++++++++++
+
+        m_renderer->RemoveActor(m_isosurfaceActor); // AddActor(m_isosurfaceActor);  // 添加等值面到渲染器
 		ui->m_mpr2DView->renderWindow()->Render();
 	}
 }
@@ -793,7 +797,8 @@ void QFourpaneviewer::INshowVolume3D()
 		m_colorTranF->AddRGBPoint(-1000.0, 0.0, 0.0, 0.0); // 空气 -> 黑色
 		m_colorTranF->AddRGBPoint(200.0, 0.8, 0.8, 0.8);   // 低密度区域 -> 灰色
 		m_colorTranF->AddRGBPoint(800.0, 1.0, 1.0, 1.0);   // 金属主体 -> 白色
-		m_colorTranF->AddRGBPoint(1500.0, 1.0, 0.0, 0.0);  // 夹杂物 -> 红色（高密度）
+		//m_colorTranF->AddRGBPoint(1500.0, 1.0, 0.0, 0.0);  // 夹杂物 -> 红色（高密度）
+        m_colorTranF->AddRGBPoint(1500.0, 190, 143, 74);  // 夹杂物 -> 红色（高密度）
 		m_volumeProperty->SetColor(m_colorTranF);
 
 	}
@@ -830,8 +835,9 @@ void QFourpaneviewer::INshowVolume3D()
 
 
 	m_volumeMapper->SetInputData(imageData);
-	m_volumeMapper->SetBlendModeToComposite();
-	//m_volumeMapper->SetRequestedRenderModeToDefault();
+    //m_volumeMapper->SetBlendModeToIsoSurface();//
+    m_volumeMapper->SetBlendModeToComposite();
+	m_volumeMapper->SetRequestedRenderModeToDefault();
 
 	// force the mapper to compute a sample distance based on data spacing
 	m_volumeMapper->SetSampleDistance(-1.0);
@@ -856,8 +862,6 @@ void QFourpaneviewer::INshowVolume3D()
 	m_renderer->SetUseDepthPeeling(1);
 	m_renderer->SetMaximumNumberOfPeels(100);
 	m_renderer->SetOcclusionRatio(0.1);
-	//
-
     //
 	ui->m_mpr2DView->renderWindow()->AddRenderer(m_renderer);//ui->m_mpr2DView->show();
 }

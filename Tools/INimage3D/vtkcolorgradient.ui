@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>645</width>
+    <width>654</width>
     <height>447</height>
    </rect>
   </property>
@@ -269,7 +269,7 @@ QSlider::handle:vertical
     <rect>
      <x>250</x>
      <y>367</y>
-     <width>401</width>
+     <width>395</width>
      <height>75</height>
     </rect>
    </property>
@@ -280,10 +280,15 @@ QSlider::handle:vertical
     <property name="geometry">
      <rect>
       <x>2</x>
-      <y>10</y>
-      <width>71</width>
+      <y>9</y>
+      <width>61</width>
       <height>18</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Microsoft YaHei UI</family>
+     </font>
     </property>
     <property name="text">
      <string>灰值图放大</string>
@@ -292,9 +297,9 @@ QSlider::handle:vertical
    <widget class="QDoubleSpinBox" name="m_grayZoom">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>66</x>
       <y>10</y>
-      <width>121</width>
+      <width>71</width>
       <height>18</height>
      </rect>
     </property>
@@ -425,6 +430,65 @@ border-radius: 20px;
     </property>
     <property name="default">
      <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>7</y>
+      <width>181</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Composite</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Maximum intensity</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Minimum intensity</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Average intensity</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Additive</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Isosurface</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="m_ambientLabel_3">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>7</y>
+      <width>61</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Microsoft YaHei UI</family>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>混合模式</string>
     </property>
    </widget>
   </widget>
