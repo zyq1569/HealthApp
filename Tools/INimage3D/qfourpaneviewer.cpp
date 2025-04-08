@@ -572,7 +572,7 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
         {
             m_volumeProperty->ShadeOff();
         }
-
+        m_renderer->RemoveActor(m_isosurfaceActor);  // 添加等值面到渲染器
         ui->m_mpr2DView->renderWindow()->Render();
     }
 }
