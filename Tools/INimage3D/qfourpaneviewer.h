@@ -95,12 +95,6 @@ public:
 	vtkPiecewiseFunction *m_pieceF, *m_pieceGradF;
 	vtkColorTransferFunction *m_colorTranF;
 	VtkColorGradient *m_vtkColorGradient;
-
-    //ISO
-    vtkMarchingCubes*  m_isoFilter;
-    vtkPolyDataMapper* m_isoMapper;
-    vtkActor*          m_isoActor;
-    //-------
 	bool m_showEditors;
 
 public:
