@@ -844,43 +844,13 @@ void MainWindow::applyRenderingStyle(const QModelIndex &index)
 
 void MainWindow::initImage3D_ITK_VTK(vtkActor *vtkactor)
 {
-	//
-	//
-	int width = 1024;
-	int height = 1024;
-	int depth = 200;  // 0~200 共 201 张
-
-	vtkSmartPointer<vtkImageAppend> imageStack = vtkSmartPointer<vtkImageAppend>::New();
-	imageStack->SetAppendAxis(2);  // 沿 Z 轴堆叠
-	const char* filename = "D:\\TEMP\\dingliang\\Slice\\slice"; // 裸数据文件路径
-	// 逐个读取 0～200 的 RAW 文件
-	for (int i = 0; i < depth; i++)
-	{
-		std::string filename = "D:\\TEMP\\dingliang\\Slice\\slice" + std::to_string(i) + ".bin";
-		vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
-		reader->SetFileName(filename.c_str());
-		reader->SetFileDimensionality(2);  // 2D 图像
-		reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
-		reader->SetDataScalarTypeToUnsignedShort();  // 16-bit 无符号整型
-		reader->SetNumberOfScalarComponents(1);
-		reader->SetFileLowerLeft(true);  // 数据从左下角开始
-
-		// 设置像素间距
-		reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
-
-		reader->Update();
-		imageStack->AddInputConnection(reader->GetOutputPort());  // 组合
-	}
-	imageStack->Update();
-	//
-	//
 	//https://developer.aliyun.com/article/933543
 	QString dir = ui->m_dcmDir->toPlainText();
 
 	Input3dImageType::Pointer image = GdcmRead3dImage(qPrintable(dir), dir);
 
 	vtkMarchingCubes *marchingcube = vtkMarchingCubes::New();
-	vtkSmartPointer<vtkImageData> ImageVTKData = imageStack->GetOutput();//ImageDataItkToVtk(image);
+	vtkSmartPointer<vtkImageData> ImageVTKData = ImageDataItkToVtk(image);
 	image = NULL;
 
 	marchingcube->SetInputData(ImageVTKData);
@@ -1022,34 +992,6 @@ void MainWindow::free3Dviewer()
 
 void MainWindow::on_pBVolume3D_clicked()
 {
-
-	//
-	int width = 1024;
-	int height = 1024;
-	int depth = 200;  // 0~200 共 201 张
-
-	vtkSmartPointer<vtkImageAppend> imageStack = vtkSmartPointer<vtkImageAppend>::New();
-	imageStack->SetAppendAxis(2);  // 沿 Z 轴堆叠
-	const char* filename = "D:\\TEMP\\dingliang\\Slice\\slice"; // 裸数据文件路径
-	// 逐个读取 0～200 的 RAW 文件
-	for (int i = 0; i < depth; i++)
-	{
-		std::string filename = "D:\\TEMP\\dingliang\\Slice\\slice" + std::to_string(i) + ".bin";
-		vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
-		reader->SetFileName(filename.c_str());
-		reader->SetFileDimensionality(2);  // 2D 图像
-		reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
-		reader->SetDataScalarTypeToUnsignedShort();  // 16-bit 无符号整型
-		reader->SetNumberOfScalarComponents(1);
-		reader->SetFileLowerLeft(true);  // 数据从左下角开始
-
-		// 设置像素间距
-		reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
-
-		reader->Update();
-		imageStack->AddInputConnection(reader->GetOutputPort());  // 组合
-	}
-	imageStack->Update();
 	//
     QList<void*> list;
     //return test();
@@ -1077,7 +1019,7 @@ void MainWindow::on_pBVolume3D_clicked()
         //    init = false;
         //}
         
-        vtkSmartPointer<vtkImageData> itkImageData = imageStack->GetOutput();//ImageDataItkToVtk(dicomimage);
+        vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
 
         //定义绘制器；
         m_rendererViewer = vtkRenderer::New();//指向指针；
