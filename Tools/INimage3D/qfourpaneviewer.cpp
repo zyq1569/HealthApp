@@ -36,6 +36,8 @@
 #include <vtkMetaImageReader.h>
 #include <vtkCamera.h>
 
+#include <vtkGPUVolumeRayCastMapper.h>
+#include <vtkMarchingCubes.h>
 //-------------showVolume3D
 #include <vtkSmartVolumeMapper.h>
 #include <vtkRayCastImageDisplayHelper.h>
@@ -308,7 +310,8 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_pieceGradF = nullptr;
 	m_colorTranF = nullptr;
 
-	m_volumeMapper = vtkSmartVolumeMapper::New();
+    //m_volumeMapper = vtkGPUVolumeRayCastMapper::New();
+    m_volumeMapper = vtkSmartVolumeMapper::New();
 
 	m_isosurfaceFilter = vtkImageMarchingCubes::New();
 
@@ -327,6 +330,10 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_isosurfaceActor->SetMapper(m_isosurfaceMapper);
 
 	m_renderer->AddViewProp(m_vtkVolume);
+
+    //add ----ISO
+    m_renderer->AddActor(m_vtkVolume);  // 添加体绘制到渲染器
+    m_renderer->AddActor(m_isosurfaceActor);  // 添加等值面到渲染器
 	//-----------------------------------------------------------
 	ui->m_SplitterLR->widget(1)->setMaximumWidth(650);
 	ui->m_SplitterLR->widget(1)->setMinimumWidth(320);
@@ -824,16 +831,17 @@ void QFourpaneviewer::INshowVolume3D()
 
 	m_volumeMapper->SetInputData(imageData);
 	m_volumeMapper->SetBlendModeToComposite();
-	m_volumeMapper->SetRequestedRenderModeToDefault();
+	//m_volumeMapper->SetRequestedRenderModeToDefault();
 
 	// force the mapper to compute a sample distance based on data spacing
 	m_volumeMapper->SetSampleDistance(-1.0);
+    std::cout << "Mapper class: " << m_volumeMapper->GetClassName() << std::endl;
 
 	//m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
 	m_isosurfaceFilter->SetInputData(imageData);
     if (m_MainWindow->m_sampleDistanceCheck)
     {
-        m_volumeMapper->SetRequestedRenderModeToRayCast();
+        //m_volumeMapper->SetRequestedRenderModeToRayCast();
         m_volumeMapper->SetSampleDistance(m_MainWindow->m_sampleDistance);
     }
 
@@ -843,11 +851,14 @@ void QFourpaneviewer::INshowVolume3D()
 	m_renderer->GetActiveCamera()->Zoom(1.5);
 	//重设相机的剪切范围；
 	m_renderer->ResetCameraClippingRange();
-	//gpt
+
+	//透明度参数
 	m_renderer->SetUseDepthPeeling(1);
 	m_renderer->SetMaximumNumberOfPeels(100);
 	m_renderer->SetOcclusionRatio(0.1);
-	//gpt
+	//
+
+    //
 	ui->m_mpr2DView->renderWindow()->AddRenderer(m_renderer);//ui->m_mpr2DView->show();
 }
 

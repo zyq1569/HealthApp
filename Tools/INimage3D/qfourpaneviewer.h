@@ -23,7 +23,10 @@ class vtkPiecewiseFunction;
 class MainWindow;
 class VtkColorGradient;
 
-//class vtkGPUVolumeRayCastMapper;
+class vtkGPUVolumeRayCastMapper;
+class vtkMarchingCubes;
+class vtkPolyDataMappers;
+
 #include <QWidget>
 
 namespace Ui {
@@ -76,7 +79,8 @@ public:
 public:
 	MainWindow *m_MainWindow;
 	/// The main mapper for volume rendering.
-	vtkSmartVolumeMapper *m_volumeMapper;
+    //vtkGPUVolumeRayCastMapper* m_volumeMapper;//
+    vtkSmartVolumeMapper *m_volumeMapper;
 	/// Properties of volume rendering.
 	vtkVolumeProperty *m_volumeProperty;
 	/// The volume actor.
@@ -92,6 +96,11 @@ public:
 	vtkColorTransferFunction *m_colorTranF;
 	VtkColorGradient *m_vtkColorGradient;
 
+    //ISO
+    vtkMarchingCubes*  m_isoFilter;
+    vtkPolyDataMapper* m_isoMapper;
+    vtkActor*          m_isoActor;
+    //-------
 	bool m_showEditors;
 
 public:
