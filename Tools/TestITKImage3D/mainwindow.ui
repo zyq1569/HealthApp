@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>873</width>
+    <width>872</width>
     <height>332</height>
    </rect>
   </property>
@@ -36,7 +36,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>10</x>
       <y>140</y>
-      <width>482</width>
+      <width>563</width>
       <height>25</height>
      </rect>
     </property>
@@ -73,6 +73,13 @@ p, li { white-space: pre-wrap; }
       <widget class="QPushButton" name="pBCT3D">
        <property name="text">
         <string>CT-3D</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_exportMhd">
+       <property name="text">
+        <string>Expor Mhd</string>
        </property>
       </widget>
      </item>

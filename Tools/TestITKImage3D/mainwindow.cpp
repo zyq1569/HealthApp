@@ -570,7 +570,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_transferFunction.setColor(445.0, 1.0, 1.0, 1.0);
     m_transferFunction.setColor(1455.0, 1.0, 1.0, 1.0);
     m_transferFunction.setColor(2784.0, 1.0, 1.0, 1.0);
-	connect(ui->pBCT3D, SIGNAL(clicked()), this, SLOT(CT3D()));
+	connect(ui->pBCT3D, SIGNAL(clicked()), this, SLOT(CT3D()));//
+    connect(ui->m_exportMhd, SIGNAL(clicked()), this, SLOT(onExportMhd()));
 }
 
 MainWindow::~MainWindow()
@@ -1330,7 +1331,31 @@ void MainWindow::on_pBRemoveBed_clicked()
 
 }
 
+//m_exportMhd
+void MainWindow::onExportMhd()
+{
+    QString dir = ui->m_dcmDir->toPlainText();
+    std::string Input_Name = qPrintable(dir);
+    Input3dImageType::Pointer image = GdcmRead3dImage(Input_Name, dir);
 
+    typedef itk::ImageToVTKImageFilter< Input3dImageType> itkTovtkFilterType;
+    itkTovtkFilterType::Pointer itkTovtkImageFilter = itkTovtkFilterType::New();
+    itkTovtkImageFilter->SetInput(image);//设置图像数据从ITK转向VTK
+    itkTovtkImageFilter->Update();
+  
+    std::string mhdFilename;
+    dir = QCoreApplication::applicationDirPath() + "\\";
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File MHD"), "", tr("MHD(*.mhd )"));
+    QString upperstr = fileName.toUpper();
+    if (upperstr.contains("MHD"))
+    {
+        mhdFilename =qPrintable(fileName);
+        vtkSmartPointer<vtkMetaImageWriter> writer = vtkSmartPointer<vtkMetaImageWriter>::New();
+        writer->SetFileName(mhdFilename.c_str());
+        writer->SetInputData(itkTovtkImageFilter->GetOutput());
+        writer->Write();
+    }  
+}
 void MainWindow::CT3D()
 {
 	//vtkSmartPointer<vtkImageAppend> imageStack = vtkSmartPointer<vtkImageAppend>::New();

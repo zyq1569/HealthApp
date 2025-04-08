@@ -96,6 +96,8 @@ private slots:
     void on_m_TestAll_clicked();
 	void CT3D();
 
+    void onExportMhd();
+
 private:
     Ui::MainWindow *ui;
 };
