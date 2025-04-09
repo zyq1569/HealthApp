@@ -320,7 +320,7 @@ QSlider::handle:vertical
     <property name="geometry">
      <rect>
       <x>2</x>
-      <y>33</y>
+      <y>38</y>
       <width>66</width>
       <height>36</height>
      </rect>
@@ -355,7 +355,7 @@ border-radius: 20px;
     <property name="geometry">
      <rect>
       <x>71</x>
-      <y>33</y>
+      <y>38</y>
       <width>66</width>
       <height>36</height>
      </rect>
@@ -390,7 +390,7 @@ border-radius: 20px;
     <property name="geometry">
      <rect>
       <x>142</x>
-      <y>33</y>
+      <y>38</y>
       <width>66</width>
       <height>36</height>
      </rect>
@@ -436,9 +436,9 @@ border-radius: 20px;
     <property name="geometry">
      <rect>
       <x>210</x>
-      <y>7</y>
+      <y>6</y>
       <width>181</width>
-      <height>22</height>
+      <height>23</height>
      </rect>
     </property>
     <item>
@@ -491,8 +491,60 @@ border-radius: 20px;
      <string>混合模式</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="m_selectColor">
+    <property name="geometry">
+     <rect>
+      <x>217</x>
+      <y>39</y>
+      <width>66</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+background-color:  #ecf5ff;
+border: 1px solid #dcdfe6;
+padding: 10px;
+border-radius: 5px;
+}
+
+QPushButton:hover {
+background-color: #ecf5ff;
+color: #409eff;
+}
+
+QPushButton:pressed, QPushButton:checked {
+border: 1px solid #3a8ee6;
+color: #409eff;
+}
+
+#button3 {
+border-radius: 20px;
+}</string>
+    </property>
+    <property name="text">
+     <string>选择颜色</string>
+    </property>
+   </widget>
+   <widget class="QColorSpinBox" name="doubleSpinBox">
+    <property name="geometry">
+     <rect>
+      <x>292</x>
+      <y>45</y>
+      <width>71</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QColorSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qcolorspinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
