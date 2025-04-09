@@ -94,6 +94,8 @@ protected:
 protected slots:
     void update3D();
 
+    void updateIsosurface();
+
 private:
     Ui::VtkColorGradient *ui;
 

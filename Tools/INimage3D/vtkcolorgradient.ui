@@ -526,7 +526,7 @@ border-radius: 20px;
      <string>选择颜色</string>
     </property>
    </widget>
-   <widget class="QColorSpinBox" name="doubleSpinBox">
+   <widget class="QDoubleSpinBox" name="m_isosurfaceSpinBox">
     <property name="geometry">
      <rect>
       <x>292</x>
@@ -538,13 +538,6 @@ border-radius: 20px;
    </widget>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QColorSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qcolorspinbox.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

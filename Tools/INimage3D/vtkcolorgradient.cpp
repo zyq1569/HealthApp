@@ -648,7 +648,12 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
 
     m_vtkColorStyle.m_bpointValue = false;
     m_vtkColorStyle.clearAll();
+
+    //m_selectColor
+    connect(ui->m_selectColor, &QPushButton::pressed, this, &VtkColorGradient::updateIsosurface);
+
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 }
 
@@ -717,6 +722,22 @@ void VtkColorGradient::update3D()
             ((QFourpaneviewer*)m_parentViewer)->UpdateColorGradient3D(m_vtkColorStyle);
         }
     }
+}
+
+void VtkColorGradient::updateIsosurface()
+{
+    bool bok = false;
+    QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
+    if (bok)
+    {
+        //color.setAlpha(255);
+        //ui->m_isosurfaceSpinBox->
+        QString foreground = QString(";color:") + (color.value() < 128 ? "white" : "black");
+        ui->m_isosurfaceSpinBox->setStyleSheet(QString("background-color:") + color.name() + foreground);
+        ui->m_isosurfaceSpinBox->setValue(color.alpha());
+    }
+
+    update3D();
 }
 
 VtkColorGradient::~VtkColorGradient()

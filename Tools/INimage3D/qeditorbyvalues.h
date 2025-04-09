@@ -9,8 +9,8 @@
 
 struct VtkColorPoint
 {
-	double m_X, m_Opacity;
-	QColor m_Color;
+    double m_X, m_Opacity;
+    QColor m_Color;
 };
 
 class VtkColorStyle
@@ -19,41 +19,45 @@ public:
     VtkColorStyle()
     {
         m_bpointValue = true;
+        m_bisosurface = false;
     };
-	QList<VtkColorPoint> m_colorPoint;
-	QString m_styleName;
-	bool m_colorOpacity, m_colorAdd, m_lightShade;
-	double m_Ambient, m_Diffuse, m_Specular, m_SpecularPower;
+    QList<VtkColorPoint> m_colorPoint;
+    QString m_styleName;
+    bool m_colorOpacity, m_colorAdd, m_lightShade;
+    double m_Ambient, m_Diffuse, m_Specular, m_SpecularPower;
 
     //++++++
     QList<QPointF>m_gradientPoinst;
     bool m_bpointValue;
     int m_slope;
+
+    bool m_bisosurface;
+    QColor m_isosurface;
     //++++++
-	void clearAll()
-	{
-		m_colorPoint.clear();
+    void clearAll()
+    {
+        m_colorPoint.clear();
         m_gradientPoinst.clear();
-	}
+    }
 };
 
 class QEditorByValues : public QWidget, private ::Ui::QEditorByValuesBase {
-Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	QEditorByValues(QWidget *parent = 0);
+    QEditorByValues(QWidget *parent = 0);
     virtual ~QEditorByValues();
 
-    void setMinimum(int minimum) ;
+    void setMinimum(int minimum);
 
-    void setMaximum(int maximum) ;
+    void setMaximum(int maximum);
 
-     void setValues(VtkColorStyle *vtkColors);
+    void setValues(VtkColorStyle *vtkColors);
 
-	 void getValues() const;
+    void getValues() const;
 
-	 const VtkColorStyle *getVtkColorStyle();
+    const VtkColorStyle *getVtkColorStyle();
 
 public slots:
 
@@ -61,18 +65,18 @@ public slots:
 
     void removeInterval();
 
-	void setValues3D();
+    void setValues3D();
 
-	void saveValues3D();
+    void saveValues3D();
 
-	void loadFileValues();
+    void loadFileValues();
 
 signals:
-	void signalsColorValue(VtkColorStyle colorValue);
+    void signalsColorValue(VtkColorStyle colorValue);
 
 private:
 
-	QIntervalEditor* addIntervalAndReturnIt();
+    QIntervalEditor* addIntervalAndReturnIt();
 
 private slots:
 
@@ -89,11 +93,11 @@ private:
 
     mutable bool m_changed;
 
-	int m_minimum;
+    int m_minimum;
 
-	int m_maximum;
+    int m_maximum;
 
-	mutable VtkColorStyle m_vtkColorStyle;
+    mutable VtkColorStyle m_vtkColorStyle;
 
 };
 
