@@ -650,8 +650,7 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
     m_vtkColorStyle.clearAll();
 
     //m_selectColor
-    connect(ui->m_selectColor, &QPushButton::pressed, this, &VtkColorGradient::updateIsosurface);
-    connect(ui->m_blendBox, SIGNAL(activated(int)), this, SLOT(updateBlend(int)));
+    connect(ui->m_blendBox, SIGNAL(activated(int)), this, SLOT(update3D()));
     
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -729,8 +728,6 @@ void VtkColorGradient::update3D()
 
 void VtkColorGradient::updateBlend(int blend)
 {
-    //m_vtkColorStyle.m_blendMode = blend;
-    update3D();
 }
 
 void VtkColorGradient::updateIsosurface()

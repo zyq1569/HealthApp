@@ -334,8 +334,8 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
     //add ----ISO
     m_renderer->AddActor(m_vtkVolume);  // 添加体绘制到渲染器
-    m_renderer->AddActor(m_isosurfaceActor);  // 添加等值面到渲染器
-    m_bremoveActor = true;
+    //m_renderer->AddActor(m_isosurfaceActor);  // 添加等值面到渲染器
+    m_bremoveActor = false;
 	//-----------------------------------------------------------
 	ui->m_SplitterLR->widget(1)->setMaximumWidth(650);
 	ui->m_SplitterLR->widget(1)->setMinimumWidth(320);
@@ -573,29 +573,47 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
         {
             m_volumeProperty->ShadeOff();
         }
-        //int blendMode = colorValue.m_blendMode;
-        //if (blendMode < 5 && m_bremoveActor)
-        //{
-        //    m_renderer->RemoveActor(m_isosurfaceActor);
-        //    m_bremoveActor = false;
-        //}
-        //else if(!m_bremoveActor)
-        //{
-        //    m_renderer->AddActor(m_isosurfaceActor);
-        //    m_bremoveActor = true;
-        //}
-        //m_volumeMapper->SetBlendMode(colorValue.m_blendMode);
-        //+++IsoSurface
-        //if (colorValue.m_bisosurface)
-        //{
-        //    m_isosurfaceMapper->ScalarVisibilityOff();
-        //    m_isosurfaceFilter->ComputeScalarsOff(); //ScalarsOff 数据（否则 Mapper 会默认启用 Scalar）
-        //
-        //    QColor color = colorValue.m_isosurface;
-        //    double r= color.redF(), g = color.greenF(), b = color.blue();
-        //    m_isosurfaceActor->GetProperty()->SetColor(r,g,b);
-        //    m_isosurfaceActor->GetProperty()->SetOpacity(color.alphaF());
-        //}
+        //+++IsoSurface test set color
+        //m_isosurfaceMapper->ScalarVisibilityOff();
+        //m_isosurfaceFilter->ComputeScalarsOff(); //ScalarsOff 数据（否则 Mapper 会默认启用 Scalar）
+        //m_isosurfaceActor->GetProperty()->SetColor(0.9, 0.9, 0.9);
+
+        //+++++++++++++
+        int blendMode = colorValue.m_blendMode;
+        if (blendMode == 5)
+        {
+            m_renderer->AddActor(m_isosurfaceActor);
+            m_bremoveActor = true;
+            m_isosurfaceMapper->ScalarVisibilityOff();
+            m_isosurfaceFilter->ComputeScalarsOff(); //ScalarsOff 数据（否则 Mapper 会默认启用 Scalar）
+            QList<VtkColorPoint> points = colorValue.m_colorPoint;
+            int len = points.size();
+            //for (int i = 0; i < len; i++)
+            //{
+            //    auto autoActor = vtkSmartPointer<vtkActor>::New();
+            //    autoActor->SetMapper(m_isosurfaceMapper);
+            //
+            //    QColor color = points.at(i).m_Color;
+            //    double x = points.at(i).m_X;
+            //    m_isosurfaceFilter->SetValue(i, x);
+            //    autoActor->GetProperty()->SetColor(color.redF(), color.greenF(), color.blueF());
+            //    m_renderer->AddActor(autoActor);
+            //}      
+            QColor color = points.at(len-1).m_Color;
+            m_isosurfaceActor->GetProperty()->SetColor(color.redF(), color.greenF(), color.blueF());
+            m_isosurfaceActor->GetProperty()->SetAmbient(colorValue.m_Ambient);//环境光系数
+            m_isosurfaceActor->GetProperty()->SetDiffuse(colorValue.m_Diffuse);//散射光系数
+            m_isosurfaceActor->GetProperty()->SetSpecular(colorValue.m_Specular);//反射光系数
+            m_isosurfaceActor->GetProperty()->SetSpecularPower(colorValue.m_SpecularPower);//高光强度
+            m_isosurfaceActor->GetProperty()->SetOpacity(colorValue.m_slope);            
+        }
+        else if(m_bremoveActor)
+        {
+            m_renderer->RemoveActor(m_isosurfaceActor);
+            m_bremoveActor = false;
+        }
+        m_volumeMapper->SetBlendMode(colorValue.m_blendMode);
+        
         //+++++++++++++
 
         //m_renderer->RemoveActor(m_isosurfaceActor);  // 添加等值面到渲染器
@@ -966,3 +984,46 @@ QFourpaneviewer::~QFourpaneviewer()
     }
     delete ui;
 }
+
+/**
+ * Blend modes.
+ * The default mode is Composite where the scalar values are sampled through
+ * the volume and composited in a front-to-back scheme through alpha blending.
+ * The final color and opacity is determined using the color and opacity
+ * transfer functions.
+ *
+ * Maximum and minimum intensity blend modes use the maximum and minimum
+ * scalar values, respectively,  along the sampling ray. The final color and
+ * opacity is determined by passing the resultant value through the color and
+ * opacity transfer functions.
+ *
+ * Additive blend mode accumulates scalar values by passing each value through
+ * the opacity transfer function and then adding up the product of the value
+ * and its opacity. In other words, the scalar values are scaled using the
+ * opacity transfer function and summed to derive the final color. Note that
+ * the resulting image is always grayscale i.e. aggregated values are not
+ * passed through the color transfer function. This is because the final
+ * value is a derived value and not a real data value along the sampling ray.
+ *
+ * Average intensity blend mode works similar to the additive blend mode where
+ * the scalar values are multiplied by opacity calculated from the opacity
+ * transfer function and then added. The additional step here is to
+ * divide the sum by the number of samples taken through the volume.
+ * One can control the scalar range by setting the AverageIPScalarRange ivar
+ * to disregard scalar values, not in the range of interest, from the average
+ * computation.
+ * As is the case with the additive intensity projection, the final
+ * image will always be grayscale i.e. the aggregated values are not
+ * passed through the color transfer function. This is because the
+ * resultant value is a derived value and not a real data value along
+ * the sampling ray.
+ *
+ * IsoSurface blend mode uses contour values defined by the user in order
+ * to display scalar values only when the ray crosses the contour. It supports
+ * opacity the same way composite blend mode does.
+ *
+ * \note vtkVolumeMapper::AVERAGE_INTENSITY_BLEND and ISOSURFACE_BLEND are
+ * only supported by the vtkGPUVolumeRayCastMapper with the OpenGL2 backend.
+ * \sa SetAverageIPScalarRange()
+ * \sa GetIsoSurfaceValues()
+ */

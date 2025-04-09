@@ -491,51 +491,6 @@ border-radius: 20px;
      <string>渲染模式</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="m_selectColor">
-    <property name="geometry">
-     <rect>
-      <x>217</x>
-      <y>39</y>
-      <width>66</width>
-      <height>36</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton {
-background-color:  #00caca;
-border: 1px solid #dcdfe6;
-padding: 10px;
-border-radius: 5px;
-}
-
-QPushButton:hover {
-background-color: #ecf5ff;
-color: #409eff;
-}
-
-QPushButton:pressed, QPushButton:checked {
-border: 1px solid #3a8ee6;
-color: #409eff;
-}
-
-#button3 {
-border-radius: 20px;
-}</string>
-    </property>
-    <property name="text">
-     <string>选择颜色</string>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="m_isosurfaceSpinBox">
-    <property name="geometry">
-     <rect>
-      <x>292</x>
-      <y>45</y>
-      <width>71</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
   </widget>
  </widget>
  <resources/>
