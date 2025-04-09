@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>654</width>
+    <width>647</width>
     <height>447</height>
    </rect>
   </property>
@@ -320,7 +320,7 @@ QSlider::handle:vertical
     <property name="geometry">
      <rect>
       <x>2</x>
-      <y>30</y>
+      <y>33</y>
       <width>66</width>
       <height>36</height>
      </rect>
@@ -355,7 +355,7 @@ border-radius: 20px;
     <property name="geometry">
      <rect>
       <x>71</x>
-      <y>30</y>
+      <y>33</y>
       <width>66</width>
       <height>36</height>
      </rect>
@@ -390,7 +390,7 @@ border-radius: 20px;
     <property name="geometry">
      <rect>
       <x>142</x>
-      <y>30</y>
+      <y>33</y>
       <width>66</width>
       <height>36</height>
      </rect>

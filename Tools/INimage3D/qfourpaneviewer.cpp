@@ -572,11 +572,12 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
         {
             m_volumeProperty->ShadeOff();
         }
+        //+++IsoSurface
         m_isosurfaceMapper->ScalarVisibilityOff();
-        m_isosurfaceFilter->ComputeScalarsOff(); // ⛔ 不输出 Scalar 数据（否则 Mapper 会默认启用 Scalar）
+        m_isosurfaceFilter->ComputeScalarsOff(); //ScalarsOff 数据（否则 Mapper 会默认启用 Scalar）
         m_isosurfaceActor->GetProperty()->SetColor(0.9, 0.9, 0.9);
-        double r, g, b;
-        m_isosurfaceActor->GetProperty()->GetColor(r,g,b);
+        //+++++++++++++
+
         //m_renderer->RemoveActor(m_isosurfaceActor);  // 添加等值面到渲染器
         ui->m_mpr2DView->renderWindow()->Render();
     }
