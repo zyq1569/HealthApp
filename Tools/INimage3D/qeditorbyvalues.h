@@ -19,7 +19,6 @@ public:
     VtkColorStyle()
     {
         m_bpointValue = true;
-        m_bisosurface = false;
     };
     QList<VtkColorPoint> m_colorPoint;
     QString m_styleName;
@@ -31,8 +30,7 @@ public:
     bool m_bpointValue;
     int m_slope;
 
-    bool m_bisosurface;
-    QColor m_isosurface;
+    int m_blendMode;
     //++++++
     void clearAll()
     {

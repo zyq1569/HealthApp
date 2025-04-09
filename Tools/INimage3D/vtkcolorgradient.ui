@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>647</width>
+    <width>649</width>
     <height>447</height>
    </rect>
   </property>
@@ -327,7 +327,7 @@ QSlider::handle:vertical
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-background-color:  #ecf5ff;
+background-color:  #00caca;
 border: 1px solid #dcdfe6;
 padding: 10px;
 border-radius: 5px;
@@ -362,7 +362,7 @@ border-radius: 20px;
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-background-color:  #ecf5ff;
+background-color:  #00caca;
 border: 1px solid #dcdfe6;
 padding: 10px;
 border-radius: 5px;
@@ -402,7 +402,7 @@ border-radius: 20px;
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-background-color:  #ecf5ff;
+background-color:  #00caca;
 border: 1px solid #dcdfe6;
 padding: 10px;
 border-radius: 5px;
@@ -432,7 +432,7 @@ border-radius: 20px;
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="m_blendBox">
     <property name="geometry">
      <rect>
       <x>210</x>
@@ -488,7 +488,7 @@ border-radius: 20px;
      </font>
     </property>
     <property name="text">
-     <string>混合模式</string>
+     <string>渲染模式</string>
     </property>
    </widget>
    <widget class="QPushButton" name="m_selectColor">
@@ -502,7 +502,7 @@ border-radius: 20px;
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
-background-color:  #ecf5ff;
+background-color:  #00caca;
 border: 1px solid #dcdfe6;
 padding: 10px;
 border-radius: 5px;

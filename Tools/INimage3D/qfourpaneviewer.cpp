@@ -335,6 +335,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
     //add ----ISO
     m_renderer->AddActor(m_vtkVolume);  // 添加体绘制到渲染器
     m_renderer->AddActor(m_isosurfaceActor);  // 添加等值面到渲染器
+    m_bremoveActor = true;
 	//-----------------------------------------------------------
 	ui->m_SplitterLR->widget(1)->setMaximumWidth(650);
 	ui->m_SplitterLR->widget(1)->setMinimumWidth(320);
@@ -572,10 +573,29 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
         {
             m_volumeProperty->ShadeOff();
         }
+        //int blendMode = colorValue.m_blendMode;
+        //if (blendMode < 5 && m_bremoveActor)
+        //{
+        //    m_renderer->RemoveActor(m_isosurfaceActor);
+        //    m_bremoveActor = false;
+        //}
+        //else if(!m_bremoveActor)
+        //{
+        //    m_renderer->AddActor(m_isosurfaceActor);
+        //    m_bremoveActor = true;
+        //}
+        //m_volumeMapper->SetBlendMode(colorValue.m_blendMode);
         //+++IsoSurface
-        m_isosurfaceMapper->ScalarVisibilityOff();
-        m_isosurfaceFilter->ComputeScalarsOff(); //ScalarsOff 数据（否则 Mapper 会默认启用 Scalar）
-        m_isosurfaceActor->GetProperty()->SetColor(0.9, 0.9, 0.9);
+        //if (colorValue.m_bisosurface)
+        //{
+        //    m_isosurfaceMapper->ScalarVisibilityOff();
+        //    m_isosurfaceFilter->ComputeScalarsOff(); //ScalarsOff 数据（否则 Mapper 会默认启用 Scalar）
+        //
+        //    QColor color = colorValue.m_isosurface;
+        //    double r= color.redF(), g = color.greenF(), b = color.blue();
+        //    m_isosurfaceActor->GetProperty()->SetColor(r,g,b);
+        //    m_isosurfaceActor->GetProperty()->SetOpacity(color.alphaF());
+        //}
         //+++++++++++++
 
         //m_renderer->RemoveActor(m_isosurfaceActor);  // 添加等值面到渲染器

@@ -90,6 +90,7 @@ public:
 	vtkImageMarchingCubes *m_isosurfaceFilter;
 	/// The actor for isosurfaces.
 	vtkActor *m_isosurfaceActor;
+    bool m_bremoveActor;
 	vtkRenderer *m_renderer;
 	vtkPolyDataMapper* m_isosurfaceMapper;
 	vtkPiecewiseFunction *m_pieceF, *m_pieceGradF;

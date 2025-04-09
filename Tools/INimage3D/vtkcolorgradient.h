@@ -96,6 +96,8 @@ protected slots:
 
     void updateIsosurface();
 
+    void updateBlend(int blend);
+
 private:
     Ui::VtkColorGradient *ui;
 

@@ -651,7 +651,8 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
 
     //m_selectColor
     connect(ui->m_selectColor, &QPushButton::pressed, this, &VtkColorGradient::updateIsosurface);
-
+    connect(ui->m_blendBox, SIGNAL(activated(int)), this, SLOT(updateBlend(int)));
+    
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -664,6 +665,8 @@ void VtkColorGradient::updateDataVtkColorStyle()
     m_vtkColorStyle.m_colorAdd     = true;
     m_vtkColorStyle.m_slope        = ui->m_setslope->value();
     double graydelta               = m_grayMax - m_grayMin;
+
+    m_vtkColorStyle.m_blendMode = ui->m_blendBox->currentIndex();
 
     QPolygonF points = m_gradientShape->getPoints();
     int sizeGra      = points.size();
@@ -724,20 +727,27 @@ void VtkColorGradient::update3D()
     }
 }
 
+void VtkColorGradient::updateBlend(int blend)
+{
+    //m_vtkColorStyle.m_blendMode = blend;
+    update3D();
+}
+
 void VtkColorGradient::updateIsosurface()
 {
-    bool bok = false;
-    QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
-    if (bok)
-    {
-        //color.setAlpha(255);
-        //ui->m_isosurfaceSpinBox->
-        QString foreground = QString(";color:") + (color.value() < 128 ? "white" : "black");
-        ui->m_isosurfaceSpinBox->setStyleSheet(QString("background-color:") + color.name() + foreground);
-        ui->m_isosurfaceSpinBox->setValue(color.alpha());
-    }
-
-    update3D();
+   //bool bok = false;
+   //QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
+   //if (bok)
+   //{
+   //    int alpha = color.alpha();
+   //    QString foreground = QString(";color:") + (color.value() < 128 ? "white" : "black");
+   //    ui->m_isosurfaceSpinBox->setStyleSheet(QString("background-color:") + color.name() + foreground);
+   //    ui->m_isosurfaceSpinBox->setValue(color.alpha());
+   //
+   //    m_vtkColorStyle.m_bisosurface = true;
+   //    m_vtkColorStyle.m_isosurface  = color;
+   //}
+   //update3D();
 }
 
 VtkColorGradient::~VtkColorGradient()
