@@ -311,16 +311,16 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_colorTranF = nullptr;
 
     //m_volumeMapper = vtkGPUVolumeRayCastMapper::New();
-    m_volumeMapper = vtkSmartVolumeMapper::New();
+    m_volumeMapper     = vtkSmartVolumeMapper::New();
 
 	m_isosurfaceFilter = vtkImageMarchingCubes::New();
 
-	m_volumeProperty = vtkVolumeProperty::New();
+	m_volumeProperty   = vtkVolumeProperty::New();
 
-	m_isosurfaceActor = vtkActor::New();
+	m_isosurfaceActor  = vtkActor::New();
     m_isosurfaceActor->GetProperty()->SetColor(1.0, 0.85, 0.7);  // 设置皮肤色（RGB）
 
-	m_renderer = vtkRenderer::New();
+	m_renderer  = vtkRenderer::New();
 
 	m_vtkVolume = vtkVolume::New();
 	m_vtkVolume->SetProperty(m_volumeProperty);
