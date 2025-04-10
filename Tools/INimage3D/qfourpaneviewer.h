@@ -66,16 +66,15 @@ public:
 	double m_defaultLevel;
 	double m_defaultWindow;
 
-	void ShowImagePlane();
+    void ShowImagePlaneAnd3D();
 
-	void ShowImagePlaneAnd3D();
+	void ShowImagePlane();
 
     void ShowImage3D();
 
 	void ShowEditorsWidget();
 
     void SavePaneImage();
-
 
 	//show 3D
 public:

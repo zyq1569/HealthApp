@@ -76,7 +76,7 @@ protected:
 		if (!m_fourPaneviewer)
 			return;
 
-        m_fourPaneviewer->INshowVolume3D();
+        m_fourPaneviewer->ShowImage3D();
 	}
 private:
 	QFourpaneviewer *m_fourPaneviewer;
@@ -446,7 +446,6 @@ void QFourpaneviewer::ShowEditorsWidget()
             }
         }
         //++++++++++++++++++++++++++++++++++++++++
-
 
         if (m_vtkColorGradient)
         {
@@ -865,7 +864,6 @@ void QFourpaneviewer::ShowImage3D()
 	}
 
 
-
 	m_volumeMapper->SetInputData(imageData);
     //m_volumeMapper->SetBlendModeToIsoSurface();//
     m_volumeMapper->SetBlendModeToComposite();
@@ -873,7 +871,6 @@ void QFourpaneviewer::ShowImage3D()
 
 	// force the mapper to compute a sample distance based on data spacing
 	m_volumeMapper->SetSampleDistance(-1.0);
-    std::cout << "Mapper class: " << m_volumeMapper->GetClassName() << std::endl;
 
 	//m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
 	m_isosurfaceFilter->SetInputData(imageData);
@@ -883,7 +880,6 @@ void QFourpaneviewer::ShowImage3D()
         m_volumeMapper->SetSampleDistance(m_MainWindow->m_sampleDistance);
     }
 
-	//m_renderer->SetBackground(0.01, 0.01, 0.01);//
 	m_renderer->SetBackground(0, 0, 0);
 	m_renderer->ResetCamera();
 	m_renderer->GetActiveCamera()->Zoom(1.5);
@@ -895,7 +891,7 @@ void QFourpaneviewer::ShowImage3D()
 	m_renderer->SetMaximumNumberOfPeels(100);
 	m_renderer->SetOcclusionRatio(0.1);
     //
-	ui->m_mpr2DView->renderWindow()->AddRenderer(m_renderer);//ui->m_mpr2DView->show();
+	ui->m_image3DView->renderWindow()->AddRenderer(m_renderer);
 }
 
 QFourpaneviewer::~QFourpaneviewer()
