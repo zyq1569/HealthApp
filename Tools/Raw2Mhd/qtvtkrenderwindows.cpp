@@ -169,6 +169,11 @@ void QtVTKRenderWindows::raw2vtkmhd()
 		std::string mhdFilename_new = qPrintable(mhd);
 		vtkSmartPointer<vtkMetaImageWriter> writer = vtkSmartPointer<vtkMetaImageWriter>::New();
 		writer->SetFileName(mhdFilename_new.c_str());
+        //--可以修改后缀名称——---20250410-
+        //mhd = dir + savefname + ".raw";
+        //std::string mhdFilename_new = qPrintable(mhd);
+        //writer->SetRAWFileName(mhdFilename_new.c_str());
+        //----------------------------------------------
 		writer->SetInputData(metaReader->GetOutput());
 		writer->Write();
 
@@ -275,7 +280,7 @@ void QtVTKRenderWindows::raw2mhd()
 		reader->SetFileName(filename.c_str());
 		reader->SetFileDimensionality(2);  // 2D 图像
 		reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
-		reader->SetDataScalarTypeToShort();  // 符号整型
+		reader->SetDataScalarTypeToUnsignedShort();  // 无符号整型
 		reader->SetNumberOfScalarComponents(1);
 		reader->SetFileLowerLeft(true);  // 数据从左下角开始
 		// 设置像素间距
@@ -284,7 +289,7 @@ void QtVTKRenderWindows::raw2mhd()
 
 		vtkSmartPointer<vtkImageData> imageData = reader->GetOutput();
 		int* dims = imageData->GetDimensions();
-		int dataSize = dims[0] * dims[1] * sizeof(short);
+		int dataSize = dims[0] * dims[1] * sizeof(unsigned short);;
 		rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
 
 	}
@@ -316,6 +321,11 @@ void QtVTKRenderWindows::raw2mhd()
 		std::string mhdFilename_new = qPrintable(mhd);
 		vtkSmartPointer<vtkMetaImageWriter> writer = vtkSmartPointer<vtkMetaImageWriter>::New();
 		writer->SetFileName(mhdFilename_new.c_str());
+        //--可以修改后缀名称——---20250410-
+        //mhd = dir + savefname + ".raw";
+        //std::string mhdFilename_new = qPrintable(mhd);
+        //writer->SetRAWFileName(mhdFilename_new.c_str());
+        //----------------------------------------------
 		writer->SetInputData(metaReader->GetOutput());
 		writer->Write();
 
