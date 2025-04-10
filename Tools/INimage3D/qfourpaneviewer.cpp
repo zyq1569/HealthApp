@@ -583,7 +583,6 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
         int blendMode = colorValue.m_blendMode;
         if (blendMode == 5)
         {
-
             m_volumeMapper->SetBlendMode(0);
             m_renderer->AddActor(m_isosurfaceActor);
             m_bremoveActor = true;
