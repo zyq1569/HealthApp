@@ -93,10 +93,8 @@ protected:
 
 protected slots:
     void update3D();
-
-    void updateIsosurface();
-
-    void updateBlend(int blend);
+    void saveValues3D();
+    void loadFileValues();
 
 private:
     Ui::VtkColorGradient *ui;

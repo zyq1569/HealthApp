@@ -602,8 +602,7 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
         {
             m_renderer->RemoveActor(m_isosurfaceActor);
             m_bremoveActor = false;
-        }
-        
+        }    
         //+++++++++++++
 
         ui->m_mpr2DView->renderWindow()->Render();
@@ -973,46 +972,3 @@ QFourpaneviewer::~QFourpaneviewer()
     }
     delete ui;
 }
-
-/**
- * Blend modes.
- * The default mode is Composite where the scalar values are sampled through
- * the volume and composited in a front-to-back scheme through alpha blending.
- * The final color and opacity is determined using the color and opacity
- * transfer functions.
- *
- * Maximum and minimum intensity blend modes use the maximum and minimum
- * scalar values, respectively,  along the sampling ray. The final color and
- * opacity is determined by passing the resultant value through the color and
- * opacity transfer functions.
- *
- * Additive blend mode accumulates scalar values by passing each value through
- * the opacity transfer function and then adding up the product of the value
- * and its opacity. In other words, the scalar values are scaled using the
- * opacity transfer function and summed to derive the final color. Note that
- * the resulting image is always grayscale i.e. aggregated values are not
- * passed through the color transfer function. This is because the final
- * value is a derived value and not a real data value along the sampling ray.
- *
- * Average intensity blend mode works similar to the additive blend mode where
- * the scalar values are multiplied by opacity calculated from the opacity
- * transfer function and then added. The additional step here is to
- * divide the sum by the number of samples taken through the volume.
- * One can control the scalar range by setting the AverageIPScalarRange ivar
- * to disregard scalar values, not in the range of interest, from the average
- * computation.
- * As is the case with the additive intensity projection, the final
- * image will always be grayscale i.e. the aggregated values are not
- * passed through the color transfer function. This is because the
- * resultant value is a derived value and not a real data value along
- * the sampling ray.
- *
- * IsoSurface blend mode uses contour values defined by the user in order
- * to display scalar values only when the ray crosses the contour. It supports
- * opacity the same way composite blend mode does.
- *
- * \note vtkVolumeMapper::AVERAGE_INTENSITY_BLEND and ISOSURFACE_BLEND are
- * only supported by the vtkGPUVolumeRayCastMapper with the OpenGL2 backend.
- * \sa SetAverageIPScalarRange()
- * \sa GetIsoSurfaceValues()
- */

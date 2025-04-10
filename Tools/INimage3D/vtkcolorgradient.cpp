@@ -9,6 +9,7 @@
 #include<QPainterPath>
 #include<QColorDialog>
 #include<QMessageBox>
+#include<QSettings>
 
 GradientShape::GradientShape(QWidget *widget, ShapeStyle style)
 {
@@ -726,27 +727,71 @@ void VtkColorGradient::update3D()
     }
 }
 
-void VtkColorGradient::updateBlend(int blend)
+void VtkColorGradient::saveValues3D()
 {
+    updateDataVtkColorStyle();
+    m_vtkColorStyle.m_colorOpacity = true;
+    m_vtkColorStyle.m_colorAdd     = true;
+    QList<VtkColorPoint> points    = m_vtkColorStyle.m_colorPoint;
+    int count = points.size();
+    QSettings settings("config.ini", QSettings::IniFormat);
+    if (count > 0)
+    {      
+        bool colorOpacity, colorAdd;
+        colorOpacity = m_vtkColorStyle.m_colorOpacity;
+        colorAdd = m_vtkColorStyle.m_colorAdd;
+        int r, g, b;
+        QString str;
+        for (unsigned short i = 0; i < count; i++)
+        {
+            double x = points.at(i).m_X;
+            QColor color = points.at(i).m_Color;
+            int alpha = color.alpha();
+            r = color.red();
+            g = color.green();
+            b = color.blue();
+            str += QString("%1|%2|%3|%4|%5;").arg(x).arg(r).arg(g).arg(b).arg(alpha);
+        }
+        settings.setValue("VtkColorStyle/points", str);
+        settings.setValue("VtkColorStyle/colorOpacity", colorOpacity);
+        settings.setValue("VtkColorStyle/colorAdd", colorAdd);
+    }
+    settings.setValue("VtkColorStyle/m_slope", m_vtkColorStyle.m_slope);
 }
 
-void VtkColorGradient::updateIsosurface()
+void VtkColorGradient::loadFileValues()
 {
-   //bool bok = false;
-   //QColor color = QColor::fromRgba(QColorDialog::getRgba(color.rgba(), &bok));
-   //if (bok)
-   //{
-   //    int alpha = color.alpha();
-   //    QString foreground = QString(";color:") + (color.value() < 128 ? "white" : "black");
-   //    ui->m_isosurfaceSpinBox->setStyleSheet(QString("background-color:") + color.name() + foreground);
-   //    ui->m_isosurfaceSpinBox->setValue(color.alpha());
-   //
-   //    m_vtkColorStyle.m_bisosurface = true;
-   //    m_vtkColorStyle.m_isosurface  = color;
-   //}
-   //update3D();
+    //QList<VtkColorPoint> points = m_vtkColorStyle.m_colorPoint;
+    //bool lastIsInterval = false;
+    //
+    //for (unsigned short i = 0; i < points.size(); i++)
+    //{
+    //    double x = points.at(i).m_X;
+    //
+    //    QColor color = points.at(i).m_Color;
+    //    if (i == 0 || color != current->color())
+    //    {
+    //        if (i > 0)
+    //        {
+    //            current = next;
+    //            if (i < points.size() - 1)
+    //            {
+    //                next = addIntervalAndReturnIt();
+    //            }
+    //        }
+    //
+    //        current->setStart(static_cast<int>(qRound(x)));
+    //        current->setColor(color);
+    //        lastIsInterval = false;
+    //    }
+    //    else
+    //    {
+    //        current->setIsInterval(true);
+    //        current->setEnd(static_cast<int>(qRound(x)));
+    //        lastIsInterval = true;
+    //    }
+    //}
 }
-
 VtkColorGradient::~VtkColorGradient()
 {
     delete ui;
