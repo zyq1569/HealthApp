@@ -355,7 +355,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 }
 
 #define VTKRCP vtkResliceCursorRepresentation
-void QFourpaneviewer::SavePaneImage()
+void QFourpaneviewer::SaveImagePaneBMP()
 {
     QString dir = QCoreApplication::applicationDirPath()+"\\";
     vtkSmartPointer<vtkPNGWriter> writer        = vtkSmartPointer<vtkPNGWriter>::New();

@@ -74,7 +74,7 @@ public:
 
 	void ShowEditorsWidget();
 
-    void SavePaneImage();
+    void SaveImagePaneBMP();
 
 	//show 3D
 public:

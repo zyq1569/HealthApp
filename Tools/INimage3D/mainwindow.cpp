@@ -81,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         if (m_image4Plane)
         {
-            ((QFourpaneviewer*)m_image4Plane)->SavePaneImage();
+            ((QFourpaneviewer*)m_image4Plane)->SaveImagePaneBMP();
         }
     });
 
