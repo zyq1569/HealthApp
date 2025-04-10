@@ -1,7 +1,7 @@
 #include "qtvtkrenderwindows.h"
 
 #include <QApplication>
-
+//D:\TEMP\DL\volume_1 1536 1536 0 300 VG NULL 5 cmd_VTKData 1
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
