@@ -722,7 +722,7 @@ void VtkColorGradient::update3D()
         if (!m_vtkColorStyle.m_bpointValue)
         {
             updateDataVtkColorStyle();
-            ((QFourpaneviewer*)m_parentViewer)->UpdateColorGradient3D(m_vtkColorStyle);
+            ((QFourpaneviewer*)m_parentViewer)->Update3DColorByCoordinate(m_vtkColorStyle);
         }
     }
 }

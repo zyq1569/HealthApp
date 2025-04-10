@@ -47,8 +47,8 @@ private:
 
 public slots:
 	void ResetViewer();
-	void ResetColor3D(VtkColorStyle colorValue);
-    void UpdateColorGradient3D(VtkColorStyle colorValue);
+	void Update3DColorByPointEditor(VtkColorStyle colorValue);
+    void Update3DColorByCoordinate(VtkColorStyle colorValue);
 
 signals:
     void LoadConfigFiles();
