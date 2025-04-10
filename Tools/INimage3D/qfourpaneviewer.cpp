@@ -578,27 +578,19 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
         //m_isosurfaceFilter->ComputeScalarsOff(); //ScalarsOff 数据（否则 Mapper 会默认启用 Scalar）
         //m_isosurfaceActor->GetProperty()->SetColor(0.9, 0.9, 0.9);
 
+        m_volumeMapper->SetBlendMode(colorValue.m_blendMode);
         //+++++++++++++
         int blendMode = colorValue.m_blendMode;
         if (blendMode == 5)
         {
+
+            m_volumeMapper->SetBlendMode(0);
             m_renderer->AddActor(m_isosurfaceActor);
             m_bremoveActor = true;
             m_isosurfaceMapper->ScalarVisibilityOff();
             m_isosurfaceFilter->ComputeScalarsOff(); //ScalarsOff 数据（否则 Mapper 会默认启用 Scalar）
             QList<VtkColorPoint> points = colorValue.m_colorPoint;
-            int len = points.size();
-            //for (int i = 0; i < len; i++)
-            //{
-            //    auto autoActor = vtkSmartPointer<vtkActor>::New();
-            //    autoActor->SetMapper(m_isosurfaceMapper);
-            //
-            //    QColor color = points.at(i).m_Color;
-            //    double x = points.at(i).m_X;
-            //    m_isosurfaceFilter->SetValue(i, x);
-            //    autoActor->GetProperty()->SetColor(color.redF(), color.greenF(), color.blueF());
-            //    m_renderer->AddActor(autoActor);
-            //}      
+            int len = points.size();    
             QColor color = points.at(len-1).m_Color;
             m_isosurfaceActor->GetProperty()->SetColor(color.redF(), color.greenF(), color.blueF());
             m_isosurfaceActor->GetProperty()->SetAmbient(colorValue.m_Ambient);//环境光系数
@@ -612,11 +604,9 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
             m_renderer->RemoveActor(m_isosurfaceActor);
             m_bremoveActor = false;
         }
-        m_volumeMapper->SetBlendMode(colorValue.m_blendMode);
         
         //+++++++++++++
 
-        //m_renderer->RemoveActor(m_isosurfaceActor);  // 添加等值面到渲染器
         ui->m_mpr2DView->renderWindow()->Render();
     }
 }

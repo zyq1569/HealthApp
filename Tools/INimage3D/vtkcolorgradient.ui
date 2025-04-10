@@ -468,7 +468,7 @@ border-radius: 20px;
     </item>
     <item>
      <property name="text">
-      <string>Isosurface</string>
+      <string>Composite-Isosurface</string>
      </property>
     </item>
    </widget>
