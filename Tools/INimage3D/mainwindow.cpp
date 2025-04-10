@@ -227,5 +227,5 @@ void MainWindow::showImage4Plane()
     {
         return;
     }
-    ((QFourpaneviewer*)m_image4Plane)->Show3DPlane();
+    ((QFourpaneviewer*)m_image4Plane)->ShowImagePlaneAnd3D();
 }

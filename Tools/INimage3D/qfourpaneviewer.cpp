@@ -467,7 +467,7 @@ void QFourpaneviewer::ShowImagePlaneAnd3D()
 
     ShowImagePlane();
 	ResetViewer();//第一个切图窗口
-	ui->m_mpr2DView->renderWindow()->Render();
+	ui->m_image3DView->renderWindow()->Render();
 
 }
 
@@ -604,7 +604,7 @@ void QFourpaneviewer::UpdateColorGradient3D(VtkColorStyle colorValue)
         }    
         //+++++++++++++
 
-        ui->m_mpr2DView->renderWindow()->Render();
+        ui->m_image3DView->renderWindow()->Render();
     }
 }
 
@@ -700,7 +700,7 @@ void QFourpaneviewer::ResetColor3D(VtkColorStyle colorValue)
         //+++++++++++++++++++++++++++
 
         m_renderer->RemoveActor(m_isosurfaceActor); // AddActor(m_isosurfaceActor);  // 添加等值面到渲染器
-		ui->m_mpr2DView->renderWindow()->Render();
+		ui->m_image3DView->renderWindow()->Render();
 	}
 }
 void QFourpaneviewer::ShowImagePlane()
