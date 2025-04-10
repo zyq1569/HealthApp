@@ -455,7 +455,7 @@ void QFourpaneviewer::ShowEditorsWidget()
     }
 }
 
-void QFourpaneviewer::Show3DPlane()
+void QFourpaneviewer::ShowImagePlaneAnd3D()
 {
     Queue queue3D;
 
@@ -466,7 +466,7 @@ void QFourpaneviewer::Show3DPlane()
 	QSharedPointer<Job> job(new Volume3DJob(this));
 	queue3D.enqueue(job);// 将任务加入队列
 
-	INimage3D();
+    ShowImagePlane();
 	ResetViewer();//第一个切图窗口
 	ui->m_mpr2DView->renderWindow()->Render();
 
@@ -704,7 +704,7 @@ void QFourpaneviewer::ResetColor3D(VtkColorStyle colorValue)
 		ui->m_mpr2DView->renderWindow()->Render();
 	}
 }
-void QFourpaneviewer::INimage3D()
+void QFourpaneviewer::ShowImagePlane()
 {
 	if (!m_MainWindow->m_vtkImageData)
 	{
@@ -806,7 +806,7 @@ void QFourpaneviewer::INimage3D()
 	}	//ui->m_axial2DView->show();	//ui->m_sagital2DView->show();	//ui->m_coronal2DView->show();
 }
 
-void QFourpaneviewer::INshowVolume3D()
+void QFourpaneviewer::ShowImage3D()
 {
 	if (!m_MainWindow->m_vtkImageData)
 		return;

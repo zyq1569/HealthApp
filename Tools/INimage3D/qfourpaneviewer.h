@@ -66,9 +66,11 @@ public:
 	double m_defaultLevel;
 	double m_defaultWindow;
 
-	void INimage3D();
+	void ShowImagePlane();
 
-	void Show3DPlane();
+	void ShowImagePlaneAnd3D();
+
+    void ShowImage3D();
 
 	void ShowEditorsWidget();
 
@@ -109,7 +111,6 @@ public:
     int m_numberPixels;
 
 public:
-	void INshowVolume3D();
 
 	Ui::QFourpaneviewer * GetUI() { return ui; };
 };
