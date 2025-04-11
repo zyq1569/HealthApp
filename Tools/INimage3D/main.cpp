@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     {
         RECT dims = GetMonitorRectBounds(i);
         int h = dims.bottom - dims.top;
-        double scale = (h > 1080) ? ((double)h / 1000.0) : 1.0;
+        double scale = (h > 1080) ? ((double)h / 1080.0) : 1.0;
         scaleFactor += (i == 0 ? "" : ";") + QString::number(scale, 'f', 1);
     }
 
