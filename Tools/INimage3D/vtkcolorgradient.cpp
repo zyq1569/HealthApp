@@ -597,14 +597,14 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
                                                                         if (ui->m_synUpdate3D->isChecked())
                                                                         {
                                                                             //m_vtkColorStyle.m_slope = ui->m_sliderslope->value();
-                                                                            update3D();
+                                                                            updateImage3D();
                                                                         }  
                                                                       });
     connect(ui->m_setslope, spinBoxSignal, [=](int vlue)  {
                                                             if (ui->m_synUpdate3D->isChecked())
                                                             {
                                                                 //m_vtkColorStyle.m_slope = ui->m_setslope->value();
-                                                                update3D();
+                                                                updateImage3D();
                                                             }
                                                           });
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -624,15 +624,15 @@ VtkColorGradient::VtkColorGradient(QWidget *parent) : QWidget(parent), ui(new Ui
                                                                         }
                                                                      });
 
-    connect(ui->m_pbUdate3D, &QPushButton::pressed, this,&VtkColorGradient::update3D);
+    connect(ui->m_pbUdate3D, &QPushButton::pressed, this,&VtkColorGradient::updateImage3D);
 
-    connect(m_gradientShape, &GradientShape::update3D, this, &VtkColorGradient::update3D);
-    connect(m_colorBar, &GradientShape::update3D, this, &VtkColorGradient::update3D);
+    connect(m_gradientShape, &GradientShape::update3D, this, &VtkColorGradient::updateImage3D);
+    connect(m_colorBar, &GradientShape::update3D, this, &VtkColorGradient::updateImage3D);
 
     connect(ui->m_shadingGBox, &QGroupBox::clicked, [=](bool check) {
                                                                         if (ui->m_synUpdate3D->isChecked())
                                                                         {
-                                                                            update3D();
+                                                                            updateImage3D();
                                                                         }
                                                                     });
 
@@ -715,7 +715,7 @@ void VtkColorGradient::updateDataVtkColorStyle()
     }
 }
 
-void VtkColorGradient::update3D()
+void VtkColorGradient::updateImage3D()
 {
     if (m_parentViewer)
     {
@@ -727,7 +727,7 @@ void VtkColorGradient::update3D()
     }
 }
 
-void VtkColorGradient::saveValues3D()
+void VtkColorGradient::saveParametersOfImage3D()
 {
     updateDataVtkColorStyle();
     m_vtkColorStyle.m_colorOpacity = true;
@@ -761,36 +761,7 @@ void VtkColorGradient::saveValues3D()
 
 void VtkColorGradient::loadFileValues()
 {
-    //QList<VtkColorPoint> points = m_vtkColorStyle.m_colorPoint;
-    //bool lastIsInterval = false;
-    //
-    //for (unsigned short i = 0; i < points.size(); i++)
-    //{
-    //    double x = points.at(i).m_X;
-    //
-    //    QColor color = points.at(i).m_Color;
-    //    if (i == 0 || color != current->color())
-    //    {
-    //        if (i > 0)
-    //        {
-    //            current = next;
-    //            if (i < points.size() - 1)
-    //            {
-    //                next = addIntervalAndReturnIt();
-    //            }
-    //        }
-    //
-    //        current->setStart(static_cast<int>(qRound(x)));
-    //        current->setColor(color);
-    //        lastIsInterval = false;
-    //    }
-    //    else
-    //    {
-    //        current->setIsInterval(true);
-    //        current->setEnd(static_cast<int>(qRound(x)));
-    //        lastIsInterval = true;
-    //    }
-    //}
+
 }
 VtkColorGradient::~VtkColorGradient()
 {

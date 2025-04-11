@@ -92,8 +92,8 @@ protected:
     void updateDataVtkColorStyle();
 
 protected slots:
-    void update3D();
-    void saveValues3D();
+    void updateImage3D();
+    void saveParametersOfImage3D();
     void loadFileValues();
 
 private:

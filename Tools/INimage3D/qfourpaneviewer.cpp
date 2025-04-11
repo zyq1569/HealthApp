@@ -332,6 +332,9 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
 	m_renderer->AddViewProp(m_vtkVolume);
 
+    m_pieceF     = vtkPiecewiseFunction::New();
+    m_pieceGradF = vtkPiecewiseFunction::New();
+
     //add ----ISO
     m_renderer->AddActor(m_vtkVolume);  // 添加体绘制到渲染器
     //m_renderer->AddActor(m_isosurfaceActor);  // 添加等值面到渲染器
@@ -811,42 +814,33 @@ void QFourpaneviewer::ShowImage3D()
 		return;
 
 	vtkImageData *imageData = m_MainWindow->m_vtkImageData;
-
-	m_pieceF = vtkPiecewiseFunction::New();//	m_pieceF->AddPoint(0, 1.0); m_pieceF->AddPoint(255, 1.0);  // 低梯度区域完全不透明 // 高梯度区域同样不透明（相当于禁用梯度影响）
+	//
+    m_pieceF->AddPoint(0, 1.0); m_pieceF->AddPoint(255, 1.0);  // 低梯度区域完全不透明 // 高梯度区域同样不透明（相当于禁用梯度影响）
 	m_MainWindow->m_checkOpacity ?(m_pieceF->AddPoint(167.00000000000000, 0.16862745098039220),m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491)):(m_pieceF->AddPoint(255, 1.0));
-	 // 完全不透明	m_pieceF->AddPoint(167.00000000000000, 0.16862745098039220);	m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491);
-	//m_pieceF->AddPoint(445.00000000000000, 0.57254901960784310);
-	m_pieceF->AddPoint(1455.0000000000000, 0.87450980392156863);
-	//m_pieceF->AddPoint(2784.0000000000000, 0.88235294117647056);
-	/**/
+	 
 	m_volumeProperty->SetScalarOpacity(m_pieceF);
 
 	if (m_MainWindow->m_check3Dcolor)
 	{
-		m_colorTranF = vtkColorTransferFunction::New();	//m_colorTranF->AddRGBPoint(0, 0.0, 0.0, 0.0);  m_colorTranF->AddRGBPoint(255, 1.0, 1.0, 1.0);  // 黑色// 白色
+		m_colorTranF = vtkColorTransferFunction::New();	
 		//气孔 半透明/黑色，可见但不影响主体观察。		//金属正常区域 白色，结构清晰可见。		//夹杂物 红色 + 高不透明度，突出异常区域。
 		m_colorTranF->AddRGBPoint(-1000.0, 0.0, 0.0, 0.0); // 空气 -> 黑色
 		m_colorTranF->AddRGBPoint(200.0, 0.8, 0.8, 0.8);   // 低密度区域 -> 灰色
 		m_colorTranF->AddRGBPoint(800.0, 1.0, 1.0, 1.0);   // 金属主体 -> 白色
-		//m_colorTranF->AddRGBPoint(1500.0, 1.0, 0.0, 0.0);  // 夹杂物 -> 红色（高密度）
         m_colorTranF->AddRGBPoint(1500.0, 190, 143, 74);  // 夹杂物 -> 红色（高密度）
 		m_volumeProperty->SetColor(m_colorTranF);
-
 	}
 
 	//关闭梯度透明
-	m_pieceGradF = vtkPiecewiseFunction::New();
 	m_pieceGradF->AddPoint(1, 0.0);
 	m_pieceGradF->AddPoint(70, 0.5);
 	m_pieceGradF->AddPoint(130, 1.0);
 	m_pieceGradF->AddPoint(300, 0.1);
 	m_volumeProperty->SetGradientOpacity(m_pieceGradF);
 
-
 	m_volumeProperty->ShadeOn();
 	//m_volumeProperty->ShadeOff();
-	m_volumeProperty->SetInterpolationType(m_MainWindow->m_cbInterType);//m_volumeProperty->SetInterpolationTypeToNearest();m_volumeProperty->SetInterpolationTypeToLinear();//m_volumeProperty->SetInterpolationTypeToCubic();
-
+	m_volumeProperty->SetInterpolationType(m_MainWindow->m_cbInterType);
 
 	//-----一般 环境光系数+散射光系数+反射光系数=1.0,  提供亮度可以大于1.0
 	m_volumeProperty->SetAmbient(0.4);//环境光系数
@@ -863,9 +857,7 @@ void QFourpaneviewer::ShowImage3D()
 		m_volumeProperty->DisableGradientOpacityOn();//关闭梯度透明度
 	}
 
-
 	m_volumeMapper->SetInputData(imageData);
-    //m_volumeMapper->SetBlendModeToIsoSurface();//
     m_volumeMapper->SetBlendModeToComposite();
 	m_volumeMapper->SetRequestedRenderModeToDefault();
 
