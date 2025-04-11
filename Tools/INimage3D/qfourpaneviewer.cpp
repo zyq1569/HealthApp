@@ -295,7 +295,6 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	//////////////////////////////////////////////////////////////////
 	//color 窗体颜色编辑值信号
 	connect(ui->m_editorByValues, &QEditorByValues::signalsColorValue,this, &QFourpaneviewer::Update3DColorByPointEditor);
-    //connect(ui->m_editorByValues, &QEditorByValues::show, ui->m_editorByValues, &QFourpaneviewer::ResetColor3D);
     connect(this, &QFourpaneviewer::LoadConfigFiles, ui->m_editorByValues, &QEditorByValues::loadFileValues);
     
 	/////////////////////////////////////////////////////////////////////
