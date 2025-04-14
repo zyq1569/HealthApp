@@ -319,7 +319,7 @@ QSlider::handle:vertical
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>2</x>
+      <x>184</x>
       <y>38</y>
       <width>66</width>
       <height>36</height>
@@ -354,7 +354,7 @@ border-radius: 20px;
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>71</x>
+      <x>253</x>
       <y>38</y>
       <width>66</width>
       <height>36</height>
@@ -389,7 +389,7 @@ border-radius: 20px;
    <widget class="QPushButton" name="m_pbUdate3D">
     <property name="geometry">
      <rect>
-      <x>142</x>
+      <x>324</x>
       <y>38</y>
       <width>66</width>
       <height>36</height>

@@ -416,19 +416,22 @@ void QFourpaneviewer::SaveImagePaneBMP()
 
 void QFourpaneviewer::ShowEditorsWidget()
 {
+    /*
+
     if (m_MainWindow->m_colorGradient)
+    {    */
+    //只保留折线调图
+    if (!m_vtkColorGradient)
     {
-        if (!m_vtkColorGradient)
-        {
-	        m_vtkColorGradient = new VtkColorGradient(this);
-            m_vtkColorGradient->setGeometry(this->width()/2, 5, m_vtkColorGradient->width(), m_vtkColorGradient->height());
-        }
-        if (m_vtkColorGradient)
-        {
-            (m_vtkColorGradient->isHidden())?(m_vtkColorGradient->show()):(m_vtkColorGradient->hide());
-        }
-        ui->m_editorsWidget->hide();
+	    m_vtkColorGradient = new VtkColorGradient(this);
+        m_vtkColorGradient->setGeometry(this->width()/2, 5, m_vtkColorGradient->width(), m_vtkColorGradient->height());
     }
+    if (m_vtkColorGradient)
+    {
+        (m_vtkColorGradient->isHidden())?(m_vtkColorGradient->show()):(m_vtkColorGradient->hide());
+    }
+    ui->m_editorsWidget->hide();
+    /*}
     else
     {
         m_showEditors ? (ui->m_editorsWidget->hide()) : (ui->m_editorsWidget->show());
@@ -453,7 +456,7 @@ void QFourpaneviewer::ShowEditorsWidget()
         {
             m_vtkColorGradient->hide();
         }
-    }
+    }*/
 }
 
 void QFourpaneviewer::ShowImagePlaneAnd3D()
@@ -540,24 +543,16 @@ void QFourpaneviewer::Update3DColorByCoordinate(VtkColorStyle colorValue)
             m_volumeProperty->DisableGradientOpacityOn();//关闭梯度透明度
         }
 
-        if (colorValue.m_colorAdd)
-        {
-            QList<VtkColorPoint> points = colorValue.m_colorPoint;
-            if (m_colorTranF)
-            {
-                m_colorTranF->RemoveAllPoints();
-                for (unsigned short i = 0; i < points.size(); i++)
-                {
-                    double x = points.at(i).m_X;
-                    QColor color = points.at(i).m_Color;
-                    m_colorTranF->AddRGBPoint(x, color.redF(), color.greenF(), color.blueF());
-                }
-                m_volumeProperty->SetColor(m_colorTranF);
-            }
-        }
-        else
+        QList<VtkColorPoint> points = colorValue.m_colorPoint;
+        if (m_colorTranF)
         {
             m_colorTranF->RemoveAllPoints();
+            for (unsigned short i = 0; i < points.size(); i++)
+            {
+                double x = points.at(i).m_X;
+                QColor color = points.at(i).m_Color;
+                m_colorTranF->AddRGBPoint(x, color.redF(), color.greenF(), color.blueF());
+            }
             m_volumeProperty->SetColor(m_colorTranF);
         }
 
@@ -574,10 +569,6 @@ void QFourpaneviewer::Update3DColorByCoordinate(VtkColorStyle colorValue)
         {
             m_volumeProperty->ShadeOff();
         }
-        //+++IsoSurface test set color
-        //m_isosurfaceMapper->ScalarVisibilityOff();
-        //m_isosurfaceFilter->ComputeScalarsOff(); //ScalarsOff 数据（否则 Mapper 会默认启用 Scalar）
-        //m_isosurfaceActor->GetProperty()->SetColor(0.9, 0.9, 0.9);
 
         m_volumeMapper->SetBlendMode(colorValue.m_blendMode);
         //+++++++++++++
