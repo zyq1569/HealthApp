@@ -699,6 +699,7 @@ void VtkColorGradient::updateDataVtkColorStyle()
     {
         pt.m_X     = m_grayMin + (clpoints[i].rx() - clpoints[0].rx())*graydelta / x_cldelta;
         pt.m_Color = colors[i];
+        m_vtkColorStyle.m_colorPoint.append(pt);
     }
     pt.m_X     = m_grayMax;
     pt.m_Color = colors[sizeColor - 1];
