@@ -873,7 +873,6 @@ void QFourpaneviewer::ShowImage3D()
 	m_isosurfaceFilter->SetInputData(imageData);
     if (m_MainWindow->m_sampleDistanceCheck)
     {
-        //m_volumeMapper->SetRequestedRenderModeToRayCast();
         m_volumeMapper->SetSampleDistance(m_MainWindow->m_sampleDistance);
     }
 
