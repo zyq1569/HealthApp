@@ -49,6 +49,8 @@
 #include <vtkPNGWriter.h>
 #include <vtkJPEGWriter.h>
 #include <vtkBMPWriter.h>
+#include <vtkcolorgradient.h>
+#include <vtkWindowToImageFilter.h>
 
 #include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
@@ -62,7 +64,6 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 #include <QDateTime>
 #include <QFileDialog>
 
-#include "vtkcolorgradient.h"
 using namespace ThreadWeaver;
 
 class Volume3DJob : public Job 
@@ -333,6 +334,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 
     m_pieceF     = vtkPiecewiseFunction::New();
     m_pieceGradF = vtkPiecewiseFunction::New();
+    m_colorTranF = vtkColorTransferFunction::New();
 
     //add ----ISO
     m_renderer->AddActor(m_vtkVolume);  // 添加体绘制到渲染器
@@ -403,7 +405,7 @@ void QFourpaneviewer::SaveImagePaneBMP()
                 mapToColors->Update();
                 QString imagefileName = fileName;// dir + QString::number(QDateTime::currentDateTime().toTime_t()) + QString::number(i) + ".png";
                 QString insertStr     = "_" + QString::number(i) + ".";
-                imagefileName = imagefileName.replace(pos,1, insertStr);
+                imagefileName    = imagefileName.replace(pos,1, insertStr);
                 std::string str  = qPrintable(imagefileName);
                 writer->SetFileName(str.c_str());
                 writer->SetInputData(mapToColors->GetOutput());
@@ -412,6 +414,20 @@ void QFourpaneviewer::SaveImagePaneBMP()
             }
         }
     }
+    //----20250416- add:保存当前三维展示的图为2维,当前保存的是显示效果的图,如果需要原始采样数据,直接保存对应的vtkImageData数据(非0-255值)
+    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+    windowToImageFilter->SetInput(ui->m_image3DView->renderWindow());
+    windowToImageFilter->Update();
+    windowToImageFilter->Modified();
+    QString imagefileName = fileName;// dir + QString::number(QDateTime::currentDateTime().toTime_t()) + QString::number(i) + ".png";
+    QString insertStr = "_3." ;
+    imagefileName = imagefileName.replace(pos, 1, insertStr);
+    std::string str = qPrintable(imagefileName);
+    writer->SetFileName(str.c_str());
+    writer->SetInputData(windowToImageFilter->GetOutput());
+    writer->Update();
+    writer->Write();
+
 }
 
 void QFourpaneviewer::ShowEditorsWidget()
@@ -811,8 +827,7 @@ void QFourpaneviewer::ShowImage3D()
 	m_volumeProperty->SetScalarOpacity(m_pieceF);
 
 	if (m_MainWindow->m_check3Dcolor)
-	{
-		m_colorTranF = vtkColorTransferFunction::New();	
+	{	
 		//气孔 半透明/黑色，可见但不影响主体观察。		//金属正常区域 白色，结构清晰可见。		//夹杂物 红色 + 高不透明度，突出异常区域。
 		m_colorTranF->AddRGBPoint(-1000.0, 0.0, 0.0, 0.0); // 空气 -> 黑色
 		m_colorTranF->AddRGBPoint(200.0, 0.8, 0.8, 0.8);   // 低密度区域 -> 灰色
@@ -932,11 +947,11 @@ QFourpaneviewer::~QFourpaneviewer()
 	m_renderer->Delete();
 
 	m_pieceF ? m_pieceF->Delete()         : m_pieceF = nullptr;
-	m_pieceGradF ? m_pieceGradF->Delete() : m_pieceF = nullptr;
-	m_colorTranF ? m_colorTranF->Delete() : m_pieceF = nullptr;
+	m_pieceGradF ? m_pieceGradF->Delete() : m_pieceGradF = nullptr;
+	m_colorTranF ? m_colorTranF->Delete() : m_colorTranF = nullptr;
 	m_pieceF = nullptr;
-	m_pieceF = nullptr;
-	m_pieceF = nullptr;
+    m_pieceGradF = nullptr;
+    m_colorTranF = nullptr;
 	if (m_isosurfaceMapper)
 	{
 		m_isosurfaceMapper->Delete();
