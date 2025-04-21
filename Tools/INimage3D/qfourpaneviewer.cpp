@@ -450,19 +450,6 @@ void QFourpaneviewer::SaveImagePaneBMP()
         writer->Update();
         writer->Write();
     }
-
-    //----20250416- add:保存当前三维展示的图为2维,当前保存的是显示效果的图,如果需要原始采样数据,直接保存对应的vtkImageData数据(非0-255值) 
-    //windowToImageFilter->SetInput(ui->m_image3DView->renderWindow());
-    //windowToImageFilter->Update();
-    //windowToImageFilter->Modified();
-    //QString imagefileName = fileName;// dir + QString::number(QDateTime::currentDateTime().toTime_t()) + QString::number(i) + ".png";
-    //QString insertStr = "_3." ;
-    //imagefileName = imagefileName.replace(pos, 1, insertStr);
-    //std::string str = qPrintable(imagefileName);
-    //writer->SetFileName(str.c_str());
-    //writer->SetInputData(windowToImageFilter->GetOutput());
-    //writer->Update();
-    //writer->Write();
 }
 
 void QFourpaneviewer::ShowEditorsWidget()
