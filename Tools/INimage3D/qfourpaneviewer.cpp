@@ -619,10 +619,10 @@ void QFourpaneviewer::Update3DColorByCoordinate(VtkColorStyle colorValue)
             m_bremoveActor = true;
             m_isosurfaceMapper->ScalarVisibilityOff();
             m_isosurfaceFilter->ComputeScalarsOff(); //ScalarsOff 数据（否则 Mapper 会默认启用 Scalar）
-            QList<VtkColorPoint> points = colorValue.m_colorPoint;
-            int len = points.size();    
-            QColor color = points.at(len-1).m_Color;//使用最后一个点颜色作为面的颜色
-            m_isosurfaceActor->GetProperty()->SetColor(color.redF(), color.greenF(), color.blueF());
+            //QList<VtkColorPoint> points = colorValue.m_colorPoint;
+            //int len = points.size();    
+            //QColor color = points.at(len-1).m_Color;//使用最后一个点颜色作为面的颜色
+            //m_isosurfaceActor->GetProperty()->SetColor(color.redF(), color.greenF(), color.blueF());
             m_isosurfaceActor->GetProperty()->SetAmbient(colorValue.m_Ambient);//环境光系数
             m_isosurfaceActor->GetProperty()->SetDiffuse(colorValue.m_Diffuse);//散射光系数
             m_isosurfaceActor->GetProperty()->SetSpecular(colorValue.m_Specular);//反射光系数
@@ -781,6 +781,8 @@ void QFourpaneviewer::ShowImagePlane()
 		m_resliceImageViewer[i]->SetResliceModeToAxisAligned();
 		//DefaultLevel = 862		DefaultWindow = 1528
 		rep->SetWindowLevel(m_defaultWindow, m_defaultLevel);
+        int max = m_resliceImageViewer[i]->GetSliceMax();
+  
 	}
 
 	//mpr2DView--->hide- to->showVolume3D
