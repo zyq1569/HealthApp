@@ -398,7 +398,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
-#define VTKRCP vtkResliceCursorRepresentation
+#define VTKRCP    vtkResliceCursorRepresentation
 #define VTKFILTER vtkWindowToImageFilter
 void QFourpaneviewer::SaveImagePaneBMP()
 {
@@ -450,6 +450,7 @@ void QFourpaneviewer::SaveImagePaneBMP()
         writer->Update();
         writer->Write();
     }
+    //int index = 10; m_resliceImageViewer[0]->SetSlice(index);
 }
 
 void QFourpaneviewer::ShowEditorsWidget()
