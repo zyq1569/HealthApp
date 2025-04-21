@@ -204,6 +204,16 @@ public:
 			//IPW[0]->GetInteractor()->GetRenderWindow()->Render();
 			return;
 		}
+        else if (vtkCommand::MiddleButtonPressEvent)
+        {
+            static bool flag = true;
+            for (int i = 0; i < 3; i++)
+            {
+                m_resliceImageViewer[i]->SetResliceMode(flag?1:0);
+                m_resliceImageViewer[i]->Render();
+            }
+            flag = false;
+        }
 
 		//vtkImagePlaneWidget* ipw = dynamic_cast<vtkImagePlaneWidget*>(caller);
 		//if (ipw)
@@ -256,7 +266,8 @@ public:
 
 	vtkResliceCursorCallback() {}
 	//vtkImagePlaneWidget* IPW[3];
-	vtkResliceCursorWidget* RCW[3];
+	vtkResliceCursorWidget*                   RCW[3];
+    vtkResliceImageViewer*   m_resliceImageViewer[3];
 };
 
 //--------------
@@ -798,6 +809,10 @@ void QFourpaneviewer::ShowImagePlane()
 		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResetCursorEvent, m_resliceCallback);
 		m_resliceImageViewer[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, m_resliceCallback);
 		m_resliceImageViewer[i]->AddObserver(vtkResliceImageViewer::SliceChangedEvent, m_resliceCallback);
+
+        //add 在增加中间键切换常规切面或者切面
+        m_resliceImageViewer[i]->GetInteractor()->AddObserver(vtkCommand::MiddleButtonPressEvent, m_resliceCallback);
+        m_resliceCallback->m_resliceImageViewer[i] = m_resliceImageViewer[i];
 
 		// Make them all share the same color map.
 		m_resliceImageViewer[i]->SetLookupTable(LookupTablecolor);
