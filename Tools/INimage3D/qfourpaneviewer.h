@@ -26,6 +26,7 @@ class VtkColorGradient;
 class vtkGPUVolumeRayCastMapper;
 class vtkMarchingCubes;
 class vtkPolyDataMappers;
+class vtkCornerAnnotation;
 
 #include <QWidget>
 
@@ -55,6 +56,8 @@ signals:
 
 public:
 	QString m_fileNameMhd;
+
+public:
 	vtkResliceImageViewer*        m_resliceImageViewer[3];
 	vtkImagePlaneWidget*          m_planeWidget[3];
 	vtkGenericOpenGLRenderWindow* m_renderWindow[3], *m_2DViewRenderWindow;
@@ -62,6 +65,7 @@ public:
 	vtkCellPicker*                m_cellPicker;
 	vtkProperty*                  m_ipwProp;
     vtkRenderer*                  m_ren;
+    vtkCornerAnnotation*          m_cornerAts[3];
 	QAction *m_actionReset;
 	double m_defaultLevel;
 	double m_defaultWindow;

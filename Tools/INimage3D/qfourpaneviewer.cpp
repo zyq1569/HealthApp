@@ -38,6 +38,7 @@
 
 #include <vtkGPUVolumeRayCastMapper.h>
 #include <vtkMarchingCubes.h>
+#include <vtkCornerAnnotation.h>
 //-------------showVolume3D
 #include <vtkSmartVolumeMapper.h>
 #include <vtkRayCastImageDisplayHelper.h>
@@ -193,8 +194,9 @@ public:
 
 	void Execute(vtkObject* caller, unsigned long ev, void* callData) override
 	{
+        static bool flag_RESLICE_AXIS_ALIGNED = false;
 		if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent ||
-			ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent)
+			ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent || ev == 1001)
 		{
 			// Render everything
 			for (int i = 0; i < 3; i++)
@@ -202,17 +204,43 @@ public:
 				RCW[i]->Render();
 			}
 			//IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+
+            // if ThicknessChanged
+            QString sliceInfo = "";
+            if (flag_RESLICE_AXIS_ALIGNED)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    int max   = m_resliceImageViewer[i]->GetSliceMax();
+                    int index = m_resliceImageViewer[i]->GetSlice();
+                    sliceInfo = QObject::tr("ims: %1/%2 ").arg(index).arg(max);                   
+                    m_cornerAts[i]->SetText(2, sliceInfo.toLatin1().constData());
+                    m_resliceImageViewer[i]->Render();
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    int max = m_resliceImageViewer[i]->GetSliceMax();
+                    sliceInfo = QObject::tr("ims: %1").arg(max);
+                    m_cornerAts[i]->SetText(2, sliceInfo.toLatin1().constData());
+                    m_resliceImageViewer[i]->Render();
+                }
+            }
 			return;
 		}
-        else if (vtkCommand::MiddleButtonPressEvent)
+        else if (ev == vtkCommand::LeftButtonDoubleClickEvent)
         {
-            static bool flag = true;
+            
             for (int i = 0; i < 3; i++)
             {
-                m_resliceImageViewer[i]->SetResliceMode(flag?1:0);
+                m_resliceImageViewer[i]->SetResliceMode(flag_RESLICE_AXIS_ALIGNED ? 1 : 0);
+                m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
+                m_resliceImageViewer[i]->Reset();
                 m_resliceImageViewer[i]->Render();
             }
-            flag = false;
+            flag_RESLICE_AXIS_ALIGNED = !flag_RESLICE_AXIS_ALIGNED;
         }
 
 		//vtkImagePlaneWidget* ipw = dynamic_cast<vtkImagePlaneWidget*>(caller);
@@ -268,6 +296,7 @@ public:
 	//vtkImagePlaneWidget* IPW[3];
 	vtkResliceCursorWidget*                   RCW[3];
     vtkResliceImageViewer*   m_resliceImageViewer[3];
+    vtkCornerAnnotation*     m_cornerAts[3];
 };
 
 //--------------
@@ -370,20 +399,17 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 }
 
 #define VTKRCP vtkResliceCursorRepresentation
+#define VTKFILTER vtkWindowToImageFilter
 void QFourpaneviewer::SaveImagePaneBMP()
 {
     QString dir = QCoreApplication::applicationDirPath()+"\\";
-    vtkSmartPointer<vtkPNGWriter> writer        = vtkSmartPointer<vtkPNGWriter>::New();
-    vtkSmartPointer<vtkJPEGWriter> writerJ      = vtkSmartPointer<vtkJPEGWriter>::New();
-    vtkSmartPointer<vtkBMPWriter> writerB       = vtkSmartPointer<vtkBMPWriter>::New();
+    vtkSmartPointer<VTKFILTER> windowToImageFilter = vtkSmartPointer<VTKFILTER>::New();
+    vtkSmartPointer<vtkPNGWriter> writer           = vtkSmartPointer<vtkPNGWriter>::New();
+    vtkSmartPointer<vtkJPEGWriter> writerJ         = vtkSmartPointer<vtkJPEGWriter>::New();
+    vtkSmartPointer<vtkBMPWriter> writerB          = vtkSmartPointer<vtkBMPWriter>::New();
     vtkSmartPointer<vtkImageWriter> imagewriter;
 
-    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
-    lookupTable->SetTableRange(0.0, 2048.0);  // 适用于 8 位灰度图像 (0-255)
-    lookupTable->SetValueRange(0.0, 1.0);   // 0 = 黑色, 1 = 白色// 设置颜色范围 (黑 -> 白)
-    lookupTable->SetSaturationRange(0.0, 0.0); // 0 = 无彩色 (纯灰度)
-    lookupTable->Build();
-    vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
+
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "",  tr("Images(*.png );;Images(*.bmp);;images(*.jpg)"));
     QString upperstr = fileName.toUpper();
     if (upperstr.contains("PNG"))
@@ -402,43 +428,41 @@ void QFourpaneviewer::SaveImagePaneBMP()
     {
         fileName = dir + QString::number(QDateTime::currentDateTime().toTime_t()) + ".png";
     }
-    int pos = fileName.length()-4;
-    for (int i = 0; i < 3; i++)
-    {
-        if (VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation()))
-        {
-            if (vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice()))
-            {
-                // default background color is the min value of the image scalar range
-                vtkImageData* data = reslice->GetOutput();
-                mapToColors->SetInputData(data);
-                mapToColors->SetLookupTable(lookupTable); // 需要提前设置适当的查找表
-                mapToColors->Update();
-                QString imagefileName = fileName;// dir + QString::number(QDateTime::currentDateTime().toTime_t()) + QString::number(i) + ".png";
-                QString insertStr     = "_" + QString::number(i) + ".";
-                imagefileName    = imagefileName.replace(pos,1, insertStr);
-                std::string str  = qPrintable(imagefileName);
-                writer->SetFileName(str.c_str());
-                writer->SetInputData(mapToColors->GetOutput());
-                writer->Update();
-                writer->Write();
-            }
-        }
-    }
-    //----20250416- add:保存当前三维展示的图为2维,当前保存的是显示效果的图,如果需要原始采样数据,直接保存对应的vtkImageData数据(非0-255值)
-    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
-    windowToImageFilter->SetInput(ui->m_image3DView->renderWindow());
-    windowToImageFilter->Update();
-    windowToImageFilter->Modified();
-    QString imagefileName = fileName;// dir + QString::number(QDateTime::currentDateTime().toTime_t()) + QString::number(i) + ".png";
-    QString insertStr = "_3." ;
-    imagefileName = imagefileName.replace(pos, 1, insertStr);
-    std::string str = qPrintable(imagefileName);
-    writer->SetFileName(str.c_str());
-    writer->SetInputData(windowToImageFilter->GetOutput());
-    writer->Update();
-    writer->Write();
 
+    QVTKRenderWidget *qvtkWidget[4];
+    qvtkWidget[0] = ui->m_axial2DView;
+    qvtkWidget[1] = ui->m_sagital2DView;
+    qvtkWidget[2] = ui->m_coronal2DView;
+    qvtkWidget[3] = ui->m_image3DView;
+    int pos = fileName.length()-4;
+    for (int i = 0; i < 4; i++)
+    {
+        windowToImageFilter->SetInput(qvtkWidget[i]->renderWindow());
+        windowToImageFilter->Update();
+        windowToImageFilter->Modified();
+
+        QString imagefileName = fileName;
+        QString insertStr     = "_" + QString::number(i) + ".";
+        imagefileName    = imagefileName.replace(pos,1, insertStr);
+        std::string str  = qPrintable(imagefileName);
+        writer->SetFileName(str.c_str());
+        writer->SetInputData(windowToImageFilter->GetOutput());
+        writer->Update();
+        writer->Write();
+    }
+
+    //----20250416- add:保存当前三维展示的图为2维,当前保存的是显示效果的图,如果需要原始采样数据,直接保存对应的vtkImageData数据(非0-255值) 
+    //windowToImageFilter->SetInput(ui->m_image3DView->renderWindow());
+    //windowToImageFilter->Update();
+    //windowToImageFilter->Modified();
+    //QString imagefileName = fileName;// dir + QString::number(QDateTime::currentDateTime().toTime_t()) + QString::number(i) + ".png";
+    //QString insertStr = "_3." ;
+    //imagefileName = imagefileName.replace(pos, 1, insertStr);
+    //std::string str = qPrintable(imagefileName);
+    //writer->SetFileName(str.c_str());
+    //writer->SetInputData(windowToImageFilter->GetOutput());
+    //writer->Update();
+    //writer->Write();
 }
 
 void QFourpaneviewer::ShowEditorsWidget()
@@ -736,9 +760,12 @@ void QFourpaneviewer::ShowImagePlane()
 
 	for (int i = 0; i < 3; i++)
 	{
-		m_resliceImageViewer[i] = vtkResliceImageViewer::New();
-		m_renderWindow[i]       = vtkGenericOpenGLRenderWindow::New(); //vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
+		m_resliceImageViewer[i]     = vtkResliceImageViewer::New();
+		m_renderWindow[i]           = vtkGenericOpenGLRenderWindow::New(); //vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
 		m_resliceImageViewer[i]->SetRenderWindow(m_renderWindow[i]);
+
+        m_cornerAts[i]              = vtkCornerAnnotation::New();
+        m_resliceImageViewer[i]->GetRenderer()->AddViewProp(m_cornerAts[i]);
 	}
 
 	ui->m_sagital2DView->setRenderWindow(m_resliceImageViewer[0]->GetRenderWindow());
@@ -811,8 +838,9 @@ void QFourpaneviewer::ShowImagePlane()
 		m_resliceImageViewer[i]->AddObserver(vtkResliceImageViewer::SliceChangedEvent, m_resliceCallback);
 
         //add 在增加中间键切换常规切面或者切面
-        m_resliceImageViewer[i]->GetInteractor()->AddObserver(vtkCommand::MiddleButtonPressEvent, m_resliceCallback);
+        m_resliceImageViewer[i]->GetInteractor()->AddObserver(vtkCommand::LeftButtonDoubleClickEvent, m_resliceCallback);
         m_resliceCallback->m_resliceImageViewer[i] = m_resliceImageViewer[i];
+        m_resliceCallback->m_cornerAts[i]          = m_cornerAts[i];
 
 		// Make them all share the same color map.
 		m_resliceImageViewer[i]->SetLookupTable(LookupTablecolor);
@@ -923,6 +951,11 @@ QFourpaneviewer::~QFourpaneviewer()
 		{
 			m_renderWindow[i]->Delete();
 		}
+
+        if (m_cornerAts[i])
+        {
+            m_cornerAts[i]->Delete();
+        }
 	}
 
 	if (m_resliceCallback)
@@ -949,7 +982,7 @@ QFourpaneviewer::~QFourpaneviewer()
 	{
 		m_2DViewRenderWindow->Delete();
 	}
-
+  
 
 	///--------------showVolume3D--------
 	m_volumeMapper->Delete();
@@ -960,10 +993,10 @@ QFourpaneviewer::~QFourpaneviewer()
 	m_isosurfaceActor->Delete();
 	m_renderer->Delete();
 
-	m_pieceF ? m_pieceF->Delete()         : m_pieceF = nullptr;
+	m_pieceF ? m_pieceF->Delete()         : m_pieceF     = nullptr;
 	m_pieceGradF ? m_pieceGradF->Delete() : m_pieceGradF = nullptr;
 	m_colorTranF ? m_colorTranF->Delete() : m_colorTranF = nullptr;
-	m_pieceF = nullptr;
+	m_pieceF     = nullptr;
     m_pieceGradF = nullptr;
     m_colorTranF = nullptr;
 	if (m_isosurfaceMapper)
