@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_vtkImageData        = nullptr;
     m_vtkAlgorithmOutput  = nullptr;
 
+    m_configForm          = nullptr;
+
     m_index3D = m_index4P = -1;
 
     m_checkStart3D = m_checkStart4Plane = m_check3Dcolor = m_checkDefaultWL = m_colorGradient = false;
@@ -210,8 +212,11 @@ MainWindow::~MainWindow()
         m_XMLImageDataReader->Delete();
         m_XMLImageDataReader = nullptr;
     }
-
-    delete m_configForm;
+    if (m_configForm)
+    {
+        delete m_configForm;
+    }
+    
     delete ui;
 }
 

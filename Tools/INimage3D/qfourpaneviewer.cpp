@@ -53,7 +53,11 @@
 #include <vtkJPEGWriter.h>
 #include <vtkBMPWriter.h>
 #include <vtkcolorgradient.h>
-#include <vtkWindowToImageFilter.h>
+#include <vtkWindowToImageFilter.h> //save image
+//show rect
+#include <vtkPolyDataMapper2D.h>
+#include <vtkActor2D.h>
+#include <vtkProperty2D.h>
 
 #include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
@@ -208,8 +212,79 @@ public:
             }
             flag_RESLICE_AXIS_ALIGNED = !flag_RESLICE_AXIS_ALIGNED;
         }
+        else if (ev == vtkCommand::RightButtonPressEvent)
+        {
+            auto interactor = vtkRenderWindowInteractor::SafeDownCast(caller);
+            vtkRenderWindow* renderWindow = interactor->GetRenderWindow();
+            vtkResliceImageViewer* currentViewer = nullptr;
+            //找到对应的 Viewer
+            for (int i = 0; i < 3; ++i)
+            {
+                if (renderWindow == m_resliceImageViewer[i]->GetRenderWindow())
+                {
+                    currentViewer = m_resliceImageViewer[i];
+                    break;
+                }
+            }
+            if (m_ptNum == 0)
+            {
+                m_startPos[0] = currentViewer->GetInteractor()->GetEventPosition()[0];
+                m_startPos[1] = currentViewer->GetInteractor()->GetEventPosition()[1];
+                m_ptNum++;
+            }
+            else 
+            {
 
-		
+
+                m_endPos[0] = currentViewer->GetInteractor()->GetEventPosition()[0];
+                m_endPos[1] = currentViewer->GetInteractor()->GetEventPosition()[1];
+                m_ptNum = 0;
+
+                vtkSmartPointer<vtkCoordinate> coord = vtkSmartPointer<vtkCoordinate>::New();
+                coord->SetCoordinateSystemToDisplay();
+                coord->SetViewport(currentViewer->GetRenderer());
+
+                coord->SetValue(m_startPos[0], m_startPos[1]);
+                double worldStart[3];
+                std::memcpy(worldStart, coord->GetComputedWorldValue(currentViewer->GetRenderer()), sizeof(double) * 3);
+
+                coord->SetValue(m_endPos[0], m_endPos[1]);
+                double worldEnd[3];
+                std::memcpy(worldEnd, coord->GetComputedWorldValue(currentViewer->GetRenderer()), sizeof(double) * 3);
+
+                vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+                points->InsertNextPoint(worldStart[0], worldStart[1], worldStart[2]);
+                points->InsertNextPoint(worldEnd[0], worldStart[1], worldStart[2]);
+                points->InsertNextPoint(worldEnd[0], worldEnd[1], worldStart[2]);
+                points->InsertNextPoint(worldStart[0], worldEnd[1], worldStart[2]);
+                points->InsertNextPoint(worldStart[0], worldStart[1], worldStart[2]); // close loop
+
+                vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
+                vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
+                ids->SetNumberOfIds(5);
+                for (int i = 0; i < 5; ++i)
+                    ids->SetId(i, i);
+                lines->InsertNextCell(ids);
+
+                vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
+                polyData->SetPoints(points);
+                polyData->SetLines(lines);
+
+                vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+                mapper->SetInputData(polyData);
+
+                vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+                actor->SetMapper(mapper);
+                actor->GetProperty()->SetColor(1.0, 0.0, 0.0);
+                actor->GetProperty()->SetLineWidth(2.0);
+
+                currentViewer->GetRenderer()->AddActor(actor);
+                //currentViewer->Geto
+                currentViewer->GetRenderWindow()->Render();
+
+            }
+            
+        }		
         QString sliceInfo = "";      
         if (flag_RESLICE_AXIS_ALIGNED)
         {
@@ -239,7 +314,10 @@ public:
 		
 	}
 
-	vtkResliceCursorCallback() {}
+	vtkResliceCursorCallback() 
+    {
+        m_ptNum = 0;
+    }
 
  public:	
 	vtkResliceCursorWidget*                   RCW[3];
@@ -248,6 +326,7 @@ public:
  private:
      int m_startPos[2];
      int m_endPos[2];
+     int m_ptNum;
 };
 
 //--------------
@@ -780,6 +859,7 @@ void QFourpaneviewer::ShowImagePlane()
 
         //add 在增加中间键切换常规切面或者切面
         m_resliceImageViewer[i]->GetInteractor()->AddObserver(vtkCommand::LeftButtonDoubleClickEvent, m_resliceCallback);
+        m_resliceImageViewer[i]->GetInteractor()->AddObserver(vtkCommand::RightButtonPressEvent, m_resliceCallback);
         m_resliceCallback->m_resliceImageViewer[i] = m_resliceImageViewer[i];
         m_resliceCallback->m_cornerAts[i]          = m_cornerAts[i];
 
