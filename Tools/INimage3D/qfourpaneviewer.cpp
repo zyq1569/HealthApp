@@ -234,8 +234,6 @@ public:
             }
             else 
             {
-
-
                 m_endPos[0] = currentViewer->GetInteractor()->GetEventPosition()[0];
                 m_endPos[1] = currentViewer->GetInteractor()->GetEventPosition()[1];
                 m_ptNum = 0;
@@ -263,7 +261,10 @@ public:
                 vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
                 ids->SetNumberOfIds(5);
                 for (int i = 0; i < 5; ++i)
+                {
                     ids->SetId(i, i);
+                }
+                    
                 lines->InsertNextCell(ids);
 
                 vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
@@ -281,9 +282,7 @@ public:
                 currentViewer->GetRenderer()->AddActor(actor);
                 //currentViewer->Geto
                 currentViewer->GetRenderWindow()->Render();
-
             }
-            
         }		
         QString sliceInfo = "";      
         if (flag_RESLICE_AXIS_ALIGNED)
@@ -310,15 +309,13 @@ public:
 		for (int i = 0; i < 3; i++)
 		{
 			RCW[i]->Render();
-		}
-		
+		}		
 	}
 
 	vtkResliceCursorCallback() 
     {
         m_ptNum = 0;
     }
-
  public:	
 	vtkResliceCursorWidget*                   RCW[3];
     vtkResliceImageViewer*   m_resliceImageViewer[3];
