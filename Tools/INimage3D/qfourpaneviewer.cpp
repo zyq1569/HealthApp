@@ -196,21 +196,7 @@ public:
 
 	void Execute(vtkObject* caller, unsigned long ev, void* callData) override
 	{
-        static bool flag_RESLICE_AXIS_ALIGNED = false;
-		//if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent ||
-		//	ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent || ev == 1001)
-		//{
-		//	// Render everything
-		//	for (int i = 0; i < 3; i++)
-		//	{
-		//		RCW[i]->Render();
-		//	}
-		//	IPW[0]->GetInteractor()->GetRenderWindow()->Render();
-        //    // if ThicknessChanged           
-        //    
-		//	return;
-		//}
-        //else 
+        static bool flag_RESLICE_AXIS_ALIGNED = false;		
         if (ev == vtkCommand::LeftButtonDoubleClickEvent)
         {
            for (int i = 0; i < 3; i++)
@@ -223,46 +209,7 @@ public:
             flag_RESLICE_AXIS_ALIGNED = !flag_RESLICE_AXIS_ALIGNED;
         }
 
-		//vtkImagePlaneWidget* ipw = dynamic_cast<vtkImagePlaneWidget*>(caller);
-		//if (ipw)
-		//{
-		//	double* wl = static_cast<double*>(callData);
-		//
-		//	if (ipw == IPW[0])
-		//	{
-		//		IPW[1]->SetWindowLevel(wl[0], wl[1], 1);
-		//		IPW[2]->SetWindowLevel(wl[0], wl[1], 1);
-		//	}
-		//	else if (ipw == IPW[1])
-		//	{
-		//		IPW[0]->SetWindowLevel(wl[0], wl[1], 1);
-		//		IPW[2]->SetWindowLevel(wl[0], wl[1], 1);
-		//	}
-		//	else if (ipw == IPW[2])
-		//	{
-		//		IPW[0]->SetWindowLevel(wl[0], wl[1], 1);
-		//		IPW[1]->SetWindowLevel(wl[0], wl[1], 1);
-		//	}
-		//}
-
-		//vtkResliceCursorWidget* rcw = dynamic_cast<vtkResliceCursorWidget*>(caller);
-		//if (rcw)
-		//{
-		//	vtkREP* rep =	dynamic_cast<vtkREP*>(rcw->GetRepresentation());
-		//	// Although the return value is not used, we keep the get calls
-		//	// in case they had side-effects
-		//	rep->GetResliceCursorActor()->GetCursorAlgorithm()->GetResliceCursor();
-		//	for (int i = 0; i < 3; i++)
-		//	{
-		//		vtkPlaneSource* ps = static_cast<vtkPlaneSource*>(IPW[i]->GetPolyDataAlgorithm());
-		//		ps->SetOrigin(RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetOrigin());
-		//		ps->SetPoint1(RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint1());
-		//		ps->SetPoint2(RCW[i]->GetResliceCursorRepresentation()->GetPlaneSource()->GetPoint2());
-		//
-		//		// If the reslice plane has modified, update it on the 3D widget
-		//		//IPW[i]->UpdatePlacement();
-		//	}
-		//}
+		
         QString sliceInfo = "";      
         if (flag_RESLICE_AXIS_ALIGNED)
         {
@@ -289,13 +236,12 @@ public:
 		{
 			RCW[i]->Render();
 		}
-		//IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+		
 	}
 
 	vtkResliceCursorCallback() {}
 
- public:
-	//vtkImagePlaneWidget* IPW[3];
+ public:	
 	vtkResliceCursorWidget*                   RCW[3];
     vtkResliceImageViewer*   m_resliceImageViewer[3];
     vtkCornerAnnotation*     m_cornerAts[3];
@@ -806,32 +752,24 @@ void QFourpaneviewer::ShowImagePlane()
 	double color[3] = { 0, 0, 0 };
 	for (int i = 0; i < 3; i++)
 	{
-		m_planeWidget[i] = vtkImagePlaneWidget::New();
-		//m_planeWidget[i]->SetInteractor(iren);//m_planeWidget[i]->SetPicker(m_cellPicker);
-		m_planeWidget[i]->RestrictPlaneToVolumeOn();
-		//color[i] = 1;
-		m_planeWidget[i]->GetPlaneProperty()->SetColor(color);
-		//color[0] /= 4.0;		color[1] /= 4.0;		color[2] /= 4.0;
+		m_planeWidget[i] = vtkImagePlaneWidget::New();		
+		m_planeWidget[i]->RestrictPlaneToVolumeOn();		
+		m_planeWidget[i]->GetPlaneProperty()->SetColor(color);		
 		m_resliceImageViewer[i]->GetRenderer()->SetBackground(color);
-
-		//m_planeWidget[i]->SetTexturePlaneProperty(m_ipwProp);
 		m_planeWidget[i]->TextureInterpolateOff();
 		m_planeWidget[i]->SetResliceInterpolateToLinear();
 		m_planeWidget[i]->SetInputConnection(m_MainWindow->m_vtkAlgorithmOutput);
 		m_planeWidget[i]->SetPlaneOrientation(i);
 		m_planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
-		m_planeWidget[i]->DisplayTextOn();
-		//m_planeWidget[i]->SetDefaultRenderer(m_ren);
-		m_planeWidget[i]->SetWindowLevel(m_defaultWindow, m_defaultLevel);
-		//m_planeWidget[i]->On();//m_planeWidget[i]->InteractionOn();
+		m_planeWidget[i]->DisplayTextOn();	
+		m_planeWidget[i]->SetWindowLevel(m_defaultWindow, m_defaultLevel);	
 	}
 
 	m_resliceCallback = vtkResliceCursorCallback::New();
 
 	vtkScalarsToColors *LookupTablecolor = m_resliceImageViewer[0]->GetLookupTable();
 	for (int i = 0; i < 3; i++)
-	{
-		//m_resliceCallback->IPW[i] = m_planeWidget[i];
+	{		
 		m_resliceCallback->RCW[i] = m_resliceImageViewer[i]->GetResliceCursorWidget();
 		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceAxesChangedEvent, m_resliceCallback);
 		m_resliceImageViewer[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::WindowLevelEvent, m_resliceCallback);
@@ -857,7 +795,7 @@ void QFourpaneviewer::ShowImagePlane()
 		m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
 		m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.2);
 		m_resliceImageViewer[i]->Render();
-	}	//ui->m_axial2DView->show();	//ui->m_sagital2DView->show();	//ui->m_coronal2DView->show();
+	}
 }
 
 void QFourpaneviewer::ShowImage3D()
