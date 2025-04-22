@@ -197,46 +197,23 @@ public:
 	void Execute(vtkObject* caller, unsigned long ev, void* callData) override
 	{
         static bool flag_RESLICE_AXIS_ALIGNED = false;
-		if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent ||
-			ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent || ev == 1001)
-		{
-			// Render everything
-			for (int i = 0; i < 3; i++)
-			{
-				RCW[i]->Render();
-			}
-			//IPW[0]->GetInteractor()->GetRenderWindow()->Render();
-
-            // if ThicknessChanged
-            QString sliceInfo = "";
-            if (flag_RESLICE_AXIS_ALIGNED)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    int max   = m_resliceImageViewer[i]->GetSliceMax();
-                    int index = m_resliceImageViewer[i]->GetSlice();
-                    sliceInfo = QObject::tr("ims: %1/%2 ").arg(index).arg(max);                   
-                    m_cornerAts[i]->SetText(2, sliceInfo.toLatin1().constData());
-                    m_resliceImageViewer[i]->Render();
-                }
-            }
-            else
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    int max = m_resliceImageViewer[i]->GetSliceMax();
-                    //sliceInfo = QObject::tr("ims: %1").arg(max);
-                    sliceInfo = "";
-                    m_cornerAts[i]->SetText(2, sliceInfo.toLatin1().constData());
-                    m_resliceImageViewer[i]->Render();
-                }
-            }
-			return;
-		}
-        else if (ev == vtkCommand::LeftButtonDoubleClickEvent)
+		//if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent ||
+		//	ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent || ev == 1001)
+		//{
+		//	// Render everything
+		//	for (int i = 0; i < 3; i++)
+		//	{
+		//		RCW[i]->Render();
+		//	}
+		//	IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+        //    // if ThicknessChanged           
+        //    
+		//	return;
+		//}
+        //else 
+        if (ev == vtkCommand::LeftButtonDoubleClickEvent)
         {
-            
-            for (int i = 0; i < 3; i++)
+           for (int i = 0; i < 3; i++)
             {
                 m_resliceImageViewer[i]->SetResliceMode(flag_RESLICE_AXIS_ALIGNED ? 1 : 0);
                 m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
@@ -286,7 +263,27 @@ public:
 		//		//IPW[i]->UpdatePlacement();
 		//	}
 		//}
-
+        QString sliceInfo = "";      
+        if (flag_RESLICE_AXIS_ALIGNED)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                int max = m_resliceImageViewer[i]->GetSliceMax();
+                int index = m_resliceImageViewer[i]->GetSlice();
+                sliceInfo = QObject::tr("ims: %1/%2 ").arg(index).arg(max);
+                m_cornerAts[i]->SetText(2, sliceInfo.toLatin1().constData());
+                m_resliceImageViewer[i]->Render();
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                sliceInfo = "";
+                m_cornerAts[i]->SetText(2, sliceInfo.toLatin1().constData());
+                m_resliceImageViewer[i]->Render();
+            }
+        }
 		// Render everything
 		for (int i = 0; i < 3; i++)
 		{
