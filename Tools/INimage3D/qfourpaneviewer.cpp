@@ -225,7 +225,8 @@ public:
                 for (int i = 0; i < 3; i++)
                 {
                     int max = m_resliceImageViewer[i]->GetSliceMax();
-                    sliceInfo = QObject::tr("ims: %1").arg(max);
+                    //sliceInfo = QObject::tr("ims: %1").arg(max);
+                    sliceInfo = "";
                     m_cornerAts[i]->SetText(2, sliceInfo.toLatin1().constData());
                     m_resliceImageViewer[i]->Render();
                 }
