@@ -293,10 +293,15 @@ public:
 	}
 
 	vtkResliceCursorCallback() {}
+
+ public:
 	//vtkImagePlaneWidget* IPW[3];
 	vtkResliceCursorWidget*                   RCW[3];
     vtkResliceImageViewer*   m_resliceImageViewer[3];
     vtkCornerAnnotation*     m_cornerAts[3];
+ private:
+     int m_startPos[2];
+     int m_endPos[2];
 };
 
 //--------------
