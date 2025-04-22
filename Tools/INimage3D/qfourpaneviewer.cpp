@@ -39,6 +39,8 @@
 #include <vtkGPUVolumeRayCastMapper.h>
 #include <vtkMarchingCubes.h>
 #include <vtkCornerAnnotation.h>
+
+#include <vtkExtractVOI.h>
 //-------------showVolume3D
 #include <vtkSmartVolumeMapper.h>
 #include <vtkRayCastImageDisplayHelper.h>
@@ -739,7 +741,19 @@ void QFourpaneviewer::ShowImagePlane()
 	}
 
 	int imageDims[3];
+
 	vtkImageData *imageData = m_MainWindow->m_vtkImageData;
+
+    //--------test-------------
+    // 1. 提取 VOI：只取 Z=30~40 层
+    //int* dims = imageData->GetDimensions();
+    //vtkSmartPointer<vtkExtractVOI> extractVOI =   vtkSmartPointer<vtkExtractVOI>::New();
+    //extractVOI->SetInputData(m_MainWindow->m_vtkImageData);
+    //extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, 10, 30);  // x, y, z 范围
+    //extractVOI->Update();
+    //imageData = extractVOI->GetOutput();
+    //--------------------------------
+
 	imageData->GetDimensions(imageDims);
 
 	for (int i = 0; i < 3; i++)
