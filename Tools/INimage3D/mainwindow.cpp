@@ -19,10 +19,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    this->setAttribute(Qt::WA_DeleteOnClose);
     setStatusBar(nullptr);
     setMenuBar(nullptr);
 
+    m_workspace           = nullptr;
     m_image4Plane         = nullptr;
     m_MetaReader          = nullptr;
     m_XMLImageDataReader  = nullptr;
@@ -98,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_editor->setEnabled(false);
     m_saveImage->setEnabled(false);
+
 }
 
 void MainWindow::starViewer()
