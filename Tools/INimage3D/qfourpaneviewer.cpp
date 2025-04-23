@@ -52,14 +52,18 @@
 #include <vtkPNGWriter.h>
 #include <vtkJPEGWriter.h>
 #include <vtkBMPWriter.h>
+#include <vtkTIFFWriter.h>
 #include <vtkcolorgradient.h>
 #include <vtkWindowToImageFilter.h> //save image
+#include <vtkImageShiftScale.h>
 //show rect
 #include <vtkPolyDataMapper2D.h>
 #include <vtkActor2D.h>
 #include <vtkProperty2D.h>
 
 #include <vtkAutoInit.h>
+#include <vtkImageCast.h>
+
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
@@ -189,7 +193,7 @@ private:
 //};
 //
 #define vtkREP vtkResliceCursorLineRepresentation 
-
+#define DRAW_RECT
 class vtkResliceCursorCallback : public vtkCommand
 {
 public:
@@ -198,6 +202,150 @@ public:
 		return new vtkResliceCursorCallback; 
 	}
 
+    void DisplayToSlice(vtkResliceImageViewer* Viewer, int x, int y, double worldOut[3])
+    {
+        vtkSmartPointer<vtkCoordinate> coord = vtkSmartPointer<vtkCoordinate>::New();
+        coord->SetCoordinateSystemToDisplay();
+        coord->SetViewport(Viewer->GetRenderer());
+        coord->SetValue(x, y);
+        double* world = coord->GetComputedWorldValue(Viewer->GetRenderer());
+
+        double origin[3], normal[3];
+        Viewer->GetResliceCursor()->GetPlane(Viewer->GetSliceOrientation())->GetOrigin(origin);
+        Viewer->GetResliceCursor()->GetPlane(Viewer->GetSliceOrientation())->GetNormal(normal);
+
+        double v[3] = {  world[0] - origin[0],   world[1] - origin[1], world[2] - origin[2] };
+        double d = vtkMath::Dot(v, normal);
+        worldOut[0] = world[0] - d * normal[0];
+        worldOut[1] = world[1] - d * normal[1];
+        worldOut[2] = world[2] - d * normal[2];
+    }
+
+    void DrawRectangle(vtkResliceImageViewer* vtkResliceViewer)
+    {
+        double p1[3], p2[3];
+        DisplayToSlice(vtkResliceViewer,m_startPos[0] , m_startPos[1], p1);
+        DisplayToSlice(vtkResliceViewer,m_endPos[0], m_endPos[1], p2);
+
+        // 生成矩形的四个顶点（闭合）
+        vtkNew<vtkPoints> points;
+        points->InsertNextPoint(p1[0], p1[1], p1[2]);
+        points->InsertNextPoint(p2[0], p1[1], p1[2]);
+        points->InsertNextPoint(p2[0], p2[1], p2[2]);
+        points->InsertNextPoint(p1[0], p2[1], p2[2]);
+        points->InsertNextPoint(p1[0], p1[1], p1[2]);
+
+        vtkNew<vtkCellArray> lines;
+        vtkNew<vtkIdList> ids;
+        ids->SetNumberOfIds(5);
+        for (int i = 0; i < 5; ++i)
+        {
+            ids->SetId(i, i);
+        }
+           
+        lines->InsertNextCell(ids);
+
+        vtkNew<vtkPolyData> polyData;
+        polyData->SetPoints(points);
+        polyData->SetLines(lines);
+
+        vtkNew<vtkPolyDataMapper> mapper;
+        mapper->SetInputData(polyData);
+
+        m_Actor = vtkSmartPointer<vtkActor>::New();
+        m_Actor->SetMapper(mapper);
+        m_Actor->GetProperty()->SetColor(1, 0, 0);
+        m_Actor->GetProperty()->SetLineWidth(2);
+
+        vtkResliceViewer->GetRenderer()->AddActor(m_Actor);
+        vtkResliceViewer->Render();
+
+        int TargetSlice = vtkResliceViewer->GetSlice();
+    }
+
+    void SaveRectangleImagePNG(vtkResliceImageViewer* vtkResliceViewer, double p1[3], double p2[3])
+    {
+        vtkResliceImageViewer* Viewer = vtkResliceViewer;
+        auto image = Viewer->GetInput();
+        if (!image)
+        {
+            return;
+        }
+
+        // 世界 → IJK
+        // 获取图像信息
+        double spacing[3], origin[3];
+        image->GetSpacing(spacing);
+        image->GetOrigin(origin);
+
+        // 手动计算 world → IJK
+        int ijk1[3], ijk2[3];
+        for (int i = 0; i < 3; ++i)
+        {
+            ijk1[i] = static_cast<int>((p1[i] - origin[i]) / spacing[i] + 0.5);
+            ijk2[i] = static_cast<int>((p2[i] - origin[i]) / spacing[i] + 0.5);
+        }
+
+        int iMin[3], iMax[3];
+        for (int i = 0; i < 3; ++i)
+        {
+            iMin[i] = std::min(ijk1[i], ijk2[i]);
+            iMax[i] = std::max(ijk1[i], ijk2[i]);
+        }
+
+        // 限定为当前切面 .获取当前 slice 所在的 Z index
+        int sliceOrientation = Viewer->GetSliceOrientation();
+        int sliceIndex = Viewer->GetSlice();
+
+        switch (sliceOrientation)
+        {
+        case vtkResliceImageViewer::SLICE_ORIENTATION_XY:
+            iMin[2] = iMax[2] = sliceIndex;
+            break;
+        case vtkResliceImageViewer::SLICE_ORIENTATION_XZ:
+            iMin[1] = iMax[1] = sliceIndex;
+            break;
+        case vtkResliceImageViewer::SLICE_ORIENTATION_YZ:
+            iMin[0] = iMax[0] = sliceIndex;
+            break;
+        }
+
+        // 提取 VOI
+        vtkNew<vtkExtractVOI> extractVOI;
+        extractVOI->SetInputData(image);
+        extractVOI->SetVOI(iMin[0], iMax[0], iMin[1], iMax[1], iMin[2], iMax[2]);
+        extractVOI->Update();
+
+        // 转为 PNG 可写格式
+        vtkImageData* croppedImage    = vtkImageData::SafeDownCast(extractVOI->GetOutput());
+        //vtkImageAlgorithm* finalInput = nullptr;
+        //int scalarType = croppedImage->GetScalarType();
+        //if (scalarType != VTK_UNSIGNED_CHAR)//如果能确定是无符号的灰值，可以不用vtkImageCast,简化代码
+        //{
+        //    // 需要转换为 unsigned char
+        //    vtkNew<vtkImageCast> cast;
+        //    cast->SetInputData(croppedImage);
+        //    cast->SetOutputScalarTypeToUnsignedChar();
+        //    cast->ClampOverflowOn();
+        //    cast->Update();
+        //    finalInput = cast;
+        //}
+        double range[2];
+        extractVOI->GetOutput()->GetScalarRange(range);
+        vtkNew<vtkImageShiftScale> shiftScale;
+        shiftScale->SetInputConnection(extractVOI->GetOutputPort());
+        shiftScale->SetOutputScalarTypeToUnsignedChar();
+        shiftScale->SetShift(-range[0]); // 把最小值移到0
+        shiftScale->SetScale(255.0 / (range[1] - range[0])); // 缩放到0~255
+        shiftScale->ClampOverflowOn();
+        shiftScale->Update();
+
+
+        vtkNew<vtkPNGWriter> writer;
+        writer->SetFileName("RectangleImage_output.png");
+        writer->SetInputConnection(shiftScale->GetOutputPort());            
+        writer->Write();
+    }
 	void Execute(vtkObject* caller, unsigned long ev, void* callData) override
 	{
         static bool flag_RESLICE_AXIS_ALIGNED = false;		
@@ -238,6 +386,8 @@ public:
                 m_endPos[1] = currentViewer->GetInteractor()->GetEventPosition()[1];
                 m_ptNum = 0;
 
+                //方式1：绘制矩形 
+#ifdef DRAW_RECT
                 vtkSmartPointer<vtkCoordinate> coord = vtkSmartPointer<vtkCoordinate>::New();
                 coord->SetCoordinateSystemToDisplay();
                 coord->SetViewport(currentViewer->GetRenderer());
@@ -264,7 +414,7 @@ public:
                 {
                     ids->SetId(i, i);
                 }
-                    
+
                 lines->InsertNextCell(ids);
 
                 vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
@@ -280,8 +430,15 @@ public:
                 actor->GetProperty()->SetLineWidth(2.0);
 
                 currentViewer->GetRenderer()->AddActor(actor);
-                //currentViewer->Geto
                 currentViewer->GetRenderWindow()->Render();
+                SaveRectangleImagePNG(currentViewer, worldStart, worldEnd);
+#else
+              //方式2：绘制矩形
+                DrawRectangle(currentViewer);
+                currentViewer->Render();
+#endif //   DRAW_RECT        
+                
+
             }
         }		
         QString sliceInfo = "";      
@@ -320,6 +477,8 @@ public:
 	vtkResliceCursorWidget*                   RCW[3];
     vtkResliceImageViewer*   m_resliceImageViewer[3];
     vtkCornerAnnotation*     m_cornerAts[3];
+
+    vtkSmartPointer<vtkActor> m_Actor;
  private:
      int m_startPos[2];
      int m_endPos[2];
