@@ -327,7 +327,8 @@ public:
         if (outDims[0] <= 0 || outDims[1] <= 0) return;
 
 
-        double yAxisFlip[3] = {
+        double yAxisFlip[3] =
+        {
         -yAxis[0],
         -yAxis[1],
         -yAxis[2]
@@ -337,9 +338,9 @@ public:
         for (int i = 0; i < 3; ++i)
         {
             customAxes->SetElement(i, 0, xAxis[i]);
-            customAxes->SetElement(i, 1, yAxis[i]);
+            customAxes->SetElement(i, 1, yAxisFlip[i]);
             customAxes->SetElement(i, 2, zAxis[i]);
-            customAxes->SetElement(i, 3, center[i] + uMin * xAxis[i] + vMin * yAxis[i]);
+            customAxes->SetElement(i, 3, center[i] + uMin * xAxis[i] + vMin * yAxisFlip[i]);
         }
 
         // Reslice
