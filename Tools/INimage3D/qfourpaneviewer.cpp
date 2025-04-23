@@ -56,6 +56,7 @@
 #include <vtkcolorgradient.h>
 #include <vtkWindowToImageFilter.h> //save image
 #include <vtkImageShiftScale.h>
+#include <vtkMatrix4x4.h>
 //show rect
 #include <vtkPolyDataMapper2D.h>
 #include <vtkActor2D.h>
@@ -265,68 +266,105 @@ public:
 
     void SaveRectangleImagePNG(vtkResliceImageViewer* vtkResliceViewer, double p1[3], double p2[3])
     {
-        vtkResliceImageViewer* Viewer = vtkResliceViewer;
-        auto image = Viewer->GetInput();
+        vtkResliceImageViewer* viewer = vtkResliceViewer;
+        auto image = viewer->GetInput();
         if (!image)
         {
             return;
         }
 
-        // 世界 → IJK
-        // 获取图像信息
-        double spacing[3], origin[3];
-        image->GetSpacing(spacing);
-        image->GetOrigin(origin);
+        vtkImageData* input = image;
 
-        // 手动计算 world → IJK
-        int ijk1[3], ijk2[3];
+        vtkResliceCursor* resliceCursor = viewer->GetResliceCursor();
+
+        // ✅ 获取当前切面的中心点和方向轴
+        const double* xAxis = resliceCursor->GetAxis(0);
+        const double* yAxis = resliceCursor->GetAxis(1);
+        double zAxis[3];
+        vtkMath::Cross(xAxis, yAxis, zAxis);  // 计算 Z 轴（法向量）
+
+        double center[3];
+        resliceCursor->GetCenter(center);
+
+        // 计算 oblique 平面 spacing（考虑原图 spacing 和方向轴）
+        double inputSpacing[3];
+        input->GetSpacing(inputSpacing);
+
+        double spacingU = std::sqrt(
+            std::pow(xAxis[0] * inputSpacing[0], 2) +
+            std::pow(xAxis[1] * inputSpacing[1], 2) +
+            std::pow(xAxis[2] * inputSpacing[2], 2));
+
+        double spacingV = std::sqrt(
+            std::pow(yAxis[0] * inputSpacing[0], 2) +
+            std::pow(yAxis[1] * inputSpacing[1], 2) +
+            std::pow(yAxis[2] * inputSpacing[2], 2));
+
+        // 计算 world 坐标点在 oblique 平面上的局部坐标（u,v）
+        auto ProjectToPlane = [&](double pt[3], double& u, double& v)
+        {
+            double vec[3] = { pt[0] - center[0], pt[1] - center[1], pt[2] - center[2] };
+            u = vtkMath::Dot(vec, xAxis);
+            v = vtkMath::Dot(vec, yAxis);
+        };
+
+        double u1, v1, u2, v2;
+        ProjectToPlane(p1, u1, v1);
+        ProjectToPlane(p2, u2, v2);
+
+        double uMin = std::min(u1, u2);
+        double uMax = std::max(u1, u2);
+        double vMin = std::min(v1, v2);
+        double vMax = std::max(v1, v2);
+
+        // 输出图像尺寸
+        int outDims[3] =
+        {
+            static_cast<int>((uMax - uMin) / spacingU + 0.5),
+            static_cast<int>((vMax - vMin) / spacingV + 0.5),
+            1
+        };
+        if (outDims[0] <= 0 || outDims[1] <= 0) return;
+
+
+        double yAxisFlip[3] = {
+        -yAxis[0],
+        -yAxis[1],
+        -yAxis[2]
+        };
+        // 构造 ResliceAxes（平移到矩形左下角）
+        vtkNew<vtkMatrix4x4> customAxes;
         for (int i = 0; i < 3; ++i)
         {
-            ijk1[i] = static_cast<int>((p1[i] - origin[i]) / spacing[i] + 0.5);
-            ijk2[i] = static_cast<int>((p2[i] - origin[i]) / spacing[i] + 0.5);
+            customAxes->SetElement(i, 0, xAxis[i]);
+            customAxes->SetElement(i, 1, yAxis[i]);
+            customAxes->SetElement(i, 2, zAxis[i]);
+            customAxes->SetElement(i, 3, center[i] + uMin * xAxis[i] + vMin * yAxis[i]);
         }
 
-        int iMin[3], iMax[3];
-        for (int i = 0; i < 3; ++i)
-        {
-            iMin[i] = std::min(ijk1[i], ijk2[i]);
-            iMax[i] = std::max(ijk1[i], ijk2[i]);
-        }
+        // Reslice
+        vtkNew<vtkImageReslice> reslicer;
+        reslicer->SetInputData(input);
+        reslicer->SetResliceAxes(customAxes);
+        reslicer->SetOutputSpacing(spacingU, spacingV, 1.0);
+        reslicer->SetOutputOrigin(0.0, 0.0, 0.0);
+        reslicer->SetOutputExtent(0, outDims[0] - 1, 0, outDims[1] - 1, 0, 0);
+        reslicer->SetInterpolationModeToLinear();
+        reslicer->Update();
 
-        // 限定为当前切面 .获取当前 slice 所在的 Z index
-        int sliceOrientation = Viewer->GetSliceOrientation();
-        int sliceIndex = Viewer->GetSlice();
-
-        switch (sliceOrientation)
-        {
-        case vtkResliceImageViewer::SLICE_ORIENTATION_XY:
-            iMin[2] = iMax[2] = sliceIndex;
-            break;
-        case vtkResliceImageViewer::SLICE_ORIENTATION_XZ:
-            iMin[1] = iMax[1] = sliceIndex;
-            break;
-        case vtkResliceImageViewer::SLICE_ORIENTATION_YZ:
-            iMin[0] = iMax[0] = sliceIndex;
-            break;
-        }
-
-        // 提取 VOI
-        vtkNew<vtkExtractVOI> extractVOI;
-        extractVOI->SetInputData(image);
-        extractVOI->SetVOI(iMin[0], iMax[0], iMin[1], iMax[1], iMin[2], iMax[2]);
-        extractVOI->Update();
-
-        // 转为 PNG 可写格式
-        vtkImageData* croppedImage    = vtkImageData::SafeDownCast(extractVOI->GetOutput());
+        // Shift/scale to 8-bit for PNG output
+        vtkImageData* reslicedImage = reslicer->GetOutput();
         double range[2];
-        extractVOI->GetOutput()->GetScalarRange(range);
+        reslicedImage->GetScalarRange(range);
+
         vtkNew<vtkImageShiftScale> shiftScale;
-        shiftScale->SetInputConnection(extractVOI->GetOutputPort());
+        shiftScale->SetInputData(reslicedImage);
         shiftScale->SetOutputScalarTypeToUnsignedChar();
-        shiftScale->SetShift(-range[0]); // 把最小值移到0
-        shiftScale->SetScale(255.0 / (range[1] - range[0])); // 缩放到0~255
+        shiftScale->SetShift(-range[0]);
+        shiftScale->SetScale(255.0 / (range[1] - range[0]));
         shiftScale->ClampOverflowOn();
         shiftScale->Update();
+
 
 
         vtkNew<vtkPNGWriter> writer;
