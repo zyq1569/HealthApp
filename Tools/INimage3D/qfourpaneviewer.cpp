@@ -318,18 +318,6 @@ public:
 
         // 转为 PNG 可写格式
         vtkImageData* croppedImage    = vtkImageData::SafeDownCast(extractVOI->GetOutput());
-        //vtkImageAlgorithm* finalInput = nullptr;
-        //int scalarType = croppedImage->GetScalarType();
-        //if (scalarType != VTK_UNSIGNED_CHAR)//如果能确定是无符号的灰值，可以不用vtkImageCast,简化代码
-        //{
-        //    // 需要转换为 unsigned char
-        //    vtkNew<vtkImageCast> cast;
-        //    cast->SetInputData(croppedImage);
-        //    cast->SetOutputScalarTypeToUnsignedChar();
-        //    cast->ClampOverflowOn();
-        //    cast->Update();
-        //    finalInput = cast;
-        //}
         double range[2];
         extractVOI->GetOutput()->GetScalarRange(range);
         vtkNew<vtkImageShiftScale> shiftScale;
@@ -345,6 +333,11 @@ public:
         writer->SetFileName("RectangleImage_output.png");
         writer->SetInputConnection(shiftScale->GetOutputPort());            
         writer->Write();
+
+        vtkNew<vtkTIFFWriter> TIFFwriter;
+        TIFFwriter->SetFileName("RectangleImage_output.tiff");
+        TIFFwriter->SetInputConnection(shiftScale->GetOutputPort());
+        TIFFwriter->Write();
     }
 	void Execute(vtkObject* caller, unsigned long ev, void* callData) override
 	{
