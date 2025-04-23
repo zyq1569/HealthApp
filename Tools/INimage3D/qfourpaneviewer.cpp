@@ -272,102 +272,96 @@ public:
         {
             return;
         }
-
         vtkImageData* input = image;
 
-        vtkResliceCursor* resliceCursor = viewer->GetResliceCursor();
-
-        // ✅ 获取当前切面的中心点和方向轴
-        const double* xAxis = resliceCursor->GetAxis(0);
-        const double* yAxis = resliceCursor->GetAxis(1);
-        double zAxis[3];
-        vtkMath::Cross(xAxis, yAxis, zAxis);  // 计算 Z 轴（法向量）
-
+        vtkResliceCursor* cursor = viewer->GetResliceCursor();
         double center[3];
-        resliceCursor->GetCenter(center);
+        cursor->GetCenter(center);
 
-        // 计算 oblique 平面 spacing（考虑原图 spacing 和方向轴）
-        double inputSpacing[3];
-        input->GetSpacing(inputSpacing);
+        // 获取当前切面方向
+        double xAxis[3] = { 0,0,0 }, yAxis[3] = { 0,0,0 }, zAxis[3] = {0,0,0};
+        double *pxAxis = cursor->GetAxis(0);
+        double *pyAxis = cursor->GetAxis(1);
+        xAxis[0] = pxAxis[0]; xAxis[1] = pxAxis[1]; xAxis[2] = pxAxis[2];
+        yAxis[0] = pyAxis[0];  yAxis[1] = pyAxis[1];  yAxis[2] = pyAxis[2];
+        vtkMath::Cross(xAxis, yAxis, zAxis);
 
+        // 👉 翻转 Y 轴，避免图像镜像
+        double yAxisFlip[3] = { -yAxis[0], -yAxis[1], -yAxis[2] };
+
+        // 原图 spacing
+        double spacingIn[3];
+        input->GetSpacing(spacingIn);
+
+        // 计算 oblique spacing
         double spacingU = std::sqrt(
-            std::pow(xAxis[0] * inputSpacing[0], 2) +
-            std::pow(xAxis[1] * inputSpacing[1], 2) +
-            std::pow(xAxis[2] * inputSpacing[2], 2));
+            std::pow(xAxis[0] * spacingIn[0], 2) +
+            std::pow(xAxis[1] * spacingIn[1], 2) +
+            std::pow(xAxis[2] * spacingIn[2], 2));
 
         double spacingV = std::sqrt(
-            std::pow(yAxis[0] * inputSpacing[0], 2) +
-            std::pow(yAxis[1] * inputSpacing[1], 2) +
-            std::pow(yAxis[2] * inputSpacing[2], 2));
+            std::pow(yAxisFlip[0] * spacingIn[0], 2) +
+            std::pow(yAxisFlip[1] * spacingIn[1], 2) +
+            std::pow(yAxisFlip[2] * spacingIn[2], 2));
 
-        // 计算 world 坐标点在 oblique 平面上的局部坐标（u,v）
-        auto ProjectToPlane = [&](double pt[3], double& u, double& v)
+        // 将 world 点投影到切片平面上
+        auto Project = [&](double pt[3], double& u, double& v)
         {
             double vec[3] = { pt[0] - center[0], pt[1] - center[1], pt[2] - center[2] };
             u = vtkMath::Dot(vec, xAxis);
-            v = vtkMath::Dot(vec, yAxis);
+            v = vtkMath::Dot(vec, yAxisFlip);
         };
 
         double u1, v1, u2, v2;
-        ProjectToPlane(p1, u1, v1);
-        ProjectToPlane(p2, u2, v2);
+        Project(p1, u1, v1);
+        Project(p2, u2, v2);
 
         double uMin = std::min(u1, u2);
         double uMax = std::max(u1, u2);
         double vMin = std::min(v1, v2);
         double vMax = std::max(v1, v2);
 
-        // 输出图像尺寸
-        int outDims[3] =
+        // 计算输出图像大小
+        int dims[3] = 
         {
             static_cast<int>((uMax - uMin) / spacingU + 0.5),
             static_cast<int>((vMax - vMin) / spacingV + 0.5),
             1
         };
-        if (outDims[0] <= 0 || outDims[1] <= 0) return;
+        if (dims[0] <= 0 || dims[1] <= 0) return;
 
-
-        double yAxisFlip[3] =
-        {
-        -yAxis[0],
-        -yAxis[1],
-        -yAxis[2]
-        };
-        // 构造 ResliceAxes（平移到矩形左下角）
-        vtkNew<vtkMatrix4x4> customAxes;
+        // 构造 ResliceAxes（从切片坐标转到 world 坐标）
+        vtkNew<vtkMatrix4x4> resliceAxes;
         for (int i = 0; i < 3; ++i)
         {
-            customAxes->SetElement(i, 0, xAxis[i]);
-            customAxes->SetElement(i, 1, yAxisFlip[i]);
-            customAxes->SetElement(i, 2, zAxis[i]);
-            customAxes->SetElement(i, 3, center[i] + uMin * xAxis[i] + vMin * yAxisFlip[i]);
+            resliceAxes->SetElement(i, 0, xAxis[i]);
+            resliceAxes->SetElement(i, 1, yAxisFlip[i]);
+            resliceAxes->SetElement(i, 2, zAxis[i]);
+            resliceAxes->SetElement(i, 3, center[i] + uMin * xAxis[i] + vMin * yAxisFlip[i]);
         }
 
-        // Reslice
+        // 创建 Reslicer
         vtkNew<vtkImageReslice> reslicer;
         reslicer->SetInputData(input);
-        reslicer->SetResliceAxes(customAxes);
+        reslicer->SetResliceAxes(resliceAxes);
         reslicer->SetOutputSpacing(spacingU, spacingV, 1.0);
-        reslicer->SetOutputOrigin(0.0, 0.0, 0.0);
-        reslicer->SetOutputExtent(0, outDims[0] - 1, 0, outDims[1] - 1, 0, 0);
+        reslicer->SetOutputOrigin(0, 0, 0);
+        reslicer->SetOutputExtent(0, dims[0] - 1, 0, dims[1] - 1, 0, 0);
         reslicer->SetInterpolationModeToLinear();
         reslicer->Update();
 
-        // Shift/scale to 8-bit for PNG output
-        vtkImageData* reslicedImage = reslicer->GetOutput();
+        // 归一化为 8-bit 图像
+        vtkImageData* slice = reslicer->GetOutput();
         double range[2];
-        reslicedImage->GetScalarRange(range);
+        slice->GetScalarRange(range);
 
         vtkNew<vtkImageShiftScale> shiftScale;
-        shiftScale->SetInputData(reslicedImage);
+        shiftScale->SetInputData(slice);
         shiftScale->SetOutputScalarTypeToUnsignedChar();
         shiftScale->SetShift(-range[0]);
         shiftScale->SetScale(255.0 / (range[1] - range[0]));
         shiftScale->ClampOverflowOn();
         shiftScale->Update();
-
-
-
         vtkNew<vtkPNGWriter> writer;
         writer->SetFileName("RectangleImage_output.png");
         writer->SetInputConnection(shiftScale->GetOutputPort());            
@@ -378,7 +372,75 @@ public:
         TIFFwriter->SetInputConnection(shiftScale->GetOutputPort());
         TIFFwriter->Write();
     }
-	void Execute(vtkObject* caller, unsigned long ev, void* callData) override
+	
+    void SaveAxisAlignedSliceRectAsPNG(vtkResliceImageViewer* viewer, double worldStart[3], double worldEnd[3])
+    {
+        if (!viewer || !viewer->GetInput()) return;
+
+        vtkImageData* image = viewer->GetInput();
+
+        double origin[3];
+        for (int i = 0; i < 3; ++i)
+            origin[i] = 0.5 * (worldStart[i] + worldEnd[i]);
+
+        // 标准正交轴
+        double xAxis[3] = { 0 }, yAxis[3] = { 0 }, zAxis[3] = { 0 };
+        int orientation = viewer->GetSliceOrientation();
+        switch (orientation) {
+        case vtkResliceImageViewer::SLICE_ORIENTATION_XY:
+            xAxis[0] = 1; yAxis[1] = 1; zAxis[2] = 1;
+            break;
+        case vtkResliceImageViewer::SLICE_ORIENTATION_YZ:
+            xAxis[2] = 1; yAxis[1] = 1; zAxis[0] = 1;
+            break;
+        case vtkResliceImageViewer::SLICE_ORIENTATION_XZ:
+            xAxis[0] = 1; yAxis[2] = 1; zAxis[1] = 1;
+            break;
+        }
+
+        vtkNew<vtkMatrix4x4> resliceAxes;
+        for (int i = 0; i < 3; ++i) {
+            resliceAxes->SetElement(i, 0, xAxis[i]);
+            resliceAxes->SetElement(i, 1, yAxis[i]);
+            resliceAxes->SetElement(i, 2, zAxis[i]);
+            resliceAxes->SetElement(i, 3, origin[i]);
+        }
+
+        vtkNew<vtkImageReslice> reslicer;
+        reslicer->SetInputData(image);
+        reslicer->SetOutputDimensionality(2);
+        reslicer->SetResliceAxes(resliceAxes);
+        reslicer->SetInterpolationModeToLinear();
+        reslicer->Update();
+
+        vtkImageData* reslicedImage = reslicer->GetOutput();
+        vtkImageData* finalImage = reslicedImage;
+
+        vtkNew<vtkImageShiftScale> scaler;
+        if (reslicedImage->GetScalarType() == VTK_UNSIGNED_SHORT)
+        {          
+            double* range = reslicedImage->GetScalarRange();  // 动态获取范围
+            scaler->SetInputData(reslicedImage);
+            scaler->SetOutputScalarTypeToUnsignedChar();
+            scaler->SetShift(-range[0]);  // 平移到0
+            scaler->SetScale(255.0 / (range[1] - range[0]));  // 映射到0-255
+            scaler->ClampOverflowOn();
+            scaler->Update();
+
+            finalImage = scaler->GetOutput();
+        }
+
+        vtkNew<vtkPNGWriter> writer;
+        writer->SetFileName("RESLICE_AXIS_ALIGNED.png");
+        writer->SetInputData(finalImage);
+        writer->Write();
+
+        vtkNew<vtkTIFFWriter> TIFFwriter;
+        TIFFwriter->SetFileName("RESLICE_AXIS_ALIGNED.tiff");
+        TIFFwriter->SetInputData(finalImage);
+        TIFFwriter->Write();
+    }
+    void Execute(vtkObject* caller, unsigned long ev, void* callData) override
 	{
         static bool flag_RESLICE_AXIS_ALIGNED = false;		
         if (ev == vtkCommand::LeftButtonDoubleClickEvent)
@@ -463,7 +525,16 @@ public:
 
                 currentViewer->GetRenderer()->AddActor(actor);
                 currentViewer->GetRenderWindow()->Render();
-                SaveRectangleImagePNG(currentViewer, worldStart, worldEnd);
+                int mode = currentViewer->GetResliceMode();
+                if (mode == vtkResliceImageViewer::RESLICE_AXIS_ALIGNED)
+                {               
+                   SaveAxisAlignedSliceRectAsPNG(currentViewer, worldStart, worldEnd);
+                }
+                else
+                {
+                   SaveRectangleImagePNG(currentViewer, worldStart, worldEnd);
+                }
+
 #else
               //方式2：绘制矩形
                 DrawRectangle(currentViewer);
