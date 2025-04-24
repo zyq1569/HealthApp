@@ -457,7 +457,7 @@ public:
             }
             flag_RESLICE_AXIS_ALIGNED = !flag_RESLICE_AXIS_ALIGNED;
         }
-        else if (ev == vtkCommand::RightButtonPressEvent)
+        else if (ev == vtkCommand::RightButtonPressEvent && m_bSaveRectImage)
         {
             auto interactor = vtkRenderWindowInteractor::SafeDownCast(caller);
             vtkRenderWindow* renderWindow = interactor->GetRenderWindow();
@@ -577,6 +577,7 @@ public:
 	vtkResliceCursorCallback() 
     {
         m_ptNum = 0;
+        m_bSaveRectImage = false;
     }
  public:	
 	vtkResliceCursorWidget*                   RCW[3];
@@ -585,9 +586,10 @@ public:
 
     vtkSmartPointer<vtkActor> m_Actor;
  private:
-     int m_startPos[2];
-     int m_endPos[2];
-     int m_ptNum;
+     int  m_startPos[2];
+     int  m_endPos[2];
+     int  m_ptNum;
+     bool m_bSaveRectImage;
 };
 
 //--------------
@@ -693,17 +695,24 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 #define VTKFILTER vtkWindowToImageFilter
 void QFourpaneviewer::SaveImagePaneBMP()
 {
-    QString dir = QCoreApplication::applicationDirPath()+"//";
-    vtkSmartPointer<VTKFILTER> windowToImageFilter = vtkSmartPointer<VTKFILTER>::New();
-    vtkSmartPointer<vtkPNGWriter> writer           = vtkSmartPointer<vtkPNGWriter>::New();
-    vtkSmartPointer<vtkJPEGWriter> writerJ         = vtkSmartPointer<vtkJPEGWriter>::New();
-    vtkSmartPointer<vtkBMPWriter> writerB          = vtkSmartPointer<vtkBMPWriter>::New();
-    vtkSmartPointer<vtkTIFFWriter> writerT         = vtkSmartPointer<vtkTIFFWriter>::New();
+    QString dir = QCoreApplication::applicationDirPath() + "\\";
+    vtkSmartPointer<vtkPNGWriter>  writer = vtkSmartPointer<vtkPNGWriter>::New();
+    vtkSmartPointer<vtkJPEGWriter> writerJ = vtkSmartPointer<vtkJPEGWriter>::New();
+    vtkSmartPointer<vtkBMPWriter>  writerB = vtkSmartPointer<vtkBMPWriter>::New();
+    vtkSmartPointer<vtkTIFFWriter> writerT = vtkSmartPointer<vtkTIFFWriter>::New();
+
     vtkSmartPointer<vtkImageWriter> imagewriter;
 
-    int pos = 4;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "",  tr("Images(*.png );;Images(*.bmp);;images(*.jpg);;images(*.tiff)"));
+    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+    lookupTable->SetTableRange(0.0, 2048.0);  // 适用于 8 位灰度图像 (0-255)
+    lookupTable->SetValueRange(0.0, 1.0);   // 0 = 黑色, 1 = 白色// 设置颜色范围 (黑 -> 白)
+    lookupTable->SetSaturationRange(0.0, 0.0); // 0 = 无彩色 (纯灰度)
+    lookupTable->Build();
+    vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Images(*.png );;Images(*.bmp);;images(*.jpg);;images(*.tiff)"));
     QString upperstr = fileName.toUpper();
+    bool btiff = false;
+    int pos = 4;
     if (upperstr.contains("PNG"))
     {
         imagewriter = writer;
@@ -719,35 +728,55 @@ void QFourpaneviewer::SaveImagePaneBMP()
     else if (upperstr.contains("TIFF"))
     {
         imagewriter = writerT;
+        btiff = true;
         pos = 5;
     }
     else
     {
         fileName = dir + QString::number(QDateTime::currentDateTime().toTime_t()) + ".png";
     }
-
-    QVTKRenderWidget *qvtkWidget[4];
-    qvtkWidget[0] = ui->m_axial2DView;
-    qvtkWidget[1] = ui->m_sagital2DView;
-    qvtkWidget[2] = ui->m_coronal2DView;
-    qvtkWidget[3] = ui->m_image3DView;
     pos = fileName.length() - pos;
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 3; i++)
     {
-        windowToImageFilter->SetInput(qvtkWidget[i]->renderWindow());
-        windowToImageFilter->Update();
-        windowToImageFilter->Modified();
-
-        QString imagefileName = fileName;
-        QString insertStr     = "_" + QString::number(i) + ".";
-        imagefileName    = imagefileName.replace(pos,1, insertStr);
-        std::string str  = qPrintable(imagefileName);
-        imagewriter->SetFileName(str.c_str());
-        imagewriter->SetInputData(windowToImageFilter->GetOutput());
-        imagewriter->Update();
-        imagewriter->Write();
+        if (VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation()))
+        {
+            if (vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice()))
+            {
+                // default background color is the min value of the image scalar range
+                vtkImageData* data = reslice->GetOutput();
+                QString imagefileName = fileName;
+                QString insertStr = "_" + QString::number(i) + ".";
+                imagefileName = imagefileName.replace(pos, 1, insertStr);
+                std::string str = qPrintable(imagefileName);
+                writer->SetFileName(str.c_str());
+                if (btiff)
+                {
+                    writer->SetInputData(data);
+                }
+                else
+                {
+                    mapToColors->SetInputData(data);
+                    mapToColors->SetLookupTable(lookupTable); // 需要提前设置适当的查找表
+                    mapToColors->Update();
+                    writer->SetInputData(mapToColors->GetOutput());
+                }
+                writer->Update();
+                writer->Write();
+            }
+        }
     }
-    //int index = 10; m_resliceImageViewer[0]->SetSlice(index);
+    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+    windowToImageFilter->SetInput(ui->m_image3DView->renderWindow());
+    windowToImageFilter->Update();
+    windowToImageFilter->Modified();
+    QString imagefileName = fileName;
+    QString insertStr = "_3.";
+    imagefileName = imagefileName.replace(pos, 1, insertStr);
+    std::string str = qPrintable(imagefileName);
+    writer->SetFileName(str.c_str());
+    writer->SetInputData(windowToImageFilter->GetOutput());
+    writer->Update();
+    writer->Write();
 }
 
 void QFourpaneviewer::ShowEditorsWidget()
