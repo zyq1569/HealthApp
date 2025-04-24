@@ -549,6 +549,13 @@ public:
         else if (ev == vtkCommand::MiddleButtonPressEvent)
         {
              m_bSaveRectImage = !m_bSaveRectImage;
+             if (m_bSaveRectImage)
+             {
+                 m_widget[0]->setCursor(Qt::CrossCursor);
+                 m_widget[1]->setCursor(Qt::CrossCursor);
+                 m_widget[2]->setCursor(Qt::CrossCursor);
+             }
+
         }
         QString sliceInfo = "";      
         if (flag_RESLICE_AXIS_ALIGNED)
@@ -587,6 +594,7 @@ public:
 	vtkResliceCursorWidget*                   RCW[3];
     vtkResliceImageViewer*   m_resliceImageViewer[3];
     vtkCornerAnnotation*     m_cornerAts[3];
+    QVTKRenderWidget*        m_widget[3];
 
     vtkSmartPointer<vtkActor> m_Actor;
  private:
@@ -594,6 +602,7 @@ public:
      int  m_endPos[2];
      int  m_ptNum;
      bool m_bSaveRectImage;
+
 };
 
 //--------------
@@ -1145,6 +1154,10 @@ void QFourpaneviewer::ShowImagePlane()
 	}
 
 	m_resliceCallback = vtkResliceCursorCallback::New();
+    m_resliceCallback->m_widget[0] = ui->m_axial2DView;
+    m_resliceCallback->m_widget[1] = ui->m_coronal2DView;
+    m_resliceCallback->m_widget[2] = ui->m_sagital2DView;
+
 
 	vtkScalarsToColors *LookupTablecolor = m_resliceImageViewer[0]->GetLookupTable();
 	for (int i = 0; i < 3; i++)
