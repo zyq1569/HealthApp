@@ -764,7 +764,7 @@ void QFourpaneviewer::SaveImagePaneBMP()
                 writer->Write();
             }
         }
-    }
+    }//非斜切面 参考SaveAxisAlignedRectangleImageTIFF 保存数据
     vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
     windowToImageFilter->SetInput(ui->m_image3DView->renderWindow());
     windowToImageFilter->Update();
