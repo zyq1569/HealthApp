@@ -447,13 +447,14 @@ public:
         TIFFwriter->Write();
     }
     
-    void ExtractAndSaveRegion(vtkResliceImageViewer* vtkResliceViewer, int StartPosition[2], int EndPosition[2]) {
+    void ExtractAndSaveRegion(vtkResliceImageViewer* vtkResliceViewer, int StartPosition[2], int EndPosition[2])
+    {
         vtkImageData *Imagedata = vtkResliceViewer->GetInput();
         vtkRenderer *Renderer = vtkResliceViewer->GetRenderer();
         if (!Imagedata || !Renderer)
             return;
 
-        // Step 1: 转换屏幕坐标为世界坐标
+        //1: 转换屏幕坐标为世界坐标
         vtkSmartPointer<vtkCoordinate> coord = vtkSmartPointer<vtkCoordinate>::New();
         coord->SetCoordinateSystemToDisplay();
 
@@ -463,7 +464,7 @@ public:
         int x1 = std::max(StartPosition[0], EndPosition[0]);
         int y1 = std::max(StartPosition[1], EndPosition[1]);
 
-        // 将显示坐标转为世界坐标，再转图像索引坐标
+        //将显示坐标转为世界坐标，再转图像索引坐标
         coord->SetValue(x0, y0);
         double world0[2], world1[2];
         double *wd = coord->GetComputedWorldValue(Renderer);
@@ -474,7 +475,7 @@ public:
         world1[0] = wd[0];
         world1[1] = wd[1];
 
-        // Step 2: 世界坐标转为图像索引（用 vtkImageData->ComputeStructuredCoordinates 更准确）
+        //2: 世界坐标转为图像索引
         int extent[6];
         Imagedata->GetExtent(extent);
 
@@ -493,19 +494,19 @@ public:
         imgY0 = clamp(imgY0, extent[2], extent[3]);
         imgY1 = clamp(imgY1, extent[2], extent[3]);
 
-        // Step 3: 提取 VOI 区域
+        //3: 提取 VOI 区域
         vtkSmartPointer<vtkExtractVOI> extractVOI = vtkSmartPointer<vtkExtractVOI>::New();
         extractVOI->SetInputData(Imagedata);
         extractVOI->SetVOI(
             std::min(imgX0, imgX1), std::max(imgX0, imgX1),
             std::min(imgY0, imgY1), std::max(imgY0, imgY1),
-            extent[4], extent[5]  // 假设只提取当前切片
+            0,0// 如果同时提取所有切面VOI区域的数据修改为,应该没什么意义 extent[4], extent[5]
         );
         extractVOI->Update();
 
-        // Step 4: 保存为 TIFF
+        // 4: 保存为 TIFF
         vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
-        writer->SetFileName("SelectedRegion.tiff");
+        writer->SetFileName("SelectedRegion.tiff");//不保存为PNG等,tiff直接原始数据.方便后期处理
         writer->SetInputConnection(extractVOI->GetOutputPort());
         writer->Write();
 
@@ -611,8 +612,7 @@ public:
                 DrawRectangle(currentViewer);
                 currentViewer->Render();
 #endif //   DRAW_RECT        
-                
-
+               
             }
         }		
         QString sliceInfo = "";      
