@@ -270,7 +270,7 @@ public:
         int TargetSlice = vtkResliceViewer->GetSlice();
     }
 
-    void SaveObliquerRectangleImagePNG(vtkResliceImageViewer* vtkResliceViewer, double p1[3], double p2[3])
+    void SaveObliquerRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double p1[3], double p2[3])
     {
         vtkResliceImageViewer* viewer = vtkResliceViewer;
         auto image = viewer->GetInput();
@@ -378,76 +378,8 @@ public:
         TIFFwriter->SetInputData(slice);
         TIFFwriter->Write();
     }
-	
-    void SaveAxisAlignedRectangleImagePNG(vtkResliceImageViewer* viewer, double worldStart[3], double worldEnd[3])
-    {
-        if (!viewer || !viewer->GetInput()) return;
-
-        vtkImageData* image = viewer->GetInput();
-
-        double origin[3];
-        for (int i = 0; i < 3; ++i)
-            origin[i] = 0.5 * (worldStart[i] + worldEnd[i]);
-
-        // 标准正交轴
-        double xAxis[3] = { 0 }, yAxis[3] = { 0 }, zAxis[3] = { 0 };
-        int orientation = viewer->GetSliceOrientation();
-        switch (orientation) {
-        case vtkResliceImageViewer::SLICE_ORIENTATION_XY:
-            xAxis[0] = 1; yAxis[1] = 1; zAxis[2] = 1;
-            break;
-        case vtkResliceImageViewer::SLICE_ORIENTATION_YZ:
-            xAxis[2] = 1; yAxis[1] = 1; zAxis[0] = 1;
-            break;
-        case vtkResliceImageViewer::SLICE_ORIENTATION_XZ:
-            xAxis[0] = 1; yAxis[2] = 1; zAxis[1] = 1;
-            break;
-        }
-
-        vtkNew<vtkMatrix4x4> resliceAxes;
-        for (int i = 0; i < 3; ++i) {
-            resliceAxes->SetElement(i, 0, xAxis[i]);
-            resliceAxes->SetElement(i, 1, yAxis[i]);
-            resliceAxes->SetElement(i, 2, zAxis[i]);
-            resliceAxes->SetElement(i, 3, origin[i]);
-        }
-
-        vtkNew<vtkImageReslice> reslicer;
-        reslicer->SetInputData(image);
-        reslicer->SetOutputDimensionality(2);
-        reslicer->SetResliceAxes(resliceAxes);
-        reslicer->SetInterpolationModeToLinear();
-        reslicer->Update();
-
-        vtkImageData* reslicedImage = reslicer->GetOutput();
-        vtkImageData* finalImage = reslicedImage;
-
-        vtkNew<vtkImageShiftScale> scaler;
-        if (reslicedImage->GetScalarType() == VTK_UNSIGNED_SHORT)
-        {          
-            double* range = reslicedImage->GetScalarRange();  // 动态获取范围
-            scaler->SetInputData(reslicedImage);
-            scaler->SetOutputScalarTypeToUnsignedChar();
-            scaler->SetShift(-range[0]);  // 平移到0
-            scaler->SetScale(255.0 / (range[1] - range[0]));  // 映射到0-255
-            scaler->ClampOverflowOn();
-            scaler->Update();
-
-            finalImage = scaler->GetOutput();
-        }
-
-        vtkNew<vtkPNGWriter> writer;
-        writer->SetFileName("RESLICE_AXIS_ALIGNED.png");
-        writer->SetInputData(finalImage);
-        writer->Write();
-
-        vtkNew<vtkTIFFWriter> TIFFwriter;
-        TIFFwriter->SetFileName("RESLICE_AXIS_ALIGNED.tiff");
-        TIFFwriter->SetInputData(finalImage);
-        TIFFwriter->Write();
-    }
-    
-    void ExtractAndSaveRegion(vtkResliceImageViewer* vtkResliceViewer, int StartPosition[2], int EndPosition[2])
+	    
+    void SaveAxisAlignedRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, int StartPosition[2], int EndPosition[2])
     {
         vtkImageData *Imagedata = vtkResliceViewer->GetInput();
         vtkRenderer *Renderer = vtkResliceViewer->GetRenderer();
@@ -599,12 +531,11 @@ public:
                 int mode = currentViewer->GetResliceMode();
                 if (mode == vtkResliceImageViewer::RESLICE_AXIS_ALIGNED)
                 {     
-                    ExtractAndSaveRegion(currentViewer, m_startPos, m_endPos);
-                    //SaveAxisAlignedRectangleImagePNG(currentViewer, worldStart, worldEnd);
+                    SaveAxisAlignedRectangleImageTIFF(currentViewer, m_startPos, m_endPos);
                 }
                 else
                 {
-                    SaveObliquerRectangleImagePNG(currentViewer, worldStart, worldEnd);
+                    SaveObliquerRectangleImageTIFF(currentViewer, worldStart, worldEnd);
                 }
 
 #else
