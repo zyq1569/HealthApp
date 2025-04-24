@@ -546,6 +546,10 @@ public:
                
             }
         }		
+        else if (ev == vtkCommand::MiddleButtonPressEvent)
+        {
+             m_bSaveRectImage = !m_bSaveRectImage;
+        }
         QString sliceInfo = "";      
         if (flag_RESLICE_AXIS_ALIGNED)
         {
@@ -1156,6 +1160,7 @@ void QFourpaneviewer::ShowImagePlane()
         //add 在增加中间键切换常规切面或者切面
         m_resliceImageViewer[i]->GetInteractor()->AddObserver(vtkCommand::LeftButtonDoubleClickEvent, m_resliceCallback);
         m_resliceImageViewer[i]->GetInteractor()->AddObserver(vtkCommand::RightButtonPressEvent, m_resliceCallback);
+        m_resliceImageViewer[i]->GetInteractor()->AddObserver(vtkCommand::MiddleButtonPressEvent, m_resliceCallback);
         m_resliceCallback->m_resliceImageViewer[i] = m_resliceImageViewer[i];
         m_resliceCallback->m_cornerAts[i]          = m_cornerAts[i];
 
