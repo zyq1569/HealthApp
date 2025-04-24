@@ -264,7 +264,7 @@ public:
         int TargetSlice = vtkResliceViewer->GetSlice();
     }
 
-    void SaveRectangleImagePNG(vtkResliceImageViewer* vtkResliceViewer, double p1[3], double p2[3])
+    void SaveObliquerRectangleImagePNG(vtkResliceImageViewer* vtkResliceViewer, double p1[3], double p2[3])
     {
         vtkResliceImageViewer* viewer = vtkResliceViewer;
         auto image = viewer->GetInput();
@@ -369,11 +369,11 @@ public:
 
         vtkNew<vtkTIFFWriter> TIFFwriter;
         TIFFwriter->SetFileName("RectangleImage_output.tiff");
-        TIFFwriter->SetInputConnection(shiftScale->GetOutputPort());
+        TIFFwriter->SetInputData(slice);
         TIFFwriter->Write();
     }
 	
-    void SaveAxisAlignedSliceRectAsPNG(vtkResliceImageViewer* viewer, double worldStart[3], double worldEnd[3])
+    void SaveAxisAlignedRectangleImagePNG(vtkResliceImageViewer* viewer, double worldStart[3], double worldEnd[3])
     {
         if (!viewer || !viewer->GetInput()) return;
 
@@ -528,11 +528,11 @@ public:
                 int mode = currentViewer->GetResliceMode();
                 if (mode == vtkResliceImageViewer::RESLICE_AXIS_ALIGNED)
                 {               
-                   SaveAxisAlignedSliceRectAsPNG(currentViewer, worldStart, worldEnd);
+                    SaveAxisAlignedRectangleImagePNG(currentViewer, worldStart, worldEnd);
                 }
                 else
                 {
-                   SaveRectangleImagePNG(currentViewer, worldStart, worldEnd);
+                    SaveObliquerRectangleImagePNG(currentViewer, worldStart, worldEnd);
                 }
 
 #else
@@ -691,15 +691,16 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 #define VTKFILTER vtkWindowToImageFilter
 void QFourpaneviewer::SaveImagePaneBMP()
 {
-    QString dir = QCoreApplication::applicationDirPath()+"\\";
+    QString dir = QCoreApplication::applicationDirPath()+"//";
     vtkSmartPointer<VTKFILTER> windowToImageFilter = vtkSmartPointer<VTKFILTER>::New();
     vtkSmartPointer<vtkPNGWriter> writer           = vtkSmartPointer<vtkPNGWriter>::New();
     vtkSmartPointer<vtkJPEGWriter> writerJ         = vtkSmartPointer<vtkJPEGWriter>::New();
     vtkSmartPointer<vtkBMPWriter> writerB          = vtkSmartPointer<vtkBMPWriter>::New();
+    vtkSmartPointer<vtkTIFFWriter> writerT         = vtkSmartPointer<vtkTIFFWriter>::New();
     vtkSmartPointer<vtkImageWriter> imagewriter;
 
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "",  tr("Images(*.png );;Images(*.bmp);;images(*.jpg)"));
+    int pos = 4;
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "",  tr("Images(*.png );;Images(*.bmp);;images(*.jpg);;images(*.tiff)"));
     QString upperstr = fileName.toUpper();
     if (upperstr.contains("PNG"))
     {
@@ -713,6 +714,11 @@ void QFourpaneviewer::SaveImagePaneBMP()
     {
         imagewriter = writerJ;
     }
+    else if (upperstr.contains("TIFF"))
+    {
+        imagewriter = writerT;
+        pos = 5;
+    }
     else
     {
         fileName = dir + QString::number(QDateTime::currentDateTime().toTime_t()) + ".png";
@@ -723,7 +729,7 @@ void QFourpaneviewer::SaveImagePaneBMP()
     qvtkWidget[1] = ui->m_sagital2DView;
     qvtkWidget[2] = ui->m_coronal2DView;
     qvtkWidget[3] = ui->m_image3DView;
-    int pos = fileName.length()-4;
+    int pos = fileName.length() - pos;
     for (int i = 0; i < 4; i++)
     {
         windowToImageFilter->SetInput(qvtkWidget[i]->renderWindow());
@@ -734,10 +740,10 @@ void QFourpaneviewer::SaveImagePaneBMP()
         QString insertStr     = "_" + QString::number(i) + ".";
         imagefileName    = imagefileName.replace(pos,1, insertStr);
         std::string str  = qPrintable(imagefileName);
-        writer->SetFileName(str.c_str());
-        writer->SetInputData(windowToImageFilter->GetOutput());
-        writer->Update();
-        writer->Write();
+        imagewriter->SetFileName(str.c_str());
+        imagewriter->SetInputData(windowToImageFilter->GetOutput());
+        imagewriter->Update();
+        imagewriter->Write();
     }
     //int index = 10; m_resliceImageViewer[0]->SetSlice(index);
 }
