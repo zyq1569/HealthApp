@@ -78,6 +78,12 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 
 using namespace ThreadWeaver;
 
+template<typename T>
+const T& clamp(const T& v, const T& lo, const T& hi)
+{
+    return (v < lo) ? lo : (v > hi) ? hi : v;
+}
+
 class Volume3DJob : public Job 
 {
 public:
@@ -440,6 +446,70 @@ public:
         TIFFwriter->SetInputData(finalImage);
         TIFFwriter->Write();
     }
+    
+    void ExtractAndSaveRegion(vtkResliceImageViewer* vtkResliceViewer, int StartPosition[2], int EndPosition[2]) {
+        vtkImageData *Imagedata = vtkResliceViewer->GetInput();
+        vtkRenderer *Renderer = vtkResliceViewer->GetRenderer();
+        if (!Imagedata || !Renderer)
+            return;
+
+        // Step 1: 转换屏幕坐标为世界坐标
+        vtkSmartPointer<vtkCoordinate> coord = vtkSmartPointer<vtkCoordinate>::New();
+        coord->SetCoordinateSystemToDisplay();
+
+        // 获取矩形对角的两个点
+        int x0 = std::min(StartPosition[0], EndPosition[0]);
+        int y0 = std::min(StartPosition[1], EndPosition[1]);
+        int x1 = std::max(StartPosition[0], EndPosition[0]);
+        int y1 = std::max(StartPosition[1], EndPosition[1]);
+
+        // 将显示坐标转为世界坐标，再转图像索引坐标
+        coord->SetValue(x0, y0);
+        double world0[2], world1[2];
+        double *wd = coord->GetComputedWorldValue(Renderer);
+        world0[0] = wd[0];
+        world0[1] = wd[1];
+        coord->SetValue(x1, y1);
+        wd = coord->GetComputedWorldValue(Renderer);
+        world1[0] = wd[0];
+        world1[1] = wd[1];
+
+        // Step 2: 世界坐标转为图像索引（用 vtkImageData->ComputeStructuredCoordinates 更准确）
+        int extent[6];
+        Imagedata->GetExtent(extent);
+
+        double spacing[3];
+        Imagedata->GetSpacing(spacing);
+        double origin[3];
+        Imagedata->GetOrigin(origin);
+
+        int imgX0 = static_cast<int>((world0[0] - origin[0]) / spacing[0]);
+        int imgY0 = static_cast<int>((world0[1] - origin[1]) / spacing[1]);
+        int imgX1 = static_cast<int>((world1[0] - origin[0]) / spacing[0]);
+        int imgY1 = static_cast<int>((world1[1] - origin[1]) / spacing[1]);
+
+        imgX0 = clamp(imgX0, extent[0], extent[1]);
+        imgX1 = clamp(imgX1, extent[0], extent[1]);
+        imgY0 = clamp(imgY0, extent[2], extent[3]);
+        imgY1 = clamp(imgY1, extent[2], extent[3]);
+
+        // Step 3: 提取 VOI 区域
+        vtkSmartPointer<vtkExtractVOI> extractVOI = vtkSmartPointer<vtkExtractVOI>::New();
+        extractVOI->SetInputData(Imagedata);
+        extractVOI->SetVOI(
+            std::min(imgX0, imgX1), std::max(imgX0, imgX1),
+            std::min(imgY0, imgY1), std::max(imgY0, imgY1),
+            extent[4], extent[5]  // 假设只提取当前切片
+        );
+        extractVOI->Update();
+
+        // Step 4: 保存为 TIFF
+        vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
+        writer->SetFileName("SelectedRegion.tiff");
+        writer->SetInputConnection(extractVOI->GetOutputPort());
+        writer->Write();
+
+    }
     void Execute(vtkObject* caller, unsigned long ev, void* callData) override
 	{
         static bool flag_RESLICE_AXIS_ALIGNED = false;		
@@ -527,8 +597,9 @@ public:
                 currentViewer->GetRenderWindow()->Render();
                 int mode = currentViewer->GetResliceMode();
                 if (mode == vtkResliceImageViewer::RESLICE_AXIS_ALIGNED)
-                {               
-                    SaveAxisAlignedRectangleImagePNG(currentViewer, worldStart, worldEnd);
+                {     
+                    ExtractAndSaveRegion(currentViewer, m_startPos, m_endPos);
+                    //SaveAxisAlignedRectangleImagePNG(currentViewer, worldStart, worldEnd);
                 }
                 else
                 {
