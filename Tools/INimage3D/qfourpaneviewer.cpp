@@ -729,7 +729,7 @@ void QFourpaneviewer::SaveImagePaneBMP()
     qvtkWidget[1] = ui->m_sagital2DView;
     qvtkWidget[2] = ui->m_coronal2DView;
     qvtkWidget[3] = ui->m_image3DView;
-    int pos = fileName.length() - pos;
+    pos = fileName.length() - pos;
     for (int i = 0; i < 4; i++)
     {
         windowToImageFilter->SetInput(qvtkWidget[i]->renderWindow());
