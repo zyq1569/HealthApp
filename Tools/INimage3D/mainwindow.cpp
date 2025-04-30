@@ -110,6 +110,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_editor->setEnabled(false);
     m_saveImage->setEnabled(false);
+    m_splitImageData->setEnabled(false);
 
 }
 

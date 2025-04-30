@@ -796,12 +796,20 @@ void QFourpaneviewer::SplitImageData()
 {
 // 1. 提取 VOI：只取 Z=30~40 层
     int* dims = m_showImageData->GetDimensions();
-    vtkSmartPointer<vtkExtractVOI> extractVOI =   vtkSmartPointer<vtkExtractVOI>::New();
-    extractVOI->SetInputData(m_MainWindow->m_vtkImageData);
-    extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, 10, 30);  // x, y, z 范围
-    extractVOI->Update();
-    m_showImageData = extractVOI->GetOutput();
+    m_extractVOI =   vtkSmartPointer<vtkExtractVOI>::New();
+    m_extractVOI->SetInputData(m_MainWindow->m_vtkImageData);
+    m_extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, 10, 30);  // x, y, z 范围
+    m_extractVOI->Update();
+    m_showImageData = m_extractVOI->GetOutput();
 //--------------------------------
+
+    for (int i = 0; i < 3; i++)
+    {
+        m_resliceImageViewer[i]->SetInputData(m_showImageData);
+        m_resliceImageViewer[i]->Render();
+    }
+    m_volumeMapper->SetInputData(m_showImageData);
+    ui->m_image3DView->renderWindow()->Render();
 }
 
 void QFourpaneviewer::ShowEditorsWidget()

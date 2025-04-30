@@ -27,6 +27,7 @@ class vtkGPUVolumeRayCastMapper;
 class vtkMarchingCubes;
 class vtkPolyDataMappers;
 class vtkCornerAnnotation;
+class vtkExtractVOI;
 
 #include <QWidget>
 
@@ -106,6 +107,7 @@ public:
 	bool m_showEditors;
 
     vtkImageData *m_showImageData,*m_topImageData,*m_centerImageData,*m_bottomImageData;
+    vtkSmartPointer<vtkExtractVOI> m_extractVOI;
 
 public:
     //绘制灰度直方图的读取参数
