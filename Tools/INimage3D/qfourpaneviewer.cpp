@@ -448,14 +448,16 @@ public:
         static bool flag_RESLICE_AXIS_ALIGNED = false;		
         if (ev == vtkCommand::LeftButtonDoubleClickEvent)
         {
-           //for (int i = 0; i < 3; i++)
-           //{
-           //     m_resliceImageViewer[i]->SetResliceMode(flag_RESLICE_AXIS_ALIGNED ? 1 : 0);
-           //     m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
-           //     m_resliceImageViewer[i]->Reset();
-           //     m_resliceImageViewer[i]->Render();
-           //}
-           //flag_RESLICE_AXIS_ALIGNED = !flag_RESLICE_AXIS_ALIGNED;
+#ifdef RESLICE_AXIS_ALIGNED
+           for (int i = 0; i < 3; i++)
+           {
+                m_resliceImageViewer[i]->SetResliceMode(flag_RESLICE_AXIS_ALIGNED ? 1 : 0);
+                m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
+                m_resliceImageViewer[i]->Reset();
+                m_resliceImageViewer[i]->Render();
+           }
+           flag_RESLICE_AXIS_ALIGNED = !flag_RESLICE_AXIS_ALIGNED;
+#endif
         }
         else if (ev == vtkCommand::RightButtonPressEvent && m_bSaveRectImage)
         {
