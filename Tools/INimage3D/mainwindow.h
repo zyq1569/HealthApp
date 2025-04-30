@@ -23,7 +23,6 @@ public:
     ~MainWindow();
 
 public slots:
-	void showImage3D();
 	void showImage4Plane();
 	void setEnabledQAction();
 	void initMetaFile();
@@ -36,7 +35,7 @@ private:
 
 public:
 	QTabWidget *m_workspace;
-	QWidget  *m_image4Plane;//*m_image3D,
+	QWidget  *m_image4Plane;
 
 	QAction *m_openAction, *m_show3D, *m_show4Plane, *m_cfigQA, *m_editor, *m_saveImage;
 	QMenu *m_fileMenu;

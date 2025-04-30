@@ -221,12 +221,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-void MainWindow::showImage3D()
-{
-
-}
-
 void MainWindow::showImage4Plane()
 {
     if (!m_vtkImageData)

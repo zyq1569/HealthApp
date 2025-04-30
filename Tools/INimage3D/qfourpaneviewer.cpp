@@ -664,7 +664,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_volumeProperty   = vtkVolumeProperty::New();
 
 	m_isosurfaceActor  = vtkActor::New();
-    m_isosurfaceActor->GetProperty()->SetColor(1.0, 0.85, 0.7);  // 设置皮肤色（RGB）
+    m_isosurfaceActor->GetProperty()->SetColor(1.0, 1.0, 1.0);  // 设置（RGB）
 
 	m_renderer  = vtkRenderer::New();
 
@@ -1126,7 +1126,6 @@ void QFourpaneviewer::ShowImagePlane()
 		m_resliceImageViewer[i]->SetInputData(imageData);
 		m_resliceImageViewer[i]->SetSliceOrientation(i);
 		m_resliceImageViewer[i]->SetResliceModeToAxisAligned();
-		//DefaultLevel = 862		DefaultWindow = 1528
 		rep->SetWindowLevel(m_defaultWindow, m_defaultLevel);
         int max = m_resliceImageViewer[i]->GetSliceMax();
   
