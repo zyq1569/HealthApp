@@ -66,6 +66,18 @@ MainWindow::MainWindow(QWidget *parent)
     m_configForm = new ConfigForm(this);
     m_configForm->InitConfig();
 
+    //add 20250430 体数据分层
+    m_splitImageData = new QAction("分层", this);
+    m_mainToolbar->addAction(m_splitImageData);
+    connect(m_splitImageData, &QAction::triggered, [this]
+    {
+        if (m_image4Plane)
+        {
+            ((QFourpaneviewer*)m_image4Plane)->SplitImageData();
+        }
+
+    });
+
     m_editor = new QAction("调参", this);
     m_mainToolbar->addAction(m_editor);
     connect(m_editor, &QAction::triggered, [this]
@@ -133,6 +145,7 @@ void MainWindow::initMetaFile()
             m_index4P = -1;
             m_editor->setEnabled(false);
             m_saveImage->setEnabled(false);
+            m_splitImageData->setEnabled(false);
         }
 
         m_openAction->setText("文件(&O)");
@@ -189,6 +202,7 @@ void MainWindow::initMetaFile()
     m_qProgressBar->hide();
     m_editor->setEnabled(true);
     m_saveImage->setEnabled(true);
+    m_splitImageData->setEnabled(true);
 }
 
 void MainWindow::setEnabledQAction()

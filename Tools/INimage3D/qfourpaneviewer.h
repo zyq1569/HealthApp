@@ -80,6 +80,8 @@ public:
 
     void SaveImagePaneBMP();
 
+    void SplitImageData();
+
 	//show 3D
 public:
 	MainWindow *m_MainWindow;
@@ -102,6 +104,8 @@ public:
 	vtkColorTransferFunction *m_colorTranF;
 	VtkColorGradient *m_vtkColorGradient;
 	bool m_showEditors;
+
+    vtkImageData *m_showImageData,*m_topImageData,*m_centerImageData,*m_bottomImageData;
 
 public:
     //绘制灰度直方图的读取参数

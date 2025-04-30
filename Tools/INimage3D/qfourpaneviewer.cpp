@@ -792,6 +792,18 @@ void QFourpaneviewer::SaveImagePaneBMP()
     writer->Write();
 }
 
+void QFourpaneviewer::SplitImageData()
+{
+// 1. 提取 VOI：只取 Z=30~40 层
+    int* dims = m_showImageData->GetDimensions();
+    vtkSmartPointer<vtkExtractVOI> extractVOI =   vtkSmartPointer<vtkExtractVOI>::New();
+    extractVOI->SetInputData(m_MainWindow->m_vtkImageData);
+    extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, 10, 30);  // x, y, z 范围
+    extractVOI->Update();
+    m_showImageData = extractVOI->GetOutput();
+//--------------------------------
+}
+
 void QFourpaneviewer::ShowEditorsWidget()
 {
     /*
@@ -1076,21 +1088,10 @@ void QFourpaneviewer::ShowImagePlane()
 	{
 		return;
 	}
-
+    m_showImageData = m_MainWindow->m_vtkImageData;
 	int imageDims[3];
 
-	vtkImageData *imageData = m_MainWindow->m_vtkImageData;
-
-    //--------test-------------
-    // 1. 提取 VOI：只取 Z=30~40 层
-    //int* dims = imageData->GetDimensions();
-    //vtkSmartPointer<vtkExtractVOI> extractVOI =   vtkSmartPointer<vtkExtractVOI>::New();
-    //extractVOI->SetInputData(m_MainWindow->m_vtkImageData);
-    //extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, 10, 30);  // x, y, z 范围
-    //extractVOI->Update();
-    //imageData = extractVOI->GetOutput();
-    //--------------------------------
-
+    vtkImageData *imageData = m_showImageData;
 	imageData->GetDimensions(imageDims);
 
 	for (int i = 0; i < 3; i++)
@@ -1195,8 +1196,9 @@ void QFourpaneviewer::ShowImage3D()
 {
 	if (!m_MainWindow->m_vtkImageData)
 		return;
+    m_showImageData = m_MainWindow->m_vtkImageData;
 
-	vtkImageData *imageData = m_MainWindow->m_vtkImageData;
+	vtkImageData *imageData = m_showImageData;
 	//
     m_pieceF->AddPoint(0, 1.0); m_pieceF->AddPoint(255, 1.0);  // 低梯度区域完全不透明 // 高梯度区域同样不透明（相当于禁用梯度影响）
 	m_MainWindow->m_checkOpacity ?(m_pieceF->AddPoint(167.00000000000000, 0.16862745098039220),m_pieceF->AddPoint(218.00000000000000, 0.41960784313725491)):(m_pieceF->AddPoint(255, 1.0));

@@ -37,7 +37,7 @@ public:
 	QTabWidget *m_workspace;
 	QWidget  *m_image4Plane;
 
-	QAction *m_openAction, *m_show3D, *m_show4Plane, *m_cfigQA, *m_editor, *m_saveImage;
+	QAction *m_openAction, *m_show3D, *m_show4Plane, *m_cfigQA, *m_editor, *m_saveImage,*m_splitImageData;
 	QMenu *m_fileMenu;
 	vtkMetaImageReader *m_MetaReader;
 	vtkXMLImageDataReader *m_XMLImageDataReader;
@@ -54,5 +54,8 @@ public:
 	bool m_checkStart3D, m_checkStart4Plane, m_check3Dcolor, m_checkDefaultWL, m_checkOpacity,m_colorGradient,m_sampleDistanceCheck;
 	int m_DefaultLevel, m_DefaultWindow, m_cbInterType;
     double m_sampleDistance;
+
+    //add 体数据XYZ 信息
+    int m_numberX, m_numberY, m_numberZ;
 };
 #endif // MAINWINDOW_H
