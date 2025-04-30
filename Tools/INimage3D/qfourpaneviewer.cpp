@@ -448,14 +448,14 @@ public:
         static bool flag_RESLICE_AXIS_ALIGNED = false;		
         if (ev == vtkCommand::LeftButtonDoubleClickEvent)
         {
-           for (int i = 0; i < 3; i++)
-            {
-                m_resliceImageViewer[i]->SetResliceMode(flag_RESLICE_AXIS_ALIGNED ? 1 : 0);
-                m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
-                m_resliceImageViewer[i]->Reset();
-                m_resliceImageViewer[i]->Render();
-            }
-            flag_RESLICE_AXIS_ALIGNED = !flag_RESLICE_AXIS_ALIGNED;
+           //for (int i = 0; i < 3; i++)
+           //{
+           //     m_resliceImageViewer[i]->SetResliceMode(flag_RESLICE_AXIS_ALIGNED ? 1 : 0);
+           //     m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
+           //     m_resliceImageViewer[i]->Reset();
+           //     m_resliceImageViewer[i]->Render();
+           //}
+           //flag_RESLICE_AXIS_ALIGNED = !flag_RESLICE_AXIS_ALIGNED;
         }
         else if (ev == vtkCommand::RightButtonPressEvent && m_bSaveRectImage)
         {
@@ -682,6 +682,9 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
     m_pieceGradF = vtkPiecewiseFunction::New();
     m_colorTranF = vtkColorTransferFunction::New();
 
+    //分层
+    m_extractVOI = vtkExtractVOI::New();
+
     //add ----ISO
     m_renderer->AddActor(m_vtkVolume);  // 添加体绘制到渲染器
     //m_renderer->AddActor(m_isosurfaceActor);  // 添加等值面到渲染器
@@ -795,12 +798,12 @@ void QFourpaneviewer::SaveImagePaneBMP()
 void QFourpaneviewer::SplitImageData()
 {
 // 1. 提取 VOI：只取 Z=30~40 层
-    int* dims = m_showImageData->GetDimensions();
-    m_extractVOI =   vtkSmartPointer<vtkExtractVOI>::New();
+    int* dims = m_showImageData->GetDimensions();   
     m_extractVOI->SetInputData(m_MainWindow->m_vtkImageData);
-    m_extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, 10, 30);  // x, y, z 范围
+    m_extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, 26, 57);  // x, y, z 范围
     m_extractVOI->Update();
     m_showImageData = m_extractVOI->GetOutput();
+    m_vtkAlgorithm  = m_extractVOI->GetOutputPort();
 //--------------------------------
 
     for (int i = 0; i < 3; i++)
@@ -1097,6 +1100,7 @@ void QFourpaneviewer::ShowImagePlane()
 		return;
 	}
     m_showImageData = m_MainWindow->m_vtkImageData;
+    m_vtkAlgorithm  = m_MainWindow->m_vtkAlgorithmOutput;
 	int imageDims[3];
 
     vtkImageData *imageData = m_showImageData;
@@ -1154,7 +1158,7 @@ void QFourpaneviewer::ShowImagePlane()
 		m_resliceImageViewer[i]->GetRenderer()->SetBackground(color);
 		m_planeWidget[i]->TextureInterpolateOff();
 		m_planeWidget[i]->SetResliceInterpolateToLinear();
-		m_planeWidget[i]->SetInputConnection(m_MainWindow->m_vtkAlgorithmOutput);
+		m_planeWidget[i]->SetInputConnection(m_vtkAlgorithm);
 		m_planeWidget[i]->SetPlaneOrientation(i);
 		m_planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
 		m_planeWidget[i]->DisplayTextOn();	
@@ -1326,8 +1330,12 @@ QFourpaneviewer::~QFourpaneviewer()
 	{
 		m_2DViewRenderWindow->Delete();
 	}
-  
 
+    if (m_extractVOI)
+    {
+        m_extractVOI->Delete();
+    }
+  
 	///--------------showVolume3D--------
 	m_volumeMapper->Delete();
 	m_volumeProperty->Delete();

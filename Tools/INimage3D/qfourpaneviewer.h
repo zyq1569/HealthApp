@@ -107,7 +107,8 @@ public:
 	bool m_showEditors;
 
     vtkImageData *m_showImageData,*m_topImageData,*m_centerImageData,*m_bottomImageData;
-    vtkSmartPointer<vtkExtractVOI> m_extractVOI;
+    vtkExtractVOI *m_extractVOI;
+    vtkAlgorithmOutput  *m_vtkAlgorithm;
 
 public:
     //绘制灰度直方图的读取参数
