@@ -628,6 +628,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
 	m_ren                = nullptr;
 	m_actionReset        = nullptr;	  
     m_vtkColorGradient   = nullptr;
+    m_volumeDataSet      = nullptr;
 
     m_numberPixels = 0;
 
@@ -797,21 +798,32 @@ void QFourpaneviewer::SaveImagePaneBMP()
     writer->Write();
 }
 
-void QFourpaneviewer::SplitImageData()
+void QFourpaneviewer::ShowEditorSplitImageData()
+{
+    int* dims = m_MainWindow->m_vtkImageData->GetDimensions();
+    if (!m_volumeDataSet)
+    {
+        m_volumeDataSet = new VolumeDataSet();
+        m_volumeDataSet->SetSlicesNumber(dims);
+        m_volumeDataSet->show();
+    }
+}
+void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
 {
 // 1. 提取 VOI：只取 Z=30~40 层
-    int* dims = m_showImageData->GetDimensions();   
+    //int* dims = m_MainWindow->m_vtkImageData->GetDimensions();   
     m_extractVOI->SetInputData(m_MainWindow->m_vtkImageData);
-    m_extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, 26, 57);  // x, y, z 范围
+    m_extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, start, end);  // x, y, z 范围
     m_extractVOI->Update();
     m_showImageData = m_extractVOI->GetOutput();
     m_vtkAlgorithm  = m_extractVOI->GetOutputPort();
-//--------------------------------
 
     for (int i = 0; i < 3; i++)
     {
         m_resliceImageViewer[i]->SetInputData(m_showImageData);
         m_resliceImageViewer[i]->Render();
+
+        m_planeWidget[i]->SetInputConnection(m_vtkAlgorithm);
     }
     m_volumeMapper->SetInputData(m_showImageData);
     ui->m_image3DView->renderWindow()->Render();
@@ -1338,6 +1350,11 @@ QFourpaneviewer::~QFourpaneviewer()
         m_extractVOI->Delete();
     }
   
+    if (m_volumeDataSet)
+    {
+        m_volumeDataSet->hide();
+        delete m_volumeDataSet;
+    }
 	///--------------showVolume3D--------
 	m_volumeMapper->Delete();
 	m_volumeProperty->Delete();

@@ -6,7 +6,8 @@
 #include "vtkImagePlaneWidget.h"
 #include "vtkResliceImageViewer.h"
 #include "vtkResliceImageViewerMeasurements.h"
-#include "vtkSmartPointer.h"
+
+#include "volumedataset.h"
 
 class vtkGenericOpenGLRenderWindow;
 class vtkResliceCursorCallback;
@@ -28,6 +29,7 @@ class vtkMarchingCubes;
 class vtkPolyDataMappers;
 class vtkCornerAnnotation;
 class vtkExtractVOI;
+
 
 #include <QWidget>
 
@@ -51,6 +53,8 @@ public slots:
 	void ResetViewer();
 	void Update3DColorByPointEditor(VtkColorStyle colorValue);
     void Update3DColorByCoordinate(VtkColorStyle colorValue);
+
+    void SplitImageData(int *dims, int start, int end);
 
 signals:
     void LoadConfigFiles();
@@ -81,7 +85,7 @@ public:
 
     void SaveImagePaneBMP();
 
-    void SplitImageData();
+    void ShowEditorSplitImageData();
 
 	//show 3D
 public:
@@ -106,9 +110,11 @@ public:
 	VtkColorGradient *m_vtkColorGradient;
 	bool m_showEditors;
 
+    //0430
     vtkImageData *m_showImageData,*m_topImageData,*m_centerImageData,*m_bottomImageData;
     vtkExtractVOI *m_extractVOI;
     vtkAlgorithmOutput  *m_vtkAlgorithm;
+    VolumeDataSet *m_volumeDataSet;
 
 public:
     //绘制灰度直方图的读取参数
