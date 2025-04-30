@@ -357,6 +357,7 @@
     <ClCompile Include="qfourpaneviewer.cpp" />
     <ClCompile Include="qintervaleditor.cpp" />
     <ClCompile Include="qprogressdata.cpp" />
+    <ClCompile Include="volumedataset.cpp" />
     <ClCompile Include="vtkcolorgradient.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -371,6 +372,7 @@
     </QtUic>
     <QtUic Include="qfourpaneviewer.ui" />
     <QtUic Include="qprogressdata.ui" />
+    <QtUic Include="volumedataset.ui" />
     <QtUic Include="vtkcolorgradient.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -380,6 +382,7 @@
     <QtMoc Include="qfourpaneviewer.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="volumedataset.h" />
     <QtMoc Include="vtkcolorgradient.h" />
     <QtMoc Include="configForm.h" />
     <QtMoc Include="qprogressdata.h" />
