@@ -5,7 +5,7 @@ VolumeDataSet::VolumeDataSet(QWidget *parent) : QWidget(parent), ui(new Ui::Volu
 {
     ui->setupUi(this);
     setWindowFlags(Qt::WindowStaysOnTopHint);
-    setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint & ~Qt::WindowMaximizeButtonHint & ~Qt::WindowMinimizeButtonHint);//& ~Qt::WindowCloseButtonHint
+    setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint & ~Qt::WindowMaximizeButtonHint & ~Qt::WindowMinimizeButtonHint & ~Qt::WindowCloseButtonHint);//
 
     connect(ui->m_pbSave, &QPushButton::pressed, this, &VolumeDataSet::SaveSplitParm);
 }
@@ -26,7 +26,7 @@ void VolumeDataSet::SetSlicesNumber(int *dim)
     m_centerStart = delta+1;
     m_centerEnd   = 2 * delta;
     m_bottomStart = 2 * delta + 1;
-    m_bottomEnd   = m_slicesNumber;
+    m_bottomEnd   = m_slicesNumber-1;
 
     ui->m_topS->setValue(m_topStart);
     ui->m_topE->setValue(m_topEnd);
@@ -56,5 +56,6 @@ void VolumeDataSet::SaveSplitParm()
         end   = m_bottomEnd;
     }
     emit SplitImageData(m_dims, start, end);
+    hide();
 }
 

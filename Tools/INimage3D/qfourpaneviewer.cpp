@@ -805,10 +805,9 @@ void QFourpaneviewer::ShowEditorSplitImageData()
     {
         m_volumeDataSet = new VolumeDataSet();
         m_volumeDataSet->SetSlicesNumber(dims);
-        m_volumeDataSet->show();
-
         connect(m_volumeDataSet, &VolumeDataSet::SplitImageData, this, &QFourpaneviewer::SplitImageData);
     }
+    m_volumeDataSet->show();
 }
 void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
 {
