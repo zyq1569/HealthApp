@@ -61,6 +61,5 @@ void VolumeDataSet::SaveSplitParm()
         end   = m_bottomEnd;
     }
     emit SplitImageData(m_dims, start, end);
-    hide();
 }
 
