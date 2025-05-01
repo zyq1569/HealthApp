@@ -34,6 +34,7 @@ void VolumeDataSet::SetSlicesNumber(int *dim)
     ui->m_centerE->setValue(m_centerEnd);
     ui->m_bottomS->setValue(m_bottomStart);
     ui->m_bottomE->setValue(m_bottomEnd);
+    m_dims = dim;
 }
 
 void VolumeDataSet::SaveSplitParm()
