@@ -846,7 +846,7 @@ void QFourpaneviewer::ShowEditorsWidget()
     {
         (m_vtkColorGradient->isHidden())?(m_vtkColorGradient->show()):(m_vtkColorGradient->hide());
     }
-    ui->m_editorsWidget->hide();
+    //ui->m_editorsWidget->hide();
     /*}
     else
     {

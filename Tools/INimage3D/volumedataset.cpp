@@ -8,6 +8,11 @@ VolumeDataSet::VolumeDataSet(QWidget *parent) : QWidget(parent), ui(new Ui::Volu
     setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint & ~Qt::WindowMaximizeButtonHint & ~Qt::WindowMinimizeButtonHint & ~Qt::WindowCloseButtonHint);//
 
     connect(ui->m_pbSave, &QPushButton::pressed, this, &VolumeDataSet::SaveSplitParm);
+    connect(ui->m_pbHide, &QPushButton::pressed, this, [this]
+    {
+        hide();
+    });
+    
 }
 
 VolumeDataSet::~VolumeDataSet()

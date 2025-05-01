@@ -112,6 +112,11 @@
      <string>应用退出</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="m_pbHide">
+    <property name="text">
+     <string>退出</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
