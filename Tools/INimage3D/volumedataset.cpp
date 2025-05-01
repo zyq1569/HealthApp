@@ -41,15 +41,18 @@ void VolumeDataSet::SaveSplitParm()
     int start, end, index = ui->m_cbSelect->currentIndex();
     if (index == 0)
     {
-
+        start = m_topStart;
+        end   = m_topEnd;
     }
     else if (index == 1)
     {
-
+        start = m_centerStart;
+        end   = m_centerEnd;
     }
     else if (index == 2)
     {
-
+        start = m_bottomStart;
+        end   = m_bottomEnd;
     }
     emit SplitImageData(m_dims, start, end);
 }
