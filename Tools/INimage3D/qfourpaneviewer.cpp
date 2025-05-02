@@ -64,7 +64,7 @@
 
 #include <vtkAutoInit.h>
 #include <vtkImageCast.h>
-
+#include <vtkImageResliceMapper.h>
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
@@ -78,10 +78,16 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 
 using namespace ThreadWeaver;
 
-template<typename T>
-const T& clamp(const T& v, const T& lo, const T& hi)
+template<typename T> const T& clamp(const T& v, const T& lo, const T& hi)
 {
     return (v < lo) ? lo : (v > hi) ? hi : v;
+}
+
+template<typename T> T clampValue(T val, T minVal, T maxVal)
+{
+    if (val < minVal) return minVal;
+    if (val > maxVal) return maxVal;
+    return val;
 }
 
 class Volume3DJob : public Job 
@@ -309,6 +315,11 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent),  ui(new Ui:
     //分层
     m_extractVOI = vtkExtractVOI::New();
 
+    //m_lines = vtkCellArray::New();    
+    //m_polyData = vtkPolyData::New();    
+    //m_mapper = vtkPolyDataMapper2D::New(); 
+    //m_actor = vtkActor2D::New();
+    //m_points = vtkPoints::New();
     //add ----ISO
     m_renderer->AddActor(m_vtkVolume);  // 添加体绘制到渲染器
     //m_renderer->AddActor(m_isosurfaceActor);  // 添加等值面到渲染器
@@ -449,6 +460,12 @@ void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
     }
     m_volumeMapper->SetInputData(m_showImageData);
     ui->m_image3DView->renderWindow()->Render();
+
+    //---
+    int* extent = m_showImageData->GetExtent();
+    double centerX = (extent[1] - extent[0]) / 2.0;
+    double centerY = (extent[3] - extent[2]) / 2.0;
+    createRectangle(0, 0, 600, 600, 45);
 }
 
 void QFourpaneviewer::ShowEditorsWidget()
@@ -915,71 +932,114 @@ void QFourpaneviewer::ShowImage3D()
 	ui->m_image3DView->renderWindow()->AddRenderer(m_renderer);
 }
 
-template<typename T>
-T clampValue(T val, T minVal, T maxVal)
+void QFourpaneviewer::createRectangle(double deltaX, double deltaY,  double width, double height , double angleDegrees)
 {
-    if (val < minVal) return minVal;
-    if (val > maxVal) return maxVal;
-    return val;
-}
-void QFourpaneviewer::createRectangle( double centerX, double centerY, double deltaX, double deltaY, 
-    double width, double height ,int imgXMin, int imgXMax, int imgYMin, int imgYMax, double angleDegrees)
-{
-    // 中心点（像素单位）
-    double rectCenterX = centerX + deltaX;
-    double rectCenterY = centerY + deltaY;
+    // Step 1: 基本参数
+    int dims[3];
+    double spacing[3], origin[3];
+    m_showImageData->GetDimensions(dims);
+    m_showImageData->GetSpacing(spacing);
+    m_showImageData->GetOrigin(origin);
 
-    double halfWidth = width / 2.0;
-    double halfHeight = height / 2.0;
+    // 图像中心（像素坐标）
+    double centerI = dims[0] / 2.0;
+    double centerJ = dims[1] / 2.0;
 
-    // 原始未旋转顶点，逆时针四角（以中心为原点）
-    std::vector<std::pair<double, double>> corners = {
-        {-halfWidth, -halfHeight}, // 左下
-        { halfWidth, -halfHeight}, // 右下
-        { halfWidth,  halfHeight}, // 右上
-        {-halfWidth,  halfHeight}  // 左上
-    };
+    // 应用 delta 偏移
+    double rectCenterI = centerI + deltaX;
+    double rectCenterJ = centerJ + deltaY;
 
-    double angleRad = vtkMath::RadiansFromDegrees(angleDegrees);
-    double cosA = cos(angleRad);
-    double sinA = sin(angleRad);
-
-    vtkNew<vtkPoints> points;
-    for (const auto& pt : corners) 
+    // Step 2: 构建切面方向单位向量
+    double xAxis[3] = { 0 }, yAxis[3] = { 0 }, zAxis[3] = { 0 };
+    int orientation = 0;
+    switch (orientation)
     {
-        double xRot = pt.first * cosA - pt.second * sinA;
-        double yRot = pt.first * sinA + pt.second * cosA;
-
-        double x = rectCenterX + xRot;
-        double y = rectCenterY + yRot;
-
-        // 可选：裁剪或限制在图像边界
-        x = clampValue(x, static_cast<double>(imgXMin), static_cast<double>(imgXMax + 1));
-        y = clampValue(y, static_cast<double>(imgYMin), static_cast<double>(imgYMax + 1));
-
-        points->InsertNextPoint(x, y, 0);
+    case 0: // Axial (XY)
+        xAxis[0] = 1; yAxis[1] = 1; zAxis[2] = 1;
+        break;
+    case 1: // Coronal (XZ)
+        xAxis[0] = 1; yAxis[2] = 1; zAxis[1] = 1;
+        break;
+    case 2: // Sagittal (YZ)
+        xAxis[1] = 1; yAxis[2] = 1; zAxis[0] = 1;
+        break;
     }
 
-    vtkNew<vtkCellArray> lines;
-    for (int i = 0; i < 4; ++i)
+    // Step 3: 构建 ResliceAxes 矩阵
+    double centerWorld[3] = {
+        origin[0] + rectCenterI * spacing[0],
+        origin[1] + rectCenterJ * spacing[1],
+        origin[2] + dims[2] / 2.0 * spacing[2]  // 仅估算中间层
+    };
+
+    vtkSmartPointer<vtkMatrix4x4> axes = vtkSmartPointer<vtkMatrix4x4>::New();
+    for (int i = 0; i < 3; ++i) {
+        axes->SetElement(i, 0, xAxis[i]);
+        axes->SetElement(i, 1, yAxis[i]);
+        axes->SetElement(i, 2, zAxis[i]);
+        axes->SetElement(i, 3, centerWorld[i]);
+    }
+    axes->SetElement(3, 3, 1.0);
+
+    // Step 4: 构建矩形4个点（以像素单位），相对于中心点
+    double angleRad = vtkMath::RadiansFromDegrees(angleDegrees);
+    double halfW = width / 2.0;
+    double halfH = height / 2.0;
+
+    std::vector<std::pair<double, double>> offsets = {
+        {-halfW, -halfH},
+        { halfW, -halfH},
+        { halfW,  halfH},
+        {-halfW,  halfH},
+    };
+
+    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+    for (const auto& offset : offsets)
+    {
+        double dx = offset.first;
+        double dy = offset.second;
+
+        // 应用旋转
+        double rx = dx * cos(angleRad) - dy * sin(angleRad);
+        double ry = dx * sin(angleRad) + dy * cos(angleRad);
+
+        // 像素坐标转换为世界坐标（切面中心为原点）
+        double localPoint[4] = {
+            rx * spacing[0],
+            ry * spacing[1],
+            0,
+            1.0
+        };
+
+        double worldPoint[4];
+        axes->MultiplyPoint(localPoint, worldPoint);
+        points->InsertNextPoint(worldPoint[0], worldPoint[1], worldPoint[2]);
+    }
+
+    // 连接为闭合矩形（polygon）
+    vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
+    for (vtkIdType i = 0; i < 4; ++i)
     {
         vtkIdType ids[2] = { i, (i + 1) % 4 };
         lines->InsertNextCell(2, ids);
     }
 
-    vtkNew<vtkPolyData> polyData;
+    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
     polyData->SetPoints(points);
     polyData->SetLines(lines);
 
-    vtkNew<vtkPolyDataMapper2D> mapper;
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(polyData);
 
-    vtkNew<vtkActor2D> actor;
+    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(1, 0, 1); // 紫色
+    actor->GetProperty()->SetColor(1, 0, 0);
     actor->GetProperty()->SetLineWidth(2.0);
-    actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
+
+    m_resliceImageViewer[2]->GetRenderer()->AddActor(actor);
+    m_resliceImageViewer[2]->Render();
 }
+
 QFourpaneviewer::~QFourpaneviewer()
 {
 	for (int i = 0; i < 3; i++)

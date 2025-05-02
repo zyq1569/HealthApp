@@ -30,6 +30,11 @@ class vtkPolyDataMappers;
 class vtkCornerAnnotation;
 class vtkExtractVOI;
 
+class classvtkCellArray                 ;
+class classvtkPolyData                  ;
+class classvtkPolyDataMapper2D          ;
+class classvtkActor2D                   ;
+class classvtkPoints                    ;
 
 #include <QWidget>
 
@@ -90,7 +95,7 @@ public:
 	//show 3D
 
     //draw
-    void createRectangle(double centerX, double centerY, double deltaX, double deltaY, double width, double height, int imgXMin, int imgXMax, int imgYMin, int imgYMax, double angleDegrees = 0.0);
+    void createRectangle(double deltaX, double deltaY, double width, double height, double angleDegrees = 0.0);
 public:
 	MainWindow *m_MainWindow;
 	/// The main mapper for volume rendering.
@@ -119,6 +124,11 @@ public:
     vtkAlgorithmOutput  *m_vtkAlgorithm;
     VolumeDataSet *m_volumeDataSet;
 
+    //vtkCellArray        *m_lines;
+    //vtkPolyData         *m_polyData;
+    //vtkPolyDataMapper2D *m_mapper;
+    //vtkActor2D          *m_actor;
+    //vtkPoints           *m_points;
 public:
     //绘制灰度直方图的读取参数
     int m_imageGrayHis[4096] = { 0 };
