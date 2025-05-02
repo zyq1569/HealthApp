@@ -248,9 +248,9 @@ void MainWindow::showImage4Plane()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (m_vtkImageData && ((QFourpaneviewer*)m_image4Plane)->m_volumeDataSet)
-    {
-        ((QFourpaneviewer*)m_image4Plane)->m_volumeDataSet->hide();
-    }
+    //if (m_vtkImageData && ((QFourpaneviewer*)m_image4Plane)->m_volumeDataSet)
+    //{
+    //    ((QFourpaneviewer*)m_image4Plane)->m_volumeDataSet->hide();
+    //}
     event->accept();
 }

@@ -6,13 +6,20 @@ VolumeDataSet::VolumeDataSet(QWidget *parent) : QWidget(parent), ui(new Ui::Volu
     ui->setupUi(this);
     setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint & ~Qt::WindowMaximizeButtonHint & ~Qt::WindowMinimizeButtonHint & ~Qt::WindowCloseButtonHint);//
+    setAttribute(Qt::WA_QuitOnClose, false);
 
     connect(ui->m_pbSave, &QPushButton::pressed, this, &VolumeDataSet::SaveSplitParm);
     connect(ui->m_pbHide, &QPushButton::pressed, this, [this]
     {
         hide();
     });
-    
+
+    ui->m_topS->setMinimum(0);
+    ui->m_topE->setMinimum(0);
+    ui->m_centerS->setMinimum(0);
+    ui->m_centerE->setMinimum(0);
+    ui->m_bottomS->setMinimum(0);
+    ui->m_bottomE->setMinimum(0);
 }
 
 VolumeDataSet::~VolumeDataSet()
@@ -23,6 +30,13 @@ VolumeDataSet::~VolumeDataSet()
 void VolumeDataSet::SetSlicesNumber(int *dim)
 {
     m_slicesNumber = dim[2];
+    ui->m_topS->setMaximum(m_slicesNumber);
+    ui->m_topE->setMaximum(m_slicesNumber);
+    ui->m_centerS->setMaximum(m_slicesNumber);
+    ui->m_centerE->setMaximum(m_slicesNumber);
+    ui->m_bottomS->setMaximum(m_slicesNumber);
+    ui->m_bottomE->setMaximum(m_slicesNumber);
+
     ui->m_AllNumber->setText(QString::number(m_slicesNumber));
     int delta = m_slicesNumber / 3;
 
