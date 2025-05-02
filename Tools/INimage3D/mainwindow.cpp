@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_configForm->InitConfig();
 
     //add 20250430 体数据分层
-    m_splitImageData = new QAction("分层", this);
+    m_splitImageData = new QAction("采样", this);
     m_mainToolbar->addAction(m_splitImageData);
     connect(m_splitImageData, &QAction::triggered, [this]
     {

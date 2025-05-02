@@ -776,8 +776,6 @@ void QFourpaneviewer::ShowImagePlane()
 		m_resliceImageViewer[i]->SetSliceOrientation(i);
 		m_resliceImageViewer[i]->SetResliceModeToAxisAligned();
 		rep->SetWindowLevel(m_defaultWindow, m_defaultLevel);
-        int max = m_resliceImageViewer[i]->GetSliceMax();
-  
 	}
 
 	//mpr2DView--->hide- to->showVolume3D

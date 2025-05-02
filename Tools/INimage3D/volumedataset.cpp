@@ -59,6 +59,14 @@ void VolumeDataSet::SetSlicesNumber(int *dim)
 void VolumeDataSet::SaveSplitParm()
 {
     int start, end, index = ui->m_cbSelect->currentIndex();
+
+    m_topStart    = ui->m_topS->value();
+    m_topEnd      = ui->m_topE->value();
+    m_centerStart = ui->m_centerS->value();
+    m_centerEnd   = ui->m_centerE->value();
+    m_bottomStart = ui->m_bottomS->value();
+    m_bottomEnd   = ui->m_bottomE->value();
+
     if (index == 0)
     {
         start = m_topStart;
