@@ -12,6 +12,7 @@
 #include <QTabBar>
 #include <QToolBar>
 #include <QProgressDialog>
+#include <QCloseEvent>
 #pragma execution_character_set("utf-8")
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -243,4 +244,13 @@ void MainWindow::showImage4Plane()
         return;
     }
     ((QFourpaneviewer*)m_image4Plane)->ShowImagePlaneAnd3D();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if (m_vtkImageData && ((QFourpaneviewer*)m_image4Plane)->m_volumeDataSet)
+    {
+        ((QFourpaneviewer*)m_image4Plane)->m_volumeDataSet->hide();
+    }
+    event->accept();
 }
