@@ -29,7 +29,7 @@ VolumeDataSet::~VolumeDataSet()
 
 void VolumeDataSet::SetSlicesNumber(int *dim)
 {
-    m_slicesNumber = dim[2];
+    m_slicesNumber = dim[2] - 1;
     ui->m_topS->setMaximum(m_slicesNumber);
     ui->m_topE->setMaximum(m_slicesNumber);
     ui->m_centerS->setMaximum(m_slicesNumber);
@@ -45,7 +45,7 @@ void VolumeDataSet::SetSlicesNumber(int *dim)
     m_centerStart = delta+1;
     m_centerEnd   = 2 * delta;
     m_bottomStart = 2 * delta + 1;
-    m_bottomEnd   = m_slicesNumber-1;
+    m_bottomEnd   = m_slicesNumber;
 
     ui->m_topS->setValue(m_topStart);
     ui->m_topE->setValue(m_topEnd);

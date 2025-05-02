@@ -246,7 +246,7 @@ void MainWindow::showImage4Plane()
     ((QFourpaneviewer*)m_image4Plane)->ShowImagePlaneAnd3D();
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    event->accept();
-}
+//void MainWindow::closeEvent(QCloseEvent *event)
+//{
+//    event->accept();
+//}

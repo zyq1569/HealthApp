@@ -58,7 +58,7 @@ public:
     //add 体数据XYZ 信息
     int m_numberX, m_numberY, m_numberZ;
 
-protected:
-    void closeEvent(QCloseEvent *event) override;
+//protected:
+//    void closeEvent(QCloseEvent *event) override;
 };
 #endif // MAINWINDOW_H
