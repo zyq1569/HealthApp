@@ -915,6 +915,71 @@ void QFourpaneviewer::ShowImage3D()
 	ui->m_image3DView->renderWindow()->AddRenderer(m_renderer);
 }
 
+template<typename T>
+T clampValue(T val, T minVal, T maxVal)
+{
+    if (val < minVal) return minVal;
+    if (val > maxVal) return maxVal;
+    return val;
+}
+void QFourpaneviewer::createRectangle( double centerX, double centerY, double deltaX, double deltaY, 
+    double width, double height ,int imgXMin, int imgXMax, int imgYMin, int imgYMax, double angleDegrees)
+{
+    // 中心点（像素单位）
+    double rectCenterX = centerX + deltaX;
+    double rectCenterY = centerY + deltaY;
+
+    double halfWidth = width / 2.0;
+    double halfHeight = height / 2.0;
+
+    // 原始未旋转顶点，逆时针四角（以中心为原点）
+    std::vector<std::pair<double, double>> corners = {
+        {-halfWidth, -halfHeight}, // 左下
+        { halfWidth, -halfHeight}, // 右下
+        { halfWidth,  halfHeight}, // 右上
+        {-halfWidth,  halfHeight}  // 左上
+    };
+
+    double angleRad = vtkMath::RadiansFromDegrees(angleDegrees);
+    double cosA = cos(angleRad);
+    double sinA = sin(angleRad);
+
+    vtkNew<vtkPoints> points;
+    for (const auto& pt : corners) 
+    {
+        double xRot = pt.first * cosA - pt.second * sinA;
+        double yRot = pt.first * sinA + pt.second * cosA;
+
+        double x = rectCenterX + xRot;
+        double y = rectCenterY + yRot;
+
+        // 可选：裁剪或限制在图像边界
+        x = clampValue(x, static_cast<double>(imgXMin), static_cast<double>(imgXMax + 1));
+        y = clampValue(y, static_cast<double>(imgYMin), static_cast<double>(imgYMax + 1));
+
+        points->InsertNextPoint(x, y, 0);
+    }
+
+    vtkNew<vtkCellArray> lines;
+    for (int i = 0; i < 4; ++i)
+    {
+        vtkIdType ids[2] = { i, (i + 1) % 4 };
+        lines->InsertNextCell(2, ids);
+    }
+
+    vtkNew<vtkPolyData> polyData;
+    polyData->SetPoints(points);
+    polyData->SetLines(lines);
+
+    vtkNew<vtkPolyDataMapper2D> mapper;
+    mapper->SetInputData(polyData);
+
+    vtkNew<vtkActor2D> actor;
+    actor->SetMapper(mapper);
+    actor->GetProperty()->SetColor(1, 0, 1); // 紫色
+    actor->GetProperty()->SetLineWidth(2.0);
+    actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
+}
 QFourpaneviewer::~QFourpaneviewer()
 {
 	for (int i = 0; i < 3; i++)

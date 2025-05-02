@@ -88,6 +88,9 @@ public:
     void ShowEditorSplitImageData();
 
 	//show 3D
+
+    //draw
+    void createRectangle(double centerX, double centerY, double deltaX, double deltaY, double width, double height, int imgXMin, int imgXMax, int imgYMin, int imgYMax, double angleDegrees = 0.0);
 public:
 	MainWindow *m_MainWindow;
 	/// The main mapper for volume rendering.
