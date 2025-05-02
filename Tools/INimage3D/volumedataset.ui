@@ -285,7 +285,7 @@
    <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
-   <widget class="QComboBox" name="m_cbSelect_2">
+   <widget class="QComboBox" name="m_cbSelectSilice">
     <item>
      <property name="text">
       <string>XY</string>
