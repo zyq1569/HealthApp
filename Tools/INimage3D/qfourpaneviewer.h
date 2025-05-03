@@ -95,7 +95,7 @@ public:
 	//show 3D
 
     //draw
-    void createRectangle(double deltaX, double deltaY, double width, double height, double angleDegrees = 0.0);
+    void createRectangle(int plane, double deltaX, double deltaY, double width, double height, double angleDegrees = 0.0);
 public:
 	MainWindow *m_MainWindow;
 	/// The main mapper for volume rendering.

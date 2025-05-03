@@ -465,7 +465,7 @@ void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
     int* extent = m_showImageData->GetExtent();
     double centerX = (extent[1] - extent[0]) / 2.0;
     double centerY = (extent[3] - extent[2]) / 2.0;
-    createRectangle(0, 0, 600, 600, 45);
+    createRectangle(1, 0, 0, 100, 10, 45);
 }
 
 void QFourpaneviewer::ShowEditorsWidget()
@@ -933,12 +933,29 @@ void QFourpaneviewer::ShowImage3D()
 }
 
 
-void QFourpaneviewer::createRectangle(double deltaX, double deltaY,  double width, double height , double angleDegrees)
+void QFourpaneviewer::createRectangle(int plane, double deltaX, double deltaY,  double width, double height , double angleDegrees)
 { 
     static double PI = 3.14159265358979323846 / 180.0;
     vtkImageData* imageData = m_showImageData;
     vtkRenderer* renderer   = m_resliceImageViewer[2]->GetRenderer();
-    int plane = 0;
+    /*
+    ui->m_sagital2DView->setRenderWindow(m_resliceImageViewer[0]->GetRenderWindow());
+	m_resliceImageViewer[0]->SetupInteractor(ui->m_sagital2DView->renderWindow()->GetInteractor());
+
+	ui->m_coronal2DView->setRenderWindow(m_resliceImageViewer[1]->GetRenderWindow());
+	m_resliceImageViewer[1]->SetupInteractor(ui->m_coronal2DView->renderWindow()->GetInteractor());
+
+	ui->m_axial2DView->setRenderWindow(m_resliceImageViewer[2]->GetRenderWindow());
+	m_resliceImageViewer[2]->SetupInteractor(ui->m_axial2DView->renderWindow()->GetInteractor());
+    */
+    if (plane == 1)
+    {
+        renderer = m_resliceImageViewer[1]->GetRenderer();
+    }
+    else if(plane == 2)
+    {
+        renderer = m_resliceImageViewer[0]->GetRenderer();
+    }
     // 1. 图像属性 
     double spacing[3], center[3];
     imageData->GetSpacing(spacing);
@@ -952,13 +969,33 @@ void QFourpaneviewer::createRectangle(double deltaX, double deltaY,  double widt
 
     double cz = center[2];  // XY平面
     double cx = center[0], cy = center[1];
+
+    int i =0, j = 1, k = 2;
+    double XYZplane;
+    if (plane == 0)
+    {
+        XYZplane = cz;
+    }
+    else if (plane == 1)
+    {
+        XYZplane = cy;
+        j = 2;
+        k = 1;
+    }
+    else
+    {
+        XYZplane = cx;
+        i = 1;
+        j = 2;
+        k = 1;
+    }
     // 3. 4个角点（世界坐标）
     double worldPts[4][3] =
     {
-        { center[0] - w_half + dx, center[1] - h_half + dy, cz },
-        { center[0] + w_half + dx, center[1] - h_half + dy, cz },
-        { center[0] + w_half + dx, center[1] + h_half + dy, cz },
-        { center[0] - w_half + dx, center[1] + h_half + dy, cz }
+        { center[i] - w_half + dx, center[j] - h_half + dy, cz },
+        { center[i] + w_half + dx, center[j] - h_half + dy, cz },
+        { center[i] + w_half + dx, center[j] + h_half + dy, cz },
+        { center[i] - w_half + dx, center[j] + h_half + dy, cz }
     };
 
     // 4. 世界->显示（屏幕）坐标
@@ -968,7 +1005,7 @@ void QFourpaneviewer::createRectangle(double deltaX, double deltaY,  double widt
         renderer->SetWorldPoint(worldPts[i][0], worldPts[i][1], worldPts[i][2], 1.0);
         renderer->WorldToDisplay();
         renderer->GetDisplayPoint(displayPts[i]);  // 输出为 displayPts[i]
-        displayPts[i][2] = 0;
+        displayPts[i][k] = 0;
     }
 
     // 5. 使用 vtkCoordinate 将显示坐标->回世界坐标
@@ -1011,7 +1048,8 @@ void QFourpaneviewer::createRectangle(double deltaX, double deltaY,  double widt
 
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(1.0, 0.0, 1.0); // 颜色
+    //actor->GetProperty()->SetColor(1.0, 0.0, 1.0); // 颜色
+    actor->GetProperty()->SetColor(1.0, 0.0, 0.0); // 颜色
     actor->GetProperty()->SetOpacity(0.4);
 
     renderer->AddActor(actor);
