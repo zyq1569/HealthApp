@@ -932,121 +932,89 @@ void QFourpaneviewer::ShowImage3D()
 	ui->m_image3DView->renderWindow()->AddRenderer(m_renderer);
 }
 
+
 void QFourpaneviewer::createRectangle(double deltaX, double deltaY,  double width, double height , double angleDegrees)
 { 
-    // 获取图像的基本信息
-    double spacing[3];
-    m_showImageData->GetSpacing(spacing);
-    double origin[3];
-    m_showImageData->GetOrigin(origin);
-    int dims[3];
-    m_showImageData->GetDimensions(dims);
+    static double PI = 3.14159265358979323846 / 180.0;
+    vtkImageData* imageData = m_showImageData;
+    vtkRenderer* renderer   = m_resliceImageViewer[2]->GetRenderer();
+    int plane = 0;
+    // 1. 图像属性 
+    double spacing[3], center[3];
+    imageData->GetSpacing(spacing);
+    imageData->GetCenter(center);
 
-   
+    // 2. 以像素为单位构建偏移和尺寸->世界坐标
+    double dx = deltaX * spacing[0];
+    double dy = deltaY * spacing[1];
+    double w_half = (width * spacing[0]) / 2.0;
+    double h_half = (height * spacing[1]) / 2.0;
 
-    // 计算中心点坐标
-    double centerPixel[3] = {
-        dims[0] / 2.0,
-        dims[1] / 2.0,
-        dims[2] / 2.0
+    double cz = center[2];  // XY平面
+    double cx = center[0], cy = center[1];
+    // 3. 4个角点（世界坐标）
+    double worldPts[4][3] =
+    {
+        { center[0] - w_half + dx, center[1] - h_half + dy, cz },
+        { center[0] + w_half + dx, center[1] - h_half + dy, cz },
+        { center[0] + w_half + dx, center[1] + h_half + dy, cz },
+        { center[0] - w_half + dx, center[1] + h_half + dy, cz }
     };
 
-    // 计算世界坐标系下的中心点
-    double centerWorld[3];
-    for (int i = 0; i < 3; ++i)
-        centerWorld[i] = origin[i] + centerPixel[i] * spacing[i];
-
-    // 确定切面的方向和局部坐标轴（基于 orientation）
-    double xAxis[3] = { 0 }, yAxis[3] = { 0 };
-    int orientation = 0;
-    switch (orientation)
+    // 4. 世界->显示（屏幕）坐标
+    double displayPts[4][3];
+    for (int i = 0; i < 4; ++i)
     {
-    case 0: // Axial (XY)
-        xAxis[0] = 1; yAxis[1] = 1;
-        break;
-    case 1: // Coronal (XZ)
-        xAxis[0] = 1; yAxis[2] = 1;
-        break;
-    case 2: // Sagittal (YZ)
-        xAxis[1] = 1; yAxis[2] = 1;
-        break;
-    default:
-        std::cerr << "Invalid orientation!" << std::endl;
-        return ;
+        renderer->SetWorldPoint(worldPts[i][0], worldPts[i][1], worldPts[i][2], 1.0);
+        renderer->WorldToDisplay();
+        renderer->GetDisplayPoint(displayPts[i]);  // 输出为 displayPts[i]
+        displayPts[i][2] = 0;
     }
 
-    // 计算局部坐标系中的 Z 轴
-    double zAxis[3];
-    vtkMath::Cross(xAxis, yAxis, zAxis);
-    vtkMath::Normalize(zAxis);
-
-    // 创建切面变换矩阵
-    vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
-    for (int i = 0; i < 3; ++i)
+    // 5. 使用 vtkCoordinate 将显示坐标->回世界坐标
+    double finalWorldPts[4][3];
+    for (int i = 0; i < 4; ++i)
     {
-        matrix->SetElement(i, 0, xAxis[i]);
-        matrix->SetElement(i, 1, yAxis[i]);
-        matrix->SetElement(i, 2, zAxis[i]);
-        matrix->SetElement(i, 3, centerWorld[i]);
+        vtkSmartPointer<vtkCoordinate> coord = vtkSmartPointer<vtkCoordinate>::New();
+        coord->SetCoordinateSystemToDisplay();
+        coord->SetValue(displayPts[i]);  // 设置 display 坐标
+        double* world = coord->GetComputedWorldValue(renderer);  // 获取转换后的世界坐标
+
+        finalWorldPts[i][0] = world[0];
+        finalWorldPts[i][1] = world[1];
+        finalWorldPts[i][2] = world[2];
     }
-    matrix->SetElement(3, 0, 0);
-    matrix->SetElement(3, 1, 0);
-    matrix->SetElement(3, 2, 0);
-    matrix->SetElement(3, 3, 1);
 
-    // 计算矩形的局部坐标（4个点）
-    double angleRad = vtkMath::RadiansFromDegrees(angleDegrees);
-    double halfW = width / 2.0;
-    double halfH = height / 2.0;
-
-    std::vector<std::pair<double, double>> offsets = {
-        {-halfW, -halfH},
-        { halfW, -halfH},
-        { halfW,  halfH},
-        {-halfW,  halfH}
-    };
-
+    // 6. 构造矩形 polygon
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-    for (const auto& offset : offsets)
+    for (int i = 0; i < 4; ++i)
     {
-        // 计算偏移量 + 旋转后的坐标
-        double dx = offset.first + deltaX;
-        double dy = offset.second + deltaY;
-
-        double rx = dx * cos(angleRad) - dy * sin(angleRad);
-        double ry = dx * sin(angleRad) + dy * cos(angleRad);
-
-        // 局部坐标 -> 世界坐标
-        double local[4] = { rx * spacing[0], ry * spacing[1], 0, 1.0 };
-        double world[4];
-        matrix->MultiplyPoint(local, world);
-        points->InsertNextPoint(world[0], world[1], world[2]);
+        points->InsertNextPoint(finalWorldPts[i]);
     }
+    points->InsertNextPoint(finalWorldPts[0]);//最后增加第一个点是形成封闭的矩形
 
-    // 创建矩形边界线
     vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-    for (vtkIdType i = 0; i < 4; ++i)
+    vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
+    ids->SetNumberOfIds(5);
+    for (int i = 0; i < 5; ++i)
     {
-        vtkIdType ids[2] = { i, (i + 1) % 4 };
-        lines->InsertNextCell(2, ids);
+        ids->SetId(i, i);
     }
+    lines->InsertNextCell(ids);
 
-    // 创建 PolyData 并设置点和线
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
     polyData->SetPoints(points);
     polyData->SetLines(lines);
 
-    // 创建映射器并设置 PolyData
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(polyData);
 
-    // 创建 Actor 并设置颜色和线宽
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(1.0, 0.0, 0.0); // 红色
-    actor->GetProperty()->SetLineWidth(2.0);
-    m_resliceImageViewer[2]->GetRenderer()->AddActor(actor);
-    m_resliceImageViewer[2]->Render();
+    actor->GetProperty()->SetColor(1.0, 0.0, 1.0); // 颜色
+    actor->GetProperty()->SetOpacity(0.4);
+
+    renderer->AddActor(actor);
 }
 
 QFourpaneviewer::~QFourpaneviewer()
