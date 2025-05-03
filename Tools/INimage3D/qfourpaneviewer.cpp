@@ -848,7 +848,7 @@ void QFourpaneviewer::SaveRectangleImage()
     double centerY = (extent[3] - extent[2]) / 2.0;
     //createRectangle(1, 0, 0, 100, 10, 45);
     vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
-    int plane = 2;
+    int plane = 1;
     if (plane == 1)//XZ
     {
         renderer = m_resliceImageViewer[1]->GetRenderer();
@@ -1326,6 +1326,8 @@ void QFourpaneviewer::ShowImage3D()
 #include <vtkPolyLine.h>
 void QFourpaneviewer::createRectangleViaDisplay( vtkImageData* imageData,  vtkRenderer* renderer,  double deltaX, double deltaY,  double width, double height,  int planeType) // 0: XY, 1: XZ, 2: YZ
 {  
+
+    double *xyz = m_planeWidget[1]->GetOrigin();
     double spacing[3], center[3];
     imageData->GetSpacing(spacing);
     imageData->GetCenter(center);
