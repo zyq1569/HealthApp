@@ -60,6 +60,7 @@ public slots:
     void Update3DColorByCoordinate(VtkColorStyle colorValue);
 
     void SplitImageData(int *dims, int start, int end);
+    void SaveRectangleImage();
 
 signals:
     void LoadConfigFiles();
@@ -95,6 +96,11 @@ public:
 	//show 3D
 
     //draw
+    void createRectangleViaDisplay(vtkImageData* imageData,
+        vtkRenderer* renderer,
+        double deltaX, double deltaY,
+        double width, double height,
+        int planeType); // 0: XY, 1: XZ, 2: YZ
     void createRectangle(int plane, double deltaX, double deltaY, double width, double height, double angleDegrees = 0.0);
 public:
 	MainWindow *m_MainWindow;

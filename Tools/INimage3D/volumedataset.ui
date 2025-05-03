@@ -217,6 +217,11 @@
      <widget class="QComboBox" name="m_cbSelect">
       <item>
        <property name="text">
+        <string>ALL</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>Top</string>
        </property>
       </item>
@@ -247,7 +252,7 @@
     <string>应用退出</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="m_pbSave_2">
+  <widget class="QPushButton" name="m_pbSaveRect">
    <property name="geometry">
     <rect>
      <x>20</x>

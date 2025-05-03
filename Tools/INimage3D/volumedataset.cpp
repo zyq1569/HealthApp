@@ -13,6 +13,9 @@ VolumeDataSet::VolumeDataSet(QWidget *parent) : QWidget(parent), ui(new Ui::Volu
     {
         hide();
     });
+    //
+    connect(ui->m_pbSaveRect, &QPushButton::pressed, this, &VolumeDataSet::SaveRectParm);
+
 
     ui->m_topS->setMinimum(0);
     ui->m_topE->setMinimum(0);
@@ -56,6 +59,11 @@ void VolumeDataSet::SetSlicesNumber(int *dim)
     m_dims = dim;
 }
 
+void VolumeDataSet::SaveRectParm()
+{
+
+    emit RectData(0, 0, 0, 0);
+}
 void VolumeDataSet::SaveSplitParm()
 {
     int start, end, index = ui->m_cbSelect->currentIndex();
@@ -69,15 +77,20 @@ void VolumeDataSet::SaveSplitParm()
 
     if (index == 0)
     {
+        start = 0;
+        end   = m_slicesNumber;
+    }
+    else if (index == 1)
+    {
         start = m_topStart;
         end   = m_topEnd;
     }
-    else if (index == 1)
+    else if (index == 2)
     {
         start = m_centerStart;
         end   = m_centerEnd;
     }
-    else if (index == 2)
+    else if (index == 3)
     {
         start = m_bottomStart;
         end   = m_bottomEnd;
