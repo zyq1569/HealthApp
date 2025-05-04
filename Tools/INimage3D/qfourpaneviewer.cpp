@@ -1383,9 +1383,10 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
         corners[3][i] = center[i] - halfWidth * uVec[i] + halfHeight * vVec[i]; // 左上
     }
     ///+++++++++++++++++++++++++++
-    bool useProjectionMethod = true;
+    bool useProjectionMethod = false;
     if (useProjectionMethod)
     {
+        //一半切面数据无法正常显示框
         // 方法一：投影回切片平面
         //double normal[3];
         double p1[3], p2[3], origin[3];
@@ -1453,7 +1454,7 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
     points->InsertNextPoint(corners[0]); // 闭合矩形
 
     vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-    vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
+    vtkSmartPointer<vtkIdList> ids      = vtkSmartPointer<vtkIdList>::New();
     ids->SetNumberOfIds(5);
     for (int i = 0; i < 5; ++i)
     {
