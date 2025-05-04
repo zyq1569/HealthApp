@@ -848,16 +848,21 @@ void QFourpaneviewer::SaveRectangleImage()
     double centerY = (extent[3] - extent[2]) / 2.0;
     //createRectangle(1, 0, 0, 100, 10, 45);
     vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
-    int plane = 1;
+    vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
+    int plane = 0;
     if (plane == 1)//XZ
     {
         renderer = m_resliceImageViewer[1]->GetRenderer();
+        planeWidget = m_planeWidget[1];
     }
     else if (plane == 2)//YZ
     {
         renderer = m_resliceImageViewer[0]->GetRenderer();
+        planeWidget = m_planeWidget[0];
     }
-    createRectangleViaDisplay(m_showImageData, renderer, 0, 0, 100, 50, plane);
+    //createRectangleViaDisplay(m_showImageData, renderer, 0, 0, 100, 50, plane);
+
+    AddRectangleFrameOnPlane(planeWidget, m_showImageData, renderer, 50, 100);
 }
 void QFourpaneviewer::ShowEditorsWidget()
 {
@@ -1199,7 +1204,7 @@ void QFourpaneviewer::ShowImagePlane()
         m_planeWidget[i]->GetPlaneProperty()->SetColor(color);
         m_resliceImageViewer[i]->GetRenderer()->SetBackground(color);
         m_planeWidget[i]->TextureInterpolateOff();
-        m_planeWidget[i]->SetResliceInterpolateToLinear();
+        m_planeWidget[i]->SetResliceInterpolateToCubic();
         m_planeWidget[i]->SetInputConnection(m_vtkAlgorithm);
         m_planeWidget[i]->SetPlaneOrientation(i);
         m_planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
@@ -1324,6 +1329,102 @@ void QFourpaneviewer::ShowImage3D()
 }
 
 #include <vtkPolyLine.h>
+void QFourpaneviewer::AddRectangleFrameOnPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
+{
+    // 1. 获取图像 spacing
+    if (!imageData)
+    {
+        std::cerr << "Error: planeWidget has no input image data." << std::endl;
+        return;
+    }
+
+    double spacing[3];
+    imageData->GetSpacing(spacing);
+
+    // 2. 获取平面方向（0 = YZ, 1 = XZ, 2 = XY）
+    int orientation = planeWidget->GetPlaneOrientation();
+
+    double spacingU = 1.0, spacingV = 1.0;
+    if (orientation == 0) {        // YZ plane
+        spacingU = spacing[1];     // Y
+        spacingV = spacing[2];     // Z
+    }
+    else if (orientation == 1) { // XZ plane
+        spacingU = spacing[0];     // X
+        spacingV = spacing[2];     // Z
+    }
+    else if (orientation == 2) { // XY plane
+        spacingU = spacing[0];     // X
+        spacingV = spacing[1];     // Y
+    }
+
+    // 3. 获取中心点和方向向量
+    double origin[3], p1[3], p2[3];
+    planeWidget->GetOrigin(origin);
+    planeWidget->GetPoint1(p1);
+    planeWidget->GetPoint2(p2);
+
+    // 计算 Right/Up 向量
+    double uVec[3], vVec[3];
+    for (int i = 0; i < 3; ++i)
+    {
+        uVec[i] = p1[i] - origin[i]; // U方向：Point1 - Origin
+        vVec[i] = p2[i] - origin[i]; // V方向：Point2 - Origin
+    }
+    vtkMath::Normalize(uVec);
+    vtkMath::Normalize(vVec);
+
+    // 获取平面中心点
+    double center[3];
+    planeWidget->GetCenter(center); // 中心仍然可用
+
+
+    // 4. 计算四个角点（世界坐标）
+    double halfWidth = (w * spacingU) / 2.0;
+    double halfHeight = (h * spacingV) / 2.0;
+
+    double corners[4][3]; // 左下，右下，右上，左上
+    for (int i = 0; i < 3; ++i) 
+    {
+        corners[0][i] = center[i] - halfWidth * uVec[i] - halfHeight * vVec[i]; // 左下
+        corners[1][i] = center[i] + halfWidth * uVec[i] - halfHeight * vVec[i]; // 右下
+        corners[2][i] = center[i] + halfWidth * uVec[i] + halfHeight * vVec[i]; // 右上
+        corners[3][i] = center[i] - halfWidth * uVec[i] + halfHeight * vVec[i]; // 左上
+    }
+
+    // 5. 构建点和线
+    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+    for (int i = 0; i < 4; ++i)
+    {
+        points->InsertNextPoint(corners[i]);
+    }
+    points->InsertNextPoint(corners[0]); // 闭合矩形
+
+    vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
+    vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
+    ids->SetNumberOfIds(5);
+    for (int i = 0; i < 5; ++i)
+    {
+        ids->SetId(i, i);
+    }
+    lines->InsertNextCell(ids);
+
+    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
+    polyData->SetPoints(points);
+    polyData->SetLines(lines);
+
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputData(polyData);
+
+    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+    actor->SetMapper(mapper);
+    actor->GetProperty()->SetColor(0.0, 1.0, 0.0);
+    actor->GetProperty()->SetLineWidth(2.0);
+
+    renderer->AddActor(actor);
+}
+
+
 void QFourpaneviewer::createRectangleViaDisplay( vtkImageData* imageData,  vtkRenderer* renderer,  double deltaX, double deltaY,  double width, double height,  int planeType) // 0: XY, 1: XZ, 2: YZ
 {  
 
@@ -1338,7 +1439,8 @@ void QFourpaneviewer::createRectangleViaDisplay( vtkImageData* imageData,  vtkRe
     double h_half = (height * spacing[1]) / 2.0;
 
     double cx = center[0], cy = center[1], cz = center[2];
-    switch (planeType) {
+    switch (planeType)
+    {
     case 0: cx += dx; cy += dy; break; // XY
     case 1: cx += dx; cz += dy; break; // XZ
     case 2: cy += dx; cz += dy; break; // YZ
@@ -1357,7 +1459,8 @@ void QFourpaneviewer::createRectangleViaDisplay( vtkImageData* imageData,  vtkRe
             {cx - w_half, cy - h_half, cz} // 闭合
         };
     }
-    else if (planeType == 1) { // XZ
+    else if (planeType == 1)
+    { // XZ
         corners = {
             {cx - w_half, cy, cz - h_half},
             {cx + w_half, cy, cz - h_half},
@@ -1366,7 +1469,8 @@ void QFourpaneviewer::createRectangleViaDisplay( vtkImageData* imageData,  vtkRe
             {cx - w_half, cy, cz - h_half} // 闭合
         };
     }
-    else if (planeType == 2) { // YZ
+    else if (planeType == 2)
+    { // YZ
         corners = {
             {cx, cy - w_half, cz - h_half},
             {cx, cy + w_half, cz - h_half},

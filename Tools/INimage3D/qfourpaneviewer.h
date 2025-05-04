@@ -102,6 +102,8 @@ public:
         double width, double height,
         int planeType); // 0: XY, 1: XZ, 2: YZ
     void createRectangle(int plane, double deltaX, double deltaY, double width, double height, double angleDegrees = 0.0);
+
+    void AddRectangleFrameOnPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h);
 public:
 	MainWindow *m_MainWindow;
 	/// The main mapper for volume rendering.
