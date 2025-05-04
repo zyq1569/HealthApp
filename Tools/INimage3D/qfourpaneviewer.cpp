@@ -1328,9 +1328,17 @@ void QFourpaneviewer::ShowImage3D()
     ui->m_image3DView->renderWindow()->AddRenderer(m_renderer);
 }
 
-#include <vtkPolyLine.h>
 void QFourpaneviewer::AddRectangleFrameOnPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
 {
+    static std::map<vtkImagePlaneWidget*, vtkSmartPointer<vtkActor>> g_widgetToBoxActorMap;
+    if (g_widgetToBoxActorMap.count(planeWidget))
+    {
+        vtkActor* oldActor = g_widgetToBoxActorMap[planeWidget];
+        if (renderer->HasViewProp(oldActor)) {
+            renderer->RemoveActor(oldActor);
+        }
+        g_widgetToBoxActorMap.erase(planeWidget);
+    }
     // 1. 获取图像 spacing
     if (!imageData)
     {
@@ -1422,12 +1430,13 @@ void QFourpaneviewer::AddRectangleFrameOnPlane(vtkImagePlaneWidget* planeWidget,
     actor->GetProperty()->SetLineWidth(2.0);
 
     renderer->AddActor(actor);
+    renderer->Render();
+    g_widgetToBoxActorMap[planeWidget] = actor;
 }
 
 
 void QFourpaneviewer::createRectangleViaDisplay( vtkImageData* imageData,  vtkRenderer* renderer,  double deltaX, double deltaY,  double width, double height,  int planeType) // 0: XY, 1: XZ, 2: YZ
 {  
-
     double *xyz = m_planeWidget[1]->GetOrigin();
     double spacing[3], center[3];
     imageData->GetSpacing(spacing);
@@ -1503,30 +1512,26 @@ void QFourpaneviewer::createRectangleViaDisplay( vtkImageData* imageData,  vtkRe
 
     // 创建 PolyLine（矩形边框）
     vtkSmartPointer<vtkPoints> vtkPts = vtkSmartPointer<vtkPoints>::New();
-    vtkSmartPointer<vtkPolyLine> polyLine = vtkSmartPointer<vtkPolyLine>::New();
-    polyLine->GetPointIds()->SetNumberOfIds(finalWorldPoints.size());
-
-    for (size_t i = 0; i < finalWorldPoints.size(); ++i)
+    vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
+    vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
+    ids->SetNumberOfIds(5);
+    for (int i = 0; i < 5; ++i)
     {
-        vtkPts->InsertNextPoint(finalWorldPoints[i].data());
-        polyLine->GetPointIds()->SetId(i, i);
+        ids->SetId(i, i);
     }
-
-    vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
-    cells->InsertNextCell(polyLine);
+    lines->InsertNextCell(ids);
 
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
     polyData->SetPoints(vtkPts);
-    polyData->SetLines(cells);
+    polyData->SetLines(lines);
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(polyData);
 
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(1.0, 1.0, 0.0); // 黄色矩形框
-    actor->GetProperty()->SetLineWidth(2.5);
-    actor->GetProperty()->SetOpacity(1.0);
+    actor->GetProperty()->SetColor(0.0, 1.0, 0.0);
+    actor->GetProperty()->SetLineWidth(2.0);
 
     renderer->AddActor(actor);
     renderer->Render();

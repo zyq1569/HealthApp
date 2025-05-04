@@ -290,7 +290,7 @@
    <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
-   <widget class="QComboBox" name="m_cbSelectSilice">
+   <widget class="QComboBox" name="m_cbSelectSlice">
     <item>
      <property name="text">
       <string>XY</string>
@@ -311,7 +311,7 @@
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
-    <widget class="QSpinBox" name="m_topS_2">
+    <widget class="QSpinBox" name="m_rectW">
      <property name="maximum">
       <number>10000</number>
      </property>
@@ -319,7 +319,7 @@
       <number>512</number>
      </property>
     </widget>
-    <widget class="QSpinBox" name="m_topE_2">
+    <widget class="QSpinBox" name="m_rectH">
      <property name="maximum">
       <number>10000</number>
      </property>
@@ -332,12 +332,12 @@
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
-    <widget class="QSpinBox" name="m_topS_3">
+    <widget class="QSpinBox" name="m_deltaX">
      <property name="maximum">
       <number>10000</number>
      </property>
     </widget>
-    <widget class="QSpinBox" name="m_topE_3">
+    <widget class="QSpinBox" name="m_deltaY">
      <property name="maximum">
       <number>10000</number>
      </property>
@@ -376,7 +376,7 @@
    </widget>
    <widget class="QLabel" name="label_10">
     <property name="text">
-     <string>长宽</string>
+     <string>宽高</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_11">
