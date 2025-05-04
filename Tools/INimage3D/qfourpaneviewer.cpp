@@ -1312,6 +1312,7 @@ void QFourpaneviewer::ShowImage3D()
     //
     ui->m_image3DView->renderWindow()->AddRenderer(m_renderer);
 }
+#include <vtkTransform.h>
 void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
 {
     if (!planeWidget || !renderer) return;
@@ -1480,7 +1481,83 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
     renderer->Render();
     g_widgetToBoxActorMap[planeWidget] = actor;
 
-    vtkResliceImageViewer* vtkResliceViewer = m_resliceImageViewer[2];
+    //+++++++++++++++++++++++++++++++++++++++
+    // ==========================
+// 保存当前矩形图像为 TIFF
+// ==========================
+    {
+        //vtkImageData* 
+        imageData = (vtkImageData*)planeWidget->GetInput();
+        if (!imageData)
+            return;
+
+        // 2. 获取平面中心和法向量
+        double center[3];
+        planeWidget->GetCenter(center);
+
+        // 使用平面原点和向量计算法线
+        double p1[3], p2[3], origin[3];
+        planeWidget->GetPoint1(p1);
+        planeWidget->GetPoint2(p2);
+        planeWidget->GetOrigin(origin);
+
+        double uVec[3], vVec[3], normal[3];
+        vtkMath::Subtract(p1, origin, uVec);
+        vtkMath::Subtract(p2, origin, vVec);
+        vtkMath::Cross(uVec, vVec, normal);
+        vtkMath::Normalize(normal);
+
+        // 3. 创建变换：将 reslice 切片平面对齐当前 planeWidget 平面
+        vtkSmartPointer<vtkTransform> resliceTransform = vtkSmartPointer<vtkTransform>::New();
+
+        // 定义方向矩阵：U、V、Normal
+        vtkNew<vtkMatrix4x4> resliceAxes;
+        for (int i = 0; i < 3; ++i)
+        {
+            resliceAxes->SetElement(i, 0, uVec[i]);
+            resliceAxes->SetElement(i, 1, vVec[i]);
+            resliceAxes->SetElement(i, 2, normal[i]);
+            resliceAxes->SetElement(i, 3, center[i]);
+        }
+        resliceAxes->SetElement(3, 0, 0);
+        resliceAxes->SetElement(3, 1, 0);
+        resliceAxes->SetElement(3, 2, 0);
+        resliceAxes->SetElement(3, 3, 1);
+
+        // 4. 执行 reslice
+        vtkSmartPointer<vtkImageReslice> reslice = vtkSmartPointer<vtkImageReslice>::New();
+        reslice->SetInputData(imageData);
+        reslice->SetResliceAxes(resliceAxes);
+        reslice->SetInterpolationModeToLinear();
+
+        // 设置输出图像大小（像素单位）
+        reslice->SetOutputSpacing(imageData->GetSpacing());
+
+        reslice->SetOutputExtent(
+            -w / 2, w / 2 - 1,
+            -h / 2, h / 2 - 1,
+            0, 0);  // 单张切片
+
+        reslice->SetOutputOrigin(0.0, 0.0, 0.0);
+        reslice->Update();
+
+        // 5. TIFF 输出前强制转为 unsigned char（若非本身为 uchar）
+        vtkSmartPointer<vtkImageCast> castFilter = vtkSmartPointer<vtkImageCast>::New();
+        castFilter->SetInputConnection(reslice->GetOutputPort());
+        castFilter->SetOutputScalarTypeToUnsignedChar();
+        castFilter->Update();
+
+        // 6. 写入 TIFF
+        vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
+        writer->SetInputConnection(castFilter->GetOutputPort());
+        writer->SetFileName("ExtractedRectangleSlice.tiff");
+        writer->Write();
+
+    }
+// 1. 获取原始图像
+   
+    /*
+     vtkResliceImageViewer* vtkResliceViewer = m_resliceImageViewer[2];
     if (orientation == 1)//XZ
     {
         vtkResliceViewer = m_resliceImageViewer[1];
@@ -1490,7 +1567,9 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
         vtkResliceViewer = m_resliceImageViewer[0];
     }
     //corners[4][3]; // 左下，右下，右上，左上
-    SaveRectangleImageTIFF(vtkResliceViewer, corners[3], corners[1]);
+    SaveRectangleImageTIFF(vtkResliceViewer, corners[3], corners[1]);   
+    */
+
 }
 void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2)
 {
@@ -1590,12 +1669,12 @@ void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceVi
     shiftScale->ClampOverflowOn();
     shiftScale->Update();
     vtkNew<vtkPNGWriter> writer;
-    writer->SetFileName("RectangleImage_output.png");
+    writer->SetFileName("SaveRectangleImage.png");
     writer->SetInputConnection(shiftScale->GetOutputPort());
     writer->Write();
 
     vtkNew<vtkTIFFWriter> TIFFwriter;
-    TIFFwriter->SetFileName("RectangleImage_output.tiff");
+    TIFFwriter->SetFileName("SaveRectangleImage.tiff");
     TIFFwriter->SetInputData(slice);
     TIFFwriter->Write();
 }
