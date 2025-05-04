@@ -14,7 +14,7 @@ VolumeDataSet::VolumeDataSet(QWidget *parent) : QWidget(parent), ui(new Ui::Volu
         hide();
     });
     //
-    connect(ui->m_pbSaveRect, &QPushButton::pressed, this, &VolumeDataSet::SaveRectParm);
+    connect(ui->m_pbSaveRect, &QPushButton::released, this, &VolumeDataSet::SaveRectParm);
 
 
     ui->m_topS->setMinimum(0);

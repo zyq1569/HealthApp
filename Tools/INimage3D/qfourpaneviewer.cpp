@@ -1320,7 +1320,8 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
     if (g_widgetToBoxActorMap.count(planeWidget))
     {
         vtkActor* oldActor = g_widgetToBoxActorMap[planeWidget];
-        if (renderer->HasViewProp(oldActor)) {
+        if (renderer->HasViewProp(oldActor))
+        {
             renderer->RemoveActor(oldActor);
         }
         g_widgetToBoxActorMap.erase(planeWidget);
@@ -1445,7 +1446,7 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
     }
     ///++++++++++++++++++++++++++++++
 
-    // 5. 构建点和线
+    // 5. 构建点和线 绘制矩形框
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
     for (int i = 0; i < 4; ++i)
     {
@@ -1478,6 +1479,125 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
     renderer->AddActor(actor);
     renderer->Render();
     g_widgetToBoxActorMap[planeWidget] = actor;
+
+    vtkResliceImageViewer* vtkResliceViewer = m_resliceImageViewer[2];
+    if (orientation == 1)//XZ
+    {
+        vtkResliceViewer = m_resliceImageViewer[1];
+    }
+    else if (orientation == 2)//YZ
+    {
+        vtkResliceViewer = m_resliceImageViewer[0];
+    }
+    //corners[4][3]; // 左下，右下，右上，左上
+    SaveRectangleImageTIFF(vtkResliceViewer, corners[3], corners[1]);
+}
+void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2)
+{
+    vtkResliceImageViewer* viewer = vtkResliceViewer;
+    if (!viewer)
+    {
+        return;
+    }
+    vtkImageData* input = m_showImageData;
+
+    vtkResliceCursor* cursor = viewer->GetResliceCursor();
+    double center[3];
+    cursor->GetCenter(center);
+
+    // 获取当前切面方向
+    double xAxis[3] = { 0,0,0 }, yAxis[3] = { 0,0,0 }, zAxis[3] = { 0,0,0 };
+    double *pxAxis = cursor->GetAxis(0);
+    double *pyAxis = cursor->GetAxis(1);
+    xAxis[0] = pxAxis[0]; xAxis[1] = pxAxis[1]; xAxis[2] = pxAxis[2];
+    yAxis[0] = pyAxis[0];  yAxis[1] = pyAxis[1];  yAxis[2] = pyAxis[2];
+    vtkMath::Cross(xAxis, yAxis, zAxis);
+
+    // VTK 坐标系和常规图像坐标系 不一样 翻转 Y 轴，避免图像镜像
+    double yAxisFlip[3] = { -yAxis[0], -yAxis[1], -yAxis[2] };
+
+    // 原图 spacing
+    double spacingIn[3];
+    input->GetSpacing(spacingIn);
+
+    // 计算 oblique spacing
+    double spacingU = std::sqrt(
+        std::pow(xAxis[0] * spacingIn[0], 2) +
+        std::pow(xAxis[1] * spacingIn[1], 2) +
+        std::pow(xAxis[2] * spacingIn[2], 2));
+
+    double spacingV = std::sqrt(
+        std::pow(yAxisFlip[0] * spacingIn[0], 2) +
+        std::pow(yAxisFlip[1] * spacingIn[1], 2) +
+        std::pow(yAxisFlip[2] * spacingIn[2], 2));
+
+    // 将 world 点投影到切片平面上
+    auto Project = [&](double pt[3], double& u, double& v)
+    {
+        double vec[3] = { pt[0] - center[0], pt[1] - center[1], pt[2] - center[2] };
+        u = vtkMath::Dot(vec, xAxis);
+        v = vtkMath::Dot(vec, yAxisFlip);
+    };
+
+    double u1, v1, u2, v2;
+    Project(p1, u1, v1);
+    Project(p2, u2, v2);
+
+    double uMin = std::min(u1, u2);
+    double uMax = std::max(u1, u2);
+    double vMin = std::min(v1, v2);
+    double vMax = std::max(v1, v2);
+
+    // 计算输出图像大小
+    int dims[3] =
+    {
+        static_cast<int>((uMax - uMin) / spacingU + 0.5),
+        static_cast<int>((vMax - vMin) / spacingV + 0.5),
+        1
+    };
+    if (dims[0] <= 0 || dims[1] <= 0) return;
+
+    // 构造 ResliceAxes（从切片坐标转到 world 坐标）
+    vtkNew<vtkMatrix4x4> resliceAxes;
+    for (int i = 0; i < 3; ++i)
+    {
+        resliceAxes->SetElement(i, 0, xAxis[i]);
+        resliceAxes->SetElement(i, 1, yAxisFlip[i]);
+        resliceAxes->SetElement(i, 2, zAxis[i]);
+        resliceAxes->SetElement(i, 3, center[i] + uMin * xAxis[i] + vMin * yAxisFlip[i]);
+    }
+
+    // 创建 Reslicer
+    vtkNew<vtkImageReslice> reslicer;
+    reslicer->SetInputData(input);
+    reslicer->SetResliceAxes(resliceAxes);
+    reslicer->SetOutputSpacing(spacingU, spacingV, 1.0);
+    reslicer->SetOutputOrigin(0, 0, 0);
+    reslicer->SetOutputExtent(0, dims[0] - 1, 0, dims[1] - 1, 0, 0);
+    reslicer->SetInterpolationModeToLinear();
+    reslicer->Update();
+
+    // 归一化为 8-bit 图像
+    vtkImageData* slice = reslicer->GetOutput();
+    double range[2];
+    slice->GetScalarRange(range);
+
+    vtkNew<vtkImageShiftScale> shiftScale;
+    shiftScale->SetInputData(slice);
+    shiftScale->SetOutputScalarTypeToUnsignedChar();
+    shiftScale->SetShift(-range[0]);
+    shiftScale->SetScale(255.0 / (range[1] - range[0]));
+    shiftScale->ClampOverflowOn();
+    shiftScale->Update();
+    vtkNew<vtkPNGWriter> writer;
+    writer->SetFileName("RectangleImage_output.png");
+    writer->SetInputConnection(shiftScale->GetOutputPort());
+    writer->Write();
+
+    vtkNew<vtkTIFFWriter> TIFFwriter;
+    TIFFwriter->SetFileName("RectangleImage_output.tiff");
+    TIFFwriter->SetInputData(slice);
+    TIFFwriter->Write();
 }
 QFourpaneviewer::~QFourpaneviewer()
 {

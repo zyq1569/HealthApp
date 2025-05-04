@@ -92,6 +92,7 @@ public:
 
     //draw
      void DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h);
+     void SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2);
 public:
 	MainWindow *m_MainWindow;
 	/// The main mapper for volume rendering.
