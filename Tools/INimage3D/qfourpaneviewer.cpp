@@ -1314,6 +1314,8 @@ void QFourpaneviewer::ShowImage3D()
 }
 void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
 {
+    if (!planeWidget || !renderer) return;
+    // 清除旧 actor
     static std::map<vtkImagePlaneWidget*, vtkSmartPointer<vtkActor>> g_widgetToBoxActorMap;
     if (g_widgetToBoxActorMap.count(planeWidget))
     {
@@ -1355,6 +1357,9 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
     planeWidget->GetOrigin(origin);
     planeWidget->GetPoint1(p1);
     planeWidget->GetPoint2(p2);
+    // 获取平面中心点
+    double center[3];
+    planeWidget->GetCenter(center); // 中心仍然可用
 
     // 计算 Right/Up 向量
     double uVec[3], vVec[3];
@@ -1366,15 +1371,9 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
     vtkMath::Normalize(uVec);
     vtkMath::Normalize(vVec);
 
-    // 获取平面中心点
-    double center[3];
-    planeWidget->GetCenter(center); // 中心仍然可用
-
-
-    // 4. 计算四个角点（世界坐标）
+    // 4. 尺寸物理长度  计算四个角点（世界坐标）
     double halfWidth = (w * spacingU) / 2.0;
     double halfHeight = (h * spacingV) / 2.0;
-
     double corners[4][3]; // 左下，右下，右上，左上
     for (int i = 0; i < 3; ++i) 
     {
@@ -1383,6 +1382,67 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
         corners[2][i] = center[i] + halfWidth * uVec[i] + halfHeight * vVec[i]; // 右上
         corners[3][i] = center[i] - halfWidth * uVec[i] + halfHeight * vVec[i]; // 左上
     }
+    ///+++++++++++++++++++++++++++
+    bool useProjectionMethod = true;
+    if (useProjectionMethod)
+    {
+        // 方法一：投影回切片平面
+        //double normal[3];
+        double p1[3], p2[3], origin[3];
+        planeWidget->GetPoint1(p1);
+        planeWidget->GetPoint2(p2);
+        planeWidget->GetOrigin(origin);
+
+        double uVec[3], vVec[3], normal[3];
+        vtkMath::Subtract(p1, origin, uVec);
+        vtkMath::Subtract(p2, origin, vVec);
+        vtkMath::Cross(uVec, vVec, normal);
+        vtkMath::Normalize(normal);
+        //planeWidget->GetNormal(normal); // 获取当前平面的法向量
+        for (int i = 0; i < 4; ++i)
+        {
+            double vec[3];
+            vtkMath::Subtract(corners[i], center, vec);// vec = corner - center
+            double dot = vtkMath::Dot(vec, normal);// 投影长度 = 向量在法向量方向上的分量
+            double correction[3];
+            for (int j = 0; j < 3; ++j)
+            {
+                correction[j] = dot * normal[j];// 修正向量 = 法向量 × 投影分量
+            }              
+            vtkMath::Subtract(corners[i], correction, corners[i]);// 投影回平面
+        }
+    }
+    else
+    {
+        // 方法二：世界坐标 -> 显示坐标 -> 非主轴值设为常数 -> 再转回世界坐标
+        for (int i = 0; i < 4; ++i)
+        {
+            double display[3];
+            vtkSmartPointer<vtkCoordinate> coordinate = vtkSmartPointer<vtkCoordinate>::New();
+            coordinate->SetCoordinateSystemToWorld();
+            coordinate->SetValue(corners[i]);
+            int* disp = coordinate->GetComputedDisplayValue(renderer);
+
+            // 修改非主轴方向的屏幕坐标
+            int axis = planeWidget->GetPlaneOrientation(); // 0=X, 1=Y, 2=Z
+            display[0] = disp[0];
+            display[1] = disp[1];
+            display[2] = 0.0; // Z值设为0，简化深度投影
+
+            // 转回世界坐标
+            renderer->SetDisplayPoint(display);
+            renderer->DisplayToWorld();
+            double* world = renderer->GetWorldPoint();
+            if (world[3] != 0.0)
+            {
+                for (int j = 0; j < 3; ++j)
+                {
+                    corners[i][j] = world[j] / world[3];
+                }                  
+            }
+        }
+    }
+    ///++++++++++++++++++++++++++++++
 
     // 5. 构建点和线
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
@@ -1412,6 +1472,7 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
     actor->SetMapper(mapper);
     actor->GetProperty()->SetColor(0.0, 1.0, 0.0);
     actor->GetProperty()->SetLineWidth(2.0);
+    actor->GetProperty()->SetOpacity(1);
 
     renderer->AddActor(actor);
     renderer->Render();
