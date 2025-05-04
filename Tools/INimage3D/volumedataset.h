@@ -18,7 +18,7 @@ public:
 signals:
     void SplitImageData(int *dims, int start, int end);
 
-    void RectData(int dx, int dy, int w, int h);
+    void RectData(int orientation, int dx, int dy, int w, int h);
 
 public slots:
     void SaveSplitParm();

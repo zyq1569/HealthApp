@@ -61,8 +61,11 @@ void VolumeDataSet::SetSlicesNumber(int *dim)
 
 void VolumeDataSet::SaveRectParm()
 {
+    int orientation = ui->m_cbSelectSlice->currentIndex();
+    int deltaX = ui->m_deltaX->value(), deltaY = ui->m_deltaY->value();
+    int w = ui->m_rectW->value(), h = ui->m_rectH->value();
 
-    emit RectData(0, 0, 0, 0);
+    emit RectData(orientation, deltaX, deltaY, w, h);
 }
 void VolumeDataSet::SaveSplitParm()
 {
