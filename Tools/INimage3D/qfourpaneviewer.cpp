@@ -806,7 +806,6 @@ void QFourpaneviewer::SaveImagePaneBMP()
     writer->Update();
     writer->Write();
 }
-
 void QFourpaneviewer::ShowEditorSplitImageData()
 {
     int* dims = m_MainWindow->m_vtkImageData->GetDimensions();
@@ -815,7 +814,7 @@ void QFourpaneviewer::ShowEditorSplitImageData()
         m_volumeDataSet = new VolumeDataSet();
         m_volumeDataSet->SetSlicesNumber(dims);
         connect(m_volumeDataSet, &VolumeDataSet::SplitImageData, this, &QFourpaneviewer::SplitImageData);
-        connect(m_volumeDataSet, &VolumeDataSet::RectData, this, &QFourpaneviewer::SaveRectangleImage);
+        connect(m_volumeDataSet, &VolumeDataSet::RectData, this, &QFourpaneviewer::SaveRectangleImageParm);
     }
     m_volumeDataSet->show();
 }
@@ -839,30 +838,21 @@ void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
     m_volumeMapper->SetInputData(m_showImageData);
     ui->m_image3DView->renderWindow()->Render();
 }
-
-void QFourpaneviewer::SaveRectangleImage()
+void QFourpaneviewer::SaveRectangleImageParm(int orientation, int dx, int dy, int w, int h)
 {
-    //---
-    int* extent = m_showImageData->GetExtent();
-    double centerX = (extent[1] - extent[0]) / 2.0;
-    double centerY = (extent[3] - extent[2]) / 2.0;
-    //createRectangle(1, 0, 0, 100, 10, 45);
-    vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
+    vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
     vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
-    int plane = 0;
-    if (plane == 1)//XZ
+    if (orientation == 1)//XZ
     {
-        renderer = m_resliceImageViewer[1]->GetRenderer();
+        renderer    = m_resliceImageViewer[1]->GetRenderer();
         planeWidget = m_planeWidget[1];
     }
-    else if (plane == 2)//YZ
+    else if (orientation == 2)//YZ
     {
-        renderer = m_resliceImageViewer[0]->GetRenderer();
+        renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
-    //createRectangleViaDisplay(m_showImageData, renderer, 0, 0, 100, 50, plane);
-
-    AddRectangleFrameOnPlane(planeWidget, m_showImageData, renderer, 50, 100);
+    DrawRectangleOnPlane(planeWidget, m_showImageData, renderer, w, h);
 }
 void QFourpaneviewer::ShowEditorsWidget()
 {
@@ -908,7 +898,6 @@ void QFourpaneviewer::ShowEditorsWidget()
         }
     }*/
 }
-
 void QFourpaneviewer::ShowImagePlaneAnd3D()
 {
     Queue queue3D;
@@ -925,7 +914,6 @@ void QFourpaneviewer::ShowImagePlaneAnd3D()
     ui->m_image3DView->renderWindow()->Render();
 
 }
-
 void QFourpaneviewer::ResetViewer()
 {
     for (int i = 0; i < 3; i++)
@@ -941,7 +929,6 @@ void QFourpaneviewer::ResetViewer()
         m_resliceImageViewer[i]->Render();
     }
 }
-
 void QFourpaneviewer::Update3DColorByCoordinate(VtkColorStyle colorValue)
 {
     if (m_volumeProperty)
@@ -1046,7 +1033,6 @@ void QFourpaneviewer::Update3DColorByCoordinate(VtkColorStyle colorValue)
         ui->m_image3DView->renderWindow()->Render();
     }
 }
-
 void QFourpaneviewer::Update3DColorByPointEditor(VtkColorStyle colorValue)
 {
     if (m_volumeProperty)
@@ -1250,7 +1236,6 @@ void QFourpaneviewer::ShowImagePlane()
         m_resliceImageViewer[i]->Render();
     }
 }
-
 void QFourpaneviewer::ShowImage3D()
 {
     if (!m_MainWindow->m_vtkImageData)
@@ -1327,8 +1312,7 @@ void QFourpaneviewer::ShowImage3D()
     //
     ui->m_image3DView->renderWindow()->AddRenderer(m_renderer);
 }
-
-void QFourpaneviewer::AddRectangleFrameOnPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
+void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
 {
     static std::map<vtkImagePlaneWidget*, vtkSmartPointer<vtkActor>> g_widgetToBoxActorMap;
     if (g_widgetToBoxActorMap.count(planeWidget))
@@ -1433,365 +1417,6 @@ void QFourpaneviewer::AddRectangleFrameOnPlane(vtkImagePlaneWidget* planeWidget,
     renderer->Render();
     g_widgetToBoxActorMap[planeWidget] = actor;
 }
-
-
-void QFourpaneviewer::createRectangleViaDisplay( vtkImageData* imageData,  vtkRenderer* renderer,  double deltaX, double deltaY,  double width, double height,  int planeType) // 0: XY, 1: XZ, 2: YZ
-{  
-    double *xyz = m_planeWidget[1]->GetOrigin();
-    double spacing[3], center[3];
-    imageData->GetSpacing(spacing);
-    imageData->GetCenter(center);
-
-    double dx = deltaX * spacing[0];
-    double dy = deltaY * spacing[1];
-    double w_half = (width * spacing[0]) / 2.0;
-    double h_half = (height * spacing[1]) / 2.0;
-
-    double cx = center[0], cy = center[1], cz = center[2];
-    switch (planeType)
-    {
-    case 0: cx += dx; cy += dy; break; // XY
-    case 1: cx += dx; cz += dy; break; // XZ
-    case 2: cy += dx; cz += dy; break; // YZ
-    default:
-        std::cerr << "Invalid planeType: " << planeType << std::endl;
-        return ;
-    }
-
-    std::vector<std::array<double, 3>> corners;
-    if (planeType == 0) { // XY
-        corners = {
-            {cx - w_half, cy - h_half, cz},
-            {cx + w_half, cy - h_half, cz},
-            {cx + w_half, cy + h_half, cz},
-            {cx - w_half, cy + h_half, cz},
-            {cx - w_half, cy - h_half, cz} // 闭合
-        };
-    }
-    else if (planeType == 1)
-    { // XZ
-        corners = {
-            {cx - w_half, cy, cz - h_half},
-            {cx + w_half, cy, cz - h_half},
-            {cx + w_half, cy, cz + h_half},
-            {cx - w_half, cy, cz + h_half},
-            {cx - w_half, cy, cz - h_half} // 闭合
-        };
-    }
-    else if (planeType == 2)
-    { // YZ
-        corners = {
-            {cx, cy - w_half, cz - h_half},
-            {cx, cy + w_half, cz - h_half},
-            {cx, cy + w_half, cz + h_half},
-            {cx, cy - w_half, cz + h_half},
-            {cx, cy - w_half, cz - h_half} // 闭合
-        };
-    }
-
-    // 世界 → 显示 → 世界（调整非平面坐标为0）
-    std::vector<std::array<double, 3>> finalWorldPoints;
-    for (const auto& wp : corners)
-    {
-        double tempWP[3] = { wp[0], wp[1], wp[2] };
-        if (planeType == 0) tempWP[2] = 0.0; // XY: Z = 0
-        if (planeType == 1) tempWP[1] = 0.0; // XZ: Y = 0
-        if (planeType == 2) tempWP[0] = 0.0; // YZ: X = 0
-
-        renderer->SetWorldPoint(tempWP[0], tempWP[1], tempWP[2], 1.0);
-        renderer->WorldToDisplay();
-        double displayPt[3];
-        renderer->GetDisplayPoint(displayPt);
-
-        vtkSmartPointer<vtkCoordinate> coord = vtkSmartPointer<vtkCoordinate>::New();
-        coord->SetCoordinateSystemToDisplay();
-        coord->SetValue(displayPt);
-        double* computedWorld = coord->GetComputedWorldValue(renderer);
-        finalWorldPoints.push_back({ computedWorld[0], computedWorld[1], computedWorld[2] });
-    }
-
-    // 创建 PolyLine（矩形边框）
-    vtkSmartPointer<vtkPoints> vtkPts = vtkSmartPointer<vtkPoints>::New();
-    vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-    vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
-    ids->SetNumberOfIds(5);
-    for (int i = 0; i < 5; ++i)
-    {
-        ids->SetId(i, i);
-    }
-    lines->InsertNextCell(ids);
-
-    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-    polyData->SetPoints(vtkPts);
-    polyData->SetLines(lines);
-
-    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputData(polyData);
-
-    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-    actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(0.0, 1.0, 0.0);
-    actor->GetProperty()->SetLineWidth(2.0);
-
-    renderer->AddActor(actor);
-    renderer->Render();
-
-/*
- // 1. 获取图像 spacing
-    double spacing[3];
-    imageData->GetSpacing(spacing);
-
-    // 2. 获取显示中心 → 转换为世界坐标
-    int* size = renderer->GetRenderWindow()->GetSize();
-    double displayCenter[3] = { size[0] / 2.0, size[1] / 2.0, 0.0 };
-
-    vtkSmartPointer<vtkCoordinate> coord = vtkSmartPointer<vtkCoordinate>::New();
-    coord->SetCoordinateSystemToDisplay();
-    coord->SetValue(displayCenter);
-    double* worldCenter = coord->GetComputedWorldValue(renderer);
-
-    double cx = worldCenter[0];
-    double cy = worldCenter[1];
-    double cz = worldCenter[2];
-
-    // 3. 自动判断当前观察平面
-    vtkCamera* cam = renderer->GetActiveCamera();
-    double viewPlaneNormal[3];
-    cam->GetViewPlaneNormal(viewPlaneNormal);
-
-    //int 
-    planeType = 0;
-    double absX = std::abs(viewPlaneNormal[0]);
-    double absY = std::abs(viewPlaneNormal[1]);
-    double absZ = std::abs(viewPlaneNormal[2]);
-
-    if (absZ >= absX && absZ >= absY)
-        planeType = 0; // XY
-    else if (absY >= absX && absY >= absZ)
-        planeType = 1; // XZ
-    else
-        planeType = 2; // YZ
-
-        // 4. 应用偏移（deltaX, deltaY 是图像像素）
-    double dx = deltaX * spacing[0];
-    double dy = deltaY * spacing[1];
-    double w_half = (width * spacing[0]) / 2.0;
-    double h_half = (height * spacing[1]) / 2.0;
-
-    switch (planeType) {
-    case 0: cx += dx; cy += dy; break; // XY
-    case 1: cx += dx; cz += dy; break; // XZ
-    case 2: cy += dx; cz += dy; break; // YZ
-    }
-
-    // 5. 生成四个角点
-    std::vector<std::array<double, 3>> corners;
-    if (planeType == 0) { // XY
-        corners = {
-            {cx - w_half, cy - h_half, cz},
-            {cx + w_half, cy - h_half, cz},
-            {cx + w_half, cy + h_half, cz},
-            {cx - w_half, cy + h_half, cz},
-            {cx - w_half, cy - h_half, cz} // 闭合
-        };
-    }
-    else if (planeType == 1) { // XZ
-        corners = {
-            {cx - w_half, cy, cz - h_half},
-            {cx + w_half, cy, cz - h_half},
-            {cx + w_half, cy, cz + h_half},
-            {cx - w_half, cy, cz + h_half},
-            {cx - w_half, cy, cz - h_half} // 闭合
-        };
-    }
-    else if (planeType == 2) { // YZ
-        corners = {
-            {cx, cy - w_half, cz - h_half},
-            {cx, cy + w_half, cz - h_half},
-            {cx, cy + w_half, cz + h_half},
-            {cx, cy - w_half, cz + h_half},
-            {cx, cy - w_half, cz - h_half} // 闭合
-        };
-    }
-
-    // 6. 世界 → 显示 → 世界，修正不在当前平面坐标轴为0
-    std::vector<std::array<double, 3>> finalWorldPoints;
-    for (const auto& pt : corners) {
-        double wp[3] = { pt[0], pt[1], pt[2] };
-        if (planeType == 0) wp[2] = 0.0;
-        if (planeType == 1) wp[1] = 0.0;
-        if (planeType == 2) wp[0] = 0.0;
-
-        renderer->SetWorldPoint(wp[0], wp[1], wp[2], 1.0);
-        renderer->WorldToDisplay();
-        double displayPt[3];
-        renderer->GetDisplayPoint(displayPt);
-
-        vtkSmartPointer<vtkCoordinate> displayCoord = vtkSmartPointer<vtkCoordinate>::New();
-        displayCoord->SetCoordinateSystemToDisplay();
-        displayCoord->SetValue(displayPt);
-        double* worldPt = displayCoord->GetComputedWorldValue(renderer);
-        finalWorldPoints.push_back({ worldPt[0], worldPt[1], worldPt[2] });
-    }
-
-    // 7. 构建 PolyLine
-    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-    vtkSmartPointer<vtkPolyLine> polyLine = vtkSmartPointer<vtkPolyLine>::New();
-    polyLine->GetPointIds()->SetNumberOfIds(finalWorldPoints.size());
-
-    for (size_t i = 0; i < finalWorldPoints.size(); ++i) {
-        points->InsertNextPoint(finalWorldPoints[i].data());
-        polyLine->GetPointIds()->SetId(i, i);
-    }
-
-    vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
-    cells->InsertNextCell(polyLine);
-
-    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-    polyData->SetPoints(points);
-    polyData->SetLines(cells);
-
-    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputData(polyData);
-
-    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-    actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(1.0, 1.0, 0.0); // 黄色
-    actor->GetProperty()->SetLineWidth(2.5);
-    actor->GetProperty()->SetOpacity(1.0);
-
-    renderer->AddActor(actor);
-*/
-   
-}
-
-void QFourpaneviewer::createRectangle(int plane, double deltaX, double deltaY, double width, double height, double angleDegrees)
-{
-    static double PI = 3.14159265358979323846 / 180.0;
-    vtkImageData* imageData = m_showImageData;
-    vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
-    /*
-    ui->m_sagital2DView->setRenderWindow(m_resliceImageViewer[0]->GetRenderWindow());
-    m_resliceImageViewer[0]->SetupInteractor(ui->m_sagital2DView->renderWindow()->GetInteractor());
-
-    ui->m_coronal2DView->setRenderWindow(m_resliceImageViewer[1]->GetRenderWindow());
-    m_resliceImageViewer[1]->SetupInteractor(ui->m_coronal2DView->renderWindow()->GetInteractor());
-
-    ui->m_axial2DView->setRenderWindow(m_resliceImageViewer[2]->GetRenderWindow());
-    m_resliceImageViewer[2]->SetupInteractor(ui->m_axial2DView->renderWindow()->GetInteractor());
-    */
-
-    // 1. 图像属性 
-    double spacing[3], center[3];
-    imageData->GetSpacing(spacing);
-    imageData->GetCenter(center);
-
-    // 2. 以像素为单位构建偏移和尺寸->世界坐标
-    double dx = deltaX * spacing[0];
-    double dy = deltaY * spacing[1];
-    double dz = deltaY * spacing[2];
-    double w_half = (width * spacing[0]) / 2.0;
-    double h_half = (height * spacing[1]) / 2.0;
-
-    double cz = center[2];  // XY平面
-    double cx = center[0], cy = center[1];
-
-    // 3. 4个角点（世界坐标）
-    double worldPtsXY[4][3] =
-    {
-        { center[0] - w_half + dx, center[1] - h_half + dy, cz },
-        { center[0] + w_half + dx, center[1] - h_half + dy, cz },
-        { center[0] + w_half + dx, center[1] + h_half + dy, cz },
-        { center[0] - w_half + dx, center[1] + h_half + dy, cz }
-    };
-    double worldPtsXZ[4][3] =
-    {
-        { center[0] - w_half + dx, cy,center[2] - h_half + dz},
-        { center[0] + w_half + dx, cy,center[2] - h_half + dz},
-        { center[0] + w_half + dx, cy,center[2] + h_half + dz},
-        { center[0] - w_half + dx, cy,center[2] + h_half + dz}
-    };
-    double worldPtsYZ[4][3] =
-    {
-        { dx, center[1] - h_half + dy, center[2] - h_half + dz },
-        { dx, center[1] - h_half + dy, center[2] - h_half + dz },
-        { dx, center[1] + h_half + dy, center[2] + h_half + dz },
-        { dx, center[1] + h_half + dy, center[2] + h_half + dz }
-    };
-
-    int k = 2;
-    double(*worldPts)[3];
-    worldPts = worldPtsXY;
-    if (plane == 1)//XZ
-    {
-        worldPts = worldPtsXZ;
-        renderer = m_resliceImageViewer[1]->GetRenderer();
-        k = 1;
-    }
-    else if (plane == 2)//YZ
-    {
-        worldPts = worldPtsYZ;
-        renderer = m_resliceImageViewer[0]->GetRenderer();
-        k = 0;
-    }
-
-    // 4. 世界->显示（屏幕）坐标
-    double displayPts[4][3];
-    for (int i = 0; i < 4; ++i)
-    {
-        renderer->SetWorldPoint(worldPts[i][0], worldPts[i][1], worldPts[i][2], 1.0);
-        renderer->WorldToDisplay();
-        renderer->GetDisplayPoint(displayPts[i]);  // 输出为 displayPts[i]
-        displayPts[i][k] = 0;
-    }
-
-    // 5. 使用 vtkCoordinate 将显示坐标->回世界坐标
-    double finalWorldPts[4][3];
-    for (int i = 0; i < 4; ++i)
-    {
-        vtkSmartPointer<vtkCoordinate> coord = vtkSmartPointer<vtkCoordinate>::New();
-        coord->SetCoordinateSystemToDisplay();
-        coord->SetValue(displayPts[i]);  // 设置 display 坐标
-        double* world = coord->GetComputedWorldValue(renderer);  // 获取转换后的世界坐标
-
-        finalWorldPts[i][0] = world[0];
-        finalWorldPts[i][1] = world[1];
-        finalWorldPts[i][2] = world[2];
-    }
-
-    // 6. 构造矩形 polygon
-    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-    for (int i = 0; i < 4; ++i)
-    {
-        points->InsertNextPoint(finalWorldPts[i]);
-    }
-    points->InsertNextPoint(finalWorldPts[0]);//最后增加第一个点是形成封闭的矩形
-
-    vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-    vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
-    ids->SetNumberOfIds(5);
-    for (int i = 0; i < 5; ++i)
-    {
-        ids->SetId(i, i);
-    }
-    lines->InsertNextCell(ids);
-
-    vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-    polyData->SetPoints(points);
-    polyData->SetLines(lines);
-
-    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputData(polyData);
-
-    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-    actor->SetMapper(mapper);
-    //actor->GetProperty()->SetColor(1.0, 0.0, 1.0); // 颜色
-    actor->GetProperty()->SetColor(1.0, 0.0, 0.0); // 颜色
-    actor->GetProperty()->SetOpacity(0.4);
-
-    renderer->AddActor(actor);
-}
-
 QFourpaneviewer::~QFourpaneviewer()
 {
     for (int i = 0; i < 3; i++)
