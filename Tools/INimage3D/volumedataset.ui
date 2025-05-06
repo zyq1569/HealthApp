@@ -70,23 +70,32 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>70</x>
+     <x>40</x>
      <y>15</y>
-     <width>151</width>
+     <width>181</width>
      <height>21</height>
     </rect>
    </property>
    <property name="inputMethodHints">
     <set>Qt::ImhNone</set>
    </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="textInteractionFlags">
+    <set>Qt::NoTextInteraction</set>
+   </property>
   </widget>
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>20</y>
-     <width>47</width>
-     <height>13</height>
+     <y>18</y>
+     <width>21</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="text">
