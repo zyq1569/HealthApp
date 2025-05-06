@@ -806,54 +806,6 @@ void QFourpaneviewer::SaveImagePaneBMP()
     writer->Update();
     writer->Write();
 }
-void QFourpaneviewer::ShowEditorSplitImageData()
-{
-    int* dims = m_MainWindow->m_vtkImageData->GetDimensions();
-    if (!m_volumeDataSet)
-    {
-        m_volumeDataSet = new VolumeDataSet();
-        m_volumeDataSet->SetSlicesNumber(dims);
-        connect(m_volumeDataSet, &VolumeDataSet::SplitImageData, this, &QFourpaneviewer::SplitImageData);
-        connect(m_volumeDataSet, &VolumeDataSet::RectData, this, &QFourpaneviewer::SaveRectangleImageParm);
-    }
-    m_volumeDataSet->show();
-}
-void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
-{
-    // 1. 提取 VOI：只取 Z=30~40 层
-        //int* dims = m_MainWindow->m_vtkImageData->GetDimensions();   
-    m_extractVOI->SetInputData(m_MainWindow->m_vtkImageData);
-    m_extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, start, end);  // x, y, z 范围
-    m_extractVOI->Update();
-    m_showImageData = m_extractVOI->GetOutput();
-    m_vtkAlgorithm = m_extractVOI->GetOutputPort();
-
-    for (int i = 0; i < 3; i++)
-    {
-        m_resliceImageViewer[i]->SetInputData(m_showImageData);
-        m_resliceImageViewer[i]->Render();
-
-        m_planeWidget[i]->SetInputConnection(m_vtkAlgorithm);
-    }
-    m_volumeMapper->SetInputData(m_showImageData);
-    ui->m_image3DView->renderWindow()->Render();
-}
-void QFourpaneviewer::SaveRectangleImageParm(int orientation, int dx, int dy, int w, int h)
-{
-    vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
-    vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
-    if (orientation == 1)//XZ
-    {
-        renderer    = m_resliceImageViewer[1]->GetRenderer();
-        planeWidget = m_planeWidget[1];
-    }
-    else if (orientation == 2)//YZ
-    {
-        renderer    = m_resliceImageViewer[0]->GetRenderer();
-        planeWidget = m_planeWidget[0];
-    }
-    DrawRectangleOnPlane(planeWidget, m_showImageData, renderer, w, h);
-}
 void QFourpaneviewer::ShowEditorsWidget()
 {
     /*
@@ -1313,6 +1265,66 @@ void QFourpaneviewer::ShowImage3D()
     ui->m_image3DView->renderWindow()->AddRenderer(m_renderer);
 }
 
+//------------------SplitImageData
+#include <vtkImageActor.h>
+void QFourpaneviewer::ShowEditorSplitImageData()
+{
+    //++++++++++++++++++++
+    VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[1]->GetResliceCursorWidget()->GetRepresentation());
+    vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice());
+    int extent[6], extent2[6];
+    reslice->GetOutput()->GetExtent(extent);
+    rep = VTKRCP::SafeDownCast(m_resliceImageViewer[0]->GetResliceCursorWidget()->GetRepresentation());
+    reslice = vtkImageReslice::SafeDownCast(rep->GetReslice());
+    reslice->GetOutput()->GetExtent(extent2);
+    //++++++++++++++++++++
+    int* dims = m_MainWindow->m_vtkImageData->GetDimensions();
+    if (!m_volumeDataSet)
+    {
+        m_volumeDataSet = new VolumeDataSet();
+        m_volumeDataSet->SetSlicesNumber(dims,extent, extent2);
+        connect(m_volumeDataSet, &VolumeDataSet::SplitImageData, this, &QFourpaneviewer::SplitImageData);
+        connect(m_volumeDataSet, &VolumeDataSet::RectData, this, &QFourpaneviewer::SaveRectangleImageParm);
+    }
+    m_volumeDataSet->show();
+}
+void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
+{
+    // 1. 提取 VOI：只取 Z=30~40 层
+        //int* dims = m_MainWindow->m_vtkImageData->GetDimensions();   
+    m_extractVOI->SetInputData(m_MainWindow->m_vtkImageData);
+    m_extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, start, end);  // x, y, z 范围
+    m_extractVOI->Update();
+    m_showImageData = m_extractVOI->GetOutput();
+    m_vtkAlgorithm = m_extractVOI->GetOutputPort();
+
+    for (int i = 0; i < 3; i++)
+    {
+        m_resliceImageViewer[i]->SetInputData(m_showImageData);
+        m_resliceImageViewer[i]->Render();
+
+        m_planeWidget[i]->SetInputConnection(m_vtkAlgorithm);
+    }
+    m_volumeMapper->SetInputData(m_showImageData);
+    ui->m_image3DView->renderWindow()->Render();
+}
+void QFourpaneviewer::SaveRectangleImageParm(int orientation, int dx, int dy, int w, int h)
+{
+    vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
+    vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
+    if (orientation == 1)//XZ
+    {
+        renderer = m_resliceImageViewer[1]->GetRenderer();
+        planeWidget = m_planeWidget[1];
+    }
+    else if (orientation == 2)//YZ
+    {
+        renderer = m_resliceImageViewer[0]->GetRenderer();
+        planeWidget = m_planeWidget[0];
+    }
+    DrawRectangleOnPlane(planeWidget, m_showImageData, renderer, w, h);
+}
+
 void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
 {
     if (!planeWidget || !renderer) return;
@@ -1554,7 +1566,7 @@ void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceVi
     double xAxis[3] = { 0,0,0 }, yAxis[3] = { 0,0,0 }, zAxis[3] = { 0,0,0 };
     double *pxAxis = cursor->GetAxis(0);
     double *pyAxis = cursor->GetAxis(1);
-    xAxis[0] = pxAxis[0]; xAxis[1] = pxAxis[1]; xAxis[2] = pxAxis[2];
+    xAxis[0] = pxAxis[0];  xAxis[1] = pxAxis[1];  xAxis[2] = pxAxis[2];
     yAxis[0] = pyAxis[0];  yAxis[1] = pyAxis[1];  yAxis[2] = pyAxis[2];
     vtkMath::Cross(xAxis, yAxis, zAxis);
 
