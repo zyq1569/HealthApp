@@ -25,7 +25,7 @@ public slots:
     void SaveRectParm();
 
 public:
-    void SetSlicesNumber(int *dim);
+    void SetSlicesNumber(int *dim, int *extent1, int *extent2);
 
 public:
     int *m_dims, m_slicesNumber, m_topStart, m_topEnd, m_centerStart, m_centerEnd, m_bottomStart, m_bottomEnd;

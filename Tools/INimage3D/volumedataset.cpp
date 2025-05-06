@@ -30,8 +30,14 @@ VolumeDataSet::~VolumeDataSet()
     delete ui;
 }
 
-void VolumeDataSet::SetSlicesNumber(int *dim)
+void VolumeDataSet::SetSlicesNumber(int *dim, int *extent1, int *extent2)
 {
+    QString str = "slices:";
+    str += QString::number(dim[0]) + "|"+ QString::number(dim[1]) + "|" + QString::number(dim[2]);
+    str += "(" + QString::number(extent1[1]+1) + "*" + QString::number(extent1[3]+1) + ")";
+    ui->m_AllNumber->setText(str);
+    //ui->m_AllNumber->setText(QString::number(m_slicesNumber));
+
     m_slicesNumber = dim[2] - 1;
     ui->m_topS->setMaximum(m_slicesNumber);
     ui->m_topE->setMaximum(m_slicesNumber);
@@ -40,7 +46,6 @@ void VolumeDataSet::SetSlicesNumber(int *dim)
     ui->m_bottomS->setMaximum(m_slicesNumber);
     ui->m_bottomE->setMaximum(m_slicesNumber);
 
-    ui->m_AllNumber->setText(QString::number(m_slicesNumber));
     int delta = m_slicesNumber / 3;
 
     m_topStart    = 0;
