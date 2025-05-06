@@ -1495,7 +1495,8 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
 
     //+++++++++++++++++++++++++++++++++++++++
     // ==========================
-// 保存当前矩形图像为 TIFF
+// 保存当前矩形图像为 TIFF:
+// todo .需要重新计算分辨率的比例值来裁剪图像
 // ==========================
     {    
         int index = 0;
