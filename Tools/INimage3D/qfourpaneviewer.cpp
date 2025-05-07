@@ -1618,7 +1618,16 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         spacingU = spacing[0];     // X
         spacingV = spacing[1];     // Y
     }
-
+    //**************************
+    //
+    //         
+    //         |
+    //         Y
+    //       p1.
+    //         |
+    //         |  center .
+    //         |
+    //  origin .----------- .p2  X -->
     // 3. 获取中心点和方向向量
     double origin[3], p1[3], p2[3];
     planeWidget->GetOrigin(origin);
@@ -1639,7 +1648,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     vtkMath::Normalize(vVec);
 
     // 4. 尺寸物理长度  计算四个角点（世界坐标）
-    double halfWidth = (w * spacingU) / 2.0;
+    double halfWidth  = (w * spacingU) / 2.0;
     double halfHeight = (h * spacingV) / 2.0;
     double corners[4][3]; // 左下，右下，右上，左上
     for (int i = 0; i < 3; ++i)
@@ -1660,7 +1669,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         int* disp = coordinate->GetComputedDisplayValue(renderer);
 
         // 修改非主轴方向的屏幕坐标
-        int axis = planeWidget->GetPlaneOrientation(); // 0=X, 1=Y, 2=Z
+        //int axis = planeWidget->GetPlaneOrientation(); // 0=X, 1=Y, 2=Z
         display[0] = disp[0];
         display[1] = disp[1];
         display[2] = 0.0; // Z值设为0，简化深度投影
@@ -1674,6 +1683,64 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
             for (int j = 0; j < 3; ++j)
             {
                 corners[i][j] = world[j] / world[3];
+            }
+        }
+    }
+    //直接转换 左下角p1[3], 右下角p2[3] 
+    double showDisplayP1[3], showDisplayP2[3], showDisplayOrigin[3], showDisplayCenter[3];
+    {
+        vtkSmartPointer<vtkCoordinate> coordinate = vtkSmartPointer<vtkCoordinate>::New();
+        coordinate->SetCoordinateSystemToWorld();
+        coordinate->SetValue(p1);
+        int* disp = coordinate->GetComputedDisplayValue(renderer);
+        // 修改非主轴方向的屏幕坐标
+        showDisplayP1[0] = disp[0];
+        showDisplayP1[1] = disp[1];
+        showDisplayP1[2] = 0.0; // Z值设为0，简化深度投影
+
+        coordinate->SetValue(p2);
+        disp = coordinate->GetComputedDisplayValue(renderer);
+        showDisplayP2[0] = disp[0];
+        showDisplayP2[1] = disp[1];
+        showDisplayP2[2] = 0.0; // Z值设为0，简化深度投影
+
+        coordinate->SetValue(origin);
+        disp = coordinate->GetComputedDisplayValue(renderer);
+        showDisplayOrigin[0] = disp[0];
+        showDisplayOrigin[1] = disp[1];
+        showDisplayOrigin[2] = 0.0; // Z值设为0，简化深度投影
+
+        coordinate->SetValue(center);
+        disp = coordinate->GetComputedDisplayValue(renderer);
+        showDisplayCenter[0] = disp[0];
+        showDisplayCenter[1] = disp[1];
+        showDisplayCenter[2] = 0.0; // Z值设为0，简化深度投影
+
+
+        // 转回世界坐标
+        renderer->SetDisplayPoint(showDisplayP1);
+        renderer->DisplayToWorld();
+        double* world = renderer->GetWorldPoint();
+        if (world[3] != 0.0)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                showDisplayP1[j] = world[j] / world[3];
+            }
+        }
+
+        coordinate->SetValue(p1);
+        disp = coordinate->GetComputedDisplayValue(renderer);
+
+        // 转回世界坐标
+        renderer->SetDisplayPoint(showDisplayP1);
+        renderer->DisplayToWorld();
+        world = renderer->GetWorldPoint();
+        if (world[3] != 0.0)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                showDisplayP2[j] = world[j] / world[3];
             }
         }
     }
@@ -1721,7 +1788,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     // todo .需要重新计算分辨率的比例值来裁剪图像
     // ==========================
     {
-        QString strOrientation = "XY_Rectangle_reslice.tiff";
+        QString strOrientation = "XY_ObliquerRectangle_reslice.tiff";
         VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation());
         vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice());
         int extent[6];
@@ -1754,7 +1821,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
             yMax = std::min(cx + newWidth / 2, orgW);
             xMin = std::max(cy - newHeigth / 2, extent[2]);
             xMax = std::min(cy + newHeigth / 2, grgH);
-            strOrientation = "XZ_Rectangle_reslice.tiff";
+            strOrientation = "XZ_ObliquerRectangle_reslice.tiff";
         }
         else //if(orientation == 0)//YZ
         {
@@ -1765,7 +1832,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
             xMax = std::min(cx + newWidth / 2, orgW);
             yMin = std::max(cy - newHeigth / 2, extent[2]);
             yMax = std::min(cy + newHeigth / 2, grgH);
-            strOrientation = "YZ_Rectangle_reslice.tiff";
+            strOrientation = "YZ_ObliquerRectangle_reslice.tiff";
         }
 
         vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
