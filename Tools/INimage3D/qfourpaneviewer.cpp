@@ -1559,21 +1559,6 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
         writer->Write();
 
     }
-    // 1. 获取原始图像
-
-        /*
-         vtkResliceImageViewer* vtkResliceViewer = m_resliceImageViewer[2];
-        if (orientation == 1)//XZ
-        {
-            vtkResliceViewer = m_resliceImageViewer[1];
-        }
-        else if (orientation == 2)//YZ
-        {
-            vtkResliceViewer = m_resliceImageViewer[0];
-        }
-        //corners[4][3]; // 左下，右下，右上，左上
-        SaveRectangleImageTIFF(vtkResliceViewer, corners[3], corners[1]);
-        */
 
 }
 void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2)
