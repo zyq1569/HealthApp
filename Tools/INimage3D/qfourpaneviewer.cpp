@@ -1618,9 +1618,9 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         spacingU = spacing[0];     // X
         spacingV = spacing[1];     // Y
     }
-    //**************************
-    //
+    //*************************************************************
     //         
+    //         ↑
     //         |
     //         Y
     //       p1.
@@ -1628,6 +1628,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     //         |  center .
     //         |
     //  origin .----------- .p2  X -->
+    //************************************************************
     // 3. 获取中心点和方向向量
     double origin[3], p1[3], p2[3];
     planeWidget->GetOrigin(origin);
@@ -1688,7 +1689,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     }
     //直接转换 左下角p1[3], 右下角p2[3] 
     double showDisplayP1[3], showDisplayP2[3], showDisplayOrigin[3], showDisplayCenter[3];
-    {
+    {   //通过这4个点来计算矩形框的4个点坐标
         vtkSmartPointer<vtkCoordinate> coordinate = vtkSmartPointer<vtkCoordinate>::New();
         coordinate->SetCoordinateSystemToWorld();
         coordinate->SetValue(p1);
