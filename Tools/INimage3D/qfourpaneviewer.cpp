@@ -1520,7 +1520,7 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
 
         int xMin, xMax, yMin, yMax;
         // 中心点像素坐标（reslice 输出的中心是 [0,0]，但数据坐标范围是 [0,wPix-1], [0,hPix-1]）
-        int cx = (extent[0] + extent[1]+1) / 2, cy = (extent[2] + extent[3]+1) / 2;
+        int cx = (extent[0] + extent[1] + 1) / 2, cy = (extent[2] + extent[3] + 1) / 2;
         int orgW = extent[1], grgH = extent[3];
         if (orientation == 2)//XY
         {
@@ -1547,13 +1547,13 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
         }
         else //if(orientation == 0)//YZ
         {
-            newWidth = qRound((double)w * extent[3] / dims[2]);
-            newHeigth = qRound((double)h * extent[1] / dims[0]);
+            newWidth = qRound((double)w * extent[1] / dims[0]);
+            newHeigth = qRound((double)h * extent[3] / dims[2]);
             // VOI 提取范围：确保不越界
-            yMin = std::max(cx - newWidth / 2, extent[0]);
-            yMax = std::min(cx + newWidth / 2 - 1, orgW);
-            xMin = std::max(cy - newHeigth / 2, extent[2]);
-            xMax = std::min(cy + newHeigth / 2 - 1, grgH);
+            xMin = std::max(cx - newWidth / 2, extent[0]);
+            xMax = std::min(cx + newWidth / 2 - 1, orgW);
+            yMin = std::max(cy - newHeigth / 2, extent[2]);
+            yMax = std::min(cy + newHeigth / 2 - 1, grgH);
         }
 
         vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
