@@ -1549,13 +1549,11 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
         {
             newWidth = qRound((double)w * extent[3] / dims[2]);
             newHeigth = qRound((double)h * extent[1] / dims[0]);
-            orgW = extent[3];
-            grgH = extent[1];
             // VOI 提取范围：确保不越界
-           xMin  = std::max(cx - newWidth / 2, extent[0]);
-           xMax  = std::min(cx + newWidth / 2 - 1, orgW);
-           yMin  = std::max(cy - newHeigth / 2, extent[2]);
-           yMax  = std::min(cy + newHeigth / 2 - 1, grgH);
+            yMin = std::max(cx - newWidth / 2, extent[0]);
+            yMax = std::min(cx + newWidth / 2 - 1, orgW);
+            xMin = std::max(cy - newHeigth / 2, extent[2]);
+            xMax = std::min(cy + newHeigth / 2 - 1, grgH);
         }
 
         vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
