@@ -1630,63 +1630,14 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     //  origin .----------- .p2  X -->
     //************************************************************
     // 3. 获取中心点和方向向量
-    double origin[3], p1[3], p2[3];
+    double origin[3], p1[3], p2[3], center[3];
     planeWidget->GetOrigin(origin);
     planeWidget->GetPoint1(p1);
     planeWidget->GetPoint2(p2);
     // 获取平面中心点
-    double center[3];
-    planeWidget->GetCenter(center); // 中心仍然可用
-
-    // 计算 Right/Up 向量
-    double uVec[3], vVec[3];
-    for (int i = 0; i < 3; ++i)
-    {
-        uVec[i] = p1[i] - origin[i]; // U方向：Point1 - Origin
-        vVec[i] = p2[i] - origin[i]; // V方向：Point2 - Origin
-    }
-    vtkMath::Normalize(uVec);
-    vtkMath::Normalize(vVec);
-
-    // 4. 尺寸物理长度  计算四个角点（世界坐标）
-    double halfWidth  = (w * spacingU) / 2.0;
-    double halfHeight = (h * spacingV) / 2.0;
-    double corners[4][3]; // 左下，右下，右上，左上
-    for (int i = 0; i < 3; ++i)
-    {
-        corners[0][i] = center[i] - halfWidth * uVec[i] - halfHeight * vVec[i]; // 左下
-        corners[1][i] = center[i] + halfWidth * uVec[i] - halfHeight * vVec[i]; // 右下
-        corners[2][i] = center[i] + halfWidth * uVec[i] + halfHeight * vVec[i]; // 右上
-        corners[3][i] = center[i] - halfWidth * uVec[i] + halfHeight * vVec[i]; // 左上
-    }
+    planeWidget->GetCenter(center); // 中心仍然可用   
     ///+++++++++++++++++++++++++++
-    // 方法二：世界坐标 -> 显示坐标 -> 非主轴值设为常数 -> 再转回世界坐标
-    for (int i = 0; i < 4; ++i)
-    {
-        double display[3];
-        vtkSmartPointer<vtkCoordinate> coordinate = vtkSmartPointer<vtkCoordinate>::New();
-        coordinate->SetCoordinateSystemToWorld();
-        coordinate->SetValue(corners[i]);
-        int* disp = coordinate->GetComputedDisplayValue(renderer);
-
-        // 修改非主轴方向的屏幕坐标
-        //int axis = planeWidget->GetPlaneOrientation(); // 0=X, 1=Y, 2=Z
-        display[0] = disp[0];
-        display[1] = disp[1];
-        display[2] = 0.0; // Z值设为0，简化深度投影
-
-        // 转回世界坐标
-        renderer->SetDisplayPoint(display);
-        renderer->DisplayToWorld();
-        double* world = renderer->GetWorldPoint();
-        if (world[3] != 0.0)
-        {
-            for (int j = 0; j < 3; ++j)
-            {
-                corners[i][j] = world[j] / world[3];
-            }
-        }
-    }
+    // +++++++++++++++++++++++++方法：世界坐标 -> 显示坐标 -> 非主轴值设为常数 -> 再转回世界坐标++++++++++++++++++++++++++
     //-----------------直接转换 左下角p1[3], 右下角p2[3] 
     double showDisplayP1[3], showDisplayP2[3], showDisplayOrigin[3], showDisplayCenter[3];
     //通过这4个点来计算矩形框的4个点坐标
@@ -1717,7 +1668,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     showDisplayCenter[1] = disp[1];
     showDisplayCenter[2] = 0.0; // Z值设为0，简化深度投影
 
-
+    double corners[4][3]; // 左下，右下，右上，左上 
     //显示坐标再转回世界坐标绘制4个点
     renderer->SetDisplayPoint(showDisplayP1);
     renderer->DisplayToWorld();
