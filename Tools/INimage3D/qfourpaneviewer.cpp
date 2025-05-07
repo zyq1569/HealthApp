@@ -1500,12 +1500,13 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
 // todo .需要重新计算分辨率的比例值来裁剪图像
 // ==========================
     {    
-        int index = 0;
-        if (orientation == 1)
+        
+        int index = 0;//XY
+        if (orientation == 1)//XZ
         {
             index = 1;
         }
-        else if(orientation == 0)
+        else if(orientation == 0)//YZ
         {
             index = 2;
         }
@@ -1513,19 +1514,36 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
         vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice());
         int extent[6];
         reslice->GetOutput()->GetExtent(extent);
+        int newWidth = w, newHeigth = h;
+        int* dims = m_resliceImageViewer[2]->GetInput()->GetDimensions();
+
         // 中心点像素坐标（reslice 输出的中心是 [0,0]，但数据坐标范围是 [0,wPix-1], [0,hPix-1]）
         int cx = (extent[0] + extent[1]) / 2;
         int cy = (extent[2] + extent[3]) / 2;
-
+        if (orientation == 0)//XY
+        {
+            newWidth = qRound((double)w * extent[1] / dims[0]);
+            newHeigth = qRound((double)h * extent[3] / dims[0]);
+        }
+        if (orientation == 1)//XY
+        {
+            newWidth = qRound((double)w * extent[1] / dims[2]);
+            newHeigth = qRound((double)h * extent[3] / dims[0]);
+        }
+        else
+        {
+            newWidth = qRound((double)w * extent[1] / dims[0]);
+            newHeigth = qRound((double)h * extent[3] / dims[1]);
+        }
         // VOI 提取范围：确保不越界
-        int xMin = std::max(cx - w / 2, extent[0]);
-        int xMax = std::min(cx + w / 2 - 1, extent[1]);
-        int yMin = std::max(cy - h / 2, extent[2]);
-        int yMax = std::min(cy + h / 2 - 1, extent[3]);
+        int xMin = std::max(cx - newWidth / 2, extent[0]);
+        int xMax = std::min(cx + newWidth / 2 - 1, extent[1]);
+        int yMin = std::max(cy - newHeigth / 2, extent[2]);
+        int yMax = std::min(cy + newHeigth / 2 - 1, extent[3]);
         vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
         extract->SetInputConnection(reslice->GetOutputPort());
         extract->SetVOI(xMin, xMax, yMin, yMax, 0, 0);  // 2D 图像
-        extract->SetVOI(0, extent[1], 0, extent[3], 0, 0);  // 2D 图像
+        //extract->SetVOI(0, extent[1], 0, extent[3], 0, 0);  // 2D 图像
         extract->Update();
         // 写入 TIFF 文件
         vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
