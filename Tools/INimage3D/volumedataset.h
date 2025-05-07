@@ -19,7 +19,7 @@ signals:
     void SplitImageData(int *dims, int start, int end);
 
     void RectData(int orientation, int dx, int dy, int w, int h);
-    void SaveObliquerRectParm(int orientation, int dx, int dy, int w, int h);   
+    void ObliquerRectParm(int orientation, int dx, int dy, int w, int h);   
 public slots:
     void SaveSplitParm();
     void SaveRectParm();

@@ -61,6 +61,7 @@ public slots:
 
     void SplitImageData(int *dims, int start, int end);
     void SaveRectangleImageParm(int orientation, int dx, int dy, int w, int h);
+    void SaveObliquerRectangleImageParm(int orientation, int dx, int dy, int w, int h);
 
 signals:
     void LoadConfigFiles();

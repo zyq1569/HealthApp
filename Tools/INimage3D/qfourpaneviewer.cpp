@@ -1285,7 +1285,7 @@ void QFourpaneviewer::ShowEditorSplitImageData()
         m_volumeDataSet->SetSlicesNumber(dims, extent, extent2);
         connect(m_volumeDataSet, &VolumeDataSet::SplitImageData, this, &QFourpaneviewer::SplitImageData);
         connect(m_volumeDataSet, &VolumeDataSet::RectData, this, &QFourpaneviewer::SaveRectangleImageParm);
-        connect(m_volumeDataSet, &VolumeDataSet::RectData, this, &QFourpaneviewer::DrawRectangleObliquerPlane);
+        connect(m_volumeDataSet, &VolumeDataSet::ObliquerRectParm, this, &QFourpaneviewer::SaveObliquerRectangleImageParm);
         
     }
     m_volumeDataSet->show();
@@ -1326,7 +1326,22 @@ void QFourpaneviewer::SaveRectangleImageParm(int orientation, int dx, int dy, in
     }
     DrawRectangleAxisAlignedPlane(planeWidget, m_showImageData, renderer, w, h);
 }
-
+void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int dx, int dy, int w, int h)
+{
+    vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
+    vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
+    if (orientation == 1)//XZ
+    {
+        renderer = m_resliceImageViewer[1]->GetRenderer();
+        planeWidget = m_planeWidget[1];
+    }
+    else if (orientation == 2)//YZ
+    {
+        renderer = m_resliceImageViewer[0]->GetRenderer();
+        planeWidget = m_planeWidget[0];
+    }
+    DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h);
+}
 void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
 {
     if (!planeWidget || !renderer) return;
