@@ -1282,7 +1282,7 @@ void QFourpaneviewer::ShowEditorSplitImageData()
     if (!m_volumeDataSet)
     {
         m_volumeDataSet = new VolumeDataSet();
-        m_volumeDataSet->SetSlicesNumber(dims,extent, extent2);
+        m_volumeDataSet->SetSlicesNumber(dims, extent, extent2);
         connect(m_volumeDataSet, &VolumeDataSet::SplitImageData, this, &QFourpaneviewer::SplitImageData);
         connect(m_volumeDataSet, &VolumeDataSet::RectData, this, &QFourpaneviewer::SaveRectangleImageParm);
     }
@@ -1311,14 +1311,16 @@ void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
 void QFourpaneviewer::SaveRectangleImageParm(int orientation, int dx, int dy, int w, int h)
 {
     vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
-    vtkImagePlaneWidget* planeWidget = m_planeWidget[orientation];
+    vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
     if (orientation == 1)//XZ
     {
         renderer = m_resliceImageViewer[1]->GetRenderer();
+        planeWidget = m_planeWidget[1];
     }
     else if (orientation == 2)//YZ
     {
         renderer = m_resliceImageViewer[0]->GetRenderer();
+        planeWidget = m_planeWidget[0];
     }
     DrawRectangleOnPlane(planeWidget, m_showImageData, renderer, w, h);
 }
@@ -1387,7 +1389,7 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
     double halfWidth = (w * spacingU) / 2.0;
     double halfHeight = (h * spacingV) / 2.0;
     double corners[4][3]; // 左下，右下，右上，左上
-    for (int i = 0; i < 3; ++i) 
+    for (int i = 0; i < 3; ++i)
     {
         corners[0][i] = center[i] - halfWidth * uVec[i] - halfHeight * vVec[i]; // 左下
         corners[1][i] = center[i] + halfWidth * uVec[i] - halfHeight * vVec[i]; // 右下
@@ -1421,7 +1423,7 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
             for (int j = 0; j < 3; ++j)
             {
                 correction[j] = dot * normal[j];// 修正向量 = 法向量 × 投影分量
-            }              
+            }
             vtkMath::Subtract(corners[i], correction, corners[i]);// 投影回平面
         }
     }
@@ -1451,7 +1453,7 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
                 for (int j = 0; j < 3; ++j)
                 {
                     corners[i][j] = world[j] / world[3];
-                }                  
+                }
             }
         }
     }
@@ -1466,7 +1468,7 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
     points->InsertNextPoint(corners[0]); // 闭合矩形
 
     vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-    vtkSmartPointer<vtkIdList> ids      = vtkSmartPointer<vtkIdList>::New();
+    vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
     ids->SetNumberOfIds(5);
     for (int i = 0; i < 5; ++i)
     {
@@ -1498,18 +1500,18 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
 // 保存当前矩形图像为 TIFF:
 // todo .需要重新计算分辨率的比例值来裁剪图像
 // ==========================
-    {    
-        
-        int index = 0;//XY
-        if (orientation == 1)//XZ
-        {
-            index = 1;
-        }
-        else if(orientation == 0)//YZ
-        {
-            index = 2;
-        }
-        VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[index]->GetResliceCursorWidget()->GetRepresentation());
+    {
+
+        //int index = 2;//XY
+        //if (orientation == 1)//XZ
+        //{
+        //    index = 1;
+        //}
+        //else if (orientation == 2)//YZ
+        //{
+        //    index = 0;
+        //}
+        VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation());
         vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice());
         int extent[6];
         reslice->GetOutput()->GetExtent(extent);
@@ -1518,17 +1520,18 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
 
         int xMin, xMax, yMin, yMax;
         // 中心点像素坐标（reslice 输出的中心是 [0,0]，但数据坐标范围是 [0,wPix-1], [0,hPix-1]）
-        int cx   = (extent[0] + extent[1]) / 2, cy = (extent[2] + extent[3]) / 2;
+        int cx = (extent[0] + extent[1]+1) / 2, cy = (extent[2] + extent[3]+1) / 2;
         int orgW = extent[1], grgH = extent[3];
-        if (orientation == 0)//XY
+        if (orientation == 2)//XY
         {
             // VOI 提取范围：确保不越界
-           xMin  = std::max(cx - w / 2, extent[0]);
-           xMax  = std::min(cx + w / 2 - 1, orgW);
-           yMin  = std::max(cy - h / 2, extent[2]);
-           yMax  = std::min(cy + h / 2 - 1, grgH);
+            xMin = std::max(cx - w / 2, extent[0]);
+            xMax = std::min(cx + w / 2 - 1, orgW);
+            yMin = std::max(cy - h / 2, extent[2]);
+            yMax = std::min(cy + h / 2 - 1, grgH);
+
         }
-        if (orientation == 1)//XZ
+        else if (orientation == 1)//XZ
         {
             cy = (extent[0] + extent[1]) / 2;
             cx = (extent[2] + extent[3]) / 2;
@@ -1537,15 +1540,22 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
             orgW = extent[3];
             grgH = extent[1];
             // VOI 提取范围：确保不越界
-           yMin  = std::max(cx - newWidth / 2, extent[0]);
-           yMax  = std::min(cx + newWidth / 2 - 1, orgW);
-           xMin  = std::max(cy - newHeigth / 2, extent[2]);
-           xMax  = std::min(cy + newHeigth / 2 - 1, grgH);
+            yMin = std::max(cx - newWidth / 2, extent[0]);
+            yMax = std::min(cx + newWidth / 2 - 1, orgW);
+            xMin = std::max(cy - newHeigth / 2, extent[2]);
+            xMax = std::min(cy + newHeigth / 2 - 1, grgH);
         }
-        else
+        else //if(orientation == 0)//YZ
         {
-            newWidth = qRound((double)w * extent[1] / dims[0]);
-            newHeigth = qRound((double)h * extent[3] / dims[1]);
+            newWidth = qRound((double)w * extent[3] / dims[2]);
+            newHeigth = qRound((double)h * extent[1] / dims[0]);
+            orgW = extent[3];
+            grgH = extent[1];
+            // VOI 提取范围：确保不越界
+           xMin  = std::max(cx - newWidth / 2, extent[0]);
+           xMax  = std::min(cx + newWidth / 2 - 1, orgW);
+           yMin  = std::max(cy - newHeigth / 2, extent[2]);
+           yMax  = std::min(cy + newHeigth / 2 - 1, grgH);
         }
 
         vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
@@ -1560,21 +1570,21 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
         writer->Write();
 
     }
-// 1. 获取原始图像
-   
-    /*
-     vtkResliceImageViewer* vtkResliceViewer = m_resliceImageViewer[2];
-    if (orientation == 1)//XZ
-    {
-        vtkResliceViewer = m_resliceImageViewer[1];
-    }
-    else if (orientation == 2)//YZ
-    {
-        vtkResliceViewer = m_resliceImageViewer[0];
-    }
-    //corners[4][3]; // 左下，右下，右上，左上
-    SaveRectangleImageTIFF(vtkResliceViewer, corners[3], corners[1]);   
-    */
+    // 1. 获取原始图像
+
+        /*
+         vtkResliceImageViewer* vtkResliceViewer = m_resliceImageViewer[2];
+        if (orientation == 1)//XZ
+        {
+            vtkResliceViewer = m_resliceImageViewer[1];
+        }
+        else if (orientation == 2)//YZ
+        {
+            vtkResliceViewer = m_resliceImageViewer[0];
+        }
+        //corners[4][3]; // 左下，右下，右上，左上
+        SaveRectangleImageTIFF(vtkResliceViewer, corners[3], corners[1]);
+        */
 
 }
 void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2)
