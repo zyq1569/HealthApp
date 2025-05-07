@@ -1311,16 +1311,14 @@ void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
 void QFourpaneviewer::SaveRectangleImageParm(int orientation, int dx, int dy, int w, int h)
 {
     vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
-    vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
+    vtkImagePlaneWidget* planeWidget = m_planeWidget[orientation];
     if (orientation == 1)//XZ
     {
         renderer = m_resliceImageViewer[1]->GetRenderer();
-        planeWidget = m_planeWidget[1];
     }
     else if (orientation == 2)//YZ
     {
         renderer = m_resliceImageViewer[0]->GetRenderer();
-        planeWidget = m_planeWidget[0];
     }
     DrawRectangleOnPlane(planeWidget, m_showImageData, renderer, w, h);
 }
@@ -1491,6 +1489,7 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
 
     renderer->AddActor(actor);
     renderer->Render();
+
     g_widgetToBoxActorMap[planeWidget] = actor;
 
     //+++++++++++++++++++++++++++++++++++++++
@@ -1517,29 +1516,38 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
         int newWidth = w, newHeigth = h;
         int* dims = m_resliceImageViewer[2]->GetInput()->GetDimensions();
 
+        int xMin, xMax, yMin, yMax;
         // 中心点像素坐标（reslice 输出的中心是 [0,0]，但数据坐标范围是 [0,wPix-1], [0,hPix-1]）
-        int cx = (extent[0] + extent[1]) / 2;
-        int cy = (extent[2] + extent[3]) / 2;
+        int cx   = (extent[0] + extent[1]) / 2, cy = (extent[2] + extent[3]) / 2;
+        int orgW = extent[1], grgH = extent[3];
         if (orientation == 0)//XY
         {
-            newWidth = qRound((double)w * extent[1] / dims[0]);
-            newHeigth = qRound((double)h * extent[3] / dims[0]);
+            // VOI 提取范围：确保不越界
+           xMin  = std::max(cx - w / 2, extent[0]);
+           xMax  = std::min(cx + w / 2 - 1, orgW);
+           yMin  = std::max(cy - h / 2, extent[2]);
+           yMax  = std::min(cy + h / 2 - 1, grgH);
         }
-        if (orientation == 1)//XY
+        if (orientation == 1)//XZ
         {
-            newWidth = qRound((double)w * extent[1] / dims[2]);
-            newHeigth = qRound((double)h * extent[3] / dims[0]);
+            cy = (extent[0] + extent[1]) / 2;
+            cx = (extent[2] + extent[3]) / 2;
+            newWidth = qRound((double)w * extent[3] / dims[2]);
+            newHeigth = qRound((double)h * extent[1] / dims[0]);
+            orgW = extent[3];
+            grgH = extent[1];
+            // VOI 提取范围：确保不越界
+           yMin  = std::max(cx - newWidth / 2, extent[0]);
+           yMax  = std::min(cx + newWidth / 2 - 1, orgW);
+           xMin  = std::max(cy - newHeigth / 2, extent[2]);
+           xMax  = std::min(cy + newHeigth / 2 - 1, grgH);
         }
         else
         {
             newWidth = qRound((double)w * extent[1] / dims[0]);
             newHeigth = qRound((double)h * extent[3] / dims[1]);
         }
-        // VOI 提取范围：确保不越界
-        int xMin = std::max(cx - newWidth / 2, extent[0]);
-        int xMax = std::min(cx + newWidth / 2 - 1, extent[1]);
-        int yMin = std::max(cy - newHeigth / 2, extent[2]);
-        int yMax = std::min(cy + newHeigth / 2 - 1, extent[3]);
+
         vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
         extract->SetInputConnection(reslice->GetOutputPort());
         extract->SetVOI(xMin, xMax, yMin, yMax, 0, 0);  // 2D 图像
