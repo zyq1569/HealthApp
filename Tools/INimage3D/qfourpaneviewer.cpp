@@ -1312,32 +1312,32 @@ void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
 }
 void QFourpaneviewer::SaveRectangleImageParm(int orientation, int dx, int dy, int w, int h)
 {
-    vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
+    vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
     vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
     if (orientation == 1)//XZ
     {
-        renderer = m_resliceImageViewer[1]->GetRenderer();
+        renderer    = m_resliceImageViewer[1]->GetRenderer();
         planeWidget = m_planeWidget[1];
     }
     else if (orientation == 2)//YZ
     {
-        renderer = m_resliceImageViewer[0]->GetRenderer();
+        renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
     DrawRectangleAxisAlignedPlane(planeWidget, m_showImageData, renderer, w, h);
 }
 void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int dx, int dy, int w, int h)
 {
-    vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
+    vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
     vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
     if (orientation == 1)//XZ
     {
-        renderer = m_resliceImageViewer[1]->GetRenderer();
+        renderer    = m_resliceImageViewer[1]->GetRenderer();
         planeWidget = m_planeWidget[1];
     }
     else if (orientation == 2)//YZ
     {
-        renderer = m_resliceImageViewer[0]->GetRenderer();
+        renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
     DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h);
