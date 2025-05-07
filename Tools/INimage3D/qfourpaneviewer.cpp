@@ -1650,63 +1650,30 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         corners[3][i] = center[i] - halfWidth * uVec[i] + halfHeight * vVec[i]; // 左上
     }
     ///+++++++++++++++++++++++++++
-    bool useProjectionMethod = false;
-    if (useProjectionMethod)
+    // 方法二：世界坐标 -> 显示坐标 -> 非主轴值设为常数 -> 再转回世界坐标
+    for (int i = 0; i < 4; ++i)
     {
-        //一半切面数据无法正常显示框
-        // 方法一：投影回切片平面
-        //double normal[3];
-        double p1[3], p2[3], origin[3];
-        planeWidget->GetPoint1(p1);
-        planeWidget->GetPoint2(p2);
-        planeWidget->GetOrigin(origin);
+        double display[3];
+        vtkSmartPointer<vtkCoordinate> coordinate = vtkSmartPointer<vtkCoordinate>::New();
+        coordinate->SetCoordinateSystemToWorld();
+        coordinate->SetValue(corners[i]);
+        int* disp = coordinate->GetComputedDisplayValue(renderer);
 
-        double uVec[3], vVec[3], normal[3];
-        vtkMath::Subtract(p1, origin, uVec);
-        vtkMath::Subtract(p2, origin, vVec);
-        vtkMath::Cross(uVec, vVec, normal);
-        vtkMath::Normalize(normal);
-        //planeWidget->GetNormal(normal); // 获取当前平面的法向量
-        for (int i = 0; i < 4; ++i)
+        // 修改非主轴方向的屏幕坐标
+        int axis = planeWidget->GetPlaneOrientation(); // 0=X, 1=Y, 2=Z
+        display[0] = disp[0];
+        display[1] = disp[1];
+        display[2] = 0.0; // Z值设为0，简化深度投影
+
+        // 转回世界坐标
+        renderer->SetDisplayPoint(display);
+        renderer->DisplayToWorld();
+        double* world = renderer->GetWorldPoint();
+        if (world[3] != 0.0)
         {
-            double vec[3];
-            vtkMath::Subtract(corners[i], center, vec);// vec = corner - center
-            double dot = vtkMath::Dot(vec, normal);// 投影长度 = 向量在法向量方向上的分量
-            double correction[3];
             for (int j = 0; j < 3; ++j)
             {
-                correction[j] = dot * normal[j];// 修正向量 = 法向量 × 投影分量
-            }
-            vtkMath::Subtract(corners[i], correction, corners[i]);// 投影回平面
-        }
-    }
-    else
-    {
-        // 方法二：世界坐标 -> 显示坐标 -> 非主轴值设为常数 -> 再转回世界坐标
-        for (int i = 0; i < 4; ++i)
-        {
-            double display[3];
-            vtkSmartPointer<vtkCoordinate> coordinate = vtkSmartPointer<vtkCoordinate>::New();
-            coordinate->SetCoordinateSystemToWorld();
-            coordinate->SetValue(corners[i]);
-            int* disp = coordinate->GetComputedDisplayValue(renderer);
-
-            // 修改非主轴方向的屏幕坐标
-            int axis = planeWidget->GetPlaneOrientation(); // 0=X, 1=Y, 2=Z
-            display[0] = disp[0];
-            display[1] = disp[1];
-            display[2] = 0.0; // Z值设为0，简化深度投影
-
-            // 转回世界坐标
-            renderer->SetDisplayPoint(display);
-            renderer->DisplayToWorld();
-            double* world = renderer->GetWorldPoint();
-            if (world[3] != 0.0)
-            {
-                for (int j = 0; j < 3; ++j)
-                {
-                    corners[i][j] = world[j] / world[3];
-                }
+                corners[i][j] = world[j] / world[3];
             }
         }
     }
