@@ -86,6 +86,7 @@ public:
     void ShowImage3D();
 	void ShowEditorsWidget();
     void SaveImagePaneBMP();
+    //显示拆分体数据及设置矩形框等参数的界面
     void ShowEditorSplitImageData();
 
 	//show 3D
