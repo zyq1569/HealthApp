@@ -454,7 +454,7 @@
    <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
-   <widget class="QComboBox" name="m_cbSelectSlice_2">
+   <widget class="QComboBox" name="m_cbSelectObliquerSlice">
     <item>
      <property name="text">
       <string>XY</string>
@@ -475,7 +475,7 @@
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
-    <widget class="QSpinBox" name="m_rectW_2">
+    <widget class="QSpinBox" name="m_rectObliquerW">
      <property name="maximum">
       <number>10000</number>
      </property>
@@ -483,7 +483,7 @@
       <number>512</number>
      </property>
     </widget>
-    <widget class="QSpinBox" name="m_rectH_2">
+    <widget class="QSpinBox" name="m_rectObliquerH">
      <property name="maximum">
       <number>10000</number>
      </property>
@@ -496,12 +496,12 @@
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
-    <widget class="QSpinBox" name="m_deltaX_2">
+    <widget class="QSpinBox" name="m_deltaObliquerX">
      <property name="maximum">
       <number>10000</number>
      </property>
     </widget>
-    <widget class="QSpinBox" name="m_deltaY_2">
+    <widget class="QSpinBox" name="m_deltaObliquerY">
      <property name="maximum">
       <number>10000</number>
      </property>
@@ -534,7 +534,7 @@
     <string>应用退出</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="m_pbSaveRect_2">
+  <widget class="QPushButton" name="m_pbObliquerSaveRect">
    <property name="geometry">
     <rect>
      <x>17</x>

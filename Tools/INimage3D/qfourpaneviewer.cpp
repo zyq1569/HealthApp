@@ -1285,6 +1285,8 @@ void QFourpaneviewer::ShowEditorSplitImageData()
         m_volumeDataSet->SetSlicesNumber(dims, extent, extent2);
         connect(m_volumeDataSet, &VolumeDataSet::SplitImageData, this, &QFourpaneviewer::SplitImageData);
         connect(m_volumeDataSet, &VolumeDataSet::RectData, this, &QFourpaneviewer::SaveRectangleImageParm);
+        connect(m_volumeDataSet, &VolumeDataSet::RectData, this, &QFourpaneviewer::DrawRectangleObliquerPlane);
+        
     }
     m_volumeDataSet->show();
 }

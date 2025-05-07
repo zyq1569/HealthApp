@@ -15,6 +15,7 @@ VolumeDataSet::VolumeDataSet(QWidget *parent) : QWidget(parent), ui(new Ui::Volu
     });
     //
     connect(ui->m_pbSaveRect, &QPushButton::released, this, &VolumeDataSet::SaveRectParm);
+    connect(ui->m_pbObliquerSaveRect, &QPushButton::released, this, &VolumeDataSet::SaveObliquerRectParm);
 
 
     ui->m_topS->setMinimum(0);
@@ -72,6 +73,14 @@ void VolumeDataSet::SaveRectParm()
 
     emit RectData(orientation, deltaX, deltaY, w, h);
 }
+void VolumeDataSet::SaveObliquerRectParm()
+{
+    int orientation = ui->m_cbSelectObliquerSlice->currentIndex();
+    int deltaX = ui->m_deltaObliquerX->value(), deltaY = ui->m_deltaObliquerY->value();
+    int w = ui->m_rectObliquerW->value(), h = ui->m_rectObliquerH->value();
+    emit SaveObliquerRectParm(orientation, deltaX, deltaY, w, h);
+}
+
 void VolumeDataSet::SaveSplitParm()
 {
     int start, end, index = ui->m_cbSelect->currentIndex();
