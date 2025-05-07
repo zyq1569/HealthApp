@@ -1541,9 +1541,9 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
             grgH = extent[1];
             // VOI 提取范围：确保不越界
             yMin = std::max(cx - newWidth / 2, extent[0]);
-            yMax = std::min(cx + newWidth / 2 - 1, orgW);
+            yMax = std::min(cx + newWidth / 2, orgW);
             xMin = std::max(cy - newHeigth / 2, extent[2]);
-            xMax = std::min(cy + newHeigth / 2 - 1, grgH);
+            xMax = std::min(cy + newHeigth / 2, grgH);
         }
         else //if(orientation == 0)//YZ
         {
@@ -1551,15 +1551,14 @@ void QFourpaneviewer::DrawRectangleOnPlane(vtkImagePlaneWidget* planeWidget, vtk
             newHeigth = qRound((double)h * extent[3] / dims[2]);
             // VOI 提取范围：确保不越界
             xMin = std::max(cx - newWidth / 2, extent[0]);
-            xMax = std::min(cx + newWidth / 2 - 1, orgW);
+            xMax = std::min(cx + newWidth / 2, orgW);
             yMin = std::max(cy - newHeigth / 2, extent[2]);
-            yMax = std::min(cy + newHeigth / 2 - 1, grgH);
+            yMax = std::min(cy + newHeigth / 2, grgH);
         }
 
         vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
         extract->SetInputConnection(reslice->GetOutputPort());
-        extract->SetVOI(xMin, xMax, yMin, yMax, 0, 0);  // 2D 图像
-        //extract->SetVOI(0, extent[1], 0, extent[3], 0, 0);  // 2D 图像
+        extract->SetVOI(xMin, xMax, yMin, yMax, 0, 0);  // 2D 图像 --> All image //extract->SetVOI(0, extent[1], 0, extent[3], 0, 0); 
         extract->Update();
         // 写入 TIFF 文件
         vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
