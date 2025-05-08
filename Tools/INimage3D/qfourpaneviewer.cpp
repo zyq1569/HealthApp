@@ -1605,7 +1605,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     ///+++++++++++++++++++++++++++
     // +++++++++++++++++++++++++方法：世界坐标 -> 显示坐标 -> 非主轴值设为常数 -> 再转回世界坐标++++++++++++++++++++++++++  
         // 1. 获取平面方向（0 = YZ, 1 = XZ, 2 = XY）
-    int orientation = planeWidget->GetPlaneOrientation();
+    int orientation    = planeWidget->GetPlaneOrientation();
     VTKRCP* repOblique = VTKRCP::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation());
     vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(repOblique->GetReslice());
     reslice->SetOutputDimensionality(2);
