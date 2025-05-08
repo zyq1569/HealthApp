@@ -1709,7 +1709,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(0.0, 1.0, 0.0);
+    actor->GetProperty()->SetColor(1.0, 0.0, 0.0);
     actor->GetProperty()->SetLineWidth(2.0);
     actor->GetProperty()->SetOpacity(1);
     
@@ -1731,32 +1731,39 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     if (orientation == 2)//XY
     {
         // VOI 提取范围：确保不越界
-        xMin = std::max(cx - w / 2, extent[0]);
-        xMax = std::min(cx + w / 2, orgW);
-        yMin = std::max(cy - h / 2, extent[2]);
-        yMax = std::min(cy + h / 2, grgH);
-
+        int x = cx - w / 2 + deltaX;
+        xMin = std::max(x, extent[0]);
+        x = cx + w / 2 + deltaX;
+        xMax = std::min(x, orgW);
+        int y = cy - h / 2 + deltaY;
+        yMin = std::max(y, extent[2]);
+        y = cy + h / 2 + deltaY;
+        yMax = std::min(y, grgH);
     }
     else if (orientation == 1)//XZ
     {
-        newWidth = qRound((double)w * extent[1] / dims[0]);
-        newHeigth = qRound((double)h * extent[3] / dims[2]);
+        newWidth   = qRound((double)w * extent[1] / dims[0]);
+        newHeigth  = qRound((double)h * extent[3] / dims[2]);
+        int RatioX = qRound((double)deltaX * extent[1] / dims[0]);
+        int RatioY = qRound((double)deltaY * extent[3] / dims[2]);
         // VOI 提取范围：确保不越界
-        xMin = std::max(cx - newWidth / 2, extent[0]);
-        xMax = std::min(cx + newWidth / 2, orgW);
-        yMin = std::max(cy - newHeigth / 2, extent[2]);
-        yMax = std::min(cy + newHeigth / 2, grgH);
+        xMin = std::max(cx - newWidth / 2  + RatioX, extent[0]);
+        xMax = std::min(cx + newWidth / 2  + RatioX, orgW);
+        yMin = std::max(cy - newHeigth / 2 + RatioY, extent[2]);
+        yMax = std::min(cy + newHeigth / 2 + RatioY, grgH);
         strOrientation = "XZ_ObliquerRectangle_reslice.tiff";
     }
     else //if(orientation == 0)//YZ
     {
         newWidth = qRound((double)w * extent[1] / dims[0]);
         newHeigth = qRound((double)h * extent[3] / dims[2]);
+        int RatioX = qRound((double)deltaX * extent[1] / dims[0]);
+        int RatioY = qRound((double)deltaY * extent[3] / dims[2]);
         // VOI 提取范围：确保不越界
-        xMin = std::max(cx - newWidth / 2, extent[0]);
-        xMax = std::min(cx + newWidth / 2, orgW);
-        yMin = std::max(cy - newHeigth / 2, extent[2]);
-        yMax = std::min(cy + newHeigth / 2, grgH);
+        xMin = std::max(cx - newWidth / 2 + RatioX, extent[0]);
+        xMax = std::min(cx + newWidth / 2 + RatioX, orgW);
+        yMin = std::max(cy - newHeigth / 2 + RatioY, extent[2]);
+        yMax = std::min(cy + newHeigth / 2 + RatioY, grgH);
         strOrientation = "YZ_ObliquerRectangle_reslice.tiff";
     }
 
