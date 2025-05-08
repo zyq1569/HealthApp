@@ -1664,8 +1664,8 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     // 计算裁剪矩形宽高
     double cropWidth = fullWidth * w / dimX;
     double cropHeight = fullHeight * h / dimY;
-    double offsetX = fullWidth * deltaX;
-    double offsetY = fullHeight * deltaY;
+    double offsetX = fullWidth * deltaX / dimX;
+    double offsetY = fullHeight * deltaY / dimY;
     // 原点是左下角，因此先计算中心点
     for (int i = 0; i < 3; ++i)
     {
