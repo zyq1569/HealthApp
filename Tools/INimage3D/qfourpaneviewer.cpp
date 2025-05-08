@@ -1738,8 +1738,8 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     }
     else if (orientation == 1)//XZ
     {
-        newWidth = qRound((double)w * extent[3] / dims[2]);
-        newHeigth = qRound((double)h * extent[1] / dims[0]);
+        newWidth = qRound((double)w * extent[1] / dims[0]);
+        newHeigth = qRound((double)h * extent[3] / dims[2]);
         // VOI 提取范围：确保不越界
         xMin = std::max(cx - newWidth / 2, extent[0]);
         xMax = std::min(cx + newWidth / 2, orgW);
