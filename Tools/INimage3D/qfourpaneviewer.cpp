@@ -1648,7 +1648,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     //}
     int* dims = imageData->GetDimensions();//XYZ
     double dimX = 1.0, dimY = 1.0;
-    if (orientation == 0)// XY
+    if (orientation == 2)// XY
     { 
         dimX = dims[0];
         dimY = dims[1];
@@ -1658,7 +1658,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         dimX = dims[0];
         dimY = dims[2];
     }
-    else if (orientation == 2)// XZ
+    else if (orientation == 0)// XZ
     { 
         dimX = dims[1];
         dimY = dims[2];
@@ -1741,17 +1741,13 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         }
         else if (orientation == 1)//XZ
         {
-            cy = (extent[0] + extent[1]) / 2;
-            cx = (extent[2] + extent[3]) / 2;
             newWidth = qRound((double)w * extent[3] / dims[2]);
             newHeigth = qRound((double)h * extent[1] / dims[0]);
-            orgW = extent[3];
-            grgH = extent[1];
             // VOI 提取范围：确保不越界
-            yMin = std::max(cx - newWidth / 2, extent[0]);
-            yMax = std::min(cx + newWidth / 2, orgW);
-            xMin = std::max(cy - newHeigth / 2, extent[2]);
-            xMax = std::min(cy + newHeigth / 2, grgH);
+            xMin = std::max(cx - newWidth / 2, extent[0]);
+            xMax = std::min(cx + newWidth / 2, orgW);
+            yMin = std::max(cy - newHeigth / 2, extent[2]);
+            yMax = std::min(cy + newHeigth / 2, grgH);
             strOrientation = "XZ_ObliquerRectangle_reslice.tiff";
         }
         else //if(orientation == 0)//YZ
@@ -1775,9 +1771,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         writer->SetInputConnection(extract->GetOutputPort());
         writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
         writer->Write();
-
     }
-
 }
 void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2)
 {
