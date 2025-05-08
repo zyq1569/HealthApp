@@ -1725,12 +1725,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     // ==========================
     {
         QString strOrientation = "XY_ObliquerRectangle_reslice.tiff";
-        VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation());
-        vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice());
-        int extent[6];
-        reslice->GetOutput()->GetExtent(extent);
-        int newWidth = w, newHeigth = h;
-        
+        int newWidth = w, newHeigth = h;     
         int xMin, xMax, yMin, yMax;
         // 中心点像素坐标（reslice 输出的中心是 [0,0]，但数据坐标范围是 [0,wPix-1], [0,hPix-1]）
         int cx = (extent[0] + extent[1] + 1) / 2, cy = (extent[2] + extent[3] + 1) / 2;
