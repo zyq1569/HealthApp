@@ -1593,8 +1593,6 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         g_widgetToBoxActorMap.erase(planeWidget);
     }
     //\\\\\\\\\\\\\\\\\\\\\\\\\\
-    // 1. 获取平面方向（0 = YZ, 1 = XZ, 2 = XY）
-    int orientation = planeWidget->GetPlaneOrientation();
     //*************************************************************
     //         
     //         ↑
@@ -1608,6 +1606,8 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     //************************************************************
     ///+++++++++++++++++++++++++++
     // +++++++++++++++++++++++++方法：世界坐标 -> 显示坐标 -> 非主轴值设为常数 -> 再转回世界坐标++++++++++++++++++++++++++  
+        // 1. 获取平面方向（0 = YZ, 1 = XZ, 2 = XY）
+    int orientation = planeWidget->GetPlaneOrientation();
     VTKRCP* repOblique = VTKRCP::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation());
     vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(repOblique->GetReslice());
     reslice->SetOutputDimensionality(2);
@@ -1620,7 +1620,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         return ;
 
     // 获取世界坐标点
-    double origin[3], center[3], corners[4][3];
+    double origin[3], center[3], corners[4][3],allImageRect[4][3];
     double spacing[2];
     spacing[0] = reslice->GetOutputSpacing()[0];
     spacing[1] = reslice->GetOutputSpacing()[1];
@@ -1628,8 +1628,8 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     image->GetExtent(extent);//XY:(0,1023,0,1023,0,0)  XZ(0,1023,0,127,0,0) YZ(0,1023,0,127,0,0)
     int width  = extent[1] - extent[0] + 1;
     int height = extent[3] - extent[2] + 1;
-    double halfWidth  = spacing[0] * width;
-    double halfHeight = spacing[1] * height;
+    double fullWidth  = spacing[0] * width;
+    double fullHeight = spacing[1] * height;
 
     double xAxis[3], yAxis[3];
     for (int i = 0; i < 3; ++i)
@@ -1638,18 +1638,50 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         yAxis[i] = axesMatrix->GetElement(i, 1);
         origin[i] = axesMatrix->GetElement(i, 3);
     }
-
-    // 2D图的四个角点按顺时针（左下，右下，右上，左上）
+    // Test 2D图的四个角点按顺时针（左下，右下，右上，左上）
+    //for (int i = 0; i < 3; ++i)
+    //{
+    //    //corners[0][i] = origin[i]; // lower left
+    //    //corners[1][i] = origin[i] + halfWidth * xAxis[i]; // lower right
+    //    //corners[2][i] = origin[i] + halfWidth * xAxis[i] + halfHeight * yAxis[i]; // upper right
+    //    //corners[3][i] = origin[i] + halfHeight * yAxis[i]; // upper left
+    //}
+    int* dims = imageData->GetDimensions();//XYZ
+    double dimX = 1.0, dimY = 1.0;
+    if (orientation == 0)// XY
+    { 
+        dimX = dims[0];
+        dimY = dims[1];
+    }
+    else if (orientation == 1)// YZ
+    { 
+        dimX = dims[0];
+        dimY = dims[2];
+    }
+    else if (orientation == 2)// XZ
+    { 
+        dimX = dims[1];
+        dimY = dims[2];
+    }
+    // 计算裁剪矩形宽高
+    double cropWidth = fullWidth * w / dimX;
+    double cropHeight = fullHeight * h / dimY;
+    // 原点是左下角，因此先计算中心点
     for (int i = 0; i < 3; ++i)
     {
-        corners[0][i] = origin[i]; // lower left
-        corners[1][i] = origin[i] + halfWidth * xAxis[i]; // lower right
-        corners[2][i] = origin[i] + halfWidth * xAxis[i] + halfHeight * yAxis[i]; // upper right
-        corners[3][i] = origin[i] + halfHeight * yAxis[i]; // upper left
+        center[i] = origin[i] + 0.5 * fullWidth  * xAxis[i] + 0.5 * fullHeight * yAxis[i];
     }
-    int* dims = imageData->GetDimensions();//XYZ
-    ///++++++++++++++++++++++++++++++
-
+    // 半宽/半高
+    double hw = 0.5 * cropWidth;
+    double hh = 0.5 * cropHeight;
+    // 计算角点：左下、右下、右上、左上
+    for (int i = 0; i < 3; ++i)
+    {
+        corners[0][i] = center[i] - hw * xAxis[i] - hh * yAxis[i]; // 左下
+        corners[1][i] = center[i] + hw * xAxis[i] - hh * yAxis[i]; // 右下
+        corners[2][i] = center[i] + hw * xAxis[i] + hh * yAxis[i]; // 右上
+        corners[3][i] = center[i] - hw * xAxis[i] + hh * yAxis[i]; // 左上
+    }
     // 5. 构建点和线 绘制矩形框
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
     for (int i = 0; i < 4; ++i)
