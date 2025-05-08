@@ -359,6 +359,9 @@
     </widget>
    </widget>
    <widget class="QSpinBox" name="m_topS_4">
+    <property name="minimum">
+     <number>-90</number>
+    </property>
     <property name="maximum">
      <number>90</number>
     </property>
@@ -401,7 +404,7 @@
    </widget>
    <widget class="QLabel" name="label_12">
     <property name="text">
-     <string>偏移角度</string>
+     <string>旋转角度</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_13">
@@ -439,7 +442,7 @@
    </widget>
    <widget class="QLabel" name="label_17">
     <property name="text">
-     <string>偏移角度</string>
+     <string>旋转角度</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_18">
@@ -520,6 +523,9 @@
     </widget>
    </widget>
    <widget class="QSpinBox" name="m_topS_6">
+    <property name="minimum">
+     <number>-90</number>
+    </property>
     <property name="maximum">
      <number>90</number>
     </property>
