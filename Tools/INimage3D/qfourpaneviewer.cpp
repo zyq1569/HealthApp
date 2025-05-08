@@ -1593,13 +1593,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         g_widgetToBoxActorMap.erase(planeWidget);
     }
     //\\\\\\\\\\\\\\\\\\\\\\\\\\
-    // 1. 获取图像 spacing
-    if (!imageData)
-    {
-        std::cerr << "Error: planeWidget has no input image data." << std::endl;
-        return;
-    }
-    // 2. 获取平面方向（0 = YZ, 1 = XZ, 2 = XY）
+    // 1. 获取平面方向（0 = YZ, 1 = XZ, 2 = XY）
     int orientation = planeWidget->GetPlaneOrientation();
     //*************************************************************
     //         
@@ -1608,7 +1602,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     //         Y
     //       p1.
     //         |
-    //         |  center .
+    //         |  
     //         |
     //  origin .----------- .p2  X -->
     //************************************************************
@@ -1630,10 +1624,8 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     double spacing[2];
     spacing[0] = reslice->GetOutputSpacing()[0];
     spacing[1] = reslice->GetOutputSpacing()[1];
-
     int extent[6];
-    image->GetExtent(extent);
-
+    image->GetExtent(extent);//XY:(0,1023,0,1023,0,0)  XZ(0,1023,0,127,0,0) YZ(0,1023,0,127,0,0)
     int width  = extent[1] - extent[0] + 1;
     int height = extent[3] - extent[2] + 1;
     double halfWidth  = spacing[0] * width;
@@ -1647,7 +1639,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         origin[i] = axesMatrix->GetElement(i, 3);
     }
 
-    // 四个角点按顺时针（左下，右下，右上，左上）
+    // 2D图的四个角点按顺时针（左下，右下，右上，左上）
     for (int i = 0; i < 3; ++i)
     {
         corners[0][i] = origin[i]; // lower left
@@ -1655,6 +1647,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         corners[2][i] = origin[i] + halfWidth * xAxis[i] + halfHeight * yAxis[i]; // upper right
         corners[3][i] = origin[i] + halfHeight * yAxis[i]; // upper left
     }
+    int* dims = imageData->GetDimensions();//XYZ
     ///++++++++++++++++++++++++++++++
 
     // 5. 构建点和线 绘制矩形框
@@ -1705,7 +1698,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         int extent[6];
         reslice->GetOutput()->GetExtent(extent);
         int newWidth = w, newHeigth = h;
-        int* dims = m_resliceImageViewer[2]->GetInput()->GetDimensions();
+        
         int xMin, xMax, yMin, yMax;
         // 中心点像素坐标（reslice 输出的中心是 [0,0]，但数据坐标范围是 [0,wPix-1], [0,hPix-1]）
         int cx = (extent[0] + extent[1] + 1) / 2, cy = (extent[2] + extent[3] + 1) / 2;
