@@ -1598,26 +1598,8 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         std::cerr << "Error: planeWidget has no input image data." << std::endl;
         return;
     }
-
-    double spacing[3];
-    imageData->GetSpacing(spacing);
-
     // 2. 获取平面方向（0 = YZ, 1 = XZ, 2 = XY）
     int orientation = planeWidget->GetPlaneOrientation();
-
-    double spacingU = 1.0, spacingV = 1.0;
-    if (orientation == 0) {        // YZ plane
-        spacingU = spacing[1];     // Y
-        spacingV = spacing[2];     // Z
-    }
-    else if (orientation == 1) { // XZ plane
-        spacingU = spacing[0];     // X
-        spacingV = spacing[2];     // Z
-    }
-    else if (orientation == 2) { // XY plane
-        spacingU = spacing[0];     // X
-        spacingV = spacing[1];     // Y
-    }
     //*************************************************************
     //         
     //         ↑
@@ -1650,51 +1632,48 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     showDisplayP1[1] = disp[1];
     showDisplayP1[2] = 0.0; // Z值设为0，简化深度投影
 
-    coordinate->SetValue(p2);
-    disp = coordinate->GetComputedDisplayValue(renderer);
+    coordinate->SetValue(p2);    disp = coordinate->GetComputedDisplayValue(renderer);
     showDisplayP2[0] = disp[0];
     showDisplayP2[1] = disp[1];
     showDisplayP2[2] = 0.0; // Z值设为0，简化深度投影
 
-    coordinate->SetValue(origin);
-    disp = coordinate->GetComputedDisplayValue(renderer);
+    coordinate->SetValue(origin);    disp = coordinate->GetComputedDisplayValue(renderer);
     showDisplayOrigin[0] = disp[0];
     showDisplayOrigin[1] = disp[1];
     showDisplayOrigin[2] = 0.0; // Z值设为0，简化深度投影
 
-    coordinate->SetValue(center);
-    disp = coordinate->GetComputedDisplayValue(renderer);
+    coordinate->SetValue(center);    disp = coordinate->GetComputedDisplayValue(renderer);
     showDisplayCenter[0] = disp[0];
     showDisplayCenter[1] = disp[1];
     showDisplayCenter[2] = 0.0; // Z值设为0，简化深度投影
 
+    double displayW = showDisplayP2[0] - showDisplayP1[0], displayH = showDisplayP2[1] - showDisplayP1[1];
+
     double corners[4][3]; // 左下，右下，右上，左上 
+    corners[0][0] = showDisplayOrigin[0], corners[0][1] = showDisplayOrigin[1];
+
+    corners[1][0] = showDisplayP1[0], corners[1][1] = showDisplayP1[1];
+
+    corners[2][0] = showDisplayP2[0], corners[0][1] = showDisplayP1[1];
+ 
+    corners[3][0] = showDisplayP2[0], corners[0][1] = showDisplayP2[1];
+
     //显示坐标再转回世界坐标绘制4个点
-    renderer->SetDisplayPoint(showDisplayP1);
-    renderer->DisplayToWorld();
-    double* world = renderer->GetWorldPoint();
-    if (world[3] != 0.0)
+     // 转回世界坐标
+    for (int i = 0; i < 4; ++i)
     {
-        for (int j = 0; j < 3; ++j)
+        renderer->SetDisplayPoint(corners[i]);
+        renderer->DisplayToWorld();
+        double* world = renderer->GetWorldPoint();
+        if (world[3] != 0.0)
         {
-            showDisplayP1[j] = world[j] / world[3];
+            for (int j = 0; j < 3; ++j)
+            {
+                corners[i][j] = world[j];
+            }
         }
     }
 
-    coordinate->SetValue(p1);
-    disp = coordinate->GetComputedDisplayValue(renderer);
-
-    // 转回世界坐标
-    renderer->SetDisplayPoint(showDisplayP1);
-    renderer->DisplayToWorld();
-    world = renderer->GetWorldPoint();
-    if (world[3] != 0.0)
-    {
-        for (int j = 0; j < 3; ++j)
-        {
-            showDisplayP2[j] = world[j] / world[3];
-        }
-    }  
     ///++++++++++++++++++++++++++++++
 
     // 5. 构建点和线 绘制矩形框
