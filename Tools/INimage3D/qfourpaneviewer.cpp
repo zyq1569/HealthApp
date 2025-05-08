@@ -1340,7 +1340,7 @@ void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int dx, in
         renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
-    DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h);
+    DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy);
 }
 void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
 {
@@ -1574,11 +1574,9 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
         writer->SetInputConnection(extract->GetOutputPort());
         writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
         writer->Write();
-
     }
-
 }
-void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
+void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY)
 {
     if (!planeWidget || !renderer) return;
     // 清除旧---- actor--------
@@ -1666,10 +1664,14 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     // 计算裁剪矩形宽高
     double cropWidth = fullWidth * w / dimX;
     double cropHeight = fullHeight * h / dimY;
+    double offsetX = fullWidth * deltaX;
+    double offsetY = fullHeight * deltaY;
     // 原点是左下角，因此先计算中心点
     for (int i = 0; i < 3; ++i)
     {
-        center[i] = origin[i] + 0.5 * fullWidth  * xAxis[i] + 0.5 * fullHeight * yAxis[i];
+        center[i] = origin[i] + 0.5 * fullWidth  * xAxis[i] + 0.5 * fullHeight * yAxis[i]
+            + offsetX * xAxis[i]
+            + offsetY * yAxis[i];
     }
     // 半宽/半高
     double hw = 0.5 * cropWidth;
