@@ -350,6 +350,9 @@
      </property>
     </widget>
     <widget class="QSpinBox" name="m_deltaY">
+     <property name="minimum">
+      <number>-1000</number>
+     </property>
      <property name="maximum">
       <number>10000</number>
      </property>
@@ -383,7 +386,7 @@
    </property>
    <widget class="QLabel" name="label_9">
     <property name="text">
-     <string>切面</string>
+     <string>正切面</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_10">
@@ -421,7 +424,7 @@
    </property>
    <widget class="QLabel" name="label_14">
     <property name="text">
-     <string>切面</string>
+     <string>斜切面</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_15">
