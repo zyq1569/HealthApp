@@ -1310,7 +1310,7 @@ void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
     m_volumeMapper->SetInputData(m_showImageData);
     ui->m_image3DView->renderWindow()->Render();
 }
-void QFourpaneviewer::SaveRectangleImageParm(int orientation, int dx, int dy, int w, int h)
+void QFourpaneviewer::SaveRectangleImageParm(int orientation, int w, int h, int dx, int dy, int angle)
 {
     vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
     vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
@@ -1326,7 +1326,7 @@ void QFourpaneviewer::SaveRectangleImageParm(int orientation, int dx, int dy, in
     }
     DrawRectangleAxisAlignedPlane(planeWidget, m_showImageData, renderer, w, h);
 }
-void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int dx, int dy, int w, int h)
+void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int h, int dx, int dy, int angle)
 {
     vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
     vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
