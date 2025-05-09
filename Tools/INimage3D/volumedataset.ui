@@ -522,7 +522,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QSpinBox" name="m_topS_6">
+   <widget class="QSpinBox" name="m_angleOblique">
     <property name="minimum">
      <number>-90</number>
     </property>
