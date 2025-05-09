@@ -69,6 +69,8 @@ VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
 
+
+#define PI 3.141592653589793
 ///////////////////////////////////
 #include <ThreadWeaver/ThreadWeaver>
 //--------------
@@ -1642,50 +1644,48 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     // 半宽/半高
     double hw = 0.5 * cropWidth;
     double hh = 0.5 * cropHeight;
-    // 初始未旋转的角点（左下，右下，右上，左上）
-    std::array<std::array<double, 3>, 4> unrotatedCorners;
-    for (int i = 0; i < 3; ++i)
+    if (angle != 0)
     {
-        unrotatedCorners[0][i] = center[i] - hw * xAxis[i] - hh * yAxis[i]; // 左下
-        unrotatedCorners[1][i] = center[i] + hw * xAxis[i] - hh * yAxis[i]; // 右下
-        unrotatedCorners[2][i] = center[i] + hw * xAxis[i] + hh * yAxis[i]; // 右上
-        unrotatedCorners[3][i] = center[i] - hw * xAxis[i] + hh * yAxis[i]; // 左上
-    }
-
-    // 构建旋转变换（绕 center 点、沿平面法向量旋转）
-    double normal[3];
-    vtkMath::Cross(xAxis, yAxis, normal);
-    vtkMath::Normalize(normal);
-
-    vtkNew<vtkTransform> transform;
-    transform->PostMultiply();
-    transform->Translate(center);
-    transform->RotateWXYZ(angle, normal);
-    transform->Translate(-center[0], -center[1], -center[2]);
-
-    // 应用旋转
-    for (int i = 0; i < 4; ++i)
-    {
-        double p[3], pRotated[3];
-        for (int j = 0; j < 3; ++j)
+        // 角度转弧度
+        double angleRad = angle * PI /180.0;
+        double cosA = cos(angleRad);
+        double sinA = sin(angleRad);
+        // 定义局部坐标点：左下、右下、右上、左上
+        std::array<std::pair<double, double>, 4> localPoints = 
         {
-            p[j] = unrotatedCorners[i][j];
-        }
+            std::make_pair(-hw, -hh),
+            std::make_pair(+hw, -hh),
+            std::make_pair(+hw, +hh),
+            std::make_pair(-hw, +hh)
+        };
 
-        transform->TransformPoint(p, pRotated);
-        for (int j = 0; j < 3; ++j)
+        // 应用二维旋转矩阵
+        for (int i = 0; i < 4; ++i)
         {
-            corners[i][j] = pRotated[j];
+            double lx = localPoints[i].first;
+            double ly = localPoints[i].second;
+
+            double rx = cosA * lx - sinA * ly;
+            double ry = sinA * lx + cosA * ly;
+
+            for (int j = 0; j < 3; ++j)
+            {
+                corners[i][j] = center[j] + rx * xAxis[j] + ry * yAxis[j];
+            }
         }
     }
-    // 计算角点：左下、右下、右上、左上
-    //for (int i = 0; i < 3; ++i)
-    //{
-    //    corners[0][i] = center[i] - hw * xAxis[i] - hh * yAxis[i]; // 左下
-    //    corners[1][i] = center[i] + hw * xAxis[i] - hh * yAxis[i]; // 右下
-    //    corners[2][i] = center[i] + hw * xAxis[i] + hh * yAxis[i]; // 右上
-    //    corners[3][i] = center[i] - hw * xAxis[i] + hh * yAxis[i]; // 左上
-    //}
+    else
+    {
+        //计算角点：左下、右下、右上、左上
+        for (int i = 0; i < 3; ++i)
+        {
+            corners[0][i] = center[i] - hw * xAxis[i] - hh * yAxis[i]; // 左下
+            corners[1][i] = center[i] + hw * xAxis[i] - hh * yAxis[i]; // 右下
+            corners[2][i] = center[i] + hw * xAxis[i] + hh * yAxis[i]; // 右上
+            corners[3][i] = center[i] - hw * xAxis[i] + hh * yAxis[i]; // 左上
+        }
+    }
+
     // 5. 构建点和线 绘制矩形框
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
     for (int i = 0; i < 4; ++i)
