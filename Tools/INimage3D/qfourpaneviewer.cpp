@@ -1324,7 +1324,7 @@ void QFourpaneviewer::SaveRectangleImageParm(int orientation, int w, int h, int 
         renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
-    DrawRectangleAxisAlignedPlane(planeWidget, m_showImageData, renderer, w, h);
+    DrawRectangleAxisAlignedPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy, angle);
 }
 void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int h, int dx, int dy, int angle)
 {
@@ -1340,8 +1340,9 @@ void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int
         renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
-    DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy);
+    DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy, angle);
 }
+#include <vtkTransform.h>
 void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int angle)
 {
     if (!planeWidget || !renderer) return;
@@ -1675,14 +1676,50 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     // 半宽/半高
     double hw = 0.5 * cropWidth;
     double hh = 0.5 * cropHeight;
-    // 计算角点：左下、右下、右上、左上
+    // 初始未旋转的角点（左下，右下，右上，左上）
+    std::array<std::array<double, 3>, 4> unrotatedCorners;
     for (int i = 0; i < 3; ++i)
     {
-        corners[0][i] = center[i] - hw * xAxis[i] - hh * yAxis[i]; // 左下
-        corners[1][i] = center[i] + hw * xAxis[i] - hh * yAxis[i]; // 右下
-        corners[2][i] = center[i] + hw * xAxis[i] + hh * yAxis[i]; // 右上
-        corners[3][i] = center[i] - hw * xAxis[i] + hh * yAxis[i]; // 左上
+        unrotatedCorners[0][i] = center[i] - hw * xAxis[i] - hh * yAxis[i]; // 左下
+        unrotatedCorners[1][i] = center[i] + hw * xAxis[i] - hh * yAxis[i]; // 右下
+        unrotatedCorners[2][i] = center[i] + hw * xAxis[i] + hh * yAxis[i]; // 右上
+        unrotatedCorners[3][i] = center[i] - hw * xAxis[i] + hh * yAxis[i]; // 左上
     }
+
+    // 构建旋转变换（绕 center 点、沿平面法向量旋转）
+    double normal[3];
+    vtkMath::Cross(xAxis, yAxis, normal);
+    vtkMath::Normalize(normal);
+
+    vtkNew<vtkTransform> transform;
+    transform->PostMultiply();
+    transform->Translate(center);
+    transform->RotateWXYZ(angle, normal);
+    transform->Translate(-center[0], -center[1], -center[2]);
+
+    // 应用旋转
+    for (int i = 0; i < 4; ++i)
+    {
+        double p[3], pRotated[3];
+        for (int j = 0; j < 3; ++j)
+        {
+            p[j] = unrotatedCorners[i][j];
+        }
+
+        transform->TransformPoint(p, pRotated);
+        for (int j = 0; j < 3; ++j)
+        {
+            corners[i][j] = pRotated[j];
+        }
+    }
+    // 计算角点：左下、右下、右上、左上
+    //for (int i = 0; i < 3; ++i)
+    //{
+    //    corners[0][i] = center[i] - hw * xAxis[i] - hh * yAxis[i]; // 左下
+    //    corners[1][i] = center[i] + hw * xAxis[i] - hh * yAxis[i]; // 右下
+    //    corners[2][i] = center[i] + hw * xAxis[i] + hh * yAxis[i]; // 右上
+    //    corners[3][i] = center[i] - hw * xAxis[i] + hh * yAxis[i]; // 左上
+    //}
     // 5. 构建点和线 绘制矩形框
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
     for (int i = 0; i < 4; ++i)
