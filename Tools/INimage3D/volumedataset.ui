@@ -358,7 +358,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QSpinBox" name="m_topS_4">
+   <widget class="QSpinBox" name="m_angle">
     <property name="minimum">
      <number>-90</number>
     </property>

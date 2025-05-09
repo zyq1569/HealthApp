@@ -70,7 +70,7 @@ void VolumeDataSet::SaveRectParm()
     int orientation = ui->m_cbSelectSlice->currentIndex();
     int deltaX      = ui->m_deltaX->value(), deltaY = ui->m_deltaY->value();
     int w           = ui->m_rectW->value(), h = ui->m_rectH->value();
-    int angle       = ui->m_angleOblique->value();
+    int angle       = ui->m_angle->value();
     emit RectData(orientation, w, h, deltaX, deltaY, angle);
 }
 void VolumeDataSet::SaveObliquerRectParm()
