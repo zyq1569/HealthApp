@@ -60,7 +60,7 @@ public slots:
     void Update3DColorByCoordinate(VtkColorStyle colorValue);
 
     void SplitImageData(int *dims, int start, int end);
-    void SaveRectangleImageParm(int orientation, int dx, int h, int dy, int w, int angle = 0);
+    void SaveRectangleImageParm(int orientation, int w, int h, int dx, int dy,  int angle = 0);
     void SaveObliquerRectangleImageParm(int orientation, int w, int h, int dx, int dy, int angle = 0);
 
 signals:
