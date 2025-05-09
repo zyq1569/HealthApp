@@ -60,7 +60,7 @@ public slots:
     void Update3DColorByCoordinate(VtkColorStyle colorValue);
 
     void SplitImageData(int *dims, int start, int end);
-    void SaveRectangleImageParm(int orientation, int w, int h, int dx, int dy,  int angle = 0);
+    void SaveRectangleImageParm        (int orientation, int w, int h, int dx, int dy, int angle = 0);
     void SaveObliquerRectangleImageParm(int orientation, int w, int h, int dx, int dy, int angle = 0);
 
 signals:
@@ -93,8 +93,8 @@ public:
 	//show 3D
 
     //draw
-     void DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h);
-     void DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX = 0, double deltaY = 0);
+     void DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX = 0, double deltaY = 0, int angle=0);
+     void DrawRectangleObliquerPlane   (vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX = 0, double deltaY = 0, int angle=0);
      void SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2);
 public:
 	MainWindow *m_MainWindow;

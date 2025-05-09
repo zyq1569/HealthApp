@@ -1342,7 +1342,7 @@ void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int
     }
     DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy);
 }
-void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h)
+void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int angle)
 {
     if (!planeWidget || !renderer) return;
     // 清除旧 actor
@@ -1576,7 +1576,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
         writer->Write();
     }
 }
-void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY)
+void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int angle)
 {
     if (!planeWidget || !renderer) return;
     // 清除旧---- actor--------
