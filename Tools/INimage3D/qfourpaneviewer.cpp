@@ -1725,60 +1725,121 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     // ==========================
     // 保存当前矩形图像为 TIFF:
     // ==========================
+    //没有旋转矩形框的情况下保存
     QString strOrientation = "XY_ObliquerRectangle_reslice.tiff";
-    int newWidth = w, newHeigth = h;
-    int xMin, xMax, yMin, yMax;
-    // 中心点像素坐标（reslice 输出的中心是 [0,0]，但数据坐标范围是 [0,wPix-1], [0,hPix-1]）
-    int cx   = (extent[0] + extent[1] + 1) / 2, cy = (extent[2] + extent[3] + 1) / 2;
-    int orgW = extent[1], grgH = extent[3];
-    if (orientation == 2)//XY
-    {
-        // VOI 提取范围：确保不越界
-        int x = cx - w / 2 + deltaX;
-        xMin  = std::max(x, extent[0]);
-        x     = cx + w / 2 + deltaX;
-        xMax  = std::min(x, orgW);
-        int y = cy - h / 2 + deltaY;
-        yMin  = std::max(y, extent[2]);
-        y     = cy + h / 2 + deltaY;
-        yMax  = std::min(y, grgH);
-    }
-    else if (orientation == 1)//XZ
-    {
-        newWidth   = qRound((double)w * extent[1] / dims[0]);
-        newHeigth  = qRound((double)h * extent[3] / dims[2]);
-        int RatioX = qRound((double)deltaX * extent[1] / dims[0]);
-        int RatioY = qRound((double)deltaY * extent[3] / dims[2]);
-        // VOI 提取范围：确保不越界
-        xMin = std::max(cx - newWidth / 2  + RatioX, extent[0]);
-        xMax = std::min(cx + newWidth / 2  + RatioX, orgW);
-        yMin = std::max(cy - newHeigth / 2 + RatioY, extent[2]);
-        yMax = std::min(cy + newHeigth / 2 + RatioY, grgH);
-        strOrientation = "XZ_ObliquerRectangle_reslice.tiff";
-    }
-    else //if(orientation == 0)//YZ
-    {
-        newWidth   = qRound((double)w * extent[1] / dims[0]);
-        newHeigth  = qRound((double)h * extent[3] / dims[2]);
-        int RatioX = qRound((double)deltaX * extent[1] / dims[0]);
-        int RatioY = qRound((double)deltaY * extent[3] / dims[2]);
-        // VOI 提取范围：确保不越界
-        xMin = std::max(cx - newWidth / 2 + RatioX, extent[0]);
-        xMax = std::min(cx + newWidth / 2 + RatioX, orgW);
-        yMin = std::max(cy - newHeigth / 2 + RatioY, extent[2]);
-        yMax = std::min(cy + newHeigth / 2 + RatioY, grgH);
-        strOrientation = "YZ_ObliquerRectangle_reslice.tiff";
-    }
+    if (angle == 0)
+    {      
+        int newWidth = w, newHeigth = h;
+        int xMin, xMax, yMin, yMax;
+        // 中心点像素坐标（reslice 输出的中心是 [0,0]，但数据坐标范围是 [0,wPix-1], [0,hPix-1]）
+        int cx = (extent[0] + extent[1] + 1) / 2, cy = (extent[2] + extent[3] + 1) / 2;
+        int orgW = extent[1], grgH = extent[3];
+        if (orientation == 2)//XY
+        {
+            // VOI 提取范围：确保不越界
+            int x = cx - w / 2 + deltaX;
+            xMin = std::max(x, extent[0]);
+            x = cx + w / 2 + deltaX;
+            xMax = std::min(x, orgW);
+            int y = cy - h / 2 + deltaY;
+            yMin = std::max(y, extent[2]);
+            y = cy + h / 2 + deltaY;
+            yMax = std::min(y, grgH);
+        }
+        else if (orientation == 1)//XZ
+        {
+            newWidth = qRound((double)w * extent[1] / dims[0]);
+            newHeigth = qRound((double)h * extent[3] / dims[2]);
+            int RatioX = qRound((double)deltaX * extent[1] / dims[0]);
+            int RatioY = qRound((double)deltaY * extent[3] / dims[2]);
+            // VOI 提取范围：确保不越界
+            xMin = std::max(cx - newWidth / 2 + RatioX, extent[0]);
+            xMax = std::min(cx + newWidth / 2 + RatioX, orgW);
+            yMin = std::max(cy - newHeigth / 2 + RatioY, extent[2]);
+            yMax = std::min(cy + newHeigth / 2 + RatioY, grgH);
+            strOrientation = "XZ_ObliquerRectangle_reslice.tiff";
+        }
+        else //if(orientation == 0)//YZ
+        {
+            newWidth = qRound((double)w * extent[1] / dims[0]);
+            newHeigth = qRound((double)h * extent[3] / dims[2]);
+            int RatioX = qRound((double)deltaX * extent[1] / dims[0]);
+            int RatioY = qRound((double)deltaY * extent[3] / dims[2]);
+            // VOI 提取范围：确保不越界
+            xMin = std::max(cx - newWidth / 2 + RatioX, extent[0]);
+            xMax = std::min(cx + newWidth / 2 + RatioX, orgW);
+            yMin = std::max(cy - newHeigth / 2 + RatioY, extent[2]);
+            yMax = std::min(cy + newHeigth / 2 + RatioY, grgH);
+            strOrientation = "YZ_ObliquerRectangle_reslice.tiff";
+        }
 
-    vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
-    extract->SetInputConnection(reslice->GetOutputPort());
-    extract->SetVOI(xMin, xMax, yMin, yMax, 0, 0);  // 2D 图像 --> All image //extract->SetVOI(0, extent[1], 0, extent[3], 0, 0); 
-    extract->Update();
-    //---->写入 TIFF 文件 采样的原始数据.
-    vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
-    writer->SetInputConnection(extract->GetOutputPort());
-    writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
-    writer->Write(); 
+        vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
+        extract->SetInputConnection(reslice->GetOutputPort());
+        extract->SetVOI(xMin, xMax, yMin, yMax, 0, 0);  // 2D 图像 --> All image //extract->SetVOI(0, extent[1], 0, extent[3], 0, 0); 
+        extract->Update();
+        //---->写入 TIFF 文件 采样的原始数据.
+        vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
+        writer->SetInputConnection(extract->GetOutputPort());
+        writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
+        writer->Write();
+    }
+    else
+    {
+        if (orientation == 1)
+        {
+            strOrientation = "XZ_ObliquerRectangle_reslice.tiff";
+        }
+        else if (orientation == 0)//YZ
+        {
+            strOrientation = "YZ_ObliquerRectangle_reslice.tiff";
+        }
+
+        //1. 计算旋转矩形的中心和轴
+        //假设你提供的 4 个点是：
+        //P0 : 左下   //    P1 : 右下   //    P2 : 右上  //    P3 : 左上  
+        double P0[4], P1[4], P2[4], P3[4];
+        double center[2] = 
+        {
+            0.25 * (P0[0] + P1[0] + P2[0] + P3[0]),
+            0.25 * (P0[1] + P1[1] + P2[1] + P3[1])
+        };
+
+        double widthVec[2] = { P1[0] - P0[0], P1[1] - P0[1] };
+        double heightVec[2] = { P3[0] - P0[0], P3[1] - P0[1] };
+        double width = sqrt(widthVec[0] * widthVec[0] + widthVec[1] * widthVec[1]);
+        double height = sqrt(heightVec[0] * heightVec[0] + heightVec[1] * heightVec[1]);
+        //2. 构建旋转矩阵 vtkMatrix4x4
+
+        double angleRadians = angle * PI / 180.0;
+        double cosA = cos(angleRadians);
+        double sinA = sin(angleRadians);
+
+        double xAxis[3] = { cosA, sinA, 0 };
+        double yAxis[3] = { -sinA, cosA, 0 };
+
+        vtkSmartPointer<vtkMatrix4x4> resliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
+        for (int i = 0; i < 3; ++i) {
+            resliceAxes->SetElement(i, 0, xAxis[i]);
+            resliceAxes->SetElement(i, 1, yAxis[i]);
+            resliceAxes->SetElement(i, 2, 0); // z axis (not used)
+            resliceAxes->SetElement(i, 3, i < 2 ? center[i] : 0); // center
+        }
+        //3. vtkImageReslice
+        reslice->SetOutputDimensionality(2);
+        reslice->SetResliceAxes(resliceAxes);
+        reslice->SetInterpolationModeToLinear();
+        reslice->SetOutputSpacing(1.0, 1.0, 1.0);
+        reslice->SetOutputExtent(0, width - 1, 0, height - 1, 0, 0);
+        reslice->SetBackgroundLevel(0);
+        reslice->Update();
+
+        vtkImageData* croppedRotatedImage = reslice->GetOutput();
+        vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
+        writer->SetFileName(qPrintable(strOrientation));
+        writer->SetInputData(croppedRotatedImage);
+        writer->Write();
+    }
+    
   
 }
 void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2)
