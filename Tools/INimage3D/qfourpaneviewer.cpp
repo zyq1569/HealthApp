@@ -1793,7 +1793,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         //1. 计算旋转矩形的中心和轴
         //假设你提供的 4 个点是：
         //P0 : 左下   //    P1 : 右下   //    P2 : 右上  //    P3 : 左上  
-        double P0[4], P1[4], P2[4], P3[4];
+        double P0[4] = { 0,0 }, P1[4] = { 0, extent[1] }, P2[4] = { extent[3], extent[1] }, P3[4] = { 0, extent[3] };
         double center[2] =
         {
             0.25 * (P0[0] + P1[0] + P2[0] + P3[0]),  0.25 * (P0[1] + P1[1] + P2[1] + P3[1])
@@ -1822,11 +1822,8 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         }
         //3. vtkImageReslice
         reslice->SetOutputDimensionality(2);
-        reslice->SetResliceAxes(resliceAxes);
-        reslice->SetInterpolationModeToLinear();
-        reslice->SetOutputSpacing(1.0, 1.0, 1.0);
+        reslice->SetResliceAxes(resliceAxes);//reslice->SetInterpolationModeToCubic();
         reslice->SetOutputExtent(0, width - 1, 0, height - 1, 0, 0);
-        reslice->SetBackgroundLevel(0);
         reslice->Update();
 
         vtkImageData* croppedRotatedImage = reslice->GetOutput();
