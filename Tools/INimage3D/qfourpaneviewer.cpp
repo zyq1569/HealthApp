@@ -1787,6 +1787,9 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
         writer->Write();
 
+        //QImage image(strOrientation);
+
+
     }
     else
     {      
@@ -1819,10 +1822,13 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         // 设置 Y 轴方向（列方向）
         resliceAxes->SetElement(1, 0, sinA);
         resliceAxes->SetElement(1, 1, cosA);
+        // 设定图像中心 + dx/dy 为旋转中心
+        resliceAxes->SetElement(0, 3, centerX);
+        resliceAxes->SetElement(1, 3, centerY);
 
         // 设置旋转中心的平移
-        resliceAxes->SetElement(0, 3, centerX - (roiWidth / 2.0 * cosA - roiHeight / 2.0 * sinA));
-        resliceAxes->SetElement(1, 3, centerY - (roiWidth / 2.0 * sinA + roiHeight / 2.0 * cosA));
+        //resliceAxes->SetElement(0, 3, centerX - (roiWidth / 2.0 * cosA - roiHeight / 2.0 * sinA));
+        //resliceAxes->SetElement(1, 3, centerY - (roiWidth / 2.0 * sinA + roiHeight / 2.0 * cosA));
         // 创建图像重采样器
         vtkSmartPointer<vtkImageReslice> newreslice = vtkSmartPointer<vtkImageReslice>::New();
         newreslice->SetInputData(image);
