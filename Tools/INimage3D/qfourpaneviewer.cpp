@@ -1790,46 +1790,52 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     }
     else
     {      
-        //1. 计算旋转矩形的中心和轴
-        //假设你提供的 4 个点是：
-        //P0 : 左下   //    P1 : 右下   //    P2 : 右上  //    P3 : 左上  
-        double P0[4] = { 0,0 }, P1[4] = { 0, extent[1] }, P2[4] = { extent[3], extent[1] }, P3[4] = { 0, extent[3] };
-        double center[2] =
-        {
-            0.25 * (P0[0] + P1[0] + P2[0] + P3[0]),  0.25 * (P0[1] + P1[1] + P2[1] + P3[1])
-        };
+        int* dims      = image->GetDimensions(); // 获取图像的像素尺寸
 
-        double widthVec[2]  = { P1[0] - P0[0], P1[1] - P0[1] };
-        double heightVec[2] = { P3[0] - P0[0], P3[1] - P0[1] };
-        double width  = sqrt(widthVec[0] * widthVec[0] + widthVec[1] * widthVec[1]);
-        double height = sqrt(heightVec[0] * heightVec[0] + heightVec[1] * heightVec[1]);
-        //2. 构建旋转矩阵 vtkMatrix4x4
+        // 计算 ROI 宽高（以像素为单位）
+        int roiWidth  = newWidth; //static_cast<int>(w * dims[0]);
+        int roiHeight = newHeigth; //static_cast<int>(h * dims[1]);
 
-        double angleRadians = angle * PI / 180.0;
-        double cosA = cos(angleRadians);
-        double sinA = sin(angleRadians);
+        // 计算图像中心（像素坐标）
+        double centerX = dims[0] / 2.0;
+        double centerY = dims[1] / 2.0;
 
-        double xAxis[3] = { cosA, sinA, 0 };
-        double yAxis[3] = { -sinA, cosA, 0 };
+        // 偏移量（单位像素）
+        double dx = NewDeltaX;// deltaX * dims[0];
+        double dy = NewDeltaY;// deltaY * dims[1];
+
+        // 创建旋转变换
+        // 构建旋转矩阵
+        double cosA = cos(angleRad);
+        double sinA = sin(angleRad);
 
         vtkSmartPointer<vtkMatrix4x4> resliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
-        for (int i = 0; i < 3; ++i)
-        {
-            resliceAxes->SetElement(i, 0, xAxis[i]);
-            resliceAxes->SetElement(i, 1, yAxis[i]);
-            resliceAxes->SetElement(i, 2, 0); // z axis (not used)
-            resliceAxes->SetElement(i, 3, i < 2 ? center[i] : 0); // center
-        }
-        //3. vtkImageReslice
-        reslice->SetOutputDimensionality(2);
-        reslice->SetResliceAxes(resliceAxes);//reslice->SetInterpolationModeToCubic();
-        reslice->SetOutputExtent(0, width - 1, 0, height - 1, 0, 0);
-        reslice->Update();
+        resliceAxes->Identity();
 
-        vtkImageData* croppedRotatedImage = reslice->GetOutput();
+        // 设置 X 轴方向（行方向）
+        resliceAxes->SetElement(0, 0, cosA);
+        resliceAxes->SetElement(0, 1, -sinA);
+
+        // 设置 Y 轴方向（列方向）
+        resliceAxes->SetElement(1, 0, sinA);
+        resliceAxes->SetElement(1, 1, cosA);
+
+        // 设置旋转中心的平移
+        resliceAxes->SetElement(0, 3, centerX - (roiWidth / 2.0 * cosA - roiHeight / 2.0 * sinA));
+        resliceAxes->SetElement(1, 3, centerY - (roiWidth / 2.0 * sinA + roiHeight / 2.0 * cosA));
+        // 创建图像重采样器
+        vtkSmartPointer<vtkImageReslice> newreslice = vtkSmartPointer<vtkImageReslice>::New();
+        newreslice->SetInputData(image);
+        newreslice->SetResliceAxes(resliceAxes);
+        newreslice->SetInterpolationModeToCubic();
+        newreslice->SetOutputExtent(0, roiWidth - 1,  0, roiHeight - 1, 0, 0);  // 设置输出范围为ROI大小（像素）
+        newreslice->SetOutputOrigin(0, 0, 0);
+        newreslice->Update();
+
+        // Write TIFF
         vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
         writer->SetFileName(qPrintable(strOrientation));
-        writer->SetInputData(croppedRotatedImage);
+        writer->SetInputConnection(newreslice->GetOutputPort());
         writer->Write();
     }
     
