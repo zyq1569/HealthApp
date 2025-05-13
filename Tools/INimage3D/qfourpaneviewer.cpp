@@ -88,13 +88,6 @@ template<typename T> const T& clamp(const T& v, const T& lo, const T& hi)
     return (v < lo) ? lo : (v > hi) ? hi : v;
 }
 
-template<typename T> T clampValue(T val, T minVal, T maxVal)
-{
-    if (val < minVal) return minVal;
-    if (val > maxVal) return maxVal;
-    return val;
-}
-
 class Volume3DJob : public Job
 {
 public:
