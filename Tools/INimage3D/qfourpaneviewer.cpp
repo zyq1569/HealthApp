@@ -65,6 +65,8 @@
 #include <vtkAutoInit.h>
 #include <vtkImageCast.h>
 #include <vtkImageResliceMapper.h>
+#include <vtkImageActor.h>
+
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
@@ -1236,7 +1238,7 @@ void QFourpaneviewer::ShowImage3D()
     m_volumeProperty->SetAmbient(0.4);//环境光系数
     m_volumeProperty->SetDiffuse(0.5);//散射光系数
     m_volumeProperty->SetSpecular(0.2);//反射光系数
-    m_volumeProperty->SetSpecularPower(1.0);//高光强度
+    m_volumeProperty->SetSpecularPower(0.5);//高光强度
     //------------------------------------------------------------------
     if (m_MainWindow->m_checkOpacity)
     {
@@ -1276,7 +1278,6 @@ void QFourpaneviewer::ShowImage3D()
 }
 
 //------------------SplitImageData
-#include <vtkImageActor.h>
 void QFourpaneviewer::ShowEditorSplitImageData()
 {
     //++++++++++++++++++++
@@ -1801,6 +1802,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     }
     else
     {      
+        angleRad      = 0;
         int* dims     = image->GetDimensions(); // 获取图像的像素尺寸
 
         // 计算 ROI 宽高（以像素为单位）
@@ -1820,30 +1822,20 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         double cosA = cos(angleRad);
         double sinA = sin(angleRad);
 
-        vtkSmartPointer<vtkMatrix4x4> resliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
-        resliceAxes->Identity();
+        vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+        transform->PostMultiply();  // 注意次序
+        transform->Translate(centerX, centerY, 0);   // 平移到中心
+        transform->RotateZ(angleRad);                        // 围绕Z轴旋转
+        //transform->Translate(-center[0], -center[1], 0); // 平移回原位
 
-        // 设置 X 轴方向（行方向）
-        resliceAxes->SetElement(0, 0, cosA);
-        resliceAxes->SetElement(0, 1, -sinA);
-
-        // 设置 Y 轴方向（列方向）
-        resliceAxes->SetElement(1, 0, sinA);
-        resliceAxes->SetElement(1, 1, cosA);
-        // 设定图像中心 + dx/dy 为旋转中心
-        resliceAxes->SetElement(0, 3, centerX);
-        resliceAxes->SetElement(1, 3, centerY);
-
-        // 设置旋转中心的平移
-        //resliceAxes->SetElement(0, 3, centerX - (roiWidth / 2.0 * cosA - roiHeight / 2.0 * sinA));
-        //resliceAxes->SetElement(1, 3, centerY - (roiWidth / 2.0 * sinA + roiHeight / 2.0 * cosA));
-        // 创建图像重采样器
+        double spacing[3];
+        image->GetSpacing(spacing);
         vtkSmartPointer<vtkImageReslice> newreslice = vtkSmartPointer<vtkImageReslice>::New();
         newreslice->SetInputData(image);
-        newreslice->SetResliceAxes(resliceAxes);
+        //newreslice->SetResliceTransform(transform);
         newreslice->SetInterpolationModeToCubic();
+        newreslice->SetOutputSpacing(spacing);
         newreslice->SetOutputExtent(0, roiWidth - 1,  0, roiHeight - 1, 0, 0);  // 设置输出范围为ROI大小（像素）
-        newreslice->SetOutputOrigin(0, 0, 0);
         newreslice->Update();
 
         // Write TIFF
