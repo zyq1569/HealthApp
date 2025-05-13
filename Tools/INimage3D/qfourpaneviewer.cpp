@@ -1801,16 +1801,9 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     }
     else
     {      
-        //angleRad      = 0;
-        int* dims     = image->GetDimensions(); // 获取图像的像素尺寸
-
-        // 计算 ROI 宽高（以像素为单位）
+        // 计算 宽高（以像素为单位）
         int roiWidth  = newWidth; //static_cast<int>(w * dims[0]);
         int roiHeight = newHeigth; //static_cast<int>(h * dims[1]);
-
-        // 计算图像中心（像素坐标）
-        double centerX = dims[0] / 2.0;
-        double centerY = dims[1] / 2.0;
 
         // 偏移量（单位像素）
         double dx = NewDeltaX;// deltaX * dims[0];
@@ -1838,7 +1831,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         newreslice->SetResliceAxes(resliceAxes);
         newreslice->SetInterpolationModeToCubic();
         newreslice->SetOutputSpacing(spacing);
-        newreslice->SetOutputExtent(-roiWidth/2, roiWidth/2 - 1, -roiHeight/2 , roiHeight/2 - 1, 0, 0);  // 设置输出范围为ROI大小（像素）
+        newreslice->SetOutputExtent(-roiWidth/2 + dx, roiWidth/2 - 1 + dx, -roiHeight/2 + dy, roiHeight/2 - 1 + dy, 0, 0);  // 设置输出范围为ROI大小（像素）
         newreslice->Update();
 
         // Write TIFF
