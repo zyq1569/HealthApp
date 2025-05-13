@@ -1591,7 +1591,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     int orientation    = planeWidget->GetPlaneOrientation();
     //+++
     //旋转XYZ轴调整斜切面
-    //vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, PI);
+    //vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, angle);
     //+++
     VTKRCP* repOblique = VTKRCP::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation());
     vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(repOblique->GetReslice());

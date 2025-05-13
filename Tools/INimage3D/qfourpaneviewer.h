@@ -58,6 +58,11 @@ public:
    */
     void InOrDecrementSlice(int inc);
 
+    int GetIncrementIndex()
+    {
+        return m_IncrementIndex;
+    }
+
 protected:
     vtkResliceImageViewerP()
     {
