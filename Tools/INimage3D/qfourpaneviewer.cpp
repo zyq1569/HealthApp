@@ -1354,7 +1354,7 @@ void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int
     DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy, angle);
 }
 #include <vtkTransform.h>
-void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int angle)
+void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
 {
     if (!planeWidget || !renderer) return;
     // 清除旧 actor
@@ -1380,17 +1380,22 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
 
     // 2. 获取平面方向（0 = YZ, 1 = XZ, 2 = XY）
     int orientation = planeWidget->GetPlaneOrientation();
+    //切换对应切面到指定的偏移量的切面显示.
+    m_resliceImageViewer[orientation]->InOrDecrementSlice(inc);
 
     double spacingU = 1.0, spacingV = 1.0;
-    if (orientation == 0) {        // YZ plane
+    if (orientation == 0)
+    {        // YZ plane
         spacingU = spacing[1];     // Y
         spacingV = spacing[2];     // Z
     }
-    else if (orientation == 1) { // XZ plane
+    else if (orientation == 1)
+    { // XZ plane
         spacingU = spacing[0];     // X
         spacingV = spacing[2];     // Z
     }
-    else if (orientation == 2) { // XY plane
+    else if (orientation == 2)
+    { // XY plane
         spacingU = spacing[0];     // X
         spacingV = spacing[1];     // Y
     }
@@ -1554,7 +1559,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
     writer->Write();
 }
-void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int angle)
+void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
 {
     if (!planeWidget || !renderer) return;
     // 清除旧---- actor--------
