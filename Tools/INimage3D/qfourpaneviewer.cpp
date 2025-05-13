@@ -66,6 +66,7 @@
 #include <vtkImageCast.h>
 #include <vtkImageResliceMapper.h>
 #include <vtkImageActor.h>
+#include <vtkTransform.h>
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
@@ -1353,7 +1354,7 @@ void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int
     }
     DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy, angle);
 }
-#include <vtkTransform.h>
+
 void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
 {
     if (!planeWidget || !renderer) return;
