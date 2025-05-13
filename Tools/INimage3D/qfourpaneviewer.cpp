@@ -1818,41 +1818,15 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
 
         // 创建旋转变换
         // 构建旋转矩阵
-        double cosA = cos(angleRad);
-        double sinA = sin(angleRad);
-
-        //vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
-        //transform->PostMultiply();  // 注意次序
-        //double center[3];
-        //center[0] = (extent[0] + extent[1]) * 0.5;
-        //center[1] = (extent[2] + extent[3]) * 0.5;
-        //center[2] = (extent[4] + extent[5]) * 0.5;  // 如果是3D切片则设置z层
-        //
-        //// 坐标要转为 world 坐标（origin + spacing）
-        //double physicalCenter[3] =
-        //{
-        //    origin[0] + center[0] * spacing[0],
-        //    origin[1] + center[1] * spacing[1],
-        //    origin[2] + center[2] * spacing[2]
-        //};
-        //
-        //// 以图像中心为原点旋转
-        //transform->Translate(physicalCenter);
-        //transform->RotateZ(angleRad);
-        //transform->Translate(-physicalCenter[0], -physicalCenter[1], -physicalCenter[2]);
         vtkSmartPointer<vtkMatrix4x4> resliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
         resliceAxes->Identity();
 
         // 设置旋转角度（绕 Z 轴，单位：度 → 弧度）
-        //double angleRad = vtkMath::RadiansFromDegrees(angle);
-        double cosTheta = cos(angleRad);
-        double sinTheta = sin(angleRad);
-
         // 设置旋转部分
-        resliceAxes->SetElement(0, 0, cosTheta);
-        resliceAxes->SetElement(0, 1, -sinTheta);
-        resliceAxes->SetElement(1, 0, sinTheta);
-        resliceAxes->SetElement(1, 1, cosTheta);
+        resliceAxes->SetElement(0, 0, cosA);
+        resliceAxes->SetElement(0, 1, -sinA);
+        resliceAxes->SetElement(1, 0, sinA);
+        resliceAxes->SetElement(1, 1, cosA);
 
         // 设置中心点（采样中心对应原图坐标系中图像中心物理坐标）
         resliceAxes->SetElement(0, 3, center[0]);
@@ -1862,7 +1836,6 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         vtkSmartPointer<vtkImageReslice> newreslice = vtkSmartPointer<vtkImageReslice>::New();
         newreslice->SetInputData(image);
         newreslice->SetResliceAxes(resliceAxes);
-        //newreslice->SetResliceTransform(transform);
         newreslice->SetInterpolationModeToCubic();
         newreslice->SetOutputSpacing(spacing);
         newreslice->SetOutputExtent(-roiWidth/2, roiWidth/2 - 1, -roiHeight/2 , roiHeight/2 - 1, 0, 0);  // 设置输出范围为ROI大小（像素）
