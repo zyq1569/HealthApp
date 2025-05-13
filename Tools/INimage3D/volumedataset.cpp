@@ -71,7 +71,7 @@ void VolumeDataSet::SaveRectParm()
     int deltaX      = ui->m_deltaX->value(), deltaY = ui->m_deltaY->value();
     int w           = ui->m_rectW->value(),       h = ui->m_rectH->value();
     int angle       = ui->m_angle->value();
-    emit RectData(orientation, w, h, deltaX, deltaY, angle);
+    emit RectData(orientation, w, h, deltaX, deltaY, inc, angle);
 }
 void VolumeDataSet::SaveObliquerRectParm()
 {
