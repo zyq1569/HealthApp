@@ -1315,7 +1315,7 @@ void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
     m_volumeMapper->SetInputData(m_showImageData);
     ui->m_image3DView->renderWindow()->Render();
 }
-void QFourpaneviewer::SaveRectangleImageParm(int orientation, int w, int h, int dx, int dy, int angle)
+void QFourpaneviewer::SaveRectangleImageParm(int orientation, int w, int h, int dx, int dy, int inc, int angle)
 {
     vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
     vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
@@ -1329,9 +1329,9 @@ void QFourpaneviewer::SaveRectangleImageParm(int orientation, int w, int h, int 
         renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
-    DrawRectangleAxisAlignedPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy, angle);
+    DrawRectangleAxisAlignedPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy, inc, angle);
 }
-void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int h, int dx, int dy, int angle)
+void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int h, int dx, int dy, int inc, int angle)
 {
     vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
     vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
@@ -1345,7 +1345,7 @@ void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int
         renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
-    DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy, angle);
+    DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy, inc, angle);
 }
 
 void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
@@ -1798,14 +1798,10 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         writer->SetInputConnection(extract->GetOutputPort());
         writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
         writer->Write();
-
-        //QImage image(strOrientation);
-
-
     }
     else
     {      
-        angleRad      = 0;
+        //angleRad      = 0;
         int* dims     = image->GetDimensions(); // 获取图像的像素尺寸
 
         // 计算 ROI 宽高（以像素为单位）
@@ -1825,20 +1821,51 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         double cosA = cos(angleRad);
         double sinA = sin(angleRad);
 
-        vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
-        transform->PostMultiply();  // 注意次序
-        transform->Translate(centerX, centerY, 0);   // 平移到中心
-        transform->RotateZ(angleRad);                        // 围绕Z轴旋转
-        //transform->Translate(-center[0], -center[1], 0); // 平移回原位
+        //vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
+        //transform->PostMultiply();  // 注意次序
+        //double center[3];
+        //center[0] = (extent[0] + extent[1]) * 0.5;
+        //center[1] = (extent[2] + extent[3]) * 0.5;
+        //center[2] = (extent[4] + extent[5]) * 0.5;  // 如果是3D切片则设置z层
+        //
+        //// 坐标要转为 world 坐标（origin + spacing）
+        //double physicalCenter[3] =
+        //{
+        //    origin[0] + center[0] * spacing[0],
+        //    origin[1] + center[1] * spacing[1],
+        //    origin[2] + center[2] * spacing[2]
+        //};
+        //
+        //// 以图像中心为原点旋转
+        //transform->Translate(physicalCenter);
+        //transform->RotateZ(angleRad);
+        //transform->Translate(-physicalCenter[0], -physicalCenter[1], -physicalCenter[2]);
+        vtkSmartPointer<vtkMatrix4x4> resliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
+        resliceAxes->Identity();
 
-        double spacing[3];
-        image->GetSpacing(spacing);
+        // 设置旋转角度（绕 Z 轴，单位：度 → 弧度）
+        //double angleRad = vtkMath::RadiansFromDegrees(angle);
+        double cosTheta = cos(angleRad);
+        double sinTheta = sin(angleRad);
+
+        // 设置旋转部分
+        resliceAxes->SetElement(0, 0, cosTheta);
+        resliceAxes->SetElement(0, 1, -sinTheta);
+        resliceAxes->SetElement(1, 0, sinTheta);
+        resliceAxes->SetElement(1, 1, cosTheta);
+
+        // 设置中心点（采样中心对应原图坐标系中图像中心物理坐标）
+        resliceAxes->SetElement(0, 3, center[0]);
+        resliceAxes->SetElement(1, 3, center[1]);
+        resliceAxes->SetElement(2, 3, center[2]);  // 通常 z 不变
+
         vtkSmartPointer<vtkImageReslice> newreslice = vtkSmartPointer<vtkImageReslice>::New();
         newreslice->SetInputData(image);
+        newreslice->SetResliceAxes(resliceAxes);
         //newreslice->SetResliceTransform(transform);
         newreslice->SetInterpolationModeToCubic();
         newreslice->SetOutputSpacing(spacing);
-        newreslice->SetOutputExtent(0, roiWidth - 1,  0, roiHeight - 1, 0, 0);  // 设置输出范围为ROI大小（像素）
+        newreslice->SetOutputExtent(-roiWidth/2, roiWidth/2 - 1, -roiHeight/2 , roiHeight/2 - 1, 0, 0);  // 设置输出范围为ROI大小（像素）
         newreslice->Update();
 
         // Write TIFF
