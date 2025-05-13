@@ -71,6 +71,7 @@ void VolumeDataSet::SaveRectParm()
     int deltaX      = ui->m_deltaX->value(), deltaY = ui->m_deltaY->value();
     int w           = ui->m_rectW->value(),       h = ui->m_rectH->value();
     int angle       = ui->m_angle->value();
+    int inc         = ui->m_incrementIndex->value();
     emit RectData(orientation, w, h, deltaX, deltaY, inc, angle);
 }
 void VolumeDataSet::SaveObliquerRectParm()
@@ -79,7 +80,8 @@ void VolumeDataSet::SaveObliquerRectParm()
     int deltaX      = ui->m_deltaObliquerX->value(), deltaY = ui->m_deltaObliquerY->value();
     int w           = ui->m_rectObliquerW->value(),       h = ui->m_rectObliquerH->value();
     int angle       = ui->m_angleOblique->value();
-    emit ObliquerRectParm(orientation, w, h, deltaX, deltaY, angle);
+    int inc         = ui->m_incrementIndexObliquer->value(); 
+    emit ObliquerRectParm(orientation, w, h, deltaX, deltaY, inc, angle);
 }
 
 void VolumeDataSet::SaveSplitParm()

@@ -530,7 +530,7 @@
      <number>90</number>
     </property>
    </widget>
-   <widget class="QSpinBox" name="m_topS_7">
+   <widget class="QSpinBox" name="m_incrementIndexObliquer">
     <property name="minimum">
      <number>-1000</number>
     </property>

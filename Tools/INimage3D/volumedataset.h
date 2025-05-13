@@ -18,8 +18,8 @@ public:
 signals:
     void SplitImageData(int *dims, int start, int end);
 
-    void RectData(int orientation, int w, int h, int dx, int dy, int inc = 0,int angle = 0);
-    void ObliquerRectParm(int orientation, int w, int h, int dx, int dy, int angle = 0);
+    void RectData        (int orientation, int w, int h, int dx, int dy, int inc = 0, int angle = 0);
+    void ObliquerRectParm(int orientation, int w, int h, int dx, int dy, int inc = 0, int angle = 0);
 public slots:
     void SaveSplitParm();
     void SaveRectParm();
