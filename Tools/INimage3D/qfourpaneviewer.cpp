@@ -613,6 +613,14 @@ private:
     bool m_bSaveRectImage;
 };
 
+
+///+++class vtkResliceImageViewerP++++++++++++
+vtkStandardNewMacro(vtkResliceImageViewerP);
+void vtkResliceImageViewerP::InOrDecrementSlice(int inc)
+{
+    m_IncrementIndex += inc;
+    IncrementSlice(inc);
+}
 //--------------
 
 QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent), ui(new Ui::QFourpaneviewer)
@@ -1097,8 +1105,8 @@ void QFourpaneviewer::ShowImagePlane()
 
     for (int i = 0; i < 3; i++)
     {
-        m_resliceImageViewer[i] = vtkResliceImageViewer::New();
-        m_renderWindow[i] = vtkGenericOpenGLRenderWindow::New(); //vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
+        m_resliceImageViewer[i] = vtkResliceImageViewerP::New();
+        m_renderWindow[i]       = vtkGenericOpenGLRenderWindow::New(); //vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
         m_resliceImageViewer[i]->SetRenderWindow(m_renderWindow[i]);
 
         m_cornerAts[i] = vtkCornerAnnotation::New();
@@ -1793,7 +1801,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     }
     else
     {      
-        int* dims      = image->GetDimensions(); // 获取图像的像素尺寸
+        int* dims     = image->GetDimensions(); // 获取图像的像素尺寸
 
         // 计算 ROI 宽高（以像素为单位）
         int roiWidth  = newWidth; //static_cast<int>(w * dims[0]);
@@ -1843,9 +1851,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         writer->SetFileName(qPrintable(strOrientation));
         writer->SetInputConnection(newreslice->GetOutputPort());
         writer->Write();
-    }
-    
-  
+    } 
 }
 void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2)
 {
