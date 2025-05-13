@@ -1801,21 +1801,19 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     }
     else
     {      
-        // 计算 宽高（以像素为单位）
-        int roiWidth  = newWidth; //static_cast<int>(w * dims[0]);
-        int roiHeight = newHeigth; //static_cast<int>(h * dims[1]);
+        // 宽高（以像素为单位）
+        int roiWidth  = newWidth; 
+        int roiHeight = newHeigth;
 
-        // 偏移量（单位像素）
-        double dx = NewDeltaX;// deltaX * dims[0];
-        double dy = NewDeltaY;// deltaY * dims[1];
+        // 偏移量单位像素）
+        double dx = NewDeltaX;
+        double dy = NewDeltaY;
 
-        // 创建旋转变换
         // 构建旋转矩阵
         vtkSmartPointer<vtkMatrix4x4> resliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
         resliceAxes->Identity();
 
         // 设置旋转角度（绕 Z 轴，单位：度 → 弧度）
-        // 设置旋转部分
         resliceAxes->SetElement(0, 0, cosA);
         resliceAxes->SetElement(0, 1, -sinA);
         resliceAxes->SetElement(1, 0, sinA);
