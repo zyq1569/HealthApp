@@ -1295,8 +1295,7 @@ void QFourpaneviewer::ShowEditorSplitImageData()
 }
 void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
 {
-    // 1. 提取 VOI：只取 Z=30~40 层
-        //int* dims = m_MainWindow->m_vtkImageData->GetDimensions();   
+    // 1. 提取 VOI：只取 Z=30~40 层 //int* dims = m_MainWindow->m_vtkImageData->GetDimensions();   
     m_extractVOI->SetInputData(m_MainWindow->m_vtkImageData);
     m_extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, start, end);  // x, y, z 范围
     m_extractVOI->Update();
@@ -1624,7 +1623,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     //    //corners[2][i] = origin[i] + halfWidth * xAxis[i] + halfHeight * yAxis[i]; // upper right
     //    //corners[3][i] = origin[i] + halfHeight * yAxis[i]; // upper left
     //}
-    int* dims = m_showImageData->GetDimensions();//XYZ
+    int* dims   = m_showImageData->GetDimensions();//XYZ
     double dimX = 1.0, dimY = 1.0;
     if (orientation == 2)// XY
     { 
@@ -1807,7 +1806,11 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         // 偏移量单位像素）
         double dx = NewDeltaX;
         double dy = NewDeltaY;
-
+        bool deltaXY = true;
+        if (dx == 0 && dy == 0)
+        {
+            deltaXY = false;
+        }
         // 构建旋转矩阵
         vtkSmartPointer<vtkMatrix4x4> resliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
         resliceAxes->Identity();
@@ -1817,24 +1820,36 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         resliceAxes->SetElement(0, 1, -sinA);
         resliceAxes->SetElement(1, 0, sinA);
         resliceAxes->SetElement(1, 1, cosA);
-
-        // 设置中心点（采样中心对应原图坐标系中图像中心物理坐标）
-        resliceAxes->SetElement(0, 3, center[0]);
-        resliceAxes->SetElement(1, 3, center[1]);
-        resliceAxes->SetElement(2, 3, center[2]);  // 通常 z 不变
-
         vtkSmartPointer<vtkImageReslice> newreslice = vtkSmartPointer<vtkImageReslice>::New();
         newreslice->SetInputData(image);
         newreslice->SetResliceAxes(resliceAxes);
         newreslice->SetInterpolationModeToCubic();
-        newreslice->SetOutputExtent(-roiWidth/2 + dx, roiWidth/2 - 1 + dx, -roiHeight/2 + dy, roiHeight/2 - 1 + dy, 0, 0);  // 设置输出范围为ROI大小（像素）
+        if (!deltaXY)
+        {
+             newreslice->SetOutputExtent(-roiWidth / 2 , roiWidth / 2 - 1 , -roiHeight / 2 , roiHeight / 2 - 1 , 0, 0);//设置输出范围为
+        }
         newreslice->Update();
 
-        // Write TIFF
-        vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
-        writer->SetFileName(qPrintable(strOrientation));
-        writer->SetInputConnection(newreslice->GetOutputPort());
-        writer->Write();
+        if (deltaXY)
+        {
+            vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
+            extract->SetInputConnection(newreslice->GetOutputPort());
+            extract->SetVOI(xMin, xMax, yMin, yMax, 0, 0);  // 2D 图像 --> All image //extract->SetVOI(0, extent[1], 0, extent[3], 0, 0); 
+            extract->Update();
+            //---->写入 TIFF 文件 采样的原始数据.
+            vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
+            writer->SetInputConnection(extract->GetOutputPort());
+            writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
+            writer->Write();
+        }
+        else
+        {
+            // Write TIFF
+            vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
+            writer->SetFileName(qPrintable(strOrientation));
+            writer->SetInputConnection(newreslice->GetOutputPort());
+            writer->Write();
+        }
     } 
 }
 void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2)
