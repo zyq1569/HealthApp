@@ -64,9 +64,7 @@
 
 #include <vtkAutoInit.h>
 #include <vtkImageCast.h>
-#include <vtkImageResliceMapper.h>
 #include <vtkImageActor.h>
-#include <vtkTransform.h>
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
@@ -1271,7 +1269,7 @@ void QFourpaneviewer::ShowImage3D()
     ui->m_image3DView->renderWindow()->AddRenderer(m_renderer);
 }
 
-//------------------SplitImageData
+//------------------+++++++++++SplitImageData---------------------------------------------------------------------------
 void QFourpaneviewer::ShowEditorSplitImageData()
 {
     //++++++++++++++++++++
@@ -1303,7 +1301,7 @@ void QFourpaneviewer::SplitImageData(int *dims, int start, int end)
     m_extractVOI->SetVOI(0, dims[0] - 1, 0, dims[1] - 1, start, end);  // x, y, z 范围
     m_extractVOI->Update();
     m_showImageData = m_extractVOI->GetOutput();
-    m_vtkAlgorithm = m_extractVOI->GetOutputPort();
+    m_vtkAlgorithm  = m_extractVOI->GetOutputPort();
 
     for (int i = 0; i < 3; i++)
     {
@@ -1329,7 +1327,7 @@ void QFourpaneviewer::SaveRectangleImageParm(int orientation, int w, int h, int 
         renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
-    DrawRectangleAxisAlignedPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy, inc, angle);
+    DrawRectangleAxisAlignedPlane(planeWidget, renderer, w, h, dx, dy, inc, angle);
 }
 void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int h, int dx, int dy, int inc, int angle)
 {
@@ -1345,10 +1343,10 @@ void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int
         renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
-    DrawRectangleObliquerPlane(planeWidget, m_showImageData, renderer, w, h, dx, dy, inc, angle);
+    DrawRectangleObliquerPlane(planeWidget, renderer, w, h, dx, dy, inc, angle);
 }
 
-void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
+void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
 {
     if (!planeWidget || !renderer) return;
     // 清除旧 actor
@@ -1362,6 +1360,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
         }
         g_widgetToBoxActorMap.erase(planeWidget);
     }
+    vtkImageData* imageData = m_showImageData;
     // 1. 获取图像 spacing
     if (!imageData)
     {
@@ -1553,7 +1552,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
     writer->Write();
 }
-void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkImageData* imageData, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
+void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
 {
     if (!planeWidget || !renderer) return;
     // 清除旧---- actor--------
@@ -1625,7 +1624,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     //    //corners[2][i] = origin[i] + halfWidth * xAxis[i] + halfHeight * yAxis[i]; // upper right
     //    //corners[3][i] = origin[i] + halfHeight * yAxis[i]; // upper left
     //}
-    int* dims = imageData->GetDimensions();//XYZ
+    int* dims = m_showImageData->GetDimensions();//XYZ
     double dimX = 1.0, dimY = 1.0;
     if (orientation == 2)// XY
     { 
@@ -1828,7 +1827,6 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         newreslice->SetInputData(image);
         newreslice->SetResliceAxes(resliceAxes);
         newreslice->SetInterpolationModeToCubic();
-        newreslice->SetOutputSpacing(spacing);
         newreslice->SetOutputExtent(-roiWidth/2 + dx, roiWidth/2 - 1 + dx, -roiHeight/2 + dy, roiHeight/2 - 1 + dy, 0, 0);  // 设置输出范围为ROI大小（像素）
         newreslice->Update();
 
