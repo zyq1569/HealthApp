@@ -1832,9 +1832,16 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
 
         if (deltaXY)
         {
+            // 图像中心 + 偏移
+            int centerX = (extent[0] + extent[1]) / 2 + dx;
+            int centerY = (extent[2] + extent[3]) / 2 + dy;
+
+            int halfWidth  = newWidth / 2;
+            int halfHeight = newHeigth / 2;
             vtkSmartPointer<vtkExtractVOI> extract = vtkSmartPointer<vtkExtractVOI>::New();
             extract->SetInputConnection(newreslice->GetOutputPort());
-            extract->SetVOI(xMin, xMax, yMin, yMax, 0, 0);  // 2D 图像 --> All image //extract->SetVOI(0, extent[1], 0, extent[3], 0, 0); 
+            extract->SetVOI(centerX - halfWidth, centerX + halfWidth - 1,
+                centerY - halfHeight, centerY + halfHeight - 1, 0, 0);  // 2D 图像 --> All image //extract->SetVOI(0, extent[1], 0, extent[3], 0, 0); 
             extract->Update();
             //---->写入 TIFF 文件 采样的原始数据.
             vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
