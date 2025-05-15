@@ -1809,35 +1809,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         writer->Write();
     }
     else
-    {   /*
-             // 偏移量单位像素）
-            double dx = NewDeltaX;
-            double dy = NewDeltaY;
-
-
-            // 构建旋转矩阵
-            vtkSmartPointer<vtkMatrix4x4> resliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
-            resliceAxes->Identity();
-
-            // 设置旋转角度（绕 Z 轴，单位：度 → 弧度）
-            resliceAxes->SetElement(0, 0, cosA);
-            resliceAxes->SetElement(0, 1, sinA);
-            resliceAxes->SetElement(1, 0,-sinA);
-            resliceAxes->SetElement(1, 1, cosA);
-            resliceAxes->SetElement(2, 2, 1.0);
-            vtkSmartPointer<vtkImageReslice> newreslice = vtkSmartPointer<vtkImageReslice>::New();
-            newreslice->SetInputData(image);
-            newreslice->SetResliceAxes(resliceAxes);
-            newreslice->SetOutputSpacing(spacing);
-            newreslice->SetInterpolationModeToCubic();
-            newreslice->SetOutputExtent(-w / 2 , w / 2 - 1 , -h / 2 , h / 2 - 1 , 0, 0);//设置输出范围为
-            newreslice->Update();
-            // Write TIFF
-            vtkSmartPointer<vtkTIFFWriter> writer = vtkSmartPointer<vtkTIFFWriter>::New();
-            writer->SetFileName(qPrintable(strOrientation));
-            writer->SetInputConnection(newreslice->GetOutputPort());
-            writer->Write();       
-        */
+    {   
         // 获取原图像的 extent 和 spacing
         int extent[6];
         double spacing[3];
