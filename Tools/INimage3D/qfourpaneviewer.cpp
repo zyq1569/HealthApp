@@ -1774,12 +1774,56 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     //旋转XYZ轴调整斜切面
     // vtkResliceCursorLineRepresentation 头文件增加函数 void UserRotateAxis(int axis, double angle) {        RotateAxis(axis, angle);    };
     //=================
-    //  2(1->0 2->1)  |    1 (1->0 2->2)
-    //  0(1->0 2->2)  |   3D
+    //  XY:2(1->0 2->1)  |    XZ:1 (1->0 2->2)
+    //  YZ:0(1->1 2->2)  |    3D
     //-------------
-    vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[1]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(axisXYZ, axisAngle * PI / 180.0);
+    int rotateIndex = 1;
+    int xyzIndex = 0;
+    if (axisAngle != 0)
+    {
+        if (orientation == 2)//XY 
+        {
+            rotateIndex = 2;
+            if (axisXYZ == 0)
+            {
+                xyzIndex = 1; //XZ              
+            }
+            else
+            {
+                xyzIndex = 0; //YZ
+            }
+        }
+        else if(orientation == 1)//XZ
+        {
+            if (axisXYZ == 0)
+            {
+                rotateIndex = 1;
+                xyzIndex    = 0; //YZ
+            }
+            else
+            {
+                rotateIndex = 2;
+                xyzIndex    = 2; //XY
+            }
+        }
+        else  if (orientation == 0)//YZ
+        {
+            rotateIndex = 1;
+            if (axisXYZ == 0)
+            {               
+                xyzIndex    = 2; //XY
+            }
+            else
+            {
+                xyzIndex    = 1; //XZ
+            }
+        }
+
+        vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[xyzIndex]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(rotateIndex, axisAngle * PI / 180.0);
+    }
     
-    //+++
+    
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     VTKRCP* repOblique = VTKRCP::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation());
     vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(repOblique->GetReslice());
     reslice->SetOutputDimensionality(2);
