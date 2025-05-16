@@ -1423,7 +1423,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     // 4. 尺寸物理长度  计算四个角点（世界坐标）
     double halfWidth  = (rectangleW * spacingU) / 2.0;
     double halfHeight = (rectangleH * spacingV) / 2.0;
-    double fulldeltaX = -rectangleDeltaX *spacingU;
+    double fulldeltaX = -rectangleDeltaX*spacingU;
     double fulldeltaY = -rectangleDeltaY*spacingV;
     double corners[4][3]; // 左下，右下，右上，左上
     for (int i = 0; i < 3; ++i)
@@ -1550,10 +1550,10 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
 
     g_widgetToBoxActorMap[planeWidget] = actor;
 
-    //+++++++++++++++++++++++++++++++++++++++
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // ==========================
-    // 先只考虑非斜切面的情况.斜切面另外函数实现
-    // 保存当前矩形图像为 TIFF:
+    // 切面矩形框内图像实现
+    // 保存当前矩形图像为 TIFF(原始数据)，其它格式参考SaveImagePaneBMP
     // ==========================
     QString strOrientation = "XY_Rectangle_reslice.tiff";
     /*
@@ -1621,7 +1621,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     int newWidth = w, newHeigth = h;
     int xMin, xMax, yMin, yMax;
     // 中心点像素坐标（reslice 输出的中心是 [0,0]，但数据坐标范围是 [0,wPix-1], [0,hPix-1]）
-    int cx = (extent[0] + extent[1] + 1) / 2, cy = (extent[2] + extent[3] + 1) / 2;
+    int cx   = (extent[0] + extent[1] + 1) / 2, cy = (extent[2] + extent[3] + 1) / 2;
     int orgW = extent[1], grgH = extent[3];
     int NewDeltaX, NewDeltaY;
     if (orientation == 2)//XY
