@@ -82,7 +82,7 @@ void VolumeDataSet::SaveObliquerRectParm()
     int angle       = ui->m_angleOblique->value();
     int inc         = ui->m_incrementIndexObliquer->value(); 
     int axisXYZ     = ui->m_axesXYZ->currentIndex();
-    int axisAngle   = ui->m_axesAngle;
+    int axisAngle   = ui->m_axesAngle->value();
     emit ObliquerRectParm(orientation, w, h, deltaX, deltaY, inc, angle, axisXYZ, axisAngle);
 }
 
