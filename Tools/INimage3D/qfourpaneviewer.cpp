@@ -1352,7 +1352,6 @@ void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int
     }
     DrawRectangleObliquerPlane(planeWidget, renderer, w, h, dx, dy, inc, angle);
 }
-
 void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
 {
     if (!planeWidget || !renderer) return;
@@ -1420,7 +1419,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     vtkMath::Normalize(vVec);
 
     // 4. 尺寸物理长度  计算四个角点（世界坐标）
-    double halfWidth = (w * spacingU) / 2.0;
+    double halfWidth  = (w * spacingU) / 2.0;
     double halfHeight = (h * spacingV) / 2.0;
     double corners[4][3]; // 左下，右下，右上，左上
     for (int i = 0; i < 3; ++i)
@@ -1441,7 +1440,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
         int* disp = coordinate->GetComputedDisplayValue(renderer);
 
         // 修改非主轴方向的屏幕坐标
-        int axis = planeWidget->GetPlaneOrientation(); // 0=X, 1=Y, 2=Z
+        int axis   = planeWidget->GetPlaneOrientation(); // 0=X, 1=Y, 2=Z
         display[0] = disp[0];
         display[1] = disp[1];
         display[2] = 0.0; // Z值设为0，简化深度投影
@@ -1470,7 +1469,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     points->InsertNextPoint(corners[0]); // 闭合矩形
 
     vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-    vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
+    vtkSmartPointer<vtkIdList> ids      = vtkSmartPointer<vtkIdList>::New();
     ids->SetNumberOfIds(5);
     for (int i = 0; i < 5; ++i)
     {
@@ -1508,10 +1507,10 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     int extent[6];
     reslice->GetOutput()->GetExtent(extent);
     int newWidth = w, newHeigth = h;
-    int* dims = m_resliceImageViewer[2]->GetInput()->GetDimensions();
+    int* dims    = m_resliceImageViewer[2]->GetInput()->GetDimensions();
     int xMin, xMax, yMin, yMax;
     // 中心点像素坐标（reslice 输出的中心是 [0,0]，但数据坐标范围是 [0,wPix-1], [0,hPix-1]）
-    int cx = (extent[0] + extent[1] + 1) / 2, cy = (extent[2] + extent[3] + 1) / 2;
+    int cx   = (extent[0] + extent[1] + 1) / 2, cy = (extent[2] + extent[3] + 1) / 2;
     int orgW = extent[1], grgH = extent[3];
     if (orientation == 2)//XY
     {
@@ -1559,7 +1558,6 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
     writer->Write();
 }
-
 void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
 {
     if (!planeWidget || !renderer) return;
