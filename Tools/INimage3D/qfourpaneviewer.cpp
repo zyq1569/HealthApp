@@ -1774,7 +1774,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     //旋转XYZ轴调整斜切面
     // vtkResliceCursorLineRepresentation 头文件增加函数 void UserRotateAxis(int axis, double angle) {        RotateAxis(axis, angle);    };
     //=================
-    //  XY:2(1->0 2->1)  |    XZ:1 (1->0 2->2)
+    //  XY:2(1->0 2->1)  |    XZ:1 (0->0 1->当前整个图像双轴 2->error)
     //  YZ:0(1->1 2->2)  |    3D
     //-------------
     int rotateIndex = 1;
@@ -1782,15 +1782,16 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     if (axisAngle != 0)
     {
         if (orientation == 2)//XY 
-        {
-            rotateIndex = 2;
+        {            
             if (axisXYZ == 0)
             {
-                xyzIndex = 1; //XZ              
+                rotateIndex = 3; // XZ  如果选择1是旋转的是全部图像
+                xyzIndex    = 1; //XZ              
             }
             else
             {
-                xyzIndex = 0; //YZ
+                rotateIndex = 1;
+                xyzIndex    = 0; //YZ       如果选择0是旋转的是全部图像 
             }
         }
         else if(orientation == 1)//XZ
@@ -1818,8 +1819,8 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
                 xyzIndex    = 1; //XZ
             }
         }
-
-        vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[xyzIndex]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(rotateIndex, axisAngle * PI / 180.0);
+        //0-2 (corresponding *to the X, Y and Z axes.
+        //vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[xyzIndex]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(rotateIndex, axisAngle * PI / 180.0);
     }
     
     
