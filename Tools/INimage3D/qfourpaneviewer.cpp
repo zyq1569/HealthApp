@@ -1719,20 +1719,20 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
         resliceAxes->SetElement(2, 3, roiCenterWorld[2]);
 
         // 设置 reslice 以旋转+提取固定大小图像
-        vtkNew<vtkImageReslice> reslice;
-        reslice->SetInputData(inputImage);
-        reslice->SetResliceAxes(resliceAxes);
-        reslice->SetOutputDimensionality(2);
-        reslice->SetInterpolationModeToLinear();
-        reslice->SetOutputSpacing(spacing); // 保持原 spacing
-        reslice->SetOutputOrigin(0, 0, 0);
-        reslice->SetOutputExtent(-w / 2, w / 2 - 1, -h / 2, h / 2 - 1, 0, 0); // 控制输出大小
-        reslice->Update();
+        vtkNew<vtkImageReslice> saveImagereslice;
+        saveImagereslice->SetInputData(inputImage);
+        saveImagereslice->SetResliceAxes(resliceAxes);
+        saveImagereslice->SetOutputDimensionality(2);
+        saveImagereslice->SetInterpolationModeToLinear();
+        saveImagereslice->SetOutputSpacing(spacing); // 保持原 spacing
+        saveImagereslice->SetOutputOrigin(0, 0, 0);
+        saveImagereslice->SetOutputExtent(-w / 2, w / 2 - 1, -h / 2, h / 2 - 1, 0, 0); // 控制输出大小
+        saveImagereslice->Update();
 
         // 写入文件
         vtkNew<vtkTIFFWriter> writer;
         writer->SetFileName(qPrintable(strOrientation));
-        writer->SetInputConnection(reslice->GetOutputPort());
+        writer->SetInputConnection(saveImagereslice->GetOutputPort());
         writer->Write();
     }
 }
@@ -2027,20 +2027,20 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         resliceAxes->SetElement(2, 3, roiCenterWorld[2]);
 
         // 设置 reslice 以旋转+提取固定大小图像
-        vtkNew<vtkImageReslice> reslice;
-        reslice->SetInputData(inputImage);
-        reslice->SetResliceAxes(resliceAxes);
-        reslice->SetOutputDimensionality(2);
-        reslice->SetInterpolationModeToLinear();
-        reslice->SetOutputSpacing(spacing); // 保持原 spacing
-        reslice->SetOutputOrigin(0,0,0);
-        reslice->SetOutputExtent(-w/2, w/2 - 1, -h/2, h/2 - 1, 0, 0); // 控制输出大小
-        reslice->Update();
+        vtkNew<vtkImageReslice> saveImagereslice;
+        saveImagereslice->SetInputData(inputImage);
+        saveImagereslice->SetResliceAxes(resliceAxes);
+        saveImagereslice->SetOutputDimensionality(2);
+        saveImagereslice->SetInterpolationModeToLinear();
+        saveImagereslice->SetOutputSpacing(spacing); // 保持原 spacing
+        saveImagereslice->SetOutputOrigin(0,0,0);
+        saveImagereslice->SetOutputExtent(-w/2, w/2 - 1, -h/2, h/2 - 1, 0, 0); // 控制输出大小
+        saveImagereslice->Update();
 
         // 写入文件
         vtkNew<vtkTIFFWriter> writer;
         writer->SetFileName(qPrintable(strOrientation));
-        writer->SetInputConnection(reslice->GetOutputPort());
+        writer->SetInputConnection(saveImagereslice->GetOutputPort());
         writer->Write();
     } 
 }
