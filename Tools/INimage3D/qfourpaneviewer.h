@@ -128,8 +128,10 @@ public:
     //show 3D
 
     //draw
-    void DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, const int w, const int h, const double deltaX = 0, const double deltaY = 0, const int inc = 0, const int angle = 0);
-    void DrawRectangleObliquerPlane   (vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, const int w, const int h, const double deltaX = 0, const double deltaY = 0, const int inc = 0, const int angle = 0);
+    void DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, const int w, const int h, 
+        const double deltaX = 0, const double deltaY = 0, const int inc = 0, const int angle = 0);
+    void DrawRectangleObliquerPlane   (vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, const int w, const int h, 
+        const double deltaX = 0, const double deltaY = 0, const int inc = 0, const int angle = 0, const int axisXYZ = 0, const int axisAngle = 0);
     void SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceViewer, double *p1, double *p2);
 public:
     MainWindow *m_MainWindow;

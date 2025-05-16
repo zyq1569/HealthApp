@@ -1736,7 +1736,8 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
         writer->Write();
     }
 }
-void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, const int w, const int h, const double deltaX, const double deltaY, const int inc, const int angle)
+void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, const int w, const int h, 
+     const double deltaX, const double deltaY, const int inc, const int angle, const int axisXYZ, const int axisAngle)
 {
     if (!planeWidget || !renderer) return;
     // 清除旧---- actor--------
