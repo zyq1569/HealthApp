@@ -78,6 +78,7 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 #include <QAction>
 #include <QDateTime>
 #include <QFileDialog>
+#include <QTimer>
 
 using namespace ThreadWeaver;
 
@@ -1191,6 +1192,13 @@ void QFourpaneviewer::ShowImagePlane()
         m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.2);
         m_resliceImageViewer[i]->Render();
     }
+
+    //QTimer::singleShot(10, [&]()
+    //{
+    //    SaveImagePaneBMP();
+    //    // 然后截图
+    //});
+    //SaveImagePaneBMP();
 }
 void QFourpaneviewer::ShowImage3D()
 {
@@ -1551,17 +1559,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     writer->SetFileName(qPrintable(strOrientation));//writer->SetFileName("Rectangle_reslice.tiff");
     writer->Write();
 }
-void RotatePoint(double cx, double cy, double angleRad, double& x, double& y)
-{
-    double tx = x - cx;
-    double ty = y - cy;
 
-    double rx = tx * cos(angleRad) - ty * sin(angleRad);
-    double ry = tx * sin(angleRad) + ty * cos(angleRad);
-
-    x = rx + cx;
-    y = ry + cy;
-}
 void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, int w, int h, double deltaX, double deltaY, int inc, int angle)
 {
     if (!planeWidget || !renderer) return;
