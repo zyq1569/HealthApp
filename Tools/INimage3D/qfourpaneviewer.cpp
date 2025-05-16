@@ -1336,7 +1336,7 @@ void QFourpaneviewer::SaveRectangleImageParm(int orientation, int w, int h, int 
     }
     DrawRectangleAxisAlignedPlane(planeWidget, renderer, w, h, dx, dy, inc, angle);
 }
-void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int h, int dx, int dy, int inc, int angle)
+void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int h, int dx, int dy, int inc, int angle, int axisXYZ, int axisAngle)
 {
     vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
     vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
@@ -1350,7 +1350,7 @@ void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int
         renderer    = m_resliceImageViewer[0]->GetRenderer();
         planeWidget = m_planeWidget[0];
     }
-    DrawRectangleObliquerPlane(planeWidget, renderer, w, h, dx, dy, inc, angle);
+    DrawRectangleObliquerPlane(planeWidget, renderer, w, h, dx, dy, inc, angle, axisXYZ, axisAngle);
 }
 void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, const int w, const int h, const double deltaX, const double deltaY, const int inc, const int angle)
 {
