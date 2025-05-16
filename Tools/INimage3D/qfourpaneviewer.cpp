@@ -1547,6 +1547,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
 
     renderer->AddActor(actor);
     renderer->Render();
+    renderer->GetRenderWindow()->Render();
 
     g_widgetToBoxActorMap[planeWidget] = actor;
 
@@ -1914,7 +1915,9 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     
     renderer->AddActor(actor);
     renderer->Render();
-    
+    renderer->GetRenderWindow()->Render();
+
+    ///
     g_widgetToBoxActorMap[planeWidget] = actor;
 
     //+++++++++++++++++++++++++++++保存当前矩形图像+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
