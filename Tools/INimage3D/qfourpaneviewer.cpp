@@ -70,8 +70,6 @@ VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
 
-
-#define PI 3.141592653589793
 ///////////////////////////////////
 #include <ThreadWeaver/ThreadWeaver>
 //--------------
@@ -81,6 +79,11 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 #include <QTimer>
 
 using namespace ThreadWeaver;
+
+#define PI 3.14159265358979323846
+
+#define VTKRCP    vtkResliceCursorRepresentation
+#define VTKFILTER vtkWindowToImageFilter
 
 template<typename T> const T& clamp(const T& v, const T& lo, const T& hi)
 {
@@ -608,7 +611,6 @@ private:
     bool m_bSaveRectImage;
 };
 
-
 ///+++class vtkResliceImageViewerP++++++++++++
 vtkStandardNewMacro(vtkResliceImageViewerP);
 void vtkResliceImageViewerP::InOrDecrementSlice(int inc)
@@ -724,8 +726,6 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent), ui(new Ui::
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
-#define VTKRCP    vtkResliceCursorRepresentation
-#define VTKFILTER vtkWindowToImageFilter
 void QFourpaneviewer::SaveImagePaneBMP()
 {
     QString dir = QCoreApplication::applicationDirPath() + "\\";
@@ -1352,7 +1352,8 @@ void QFourpaneviewer::SaveObliquerRectangleImageParm(int orientation, int w, int
     }
     DrawRectangleObliquerPlane(planeWidget, renderer, w, h, dx, dy, inc, angle, axisXYZ, axisAngle);
 }
-void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, const int w, const int h, const double deltaX, const double deltaY, const int inc, const int angle)
+void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWidget, vtkRenderer* renderer, 
+     const int w, const int h, const double deltaX, const double deltaY, const int inc, const int angle)
 {
     if (!planeWidget || !renderer) return;
     // 清除旧 actor
