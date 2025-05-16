@@ -47,8 +47,9 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
+            w.showMinimized();
 			w.m_commdFilePath = filepath;
-			w.starViewer();
+			w.starViewer();          
 		}
 	}
 	else

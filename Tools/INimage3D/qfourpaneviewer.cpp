@@ -1382,7 +1382,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     //切换对应切面到指定的偏移量的切面显示.
     m_resliceImageViewer[orientation]->InOrDecrementSlice(inc);
 
-    double spacingU = 1.0, spacingV = 1.0;
+    double spacingU, spacingV;
     if (orientation == 0)
     {        // YZ plane
         spacingU = spacing[1];     // Y
@@ -1390,6 +1390,13 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     }
     else if (orientation == 1)
     { // XZ plane
+        int temp = w;
+        w = h;
+        h = temp;
+        temp = -deltaX;
+        deltaX = -deltaY;
+        deltaY = temp;
+
         spacingU = spacing[0];     // X
         spacingV = spacing[2];     // Z
     }
@@ -1421,13 +1428,65 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     // 4. 尺寸物理长度  计算四个角点（世界坐标）
     double halfWidth  = (w * spacingU) / 2.0;
     double halfHeight = (h * spacingV) / 2.0;
+    double fulldeltaX = -deltaX*spacingU;
+    double fulldeltaY = -deltaY*spacingV;
     double corners[4][3]; // 左下，右下，右上，左上
+    for (int i = 0; i < 3; ++i)
+    {
+        center[i] += fulldeltaX * uVec[i] + fulldeltaY * vVec[i];
+    }
     for (int i = 0; i < 3; ++i)
     {
         corners[0][i] = center[i] - halfWidth * uVec[i] - halfHeight * vVec[i]; // 左下
         corners[1][i] = center[i] + halfWidth * uVec[i] - halfHeight * vVec[i]; // 右下
         corners[2][i] = center[i] + halfWidth * uVec[i] + halfHeight * vVec[i]; // 右上
         corners[3][i] = center[i] - halfWidth * uVec[i] + halfHeight * vVec[i]; // 左上
+    }
+    if (angle != 0)
+    {
+        // 角度转弧度
+        double angleRad = angle * PI / 180.0;
+        double cosA = cos(angleRad);
+        double sinA = sin(angleRad);
+        double hw   = halfWidth;
+        double hh   = halfHeight;
+        // 定义局部坐标点：左下、右下、右上、左上
+        std::array<std::pair<double, double>, 4> localPoints =
+        {
+            std::make_pair(-hw, -hh),
+            std::make_pair(+hw, -hh),
+            std::make_pair(+hw, +hh),
+            std::make_pair(-hw, +hh)
+        };
+        if (orientation == 1)
+        {
+            cosA = sin(-angleRad);
+            sinA = cos(-angleRad);
+        }
+        // 应用二维旋转矩阵
+        for (int i = 0; i < 4; ++i)
+        {
+            double lx = localPoints[i].first;
+            double ly = localPoints[i].second;
+            double rx = cosA * lx - sinA * ly;
+            double ry = sinA * lx + cosA * ly;
+            double xAxis[3], yAxis[3];
+            VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation());
+            vtkImageReslice* axesReslice = vtkImageReslice::SafeDownCast(rep->GetReslice());
+            vtkMatrix4x4* axesMatrix = axesReslice->GetResliceAxes();
+            if (!axesMatrix)
+                return;
+            for (int i = 0; i < 3; ++i)
+            {
+                xAxis[i]  = axesMatrix->GetElement(i, 0);
+                yAxis[i]  = axesMatrix->GetElement(i, 1);
+                origin[i] = axesMatrix->GetElement(i, 3);
+            }
+            for (int j = 0; j < 3; ++j)
+            {
+                corners[i][j] = center[j] + rx * xAxis[j] + ry * yAxis[j];
+            }
+        }
     }
     ///+++++++++++++++++++++++++++
     //世界坐标 -> 显示坐标 -> 非主轴值设为常数 -> 再转回世界坐标
@@ -1497,9 +1556,8 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
 
     //+++++++++++++++++++++++++++++++++++++++
     // ==========================
-    //先只考虑非斜切面的情况.斜切面另外函数实现
+    // 先只考虑非斜切面的情况.斜切面另外函数实现
     // 保存当前矩形图像为 TIFF:
-    // todo .需要重新计算分辨率的比例值来裁剪图像
     // ==========================
     QString strOrientation = "XY_Rectangle_reslice.tiff";
     VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation());
