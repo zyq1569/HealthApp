@@ -121,6 +121,59 @@ void MainWindow::starViewer()
     m_commdFilePath = "";
 }
 
+#include <QTimer>
+void MainWindow::autoRun()
+{
+    QString Mhdfilename;
+    Mhdfilename = m_commdFilePath;
+    QFileInfo finfo(Mhdfilename);
+    if (!finfo.exists())
+    {
+        return;
+    }
+    // ------------------show UI-----------------------------------------
+    m_image4Plane = new QFourpaneviewer(this);
+    m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
+    m_workspace->setCurrentIndex(m_index4P);
+
+    //----------ProgressBar--start---------------------------------
+    std::string filename = qPrintable(Mhdfilename);
+    if (Mhdfilename.contains(".mhd"))
+    {
+        m_MetaReader = vtkMetaImageReader::New();
+        m_MetaReader->SetFileName(filename.c_str());
+        m_MetaReader->Update();
+        m_vtkImageData = m_MetaReader->GetOutput();
+        m_vtkAlgorithmOutput = m_MetaReader->GetOutputPort();
+    }
+    else
+    {
+        m_XMLImageDataReader = vtkXMLImageDataReader::New();
+        m_XMLImageDataReader->SetFileName(filename.c_str());  // 输入的压缩 VTI 文件名
+        m_XMLImageDataReader->Update();
+        m_vtkImageData = m_XMLImageDataReader->GetOutput();
+        m_vtkAlgorithmOutput = m_XMLImageDataReader->GetOutputPort();
+    }
+
+    m_openAction->setText("关闭(&C)");
+    m_openAction->setShortcut(QKeySequence("Ctrl+C"));
+
+    if (!m_vtkImageData)
+    {
+        return;
+    }
+    QFourpaneviewer* viewer = ((QFourpaneviewer*)m_image4Plane);
+    viewer->m_testAutoSave  = true;
+    viewer->TestAutoHis();
+    viewer->ShowImage3D();
+    viewer->ShowImagePlane();
+    viewer->ResetViewer();
+}
+
+void MainWindow::miniTrayIcon()
+{
+
+}
 void MainWindow::initMetaFile()
 {
     if (m_vtkImageData)

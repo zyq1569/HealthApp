@@ -720,12 +720,72 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent), ui(new Ui::
     ui->m_editorsWidget->hide();
     m_showEditors = false;
 
+    m_testAutoSave = false;
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     ui->m_editorsWidget->setCurrentIndex(1);//设置坐标系方式选择点,另外一个是具体点坐标输入方式设置颜色及透明度
     ui->m_editorsWidget->setStyleSheet("background-color:rgb(240,240,240)}");
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
+void QFourpaneviewer::TestAutoHis()
+{
+    Queue queue3D;
+
+    //读取灰度值信息
+    QSharedPointer<Job> jobgray(new VolumeGrayHistogramJob(this, m_MainWindow->m_vtkImageData));
+    queue3D.enqueue(jobgray);// 将任务加入队列
+}
+void QFourpaneviewer::TestAutoeSaveImage()
+{
+    //1.测试保存三个切面数据
+    QString dir = QCoreApplication::applicationDirPath() + "/";
+    vtkSmartPointer<vtkPNGWriter>  writer = vtkSmartPointer<vtkPNGWriter>::New();
+    
+    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+    lookupTable->SetTableRange(0.0, 2048.0);  // 适用于 8 位灰度图像 (0-255)
+    lookupTable->SetValueRange(0.0, 1.0);   // 0 = 黑色, 1 = 白色// 设置颜色范围 (黑 -> 白)
+    lookupTable->SetSaturationRange(0.0, 0.0); // 0 = 无彩色 (纯灰度)
+    lookupTable->Build();
+    vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
+    qint64 currentMEpoch = QDateTime::currentMSecsSinceEpoch();
+    QString fileName = dir + QString::number(currentMEpoch);
+    for (int i = 0; i < 3; i++)
+    {
+        if (VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation()))
+        {
+            if (vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice()))
+            {
+                // default background color is the min value of the image scalar range
+                vtkImageData* data = reslice->GetOutput();
+                QString imagefileName = fileName + "_" + QString::number(i) + ".png";
+                std::string str = qPrintable(imagefileName);
+                writer->SetFileName(str.c_str());
+    
+                mapToColors->SetInputData(data);
+                mapToColors->SetLookupTable(lookupTable); // 需要提前设置适当的查找表
+                mapToColors->Update();
+                writer->SetInputData(mapToColors->GetOutput());
+    
+                writer->Update();
+                writer->Write();
+            }
+        }
+    } 
+
+    //2.测试矩形框内图像数据
+    vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
+    vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
+    DrawRectangleObliquerPlane(planeWidget, renderer,1000,512,10,-10,3,30);
+
+    renderer    = m_resliceImageViewer[1]->GetRenderer();
+    planeWidget = m_planeWidget[1];
+    DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, 20, 2);
+
+    renderer    = m_resliceImageViewer[0]->GetRenderer();
+    planeWidget = m_planeWidget[0];
+    DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, -20, 2);
+    //
+}
 void QFourpaneviewer::SaveImagePaneBMP()
 {
     QString dir = QCoreApplication::applicationDirPath() + "\\";
@@ -1193,12 +1253,15 @@ void QFourpaneviewer::ShowImagePlane()
         m_resliceImageViewer[i]->Render();
     }
 
-    //QTimer::singleShot(10, [&]()
-    //{
-    //    SaveImagePaneBMP();
-    //    // 然后截图
-    //});
-    //SaveImagePaneBMP();
+    if (m_testAutoSave)
+    {
+        QTimer::singleShot(10, [&]()
+        {
+            TestAutoeSaveImage();    
+            // 然后截图
+        });
+
+    }
 }
 void QFourpaneviewer::ShowImage3D()
 {
@@ -1777,7 +1840,8 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     //  XY:2(1->0 2->1)  |    XZ:1 (0->0 1->当前整个图像双轴 2->error)
     //  YZ:0(1->1 2->2)  |    3D
     //-------------
-    int rotateIndex = 1;
+    /*
+        int rotateIndex = 1;
     int xyzIndex = 0;
     if (axisAngle != 0)
     {
@@ -1785,7 +1849,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         {            
             if (axisXYZ == 0)
             {
-                rotateIndex = 3; // XZ  如果选择1是旋转的是全部图像
+                rotateIndex = 2; // XZ  如果选择1是旋转的是全部图像
                 xyzIndex    = 1; //XZ              
             }
             else
@@ -1822,6 +1886,8 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         //0-2 (corresponding *to the X, Y and Z axes.
         //vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[xyzIndex]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(rotateIndex, axisAngle * PI / 180.0);
     }
+    */
+
     
     
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

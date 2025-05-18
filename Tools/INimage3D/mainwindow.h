@@ -29,6 +29,10 @@ public slots:
 
 public:
 	void starViewer();
+    //++++
+    void autoRun();
+    void miniTrayIcon();
+    //++
 
 private:
     Ui::MainWindow *ui;
