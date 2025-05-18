@@ -52,7 +52,6 @@ int main(int argc, char *argv[])
             w.setWindowFlags(Qt::Tool);
             w.hide();
             w.show();
-            //w.hide();
             w.m_commdFilePath = filepath;
             w.autoRun();
         }
