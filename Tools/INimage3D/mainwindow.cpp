@@ -169,10 +169,22 @@ void MainWindow::autoRun()
     viewer->ShowImagePlane();
     viewer->ResetViewer();
 }
-
+#include <QSystemTrayIcon>
 void MainWindow::miniTrayIcon()
 {
+    QSystemTrayIcon* qsys = new QSystemTrayIcon(this);
+    qsys->setIcon(QIcon(":/images/icons/pyramid.png"));
+    qsys->setToolTip(tr("采集数据"));
 
+    m_QuitAction = new QAction(tr("&Quit"), this);
+    connect(m_QuitAction, &QAction::triggered, qApp, [this]
+    {
+        QCoreApplication::quit();
+    });
+    m_TrayIconMenu = new QMenu(this);
+    m_TrayIconMenu->addAction(m_QuitAction);
+    qsys->setContextMenu(m_TrayIconMenu);
+    qsys->show();
 }
 void MainWindow::initMetaFile()
 {

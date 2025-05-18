@@ -48,6 +48,10 @@ int main(int argc, char *argv[])
         else
         {
             w.showMinimized();
+            w.miniTrayIcon();
+            w.setWindowFlags(Qt::Tool);
+            w.hide();
+            w.show();
             //w.hide();
             w.m_commdFilePath = filepath;
             w.autoRun();

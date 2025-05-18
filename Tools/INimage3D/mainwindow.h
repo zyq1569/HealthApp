@@ -32,6 +32,8 @@ public:
     //++++
     void autoRun();
     void miniTrayIcon();
+    QAction *m_QuitAction;
+    QMenu *m_TrayIconMenu;
     //++
 
 private:
