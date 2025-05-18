@@ -37,7 +37,23 @@ int main(int argc, char *argv[])
 
 	QApplication a(argc, argv);
 	MainWindow w;
-	if (argc > 1)
+    if (argc == 3)
+    {
+        QString filepath = argv[1];
+        QFileInfo finfo(filepath);
+        if (!finfo.exists())
+        {
+            w.show();
+        }
+        else
+        {
+            w.showMinimized();
+            //w.hide();
+            w.m_commdFilePath = filepath;
+            w.autoRun();
+        }
+    }
+    else if (argc > 1)
 	{
 		QString filepath = argv[1];
 		QFileInfo finfo(filepath);
@@ -47,7 +63,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-            w.showMinimized();
+            
 			w.m_commdFilePath = filepath;
 			w.starViewer();          
 		}
