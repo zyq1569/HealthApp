@@ -20,10 +20,14 @@ signals:
 
     void RectData        (int orientation, int w, int h, int dx, int dy, int inc = 0, int angle = 0);
     void ObliquerRectParm(int orientation, int w, int h, int dx, int dy, int inc = 0, int angle = 0, int axisXYZ = 0, int axisAngle = 0);
+
 public slots:
     void SaveSplitParm();
     void SaveRectParm();
     void SaveObliquerRectParm();
+
+    void SaveRectParmIni();
+    void SaveObliquerRectParmIni();
 
 public:
     void SetSlicesNumber(int *dim, int *extent1, int *extent2);
@@ -31,6 +35,8 @@ public:
 public:
     int *m_dims, m_slicesNumber, m_topStart, m_topEnd, m_centerStart, m_centerEnd, m_bottomStart, m_bottomEnd;
     int m_showIndex;
+public:
+    QList<QString> m_saveRectParm;
 
 private:
     Ui::VolumeDataSet *ui;

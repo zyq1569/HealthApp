@@ -248,7 +248,7 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QPushButton" name="m_saveRectParm">
    <property name="geometry">
     <rect>
      <x>87</x>
@@ -258,7 +258,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>应用退出</string>
+    <string>保存参数</string>
    </property>
   </widget>
   <widget class="QPushButton" name="m_pbSaveRect">
@@ -539,7 +539,7 @@
     </property>
    </widget>
   </widget>
-  <widget class="QPushButton" name="pushButton_4">
+  <widget class="QPushButton" name="m_saveObliqueRectParmr">
    <property name="geometry">
     <rect>
      <x>86</x>
@@ -549,7 +549,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>应用退出</string>
+    <string>保存参数</string>
    </property>
   </widget>
   <widget class="QPushButton" name="m_pbObliquerSaveRect">

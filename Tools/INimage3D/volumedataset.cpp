@@ -14,8 +14,12 @@ VolumeDataSet::VolumeDataSet(QWidget *parent) : QWidget(parent), ui(new Ui::Volu
         hide();
     });
     //
-    connect(ui->m_pbSaveRect, &QPushButton::released, this, &VolumeDataSet::SaveRectParm);
+    connect(ui->m_pbSaveRect,         &QPushButton::released, this, &VolumeDataSet::SaveRectParm);
     connect(ui->m_pbObliquerSaveRect, &QPushButton::released, this, &VolumeDataSet::SaveObliquerRectParm);
+
+    connect(ui->m_saveRectParm,         &QPushButton::released, this, &VolumeDataSet::SaveRectParmIni);
+    connect(ui->m_saveObliqueRectParmr, &QPushButton::released, this, &VolumeDataSet::SaveObliquerRectParmIni);
+    // 
 
 
     ui->m_topS->setMinimum(0);
@@ -26,11 +30,54 @@ VolumeDataSet::VolumeDataSet(QWidget *parent) : QWidget(parent), ui(new Ui::Volu
     ui->m_bottomE->setMinimum(0);
 }
 
+
+void VolumeDataSet::SaveRectParmIni()
+{
+    QString str = "0|";
+    int orientation = ui->m_cbSelectSlice->currentIndex();
+    int w           = ui->m_rectW->value(),       h = ui->m_rectH->value();
+    int deltaX      = ui->m_deltaX->value(), deltaY = ui->m_deltaY->value();
+    int inc         = ui->m_incrementIndex->value();
+    int angle       = ui->m_angle->value();
+    
+    str += QString::number(orientation) + "|";
+    str += QString::number(w) + "|";
+    str += QString::number(h) + "|";
+    str += QString::number(deltaX) + "|";
+    str += QString::number(deltaY) + "|";
+    str += QString::number(inc) + "|";
+    str += QString::number(angle);
+    m_saveRectParm.push_back(str);
+
+}
+
+void VolumeDataSet::SaveObliquerRectParmIni()
+{
+    QString str = "1|";
+    int orientation = ui->m_cbSelectObliquerSlice->currentIndex();
+    int w           = ui->m_rectObliquerW->value(),  h = ui->m_rectObliquerH->value();
+    int deltaX      = ui->m_deltaObliquerX->value(), deltaY = ui->m_deltaObliquerY->value();
+    int inc         = ui->m_incrementIndexObliquer->value();   
+    int angle       = ui->m_angleOblique->value();
+    int axisXYZ     = ui->m_axesXYZ->currentIndex();
+    int axisAngle   = ui->m_axesAngle->value();
+
+    str += QString::number(orientation) + "|";
+    str += QString::number(w) + "|";
+    str += QString::number(h) + "|";
+    str += QString::number(deltaX) + "|";
+    str += QString::number(deltaY) + "|";
+    str += QString::number(inc) + "|";
+    str += QString::number(angle) + "|";
+    str += QString::number(axisXYZ) + "|";
+    str += QString::number(axisAngle);
+    m_saveRectParm.push_back(str);
+}
+
 VolumeDataSet::~VolumeDataSet()
 {
     delete ui;
 }
-
 void VolumeDataSet::SetSlicesNumber(int *dim, int *extent1, int *extent2)
 {
     QString str = "slices:";
@@ -64,7 +111,6 @@ void VolumeDataSet::SetSlicesNumber(int *dim, int *extent1, int *extent2)
     ui->m_bottomE->setValue(m_bottomEnd);
     m_dims = dim;
 }
-
 void VolumeDataSet::SaveRectParm()
 {
     int orientation = ui->m_cbSelectSlice->currentIndex();
