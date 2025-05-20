@@ -774,19 +774,19 @@ void QFourpaneviewer::TestAutoeSaveImage()
 
     //2.测试矩形框内图像数据
     int inc = 0;
-    vtkRenderer* renderer = m_resliceImageViewer[2]->GetRenderer();
+    vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
     vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
     DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 512, 10, -10, 40,                                                  30);
     inc = -30;
     DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 512, 10, -10, inc - m_resliceImageViewer[2]->GetIncrementIndex(), 30);
 
-    renderer = m_resliceImageViewer[1]->GetRenderer();
+    renderer    = m_resliceImageViewer[1]->GetRenderer();
     planeWidget = m_planeWidget[1];
     DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, 20,                                                2);
     inc = -20;
     DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, inc - m_resliceImageViewer[1]->GetIncrementIndex(), 2);
 
-    renderer = m_resliceImageViewer[0]->GetRenderer();
+    renderer    = m_resliceImageViewer[0]->GetRenderer();
     planeWidget = m_planeWidget[0];
     DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, 10,                                               2);
     inc = -15;
