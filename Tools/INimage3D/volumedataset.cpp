@@ -1,5 +1,6 @@
 #include "volumedataset.h"
 #include "ui_volumedataset.h"
+#include <QSettings>
 
 VolumeDataSet::VolumeDataSet(QWidget *parent) : QWidget(parent), ui(new Ui::VolumeDataSet)
 {
@@ -77,6 +78,17 @@ void VolumeDataSet::SaveObliquerRectParmIni()
 VolumeDataSet::~VolumeDataSet()
 {
     delete ui;
+    int size = m_saveRectParm.size();
+    if (size > 0)
+    {
+        QSettings settings("rectParm.ini", QSettings::IniFormat);
+        settings.setValue("size", size);
+        for (int i = 0; i < size; i++)
+        {
+            settings.setValue(QString::number(i), m_saveRectParm[i]);
+        }
+    }
+
 }
 void VolumeDataSet::SetSlicesNumber(int *dim, int *extent1, int *extent2)
 {
