@@ -748,7 +748,7 @@ void QFourpaneviewer::TestAutoeSaveImage()
     lookupTable->Build();
     vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
     qint64 currentMEpoch = QDateTime::currentMSecsSinceEpoch();
-    QString fileName = dir + QString::number(currentMEpoch);
+    QString fileName     = dir + QString::number(currentMEpoch);
     for (int i = 0; i < 3; i++)
     {
         if (VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation()))
@@ -796,7 +796,7 @@ void QFourpaneviewer::TestAutoeSaveImage()
 void QFourpaneviewer::SaveImagePaneBMP()
 {
     QString dir = QCoreApplication::applicationDirPath() + "\\";
-    vtkSmartPointer<vtkPNGWriter>  writer = vtkSmartPointer<vtkPNGWriter>::New();
+    vtkSmartPointer<vtkPNGWriter>  writer  = vtkSmartPointer<vtkPNGWriter>::New();
     vtkSmartPointer<vtkJPEGWriter> writerJ = vtkSmartPointer<vtkJPEGWriter>::New();
     vtkSmartPointer<vtkBMPWriter>  writerB = vtkSmartPointer<vtkBMPWriter>::New();
     vtkSmartPointer<vtkTIFFWriter> writerT = vtkSmartPointer<vtkTIFFWriter>::New();
@@ -843,25 +843,25 @@ void QFourpaneviewer::SaveImagePaneBMP()
             if (vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice()))
             {
                 // default background color is the min value of the image scalar range
-                vtkImageData* data = reslice->GetOutput();
+                vtkImageData* data    = reslice->GetOutput();
                 QString imagefileName = fileName;
-                QString insertStr = "_" + QString::number(i) + ".";
-                imagefileName = imagefileName.replace(pos, 1, insertStr);
+                QString insertStr     = "_" + QString::number(i) + ".";
+                imagefileName   = imagefileName.replace(pos, 1, insertStr);
                 std::string str = qPrintable(imagefileName);
-                writer->SetFileName(str.c_str());
+                imagewriter->SetFileName(str.c_str());
                 if (btiff)
                 {
-                    writer->SetInputData(data);
+                    imagewriter->SetInputData(data);
                 }
                 else
                 {
                     mapToColors->SetInputData(data);
                     mapToColors->SetLookupTable(lookupTable); // 需要提前设置适当的查找表
                     mapToColors->Update();
-                    writer->SetInputData(mapToColors->GetOutput());
+                    imagewriter->SetInputData(mapToColors->GetOutput());
                 }
-                writer->Update();
-                writer->Write();
+                imagewriter->Update();
+                imagewriter->Write();
             }
         }
     }//非斜切面 参考SaveAxisAlignedRectangleImageTIFF 保存数据
@@ -870,13 +870,13 @@ void QFourpaneviewer::SaveImagePaneBMP()
     windowToImageFilter->Update();
     windowToImageFilter->Modified();
     QString imagefileName = fileName;
-    QString insertStr = "_3.";
-    imagefileName = imagefileName.replace(pos, 1, insertStr);
+    QString insertStr     = "_3.";
+    imagefileName   = imagefileName.replace(pos, 1, insertStr);
     std::string str = qPrintable(imagefileName);
-    writer->SetFileName(str.c_str());
-    writer->SetInputData(windowToImageFilter->GetOutput());
-    writer->Update();
-    writer->Write();
+    imagewriter->SetFileName(str.c_str());
+    imagewriter->SetInputData(windowToImageFilter->GetOutput());
+    imagewriter->Update();
+    imagewriter->Write();
 }
 void QFourpaneviewer::ShowEditorsWidget()
 {
