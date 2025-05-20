@@ -1890,12 +1890,13 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
             }
         }
         //0-2 (corresponding *to the X, Y and Z axes.
-        vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[xyzIndex]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(rotateIndex, axisAngle / PI);
+        vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[xyzIndex]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(rotateIndex, axisAngle * PI /180);
     }
-    
-
-
-
+    for (int i = 0; i < 3; i++)
+    {
+        m_resliceImageViewer[i]->GetRenderWindow()->Render();
+    }
+   
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     VTKRCP* repOblique = VTKRCP::SafeDownCast(m_resliceImageViewer[orientation]->GetResliceCursorWidget()->GetRepresentation());
     vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(repOblique->GetReslice());
@@ -1915,9 +1916,9 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     spacing[1] = reslice->GetOutputSpacing()[1];
     int extent[6];
     image->GetExtent(extent);//XY:(0,1023,0,1023,0,0)  XZ(0,1023,0,127,0,0) YZ(0,1023,0,127,0,0)
-    int width = extent[1] - extent[0] + 1;
+    int width  = extent[1] - extent[0] + 1;
     int height = extent[3] - extent[2] + 1;
-    double fullWidth = spacing[0] * width;
+    double fullWidth  = spacing[0] * width;
     double fullHeight = spacing[1] * height;
 
     double xAxis[3], yAxis[3];
@@ -1961,7 +1962,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     for (int i = 0; i < 3; ++i)
     {
         center[i] = origin[i] + 0.5 * fullWidth  * xAxis[i] + 0.5 * fullHeight * yAxis[i] +
-            offsetX * xAxis[i] + offsetY * yAxis[i];
+                    offsetX * xAxis[i] + offsetY * yAxis[i];
     }
     // 半宽/半高
     double hw = 0.5 * cropWidth;
@@ -2075,7 +2076,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     }
     else if (orientation == 1)//XZ
     {
-        newWidth = qRound((double)w * extent[1] / dims[0]);
+        newWidth  = qRound((double)w * extent[1] / dims[0]);
         newHeigth = qRound((double)h * extent[3] / dims[2]);
         NewDeltaX = qRound((double)deltaX * extent[1] / dims[0]);
         NewDeltaY = qRound((double)deltaY * extent[3] / dims[2]);
@@ -2088,7 +2089,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
     }
     else //if(orientation == 0)//YZ
     {
-        newWidth = qRound((double)w * extent[1] / dims[0]);
+        newWidth  = qRound((double)w * extent[1] / dims[0]);
         newHeigth = qRound((double)h * extent[3] / dims[2]);
         NewDeltaX = qRound((double)deltaX * extent[1] / dims[0]);
         NewDeltaY = qRound((double)deltaY * extent[3] / dims[2]);
@@ -2186,8 +2187,8 @@ void QFourpaneviewer::SaveRectangleImageTIFF(vtkResliceImageViewer* vtkResliceVi
 
     // 获取当前切面方向
     double xAxis[3] = { 0,0,0 }, yAxis[3] = { 0,0,0 }, zAxis[3] = { 0,0,0 };
-    double *pxAxis = cursor->GetAxis(0);
-    double *pyAxis = cursor->GetAxis(1);
+    double *pxAxis  = cursor->GetAxis(0);
+    double *pyAxis  = cursor->GetAxis(1);
     xAxis[0] = pxAxis[0];  xAxis[1] = pxAxis[1];  xAxis[2] = pxAxis[2];
     yAxis[0] = pyAxis[0];  yAxis[1] = pyAxis[1];  yAxis[2] = pyAxis[2];
     vtkMath::Cross(xAxis, yAxis, zAxis);
