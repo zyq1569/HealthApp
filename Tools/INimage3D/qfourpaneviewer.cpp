@@ -77,6 +77,7 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 #include <QDateTime>
 #include <QFileDialog>
 #include <QTimer>
+#include <QSettings>
 
 using namespace ThreadWeaver;
 
@@ -792,6 +793,62 @@ void QFourpaneviewer::TestAutoeSaveImage()
     inc = -15;
     DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, inc - m_resliceImageViewer[0]->GetIncrementIndex(), 2);
     //
+    QFileInfo iniFile(m_MainWindow->m_commdParmIniFilePath);
+    if (iniFile.exists())
+    {
+        QSettings settings(m_MainWindow->m_commdParmIniFilePath, QSettings::IniFormat);
+        vtkRenderer*            renderer = m_resliceImageViewer[1]->GetRenderer();
+        vtkImagePlaneWidget* planeWidget = m_planeWidget[1];
+
+        int size = settings.value("size").toInt();
+        for (int i = 0; i < size; i++)
+        {
+            QString str = settings.value(QString::number(i)).toString();
+            QStringList list = str.split("|");
+            int count = list.size();
+            int type = list[0].toInt();
+            int index = 0;
+            int orientation = list[++index].toInt();
+            if (orientation == 0)
+            {
+                renderer = m_resliceImageViewer[2]->GetRenderer();
+                planeWidget = m_planeWidget[2];
+            }
+            else if (orientation == 2)
+            {
+                renderer = m_resliceImageViewer[0]->GetRenderer();
+                planeWidget = m_planeWidget[0];
+            }
+            if (type == 0)
+            {
+                if (count == 8)
+                {                 
+                    int w           = list[++index].toInt();
+                    int h           = list[++index].toInt();
+                    int deltaX      = list[++index].toInt();
+                    int deltaY      = list[++index].toInt();
+                    int inc         = list[++index].toInt();
+                    int angle       = list[++index].toInt();
+                    DrawRectangleAxisAlignedPlane(planeWidget, renderer, w,h,deltaX,deltaY,inc,angle);
+                }
+            }
+            else
+            {
+                if (count == 10)
+                {
+                    int w           = list[++index].toInt();
+                    int h           = list[++index].toInt();
+                    int deltaX      = list[++index].toInt();
+                    int deltaY      = list[++index].toInt();
+                    int inc         = list[++index].toInt();
+                    int angle       = list[++index].toInt();
+                    int axisXYZ     = list[++index].toInt();
+                    int axisAngle   = list[++index].toInt();
+                    DrawRectangleObliquerPlane(planeWidget, renderer, w, h, deltaX, deltaY, inc, angle,axisXYZ,axisAngle);
+                }
+            }
+        }
+    }
 }
 void QFourpaneviewer::SaveImagePaneBMP()
 {

@@ -31,7 +31,6 @@ VolumeDataSet::VolumeDataSet(QWidget *parent) : QWidget(parent), ui(new Ui::Volu
     ui->m_bottomE->setMinimum(0);
 }
 
-
 void VolumeDataSet::SaveRectParmIni()
 {
     QString str = "0|";
@@ -143,7 +142,6 @@ void VolumeDataSet::SaveObliquerRectParm()
     int axisAngle   = ui->m_axesAngle->value();
     emit ObliquerRectParm(orientation, w, h, deltaX, deltaY, inc, angle, axisXYZ, axisAngle);
 }
-
 void VolumeDataSet::SaveSplitParm()
 {
     int start, end, index = ui->m_cbSelect->currentIndex();
