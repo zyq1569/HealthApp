@@ -773,51 +773,55 @@ void QFourpaneviewer::TestAutoeSaveImage()
         }
     }
 
-    //2.测试矩形框内图像数据
-    int inc = 0;
-    vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
-    vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
-    DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 512, 10, -10, 40,                                                  30);
-    inc = -30;
-    DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 512, 10, -10, inc - m_resliceImageViewer[2]->GetIncrementIndex(), 30);
-
-    renderer    = m_resliceImageViewer[1]->GetRenderer();
-    planeWidget = m_planeWidget[1];
-    DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, 20,                                                2);
-    inc = -20;
-    DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, inc - m_resliceImageViewer[1]->GetIncrementIndex(), 2);
-
-    renderer    = m_resliceImageViewer[0]->GetRenderer();
-    planeWidget = m_planeWidget[0];
-    DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, 10,                                               2);
-    inc = -15;
-    DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, inc - m_resliceImageViewer[0]->GetIncrementIndex(), 2);
+    //2.手动模拟数据测试矩形框内图像数据
+    //int inc = 0;
+    //vtkRenderer* renderer            = m_resliceImageViewer[2]->GetRenderer();
+    //vtkImagePlaneWidget* planeWidget = m_planeWidget[2];
+    //DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 512, 10, -10, 40,                                                  30);
+    //inc = -30;
+    //DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 512, 10, -10, inc - m_resliceImageViewer[2]->GetIncrementIndex(), 30);
     //
+    //renderer    = m_resliceImageViewer[1]->GetRenderer();
+    //planeWidget = m_planeWidget[1];
+    //DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, 20,                                                2);
+    //inc = -20;
+    //DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, inc - m_resliceImageViewer[1]->GetIncrementIndex(), 2);
+    //
+    //renderer    = m_resliceImageViewer[0]->GetRenderer();
+    //planeWidget = m_planeWidget[0];
+    //DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, 10,                                               2);
+    //inc = -15;
+    //DrawRectangleObliquerPlane(planeWidget, renderer, 1000, 60, 10, 0, inc - m_resliceImageViewer[0]->GetIncrementIndex(), 2);
+    
+    //3.文件ini方式测试
     QFileInfo iniFile(m_MainWindow->m_commdParmIniFilePath);
     if (iniFile.exists())
     {
         QSettings settings(m_MainWindow->m_commdParmIniFilePath, QSettings::IniFormat);
-        vtkRenderer*            renderer = m_resliceImageViewer[1]->GetRenderer();
-        vtkImagePlaneWidget* planeWidget = m_planeWidget[1];
+        vtkResliceImageViewerP  *imageViewerP = m_resliceImageViewer[1];
+        vtkRenderer*            renderer      = m_resliceImageViewer[1]->GetRenderer();
+        vtkImagePlaneWidget* planeWidget      = m_planeWidget[1];
 
         int size = settings.value("size").toInt();
         for (int i = 0; i < size; i++)
         {
-            QString str = settings.value(QString::number(i)).toString();
+            QString str      = settings.value(QString::number(i)).toString();
             QStringList list = str.split("|");
             int count = list.size();
-            int type = list[0].toInt();
+            int type  = list[0].toInt();
             int index = 0;
             int orientation = list[++index].toInt();
             if (orientation == 0)
             {
-                renderer = m_resliceImageViewer[2]->GetRenderer();
-                planeWidget = m_planeWidget[2];
+                imageViewerP = m_resliceImageViewer[2];
+                renderer     = m_resliceImageViewer[2]->GetRenderer();
+                planeWidget  = m_planeWidget[2];
             }
             else if (orientation == 2)
             {
-                renderer = m_resliceImageViewer[0]->GetRenderer();
-                planeWidget = m_planeWidget[0];
+                imageViewerP = m_resliceImageViewer[0];
+                renderer     = m_resliceImageViewer[0]->GetRenderer();
+                planeWidget  = m_planeWidget[0];
             }
             if (type == 0)
             {
@@ -829,7 +833,7 @@ void QFourpaneviewer::TestAutoeSaveImage()
                     int deltaY      = list[++index].toInt();
                     int inc         = list[++index].toInt();
                     int angle       = list[++index].toInt();
-                    DrawRectangleAxisAlignedPlane(planeWidget, renderer, w,h,deltaX,deltaY,inc,angle);
+                    DrawRectangleAxisAlignedPlane(planeWidget, renderer, w,h,deltaX,deltaY, inc - imageViewerP->GetIncrementIndex(),angle);
                 }
             }
             else
@@ -844,7 +848,7 @@ void QFourpaneviewer::TestAutoeSaveImage()
                     int angle       = list[++index].toInt();
                     int axisXYZ     = list[++index].toInt();
                     int axisAngle   = list[++index].toInt();
-                    DrawRectangleObliquerPlane(planeWidget, renderer, w, h, deltaX, deltaY, inc, angle,axisXYZ,axisAngle);
+                    DrawRectangleObliquerPlane(planeWidget, renderer, w, h, deltaX, deltaY, inc - imageViewerP->GetIncrementIndex(), angle,axisXYZ,axisAngle);
                 }
             }
         }
