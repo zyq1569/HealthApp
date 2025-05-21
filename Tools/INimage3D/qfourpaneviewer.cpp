@@ -1006,6 +1006,7 @@ void QFourpaneviewer::ResetViewer()
         m_resliceImageViewer[i]->SetResliceMode(1);
         vtkREP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation())->SetWindowLevel(m_defaultWindow, m_defaultLevel);
     }
+
     for (int i = 0; i < 3; i++)
     {
         m_resliceImageViewer[i]->Reset();
@@ -1013,6 +1014,11 @@ void QFourpaneviewer::ResetViewer()
         m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.2);
         m_resliceImageViewer[i]->Render();
     }
+    //
+    //vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[1]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, 90 * PI / 180);
+    //m_resliceImageViewer[1]->Render();
+    //m_resliceImageViewer[1]->GetRenderWindow()->Render();
+    //
 }
 void QFourpaneviewer::Update3DColorByCoordinate(VtkColorStyle colorValue)
 {
