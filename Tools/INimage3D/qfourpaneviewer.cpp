@@ -1232,6 +1232,10 @@ void QFourpaneviewer::ShowImagePlane()
     vtkImageData *imageData = m_showImageData;
     imageData->GetDimensions(imageDims);
 
+    ///自动计算默认窗位值
+    //double range = imageData->GetScalarRange()[1]  - imageData->GetScalarRange()[0];
+    //double level = (imageData->GetScalarRange()[1] + imageData->GetScalarRange()[0]) / 2.0;
+    ///
     for (int i = 0; i < 3; i++)
     {
         m_resliceImageViewer[i] = vtkResliceImageViewerP::New();
