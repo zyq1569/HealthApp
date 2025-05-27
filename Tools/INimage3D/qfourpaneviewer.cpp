@@ -864,12 +864,12 @@ void QFourpaneviewer::SaveImagePaneBMP()
 
     vtkSmartPointer<vtkImageWriter> imagewriter;
 
-    vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
-    lookupTable->SetTableRange(0.0, 2048.0);  // 适用于 8 位灰度图像 (0-255)
-    lookupTable->SetValueRange(0.0, 1.0);   // 0 = 黑色, 1 = 白色// 设置颜色范围 (黑 -> 白)
-    lookupTable->SetSaturationRange(0.0, 0.0); // 0 = 无彩色 (纯灰度)
-    lookupTable->Build();
-    vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
+    //vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+    //lookupTable->SetTableRange(0.0, 2048.0);  // 适用于 8 位灰度图像 (0-255)
+    //lookupTable->SetValueRange(0.0, 1.0);   // 0 = 黑色, 1 = 白色// 设置颜色范围 (黑 -> 白)
+    //lookupTable->SetSaturationRange(0.0, 0.0); // 0 = 无彩色 (纯灰度)
+    //lookupTable->Build();
+    //vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Images(*.png );;Images(*.bmp);;images(*.jpg);;images(*.tiff)"));
     QString upperstr = fileName.toUpper();
     bool btiff = false;
@@ -916,10 +916,19 @@ void QFourpaneviewer::SaveImagePaneBMP()
                 }
                 else
                 {
-                    mapToColors->SetInputData(data);
-                    mapToColors->SetLookupTable(lookupTable); // 需要提前设置适当的查找表
-                    mapToColors->Update();
-                    imagewriter->SetInputData(mapToColors->GetOutput());
+                    //mapToColors->SetInputData(data);
+                    //mapToColors->SetLookupTable(lookupTable); // 需要提前设置适当的查找表
+                    //mapToColors->Update();
+                    //imagewriter->SetInputData(mapToColors->GetOutput());
+                    vtkSmartPointer<vtkImageMapToWindowLevelColors> imageMapToWindowLevel = vtkSmartPointer<vtkImageMapToWindowLevelColors>::New();
+                    imageMapToWindowLevel->SetInputData(data);
+                    double w = m_resliceImageViewer[i]->GetColorWindow(), l = m_resliceImageViewer[i]->GetColorLevel();
+                    imageMapToWindowLevel->SetWindow(m_resliceImageViewer[i]->GetColorWindow());
+                    imageMapToWindowLevel->SetLevel(m_resliceImageViewer[i]->GetColorLevel());
+                    imageMapToWindowLevel->SetLookupTable(m_resliceImageViewer[i]->GetLookupTable());//PassAlphaToOutputOn(); // 如果用了 alpha 通道
+                    imageMapToWindowLevel->SetOutputFormatToLuminance();
+                    imageMapToWindowLevel->Update();
+                    imagewriter->SetInputConnection(imageMapToWindowLevel->GetOutputPort());
                 }
                 imagewriter->Update();
                 imagewriter->Write();
@@ -1248,12 +1257,15 @@ void QFourpaneviewer::ShowImagePlane()
 
     ui->m_sagital2DView->setRenderWindow(m_resliceImageViewer[0]->GetRenderWindow());
     m_resliceImageViewer[0]->SetupInteractor(ui->m_sagital2DView->renderWindow()->GetInteractor());
+    m_resliceImageViewer[0]->GetInteractor()->SetRenderWindow(m_resliceImageViewer[0]->GetRenderWindow());
 
     ui->m_coronal2DView->setRenderWindow(m_resliceImageViewer[1]->GetRenderWindow());
     m_resliceImageViewer[1]->SetupInteractor(ui->m_coronal2DView->renderWindow()->GetInteractor());
+    m_resliceImageViewer[1]->GetInteractor()->SetRenderWindow(m_resliceImageViewer[1]->GetRenderWindow());
 
     ui->m_axial2DView->setRenderWindow(m_resliceImageViewer[2]->GetRenderWindow());
     m_resliceImageViewer[2]->SetupInteractor(ui->m_axial2DView->renderWindow()->GetInteractor());
+    m_resliceImageViewer[2]->GetInteractor()->SetRenderWindow(m_resliceImageViewer[2]->GetRenderWindow());
 
     for (int i = 0; i < 3; i++)
     {
