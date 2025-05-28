@@ -935,17 +935,6 @@ void QFourpaneviewer::SaveImagePaneBMP()
                     //imageMapToWindowLevel->Update();
                     //imagewriter->SetInputConnection(imageMapToWindowLevel->GetOutputPort());
 
-                    //vtkSmartPointer<vtkImageMapToWindowLevelColors> imageMapToWindowLevel = vtkSmartPointer<vtkImageMapToWindowLevelColors>::New();
-                    //imageMapToWindowLevel->SetInputData(data);
-                    //double m_CurrentWL[2];
-                    //rep->GetWindowLevel(m_CurrentWL);
-                    //imageMapToWindowLevel->SetWindow(m_CurrentWL[0]);
-                    //imageMapToWindowLevel->SetLevel(m_CurrentWL[1]);
-                    //imageMapToWindowLevel->SetLookupTable(rep->GetLookupTable());//PassAlphaToOutputOn(); // 如果用了 alpha 通道
-                    //imageMapToWindowLevel->SetOutputFormatToLuminance();
-                    //imageMapToWindowLevel->Update();
-                    //imagewriter->SetInputConnection(imageMapToWindowLevel->GetOutputPort());
-
                     double ww,wl;
                     ww = rep->GetWindow();
                     wl = rep->GetLevel();
