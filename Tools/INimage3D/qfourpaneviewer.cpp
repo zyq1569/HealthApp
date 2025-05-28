@@ -872,6 +872,8 @@ void QFourpaneviewer::SaveImagePaneBMP()
     //lookupTable->Build();
     //vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Images(*.png );;Images(*.bmp);;images(*.jpg);;images(*.tiff)"));
+    if (fileName.length() < 4)
+        return;
     QString upperstr = fileName.toUpper();
     bool btiff = false;
     int pos = 4;
@@ -932,14 +934,40 @@ void QFourpaneviewer::SaveImagePaneBMP()
                     //imageMapToWindowLevel->SetOutputFormatToLuminance();
                     //imageMapToWindowLevel->Update();
                     //imagewriter->SetInputConnection(imageMapToWindowLevel->GetOutputPort());
-                    vtkSmartPointer<vtkImageMapToWindowLevelColors> imageMapToWindowLevel = vtkSmartPointer<vtkImageMapToWindowLevelColors>::New();
-                    imageMapToWindowLevel->SetInputData(data);
-                    imageMapToWindowLevel->SetWindow(m_resliceImageViewer[i]->GetColorWindow());
-                    imageMapToWindowLevel->SetLevel(m_resliceImageViewer[i]->GetColorLevel());
-                    imageMapToWindowLevel->SetLookupTable(m_resliceImageViewer[i]->GetLookupTable());//PassAlphaToOutputOn(); // 如果用了 alpha 通道
-                    imageMapToWindowLevel->SetOutputFormatToLuminance();
-                    imageMapToWindowLevel->Update();
-                    imagewriter->SetInputConnection(imageMapToWindowLevel->GetOutputPort());
+
+                    //vtkSmartPointer<vtkImageMapToWindowLevelColors> imageMapToWindowLevel = vtkSmartPointer<vtkImageMapToWindowLevelColors>::New();
+                    //imageMapToWindowLevel->SetInputData(data);
+                    //double m_CurrentWL[2];
+                    //rep->GetWindowLevel(m_CurrentWL);
+                    //imageMapToWindowLevel->SetWindow(m_CurrentWL[0]);
+                    //imageMapToWindowLevel->SetLevel(m_CurrentWL[1]);
+                    //imageMapToWindowLevel->SetLookupTable(rep->GetLookupTable());//PassAlphaToOutputOn(); // 如果用了 alpha 通道
+                    //imageMapToWindowLevel->SetOutputFormatToLuminance();
+                    //imageMapToWindowLevel->Update();
+                    //imagewriter->SetInputConnection(imageMapToWindowLevel->GetOutputPort());
+
+                    double ww,wl;
+                    ww = rep->GetWindow();
+                    wl = rep->GetLevel();
+                    auto shiftScale = vtkSmartPointer<vtkImageShiftScale>::New();
+                    shiftScale->SetInputData(data);
+                    shiftScale->SetShift(-1.0 * (wl - ww / 2.0));
+                    shiftScale->SetScale(255.0 / ww);
+                    shiftScale->SetOutputScalarTypeToUnsignedChar();
+                    shiftScale->ClampOverflowOn();
+                    
+                    auto lookupTable = vtkSmartPointer<vtkLookupTable>::New();
+                    lookupTable->SetRange(0, 255); 
+                    lookupTable->SetValueRange(0.0, 1.0);
+                    lookupTable->SetSaturationRange(0.0, 0.0);  // 灰度
+                    lookupTable->SetRampToSCurve();
+                    lookupTable->Build();
+                    
+                    auto imageMapToColor = vtkSmartPointer<vtkImageMapToColors>::New();
+                    imageMapToColor->SetInputConnection(shiftScale->GetOutputPort());
+                    imageMapToColor->SetLookupTable(lookupTable);
+                    imageMapToColor->Update();
+                    imagewriter->SetInputConnection(imageMapToColor->GetOutputPort());
                 }
                 imagewriter->Update();
                 imagewriter->Write();
@@ -1268,15 +1296,12 @@ void QFourpaneviewer::ShowImagePlane()
 
     ui->m_sagital2DView->setRenderWindow(m_resliceImageViewer[0]->GetRenderWindow());
     m_resliceImageViewer[0]->SetupInteractor(ui->m_sagital2DView->renderWindow()->GetInteractor());
-    ui->m_sagital2DView->renderWindow()->GetInteractor()->SetRenderWindow(m_resliceImageViewer[0]->GetRenderWindow());
 
     ui->m_coronal2DView->setRenderWindow(m_resliceImageViewer[1]->GetRenderWindow());
     m_resliceImageViewer[1]->SetupInteractor(ui->m_coronal2DView->renderWindow()->GetInteractor());
-    ui->m_coronal2DView->renderWindow()->GetInteractor()->SetRenderWindow(m_resliceImageViewer[1]->GetRenderWindow());
 
     ui->m_axial2DView->setRenderWindow(m_resliceImageViewer[2]->GetRenderWindow());
     m_resliceImageViewer[2]->SetupInteractor(ui->m_axial2DView->renderWindow()->GetInteractor());
-    ui->m_axial2DView->renderWindow()->GetInteractor()->SetRenderWindow(m_resliceImageViewer[2]->GetRenderWindow());
 
     for (int i = 0; i < 3; i++)
     {
