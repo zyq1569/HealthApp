@@ -865,12 +865,6 @@ void QFourpaneviewer::SaveImagePaneBMP()
 
     vtkSmartPointer<vtkImageWriter> imagewriter;
 
-    //vtkSmartPointer<vtkLookupTable> lookupTable = vtkSmartPointer<vtkLookupTable>::New();
-    //lookupTable->SetTableRange(0.0, 2048.0);  // 适用于 8 位灰度图像 (0-255)
-    //lookupTable->SetValueRange(0.0, 1.0);   // 0 = 黑色, 1 = 白色// 设置颜色范围 (黑 -> 白)
-    //lookupTable->SetSaturationRange(0.0, 0.0); // 0 = 无彩色 (纯灰度)
-    //lookupTable->Build();
-    //vtkSmartPointer<vtkImageMapToColors> mapToColors = vtkSmartPointer<vtkImageMapToColors>::New();
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Images(*.png );;Images(*.bmp);;images(*.jpg);;images(*.tiff)"));
     if (fileName.length() < 4)
         return;
