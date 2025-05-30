@@ -636,6 +636,128 @@ void QFourpaneviewer::ShowImagePlaneAnd3D()
     ui->m_image3DView->renderWindow()->Render();
 
 }
+void FitResliceImageToViewer(vtkResliceImageViewer* viewer)
+{
+    /*
+    //只XY面
+    if (!viewer || !viewer->GetImageActor() || !viewer->GetRenderer())
+        return;
+
+    // Step 1: 重设相机，确保在合适位置和视角
+    viewer->GetRenderer()->ResetCamera();
+    vtkCamera* camera = viewer->GetRenderer()->GetActiveCamera();
+
+    // Step 2: 获取窗口大小（像素）
+    int* winSize = viewer->GetRenderWindow()->GetSize();
+    if (winSize[0] <= 0 || winSize[1] <= 0)
+        return;
+
+    double windowAspect = static_cast<double>(winSize[0]) / static_cast<double>(winSize[1]);
+
+    // Step 3: 获取图像 actor 的 bounds（world 坐标下）
+    double bounds[6];
+    viewer->GetImageActor()->GetBounds(bounds);
+
+    double imageWidth  = bounds[1] - bounds[0]; // x
+    double imageHeight = bounds[3] - bounds[2]; // y
+
+    if (imageWidth <= 0 || imageHeight <= 0)
+        return;
+
+    double imageAspect = imageWidth / imageHeight;
+
+    // Step 4: 设置相机的 parallel scale，使图像铺满窗口
+    if (imageAspect > windowAspect)
+    {
+        // 图像更宽，按宽度适配
+        double scale = (imageWidth / windowAspect) / 2.0;
+        camera->SetParallelScale(scale);
+    }
+    else
+    {
+        // 图像更高或匹配，按高度适配
+        double scale = imageHeight / 2.0;
+        camera->SetParallelScale(scale);
+    }
+
+    viewer->Render();
+    */
+
+    if (!viewer || !viewer->GetImageActor() || !viewer->GetRenderer())
+        return;
+
+    vtkRenderer*    renderer = viewer->GetRenderer();
+    vtkCamera*      camera   = renderer->GetActiveCamera();
+    vtkImageData*   image    = viewer->GetInput();
+
+    if (!camera || !image)
+    {
+        return;
+    }
+
+
+    renderer->ResetCamera();
+
+    if (0 == viewer->GetSliceOrientation())
+    {
+        camera->SetViewUp(0, -1, 0);
+    }
+    else
+    {
+        camera->SetViewUp(0, 0, -1);
+    }
+    camera->SetViewUp(0, 0, -1);
+    // Step 2: Get window aspect ratio
+    int* winSize = viewer->GetRenderWindow()->GetSize();
+    if (winSize[0] <= 0 || winSize[1] <= 0)
+    {
+        return;
+    }
+
+
+    double windowAspect = static_cast<double>(winSize[0]) / static_cast<double>(winSize[1]);
+
+    // Step 3: Get image spacing and extent
+    int extent[6];
+    double spacing[3];
+    image->GetExtent(extent);
+    image->GetSpacing(spacing);
+
+    // Step 4: Compute width and height depending on orientation
+    double width = 1.0, height = 1.0;
+    switch (viewer->GetSliceOrientation())
+    {
+    case vtkResliceImageViewer::SLICE_ORIENTATION_XY:
+        width  = (extent[1] - extent[0] + 1) * spacing[0]; // X
+        height = (extent[3] - extent[2] + 1) * spacing[1]; // Y
+        break;
+    case vtkResliceImageViewer::SLICE_ORIENTATION_XZ:
+        width = (extent[1] - extent[0] + 1) * spacing[0]; // X
+        height = (extent[5] - extent[4] + 1) * spacing[2]; // Z
+        break;
+    case vtkResliceImageViewer::SLICE_ORIENTATION_YZ:
+        width  = (extent[3] - extent[2] + 1) * spacing[1]; // Y
+        height = (extent[5] - extent[4] + 1) * spacing[2]; // Z
+        break;
+    default:
+        return; // unsupported or oblique orientation
+    }
+
+    // Step 5: Fit parallel scale
+    double imageAspect = width / height;
+    if (imageAspect > windowAspect)
+    {
+        double scale = (width / windowAspect) / 2.0;
+        camera->SetParallelScale(scale);
+    }
+    else
+    {
+        double scale = height / 2.0;
+        camera->SetParallelScale(scale);
+    }
+    viewer->Render();
+
+}
 void QFourpaneviewer::ResetViewer()
 {
     for (int i = 0; i < 3; i++)
@@ -644,12 +766,19 @@ void QFourpaneviewer::ResetViewer()
         vtkREP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation())->SetWindowLevel(m_defaultWindow, m_defaultLevel);
     }
 
+    /*
     for (int i = 0; i < 3; i++)
     {
-            m_resliceImageViewer[i]->Reset();
-            m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
-            m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.2);
+        m_resliceImageViewer[i]->Reset();
+        m_resliceImageViewer[i]->GetRenderer()->ResetCamera();
+        m_resliceImageViewer[i]->GetRenderer()->GetActiveCamera()->Zoom(1.2);
         m_resliceImageViewer[i]->Render();
+    }    
+    */
+      
+    for (int i = 0; i < 3; i++)
+    {
+        FitResliceImageToViewer(m_resliceImageViewer[i]);
     }
     //
     //vtkResliceCursorLineRepresentation::SafeDownCast(m_resliceImageViewer[1]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, 90 * PI / 180);
