@@ -700,21 +700,14 @@ void FitResliceImageToViewer(vtkResliceImageViewer* viewer)
 
     if (0 == viewer->GetSliceOrientation())
     {
-        camera->SetViewUp(0, -1, 0);
+       camera->SetViewUp(0, 0, 1); // Z 轴朝上，视角从下看，要反转头朝上
     }
-    else
-    {
-        camera->SetViewUp(0, 0, -1);
-    }
-    camera->SetViewUp(0, 0, -1);
     // Step 2: Get window aspect ratio
     int* winSize = viewer->GetRenderWindow()->GetSize();
     if (winSize[0] <= 0 || winSize[1] <= 0)
     {
         return;
     }
-
-
     double windowAspect = static_cast<double>(winSize[0]) / static_cast<double>(winSize[1]);
 
     // Step 3: Get image spacing and extent
