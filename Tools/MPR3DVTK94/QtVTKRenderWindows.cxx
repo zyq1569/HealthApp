@@ -878,10 +878,39 @@ void QtVTKRenderWindows::on_pushButton_clicked()
 
 void QtVTKRenderWindows::on_Sagittal_clicked()
 {
+    /*
+    this->ui->view2->setRenderWindow(riw[0]->GetRenderWindow());
+	riw[0]->SetupInteractor(this->ui->view2->renderWindow()->GetInteractor());
+
+	this->ui->view3->setRenderWindow(riw[1]->GetRenderWindow());
+	riw[1]->SetupInteractor(this->ui->view3->renderWindow()->GetInteractor());
+
+	this->ui->view1->setRenderWindow(riw[2]->GetRenderWindow());
+	riw[2]->SetupInteractor(this->ui->view1->renderWindow()->GetInteractor());
+    */
 	//    //m_Sagittal
 	const double pi = -3.141592653589793238462643383279502884197169399375105820974944;
-	vtkResliceCursorLineRepresentation::SafeDownCast(riw[0]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, pi);
-	riw[2]->GetRenderWindow()->Render();
+
+    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[0]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, 30 * pi/180);
+    //riw[0]->GetRenderWindow()->Render();
+	//vtkResliceCursorLineRepresentation::SafeDownCast(riw[0]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, 30 * pi / 180);
+    //riw[0]->GetRenderWindow()->Render();
+    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[0]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(2, 30 * pi / 180);
+    //riw[0]->GetRenderWindow()->Render();
+    //
+    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, 30 * pi / 180);
+    //riw[2]->GetRenderWindow()->Render();
+    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, 30 * pi / 180);
+    //riw[2]->GetRenderWindow()->Render();
+    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(2, 30 * pi / 180);
+    //riw[2]->GetRenderWindow()->Render();
+    //
+    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[1]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, 30 * pi / 180);
+    //riw[1]->GetRenderWindow()->Render();
+    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[1]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, 30 * pi / 180);
+    //riw[1]->GetRenderWindow()->Render();
+    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[1]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(2, 30 * pi / 180);
+	//riw[1]->GetRenderWindow()->Render();
 }
 
 //常见人体组织的CT值（HU）
