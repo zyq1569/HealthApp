@@ -636,6 +636,7 @@ void QFourpaneviewer::ShowImagePlaneAnd3D()
     ui->m_image3DView->renderWindow()->Render();
 
 }
+void FitResliceImageToViewer(vtkResliceImageViewer* viewer);
 void FitResliceImageToViewer(vtkResliceImageViewer* viewer)
 {
     /*
@@ -695,7 +696,6 @@ void FitResliceImageToViewer(vtkResliceImageViewer* viewer)
         return;
     }
 
-
     renderer->ResetCamera();
 
     if (0 == viewer->GetSliceOrientation())
@@ -725,7 +725,7 @@ void FitResliceImageToViewer(vtkResliceImageViewer* viewer)
         height = (extent[3] - extent[2] + 1) * spacing[1]; // Y
         break;
     case vtkResliceImageViewer::SLICE_ORIENTATION_XZ:
-        width = (extent[1] - extent[0] + 1) * spacing[0]; // X
+        width  = (extent[1] - extent[0] + 1) * spacing[0]; // X
         height = (extent[5] - extent[4] + 1) * spacing[2]; // Z
         break;
     case vtkResliceImageViewer::SLICE_ORIENTATION_YZ:
@@ -768,7 +768,7 @@ void QFourpaneviewer::ResetViewer()
         m_resliceImageViewer[i]->Render();
     }    
     */
-      
+    //XY 暂时不知道为何旋转180度,如果需要手动旋转180恢复好了,[XZ 如果要旋转180,自己试下把 FitResliceImageToViewer 里面窗体宽高换下]
     for (int i = 0; i < 3; i++)
     {
         FitResliceImageToViewer(m_resliceImageViewer[i]);
