@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1099</width>
-    <height>763</height>
+    <width>1289</width>
+    <height>923</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,8 +29,8 @@
      <rect>
       <x>10</x>
       <y>40</y>
-      <width>881</width>
-      <height>721</height>
+      <width>1011</width>
+      <height>871</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
@@ -51,7 +51,7 @@
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>930</x>
+      <x>1040</x>
       <y>40</y>
       <width>161</width>
       <height>521</height>
@@ -234,6 +234,19 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>Sagittal</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="m_pbCPR">
+    <property name="geometry">
+     <rect>
+      <x>1050</x>
+      <y>580</y>
+      <width>51</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>CPR</string>
     </property>
    </widget>
   </widget>
