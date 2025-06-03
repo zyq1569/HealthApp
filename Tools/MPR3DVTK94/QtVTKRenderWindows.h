@@ -41,6 +41,7 @@ public Q_SLOTS:
   virtual void Render();
   virtual void AddDistanceMeasurementToView1();
   virtual void AddDistanceMeasurementToView(int);
+  virtual void StarCPR();
 
 protected:
   //vtkSmartPointer<vtkResliceImageViewer> riw[3];
@@ -49,6 +50,8 @@ protected:
   vtkSmartPointer<vtkImagePlaneWidget> planeWidget[3];
   vtkSmartPointer<vtkDistanceWidget> DistanceWidget[3];
   vtkSmartPointer<vtkResliceImageViewerMeasurements> ResliceMeasurements;
+
+public:
 
 public:
 	vtkSmartPointer< vtkResliceCursorLineRepresentation > vtkrclp[3];
@@ -62,6 +65,8 @@ private slots:
 private:
   // Designer form
   Ui_QtVTKRenderWindows* ui;
+public:
+    vtkSmartPointer < vtkResliceCursorCallback> m_cbk;
 };
 
 #endif // QtVTKRenderWindows_H
