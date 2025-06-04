@@ -55,6 +55,9 @@
 #include <qevent.h>
 
 const double PI = -3.141592653589793238462643383279502884197169399375105820974944;
+
+#define VTKRCP    vtkResliceCursorRepresentation
+
 void FitResliceImageToViewer(vtkResliceImageViewer* viewer);
 void FitResliceImageToViewer(vtkResliceImageViewer* viewer)
 {
@@ -288,25 +291,21 @@ class vtkResliceCursorCallback : public vtkCommand
 {
 public:
     static vtkResliceCursorCallback* New() { return new vtkResliceCursorCallback; }
+
     vtkSmartPointer<vtkImageData> GenerateCPRImageWithThickness(
-        vtkImageData* volume,
-        const std::vector<std::array<double, 3>>& pathPoints,
-        int outputSliceSize = 256,
-        int thickness = 1,
-        double spacing = 1.0,
-        const std::string& mode = "NULL" // "mean" or "mip"
+        vtkImageData* volume,        const std::vector<std::array<double, 3>>& pathPoints,        int outputSliceSize = 200,
+        int thickness = 1,        double spacing = 1.0,        const std::string& mode = "NULL" // "mean" or "mip"
     )
     {
         if (!volume || pathPoints.size() < 2)
             return nullptr;
 
         auto finalStack = vtkSmartPointer<vtkImageAppend>::New();
-        finalStack->SetAppendAxis(1); // Stack along Y
+        finalStack->SetAppendAxis(0); // Stack along Y
         for (size_t i = 0; i + 1 < pathPoints.size(); ++i)
         {
             std::array<double, 3> p0 = pathPoints[i];
             std::array<double, 3> p1 = pathPoints[i + 1];
-
             double tangent[3] =
             {
                 p1[0] - p0[0],
@@ -314,14 +313,12 @@ public:
                 p1[2] - p0[2]
             };
             vtkMath::Normalize(tangent);
-
             // Build orthogonal coordinate system
             double ref[3] = { 0, 0, 1 };
             if (std::abs(vtkMath::Dot(tangent, ref)) > 0.99)
             {
                 ref[0] = 0, ref[1] = 1, ref[2] = 0;
-            }
-                
+            }              
             double normal[3];
             vtkMath::Cross(tangent, ref, normal);
             vtkMath::Normalize(normal);
@@ -337,10 +334,8 @@ public:
                 0.5 * (p0[1] + p1[1]),
                 0.5 * (p0[2] + p1[2])
             };
-
             // Store thickness slices
             std::vector<vtkSmartPointer<vtkImageData>> sliceLayers;
-
             for (int t = -thickness; t <= thickness; ++t)
             {
                 double offsetCenter[3] =
@@ -349,7 +344,6 @@ public:
                     center[1] + spacing * t * normal[1],
                     center[2] + spacing * t * normal[2]
                 };
-
                 auto axes = vtkSmartPointer<vtkMatrix4x4>::New();
                 for (int r = 0; r < 3; ++r)
                 {
@@ -358,18 +352,26 @@ public:
                     axes->SetElement(r, 2, normal[r]);
                     axes->SetElement(r, 3, offsetCenter[r]);
                 }
-
                 auto reslice = vtkSmartPointer<vtkImageReslice>::New();
                 reslice->SetInputData(volume);
                 reslice->SetOutputDimensionality(2);
                 reslice->SetResliceAxes(axes);
                 reslice->SetInterpolationModeToLinear();
                 reslice->SetOutputSpacing(1.0, 1.0, 1.0);
-                reslice->SetOutputExtent(0, outputSliceSize - 1, 0, outputSliceSize - 1, 0, 0);
+                //reslice->SetOutputExtent(0, outputSliceSize - 1, 0, outputSliceSize - 1, 0, 0);
                 reslice->SetBackgroundLevel(0);
                 reslice->Update();
 
                 sliceLayers.push_back(reslice->GetOutput());
+                /*
+                static int number = 0;
+                QString fileName = QString::number(i) + QString::number(number ++) + ".tiff";                
+                vtkSmartPointer<vtkTIFFWriter>  writer = vtkSmartPointer<vtkTIFFWriter>::New();
+                writer->SetFileName(qPrintable(fileName));
+                writer->SetInputData(reslice->GetOutput());
+                writer->Update();
+                writer->Write();
+                */
             }
 
             vtkSmartPointer<vtkImageData> combined;
@@ -415,7 +417,6 @@ public:
 
             finalStack->AddInputData(combined);
         }
-
         finalStack->Update();
         return finalStack->GetOutput();
     }
