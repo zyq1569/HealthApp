@@ -13,6 +13,7 @@
 class vtkCornerAnnotation;
 class vtkResliceCursorLineRepresentation;
 class vtkMPRResliceImageViewer;
+class vtkResliceCursorCallback;
 // Forward Qt class declarations
 class Ui_QtVTKRenderWindows;
 
@@ -66,7 +67,7 @@ private:
   // Designer form
   Ui_QtVTKRenderWindows* ui;
 public:
-    vtkSmartPointer < vtkResliceCursorCallback> m_cbk;
+    vtkSmartPointer <vtkResliceCursorCallback> m_cbk;
 };
 
 #endif // QtVTKRenderWindows_H
