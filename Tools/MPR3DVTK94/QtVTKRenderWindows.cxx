@@ -50,7 +50,7 @@
 #include <vtkImageActor.h>
 #include <vtkImageReslice.h>
 #include <vtkPolyDataMapper.h>
-
+#include <vtkImageAppend.h>
 
 #include <qevent.h>
 
@@ -288,10 +288,156 @@ class vtkResliceCursorCallback : public vtkCommand
 {
 public:
     static vtkResliceCursorCallback* New() { return new vtkResliceCursorCallback; }
+    vtkSmartPointer<vtkImageData> GenerateCPRImageWithThickness(
+        vtkImageData* volume,
+        const std::vector<std::array<double, 3>>& pathPoints,
+        int outputSliceSize = 256,
+        int thickness = 1,
+        double spacing = 1.0,
+        const std::string& mode = "NULL" // "mean" or "mip"
+    )
+    {
+        if (!volume || pathPoints.size() < 2)
+            return nullptr;
 
+        auto finalStack = vtkSmartPointer<vtkImageAppend>::New();
+        finalStack->SetAppendAxis(1); // Stack along Y
+        for (size_t i = 0; i + 1 < pathPoints.size(); ++i)
+        {
+            std::array<double, 3> p0 = pathPoints[i];
+            std::array<double, 3> p1 = pathPoints[i + 1];
+
+            double tangent[3] =
+            {
+                p1[0] - p0[0],
+                p1[1] - p0[1],
+                p1[2] - p0[2]
+            };
+            vtkMath::Normalize(tangent);
+
+            // Build orthogonal coordinate system
+            double ref[3] = { 0, 0, 1 };
+            if (std::abs(vtkMath::Dot(tangent, ref)) > 0.99)
+            {
+                ref[0] = 0, ref[1] = 1, ref[2] = 0;
+            }
+                
+            double normal[3];
+            vtkMath::Cross(tangent, ref, normal);
+            vtkMath::Normalize(normal);
+
+            double binormal[3];
+            vtkMath::Cross(tangent, normal, binormal);
+            vtkMath::Normalize(binormal);
+
+            // Midpoint center
+            double center[3] =
+            {
+                0.5 * (p0[0] + p1[0]),
+                0.5 * (p0[1] + p1[1]),
+                0.5 * (p0[2] + p1[2])
+            };
+
+            // Store thickness slices
+            std::vector<vtkSmartPointer<vtkImageData>> sliceLayers;
+
+            for (int t = -thickness; t <= thickness; ++t)
+            {
+                double offsetCenter[3] =
+                {
+                    center[0] + spacing * t * normal[0],
+                    center[1] + spacing * t * normal[1],
+                    center[2] + spacing * t * normal[2]
+                };
+
+                auto axes = vtkSmartPointer<vtkMatrix4x4>::New();
+                for (int r = 0; r < 3; ++r)
+                {
+                    axes->SetElement(r, 0, tangent[r]);
+                    axes->SetElement(r, 1, binormal[r]);
+                    axes->SetElement(r, 2, normal[r]);
+                    axes->SetElement(r, 3, offsetCenter[r]);
+                }
+
+                auto reslice = vtkSmartPointer<vtkImageReslice>::New();
+                reslice->SetInputData(volume);
+                reslice->SetOutputDimensionality(2);
+                reslice->SetResliceAxes(axes);
+                reslice->SetInterpolationModeToLinear();
+                reslice->SetOutputSpacing(1.0, 1.0, 1.0);
+                reslice->SetOutputExtent(0, outputSliceSize - 1, 0, outputSliceSize - 1, 0, 0);
+                reslice->SetBackgroundLevel(0);
+                reslice->Update();
+
+                sliceLayers.push_back(reslice->GetOutput());
+            }
+
+            vtkSmartPointer<vtkImageData> combined;
+            //if (mode == "mip")
+            //{
+            //    auto mip = vtkSmartPointer<vtkImageMathematics>::New();
+            //    mip->SetOperationToMax();
+            //    mip->SetInput1Data(sliceLayers[0]);
+            //    for (size_t j = 1; j < sliceLayers.size(); ++j) {
+            //        mip->SetInput2Data(sliceLayers[j]);
+            //        mip->Update();
+            //        mip->SetInput1Data(mip->GetOutput());
+            //    }
+            //    mip->Update();
+            //    combined = mip->GetOutput();
+            //}
+            //else if (mode == "mean")
+            //{
+            //    auto sum = vtkSmartPointer<vtkImageMathematics>::New();
+            //    sum->SetOperationToAdd();
+            //    sum->SetInput1Data(sliceLayers[0]);
+            //    for (size_t j = 1; j < sliceLayers.size(); ++j) {
+            //        sum->SetInput2Data(sliceLayers[j]);
+            //        sum->Update();
+            //        sum->SetInput1Data(sum->GetOutput());
+            //    }
+            //    sum->Update();
+            //
+            //    auto avg = vtkSmartPointer<vtkImageShiftScale>::New();
+            //    avg->SetInputData(sum->GetOutput());
+            //    avg->SetShift(0);
+            //    avg->SetScale(1.0 / sliceLayers.size());
+            //    avg->SetOutputScalarTypeToFloat();
+            //    avg->Update();
+            //
+            //    combined = avg->GetOutput();
+            //}
+            //else
+            {
+                // 默认返回中间层
+                combined = sliceLayers[thickness];
+            }
+
+            finalStack->AddInputData(combined);
+        }
+
+        finalStack->Update();
+        return finalStack->GetOutput();
+    }
     void Execute(vtkObject* caller, unsigned long ev, void* callData) override
     {
         AbortFlagOff();
+        vtkRenderWindow* renderWindow        = nullptr;;
+        vtkResliceImageViewer* currentViewer = nullptr;
+        auto interactor                      = vtkRenderWindowInteractor::SafeDownCast(caller);
+        if (interactor)
+        {
+            renderWindow = interactor->GetRenderWindow();
+            for (int i = 0; i < 3; i++)
+            {
+                if (renderWindow == m_riw[i]->GetRenderWindow())
+                {
+                    currentViewer = m_riw[i];
+                    break;
+                }
+            }
+        }
+
         if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent ||
             ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent)
         {
@@ -307,24 +453,28 @@ public:
         else if (ev == vtkCommand::LeftButtonDoubleClickEvent)
         {
             m_starSpline = false;
+            int pointsize = m_points.size();
+            if (pointsize > 2)
+            {
+                auto data = GenerateCPRImageWithThickness(currentViewer->GetInput(), m_points);
+                auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
+                viewer->SetInputData(data);
+
+                auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+                viewer->SetupInteractor(interactor);
+
+                viewer->GetRenderWindow()->SetWindowName("title.c_str()");
+                viewer->Render();
+                interactor->Start();
+            }
         }
         else if (ev == vtkCommand::RightButtonPressEvent && m_starSpline)
-        {
-            auto interactor = vtkRenderWindowInteractor::SafeDownCast(caller);
+        {        
             int* clickPos = interactor->GetEventPosition();
             vtkSmartPointer<vtkCoordinate> coordinate = vtkSmartPointer<vtkCoordinate>::New();
             coordinate->SetCoordinateSystemToDisplay();
             coordinate->SetValue(clickPos[0], clickPos[1]);
-            vtkRenderWindow* renderWindow       = interactor->GetRenderWindow();
-            vtkResliceImageViewer* currentViewer = nullptr;
-            for (int i = 0; i < 3; i++)
-            {
-                if (renderWindow == m_riw[i]->GetRenderWindow())
-                {
-                    currentViewer = m_riw[i];
-                    break;
-                }
-            }
+            
             double* world = coordinate->GetComputedWorldValue(currentViewer->GetRenderer());
             m_points.push_back({ world[0], world[1], world[2] });
         }
@@ -349,50 +499,63 @@ public:
                 QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
                 m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
             }
-            if (m_starSpline && m_points.size() > 1)
+            int pointsize = m_points.size();
+            if (m_starSpline &&  pointsize > 0)
             {
                 vtkSmartPointer<vtkPoints> vtkpoints = vtkSmartPointer<vtkPoints>::New();
-                for (int i = 0; i < 4; ++i)
+
+                for (int i = 0; i < pointsize; ++i)
                 {
                     vtkpoints->InsertNextPoint(m_points[i].at(0), m_points[i].at(1), m_points[i].at(2));
                 }
-
+                //+++
+                int* clickPos = interactor->GetEventPosition();
+                vtkSmartPointer<vtkCoordinate> coordinate = vtkSmartPointer<vtkCoordinate>::New();
+                coordinate->SetCoordinateSystemToDisplay();
+                coordinate->SetValue(clickPos[0], clickPos[1]);
+                double* world = coordinate->GetComputedWorldValue(currentViewer->GetRenderer());
+                vtkpoints->InsertNextPoint(world[0], world[1], world[2]);
+                pointsize++;
+                //++
                 vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-                vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
-                ids->SetNumberOfIds(5);
-                for (int i = 0; i < 5; ++i)
+                vtkSmartPointer<vtkIdList> ids      = vtkSmartPointer<vtkIdList>::New();
+                ids->SetNumberOfIds(pointsize);
+                for (int i = 0; i < pointsize; ++i)
                 {
                     ids->SetId(i, i);
                 }
                 lines->InsertNextCell(ids);
 
-                vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
+                vtkSmartPointer<vtkPolyData> polyData    = vtkSmartPointer<vtkPolyData>::New();
                 polyData->SetPoints(vtkpoints);
                 polyData->SetLines(lines);
 
                 vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
                 mapper->SetInputData(polyData);
 
+                // 清除旧---- actor--------
+                static std::map<vtkResliceImageViewer*, vtkSmartPointer<vtkActor>> g_ResliceImageActorMap;
+
                 vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
                 actor->SetMapper(mapper);
                 actor->GetProperty()->SetColor(1.0, 0.0, 0.0);
                 actor->GetProperty()->SetLineWidth(2.0);
                 actor->GetProperty()->SetOpacity(1);
-
-                auto interactor = vtkRenderWindowInteractor::SafeDownCast(caller);
-                vtkRenderWindow* renderWindow = interactor->GetRenderWindow();
-                vtkResliceImageViewer* currentViewer = nullptr;
-                for (int i = 0; i < 3; i++)
+               
+                if (g_ResliceImageActorMap.count(currentViewer))
                 {
-                    if (renderWindow == m_riw[i]->GetRenderWindow())
+                    vtkActor* oldActor = g_ResliceImageActorMap[currentViewer];
+                    if (currentViewer->GetRenderer()->HasViewProp(oldActor))
                     {
-                        currentViewer = m_riw[i];
-                        break;
+                        currentViewer->GetRenderer()->RemoveActor(oldActor);
                     }
+                    g_ResliceImageActorMap.erase(currentViewer);
                 }
                 currentViewer->GetRenderer()->AddActor(actor);
                 currentViewer->GetRenderer()->Render();
                 currentViewer->GetRenderer()->GetRenderWindow()->Render();
+
+                g_ResliceImageActorMap[currentViewer] = actor;
             }
         }
         else if (ev == vtkCommand::MouseWheelForwardEvent || ev == vtkCommand::MouseWheelBackwardEvent)
@@ -484,7 +647,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     vtkNew<vtkMetaImageReader> reader;
     //std::string dir = qPrintable());//argv[1];	
     QString dir = argv[1];
-    dir = "D:\\Test_DICOM\\jp2k\\VTKMetaData.mhd";
+    dir = "D:\\TEMP\\SZDL\\test-data\\MPR_0408.mhd";
     std::string stddir = qPrintable(dir);
     reader->SetFileName(stddir.c_str());
     reader->Update();
@@ -557,9 +720,9 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
     picker->SetTolerance(0.005);
 
-    vtkSmartPointer<vtkProperty> ipwProp = vtkSmartPointer<vtkProperty>::New();
+    vtkSmartPointer<vtkProperty> ipwProp  = vtkSmartPointer<vtkProperty>::New();
 
-    vtkSmartPointer<vtkRenderer> ren = vtkSmartPointer<vtkRenderer>::New();
+    vtkSmartPointer<vtkRenderer> ren      = vtkSmartPointer<vtkRenderer>::New();
 
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
     this->ui->view4->setRenderWindow(renderWindow);
@@ -599,12 +762,10 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     }
 
     resliceMode(1);
-    double bounds[6];
-    imageData->GetCellBounds(imageData->GetNumberOfCells(), bounds);
-    double w = bounds[0] - bounds[0];
-
+    //double bounds[6];
+    //imageData->GetCellBounds(imageData->GetNumberOfCells(), bounds);
+    //double w = bounds[0] - bounds[0];
     ///
-
     m_cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
 
     for (int i = 0; i < 3; i++)
@@ -625,10 +786,10 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 
         riw[i]->GetInteractor()->AddObserver(vtkCommand::MouseWheelForwardEvent, m_cbk);
         riw[i]->GetInteractor()->AddObserver(vtkCommand::MouseWheelBackwardEvent, m_cbk);
+
         riw[i]->GetInteractor()->AddObserver(vtkCommand::LeftButtonDoubleClickEvent, m_cbk);
         riw[i]->GetInteractor()->AddObserver(vtkCommand::RightButtonPressEvent, m_cbk);
-
-        riw[i]->AddObserver(vtkCommand::MouseWheelForwardEvent, m_cbk);
+        riw[i]->GetInteractor()->AddObserver(vtkCommand::MouseMoveEvent, m_cbk);
 
         // Make them all share the same color map.
         riw[i]->SetLookupTable(riw[0]->GetLookupTable());
@@ -674,6 +835,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 void QtVTKRenderWindows::StarCPR()
 {
     m_cbk->m_starSpline = true;
+    m_cbk->m_points.clear();
 }
 
 void QtVTKRenderWindows::slotExit()
