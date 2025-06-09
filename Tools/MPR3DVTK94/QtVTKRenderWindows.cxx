@@ -324,12 +324,8 @@ vtkSmartPointer<vtkImageData> GenerateCPRImageWithThickness(
     return finalStack->GetOutput();
 }
 
-vtkSmartPointer<vtkImageData> GenerateCPRImageFromViewer(
-    vtkResliceImageViewer* viewer,
-    const std::vector<std::array<double, 3>>& pathPoints,
-    int thickness = 1,
-    double spacing = 1.0,
-    const std::string& mode = "mean"
+vtkSmartPointer<vtkImageData> GenerateCPRImageFromViewer(    vtkResliceImageViewer* viewer,    
+    const std::vector<std::array<double, 3>>& pathPoints,    int thickness = 1,    double spacing = 1.0,    const std::string& mode = "mean"
 )
 {
     if (!viewer || pathPoints.size() < 2)
@@ -438,13 +434,9 @@ vtkSmartPointer<vtkImageData> GenerateCPRImageFromViewer(
             reslicer->SetResliceAxes(matrix);
             reslicer->SetInterpolationModeToLinear();
             reslicer->SetOutputSpacing(spacing, spacing, spacing);
-            reslicer->SetOutputExtent(
-                -outputWidth / 2, outputWidth / 2,
-                -outputHeight / 2, outputHeight / 2,
-                0, 0);
+            //reslicer->SetOutputExtent( -outputWidth / 2, outputWidth / 2,-outputHeight / 2, outputHeight / 2, 0, 0);
             reslicer->SetOutputOrigin(0, 0, 0);
             reslicer->Update();
-
             slices.push_back(reslicer->GetOutput());
         }
 
