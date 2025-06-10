@@ -755,7 +755,7 @@ void QFourpaneviewer::ResetViewer()
 {
     for (int i = 0; i < 3; i++)
     {
-        m_resliceImageViewer[i]->SetResliceMode(1);
+        m_resliceImageViewer[i]->SetResliceMode(1);// 如果模式修改为0,则对应原始数据每一个切面的数据浏览. 这种模式 GetSlice 可以直接使用
         vtkREP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation())->SetWindowLevel(m_defaultWindow, m_defaultLevel);
     }
 
