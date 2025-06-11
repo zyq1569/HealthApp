@@ -698,10 +698,10 @@ void FitResliceImageToViewer(vtkResliceImageViewer* viewer)
 
     renderer->ResetCamera();
 
-    if (0 == viewer->GetSliceOrientation())
-    {
-       camera->SetViewUp(0, 0, 1); // Z 轴朝上，视角从下看，要反转头朝上
-    }
+    //if (0 == viewer->GetSliceOrientation())
+    //{
+    //   camera->SetViewUp(0, 0, 1); // Z 轴朝上，视角从下看，要反转头朝上
+    //}
     // Step 2: Get window aspect ratio
     int* winSize = viewer->GetRenderWindow()->GetSize();
     if (winSize[0] <= 0 || winSize[1] <= 0)
@@ -768,7 +768,8 @@ void QFourpaneviewer::ResetViewer()
         m_resliceImageViewer[i]->Render();
     }    
     */
-    //XY 暂时不知道为何旋转180度,如果需要手动旋转180恢复好了,[XZ 如果要旋转180,自己试下把 FitResliceImageToViewer 里面窗体宽高换下]
+    //[XZ 如果要旋转180,自己试下把 FitResliceImageToViewer 里面窗体宽高换下]
+    int a[2];
     for (int i = 0; i < 3; i++)
     {
         m_resliceImageViewer[i]->Reset();
