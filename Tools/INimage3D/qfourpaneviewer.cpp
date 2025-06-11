@@ -769,7 +769,6 @@ void QFourpaneviewer::ResetViewer()
     }    
     */
     //[XZ 如果要旋转180,自己试下把 FitResliceImageToViewer 里面窗体宽高换下]
-    int a[2];
     for (int i = 0; i < 3; i++)
     {
         m_resliceImageViewer[i]->Reset();
