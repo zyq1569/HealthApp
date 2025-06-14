@@ -10,9 +10,11 @@
 #include <fstream>
 #include <iostream>
 
-#include<Qdir>
-#include<QMessageBox>
+#include <Qdir>
+#include <QMessageBox>
 #include <QSettings>
+
+//#include <QElapsedTimer>
 
 QtVTKRenderWindows::QtVTKRenderWindows(QWidget *parent) : QMainWindow(parent), ui(new Ui::QtVTKRenderWindows)
 {
@@ -200,7 +202,13 @@ void QtVTKRenderWindows::raw2mhd()
 	{
 		return;
 	}
+    ///+++++
+    //QElapsedTimer ElapsedTimer;
+    //ElapsedTimer.start();
+    /*耗时操作......*/
+    //ElapsedTimer.elapsed() ;
 
+    ///+++++
 	QString w = ui->m_width->toPlainText();
 	QString h = ui->m_height->toPlainText();
 	QString filenameExtra;
@@ -245,13 +253,13 @@ void QtVTKRenderWindows::raw2mhd()
 		return;
 	}
 
-
-	QString fn = ui->m_filename->toPlainText();
-	QString fa = ui->m_fmn->toPlainText();
+    QStringList filesList;
+	QString fn   = ui->m_filename->toPlainText();
+	QString fa   = ui->m_fmn->toPlainText();
 	int formateN = fa.toInt();
-	int index_s = ui->m_start->toPlainText().toInt();
-	int index_e = ui->m_end->toPlainText().toInt() + 1;
-	int depth = index_e - index_s;
+	int index_s  = ui->m_start->toPlainText().toInt();
+	int index_e  = ui->m_end->toPlainText().toInt() + 1;
+	int depth    = index_e - index_s;
 	for (int i = index_s; i < index_e; i++)
 	{
 		QString index = dir + "\\" + fn;//
@@ -265,7 +273,9 @@ void QtVTKRenderWindows::raw2mhd()
 			index += QString("%1").arg(i);
 			index += filenameExtra;
 		}
+        filesList.push_back(index);
 
+        /*
 		std::string filename = qPrintable(index);
 		QFileInfo file(index);
 		if (!file.isFile())
@@ -276,6 +286,9 @@ void QtVTKRenderWindows::raw2mhd()
 			QFile::remove(rawFilename.c_str());
 			return;
 		}
+        //QElapsedTimer ElapsedTimerRead;
+        //ElapsedTimerRead.start();
+        
 		vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
 		reader->SetFileName(filename.c_str());
 		reader->SetFileDimensionality(2);  // 2D 图像
@@ -287,15 +300,42 @@ void QtVTKRenderWindows::raw2mhd()
 		reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
 		reader->Update();
 
-		vtkSmartPointer<vtkImageData> imageData = reader->GetOutput();
-		int* dims = imageData->GetDimensions();
-		int dataSize = dims[0] * dims[1] * sizeof(unsigned short);;
-		rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
+        //QString strRead = QString::number(ElapsedTimerRead.elapsed());
+        //QMessageBox::information(nullptr, "ElapsedTimer", strRead, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
+		vtkSmartPointer<vtkImageData> imageData = reader->GetOutput();
+		int* dims    = imageData->GetDimensions();
+		int dataSize = dims[0] * dims[1] * sizeof(unsigned short);
+		rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);        
+        */
 	}
+    int size = filesList.size();
+    QList< vtkSmartPointer<vtkImageReader2>> vtkImageReaderList;
+    for (int i = 0; i < size; i++)
+    {
+        std::string filename = qPrintable(filesList.at(i));
+        vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
+        reader->SetFileName(filename.c_str());
+        reader->SetFileDimensionality(2);  // 2D 图像
+        reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
+        reader->SetDataScalarTypeToUnsignedShort();  // 无符号整型
+        reader->SetNumberOfScalarComponents(1);
+        reader->SetFileLowerLeft(true);  // 数据从左下角开始
+        // 设置像素间距
+        reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
+        reader->Update();
+        vtkImageReaderList.push_back(reader);
+    }
+    for (int i = 0; i < size; i++)
+    {
+        vtkSmartPointer<vtkImageData> imageData = vtkImageReaderList.at(i)->GetOutput();
+        int* dims = imageData->GetDimensions();
+        int dataSize = dims[0] * dims[1] * sizeof(unsigned short);
+        rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
+    }
 	rawFile.close();
 
-
+    //QString str = QString::number(ElapsedTimer.elapsed());
 	// 生成 MHD 头文件（只执行一次）
 	std::ofstream mhdFile(mhdFilename);
 	if (!mhdFile.is_open())
@@ -333,7 +373,10 @@ void QtVTKRenderWindows::raw2mhd()
 		QFile::remove(mhdFilename.c_str());
 		QFile::remove(rawFilename.c_str());
 	}
+    //str += "|";
+    //str += QString::number(ElapsedTimer.elapsed());
 
+    //QMessageBox::information(nullptr, "ElapsedTimer",str,QMessageBox::Yes |QMessageBox::No,QMessageBox::Yes);
 	//SetMemoryBuffer
 }
 
