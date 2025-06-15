@@ -15,6 +15,79 @@
 #include <QSettings>
 
 //#include <QElapsedTimer>
+#include <QCoreApplication>
+#include <QtConcurrent/QtConcurrent>
+
+using namespace QtConcurrent;
+
+extern QList< vtkSmartPointer<vtkImageReader2>> vtkImageReaderOne(QStringList filesList, int width , int height)
+{
+    int size = filesList.size();
+    QList< vtkSmartPointer<vtkImageReader2>> listImageReader2;
+    for (int i = 0; i < size; i++)
+    {
+        std::string filename = qPrintable(filesList.at(i));
+        vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
+        reader->SetFileName(filename.c_str());
+        reader->SetFileDimensionality(2);  // 2D 图像
+        reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
+        reader->SetDataScalarTypeToUnsignedShort();  // 无符号整型
+        reader->SetNumberOfScalarComponents(1);
+        reader->SetFileLowerLeft(true);  // 数据从左下角开始
+        // 设置像素间距
+        reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
+        reader->Update();
+        listImageReader2.push_back(reader);
+    }
+
+    return listImageReader2;
+}
+
+extern QList< vtkSmartPointer<vtkImageReader2>> vtkImageReaderTwo(QStringList filesList, int width, int height)
+{
+    int size = filesList.size();
+    QList< vtkSmartPointer<vtkImageReader2>> listImageReader2;
+    for (int i = 0; i < size; i++)
+    {
+        std::string filename = qPrintable(filesList.at(i));
+        vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
+        reader->SetFileName(filename.c_str());
+        reader->SetFileDimensionality(2);  // 2D 图像
+        reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
+        reader->SetDataScalarTypeToUnsignedShort();  // 无符号整型
+        reader->SetNumberOfScalarComponents(1);
+        reader->SetFileLowerLeft(true);  // 数据从左下角开始
+        // 设置像素间距
+        reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
+        reader->Update();
+        listImageReader2.push_back(reader);
+    }
+
+    return listImageReader2;
+}
+
+extern QList< vtkSmartPointer<vtkImageReader2>> vtkImageReaderThree(QStringList filesList, int width, int height)
+{
+    int size = filesList.size();
+    QList< vtkSmartPointer<vtkImageReader2>> listImageReader2;
+    for (int i = 0; i < size; i++)
+    {
+        std::string filename = qPrintable(filesList.at(i));
+        vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
+        reader->SetFileName(filename.c_str());
+        reader->SetFileDimensionality(2);  // 2D 图像
+        reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
+        reader->SetDataScalarTypeToUnsignedShort();  // 无符号整型
+        reader->SetNumberOfScalarComponents(1);
+        reader->SetFileLowerLeft(true);  // 数据从左下角开始
+        // 设置像素间距
+        reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
+        reader->Update();
+        listImageReader2.push_back(reader);
+    }
+
+    return listImageReader2;
+}
 
 QtVTKRenderWindows::QtVTKRenderWindows(QWidget *parent) : QMainWindow(parent), ui(new Ui::QtVTKRenderWindows)
 {
@@ -197,6 +270,7 @@ void QtVTKRenderWindows::raw2vtkmhd()
 
 void QtVTKRenderWindows::raw2mhd()
 {
+   
 	QString dir = ui->m_dcmDIR->toPlainText();
 	if (!QDir(dir).exists())
 	{
@@ -310,30 +384,88 @@ void QtVTKRenderWindows::raw2mhd()
         */
 	}
     int size = filesList.size();
-    QList< vtkSmartPointer<vtkImageReader2>> vtkImageReaderList;
-    for (int i = 0; i < size; i++)
+    //QList< vtkSmartPointer<vtkImageReader2>> vtkImageReaderList;
+    //for (int i = 0; i < size; i++)
+    //{
+    //    std::string filename = qPrintable(filesList.at(i));
+    //    vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
+    //    reader->SetFileName(filename.c_str());
+    //    reader->SetFileDimensionality(2);  // 2D 图像
+    //    reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
+    //    reader->SetDataScalarTypeToUnsignedShort();  // 无符号整型
+    //    reader->SetNumberOfScalarComponents(1);
+    //    reader->SetFileLowerLeft(true);  // 数据从左下角开始
+    //    // 设置像素间距
+    //    reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
+    //    reader->Update();
+    //    vtkImageReaderList.push_back(reader);
+    //}
+    //
+    ///
+    //for (int i = 0; i < size; i++)
+    //{
+    //    vtkSmartPointer<vtkImageData> imageData = vtkImageReaderList.at(i)->GetOutput();
+    //    int* dims = imageData->GetDimensions();
+    //    int dataSize = dims[0] * dims[1] * sizeof(unsigned short);
+    //    rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
+    //}
+    //rawFile.close();
     {
-        std::string filename = qPrintable(filesList.at(i));
-        vtkSmartPointer<vtkImageReader2> reader = vtkSmartPointer<vtkImageReader2>::New();
-        reader->SetFileName(filename.c_str());
-        reader->SetFileDimensionality(2);  // 2D 图像
-        reader->SetDataExtent(0, width - 1, 0, height - 1, 0, 0);  // 2D 读取
-        reader->SetDataScalarTypeToUnsignedShort();  // 无符号整型
-        reader->SetNumberOfScalarComponents(1);
-        reader->SetFileLowerLeft(true);  // 数据从左下角开始
-        // 设置像素间距
-        reader->SetDataSpacing(0.025, 0.025, 0.025); // X, Y, Z 间距匹配 Scale_x/y/z
-        reader->Update();
-        vtkImageReaderList.push_back(reader);
+        QStringList filesOne, filesTwo, filesThree;
+        QList< vtkSmartPointer<vtkImageReader2>> vtkImageReaderList;
+        int div = size / 3;
+        for (int i = 0; i < div; i++)
+        {
+            filesOne.push_back(filesList[i]);
+        }
+        for (int i = div; i < size - 2*div; i++)
+        {
+            filesTwo.push_back(filesList[i]);
+        }
+        for (int i = size - 2 * div; i < size; i++)
+        {
+            filesThree.push_back(filesList[i]);
+        }
+
+        QFuture < QList< vtkSmartPointer<vtkImageReader2>> > threadOne   = QtConcurrent::run(vtkImageReaderOne, filesOne, width, height);
+        QList< vtkSmartPointer<vtkImageReader2>> listvtkImageReaderOne   = threadOne.result();
+                                                                        
+        QFuture < QList< vtkSmartPointer<vtkImageReader2>> > threadTwo   = QtConcurrent::run(vtkImageReaderTwo,  filesTwo, width, height);
+        QList< vtkSmartPointer<vtkImageReader2>> listvtkImageReaderTwo   = threadTwo.result();
+
+        QFuture < QList< vtkSmartPointer<vtkImageReader2>> > threadThree = QtConcurrent::run(vtkImageReaderThree, filesThree, width, height);
+        QList< vtkSmartPointer<vtkImageReader2>> listvtkImageReaderThree = threadThree.result();
+
+        threadOne.waitForFinished();
+        threadTwo.waitForFinished();
+        threadThree.waitForFinished();
+
+        int tsize = listvtkImageReaderOne.size();
+        for (int i = 0; i < tsize; i++)
+        {
+            vtkSmartPointer<vtkImageData> imageData = listvtkImageReaderOne.at(i)->GetOutput();
+            int* dims = imageData->GetDimensions();
+            int dataSize = dims[0] * dims[1] * sizeof(unsigned short);
+            rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
+        }
+        tsize = listvtkImageReaderTwo.size();
+        for (int i = 0; i < tsize; i++)
+        {
+            vtkSmartPointer<vtkImageData> imageData = listvtkImageReaderTwo.at(i)->GetOutput();
+            int* dims = imageData->GetDimensions();
+            int dataSize = dims[0] * dims[1] * sizeof(unsigned short);
+            rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
+        }
+        tsize = listvtkImageReaderThree.size();
+        for (int i = 0; i < tsize; i++)
+        {
+            vtkSmartPointer<vtkImageData> imageData = listvtkImageReaderThree.at(i)->GetOutput();
+            int* dims = imageData->GetDimensions();
+            int dataSize = dims[0] * dims[1] * sizeof(unsigned short);
+            rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
+        }
+
     }
-    for (int i = 0; i < size; i++)
-    {
-        vtkSmartPointer<vtkImageData> imageData = vtkImageReaderList.at(i)->GetOutput();
-        int* dims = imageData->GetDimensions();
-        int dataSize = dims[0] * dims[1] * sizeof(unsigned short);
-        rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
-    }
-	rawFile.close();
 
     //QString str = QString::number(ElapsedTimer.elapsed());
 	// 生成 MHD 头文件（只执行一次）
@@ -375,7 +507,6 @@ void QtVTKRenderWindows::raw2mhd()
 	}
     //str += "|";
     //str += QString::number(ElapsedTimer.elapsed());
-
     //QMessageBox::information(nullptr, "ElapsedTimer",str,QMessageBox::Yes |QMessageBox::No,QMessageBox::Yes);
 	//SetMemoryBuffer
 }
