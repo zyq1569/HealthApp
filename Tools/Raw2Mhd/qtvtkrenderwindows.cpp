@@ -17,18 +17,16 @@
 #include <QElapsedTimer>
 #include <QCoreApplication>
 #include <QtConcurrent/QtConcurrent>
-#include <QFuture>
 #include <vtkStringArray.h>
-//using namespace QtConcurrent;
 
 class DataIno
 {
 public:
     DataIno(QStringList list, int w = 512, int h = 512)
     {
-        m_width = w;
+        m_width  = w;
         m_height = h;
-        m_array = vtkStringArray::New();
+        m_array  = vtkStringArray::New();
         for (int i = 0; i < list.size(); i++)
         {
             m_array->InsertNextValue(qPrintable(list.at(i)));
@@ -361,7 +359,6 @@ void QtVTKRenderWindows::raw2mhd()
     mhdFile << "ElementType = MET_USHORT\n";
     mhdFile << "ElementDataFile = " << rawFilename << "\n";
     mhdFile.close();
-
 
     if (bzipdata)
     {
