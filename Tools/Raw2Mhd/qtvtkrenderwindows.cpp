@@ -22,16 +22,26 @@
 class DataIno
 {
 public:
-    DataIno(QStringList list, int w = 512, int h = 512)
+    DataIno(QStringList list = QStringList(), int w = 512, int h = 512)
     {
-        m_width  = w;
+        m_width = w;
         m_height = h;
-        m_array  = vtkStringArray::New();
+        m_array = vtkStringArray::New();
         for (int i = 0; i < list.size(); i++)
         {
             m_array->InsertNextValue(qPrintable(list.at(i)));
         }
         m_reader = vtkSmartPointer<vtkImageReader2>::New();
+    }
+    void setInfo(QStringList list, int w, int h)
+    {
+        m_width = w;
+        m_height = h;
+        m_array->Initialize();
+        for (int i = 0; i < list.size(); i++)
+        {
+            m_array->InsertNextValue(qPrintable(list.at(i)));
+        }
     }
     vtkSmartPointer<vtkImageReader2 >  m_reader;
     vtkStringArray *m_array;
@@ -310,38 +320,37 @@ void QtVTKRenderWindows::raw2mhd()
     QElapsedTimer ElapsedTimer;
     ElapsedTimer.start();
 
+#define  MAX_THREAD  4 //常规下不要超过  max_n = (CPU核心数的2倍 - 1), 否则可能慢！(服务器自行考虑)
     int count = filesList.size();
-    QStringList list1, list2, list3;
-    for (int i = 0; i < count / 3; i++)
-    {
-        list1.push_back(filesList[i]);
-    }
-    for (int i = count / 3; i < 2 * count / 3; i++)
-    {
-        list2.push_back(filesList[i]);
-    }
-    for (int i = 2 * count / 3; i < count; i++)
-    {
-        list3.push_back(filesList[i]);
-    }
-    DataIno info1(list1), info2(list2), info3(list3);
+    QStringList list[MAX_THREAD];
 
-    QList < DataIno > listDatas = { info1 ,info2 ,info3 };
+    for (int j = 0; j < MAX_THREAD; j++)
+    {
+        for (int k = j * count / MAX_THREAD; k < (j + 1)*count / MAX_THREAD; k++)
+        {
+            list[j].push_back(filesList[k]);
+        }
+    }
+
+    DataIno info[MAX_THREAD];
+
+    QList < DataIno > listDatas;
+    for (int i = 0; i < MAX_THREAD; i++)
+    {
+        info[i].setInfo(list[i], width, height);
+        listDatas.push_back(info[i]);
+    }
+
     auto listFuture = QtConcurrent::mapped(listDatas, vtkReadFiles);
     listFuture.waitForFinished();
 
-    vtkSmartPointer<vtkImageData> imageData = info1.m_reader->GetOutput();
-    int* dims = imageData->GetDimensions();
-    int dataSize = dims[0] * dims[1] * sizeof(unsigned short)*list1.size();
-    rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
-
-    imageData = info2.m_reader->GetOutput();
-    dataSize = dims[0] * dims[1] * sizeof(unsigned short)*list2.size();
-    rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
-
-    imageData = info3.m_reader->GetOutput();
-    dataSize = dims[0] * dims[1] * sizeof(unsigned short)*list3.size();
-    rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
+    for (int i = 0; i < MAX_THREAD; i++)
+    {
+        vtkSmartPointer<vtkImageData> imageData = info[i].m_reader->GetOutput();
+        int* dims = imageData->GetDimensions();
+        int dataSize = dims[0] * dims[1] * sizeof(unsigned short)*list[i].size();
+        rawFile.write(static_cast<char*>(imageData->GetScalarPointer()), dataSize);
+    }
     rawFile.close();
     
     QString str = QString::number(ElapsedTimer.elapsed());
