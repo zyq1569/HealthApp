@@ -159,7 +159,8 @@
       </ImportLibrary>
       <ProgramDataBaseFile>
       </ProgramDataBaseFile>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -208,7 +209,8 @@
       </ImportLibrary>
       <ProgramDataBaseFile>
       </ProgramDataBaseFile>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -257,7 +259,8 @@
       </ImportLibrary>
       <ProgramDataBaseFile>
       </ProgramDataBaseFile>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -305,7 +308,8 @@
       </ImportLibrary>
       <ProgramDataBaseFile>
       </ProgramDataBaseFile>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -314,12 +318,18 @@
   <ItemGroup>
     <ClCompile Include="QtVTKRenderWindows.cxx" />
     <ClCompile Include="QtVTKRenderWindowsApp.cxx" />
+    <ClCompile Include="vtkFrenetSerretFrame.cxx" />
+    <ClCompile Include="vtkSplineDrivenImageSlicer.cxx" />
     <QtMoc Include="QtVTKRenderWindows.h" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="QtVTKRenderWindows.ui">
       <FileType>Document</FileType>
     </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vtkFrenetSerretFrame.h" />
+    <ClInclude Include="vtkSplineDrivenImageSlicer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

@@ -85,6 +85,7 @@ vtkAlgorithmOutput *g_vtkAlgorithmOutput = NULL;
  * @brief The CBCTFrenetSerretFrame class
  * 弗莱纳公式（Frenet–Serret formulas）
  */
+/*
 class CBCTFrenetSerretFrame : public vtkPolyDataAlgorithm
 {
 public:
@@ -267,11 +268,14 @@ void CBCTFrenetSerretFrame::RotateVector(double *vector, const double *axis, dou
             + sin(angle) * NvectU[comp];
     }
 }
-
+*/
 /**
  * @brief The CBCTSplineDrivenImageSlicer class
  * 沿着样条曲线切割图片
  */
+/*
+
+
 class CBCTSplineDrivenImageSlicer : public vtkImageAlgorithm 
 {
 public:
@@ -431,17 +435,17 @@ int CBCTSplineDrivenImageSlicer::RequestInformation( vtkInformation *vtkNotUsed(
 int CBCTSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request), vtkInformationVector **inputVector,  vtkInformationVector *outputVector) 
 {
     // 获取信息对象
-    vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
-    vtkInformation *pathInfo = inputVector[1]->GetInformationObject(0);
+    vtkInformation *inInfo       = inputVector[0]->GetInformationObject(0);
+    vtkInformation *pathInfo     = inputVector[1]->GetInformationObject(0);
     vtkInformation *outImageInfo = outputVector->GetInformationObject(0);
     vtkInformation *outPlaneInfo = outputVector->GetInformationObject(1);
     // 获取输入和输出
-    vtkImageData *input = vtkImageData::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
-    vtkImageData *inputCopy = vtkImageData::New();
+    vtkImageData *input          = vtkImageData::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkImageData *inputCopy      = vtkImageData::New();
     inputCopy->ShallowCopy(input);
-    vtkPolyData *inputPath = vtkPolyData::SafeDownCast(  pathInfo->Get(vtkDataObject::DATA_OBJECT()));
-    vtkImageData *outputImage = vtkImageData::SafeDownCast(  outImageInfo->Get(vtkDataObject::DATA_OBJECT()));
-    vtkPolyData *outputPlane = vtkPolyData::SafeDownCast( outPlaneInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *inputPath       = vtkPolyData::SafeDownCast(  pathInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkImageData *outputImage    = vtkImageData::SafeDownCast(  outImageInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *outputPlane     = vtkPolyData::SafeDownCast( outPlaneInfo->Get(vtkDataObject::DATA_OBJECT()));
     vtkSmartPointer<vtkPolyData> pathCopy = vtkSmartPointer<vtkPolyData>::New();
     pathCopy->ShallowCopy(inputPath);
     // 计算路径的局部法线和切线
@@ -455,18 +459,16 @@ int CBCTSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request
     vtkCellArray *lines = path->GetLines();
     lines->InitTraversal();
     vtkIdType nbCellPoints;     
+    vtkIdType *points; 
+    vtkIdType cellId = -1;
+    lines->GetNextCell(nbCellPoints, (vtkIdType const*&)points);
+    do
     {
-        vtkIdType *points; 
-        vtkIdType cellId = -1;
         lines->GetNextCell(nbCellPoints, (vtkIdType const*&)points);
-    }
-    //do
-    //{
-    //    lines->GetNextCell(nbCellPoints, (vtkIdType const*&)points);
-    //    //lines->GetNextCell(nbCellPoints, points);
-    //    cellId++;
-    //} 
-    //while (cellId != this->offset_line_);
+        //lines->GetNextCell(nbCellPoints, points);
+        cellId++;
+    } 
+    while (cellId != this->offset_line_);
 
     vtkIdType ptId = this->offset_point_;
     if (ptId >= nbCellPoints) 
@@ -484,7 +486,7 @@ int CBCTSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request
     vtkDoubleArray *pathTangents = static_cast<vtkDoubleArray *> (path->GetPointData()->GetArray("FSTangents"));
     double tangent[3];
     pathTangents->GetTuple(ptId, tangent);
-    vtkDoubleArray *pathNormals = static_cast<vtkDoubleArray *> (path->GetPointData()->GetArray("FSNormals"));
+    vtkDoubleArray *pathNormals  = static_cast<vtkDoubleArray *> (path->GetPointData()->GetArray("FSNormals"));
     double normal[3];
     pathNormals->GetTuple(ptId, normal);
     // Frenet-Serret 图表由 T, N and B = T ^ N
@@ -560,11 +562,12 @@ int CBCTSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request
     outputImage->GetPointData()->GetScalars()->SetName("ReslicedImage");
     return 1;
 }
-
+*/
 ///+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ///+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
+#include "vtkFrenetSerretFrame.h"
+#include "vtkSplineDrivenImageSlicer.h"
+#include "vtkSplineFilter.h"
 void FitResliceImageToViewer(vtkResliceImageViewer* viewer);
 void FitResliceImageToViewer(vtkResliceImageViewer* viewer)
 {
@@ -636,6 +639,7 @@ void FitResliceImageToViewer(vtkResliceImageViewer* viewer)
 
 }
 
+///+++++++++++++++++++++++*******C-P-R-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 vtkSmartPointer<vtkPolyData> SweepLineByPoints(const std::vector<std::array<double, 3>>& Points,
     const double direction[3], double distance, unsigned int cols);
 vtkSmartPointer<vtkPolyData> SweepLineByPoints(const std::vector<std::array<double, 3>>& Points,
@@ -761,7 +765,7 @@ vtkSmartPointer<vtkPolyData> SweepLine(const std::vector<std::array<double, 3>>&
 //https://blog.csdn.net/juluwangriyue/article/details/127272402
 vtkSmartPointer<vtkImageData> GenerateCPRImageWithThickness(
     vtkImageData* volume, const std::vector<std::array<double, 3>>& pathPoints, int outputSliceSize = 200,
-    int thickness = 1, double spacing = 1.0, const std::string& mode = "mean" // "mean" or "mip"
+    int thickness = 1, double spacing = 0.1, const std::string& mode = "NULL" // "mean" or "mip"
 )
 {
     if (!volume || pathPoints.size() < 2)
@@ -855,7 +859,8 @@ vtkSmartPointer<vtkImageData> GenerateCPRImageWithThickness(
             auto sum = vtkSmartPointer<vtkImageMathematics>::New();
             sum->SetOperationToAdd();
             sum->SetInput1Data(sliceLayers[0]);
-            for (size_t j = 1; j < sliceLayers.size(); ++j) {
+            for (size_t j = 1; j < sliceLayers.size(); ++j)
+            {
                 sum->SetInput2Data(sliceLayers[j]);
                 sum->Update();
                 sum->SetInput1Data(sum->GetOutput());
@@ -883,164 +888,7 @@ vtkSmartPointer<vtkImageData> GenerateCPRImageWithThickness(
     return finalStack->GetOutput();
 }
 
-vtkSmartPointer<vtkImageData> GenerateCPRImageFromViewer(vtkResliceImageViewer* viewer,
-    const std::vector<std::array<double, 3>>& pathPoints, int thickness = 1, double spacing = 1.0, const std::string& mode = "mean"
-)
-{
-    if (!viewer || pathPoints.size() < 2)
-        return nullptr;
-
-    vtkImageData* volume = viewer->GetInput();
-    if (!volume)
-        return nullptr;
-
-    // 自动获取当前切面的法向量
-    double sliceNormal[3] = { 0, 0, 0 };
-    int orientation = viewer->GetSliceOrientation();
-    switch (orientation)
-    {
-    case 0: sliceNormal[2] = 1; break; // XY
-    case 1: sliceNormal[1] = 1; break; // XZ
-    case 2: sliceNormal[0] = 1; break; // YZ
-    default: return nullptr;
-    }
-
-    // Step 1: 拟合样条线并均匀采样
-    auto points = vtkSmartPointer<vtkPoints>::New();
-    for (const auto& pt : pathPoints)
-        points->InsertNextPoint(pt.data());
-
-    auto spline = vtkSmartPointer<vtkParametricSpline>::New();
-    spline->SetPoints(points);
-
-    auto functionSource = vtkSmartPointer<vtkParametricFunctionSource>::New();
-    functionSource->SetParametricFunction(spline);
-    functionSource->SetUResolution(10 * pathPoints.size()); // 插值密度
-    functionSource->Update();
-
-    auto splineOutput = functionSource->GetOutput();
-    auto interpolatedPoints = splineOutput->GetPoints();
-    int numSamples = interpolatedPoints->GetNumberOfPoints();
-
-    auto stack = vtkSmartPointer<vtkImageAppend>::New();
-    stack->SetAppendAxis(0); // 沿Y轴拼接
-
-    // Step 2: 获取 volume 尺寸，在法向方向上自动设置 outputHeight
-    int extent[6];
-    double volSpacing[3];
-    volume->GetExtent(extent);
-    volume->GetSpacing(volSpacing);
-
-    int normalAxis = 2;
-    switch (orientation)
-    {
-    case 0: normalAxis = 2; break; // XY => Z轴
-    case 1: normalAxis = 1; break; // XZ => Y轴
-    case 2: normalAxis = 0; break; // YZ => X轴
-    }
-
-    int outputHeight = extent[2 * normalAxis + 1] - extent[2 * normalAxis] + 1;
-
-    for (int i = 0; i + 1 < numSamples; ++i)
-    {
-        double p0[3], p1[3];
-        interpolatedPoints->GetPoint(i, p0);
-        interpolatedPoints->GetPoint(i + 1, p1);
-
-        double tangent[3] = { p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2] };
-        vtkMath::Normalize(tangent);
-
-        double normal[3];
-        vtkMath::Cross(tangent, sliceNormal, normal);
-        vtkMath::Normalize(normal);
-
-        double binormal[3];
-        vtkMath::Cross(tangent, normal, binormal);
-        vtkMath::Normalize(binormal);
-
-        double center[3] = {
-            0.5 * (p0[0] + p1[0]),
-            0.5 * (p0[1] + p1[1]),
-            0.5 * (p0[2] + p1[2])
-        };
-
-        double length = std::sqrt(vtkMath::Distance2BetweenPoints(p0, p1));
-        int outputWidth = static_cast<int>(length / spacing);
-
-        std::vector<vtkSmartPointer<vtkImageData>> slices;
-
-        for (int t = -thickness / 2; t <= thickness / 2; ++t)
-        {
-            double offsetCenter[3] = {
-                center[0] + t * spacing * sliceNormal[0],
-                center[1] + t * spacing * sliceNormal[1],
-                center[2] + t * spacing * sliceNormal[2]
-            };
-
-            auto matrix = vtkSmartPointer<vtkMatrix4x4>::New();
-            for (int col = 0; col < 3; ++col)
-            {
-                matrix->SetElement(0, col, binormal[col]);
-                matrix->SetElement(1, col, normal[col]);
-                matrix->SetElement(2, col, tangent[col]);
-            }
-            for (int row = 0; row < 3; ++row)
-                matrix->SetElement(row, 3, offsetCenter[row]);
-            matrix->SetElement(3, 3, 1.0);
-
-            auto reslicer = vtkSmartPointer<vtkImageReslice>::New();
-            reslicer->SetInputData(volume);
-            reslicer->SetResliceAxes(matrix);
-            reslicer->SetInterpolationModeToLinear();
-            reslicer->SetOutputSpacing(spacing, spacing, spacing);
-            //reslicer->SetOutputExtent( -outputWidth / 2, outputWidth / 2,-outputHeight / 2, outputHeight / 2, 0, 0);
-            reslicer->SetOutputOrigin(0, 0, 0);
-            reslicer->Update();
-            slices.push_back(reslicer->GetOutput());
-        }
-
-        vtkSmartPointer<vtkImageData> mergedSlice;
-
-        if (mode == "mip")
-        {
-            auto mip = vtkSmartPointer<vtkImageMathematics>::New();
-            mip->SetOperationToMax();
-            mip->SetInput1Data(slices[0]);
-            for (size_t i = 1; i < slices.size(); ++i)
-            {
-                mip->SetInput2Data(slices[i]);
-                mip->Update();
-                mip->SetInput1Data(mip->GetOutput());
-            }
-            mergedSlice = mip->GetOutput();
-        }
-        else if (mode == "mean")
-        {
-            auto avg = vtkSmartPointer<vtkImageMathematics>::New();
-            avg->SetOperationToAdd();
-            avg->SetInput1Data(slices[0]);
-            for (size_t i = 1; i < slices.size(); ++i)
-            {
-                avg->SetInput2Data(slices[i]);
-                avg->Update();
-                avg->SetInput1Data(avg->GetOutput());
-            }
-            avg->SetConstantK(1.0 / slices.size());
-            avg->SetOperationToMultiplyByK();
-            avg->Update();
-            mergedSlice = avg->GetOutput();
-        }
-
-        if (mergedSlice)
-            stack->AddInputData(mergedSlice);
-    }
-
-    stack->Update();
-    return stack->GetOutput();
-}
-
-vtkSmartPointer<vtkImageData> GenerateCPRImage(vtkResliceImageViewer* viewer, const std::vector<std::array<double, 3>>& points,
-    unsigned int cols) // 法向量方向的采样数
+vtkSmartPointer<vtkImageData> GenerateCPRImage(vtkResliceImageViewer* viewer, const std::vector<std::array<double, 3>>& points, unsigned int cols) // 法向量方向的采样数
 {
     if (!viewer || points.size() < 2 || cols == 0)
         return nullptr;
@@ -1053,7 +901,7 @@ vtkSmartPointer<vtkImageData> GenerateCPRImage(vtkResliceImageViewer* viewer, co
     // 获取当前切面法向量
     double normal[3] = { 0, 0, 0 };
     int orientation = viewer->GetSliceOrientation();
-    if (orientation == 0)       // XY
+    if (orientation == 2)       // XY
     {
         normal[2] = 1;
     }
@@ -1061,7 +909,7 @@ vtkSmartPointer<vtkImageData> GenerateCPRImage(vtkResliceImageViewer* viewer, co
     {
         normal[1] = 1;
     }
-    else if (orientation == 2)  // YZ
+    else if (orientation == 0)  // YZ
     {
         normal[0] = 1;
     }
@@ -1300,7 +1148,7 @@ std::vector<std::array<double, 3>> InterpolateSplinePoints(const std::vector<std
 }
 
 // ---------- 计算每个切片方向矩阵 ----------
-vtkSmartPointer<vtkMatrix4x4> ComputeResliceAxes(const std::array<double, 3>& origin, const double direction[3])
+vtkSmartPointer<vtkMatrix4x4> ComputeResliceAxes(const double origin[3], const double direction[3])
 {
     double z[3] = { direction[0], direction[1], direction[2] };
     vtkMath::Normalize(z);
@@ -1329,36 +1177,86 @@ vtkSmartPointer<vtkMatrix4x4> ComputeResliceAxes(const std::array<double, 3>& or
     return matrix;
 }
 
+#define DIS(p1, p2) (sqrt((p1[0]-p2[0])*(p1[0]-p2[0]) + (p1[1]-p2[1])*(p1[1]-p2[1]) + (p1[2]-p2[2])*(p1[2]-p2[2])))
 // ---------- 生成CPR图像 ----------
-vtkSmartPointer<vtkImageData> NewGenerateCPRImage(
-    vtkImageData* volume,
-    const std::vector<std::array<double, 3>>& splinePoints,
-    double thickness,
-    int resliceSize)
+vtkSmartPointer<vtkImageData> NewGenerateCPRImage( vtkImageData* volume,  const std::vector<std::array<double, 3>>& splinePoints,  double thickness, int resliceSize)
 {
+    /*
+    vtkSmartPointer<vtkPoints> vtkpoints =  vtkSmartPointer<vtkPoints>::New();
+    for (size_t i = 0; i < splinePoints.size() - 1; ++i)
+    {
+        vtkpoints->InsertNextPoint(splinePoints[i][0], splinePoints[i][1], splinePoints[i][2]);
+    }
+    vtkSmartPointer<vtkParametricSpline> spline =  vtkSmartPointer<vtkParametricSpline>::New();
+    spline->SetPoints(vtkpoints);
+    vtkSmartPointer<vtkPoints> outPoints =  vtkSmartPointer<vtkPoints>::New();
+    for (size_t i = 0; i < splinePoints.size() - 1; ++i)
+    {
+        double p0[3] = { splinePoints[i][0],splinePoints[i][0], splinePoints[i][0]};
+        double p1[3] = { splinePoints[i+1][0],splinePoints[i+1][0], splinePoints[i+1][0] };
+        double totalLen = DIS(p0, p1) + DIS(p1, p2);
+        double start = 0;
+        double step = .3;
+        while (start <= totalLen)
+        {
+            double u[] = { start / totalLen, 0, 0 };
+            double p[3];
+            spline->Evaluate(u, p, NULL);
+            outPoints->InsertNextPoint(p);
+            start += step;
+        }
+    }
+    */
+///+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     auto imageAppend = vtkSmartPointer<vtkImageAppend>::New();
     imageAppend->SetAppendAxis(0); // 横向拼接
     double voxelSpacing = volume->GetSpacing()[0]; // X方向spacing，假设横向是X轴
     for (size_t i = 0; i < splinePoints.size() - 1; ++i)
     {
-        auto origin = splinePoints[i];
-        auto next   = splinePoints[i + 1];
+        double origin[3] = 
+        {   (splinePoints[i][0] + splinePoints[i + 1][0]) / 2,
+            (splinePoints[i][1] + splinePoints[i + 1][1]) / 2,
+            (splinePoints[i][2] + splinePoints[i + 1][2]) / 2
+        };
+        auto next           = splinePoints[i + 1];
         double direction[3] = {
             next[0] - origin[0],
             next[1] - origin[1],
             next[2] - origin[2]
         };
 
-        auto axes = ComputeResliceAxes(origin, direction);
+        //auto axes = ComputeResliceAxes(origin, direction);
+        double z[3] = { direction[0], direction[1], direction[2] };
+        vtkMath::Normalize(z);
+
+        double arbitrary[3] = { 0.0, 0.0, 1.0 };
+        if (std::fabs(vtkMath::Dot(z, arbitrary)) > 0.9)
+            arbitrary[0] = 1.0;
+
+        double x[3], y[3];
+        vtkMath::Cross(arbitrary, z, x); vtkMath::Normalize(x);
+        vtkMath::Cross(z, x, y); vtkMath::Normalize(y);
+
+        auto matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+        for (int i = 0; i < 3; ++i)
+        {
+            matrix->SetElement(i, 0, x[i]);
+            matrix->SetElement(i, 1, y[i]);
+            matrix->SetElement(i, 2, z[i]);
+            matrix->SetElement(i, 3, origin[i]);
+        }
+        matrix->SetElement(3, 0, 0);
+        matrix->SetElement(3, 1, 0);
+        matrix->SetElement(3, 2, 0);
+        matrix->SetElement(3, 3, 1);
 
         auto reslice = vtkSmartPointer<vtkImageReslice>::New();
         reslice->SetInputData(volume);
-        reslice->SetResliceAxes(axes);
+        reslice->SetResliceAxes(matrix);
         reslice->SetOutputDimensionality(2);
         reslice->SetInterpolationModeToLinear();
         reslice->SetOutputSpacing(1, 1, 1);
-        reslice->SetOutputExtent(0, resliceSize - 1, 0, resliceSize - 1, 0, 0);
-
+        //reslice->SetOutputExtent(0, resliceSize - 1, 0, resliceSize - 1, 0, 0);
         // 投影设置：厚度方向最大值
         reslice->SetSlabModeToMax(); // 可选：ToMean / ToMin
         reslice->SetSlabNumberOfSlices(static_cast<int>(thickness));
@@ -1386,7 +1284,7 @@ int SplineCPRImage(vtkResliceImageViewer* viewer, const std::vector<std::array<d
     // 将样条曲线离散为多点
     auto splineSource = vtkSmartPointer<vtkParametricFunctionSource>::New();
     splineSource->SetParametricFunction(spline);
-    splineSource->SetUResolution(100); // 更高 = 更平滑
+    splineSource->SetUResolution(1000); // 更高 = 更平滑
     splineSource->Update();
 
     auto polyline = splineSource->GetOutput();
@@ -1419,7 +1317,7 @@ int SplineCPRImage(vtkResliceImageViewer* viewer, const std::vector<std::array<d
         }
         vtkMath::Normalize(tangent);
 
-        double normal[3] = { 0.0, 1.0, 0.0 }; // 任意法向量
+        double normal[3] = { 0.0, 0.0, 1.0 }; // 任意法向量
         double binormal[3];
         vtkMath::Cross(tangent, normal, binormal);
         vtkMath::Normalize(binormal);
@@ -1622,6 +1520,12 @@ public:
     }
 };
 //------------------------------------------------------------------------------
+/// 图像中有三条线 https://gitlab.kitware.com/vtk/vtk/-/issues/18441
+///https://github.com/SJTUzhh/Dental-Pre-Processing/tree/master/scripts
+#include <vtkSphereSource.h>
+#include <vtkGlyph3DMapper.h>
+#include <vtkContourWidget.h>
+#include <vtkKochanekSpline.h>
 class vtkResliceCursorCallback : public vtkCommand
 {
 public:
@@ -1662,35 +1566,44 @@ public:
         {
             m_starSpline = false;
             int pointsize = m_points.size();
+            m_points[0][2] = m_points[1][2];
             if (pointsize > 1)
             {
-                //auto data = GenerateCPRImageFromViewer(currentViewer, m_points);//GenerateCPRImage(currentViewer, m_points, 60);// GenerateCPRImageWithThickness(currentViewer->GetInput(), m_points);
-                //auto data = GenerateCPRImage(currentViewer, m_points, 60);
-                //auto data = GenerateCPRImageWithThickness(currentViewer->GetInput(), m_points);
-                //auto data = GenerateCPRImageFromViewer(currentViewer, m_points);
-                //auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
-                //viewer->SetInputData(data);
-                //auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-                //viewer->SetupInteractor(interactor);
-                //viewer->GetRenderWindow()->SetWindowName("title.c_str()");
-                //viewer->Render();
-                //interactor->Start();
-                //https://blog.csdn.net/a15005784320/article/details/117248736
-                //
-                auto data = NewGenerateCPRImage(currentViewer->GetInput(), m_points,10,100);//MPRCPRImageWithThickness(currentViewer->GetInput(), m_points);
-                auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
-                viewer->SetInputData(data);
-                auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-                viewer->SetupInteractor(interactor);
-                viewer->GetRenderWindow()->SetWindowName("title.c_str()");
-                viewer->Render();
-                interactor->Start();
-
-                //error
-                //SplineCPRImage(currentViewer, m_points);
-
-                ////************************************************************\\//
                 if (0)
+                {
+                    //???什么地方错误
+                    SplineCPRImage(currentViewer, m_points);
+                }
+                else if (0)
+                {
+                    //参考VTKdemo的曲面改,目前效果完全无法使用
+                    //auto data = GenerateCPRImage(currentViewer, m_points, 60);
+
+                    auto data = GenerateCPRImageWithThickness(currentViewer->GetInput(), m_points);
+                    //auto data = GenerateCPRImageFromViewer(currentViewer, m_points);
+                    auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
+                    viewer->SetInputData(data);
+                    auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+                    viewer->SetupInteractor(interactor);
+                    viewer->GetRenderWindow()->SetWindowName("title.c_str()");
+                    viewer->Render();
+                    interactor->Start();
+                    //https://blog.csdn.net/a15005784320/article/details/117248736
+                    //
+                }
+                else if (10)
+                {
+                    auto data = NewGenerateCPRImage(currentViewer->GetInput(), m_points,10,200);//MPRCPRImageWithThickness(currentViewer->GetInput(), m_points);
+                    auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
+                    viewer->SetInputData(data);
+                    auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+                    viewer->SetupInteractor(interactor);
+                    viewer->GetRenderWindow()->SetWindowName("title.c_str()");
+                    viewer->Render();
+                    interactor->Start();
+                }
+                ////************************************************************\\//
+                else if (0)
                 {
                     vtkNew<vtkPoints> vtkpoints;
                     vtkNew<vtkCellArray> lines;
@@ -1703,38 +1616,39 @@ public:
                     vtkNew<vtkPolyData> polyData;
                     polyData->SetPoints(vtkpoints);
                     polyData->SetLines(lines);
-                    vtkNew<vtkSplineFilter> spline_filter;
+                    vtkNew<vtkSplineFilter> spline_filter;                                    
                     spline_filter->SetSubdivideToLength();
                     spline_filter->SetLength(0.2);
                     spline_filter->SetInputData(polyData);//(poly_data);
-                    spline_filter->Update();
+                    spline_filter->Update();                   
+                    //++
 
                     vtkNew<vtkImageAppend> append;
                     append->SetAppendAxis(2);
-                    vtkNew<CBCTSplineDrivenImageSlicer> reslicer;
+                    vtkNew<vtkSplineDrivenImageSlicer> reslicer;
                     reslicer->SetInputData(currentViewer->GetInput());
                     reslicer->SetPathConnection(spline_filter->GetOutputPort());
                     long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
                     for (int pt_id = 0; pt_id < nb_points; pt_id++)
                     {
-                        reslicer->Setoffset_point_(pt_id);
+                        reslicer->SetOffsetPoint(pt_id);
                         reslicer->Update();
                         vtkNew<vtkImageData> tempSlice;
                         tempSlice->DeepCopy(reslicer->GetOutput());
                         append->AddInputData(tempSlice);
                     }
                     append->Update();
-                    //vtkNew<vtkImagePermute> permute_filter;
-                    //permute_filter->SetInputData(append->GetOutput());
-                    //permute_filter->SetFilteredAxes(2, 0, 1);
-                    //permute_filter->Update();
-                    //vtkNew<vtkImageFlip> flip_filter;
-                    //flip_filter->SetInputData(permute_filter->GetOutput());
-                    //flip_filter->SetFilteredAxes(1);
-                    //flip_filter->Update();
+                    vtkNew<vtkImagePermute> permute_filter;
+                    permute_filter->SetInputData(append->GetOutput());
+                    permute_filter->SetFilteredAxes(2, 0, 1);
+                    permute_filter->Update();
+                    vtkNew<vtkImageFlip> flip_filter;
+                    flip_filter->SetInputData(permute_filter->GetOutput());
+                    flip_filter->SetFilteredAxes(1);
+                    flip_filter->Update();
 
                     auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
-                    viewer->SetInputData(append->GetOutput());
+                    viewer->SetInputData(flip_filter->GetOutput());
                     auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
                     viewer->SetupInteractor(interactor);
                     viewer->GetRenderWindow()->SetWindowName("title.c_str()");
@@ -1742,57 +1656,52 @@ public:
                     interactor->Start();
                 }
                 
-
-
                 //******************************************************************\\
                 ///+++++++++++++++
                 /*
-                double const direction[3] = {0,0,1};
-                auto surface = SweepLine(m_points, direction, 100, 30);
-                vtkNew<vtkProbeFilter> sampleVolume;
-                sampleVolume->SetInputConnection(1, g_vtkAlgorithmOutput);
-                sampleVolume->SetInputData(0, surface);
+                //double const direction[3] = {0,0,1};
+                //auto surface = SweepLine(m_points, direction, 10, 900);
+                //vtkNew<vtkProbeFilter> sampleVolume;
+                //sampleVolume->SetInputConnection(1, g_vtkAlgorithmOutput);
+                //sampleVolume->SetInputData(0, surface);
+                //vtkNew<vtkWindowLevelLookupTable> wlLut;
+                //vtkImageData *data = currentViewer->GetInput();
+                //double range = data->GetScalarRange()[1] - data->GetScalarRange()[0];
+                //double level = (data->GetScalarRange()[1] + data->GetScalarRange()[0]) / 2.0;
+                //wlLut->SetWindow(range);
+                //wlLut->SetLevel(level);
 
-                vtkNew<vtkWindowLevelLookupTable> wlLut;
-                vtkImageData *data = currentViewer->GetInput();
-                double range = data->GetScalarRange()[1] - data->GetScalarRange()[0];
-                double level = (data->GetScalarRange()[1] + data->GetScalarRange()[0]) / 2.0;
-                wlLut->SetWindow(range);
-                wlLut->SetLevel(level);
-
-                vtkNew<vtkDataSetMapper> mapper;
-                mapper->SetInputConnection(sampleVolume->GetOutputPort());
-                mapper->SetLookupTable(wlLut);
-                mapper->SetScalarRange(0, 255);
-                vtkNew<vtkActor> actor;
-                actor->SetMapper(mapper);
-
-                // Create a renderer, render window, and interactor.
-                vtkNew<vtkRenderer> renderer;
-                vtkNew<vtkRenderWindow> renderWindow;
-                renderWindow->AddRenderer(renderer);
-                renderWindow->SetWindowName("CurvedReformation");
-
-                vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
-                renderWindowInteractor->SetRenderWindow(renderWindow);
-
-                vtkNew<vtkNamedColors> colors;
-                // Add the actors to the scene.
-                renderer->AddActor(actor);
-                renderer->SetBackground(colors->GetColor3d("DarkSlateGray").GetData());
-
-                // Set the camera for viewing medical images.
-                renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
-                renderer->GetActiveCamera()->SetPosition(0, 0, 0);
-                renderer->GetActiveCamera()->SetFocalPoint(0, 1, 0);
-                renderer->ResetCamera();
-
-                // Render and interact
-                renderWindow->Render();
-                renderWindowInteractor->Start();
+                //vtkNew<vtkDataSetMapper> mapper;
+                //mapper->SetInputConnection(sampleVolume->GetOutputPort());
+                //mapper->SetLookupTable(wlLut);
+                //mapper->SetScalarRange(0, 255);
+                //vtkNew<vtkActor> actor;
+                //actor->SetMapper(mapper);
+                //
+                //// Create a renderer, render window, and interactor.
+                //vtkNew<vtkRenderer> renderer;
+                //vtkNew<vtkRenderWindow> renderWindow;
+                //renderWindow->AddRenderer(renderer);
+                //renderWindow->SetWindowName("CurvedReformation");
+                //
+                //vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
+                //renderWindowInteractor->SetRenderWindow(renderWindow);
+                //
+                //vtkNew<vtkNamedColors> colors;
+                //// Add the actors to the scene.
+                //renderer->AddActor(actor);
+                //renderer->SetBackground(colors->GetColor3d("DarkSlateGray").GetData());
+                //
+                //// Set the camera for viewing medical images.
+                //renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
+                //renderer->GetActiveCamera()->SetPosition(0, 0, 0);
+                //renderer->GetActiveCamera()->SetFocalPoint(0, 1, 0);
+                //renderer->ResetCamera();
+                //
+                //// Render and interact
+                //renderWindow->Render();
+                //renderWindowInteractor->Start();
                 */
-
-
             }
             //if (pointsize > 3)
             //{
@@ -1855,6 +1764,35 @@ public:
 
             double* world = coordinate->GetComputedWorldValue(currentViewer->GetRenderer());
             m_points.push_back({ world[0], world[1], world[2] });
+
+            ///
+            //vtkContourWidget *wid = vtkContourWidget::New();
+            //wid->SetInteractor(renderWindow->GetInteractor());
+            //wid->CreateDefaultRepresentation();
+            //wid->On();
+            //m_scrollConnection->Connect( wid, vtkCommand::EndInteractionEvent, this, 
+            //    SLOT(  SlotContourEndInteractionEvent( vtkObject *, unsigned long, void *, void *)) , nullptr, 0.0, Qt::UniqueConnection);
+            //
+            //auto widget = dynamic_cast<vtkContourWidget *>(t_obj);
+            //auto rep = dynamic_cast<vtkOrientedGlyphContourRepresentation *>(widget->GetContourRepresentation());
+            //if (rep) 
+            //{
+            //    vtkMatrix4x4 *sourceMatrix = m_resliceWidget->getImageReslicers()[2]->GetResliceAxes();
+            //    qint32 n = rep->GetNumberOfNodes();
+            //    for (qint32 i = 0; i < n; ++i)
+            //    {
+            //        double p[3];
+            //        rep->GetNthNodeWorldPosition(i, p);
+            //        vtkNew<vtkTransform> transform1;
+            //        transform1->SetMatrix(sourceMatrix);
+            //        transform1->Translate(p[0], p[1], 0);
+            //        qDebug() << i
+            //            << transform1->GetMatrix()->GetElement(0, 3)
+            //            << transform1->GetMatrix()->GetElement(1, 3)
+            //            << transform1->GetMatrix()->GetElement(2, 3);
+            //    }
+            //}
+/////////
         }
         //end add:20250603
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
