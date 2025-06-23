@@ -1181,33 +1181,6 @@ vtkSmartPointer<vtkMatrix4x4> ComputeResliceAxes(const double origin[3], const d
 // ---------- 生成CPR图像 ----------
 vtkSmartPointer<vtkImageData> NewGenerateCPRImage( vtkImageData* volume,  const std::vector<std::array<double, 3>>& splinePoints,  double thickness, int resliceSize)
 {
-    /*
-    vtkSmartPointer<vtkPoints> vtkpoints =  vtkSmartPointer<vtkPoints>::New();
-    for (size_t i = 0; i < splinePoints.size() - 1; ++i)
-    {
-        vtkpoints->InsertNextPoint(splinePoints[i][0], splinePoints[i][1], splinePoints[i][2]);
-    }
-    vtkSmartPointer<vtkParametricSpline> spline =  vtkSmartPointer<vtkParametricSpline>::New();
-    spline->SetPoints(vtkpoints);
-    vtkSmartPointer<vtkPoints> outPoints =  vtkSmartPointer<vtkPoints>::New();
-    for (size_t i = 0; i < splinePoints.size() - 1; ++i)
-    {
-        double p0[3] = { splinePoints[i][0],splinePoints[i][0], splinePoints[i][0]};
-        double p1[3] = { splinePoints[i+1][0],splinePoints[i+1][0], splinePoints[i+1][0] };
-        double totalLen = DIS(p0, p1) + DIS(p1, p2);
-        double start = 0;
-        double step = .3;
-        while (start <= totalLen)
-        {
-            double u[] = { start / totalLen, 0, 0 };
-            double p[3];
-            spline->Evaluate(u, p, NULL);
-            outPoints->InsertNextPoint(p);
-            start += step;
-        }
-    }
-    */
-///+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     auto imageAppend = vtkSmartPointer<vtkImageAppend>::New();
     imageAppend->SetAppendAxis(0); // 横向拼接
     double voxelSpacing = volume->GetSpacing()[0]; // X方向spacing，假设横向是X轴
@@ -1593,7 +1566,8 @@ public:
                 }
                 else if (10)
                 {
-                    auto data = NewGenerateCPRImage(currentViewer->GetInput(), m_points,10,200);//MPRCPRImageWithThickness(currentViewer->GetInput(), m_points);
+                    auto data = NewGenerateCPRImage(currentViewer->GetInput(), m_points, 10, 200);
+                    //auto data = MPRCPRImageWithThickness(currentViewer->GetInput(), m_points);
                     auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
                     viewer->SetInputData(data);
                     auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
@@ -1603,8 +1577,9 @@ public:
                     interactor->Start();
                 }
                 ////************************************************************\\//
-                else if (0)
+                else if (10)
                 {
+                    //目前是白色的线带.暂时不知问题地方
                     vtkNew<vtkPoints> vtkpoints;
                     vtkNew<vtkCellArray> lines;
                     lines->InsertNextCell(m_points.size());
