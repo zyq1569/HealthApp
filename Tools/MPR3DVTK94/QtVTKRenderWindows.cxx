@@ -1519,6 +1519,7 @@ public:
 #include "vtkLineSource.h"
 
 #include "vtkSplineFilter.h"
+#include "vtkPolyLine.h"
 class vtkResliceCursorCallback : public vtkCommand
 {
 public:
@@ -1604,7 +1605,11 @@ public:
                 ////************************************************************\\//
                 else if (4 == icase)
                 {
+
                     //目前是白色的线带.暂时不知问题地方
+                    /*
+                    
+                    
                     vtkNew<vtkPoints> vtkpoints;
                     vtkNew<vtkCellArray> lines;
                     lines->InsertNextCell(m_points.size());
@@ -1618,9 +1623,12 @@ public:
                     polyData->SetLines(lines);
                     vtkNew<vtkSplineFilter> spline_filter;                                    
                     spline_filter->SetSubdivideToLength();
-                    spline_filter->SetLength(1);
+                    //spline_filter->SetLength(1);
+                    spline_filter->SetSubdivideToSpecified();
+                    spline_filter->SetNumberOfSubdivisions(50);
                     spline_filter->SetInputData(polyData);//(poly_data);
-                    spline_filter->Update(); 
+                    spline_filter->Update();
+                    */
                     //vtkPoints* vtP = spline_filter->GetOutput()->GetPoints();
                     //long long nbpoints = spline_filter->GetOutput()->GetNumberOfPoints();
                     //___
@@ -1635,18 +1643,72 @@ public:
                     //splineFilter->Update();
                     //++              
 
+                    vtkNew<vtkPoints> points;
+                    for (const auto&p:m_points)
+                    {
+                        points->InsertNextPoint(p[0], p[1], p[2]);
+                    }
+                    vtkNew<vtkPolyLine> polyLine;
+                    polyLine->GetPointIds()->SetNumberOfIds(points->GetNumberOfPoints());
+                    for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++)
+                    {
+                        polyLine->GetPointIds()->SetId(i, i);
+                    }
+                    vtkNew<vtkCellArray> cells;
+                    cells->InsertNextCell(polyLine);
+                    vtkNew<vtkPolyData> polyData;
+                    polyData->SetPoints(points);
+                    polyData->SetLines(cells);
+
+                    vtkNew<vtkSplineFilter> spline_filter;
+                    spline_filter->SetSubdivideToLength();
+                    spline_filter->SetLength(1);
+                    //spline_filter->SetSubdivideToSpecified();
+                    //spline_filter->SetNumberOfSubdivisions(50);
+                    spline_filter->SetInputData(polyData);//(poly_data);
+                    spline_filter->Update();
+
+                    //+++++++++++++++++++++++++++++++++++++++++
+                    //绘制样条线
+                    vtkNew<vtkPolyDataMapper> splineMapper;
+                    splineMapper->SetInputConnection(spline_filter->GetOutputPort());
+
+                    vtkNew<vtkActor> splineActor;
+                    splineActor->SetMapper(splineMapper);
+                    //vtkNew<vtkRenderer> ren1;
+                    //ren1->AddActor(splineActor);
+                    //ren1->SetBackground(0.1, 0.2, 0.4);
+                    //
+                    //vtkNew<vtkRenderWindow> renWin;
+                    //renWin->AddRenderer(ren1);
+                    //renWin->SetSize(300, 300);
+                    //
+                    //vtkNew<vtkRenderWindowInteractor> iren;
+                    //iren->SetRenderWindow(/*renderWindow*/renWin);
+                    //iren->Initialize();
+                    //iren->Start();
+                    splineActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
+                    splineActor->GetProperty()->SetLineWidth(1.0);
+                    splineActor->GetProperty()->SetOpacity(1);
+                    //currentViewer->GetRenderer()->RemoveActor(m_oldActor);
+                    currentViewer->GetRenderer()->AddActor(splineActor);
+                    currentViewer->GetRenderer()->Render();
+                    currentViewer->GetRenderer()->GetRenderWindow()->Render();
+                    //+++++++++++++++++++++++++++++++++++++++++
+
                     vtkSmartPointer<vtkXMLPolyDataReader> pathReader =  vtkSmartPointer<vtkXMLPolyDataReader>::New();
-                    pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\closed_curve.vtp");
+                    pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\closed_curve.vtp");//vtp closed_curve.vtp");
                     vtkNew<vtkImageAppend> append;
                     append->SetAppendAxis(2);
                     vtkNew<vtkSplineDrivenImageSlicer> reslicer;
                     reslicer->SetInputData(currentViewer->GetInput());
                     reslicer->SetPathConnection(pathReader->GetOutputPort());//spline_filter->GetOutputPort());
+                    //reslicer->SetPathConnection(spline_filter->GetOutputPort());
                     //reslicer->SetPathConnection(linSource->GetOutputPort());
                     //reslicer->SetPathConnection(splineFilter->GetOutputPort());
-                    reslicer->SetSliceExtent(256, 256);
+                    reslicer->SetSliceExtent(200, 200);
                     //reslicer->SetSliceSpacing(0.2, 0.1);
-                    reslicer->SetSliceThickness(4);
+                    reslicer->SetSliceThickness(2);
 
                     long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
                     for (int pt_id = 0; pt_id < nb_points; pt_id++)
@@ -1898,8 +1960,8 @@ public:
 
                 vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
                 actor->SetMapper(mapper);
-                actor->GetProperty()->SetColor(1.0, 0.0, 0.0);
-                actor->GetProperty()->SetLineWidth(2.0);
+                actor->GetProperty()->SetColor(0.0, 1.0, 0.0);
+                actor->GetProperty()->SetLineWidth(1.0);
                 actor->GetProperty()->SetOpacity(1);
 
                 if (g_ResliceImageActorMap.count(currentViewer))
@@ -1916,6 +1978,7 @@ public:
                 currentViewer->GetRenderer()->GetRenderWindow()->Render();
 
                 g_ResliceImageActorMap[currentViewer] = actor;
+                m_oldActor = actor;
             }
         }
         else if (ev == vtkCommand::MouseWheelForwardEvent || ev == vtkCommand::MouseWheelBackwardEvent)
@@ -1986,6 +2049,7 @@ public:
     vtkResliceCursorWidget* RCW[3];
     vtkCornerAnnotation *m_cornerAnnotations[3];
     vtkResliceImageViewer *m_riw[3];
+    vtkActor* m_oldActor;
     ///////////////////
     bool m_starSpline;
     std::vector<std::array<double, 3>> m_points;
