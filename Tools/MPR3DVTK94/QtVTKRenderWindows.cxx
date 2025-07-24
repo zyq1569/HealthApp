@@ -1662,7 +1662,7 @@ public:
 
                     vtkNew<vtkSplineFilter> spline_filter;
                     spline_filter->SetSubdivideToLength();
-                    spline_filter->SetLength(1);
+                    spline_filter->SetLength(3);
                     //spline_filter->SetSubdivideToSpecified();
                     //spline_filter->SetNumberOfSubdivisions(50);
                     spline_filter->SetInputData(polyData);//(poly_data);
@@ -1698,26 +1698,46 @@ public:
 
                     vtkSmartPointer<vtkXMLPolyDataReader> pathReader =  vtkSmartPointer<vtkXMLPolyDataReader>::New();
                     pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\closed_curve.vtp");//vtp closed_curve.vtp");
+                    pathReader->Update();
                     vtkNew<vtkImageAppend> append;
                     append->SetAppendAxis(2);
                     vtkNew<vtkSplineDrivenImageSlicer> reslicer;
                     reslicer->SetInputData(currentViewer->GetInput());
-                    reslicer->SetPathConnection(pathReader->GetOutputPort());//spline_filter->GetOutputPort());
-                    //reslicer->SetPathConnection(spline_filter->GetOutputPort());
-                    //reslicer->SetPathConnection(linSource->GetOutputPort());
-                    //reslicer->SetPathConnection(splineFilter->GetOutputPort());
-                    reslicer->SetSliceExtent(200, 200);
-                    //reslicer->SetSliceSpacing(0.2, 0.1);
-                    reslicer->SetSliceThickness(2);
-
-                    long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
-                    for (int pt_id = 0; pt_id < nb_points; pt_id++)
+                    if (10)
                     {
-                        reslicer->SetOffsetPoint(pt_id);
-                        reslicer->Update();
-                        vtkNew<vtkImageData> tempSlice;
-                        tempSlice->DeepCopy(reslicer->GetOutput());
-                        append->AddInputData(tempSlice);
+                        reslicer->SetPathConnection(pathReader->GetOutputPort());//spline_filter->GetOutputPort());
+                        //reslicer->SetPathConnection(spline_filter->GetOutputPort());
+                        //reslicer->SetPathConnection(linSource->GetOutputPort());
+                        //reslicer->SetPathConnection(splineFilter->GetOutputPort());
+                        reslicer->SetSliceExtent(200, 200);
+                        //reslicer->SetSliceSpacing(0.2, 0.1);
+                        reslicer->SetSliceThickness(2);
+
+                        long long nb_points = 12;// pathReader->GetOutput()->GetNumberOfPoints();
+                        for (int pt_id = 0; pt_id < nb_points; pt_id++)
+                        {
+                            reslicer->SetOffsetPoint(pt_id);
+                            reslicer->Update();
+                            vtkNew<vtkImageData> tempSlice;
+                            tempSlice->DeepCopy(reslicer->GetOutput());
+                            append->AddInputData(tempSlice);
+                        }
+                    }
+                    else
+                    {
+                        reslicer->SetPathConnection(spline_filter->GetOutputPort());
+                        reslicer->SetSliceExtent(200, 200);
+                        reslicer->SetSliceThickness(2);
+                        long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
+                        for (int pt_id = 0; pt_id < nb_points; pt_id++)
+                        {
+                            //double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
+                            reslicer->SetOffsetPoint(pt_id);
+                            reslicer->Update();
+                            vtkNew<vtkImageData> tempSlice;
+                            tempSlice->DeepCopy(reslicer->GetOutput());
+                            append->AddInputData(tempSlice);
+                        }
                     }
                     append->Update();
                     //vtkNew<vtkImagePermute> permute_filter;
