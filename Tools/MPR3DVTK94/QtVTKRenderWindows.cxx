@@ -1703,7 +1703,7 @@ public:
                     append->SetAppendAxis(2);
                     vtkNew<vtkSplineDrivenImageSlicer> reslicer;
                     reslicer->SetInputData(currentViewer->GetInput());
-                    if (10)
+                    if (0)
                     {
                         reslicer->SetPathConnection(pathReader->GetOutputPort());//spline_filter->GetOutputPort());
                         //reslicer->SetPathConnection(spline_filter->GetOutputPort());

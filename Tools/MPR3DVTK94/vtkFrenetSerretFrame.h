@@ -35,55 +35,47 @@
 //! \author Jerome Velut
 //! \date 21 jan 2010
 
-#ifndef __VTKFRENETSERRETFRAME_H__
-#define __VTKFRENETSERRETFRAME_H__
+#ifndef vtkFrenetSerretFrame_h
+#define vtkFrenetSerretFrame_h
 
-#include"vtkPoints.h"
-#include"vtkPolyDataAlgorithm.h"
-#include"vtkPolyData.h"
-#include"vtkCellArray.h"
+#include "vtkPolyDataAlgorithm.h"
 
-#if defined(NO_DLL)  && defined (WIN32)
-#undef VTK_EXPORT
-#define VTK_EXPORT
-#endif
-#define vtkTypeRevisionMacro vtkTypeMacro
-class vtkFrenetSerretFrame : public vtkPolyDataAlgorithm
+class  vtkFrenetSerretFrame : public vtkPolyDataAlgorithm
 {
 public:
-    vtkTypeRevisionMacro(vtkFrenetSerretFrame,vtkPolyDataAlgorithm);
+    vtkTypeMacro(vtkFrenetSerretFrame, vtkPolyDataAlgorithm);
     static vtkFrenetSerretFrame* New();
 
     //! Set ConsistentNormals to 1 if you want your frames to be 'smooth'.
     //! Note that in this case, the normal to the curve will not represent the
     //! acceleration, ie this is no more Frenet-Serret chart.
-    vtkBooleanMacro( ConsistentNormals, int );
-    vtkSetMacro( ConsistentNormals, int );
-    vtkGetMacro( ConsistentNormals, int );
+    vtkBooleanMacro(ConsistentNormals, int);
+    vtkSetMacro(ConsistentNormals, int);
+    vtkGetMacro(ConsistentNormals, int);
 
     //! If yes, computes the cross product between Tangent and Normal to get
     //! the binormal vector.
-    vtkBooleanMacro( ComputeBinormal, int );
-    vtkSetMacro( ComputeBinormal, int );
-    vtkGetMacro( ComputeBinormal, int );
+    vtkBooleanMacro(ComputeBinormal, int);
+    vtkSetMacro(ComputeBinormal, int);
+    vtkGetMacro(ComputeBinormal, int);
 
-   //! Define the inclination of the consistent normals. Radian value.
-    vtkSetMacro( ViewUp, double );
-    vtkGetMacro( ViewUp, double );
+    //! Define the inclination of the consistent normals. Radian value.
+    vtkSetMacro(ViewUp, double);
+    vtkGetMacro(ViewUp, double);
 
     //! Rotate a vector around an axis
     //! \param [in] axis {Vector defining the axis to turn around.}
     //! \param [in] angle {Rotation angle in radian.}
     //! \param [out] vector {Vector to rotate. In place modification.}
-    static void RotateVector( double* vector, const double* axis, double angle );
+    static void RotateVector(double* vector, const double* axis, double angle);
 
 
 protected:
     vtkFrenetSerretFrame();
     ~vtkFrenetSerretFrame();
 
-    virtual int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
-    virtual int FillInputPortInformation(int port, vtkInformation *info);
+    virtual int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *) override;
+    virtual int FillInputPortInformation(int port, vtkInformation *info) override;
 
     //! Computes the derivative between 2 points (Next - Last).
     //! \param [in] pointIdNext {give first point Id}
@@ -91,13 +83,13 @@ protected:
     //! \param [out] tangent {fill a 3-array with the derivative value}
     //! \note If Next is [i+1], Last is [i-1], your are computing the
     //! centered tangent at [i].
-    void ComputeTangentVectors( vtkIdType pointIdNext,vtkIdType pointIdLast, double* tangent);
+    void ComputeTangentVectors(vtkIdType pointIdNext, vtkIdType pointIdLast,  double* tangent);
 
     //! Computes the second derivative between 2 points (Next - Last).
     //! \param [in] nextTg {give a first derivative}
     //! \param [in] lastTg {give a first derivative}
     //! \param [out] normal {fill a 3-array with the second derivative value}
-    void ComputeNormalVectors( double *tgNext, double *tgLast,  double* normal);
+    void ComputeNormalVectors(double *tgNext, double *tgLast,  double* normal);
 
     //! ConsistentNormal depends on the local tangent and the last computed
     //! normal. This is a projection of lastNormal on the plan defined
@@ -105,10 +97,10 @@ protected:
     //! \param [in] tangent {give the tangent}
     //! \param [in] lastNormal {give the reference normal}
     //! \param [out] normal {fill a 3-array with the normal vector}
-    void ComputeConsistentNormalVectors( double *tangent,double *lastNormal, double* normal);
+    void ComputeConsistentNormalVectors(double *tangent, double *lastNormal, double* normal);
 private:
-    vtkFrenetSerretFrame(const vtkFrenetSerretFrame&);  // Not implemented.
-    void operator=(const vtkFrenetSerretFrame&);  // Not implemented.
+    vtkFrenetSerretFrame(const vtkFrenetSerretFrame&) = delete;
+    void operator=(const vtkFrenetSerretFrame&) = delete;
 
     int ComputeBinormal; //!< If 1, a Binormal array is added to the output
     int ConsistentNormals; //!< Boolean. If 1, successive normals are computed
