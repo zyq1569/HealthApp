@@ -154,23 +154,19 @@ int vtkSplineDrivenImageSlicer::RequestData(
     vtkInformationVector *outputVector)
 {
     // get the info objects
-    vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
-    vtkInformation *pathInfo = inputVector[1]->GetInformationObject(0);
+    vtkInformation *inInfo       = inputVector[0]->GetInformationObject(0);
+    vtkInformation *pathInfo     = inputVector[1]->GetInformationObject(0);
     vtkInformation *outImageInfo = outputVector->GetInformationObject(0);
     vtkInformation *outPlaneInfo = outputVector->GetInformationObject(1);
 
     // get the input and ouptut
-    vtkImageData *input = vtkImageData::SafeDownCast(
-        inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkImageData *input                     = vtkImageData::SafeDownCast( inInfo->Get(vtkDataObject::DATA_OBJECT()));
     vtkSmartPointer<vtkImageData> inputCopy = vtkSmartPointer<vtkImageData>::New();
     inputCopy->ShallowCopy(input);
-    vtkPolyData *inputPath = vtkPolyData::SafeDownCast(
-        pathInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *inputPath    = vtkPolyData::SafeDownCast( pathInfo->Get(vtkDataObject::DATA_OBJECT()));
 
-    vtkImageData *outputImage = vtkImageData::SafeDownCast(
-        outImageInfo->Get(vtkDataObject::DATA_OBJECT()));
-    vtkPolyData *outputPlane = vtkPolyData::SafeDownCast(
-        outPlaneInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkImageData *outputImage = vtkImageData::SafeDownCast( outImageInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *outputPlane  = vtkPolyData::SafeDownCast( outPlaneInfo->Get(vtkDataObject::DATA_OBJECT()));
 
     vtkSmartPointer<vtkPolyData> pathCopy = vtkSmartPointer<vtkPolyData>::New();
     pathCopy->ShallowCopy(inputPath);
@@ -212,24 +208,26 @@ int vtkSplineDrivenImageSlicer::RequestData(
     // Build a new reslicer with image input as input too.
     this->reslicer->SetInputData(inputCopy);
 
+    //vtkFrenetSerretFrame 的输出是一个 vtkPolyData 对象，其中每个点数据中包含三个数组：
+    //
+    //Tangent：表示切向量。
+    //Normal：表示主法向量。
+    //Binormal：表示副法向量。
     // Get the Frenet-Serret chart at point ptId:
     // - position (center)
     // - tangent T
     // - normal N
     double center[3];
     path->GetPoints()->GetPoint(ptId, center);
-    vtkDoubleArray* pathTangents = static_cast<vtkDoubleArray*>
-        (path->GetPointData()->GetArray("FSTangents"));
+    vtkDoubleArray* pathTangents = static_cast<vtkDoubleArray*>(path->GetPointData()->GetArray("FSTangents"));
     double tangent[3];
     pathTangents->GetTuple(ptId, tangent);
 
-    vtkDoubleArray* pathNormals = static_cast<vtkDoubleArray*>
-        (path->GetPointData()->GetArray("FSNormals"));
+    vtkDoubleArray* pathNormals = static_cast<vtkDoubleArray*> (path->GetPointData()->GetArray("FSNormals"));
     double normal[3];
     pathNormals->GetTuple(ptId, normal);
 
-    vtkDoubleArray* pathBinormals = static_cast<vtkDoubleArray*>
-        (path->GetPointData()->GetArray("FSBinormals"));
+    vtkDoubleArray* pathBinormals = static_cast<vtkDoubleArray*>(path->GetPointData()->GetArray("FSBinormals"));
     double binormal[3];
     pathBinormals->GetTuple(ptId, binormal);
 
@@ -310,12 +308,8 @@ int vtkSplineDrivenImageSlicer::RequestData(
 
     this->reslicer->SetOutputDimensionality(2);
     this->reslicer->SetOutputOrigin(0, 0, 0);
-    this->reslicer->SetOutputExtent(0, this->SliceExtent[0] - 1,
-        0, this->SliceExtent[1] - 1,
-        0, 1);
-    this->reslicer->SetOutputSpacing(this->SliceSpacing[0],
-        this->SliceSpacing[1],
-        this->SliceThickness);
+    this->reslicer->SetOutputExtent(0, this->SliceExtent[0] - 1,  0, this->SliceExtent[1] - 1,   0, 1);
+    this->reslicer->SetOutputSpacing(this->SliceSpacing[0], this->SliceSpacing[1],  this->SliceThickness);
     this->reslicer->Update();
 
     resliceAxes->Delete();
