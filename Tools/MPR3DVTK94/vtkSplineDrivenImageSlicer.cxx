@@ -135,8 +135,8 @@ int vtkSplineDrivenImageSlicer::RequestInformation(
     vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
     int extent[6] = { 0, this->SliceExtent[0] - 1,
-                     0, this->SliceExtent[1] - 1,
-                     0, 1 };
+                      0, this->SliceExtent[1] - 1,
+                      0, 1 };
     double spacing[3] = { this->SliceSpacing[0],this->SliceSpacing[1],this->SliceThickness };
 
 
@@ -148,10 +148,7 @@ int vtkSplineDrivenImageSlicer::RequestInformation(
 }
 
 //! RequestData is called by the pipeline process. 
-int vtkSplineDrivenImageSlicer::RequestData(
-    vtkInformation *vtkNotUsed(request),
-    vtkInformationVector **inputVector,
-    vtkInformationVector *outputVector)
+int vtkSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request), vtkInformationVector **inputVector,  vtkInformationVector *outputVector)
 {
     // get the info objects
     vtkInformation *inInfo       = inputVector[0]->GetInformationObject(0);
@@ -179,8 +176,7 @@ int vtkSplineDrivenImageSlicer::RequestData(
     this->localFrenetFrames->Update();
 
     // path will contain PointData array "Tangents" and "Vectors"
-    vtkPolyData* path = static_cast<vtkPolyData*>
-        (this->localFrenetFrames->GetOutputDataObject(0));
+    vtkPolyData* path = static_cast<vtkPolyData*>(this->localFrenetFrames->GetOutputDataObject(0));
     // Count how many points are used in the cells
     // In case of loop, points may be used several times
     // (note: not using NumberOfPoints because we want only LINES points...)
@@ -195,7 +191,8 @@ int vtkSplineDrivenImageSlicer::RequestData(
 #endif // VTK_CELL_ARRAY_V2
 
     vtkIdType cellId = -1;
-    do {
+    do
+    {
         lines->GetNextCell(nbCellPoints, points);
         cellId++;
     } while (cellId != this->OffsetLine);
@@ -219,11 +216,11 @@ int vtkSplineDrivenImageSlicer::RequestData(
     // - normal N
     double center[3];
     path->GetPoints()->GetPoint(ptId, center);
-    vtkDoubleArray* pathTangents = static_cast<vtkDoubleArray*>(path->GetPointData()->GetArray("FSTangents"));
+    vtkDoubleArray* pathTangents  = static_cast<vtkDoubleArray*>(path->GetPointData()->GetArray("FSTangents"));
     double tangent[3];
     pathTangents->GetTuple(ptId, tangent);
 
-    vtkDoubleArray* pathNormals = static_cast<vtkDoubleArray*> (path->GetPointData()->GetArray("FSNormals"));
+    vtkDoubleArray* pathNormals   = static_cast<vtkDoubleArray*> (path->GetPointData()->GetArray("FSNormals"));
     double normal[3];
     pathNormals->GetTuple(ptId, normal);
 
@@ -239,16 +236,14 @@ int vtkSplineDrivenImageSlicer::RequestData(
     double planePoint2[3];
     for (int comp = 0; comp < 3; comp++)
     {
-        planeOrigin[comp] = center[comp] - normal[comp] * this->SliceExtent[1] * this->SliceSpacing[1] / 2.0
-            - binormal[comp] * this->SliceExtent[0] * this->SliceSpacing[0] / 2.0;
+        planeOrigin[comp] = center[comp] - normal[comp] * this->SliceExtent[1] * this->SliceSpacing[1] / 2.0  - binormal[comp] * this->SliceExtent[0] * this->SliceSpacing[0] / 2.0;
         planePoint1[comp] = planeOrigin[comp] + binormal[comp] * this->SliceExtent[0] * this->SliceSpacing[0];
         planePoint2[comp] = planeOrigin[comp] + normal[comp] * this->SliceExtent[1] * this->SliceSpacing[1];
     }
     plane->SetOrigin(planeOrigin);
     plane->SetPoint1(planePoint1);
     plane->SetPoint2(planePoint2);
-    plane->SetResolution(this->SliceExtent[0],
-        this->SliceExtent[1]);
+    plane->SetResolution(this->SliceExtent[0], this->SliceExtent[1]);
     plane->Update();
 
     if (this->ProbeInput == 1)
