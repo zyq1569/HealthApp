@@ -1557,6 +1557,8 @@ public:
         }
         //add:20250603
         //https://notes.beyondxin.top/Vtk/%E9%87%8D%E5%BB%BA/CPR.html?h=cpr#4
+        //https://www.researchgate.net/publication/357547876_A_Spline-Driven_Image_Slicer
+        //https://github.com/djelouze/vtkKinship
         else if (ev == vtkCommand::LeftButtonDoubleClickEvent)
         {
             m_starSpline   = false;
@@ -1643,24 +1645,39 @@ public:
                     //splineFilter->Update();
                     //++              
 
-                    vtkNew<vtkPoints> points;
+                    double origin[3], spacing[3];
+                    currentViewer->GetInput()->GetOrigin(origin);
+                    currentViewer->GetInput()->GetSpacing(spacing);
+                    vtkNew<vtkPoints> points,points_line;
+                    points->InsertNextPoint(1, 1, 0);
                     for (const auto&p:m_points)
                     {
-                        points->InsertNextPoint(p[0], p[1], p[2]);
+                      points->InsertNextPoint(p[0], p[1], p[2]);
+                      points_line->InsertNextPoint(p[0], p[1], p[2]);
+                        //double ijk[3];
+                        //for (int i = 0; i < 3; ++i)
+                        //    ijk[i] = (p[i] - origin[i]) / spacing[i];
+                        //points->InsertNextPoint(ijk);
                     }
-                    vtkNew<vtkPolyLine> polyLine;
+                    //points->InsertNextPoint(m_points[0][0], m_points[0][1], m_points[0][2]);
+                    vtkNew<vtkPolyLine> polyLine, polyLine_line;
                     polyLine->GetPointIds()->SetNumberOfIds(points->GetNumberOfPoints());
+                    polyLine_line->GetPointIds()->SetNumberOfIds(points_line->GetNumberOfPoints());
                     for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++)
                     {
                         polyLine->GetPointIds()->SetId(i, i);
+                        polyLine_line->GetPointIds()->SetId(i, i);
                     }
-                    vtkNew<vtkCellArray> cells;
+                    vtkNew<vtkCellArray> cells, cells_line;
                     cells->InsertNextCell(polyLine);
-                    vtkNew<vtkPolyData> polyData;
+                    cells_line->InsertNextCell(polyLine_line);
+                    vtkNew<vtkPolyData> polyData, polyData_line;
                     polyData->SetPoints(points);
                     polyData->SetLines(cells);
+                    polyData_line->SetPoints(points_line);
+                    polyData_line->SetLines(cells_line);
 
-                    vtkNew<vtkSplineFilter> spline_filter;
+                    vtkNew<vtkSplineFilter> spline_filter, spline_filter_line;
                     spline_filter->SetSubdivideToLength();
                     spline_filter->SetLength(3);
                     //spline_filter->SetSubdivideToSpecified();
@@ -1670,8 +1687,12 @@ public:
 
                     //+++++++++++++++++++++++++++++++++++++++++
                     //绘制样条线
+                    spline_filter_line->SetSubdivideToLength();
+                    spline_filter_line->SetLength(1);
+                    spline_filter_line->SetInputData(polyData_line);
+                    spline_filter_line->Update();
                     vtkNew<vtkPolyDataMapper> splineMapper;
-                    splineMapper->SetInputConnection(spline_filter->GetOutputPort());
+                    splineMapper->SetInputConnection(spline_filter_line->GetOutputPort());
 
                     vtkNew<vtkActor> splineActor;
                     splineActor->SetMapper(splineMapper);
@@ -1697,14 +1718,22 @@ public:
                     //+++++++++++++++++++++++++++++++++++++++++
 
                     vtkSmartPointer<vtkXMLPolyDataReader> pathReader =  vtkSmartPointer<vtkXMLPolyDataReader>::New();
-                    pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\closed_curve.vtp");//vtp closed_curve.vtp");
+                    //pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\vtp.vtp");//vtp closed_curve.vtp");
+                    pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\output.vtp");
                     pathReader->Update();
                     vtkNew<vtkImageAppend> append;
                     append->SetAppendAxis(2);
                     vtkNew<vtkSplineDrivenImageSlicer> reslicer;
                     reslicer->SetInputData(currentViewer->GetInput());
-                    if (10)
+                    if (0)
                     {
+                        /*
+                        vtkNew<vtkXMLPolyDataWriter> splineWriter;
+                        splineWriter->SetFileName("output_second.vtp");
+                        splineWriter->SetInputConnection(pathReader->GetOutputPort());
+                        splineWriter->Update();
+                        splineWriter->Write();                        
+                        */
                         reslicer->SetPathConnection(pathReader->GetOutputPort());//spline_filter->GetOutputPort());
                         //reslicer->SetPathConnection(spline_filter->GetOutputPort());
                         //reslicer->SetPathConnection(linSource->GetOutputPort());
@@ -1712,6 +1741,8 @@ public:
                         reslicer->SetSliceExtent(200, 200);
                         //reslicer->SetSliceSpacing(0.2, 0.1);
                         reslicer->SetSliceThickness(2);
+
+
 
                         long long nb_points = 12;// pathReader->GetOutput()->GetNumberOfPoints();
                         for (int pt_id = 0; pt_id < nb_points; pt_id++)
@@ -1725,6 +1756,19 @@ public:
                     }
                     else
                     {
+                        //+++VTP FILE
+                        //vtkNew<vtkFrenetSerretFrame> frameFilter;
+                        //frameFilter->SetInputConnection(spline_filter->GetOutputPort());
+                        //frameFilter->Update();
+                        vtkNew<vtkXMLPolyDataWriter> splineWriter;                        
+                        splineWriter->SetFileName("output.vtp");
+                        splineWriter->SetInputData(spline_filter->GetOutput());
+                        //splineWriter->SetInputData(frameFilter->GetOutput());
+                        //splineWriter->SetCompressorTypeToNone();
+                        splineWriter->SetDataModeToAscii();
+                        splineWriter->Update();
+                        splineWriter->Write();
+                        //+++
                         reslicer->SetPathConnection(spline_filter->GetOutputPort());
                         reslicer->SetSliceExtent(200, 200);
                         reslicer->SetSliceThickness(2);
@@ -1960,7 +2004,7 @@ public:
                 pointsize++;
                 //++
                 vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-                vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
+                vtkSmartPointer<vtkIdList> ids      = vtkSmartPointer<vtkIdList>::New();
                 ids->SetNumberOfIds(pointsize);
                 for (int i = 0; i < pointsize; ++i)
                 {
