@@ -1649,15 +1649,11 @@ public:
                     currentViewer->GetInput()->GetOrigin(origin);
                     currentViewer->GetInput()->GetSpacing(spacing);
                     vtkNew<vtkPoints> points,points_line;
-                    points->InsertNextPoint(1, 1, 0);
+                    points->InsertNextPoint(0, 0, 1);
                     for (const auto&p:m_points)
                     {
                       points->InsertNextPoint(p[0], p[1], p[2]);
                       points_line->InsertNextPoint(p[0], p[1], p[2]);
-                        //double ijk[3];
-                        //for (int i = 0; i < 3; ++i)
-                        //    ijk[i] = (p[i] - origin[i]) / spacing[i];
-                        //points->InsertNextPoint(ijk);
                     }
                     //points->InsertNextPoint(m_points[0][0], m_points[0][1], m_points[0][2]);
                     vtkNew<vtkPolyLine> polyLine, polyLine_line;
@@ -1679,9 +1675,7 @@ public:
 
                     vtkNew<vtkSplineFilter> spline_filter, spline_filter_line;
                     spline_filter->SetSubdivideToLength();
-                    spline_filter->SetLength(3);
-                    //spline_filter->SetSubdivideToSpecified();
-                    //spline_filter->SetNumberOfSubdivisions(50);
+                    spline_filter->SetLength(3);//spline_filter->SetSubdivideToSpecified(); //spline_filter->SetNumberOfSubdivisions(50);
                     spline_filter->SetInputData(polyData);//(poly_data);
                     spline_filter->Update();
 
@@ -1718,8 +1712,7 @@ public:
                     //+++++++++++++++++++++++++++++++++++++++++
 
                     vtkSmartPointer<vtkXMLPolyDataReader> pathReader =  vtkSmartPointer<vtkXMLPolyDataReader>::New();
-                    //pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\vtp.vtp");//vtp closed_curve.vtp");
-                    pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\output.vtp");
+                    pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\vtp.vtp");//vtp closed_curve.vtp"); //pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\output.vtp");
                     pathReader->Update();
                     vtkNew<vtkImageAppend> append;
                     append->SetAppendAxis(2);
@@ -1741,9 +1734,6 @@ public:
                         reslicer->SetSliceExtent(200, 200);
                         //reslicer->SetSliceSpacing(0.2, 0.1);
                         reslicer->SetSliceThickness(2);
-
-
-
                         long long nb_points = 12;// pathReader->GetOutput()->GetNumberOfPoints();
                         for (int pt_id = 0; pt_id < nb_points; pt_id++)
                         {
