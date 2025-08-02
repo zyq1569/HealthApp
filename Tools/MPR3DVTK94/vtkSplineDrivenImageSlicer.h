@@ -49,67 +49,67 @@ class vtkImageReslice;
 class  vtkSplineDrivenImageSlicer : public vtkImageAlgorithm
 {
 public:
-  vtkTypeMacro(vtkSplineDrivenImageSlicer,vtkImageAlgorithm);
-  static vtkSplineDrivenImageSlicer* New();
+    vtkTypeMacro(vtkSplineDrivenImageSlicer, vtkImageAlgorithm);
+    static vtkSplineDrivenImageSlicer* New();
 
-  //! Specify the path represented by a vtkPolyData wich contains PolyLines
-  void SetPathConnection(int id, vtkAlgorithmOutput* algOutput);
-  void SetPathConnection(vtkAlgorithmOutput* algOutput)
-  {
-    this->SetPathConnection(0, algOutput);
-  };
-  vtkAlgorithmOutput* GetPathConnection( )
-  {return( this->GetInputConnection( 1, 0 ) );};
+    //! Specify the path represented by a vtkPolyData wich contains PolyLines
+    void SetPathConnection(int id, vtkAlgorithmOutput* algOutput);
+    void SetPathConnection(vtkAlgorithmOutput* algOutput)
+    {
+        this->SetPathConnection(0, algOutput);
+    };
+    vtkAlgorithmOutput* GetPathConnection()
+    {
+        return(this->GetInputConnection(1, 0));
+    };
 
-  vtkSetVector2Macro( SliceExtent, int );
-  vtkGetVector2Macro( SliceExtent, int );
+    vtkSetVector2Macro(SliceExtent, int);
+    vtkGetVector2Macro(SliceExtent, int);
 
-  vtkSetVector2Macro( SliceSpacing, double );
-  vtkGetVector2Macro( SliceSpacing, double );
+    vtkSetVector2Macro(SliceSpacing, double);
+    vtkGetVector2Macro(SliceSpacing, double);
 
-  vtkSetMacro( SliceThickness, double );
-  vtkGetMacro( SliceThickness, double );
+    vtkSetMacro(SliceThickness, double);
+    vtkGetMacro(SliceThickness, double);
 
-  vtkSetMacro( OffsetPoint, vtkIdType );
-  vtkGetMacro( OffsetPoint, vtkIdType );
+    vtkSetMacro(OffsetPoint, vtkIdType);
+    vtkGetMacro(OffsetPoint, vtkIdType);
 
-  vtkSetMacro( OffsetLine, vtkIdType );
-  vtkGetMacro( OffsetLine, vtkIdType );
+    vtkSetMacro(OffsetLine, vtkIdType);
+    vtkGetMacro(OffsetLine, vtkIdType);
 
-  vtkSetMacro( ProbeInput, vtkIdType );
-  vtkGetMacro( ProbeInput, vtkIdType );
-  vtkBooleanMacro( ProbeInput, vtkIdType );
+    vtkSetMacro(ProbeInput, vtkIdType);
+    vtkGetMacro(ProbeInput, vtkIdType);
+    vtkBooleanMacro(ProbeInput, vtkIdType);
 
-  vtkSetMacro( Incidence, double );
-  vtkGetMacro( Incidence, double );
+    vtkSetMacro(Incidence, double);
+    vtkGetMacro(Incidence, double);
 
 
 protected:
-  vtkSplineDrivenImageSlicer();
-  ~vtkSplineDrivenImageSlicer();
+    vtkSplineDrivenImageSlicer();
+    ~vtkSplineDrivenImageSlicer();
 
-  virtual int RequestData(vtkInformation *, vtkInformationVector **, 
-                          vtkInformationVector *) override;
+    virtual int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *) override;
 
-  virtual int FillInputPortInformation(int port, vtkInformation *info) override;
-  virtual int FillOutputPortInformation( int, vtkInformation*) override;
-  virtual int RequestInformation(vtkInformation*, vtkInformationVector**, 
-                                 vtkInformationVector*) override;
+    virtual int FillInputPortInformation(int port, vtkInformation *info) override;
+    virtual int FillOutputPortInformation(int, vtkInformation*) override;
+    virtual int RequestInformation(vtkInformation*, vtkInformationVector**, vtkInformationVector*) override;
 private:
-  vtkSplineDrivenImageSlicer(const vtkSplineDrivenImageSlicer&) = delete;
-  void operator=(const vtkSplineDrivenImageSlicer&) = delete;
+    vtkSplineDrivenImageSlicer(const vtkSplineDrivenImageSlicer&) = delete;
+    void operator=(const vtkSplineDrivenImageSlicer&) = delete;
 
-  vtkFrenetSerretFrame* localFrenetFrames; //!< computes local tangent along path input
-  vtkImageReslice* reslicer; //!< Reslicers array
+    vtkFrenetSerretFrame* localFrenetFrames; //!< computes local tangent along path input
+    vtkImageReslice* reslicer; //!< Reslicers array
 
-  int     SliceExtent[2]; //!< Number of pixels nx, ny in the slice space around the center points
-  double SliceSpacing[2]; //!< Pixel size sx, sy of the output slice
-  double SliceThickness; //!< Slice thickness (useful for volumic reconstruction) 
-  double Incidence; //!< Rotation of the initial normal vector.
-   
-  vtkIdType OffsetPoint; //!< Id of the point where the reslicer proceed
-  vtkIdType OffsetLine; //!< Id of the line cell where to get the reslice center
-  vtkIdType ProbeInput; //!< If true, the output plane (2nd output probes the input image)
+    int     SliceExtent[2]; //!< Number of pixels nx, ny in the slice space around the center points
+    double SliceSpacing[2]; //!< Pixel size sx, sy of the output slice
+    double SliceThickness; //!< Slice thickness (useful for volumic reconstruction) 
+    double Incidence; //!< Rotation of the initial normal vector.
+
+    vtkIdType OffsetPoint; //!< Id of the point where the reslicer proceed
+    vtkIdType OffsetLine; //!< Id of the line cell where to get the reslice center
+    vtkIdType ProbeInput; //!< If true, the output plane (2nd output probes the input image)
 };
 
 #endif //__vtkSplineDrivenImageSlicer_h__

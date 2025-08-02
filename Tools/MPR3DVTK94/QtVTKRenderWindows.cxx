@@ -1649,7 +1649,7 @@ public:
                     currentViewer->GetInput()->GetOrigin(origin);
                     currentViewer->GetInput()->GetSpacing(spacing);
                     vtkNew<vtkPoints> points,points_line;
-                    points->InsertNextPoint(0, 0, 1);
+                    //points->InsertNextPoint(m_points[0][0], m_points[0][1], 0);
                     for (const auto&p:m_points)
                     {
                       points->InsertNextPoint(p[0], p[1], p[2]);
@@ -1682,7 +1682,7 @@ public:
                     //+++++++++++++++++++++++++++++++++++++++++
                     //绘制样条线
                     spline_filter_line->SetSubdivideToLength();
-                    spline_filter_line->SetLength(1);
+                    spline_filter_line->SetLength(0.8);
                     spline_filter_line->SetInputData(polyData_line);
                     spline_filter_line->Update();
                     vtkNew<vtkPolyDataMapper> splineMapper;
@@ -1747,26 +1747,21 @@ public:
                     else
                     {
                         //+++VTP FILE
-                        //vtkNew<vtkFrenetSerretFrame> frameFilter;
-                        //frameFilter->SetInputConnection(spline_filter->GetOutputPort());
-                        //frameFilter->Update();
-                        vtkNew<vtkXMLPolyDataWriter> splineWriter;                        
-                        splineWriter->SetFileName("output.vtp");
-                        splineWriter->SetInputData(spline_filter->GetOutput());
-                        //splineWriter->SetInputData(frameFilter->GetOutput());
-                        //splineWriter->SetCompressorTypeToNone();
-                        splineWriter->SetDataModeToAscii();
-                        splineWriter->Update();
-                        splineWriter->Write();
+                        //vtkNew<vtkXMLPolyDataWriter> splineWriter;                        
+                        //splineWriter->SetFileName("output.vtp");
+                        //splineWriter->SetInputData(spline_filter->GetOutput());
+                        //splineWriter->SetDataModeToAscii();
+                        //splineWriter->Update();
+                        //splineWriter->Write();
                         //+++
                         reslicer->SetPathConnection(spline_filter->GetOutputPort());
-                        reslicer->SetSliceExtent(200, 200);
-                        reslicer->SetSliceThickness(2);
+                        reslicer->SetSliceExtent(250, 200);
+                        //reslicer->SetSliceSpacing(0.2, 0.1);
+                        reslicer->SetSliceThickness(0.5);
                         long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
                         for (int pt_id = 0; pt_id < nb_points; pt_id++)
-                        {
-                            //double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
-                            reslicer->SetOffsetPoint(pt_id);
+                        {                           
+                            reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
                             reslicer->Update();
                             vtkNew<vtkImageData> tempSlice;
                             tempSlice->DeepCopy(reslicer->GetOutput());
