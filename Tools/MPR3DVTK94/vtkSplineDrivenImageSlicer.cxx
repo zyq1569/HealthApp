@@ -276,8 +276,7 @@ int vtkSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request)
         resliceAxes->SetElement(1, comp, normal[comp]);
         resliceAxes->SetElement(2, comp, tangent[comp]);
 
-        origin[comp] = center[comp] - normal[comp] * this->SliceExtent[1] * this->SliceSpacing[1] / 2.0
-            - binormal[comp] * this->SliceExtent[0] * this->SliceSpacing[0] / 2.0;
+        origin[comp] = center[comp] - normal[comp] * this->SliceExtent[1] * this->SliceSpacing[1] / 2.0 - binormal[comp] * this->SliceExtent[0] * this->SliceSpacing[0] / 2.0;
     }
 
     //! Transform the origin in the homogeneous coordinate space. 
@@ -308,7 +307,6 @@ int vtkSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request)
     this->reslicer->Update();
 
     resliceAxes->Delete();
-
 
     outputImage->DeepCopy(this->reslicer->GetOutputDataObject(0));
     outputImage->GetPointData()->GetScalars()->SetName("ReslicedImage");
