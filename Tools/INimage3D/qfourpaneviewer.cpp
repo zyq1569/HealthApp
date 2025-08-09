@@ -236,10 +236,52 @@ private:
 
 ///+++class vtkResliceImageViewerP++++++++++++
 vtkStandardNewMacro(vtkResliceImageViewerP);
-void vtkResliceImageViewerP::InOrDecrementSlice(int inc)
-{
-    m_IncrementIndex += inc;
-    IncrementSlice(inc);
+//void vtkResliceImageViewerP::InOrDecrementSlice(int inc)
+//{
+//    //m_IncrementIndex += inc;
+//    IncrementSlice(inc);
+//}
+
+void vtkResliceImageViewerP::IncrementSlice(int inc)
+{  
+    if (this->GetResliceMode() == vtkResliceImageViewer::RESLICE_AXIS_ALIGNED)
+    {
+        m_IncrementIndex += inc;
+        int oldSlice = this->GetSlice();
+        this->SetSlice(this->GetSlice() + static_cast<int>(std::round(inc * this->SliceScrollFactor)));
+        if (this->GetSlice() != oldSlice)
+        {
+            this->InvokeEvent(vtkResliceImageViewer::SliceChangedEvent, nullptr);
+            this->InvokeEvent(vtkCommand::InteractionEvent, nullptr);
+        }
+    }
+    else
+    {
+        if (vtkPlane* p = this->GetReslicePlane())
+        {
+            m_IncrementIndex += inc;
+            double n[3], c[3], bounds[6];
+            p->GetNormal(n);
+            const double spacing =  this->GetInterSliceSpacingInResliceMode() * inc * this->SliceScrollFactor;
+            this->GetResliceCursor()->GetCenter(c);
+            vtkMath::MultiplyScalar(n, spacing);
+            c[0] += n[0];
+            c[1] += n[1];
+            c[2] += n[2];
+
+            // If the new center is inside, put it there...
+            if (vtkImageData* image = this->GetResliceCursor()->GetImage())
+            {
+                image->GetBounds(bounds);
+                if (c[0] >= bounds[0] && c[0] <= bounds[1] && c[1] >= bounds[2] && c[1] <= bounds[3] &&  c[2] >= bounds[4] && c[2] <= bounds[5])
+                {
+                    this->GetResliceCursor()->SetCenter(c);
+                    this->InvokeEvent(vtkResliceImageViewer::SliceChangedEvent, nullptr);
+                    this->InvokeEvent(vtkCommand::InteractionEvent, nullptr);
+                }
+            }
+        }
+    }
 }
 //--------------
 
@@ -1271,7 +1313,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
     // 2. 获取平面方向（0 = YZ, 1 = XZ, 2 = XY）
     int orientation = planeWidget->GetPlaneOrientation();
     //切换对应切面到指定的偏移量的切面显示.
-    m_resliceImageViewer[orientation]->InOrDecrementSlice(inc);
+    m_resliceImageViewer[orientation]->IncrementSlice(inc);
 
     double spacingU, spacingV;
     if (orientation == 0)
@@ -1658,7 +1700,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         // 1. 获取平面方向（0 = YZ, 1 = XZ, 2 = XY）
     int orientation = planeWidget->GetPlaneOrientation();
     //切换对应切面到指定的偏移量的切面显示.
-    m_resliceImageViewer[orientation]->InOrDecrementSlice(inc);
+    m_resliceImageViewer[orientation]->IncrementSlice(inc);
     //+++
     //旋转XYZ轴调整斜切面
     // vtkResliceCursorLineRepresentation 头文件增加函数 void UserRotateAxis(int axis, double angle) {        RotateAxis(axis, angle);    };

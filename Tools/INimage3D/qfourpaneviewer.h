@@ -56,12 +56,18 @@ public:
       /**
    * Increment/Decrement slice by 'inc' slices
    */
-    void InOrDecrementSlice(int inc);
+    //void InOrDecrementSlice(int inc);//∑œ∆˙
 
     int GetIncrementIndex()
     {
         return m_IncrementIndex;
     }
+public:
+    //÷ÿ‘ÿ‘¥¬Î
+      /**
+   * Increment/Decrement slice by 'inc' slices
+   */
+    virtual void IncrementSlice(int inc);
 
 protected:
     vtkResliceImageViewerP()
