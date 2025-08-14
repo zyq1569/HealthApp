@@ -246,11 +246,12 @@ void vtkResliceImageViewerP::IncrementSlice(int inc)
 {  
     if (this->GetResliceMode() == vtkResliceImageViewer::RESLICE_AXIS_ALIGNED)
     {
-        m_IncrementIndex += inc;
+
         int oldSlice = this->GetSlice();
         this->SetSlice(this->GetSlice() + static_cast<int>(std::round(inc * this->SliceScrollFactor)));
         if (this->GetSlice() != oldSlice)
         {
+            m_IncrementIndex += inc;
             this->InvokeEvent(vtkResliceImageViewer::SliceChangedEvent, nullptr);
             this->InvokeEvent(vtkCommand::InteractionEvent, nullptr);
         }
@@ -259,7 +260,6 @@ void vtkResliceImageViewerP::IncrementSlice(int inc)
     {
         if (vtkPlane* p = this->GetReslicePlane())
         {
-            m_IncrementIndex += inc;
             double n[3], c[3], bounds[6];
             p->GetNormal(n);
             const double spacing =  this->GetInterSliceSpacingInResliceMode() * inc * this->SliceScrollFactor;
@@ -275,6 +275,7 @@ void vtkResliceImageViewerP::IncrementSlice(int inc)
                 image->GetBounds(bounds);
                 if (c[0] >= bounds[0] && c[0] <= bounds[1] && c[1] >= bounds[2] && c[1] <= bounds[3] &&  c[2] >= bounds[4] && c[2] <= bounds[5])
                 {
+                    m_IncrementIndex += inc;
                     this->GetResliceCursor()->SetCenter(c);
                     this->InvokeEvent(vtkResliceImageViewer::SliceChangedEvent, nullptr);
                     this->InvokeEvent(vtkCommand::InteractionEvent, nullptr);
