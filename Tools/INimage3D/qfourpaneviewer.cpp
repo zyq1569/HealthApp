@@ -1428,7 +1428,7 @@ void QFourpaneviewer::DrawRectangleAxisAlignedPlane(vtkImagePlaneWidget* planeWi
         int* disp = coordinate->GetComputedDisplayValue(renderer);
 
         // 修改非主轴方向的屏幕坐标
-        int axis = planeWidget->GetPlaneOrientation(); // 0=X, 1=Y, 2=Z
+        //int axis = planeWidget->GetPlaneOrientation(); // 0=X, 1=Y, 2=Z
         display[0] = disp[0];
         display[1] = disp[1];
         display[2] = 0.0; // Z值设为0，简化深度投影
@@ -1772,7 +1772,7 @@ void QFourpaneviewer::DrawRectangleObliquerPlane(vtkImagePlaneWidget* planeWidge
         return;
 
     // 获取世界坐标点
-    double origin[3], center[3], corners[4][3], allImageRect[4][3];
+    double origin[3], center[3], corners[4][3];// , allImageRect[4][3];
     double spacing[2];
     spacing[0] = reslice->GetOutputSpacing()[0];
     spacing[1] = reslice->GetOutputSpacing()[1];
