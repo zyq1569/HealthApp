@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="QtVTKRenderWindows.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QtVTKRenderWindowsApp.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vtkFrenetSerretFrame.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vtkSplineDrivenImageSlicer.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Form">
+      <UniqueIdentifier>{1a3571df-bd99-45f0-bda0-b862d40aa414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{8b2d8348-d3bf-4195-88ce-c971d29653ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4ead00b4-b3b3-41ca-9a03-fd88c6c4ee88}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="QtVTKRenderWindows.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="QtVTKRenderWindows.ui">
+      <Filter>Form</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vtkFrenetSerretFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vtkSplineDrivenImageSlicer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

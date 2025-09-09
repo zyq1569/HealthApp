@@ -48,16 +48,16 @@ vtkStandardNewMacro(vtkSplineDrivenImageSlicer);
 vtkSplineDrivenImageSlicer::vtkSplineDrivenImageSlicer()
 {
     this->localFrenetFrames = vtkFrenetSerretFrame::New();
-    this->reslicer = vtkImageReslice::New();
-    this->SliceExtent[0]  = 15;
-    this->SliceExtent[1]  = 15;
-    this->SliceSpacing[0] = 1;
-    this->SliceSpacing[1] = 1;
-    this->SliceThickness  = 1;
-    this->OffsetPoint     = 0;
-    this->OffsetLine      = 0;
-    this->ProbeInput      = 1;
-    this->Incidence       = 0;
+    this->reslicer          = vtkImageReslice::New();
+    this->SliceExtent[0]    = 15;
+    this->SliceExtent[1]    = 15;
+    this->SliceSpacing[0]   = 1;
+    this->SliceSpacing[1]   = 1;
+    this->SliceThickness    = 1;
+    this->OffsetPoint       = 0;
+    this->OffsetLine        = 0;
+    this->ProbeInput        = 1;
+    this->Incidence         = 0;
 
     this->SetNumberOfInputPorts(2);
     this->SetNumberOfOutputPorts(2);
@@ -130,9 +130,9 @@ int vtkSplineDrivenImageSlicer::RequestInformation(  vtkInformation * vtkNotUsed
     // get the info objects
     vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
-    int extent[6] = { 0, this->SliceExtent[0] - 1,
-                      0, this->SliceExtent[1] - 1,
-                      0, 1 };
+    int extent[6]     = { 0, this->SliceExtent[0] - 1,
+                          0, this->SliceExtent[1] - 1,
+                          0, 1 };
     double spacing[3] = { this->SliceSpacing[0],this->SliceSpacing[1],this->SliceThickness };
 
 
@@ -211,11 +211,11 @@ int vtkSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request)
     // - normal N
     double center[3];
     path->GetPoints()->GetPoint(ptId, center);
-    vtkDoubleArray* pathTangents  = static_cast<vtkDoubleArray*>(path->GetPointData()->GetArray("FSTangents"));
+    vtkDoubleArray* pathTangents  = static_cast<vtkDoubleArray*>(path->GetPointData()->GetArray("FSTangents"));//FSTangents
     double tangent[3];
     pathTangents->GetTuple(ptId, tangent);
 
-    vtkDoubleArray* pathNormals   = static_cast<vtkDoubleArray*> (path->GetPointData()->GetArray("FSNormals"));//FSNormals
+    vtkDoubleArray* pathNormals   = static_cast<vtkDoubleArray*>(path->GetPointData()->GetArray("FSNormals"));//FSNormals
     double normal[3];
     pathNormals->GetTuple(ptId, normal);
 

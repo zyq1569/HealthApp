@@ -1543,7 +1543,7 @@ public:
                 }
             }
         }
-
+        //https://notes.beyondxin.top/Vtk/%E9%87%8D%E5%BB%BA/CPR.html#41-vtksplinefilter
         if (ev == vtkResliceCursorWidget::WindowLevelEvent || ev == vtkCommand::WindowLevelEvent ||
             ev == vtkResliceCursorWidget::ResliceThicknessChangedEvent)
         {
@@ -1566,401 +1566,146 @@ public:
             m_points[0][2] = m_points[1][2];
             if (pointsize > 1)
             {
-                int icase = 4;
-                if (1 == icase)
+                //目前是白色的线带.暂时不知问题地方          
+                double origin[3], spacing[3];
+                currentViewer->GetInput()->GetOrigin(origin);
+                currentViewer->GetInput()->GetSpacing(spacing);
+                vtkNew<vtkPoints> points, points_line;
+                points->InsertNextPoint(0, 0, 1);
+                for (const auto&p : m_points)
                 {
-                    //???什么地方错误
-                    SplineCPRImage(currentViewer, m_points);
+                    points->InsertNextPoint(p[0], p[1], p[2]);
+                    points_line->InsertNextPoint(p[0], p[1], p[2]);
                 }
-                else if (2 == icase)
+                vtkNew<vtkPolyLine> polyLine, polyLine_line;
+                polyLine->GetPointIds()->SetNumberOfIds(points->GetNumberOfPoints());
+                polyLine_line->GetPointIds()->SetNumberOfIds(points_line->GetNumberOfPoints());
+                for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++)
                 {
-                    //参考VTKdemo的曲面改,目前效果完全无法使用
-                    //auto data = GenerateCPRImage(currentViewer, m_points, 60);
-                    auto data = GenerateCPRImageWithThickness(currentViewer->GetInput(), m_points);
-                    //auto data = GenerateCPRImageFromViewer(currentViewer, m_points);
-                    auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
-                    viewer->SetInputData(data);
-                    auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-                    viewer->SetupInteractor(interactor);
-                    viewer->GetRenderWindow()->SetWindowName("title.c_str()");
-                    viewer->Render();
-                    interactor->Start();
-                    //https://blog.csdn.net/a15005784320/article/details/117248736
-                    //
+                    polyLine->GetPointIds()->SetId(i, i);
+                    polyLine_line->GetPointIds()->SetId(i, i);
                 }
-                else if (3 == icase)
-                {                              
-                    VTKRCP* repOblique = VTKRCP::SafeDownCast(currentViewer->GetResliceCursorWidget()->GetRepresentation());
-                    vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(repOblique->GetReslice());
-                    double *spacing = reslice->GetOutputSpacing();
-                    auto data = NewGenerateCPRImage(currentViewer->GetInput(), m_points, 10, spacing);
-                    //auto data = MPRCPRImageWithThickness(currentViewer->GetInput(), m_points);
-                    //auto data = GenerateCPRImageFromViewer(currentViewer, m_points, 10, 200,"NULL");
-                    auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
-                    viewer->SetInputData(data);
-                    auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-                    viewer->SetupInteractor(interactor);
-                    viewer->GetRenderWindow()->SetWindowName("title.c_str()");
-                    viewer->Render();
-                    interactor->Start();
-                }
-                ////************************************************************\\//
-                else if (4 == icase)
+                vtkNew<vtkCellArray> cells, cells_line;
+                cells->InsertNextCell(polyLine);
+                cells_line->InsertNextCell(polyLine_line);
+                vtkNew<vtkPolyData> polyData, polyData_line;
+                polyData->SetPoints(points);
+                polyData->SetLines(cells);
+                polyData_line->SetPoints(points_line);
+                polyData_line->SetLines(cells_line);
+
+                vtkNew<vtkSplineFilter> spline_filter, spline_filter_line;
+                spline_filter->SetSubdivideToLength();
+                //spline_filter->SetLength(1);//spline_filter->SetSubdivideToSpecified(); //
+                spline_filter->SetNumberOfSubdivisions(50);
+                spline_filter->SetInputData(polyData);//(poly_data);
+                spline_filter->Update();
+
+                //+++++++++++++++++++++++++++++++++++++++++
+                //绘制样条线
+                spline_filter_line->SetSubdivideToLength();
+                spline_filter_line->SetLength(0.8);
+                spline_filter_line->SetInputData(polyData_line);
+                spline_filter_line->Update();
+                vtkNew<vtkPolyDataMapper> splineMapper;
+                splineMapper->SetInputConnection(spline_filter_line->GetOutputPort());
+
+                vtkNew<vtkActor> splineActor;
+                splineActor->SetMapper(splineMapper);
+                //vtkNew<vtkRenderer> ren1;
+                //ren1->AddActor(splineActor);
+                //ren1->SetBackground(0.1, 0.2, 0.4);
+                //
+                //vtkNew<vtkRenderWindow> renWin;
+                //renWin->AddRenderer(ren1);
+                //renWin->SetSize(300, 300);
+                //
+                //vtkNew<vtkRenderWindowInteractor> iren;
+                //iren->SetRenderWindow(/*renderWindow*/renWin);
+                //iren->Initialize();
+                //iren->Start();
+                splineActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
+                splineActor->GetProperty()->SetLineWidth(1.0);
+                splineActor->GetProperty()->SetOpacity(1);
+                //currentViewer->GetRenderer()->RemoveActor(m_oldActor);
+                currentViewer->GetRenderer()->AddActor(splineActor);
+                currentViewer->GetRenderer()->Render();
+                currentViewer->GetRenderer()->GetRenderWindow()->Render();
+                //+++++++++++++++++++++++++++++++++++++++++
+                vtkNew<vtkImageAppend> append;
+                append->SetAppendAxis(2);
+                vtkNew<vtkSplineDrivenImageSlicer> reslicer;
+                reslicer->SetInputData(currentViewer->GetInput());
+
+                reslicer->SetPathConnection(spline_filter->GetOutputPort());
+                reslicer->SetSliceExtent(256, 256);
+                reslicer->SetSliceThickness(2);
+                //reslicer->SetSliceSpacing(0.2, 0.1);
+                //reslicer->SetIncidence(2 * 3.1415926 / 3);
+                vtkSmartPointer<vtkFrenetSerretFrame> frenet = vtkSmartPointer<vtkFrenetSerretFrame>::New();
+                frenet->SetInputData(spline_filter->GetOutput());
+                frenet->Update();
+
+                long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
+
+                for (int pt_id = 0; pt_id < nb_points; pt_id++)
                 {
-                    {
-                        // Create an ellipsoid
-                        vtkSmartPointer<vtkImageEllipsoidSource> imgSource = vtkSmartPointer<vtkImageEllipsoidSource>::New();
-                        imgSource->SetWholeExtent(0, 255, 0, 255, 0, 255);
-                        imgSource->SetCenter(127, 127, 127);
-                        imgSource->SetRadius(50, 50, 50);
-                        imgSource->Update();
-                        double imgBB[6];
-                        imgSource->GetOutput()->GetBounds(imgBB);
+                    //****
+                    double* point1 = spline_filter->GetOutput()->GetPoint(pt_id);
+                    double* point2 = spline_filter->GetOutput()->GetPoint(pt_id + 1);
 
-                        // Create a spline
-                        vtkSmartPointer<vtkLineSource> linSource = vtkSmartPointer<vtkLineSource>::New();
-                        linSource->SetPoint1(imgBB[0], imgBB[2], imgBB[4]);
-                        linSource->SetPoint2(imgBB[1], imgBB[3], imgBB[5]);
-                        linSource->SetResolution(20);
+                    // Step 5: Calculate the tangent vector (direction of the curve)
+                    vtkVector3d tangent(point2[0] - point1[0], point2[1] - point1[1], point2[2] - point1[2]);
+                    tangent.Normalize();
 
-                        // tested object
-                        vtkSmartPointer<vtkSplineDrivenImageSlicer> sdis;
-                        sdis = vtkSmartPointer<vtkSplineDrivenImageSlicer>::New();
-                        sdis->SetInputConnection(0, imgSource->GetOutputPort());
-                        sdis->SetInputConnection(1, linSource->GetOutputPort());
-                        sdis->SetOffsetPoint(10);
-                        sdis->SetSliceExtent(200, 200);
-                        sdis->SetSliceSpacing(0.5, 0.5);
+                    // Step 6: Calculate the normal and binormal using the Frenet Serret frame
+                    vtkVector3d normal, binormal;
+                    //vtkDoubleArray* pathNormals = static_cast<vtkDoubleArray*> (frenet->GetPointData()->GetArray("FSNormals"));//FSNormals
+                    //frenet->GetPointData()->GetArray("FSNormals");//FSNormals)
+                    //frenet->GetNormal(pt_id, normal.GetData());
+                    //frenet->GetBinormal(pt_id+1, binormal.GetData());
 
-                        sdis->Update();
-
-                        // Check output scalar range:
-                        double scalarRange[2];
-                        sdis->GetOutput(0)->GetScalarRange(scalarRange);
-                        if (scalarRange[0] != 0 || scalarRange[1] != 255)
-                            return;
-
-                        // Check plane output bounds
-                        static_cast<vtkPolyData*>(sdis->GetOutputDataObject(1))->ComputeBounds();
-                        double bounds[6];
-                        static_cast<vtkPolyData*>(sdis->GetOutputDataObject(1))->GetBounds(bounds);
-
-                        // Bounds centroid:
-                        double sum = 0;
-                        for (int i = 0; i < 6; i++)
-                            sum += bounds[i] / 6.0;
-
-                        double epsilon = 2;
-                        if (fabs(sum - 127) > epsilon)
-                            return;
-
-                        return;
-                    }
-
-                    //目前是白色的线带.暂时不知问题地方
-                    /*
-                    
-                    
-                    vtkNew<vtkPoints> vtkpoints;
-                    vtkNew<vtkCellArray> lines;
-                    lines->InsertNextCell(m_points.size());
-                    for (int i = 0; i < m_points.size(); i++)
-                    {
-                        vtkpoints->InsertNextPoint(m_points[i][0], m_points[i][1], m_points[i][2]);
-                        lines->InsertCellPoint(i);
-                    }
-                    vtkNew<vtkPolyData> polyData;
-                    polyData->SetPoints(vtkpoints);
-                    polyData->SetLines(lines);
-                    vtkNew<vtkSplineFilter> spline_filter;                                    
-                    spline_filter->SetSubdivideToLength();
-                    //spline_filter->SetLength(1);
-                    spline_filter->SetSubdivideToSpecified();
-                    spline_filter->SetNumberOfSubdivisions(50);
-                    spline_filter->SetInputData(polyData);//(poly_data);
-                    spline_filter->Update();
-                    */
-                    //vtkPoints* vtP = spline_filter->GetOutput()->GetPoints();
-                    //long long nbpoints = spline_filter->GetOutput()->GetNumberOfPoints();
-                    //___
-                    //vtkSmartPointer<vtkLineSource> linSource = vtkSmartPointer<vtkLineSource>::New();
-                    //linSource->SetPoints(vtkpoints);
-                    //linSource->SetResolution(20);
+                    // Step 7: Create the reslice matrix to align with the tangent, normal, and binormal
+                    vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+                    matrix->SetElement(0, 0, normal[0]);
+                    matrix->SetElement(0, 1, binormal[0]);
+                    matrix->SetElement(0, 2, tangent[0]);
+                    matrix->SetElement(1, 0, normal[1]);
+                    matrix->SetElement(1, 1, binormal[1]);
+                    matrix->SetElement(1, 2, tangent[1]);
+                    matrix->SetElement(2, 0, normal[2]);
+                    matrix->SetElement(2, 1, binormal[2]);
+                    matrix->SetElement(2, 2, tangent[2]);
+                    matrix->SetElement(0, 3, point1[0]);
+                    matrix->SetElement(1, 3, point1[1]);
+                    matrix->SetElement(2, 3, point1[2]);
                     //
-                    //vtkNew <vtkSplineFilter> splineFilter;
-                    //splineFilter->SetSubdivideToLength();
-                    //splineFilter->SetLength(1.0);
-                    //splineFilter->SetInputData(polyData);
-                    //splineFilter->Update();
-                    //++              
+                    reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
+                    reslicer->Update();
+                    vtkNew<vtkImageData> tempSlice;
+                    tempSlice->DeepCopy(reslicer->GetOutput());
+                    append->AddInputData(tempSlice);
+                }
 
-                    double origin[3], spacing[3];
-                    currentViewer->GetInput()->GetOrigin(origin);
-                    currentViewer->GetInput()->GetSpacing(spacing);
-                    vtkNew<vtkPoints> points,points_line;
-                    //points->InsertNextPoint(m_points[0][0], m_points[0][1], 0);
-                    points->InsertNextPoint(0, 0, 1);
-                    for (const auto&p:m_points)
-                    {
-                      points->InsertNextPoint(p[0], p[1], p[2]);
-                      points_line->InsertNextPoint(p[0], p[1], p[2]);
-                    }
-                    //points->InsertNextPoint(m_points[0][0], m_points[0][1], m_points[0][2]);
-                    vtkNew<vtkPolyLine> polyLine, polyLine_line;
-                    polyLine->GetPointIds()->SetNumberOfIds(points->GetNumberOfPoints());
-                    polyLine_line->GetPointIds()->SetNumberOfIds(points_line->GetNumberOfPoints());
-                    for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++)
-                    {
-                        polyLine->GetPointIds()->SetId(i, i);
-                        polyLine_line->GetPointIds()->SetId(i, i);
-                    }
-                    vtkNew<vtkCellArray> cells, cells_line;
-                    cells->InsertNextCell(polyLine);
-                    cells_line->InsertNextCell(polyLine_line);
-                    vtkNew<vtkPolyData> polyData, polyData_line;
-                    polyData->SetPoints(points);
-                    polyData->SetLines(cells);
-                    polyData_line->SetPoints(points_line);
-                    polyData_line->SetLines(cells_line);
-
-                    vtkNew<vtkSplineFilter> spline_filter, spline_filter_line;
-                    spline_filter->SetSubdivideToLength();
-                    spline_filter->SetLength(3);//spline_filter->SetSubdivideToSpecified(); //spline_filter->SetNumberOfSubdivisions(50);
-                    spline_filter->SetInputData(polyData);//(poly_data);
-                    spline_filter->Update();
-
-                    //+++++++++++++++++++++++++++++++++++++++++
-                    //绘制样条线
-                    spline_filter_line->SetSubdivideToLength();
-                    spline_filter_line->SetLength(0.8);
-                    spline_filter_line->SetInputData(polyData_line);
-                    spline_filter_line->Update();
-                    vtkNew<vtkPolyDataMapper> splineMapper;
-                    splineMapper->SetInputConnection(spline_filter_line->GetOutputPort());
-
-                    vtkNew<vtkActor> splineActor;
-                    splineActor->SetMapper(splineMapper);
-                    //vtkNew<vtkRenderer> ren1;
-                    //ren1->AddActor(splineActor);
-                    //ren1->SetBackground(0.1, 0.2, 0.4);
-                    //
-                    //vtkNew<vtkRenderWindow> renWin;
-                    //renWin->AddRenderer(ren1);
-                    //renWin->SetSize(300, 300);
-                    //
-                    //vtkNew<vtkRenderWindowInteractor> iren;
-                    //iren->SetRenderWindow(/*renderWindow*/renWin);
-                    //iren->Initialize();
-                    //iren->Start();
-                    splineActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
-                    splineActor->GetProperty()->SetLineWidth(1.0);
-                    splineActor->GetProperty()->SetOpacity(1);
-                    //currentViewer->GetRenderer()->RemoveActor(m_oldActor);
-                    currentViewer->GetRenderer()->AddActor(splineActor);
-                    currentViewer->GetRenderer()->Render();
-                    currentViewer->GetRenderer()->GetRenderWindow()->Render();
-                    //+++++++++++++++++++++++++++++++++++++++++
-
-                    vtkSmartPointer<vtkXMLPolyDataReader> pathReader =  vtkSmartPointer<vtkXMLPolyDataReader>::New();
-                    pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\vtp.vtp");//vtp closed_curve.vtp"); //pathReader->SetFileName("F:\\temp\\HealthApp\\Tools\\MPR3DVTK94\\output.vtp");
-                    pathReader->Update();
-                    vtkNew<vtkImageAppend> append;
-                    append->SetAppendAxis(2);
-                    vtkNew<vtkSplineDrivenImageSlicer> reslicer;
-                    reslicer->SetInputData(currentViewer->GetInput());
-                    if (0)
-                    {
-                        /*
-                        vtkNew<vtkXMLPolyDataWriter> splineWriter;
-                        splineWriter->SetFileName("output_second.vtp");
-                        splineWriter->SetInputConnection(pathReader->GetOutputPort());
-                        splineWriter->Update();
-                        splineWriter->Write();                        
-                        */
-                        reslicer->SetPathConnection(pathReader->GetOutputPort());//spline_filter->GetOutputPort());
-                        //reslicer->SetPathConnection(spline_filter->GetOutputPort());
-                        //reslicer->SetPathConnection(linSource->GetOutputPort());
-                        //reslicer->SetPathConnection(splineFilter->GetOutputPort());
-                        reslicer->SetSliceExtent(200, 200);
-                        //reslicer->SetSliceSpacing(0.2, 0.1);
-                        reslicer->SetSliceThickness(2);
-                        long long nb_points = 12;// pathReader->GetOutput()->GetNumberOfPoints();
-                        for (int pt_id = 0; pt_id < nb_points; pt_id++)
-                        {
-                            reslicer->SetOffsetPoint(pt_id);
-                            reslicer->Update();
-                            vtkNew<vtkImageData> tempSlice;
-                            tempSlice->DeepCopy(reslicer->GetOutput());
-                            append->AddInputData(tempSlice);
-                        }
-                    }
-                    else
-                    {
-                        //+++VTP FILE
-                        //vtkNew<vtkXMLPolyDataWriter> splineWriter;                        
-                        //splineWriter->SetFileName("output.vtp");
-                        //splineWriter->SetInputData(spline_filter->GetOutput());
-                        //splineWriter->SetDataModeToAscii();
-                        //splineWriter->Update();
-                        //splineWriter->Write();
-                        //+++
-                        reslicer->SetPathConnection(spline_filter->GetOutputPort());
-                        reslicer->SetSliceExtent(250, 200);
-                        //reslicer->SetSliceThickness(0.5);
-                        reslicer->SetSliceSpacing(0.2, 0.1);
-                        //reslicer->SetIncidence(2 * 3.1415926 / 3);
-                        long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
-                        
-                        for (int pt_id = 0; pt_id < nb_points; pt_id++)
-                        {                           
-                            reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
-                            reslicer->Update();
-                            vtkNew<vtkImageData> tempSlice;
-                            tempSlice->DeepCopy(reslicer->GetOutput());
-                            append->AddInputData(tempSlice);
-                        }
-                    }
-                    append->Update();
-                    //vtkNew<vtkImagePermute> permute_filter;
-                    //permute_filter->SetInputData(append->GetOutput());
-                    //permute_filter->SetFilteredAxes(2, 0, 1);
-                    //permute_filter->Update();
-                    //vtkNew<vtkImageFlip> flip_filter;
-                    //flip_filter->SetInputData(permute_filter->GetOutput());
-                    //flip_filter->SetFilteredAxes(1);
-                    //flip_filter->Update();
-                    auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
-                    //viewer->SetInputData(flip_filter->GetOutput());
-                    viewer->SetInputData(append->GetOutput());
-                    auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-                    viewer->SetupInteractor(interactor);
-                    viewer->GetRenderWindow()->SetWindowName("Test-CPR");
-                    viewer->Render();
-                    interactor->Start();
-                }              
-                //******************************************************************\\
-                 // Create an ellipsoid
-                //vtkSmartPointer<vtkImageEllipsoidSource> imgSource = vtkSmartPointer<vtkImageEllipsoidSource>::New();
-                //imgSource->SetWholeExtent(0, 255, 0, 255, 0, 255);
-                //imgSource->SetCenter(127, 127, 127);
-                //imgSource->SetRadius(50, 50, 50);
-                //imgSource->Update();
-                //double imgBB[6];
-                //imgSource->GetOutput()->GetBounds(imgBB);
-                //
-                //// Create a spline
-                //vtkSmartPointer<vtkLineSource> linSource = vtkSmartPointer<vtkLineSource>::New();
-                //linSource->SetPoint1(imgBB[0], imgBB[2], imgBB[4]);
-                //linSource->SetPoint2(imgBB[1], imgBB[3], imgBB[5]);
-                //linSource->SetResolution(20);
-                //
-                //// tested object
-                //vtkSmartPointer<vtkSplineDrivenImageSlicer> sdis;
-                //sdis = vtkSmartPointer<vtkSplineDrivenImageSlicer>::New();
-                //sdis->SetInputConnection(0, imgSource->GetOutputPort());
-                //sdis->SetInputConnection(1, linSource->GetOutputPort());
-                //sdis->SetOffsetPoint(10);
-                //sdis->SetSliceExtent(200, 200);
-                //sdis->SetSliceSpacing(0.5, 0.5);
-                //sdis->Update();
-                //+++++++
-                ///+++++++++++++++
-                /*
-                //double const direction[3] = {0,0,1};
-                //auto surface = SweepLine(m_points, direction, 10, 900);
-                //vtkNew<vtkProbeFilter> sampleVolume;
-                //sampleVolume->SetInputConnection(1, g_vtkAlgorithmOutput);
-                //sampleVolume->SetInputData(0, surface);
-                //vtkNew<vtkWindowLevelLookupTable> wlLut;
-                //vtkImageData *data = currentViewer->GetInput();
-                //double range = data->GetScalarRange()[1] - data->GetScalarRange()[0];
-                //double level = (data->GetScalarRange()[1] + data->GetScalarRange()[0]) / 2.0;
-                //wlLut->SetWindow(range);
-                //wlLut->SetLevel(level);
-
-                //vtkNew<vtkDataSetMapper> mapper;
-                //mapper->SetInputConnection(sampleVolume->GetOutputPort());
-                //mapper->SetLookupTable(wlLut);
-                //mapper->SetScalarRange(0, 255);
-                //vtkNew<vtkActor> actor;
-                //actor->SetMapper(mapper);
-                //
-                //// Create a renderer, render window, and interactor.
-                //vtkNew<vtkRenderer> renderer;
-                //vtkNew<vtkRenderWindow> renderWindow;
-                //renderWindow->AddRenderer(renderer);
-                //renderWindow->SetWindowName("CurvedReformation");
-                //
-                //vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
-                //renderWindowInteractor->SetRenderWindow(renderWindow);
-                //
-                //vtkNew<vtkNamedColors> colors;
-                //// Add the actors to the scene.
-                //renderer->AddActor(actor);
-                //renderer->SetBackground(colors->GetColor3d("DarkSlateGray").GetData());
-                //
-                //// Set the camera for viewing medical images.
-                //renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
-                //renderer->GetActiveCamera()->SetPosition(0, 0, 0);
-                //renderer->GetActiveCamera()->SetFocalPoint(0, 1, 0);
-                //renderer->ResetCamera();
-                //
-                //// Render and interact
-                //renderWindow->Render();
-                //renderWindowInteractor->Start();
-                */
+                append->Update();
+                //vtkNew<vtkImagePermute> permute_filter;
+                //permute_filter->SetInputData(append->GetOutput());
+                //permute_filter->SetFilteredAxes(2, 0, 1);
+                //permute_filter->Update();
+                //vtkNew<vtkImageFlip> flip_filter;
+                //flip_filter->SetInputData(permute_filter->GetOutput());
+                //flip_filter->SetFilteredAxes(1);
+                //flip_filter->Update();
+                auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
+                //viewer->SetInputData(flip_filter->GetOutput());
+                viewer->SetInputData(append->GetOutput());
+                auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+                viewer->SetupInteractor(interactor);
+                viewer->GetRenderWindow()->SetWindowName("Test-CPR");
+                viewer->Render();
+                interactor->Start();
             }
-            //if (pointsize > 3)
-            //{
-            //    double normal[3] = { 0, 0, -1 };
-            //    auto surface = SweepLineByPoints(m_points, normal, 150, 40);
-            //
-            //    // Probe the volume with the extruded surface.
-            //    vtkNew<vtkProbeFilter> sampleVolume;
-            //    sampleVolume->SetInputConnection(1, g_vtkAlgorithmOutput);
-            //    sampleVolume->SetInputData(0, surface);
-            //
-            //    // Compute a simple window/level based on scalar range.
-            //    vtkNew<vtkWindowLevelLookupTable> wlLut;
-            //    vtkImageData *data = currentViewer->GetInput();
-            //    double range = data->GetScalarRange()[1] - data->GetScalarRange()[0];
-            //    double level = (data->GetScalarRange()[1] + data->GetScalarRange()[0]) / 2.0;
-            //    wlLut->SetWindow(range);
-            //    wlLut->SetLevel(level);
-            //
-            //    // Create a mapper and actor.
-            //    vtkNew<vtkDataSetMapper> mapper;
-            //    mapper->SetInputConnection(sampleVolume->GetOutputPort());
-            //    mapper->SetLookupTable(wlLut);
-            //    mapper->SetScalarRange(0, 255);
-            //
-            //    vtkNew<vtkActor> actor;
-            //    actor->SetMapper(mapper);
-            //
-            //    // Create a renderer, render window, and interactor.
-            //    vtkNew<vtkRenderer> renderer;
-            //    vtkNew<vtkRenderWindow> renderWindow;
-            //    renderWindow->AddRenderer(renderer);
-            //    renderWindow->SetWindowName("CurvedReformation");
-            //
-            //    vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
-            //    renderWindowInteractor->SetRenderWindow(renderWindow);
-            //
-            //    //vtkNew<vtkNamedColors> colors;
-            //    // Add the actors to the scene.
-            //    renderer->AddActor(actor);
-            //    //renderer->SetBackground(colors->GetColor3d("DarkSlateGray").GetData());
-            //
-            //    // Set the camera for viewing medical images.
-            //    renderer->GetActiveCamera()->SetViewUp(0, 0, 1);
-            //    renderer->GetActiveCamera()->SetPosition(0, 0, 0);
-            //    renderer->GetActiveCamera()->SetFocalPoint(0, 1, 0);
-            //    renderer->ResetCamera();
-            //
-            //    // Render and interact
-            //    renderWindow->Render();
-            //    renderWindowInteractor->Start();
-            //}
+            ///+++++++++++++++         
         }
         else if (ev == vtkCommand::RightButtonPressEvent && m_starSpline)
         {
@@ -1971,35 +1716,6 @@ public:
 
             double* world = coordinate->GetComputedWorldValue(currentViewer->GetRenderer());
             m_points.push_back({ world[0], world[1], world[2] });
-
-            ///
-            //vtkContourWidget *wid = vtkContourWidget::New();
-            //wid->SetInteractor(renderWindow->GetInteractor());
-            //wid->CreateDefaultRepresentation();
-            //wid->On();
-            //m_scrollConnection->Connect( wid, vtkCommand::EndInteractionEvent, this, 
-            //    SLOT(  SlotContourEndInteractionEvent( vtkObject *, unsigned long, void *, void *)) , nullptr, 0.0, Qt::UniqueConnection);
-            //
-            //auto widget = dynamic_cast<vtkContourWidget *>(t_obj);
-            //auto rep = dynamic_cast<vtkOrientedGlyphContourRepresentation *>(widget->GetContourRepresentation());
-            //if (rep) 
-            //{
-            //    vtkMatrix4x4 *sourceMatrix = m_resliceWidget->getImageReslicers()[2]->GetResliceAxes();
-            //    qint32 n = rep->GetNumberOfNodes();
-            //    for (qint32 i = 0; i < n; ++i)
-            //    {
-            //        double p[3];
-            //        rep->GetNthNodeWorldPosition(i, p);
-            //        vtkNew<vtkTransform> transform1;
-            //        transform1->SetMatrix(sourceMatrix);
-            //        transform1->Translate(p[0], p[1], 0);
-            //        qDebug() << i
-            //            << transform1->GetMatrix()->GetElement(0, 3)
-            //            << transform1->GetMatrix()->GetElement(1, 3)
-            //            << transform1->GetMatrix()->GetElement(2, 3);
-            //    }
-            //}
-/////////
         }
         //end add:20250603
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2161,18 +1877,11 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     this->ui = new Ui_QtVTKRenderWindows;
     this->ui->setupUi(this);
 
-    //MprInit();
-    //return;
-    //vtkSmartPointer<vtkDICOMImageReader> reader = vtkSmartPointer<vtkDICOMImageReader>::New();
-    //reader->SetDirectoryName(argv[1]);
-    //reader->Update();
-    //int imageDims[3];
-    //reader->GetOutput()->GetDimensions(imageDims);
-    //--
     vtkNew<vtkMetaImageReader> reader;
     //std::string dir = qPrintable());//argv[1];	
     QString dir = argv[1];
-    dir = "D:\\TEMP\\SZDL\\test-data\\MPR_0408.mhd";
+    dir = "D:/Test_DICOM/INCISIX-Dental/MHD/3DMetaData.mhd";
+    //dir = "D:/TEMP/SZDL/test-data/MPR_0408.mhd";
     std::string stddir = qPrintable(dir);
     reader->SetFileName(stddir.c_str());
     reader->Update();
@@ -2292,7 +2001,6 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     //double w = bounds[0] - bounds[0];
     ///
     m_cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
-
     for (int i = 0; i < 3; i++)
     {
         ///------------------
@@ -2517,240 +2225,6 @@ void QtVTKRenderWindows::AddDistanceMeasurementToView(int i)
 
     this->DistanceWidget[i]->CreateDefaultRepresentation();
     this->DistanceWidget[i]->EnabledOn();
-}
-
-void QtVTKRenderWindows::MprInit()
-{
-    //return GPTMRP3D();
-    vtkNew<vtkMetaImageReader> reader;
-    //std::string dir = qPrintable());//argv[1];	
-    QString dir = this->ui->m_dcmDIR->toPlainText();
-    dir += "\\VTKMetaData.mhd";
-    //QDir mhdDir;
-    //QFileInfo file(dir);
-    //if (!file.isFile())
-    //{
-    //	saveHDMdata(this->ui->m_dcmDIR->toPlainText());
-    //}
-    std::string stddir = qPrintable(dir);
-    reader->SetFileName(stddir.c_str());
-    reader->Update();
-    int imageDims[3];
-    reader->GetOutput()->GetDimensions(imageDims);
-
-    for (int i = 0; i < 3; i++)
-    {
-        riw[i] = vtkSmartPointer< vtkMPRResliceImageViewer >::New();
-        vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-        riw[i]->SetRenderWindow(renderWindow);
-    }
-
-
-    this->ui->view1->setRenderWindow(riw[0]->GetRenderWindow());
-    riw[0]->SetupInteractor(this->ui->view1->renderWindow()->GetInteractor());
-
-    this->ui->view2->setRenderWindow(riw[1]->GetRenderWindow());
-    riw[1]->SetupInteractor(this->ui->view2->renderWindow()->GetInteractor());
-
-    this->ui->view3->setRenderWindow(riw[2]->GetRenderWindow());
-    riw[2]->SetupInteractor(this->ui->view3->renderWindow()->GetInteractor());
-
-    ///012  021 120 102  201 210  
-    vtkImageData *imageData = reader->GetOutput();
-
-    ///https://gitlab.kitware.com/vtk/vtk/-/issues/18726
-    ///https://discourse.vtk.org/t/flip-mpr-image-become-abnormal/9931
-    vtkSmartPointer< vtkRenderWindowInteractor >renderWindowInteractor[3];
-    vtkSmartPointer< vtkResliceCursorLineRepresentation > vtkrclp[3];
-    vtkSmartPointer< vtkResliceCursor > resliceCursor = vtkSmartPointer< vtkResliceCursor >::New();
-    ///
-
-    for (int i = 0; i < 3; i++)
-    {
-        // make them all share the same reslice cursor object.
-        vtkResliceCursorLineRepresentation *rep = vtkResliceCursorLineRepresentation::SafeDownCast(riw[i]->GetResliceCursorWidget()->GetRepresentation());
-        riw[i]->SetResliceCursor(riw[0]->GetResliceCursor());
-        rep->GetResliceCursorActor()->GetCursorAlgorithm()->SetReslicePlaneNormal(i);
-        riw[i]->SetInputData(imageData);
-        //riw[i]->SetInputData(reslice->GetOutput());
-        riw[i]->SetSliceOrientation(i);
-        riw[i]->SetResliceModeToAxisAligned();
-    }
-
-
-
-    vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
-    picker->SetTolerance(0.005);
-
-    vtkSmartPointer<vtkProperty> ipwProp = vtkSmartPointer<vtkProperty>::New();
-
-    vtkSmartPointer< vtkRenderer > ren = vtkSmartPointer< vtkRenderer >::New();
-
-    vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-    this->ui->view4->setRenderWindow(renderWindow);
-    this->ui->view4->renderWindow()->AddRenderer(ren);
-    vtkRenderWindowInteractor *iren = this->ui->view4->interactor();
-
-    for (int i = 0; i < 3; i++)
-    {
-        planeWidget[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
-        planeWidget[i]->SetInteractor(iren);
-        planeWidget[i]->SetPicker(picker);
-        planeWidget[i]->RestrictPlaneToVolumeOn();
-        double color[3] = { 0, 0, 0 };
-        color[i] = 1;
-        planeWidget[i]->GetPlaneProperty()->SetColor(color);
-
-        color[0] /= 4.0;
-        color[1] /= 4.0;
-        color[2] /= 4.0;
-        riw[i]->GetRenderer()->SetBackground(color);
-
-        planeWidget[i]->SetTexturePlaneProperty(ipwProp);
-        planeWidget[i]->TextureInterpolateOff();
-        planeWidget[i]->SetResliceInterpolateToLinear();
-        planeWidget[i]->SetInputConnection(reader->GetOutputPort());
-
-        planeWidget[i]->SetPlaneOrientation(i);
-        planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
-        planeWidget[i]->DisplayTextOn();
-        planeWidget[i]->SetDefaultRenderer(ren);
-        planeWidget[i]->SetWindowLevel(250, 50);
-        planeWidget[i]->On();
-        planeWidget[i]->InteractionOn();
-    }
-
-    //add
-    static QeventMouse filter;
-    for (int i = 0; i < 3; i++)
-    {
-        filter.m_cornerAnnotations[i] = m_cornerAnnotations[i];
-        filter.m_riw[i] = riw[i];
-    }
-    int w, h;
-    w = ui->view1->size().width();
-    h = ui->view1->size().height();
-    ui->view1->installEventFilter(&filter);
-    ui->view2->installEventFilter(&filter);
-    ui->view3->installEventFilter(&filter);
-
-    for (int i = 0; i < 3; i++)
-    {
-        riw[i]->SetResliceMode(1);
-        riw[i]->GetRenderer()->ResetCamera();
-        riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
-        riw[i]->Render();
-    }
-    ////////////////////////
-    vtkSmartPointer<vtkResliceCursorCallback> cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
-    for (int i = 0; i < 3; i++)
-    {
-        cbk->IPW[i] = planeWidget[i];
-        cbk->RCW[i] = riw[i]->GetResliceCursorWidget();
-        riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceAxesChangedEvent, cbk);
-        riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::WindowLevelEvent, cbk);
-        riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceThicknessChangedEvent, cbk);
-        riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResetCursorEvent, cbk);
-        riw[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, cbk);
-
-        riw[i]->AddObserver(vtkResliceImageViewer::SliceChangedEvent, cbk);
-
-        // Make them all share the same color map.
-        riw[i]->SetLookupTable(riw[0]->GetLookupTable());
-        planeWidget[i]->GetColorMap()->SetLookupTable(riw[0]->GetLookupTable());
-        //planeWidget[i]->GetColorMap()->SetInput(riw[i]->GetResliceCursorWidget()->GetResliceCursorRepresentation()->GetColorMap()->GetInput());
-        planeWidget[i]->SetColorMap(riw[i]->GetResliceCursorWidget()->GetResliceCursorRepresentation()->GetColorMap());
-    }
-
-    this->ui->view1->show();
-    this->ui->view2->show();
-    this->ui->view3->show();
-    ///
-    this->ui->thickModeCheckBox->setEnabled(1);
-    this->ui->blendModeGroupBox->setEnabled(1);
-    ///
-    static bool init = true;
-    if (init)
-    {
-        init = false;
-        // Set up action signals and slots
-        connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
-        connect(this->ui->resliceModeCheckBox, SIGNAL(stateChanged(int)), this, SLOT(resliceMode(int)));
-        connect(this->ui->thickModeCheckBox, SIGNAL(stateChanged(int)), this, SLOT(thickMode(int)));
-        this->ui->thickModeCheckBox->setEnabled(0);
-
-        connect(this->ui->radioButton_Max, SIGNAL(pressed()), this, SLOT(SetBlendModeToMaxIP()));
-        connect(this->ui->radioButton_Min, SIGNAL(pressed()), this, SLOT(SetBlendModeToMinIP()));
-        connect(this->ui->radioButton_Mean, SIGNAL(pressed()), this, SLOT(SetBlendModeToMeanIP()));
-        this->ui->blendModeGroupBox->setEnabled(0);
-
-        connect(this->ui->resetButton, SIGNAL(pressed()), this, SLOT(ResetViews()));
-        connect(this->ui->AddDistance1Button, SIGNAL(pressed()), this, SLOT(AddDistanceMeasurementToView1()));
-
-        ///---
-        QString sliceInfo;
-        for (int i = 0; i < 3; i++)
-        {
-            m_cornerAnnotations[i] = vtkCornerAnnotation::New();
-            filter.m_cornerAnnotations[i] = m_cornerAnnotations[i];
-            m_cornerAnnotations[i]->GetTextProperty()->SetFontFamilyToArial();
-            m_cornerAnnotations[i]->GetTextProperty()->ShadowOn();
-            riw[i]->GetRenderer()->AddViewProp(m_cornerAnnotations[i]);
-            //riw[i]->SetSliceScrollOnMouseWheel(true);
-            int now = riw[i]->GetSlice() + 1;
-            int max = riw[i]->GetSliceMax() + 1;
-            sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
-            m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
-        }
-        //---------------------------------------------------------------
-    }
-}
-
-void QtVTKRenderWindows::on_pushButton_clicked()
-{
-    double a = -0.12037446071029209*26.1;//-3.1417734245386240 ~~~
-    a = -3.1415926535897931;//pi
-    const double pi = -3.141592653589793238462643383279502884197169399375105820974944;
-    vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, pi);
-    riw[0]->GetRenderWindow()->Render();
-}
-
-
-void QtVTKRenderWindows::on_Sagittal_clicked()
-{
-    /*
-    this->ui->view2->setRenderWindow(riw[0]->GetRenderWindow());
-    riw[0]->SetupInteractor(this->ui->view2->renderWindow()->GetInteractor());
-
-    this->ui->view3->setRenderWindow(riw[1]->GetRenderWindow());
-    riw[1]->SetupInteractor(this->ui->view3->renderWindow()->GetInteractor());
-
-    this->ui->view1->setRenderWindow(riw[2]->GetRenderWindow());
-    riw[2]->SetupInteractor(this->ui->view1->renderWindow()->GetInteractor());
-    */
-    //    //m_Sagittal
-    const double pi = -3.141592653589793238462643383279502884197169399375105820974944;
-
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[0]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, 30 * pi/180);
-    //riw[0]->GetRenderWindow()->Render();
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[0]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, 30 * pi / 180);
-    //riw[0]->GetRenderWindow()->Render();
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[0]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(2, 30 * pi / 180);
-    //riw[0]->GetRenderWindow()->Render();
-    //
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, 30 * pi / 180);
-    //riw[2]->GetRenderWindow()->Render();
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, 30 * pi / 180);
-    //riw[2]->GetRenderWindow()->Render();
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(2, 30 * pi / 180);
-    //riw[2]->GetRenderWindow()->Render();
-    //
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[1]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, 30 * pi / 180);
-    //riw[1]->GetRenderWindow()->Render();
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[1]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, 30 * pi / 180);
-    //riw[1]->GetRenderWindow()->Render();
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[1]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(2, 30 * pi / 180);
-    //riw[1]->GetRenderWindow()->Render();
 }
 
 //常见人体组织的CT值（HU）
