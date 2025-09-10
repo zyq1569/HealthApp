@@ -110,6 +110,9 @@ private:
     vtkIdType OffsetPoint; //!< Id of the point where the reslicer proceed
     vtkIdType OffsetLine; //!< Id of the line cell where to get the reslice center
     vtkIdType ProbeInput; //!< If true, the output plane (2nd output probes the input image)
+
+public:
+    void SetReslicer(vtkImageReslice* reslicer);
 };
 
 #endif //__vtkSplineDrivenImageSlicer_h__

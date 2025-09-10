@@ -66,6 +66,15 @@ vtkSplineDrivenImageSlicer::vtkSplineDrivenImageSlicer()
     this->SetInputArrayToProcess(0, 0, 0, vtkDataObject::FIELD_ASSOCIATION_POINTS, vtkDataSetAttributes::SCALARS);
 }
 
+void vtkSplineDrivenImageSlicer::SetReslicer(vtkImageReslice* reslicer)
+{
+    if (this->reslicer && reslicer)
+    {       
+        this->reslicer->SetResliceAxes(reslicer->GetResliceAxes());
+        this->reslicer->SetOutputSpacing(reslicer->GetOutputSpacing());
+        this->reslicer->SetOutputOrigin(reslicer->GetOutputOrigin());
+    }
+}
 vtkSplineDrivenImageSlicer::~vtkSplineDrivenImageSlicer()
 {
     this->localFrenetFrames->Delete();
