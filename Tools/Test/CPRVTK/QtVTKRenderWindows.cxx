@@ -1633,11 +1633,11 @@ public:
                 reslicer->SetInputData(0, currentViewer->GetInput());
                 //reslicer->SetInputData(1, spline_filter->GetOutput());
                 reslicer->SetPathConnection(spline_filter->GetOutputPort());
-                reslicer->SetSliceExtent(20,100);
-                //reslicer->SetSliceThickness(3);
+                reslicer->SetSliceExtent(100,30);
+                reslicer->SetSliceThickness(1);
                 //reslicer->SetProbeInput(0);
                 //reslicer->SetSliceSpacing(0.1, 0.1);
-                //reslicer->SetIncidence(2 * 3.1415926 / 3);
+                reslicer->SetIncidence(2 * 3.1415926 / 3);
                 double bounds[6];
                 currentViewer->GetInput()->GetBounds(bounds);
                 std::cout << "Volume bounds: "  << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " "
