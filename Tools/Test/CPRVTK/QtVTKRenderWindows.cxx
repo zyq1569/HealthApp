@@ -37,6 +37,7 @@
 
 
 #include <vtkMetaImageReader.h>
+#include <vtkMetaImageWriter.h>
 #include <vtkImageFlip.h>
 #include "vtkAutoInit.h"
 #include "vtkMarchingCubes.h"
@@ -1509,6 +1510,8 @@ public:
 #include <vtkGlyph3DMapper.h>
 #include <vtkContourWidget.h>
 #include <vtkKochanekSpline.h>
+#include <vtkMatrix3x3.h>
+#include <vtkPropPicker.h>
 
 #include "vtkXMLPolyDataReader.h"
 #include "vtkXMLImageDataReader.h"
@@ -1563,22 +1566,13 @@ public:
         else if (ev == vtkCommand::LeftButtonDoubleClickEvent)
         {
             m_starSpline   = false;
-            int pointsize  = m_points.size();
-            m_points[0][2] = m_points[1][2];
+            int pointsize  = m_points.size();           
             if (pointsize > 1)
             {
-                //目前是白色的线带.暂时不知问题地方  
-                //auto rep = VTKRCP::SafeDownCast(currentViewer->GetResliceCursorWidget()->GetRepresentation());
-                //vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice());
-                //vtkMatrix4x4 *m = reslice->GetResliceAxes();
-                //double *spac    = reslice->GetOutputSpacing();
-                //double *org     = reslice->GetOutputOrigin();
-
                 double origin[3], spacing[3];
                 currentViewer->GetInput()->GetOrigin(origin);
                 currentViewer->GetInput()->GetSpacing(spacing);
                 vtkNew<vtkPoints> points, points_line;
-                //points->InsertNextPoint(0, 0, 1);
                 for (const auto&p : m_points)
                 {
                     points->InsertNextPoint(p[0], p[1], p[2]);
@@ -1611,6 +1605,7 @@ public:
 
                 //+++++++++++++++++++++++++++++++++++++++++
                 //绘制样条线
+                /*
                 spline_filter_line->SetSubdivideToLength();
                 spline_filter_line->SetLength(0.8);
                 spline_filter_line->SetInputData(polyData_line);
@@ -1620,56 +1615,46 @@ public:
 
                 vtkNew<vtkActor> splineActor;
                 splineActor->SetMapper(splineMapper);
-                //vtkNew<vtkRenderer> ren1;
-                //ren1->AddActor(splineActor);
-                //ren1->SetBackground(0.1, 0.2, 0.4);
-                //
-                //vtkNew<vtkRenderWindow> renWin;
-                //renWin->AddRenderer(ren1);
-                //renWin->SetSize(300, 300);
-                //
-                //vtkNew<vtkRenderWindowInteractor> iren;
-                //iren->SetRenderWindow(/*renderWindow*/renWin);
-                //iren->Initialize();
-                //iren->Start();
                 splineActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
                 splineActor->GetProperty()->SetLineWidth(1.0);
                 splineActor->GetProperty()->SetOpacity(1);
                 //currentViewer->GetRenderer()->RemoveActor(m_oldActor);
                 currentViewer->GetRenderer()->AddActor(splineActor);
                 currentViewer->GetRenderer()->Render();
-                currentViewer->GetRenderer()->GetRenderWindow()->Render();
+                currentViewer->GetRenderer()->GetRenderWindow()->Render();                
+                */
                 //+++++++++++++++++++++++++++++++++++++++++
                 vtkNew<vtkImageAppend> append;
-                append->SetAppendAxis(1);
+                append->SetAppendAxis(2);
                 vtkNew<vtkSplineDrivenImageSlicer> reslicer;
                 reslicer->SetInputData(0, currentViewer->GetInput());
                 //reslicer->SetInputData(1, spline_filter->GetOutput());
                 reslicer->SetPathConnection(spline_filter->GetOutputPort());
-                reslicer->SetSliceExtent(20, 20);
-                reslicer->SetSliceThickness(2);
-                reslicer->SetProbeInput(0);
-                //reslicer->SetSliceSpacing(0.2, 0.1);
+                reslicer->SetSliceExtent(80,80);
+                //reslicer->SetSliceThickness(3);
+                //reslicer->SetProbeInput(0);
+                //reslicer->SetSliceSpacing(0.1, 0.1);
                 //reslicer->SetIncidence(2 * 3.1415926 / 3);
                 double bounds[6];
                 currentViewer->GetInput()->GetBounds(bounds);
-                std::cout << "Volume bounds: "
-                    << bounds[0] << " " << bounds[1] << " "
-                    << bounds[2] << " " << bounds[3] << " "
-                    << bounds[4] << " " << bounds[5] << std::endl;
+                std::cout << "Volume bounds: "  << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " "
+                          << bounds[4] << " " << bounds[5] << std::endl;
                 long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
                 
                 for (int pt_id = 0; pt_id < nb_points; pt_id++)
                 {
                     double p[3]; spline_filter->GetOutput()->GetPoint(pt_id, p);
-                    std::cout << "Centerline point " << pt_id << ": " << p[0] << " " << p[1] << " " << p[2] << std::endl;
-                    reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
-                    reslicer->Update();
-                    vtkNew<vtkImageData> tempSlice;
-                    tempSlice->DeepCopy(reslicer->GetOutput());
-                    append->AddInputData(tempSlice);
-                }           
+                    //std::cout << "Centerline point " << pt_id << ": " << p[0] << " " << p[1] << " " << p[2] << std::endl;
+                    if (p[0] >= bounds[0] && p[0] <= bounds[1]&& p[1] >= bounds[2] && p[1] <= bounds[3]&& p[2] >= bounds[4] && p[2] <= bounds[5])
+                    {
+                        reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
+                        reslicer->Update();
+                        vtkNew<vtkImageData> tempSlice;
+                        tempSlice->DeepCopy(reslicer->GetOutput());
+                        append->AddInputData(tempSlice);
+                    }
 
+                }           
                 //
                 append->Update();
                 double range[2];
@@ -1683,9 +1668,23 @@ public:
                 //flip_filter->SetInputData(permute_filter->GetOutput());
                 //flip_filter->SetFilteredAxes(1);
                 //flip_filter->Update();
+                //-----------------------
+                QString DicomDir =  QCoreApplication::applicationDirPath();
+                vtkImageData * itkImageData = append->GetOutput();
+                std::string Input_Name      = qPrintable(DicomDir);
+                std::string path            = Input_Name + "/INCISIXDental.mhd";
+                
+                vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+                vtkdatawrite->SetInputData(itkImageData);
+                vtkdatawrite->SetFileName(path.c_str());
+                vtkdatawrite->Write();
+                vtkdatawrite->Delete();
+                //-----------------------
                 auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
                 //viewer->SetInputData(flip_filter->GetOutput());
                 viewer->SetInputData(append->GetOutput());
+                viewer->SetColorWindow(2000); // 根据CT值调
+                viewer->SetColorLevel(500);
                 auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
                 viewer->SetupInteractor(interactor);
                 viewer->GetRenderWindow()->SetWindowName("Test-CPR");
@@ -1696,20 +1695,74 @@ public:
         }
         else if (ev == vtkCommand::RightButtonPressEvent && m_starSpline)
         {
-            static bool init = true;
-            if (init)
-            {               
-                currentViewer->GetInput()->GetSpacing(m_spacing);
-                currentViewer->GetInput()->GetOrigin(m_origin);
-            }
+            double outWorld[3];
+            vtkImageData *image = currentViewer->GetInput();
             int* clickPos = interactor->GetEventPosition();
             vtkSmartPointer<vtkCoordinate> coordinate = vtkSmartPointer<vtkCoordinate>::New();
             coordinate->SetCoordinateSystemToDisplay();
             coordinate->SetValue(clickPos[0], clickPos[1]);
-            
             double* world = coordinate->GetComputedWorldValue(currentViewer->GetRenderer());
-            m_points.push_back({ world[0], world[1], world[2] });
+            double pickPos[3];
+            vtkNew<vtkPropPicker> picker;
+            if (picker->Pick(clickPos[0], clickPos[1], 0, currentViewer->GetRenderer()))
+            {               
+                picker->GetPickPosition(pickPos);
+            }
+            m_points.push_back({ pickPos[0], pickPos[1], pickPos[2] });
+            return;
+            /*
+            // 2. 读取图像几何参数
+            double origin[3], spacing[3];
+            image->GetOrigin(origin);
+            image->GetSpacing(spacing);
 
+            // 3. 如果有方向矩阵，取出来
+            vtkMatrix3x3* dir = image->GetDirectionMatrix(); // VTK9+
+            vtkNew<vtkMatrix3x3> invDir;
+            vtkMatrix3x3::Invert(dir, invDir);
+
+            // 4. 世界坐标 → IJK
+            double worldMinusOrigin[3] = {
+                world[0] - origin[0],
+                world[1] - origin[1],
+                world[2] - origin[2]
+            };
+            double tmp[3];
+            invDir->MultiplyPoint(worldMinusOrigin, tmp);
+            double ijk[3] = {
+                tmp[0] / spacing[0],
+                tmp[1] / spacing[1],
+                tmp[2] / spacing[2]
+            };
+
+            // 检查是否在范围内
+            int extent[6];
+            image->GetExtent(extent);
+            if (ijk[0] < extent[0] || ijk[0] > extent[1] ||
+                ijk[1] < extent[2] || ijk[1] > extent[3] ||
+                ijk[2] < extent[4] || ijk[2] > extent[5])
+            {
+                // 不在范围内
+                return ;
+            }
+
+            // 5. IJK → 图像世界坐标（MHD物理坐标）
+            double tmp2[3] = {
+                ijk[0] * spacing[0],
+                ijk[1] * spacing[1],
+                ijk[2] * spacing[2]
+            };
+            double rotated[3];
+            dir->MultiplyPoint(tmp2, rotated);
+            outWorld[0] = origin[0] + rotated[0];
+            outWorld[1] = origin[1] + rotated[1];
+            outWorld[2] = origin[2] + rotated[2];
+
+            
+            m_points.push_back({ outWorld[0], outWorld[1], outWorld[2] });
+
+            */
+            
         }
         //end add:20250603
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1874,7 +1927,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 {
     this->ui = new Ui_QtVTKRenderWindows;
     this->ui->setupUi(this);
-
+    
     vtkNew<vtkMetaImageReader> reader;
     //std::string dir = qPrintable());//argv[1];	
     QString dir = argv[1];
