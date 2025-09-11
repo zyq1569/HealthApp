@@ -1523,6 +1523,7 @@ public:
 
 #include "vtkSplineFilter.h"
 #include "vtkPolyLine.h"
+#include <QDateTime>
 class vtkResliceCursorCallback : public vtkCommand
 {
 public:
@@ -1598,7 +1599,7 @@ public:
 
                 vtkNew<vtkSplineFilter> spline_filter, spline_filter_line;
                 spline_filter->SetSubdivideToLength();// 按弧长
-                spline_filter->SetLength(5);//spline_filter->SetSubdivideToSpecified(); //
+                spline_filter->SetLength(0.2);//spline_filter->SetSubdivideToSpecified(); //
                 //spline_filter->SetNumberOfSubdivisions(50);
                 spline_filter->SetInputData(polyData);//(poly_data);
                 spline_filter->Update();
@@ -1624,13 +1625,15 @@ public:
                 currentViewer->GetRenderer()->GetRenderWindow()->Render();                
                 */
                 //+++++++++++++++++++++++++++++++++++++++++
-                vtkNew<vtkImageAppend> append;
-                append->SetAppendAxis(2);
+                vtkNew<vtkImageAppend> append, append3D;
+                append3D->SetAppendAxis(2);
+                append->SetAppendAxis(1);
+
                 vtkNew<vtkSplineDrivenImageSlicer> reslicer;
                 reslicer->SetInputData(0, currentViewer->GetInput());
                 //reslicer->SetInputData(1, spline_filter->GetOutput());
                 reslicer->SetPathConnection(spline_filter->GetOutputPort());
-                reslicer->SetSliceExtent(80,80);
+                reslicer->SetSliceExtent(20,100);
                 //reslicer->SetSliceThickness(3);
                 //reslicer->SetProbeInput(0);
                 //reslicer->SetSliceSpacing(0.1, 0.1);
@@ -1645,18 +1648,25 @@ public:
                 {
                     double p[3]; spline_filter->GetOutput()->GetPoint(pt_id, p);
                     //std::cout << "Centerline point " << pt_id << ": " << p[0] << " " << p[1] << " " << p[2] << std::endl;
-                    if (p[0] >= bounds[0] && p[0] <= bounds[1]&& p[1] >= bounds[2] && p[1] <= bounds[3]&& p[2] >= bounds[4] && p[2] <= bounds[5])
+                    //if (p[0] >= bounds[0] && p[0] <= bounds[1]&& p[1] >= bounds[2] && p[1] <= bounds[3]&& p[2] >= bounds[4] && p[2] <= bounds[5])
+                    //{
+                    reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
+                    reslicer->Update();
+                    double range[2];
+                    reslicer->GetOutput()->GetScalarRange(range);
+                    if (range[0] != range[1])
                     {
-                        reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
-                        reslicer->Update();
                         vtkNew<vtkImageData> tempSlice;
                         tempSlice->DeepCopy(reslicer->GetOutput());
                         append->AddInputData(tempSlice);
+                        append3D->AddInputData(tempSlice);
                     }
+                    //}
 
                 }           
                 //
                 append->Update();
+                append3D->Update();
                 double range[2];
                 append->GetOutput()->GetScalarRange(range);
                 std::cout << "CPR scalar range: " << range[0] << "," << range[1] << std::endl;
@@ -1669,16 +1679,22 @@ public:
                 //flip_filter->SetFilteredAxes(1);
                 //flip_filter->Update();
                 //-----------------------
-                QString DicomDir =  QCoreApplication::applicationDirPath();
-                vtkImageData * itkImageData = append->GetOutput();
+                // 获取当前日期时间
+                QDateTime dateTime = QDateTime::currentDateTime();
+                // 将日期时间格式化为字符串
+                QString str = dateTime.toString("/MMddhhmmss.mhd");
+                QString DicomDir            =  QCoreApplication::applicationDirPath();
+                vtkImageData * itkImageData = append3D->GetOutput();
                 std::string Input_Name      = qPrintable(DicomDir);
-                std::string path            = Input_Name + "/INCISIXDental.mhd";
+                std::string path            = Input_Name + qPrintable(str);
                 
                 vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
                 vtkdatawrite->SetInputData(itkImageData);
                 vtkdatawrite->SetFileName(path.c_str());
                 vtkdatawrite->Write();
                 vtkdatawrite->Delete();
+
+
                 //-----------------------
                 auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
                 //viewer->SetInputData(flip_filter->GetOutput());
