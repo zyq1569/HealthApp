@@ -1571,6 +1571,7 @@ public:
             int pointsize  = m_points.size();           
             if (pointsize > 1)
             {
+                m_curePoints[0][2] = m_curePoints[1][2];
                 double origin[3], spacing[3];
                 currentViewer->GetInput()->GetOrigin(origin);
                 currentViewer->GetInput()->GetSpacing(spacing);
@@ -1578,9 +1579,11 @@ public:
                 for (const auto&p : m_points)
                 {
                     points->InsertNextPoint(p[0], p[1], p[2]);
+                }
+                for (const auto&p : m_curePoints)
+                {
                     points_line->InsertNextPoint(p[0], p[1], p[2]);
                 }
-
                 vtkNew<vtkPolyLine> polyLine, polyLine_line;
                 polyLine->GetPointIds()->SetNumberOfIds(points->GetNumberOfPoints());
                 polyLine_line->GetPointIds()->SetNumberOfIds(points_line->GetNumberOfPoints());
@@ -1600,16 +1603,16 @@ public:
 
                 vtkNew<vtkSplineFilter> spline_filter, spline_filter_line;
                 spline_filter->SetSubdivideToLength();// 按弧长
-                spline_filter->SetLength(0.2);//spline_filter->SetSubdivideToSpecified(); //
+                spline_filter->SetLength(5);//spline_filter->SetSubdivideToSpecified(); //
                 //spline_filter->SetNumberOfSubdivisions(50);
                 spline_filter->SetInputData(polyData);//(poly_data);
                 spline_filter->Update();
 
                 //+++++++++++++++++++++++++++++++++++++++++
                 //绘制样条线
-                /*
+                
                 spline_filter_line->SetSubdivideToLength();
-                spline_filter_line->SetLength(0.8);
+                spline_filter_line->SetLength(5);
                 spline_filter_line->SetInputData(polyData_line);
                 spline_filter_line->Update();
                 vtkNew<vtkPolyDataMapper> splineMapper;
@@ -1618,13 +1621,13 @@ public:
                 vtkNew<vtkActor> splineActor;
                 splineActor->SetMapper(splineMapper);
                 splineActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
-                splineActor->GetProperty()->SetLineWidth(1.0);
+                splineActor->GetProperty()->SetLineWidth(3.0);
                 splineActor->GetProperty()->SetOpacity(1);
                 //currentViewer->GetRenderer()->RemoveActor(m_oldActor);
                 currentViewer->GetRenderer()->AddActor(splineActor);
                 currentViewer->GetRenderer()->Render();
                 currentViewer->GetRenderer()->GetRenderWindow()->Render();                
-                */
+                
                 //+++++++++++++++++++++++++++++++++++++++++
                 vtkNew<vtkImageAppend> append, append3D;
                 append3D->SetAppendAxis(2);
@@ -1723,6 +1726,7 @@ public:
                 picker->GetPickPosition(pickPos);
             }
             m_points.push_back({ pickPos[0], pickPos[1], pickPos[2] });
+            m_curePoints.push_back({ world[0], world[1], world[2] });
             return;
             /*
             // 2. 读取图像几何参数
@@ -1934,7 +1938,7 @@ public:
     vtkActor* m_oldActor;
     ///////////////////
     bool m_starSpline;
-    std::vector<std::array<double, 3>> m_points,m_mhdpoints;
+    std::vector<std::array<double, 3>> m_points,m_curePoints;
 
     //
     double m_spacing[3], m_origin[3];
