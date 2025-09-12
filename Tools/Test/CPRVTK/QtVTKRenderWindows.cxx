@@ -1370,7 +1370,8 @@ public:
                 int i = name.replace("view", "").toInt() - 1;
                 int now = m_riw[i]->GetSlice() + 1;
                 int max = m_riw[i]->GetSliceMax() + 1;
-                QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+                //QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+                QString sliceInfo = QObject::tr("ims: %1").arg(max);
                 m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
             }
         }
@@ -1633,7 +1634,7 @@ public:
                 reslicer->SetInputData(0, currentViewer->GetInput());
                 //reslicer->SetInputData(1, spline_filter->GetOutput());
                 reslicer->SetPathConnection(spline_filter->GetOutputPort());
-                reslicer->SetSliceExtent(100,30);
+                reslicer->SetSliceExtent(100,100);
                 reslicer->SetSliceThickness(1);
                 //reslicer->SetProbeInput(0);
                 //reslicer->SetSliceSpacing(0.1, 0.1);
@@ -1671,7 +1672,7 @@ public:
                 append->GetOutput()->GetScalarRange(range);
                 std::cout << "CPR scalar range: " << range[0] << "," << range[1] << std::endl;
                 //vtkNew<vtkImagePermute> permute_filter;
-                //permute_filter->SetInputData(append->GetOutput());
+                //permute_filter->SetInputData(append3D->GetOutput());
                 //permute_filter->SetFilteredAxes(2, 0, 1);
                 //permute_filter->Update();
                 //vtkNew<vtkImageFlip> flip_filter;
@@ -1686,15 +1687,12 @@ public:
                 QString DicomDir            =  QCoreApplication::applicationDirPath();
                 vtkImageData * itkImageData = append3D->GetOutput();
                 std::string Input_Name      = qPrintable(DicomDir);
-                std::string path            = Input_Name + qPrintable(str);
-                
+                std::string path            = Input_Name + qPrintable(str);               
                 vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
                 vtkdatawrite->SetInputData(itkImageData);
                 vtkdatawrite->SetFileName(path.c_str());
                 vtkdatawrite->Write();
                 vtkdatawrite->Delete();
-
-
                 //-----------------------
                 auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
                 //viewer->SetInputData(flip_filter->GetOutput());
@@ -1788,7 +1786,8 @@ public:
             {
                 int now = m_riw[i]->GetSlice() + 1;
                 int max = m_riw[i]->GetSliceMax() + 1;
-                QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+                QString sliceInfo = QObject::tr("ims: %1").arg(max);
+                //QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
                 m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
             }
         }
@@ -1798,7 +1797,8 @@ public:
             {
                 int now = m_riw[i]->GetSlice() + 1;
                 int max = m_riw[i]->GetSliceMax() + 1;
-                QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+                QString sliceInfo = QObject::tr("ims: %1").arg(max);
+                //QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
                 m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
             }
             int pointsize = m_points.size();
@@ -1867,7 +1867,8 @@ public:
             {
                 int now = m_riw[i]->GetSlice() + 1;
                 int max = m_riw[i]->GetSliceMax() + 1;
-                QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+                //QString sliceInfo = QObject::tr("im: %1 / %2").arg(now).arg(max);
+                QString sliceInfo = QObject::tr("ims: %1").arg(max);
                 m_cornerAnnotations[i]->SetText(2, sliceInfo.toLatin1().constData());
             }
         }
