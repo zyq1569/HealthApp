@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1289</width>
+    <width>1029</width>
     <height>923</height>
    </rect>
   </property>
@@ -35,13 +35,13 @@
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="1" column="0">
-      <widget class="QVTKRenderWidget" name="view2" native="true"/>
+      <widget class="QVTKRenderWidget" name="view3" native="true"/>
      </item>
      <item row="0" column="1">
-      <widget class="QVTKRenderWidget" name="view4" native="true"/>
+      <widget class="QVTKRenderWidget" name="view2" native="true"/>
      </item>
      <item row="1" column="1">
-      <widget class="QVTKRenderWidget" name="view3" native="true"/>
+      <widget class="QVTKRenderWidget" name="view4" native="true"/>
      </item>
      <item row="0" column="0">
       <widget class="QVTKRenderWidget" name="view1" native="true"/>
@@ -150,19 +150,6 @@
       </property>
      </widget>
     </widget>
-    <widget class="QPushButton" name="resetButton">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>220</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Reset</string>
-     </property>
-    </widget>
     <widget class="QFrame" name="frame_2">
      <property name="geometry">
       <rect>
@@ -178,19 +165,6 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QPushButton" name="AddDistance1Button">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>131</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Add Distance On View 1</string>
-      </property>
-     </widget>
     </widget>
    </widget>
    <widget class="QTextEdit" name="m_dcmDIR">
@@ -198,7 +172,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>701</width>
+      <width>521</width>
       <height>21</height>
      </rect>
     </property>
@@ -210,44 +184,43 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QSplitter" name="splitter">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>540</x>
       <y>10</y>
-      <width>75</width>
+      <width>441</width>
       <height>23</height>
      </rect>
     </property>
-    <property name="text">
-     <string>DIR</string>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
-   </widget>
-   <widget class="QPushButton" name="Sagittal">
-    <property name="geometry">
-     <rect>
-      <x>800</x>
-      <y>10</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Sagittal</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="m_pbCPR">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>10</y>
-      <width>51</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>CPR</string>
-    </property>
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>DIR</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Sagittal">
+     <property name="text">
+      <string>Sagittal</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="m_pbCPR">
+     <property name="text">
+      <string>CPR</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="resetButton">
+     <property name="text">
+      <string>Reset</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="AddDistance1Button">
+     <property name="text">
+      <string>Add Distance On View3</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <action name="actionOpenFile">

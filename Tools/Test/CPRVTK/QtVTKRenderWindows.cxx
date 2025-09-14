@@ -686,7 +686,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     //vtkRenderWindowInteractor* iren = this->ui->view4->interactor();
     vtkRenderWindowInteractor* iren = this->ui->view3->interactor();
     /**/
-     for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
         planeWidget[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
         planeWidget[i]->SetInteractor(iren);
@@ -716,7 +716,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 
         riw[i]->GetRenderer()->ResetCamera();
         riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
-    }   
+    }
     
 
     resliceMode(1);
