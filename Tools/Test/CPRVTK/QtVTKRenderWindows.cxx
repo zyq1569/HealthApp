@@ -593,7 +593,7 @@ public:
     vtkActor* m_oldActor;
     ///////////////////
     bool m_starSpline;
-    std::vector<std::array<double, 3>> m_points,m_curePoints;
+    std::vector<std::array<double, 3>> m_points,m_cprPoints;
 
     //
     double m_spacing[3], m_origin[3];
@@ -605,7 +605,6 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     this->ui->setupUi(this);
     
     vtkNew<vtkMetaImageReader> reader;
-    //std::string dir = qPrintable());//argv[1];	
     QString dir = argv[1];
     dir = "D:/Test_DICOM/INCISIX-Dental_MHD/3DMetaData.mhd";
     //dir = "D:/TEMP/SZDL/test-data/MPR_0408.mhd";
@@ -633,8 +632,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
         vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
         riw[i]->SetRenderWindow(renderWindow);
     }
-    ////
-        //--
+
     for (int i = 0; i < 3; i++)
     {
         m_cornerAnnotations[i] = vtkCornerAnnotation::New();
@@ -667,12 +665,9 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
         riw[i]->SetSliceOrientation(i);
         riw[i]->SetResliceModeToAxisAligned();
     }
-    //----adjust ---
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(1, PI);
+
     riw[0]->GetRenderWindow()->Render();
     //---
-    ////
-    //vtkResliceCursorLineRepresentation::SafeDownCast(riw[2]->GetResliceCursorWidget()->GetRepresentation())->UserRotateAxis(0, PI);
     vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
     picker->SetTolerance(0.005);
 
@@ -718,7 +713,6 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
         riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
     }
     
-
     resliceMode(1);
     //double bounds[6];
     //imageData->GetCellBounds(imageData->GetNumberOfCells(), bounds);
@@ -780,6 +774,7 @@ void QtVTKRenderWindows::StarCPR()
 {
     m_cbk->m_starSpline = true;
     m_cbk->m_points.clear();
+    m_cbk->m_curePoints.clear(); 
 }
 
 void QtVTKRenderWindows::slotExit()
