@@ -402,15 +402,16 @@ public:
                 vtkdatawrite->Write();
                 vtkdatawrite->Delete();
                 //-----------------------
-                auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
+                //auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
+                
                 //viewer->SetInputData(flip_filter->GetOutput());
-                viewer->SetInputData(append->GetOutput());
-                viewer->SetColorWindow(2000); // 根据CT值调
-                viewer->SetColorLevel(500);
+                m_cprViewer->SetInputData(append->GetOutput());
+                m_cprViewer->SetColorWindow(2000); // 根据CT值调
+                m_cprViewer->SetColorLevel(500);
                 auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-                viewer->SetupInteractor(interactor);
-                viewer->GetRenderWindow()->SetWindowName("Test-CPR");
-                viewer->Render();
+                m_cprViewer->SetupInteractor(interactor);
+                //m_cprViewer->GetRenderWindow()->SetWindowName("Test-CPR");
+                m_cprViewer->Render();
                 interactor->Start();
             }
             ///+++++++++++++++         
@@ -590,6 +591,7 @@ public:
     vtkResliceCursorWidget* RCW[3];
     vtkCornerAnnotation *m_cornerAnnotations[3];
     vtkResliceImageViewer *m_riw[3];
+    vtkImageViewer2 *m_cprViewer;
     vtkActor* m_oldActor;
     ///////////////////
     bool m_starSpline;
@@ -601,6 +603,8 @@ public:
 
 QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 {
+
+
     this->ui = new Ui_QtVTKRenderWindows;
     this->ui->setupUi(this);
     
@@ -718,7 +722,10 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     //imageData->GetCellBounds(imageData->GetNumberOfCells(), bounds);
     //double w = bounds[0] - bounds[0];
     ///
+    m_cprViewer = vtkSmartPointer<vtkImageViewer2>::New();
+    ui->view4->renderWindow()->AddRenderer(m_cprViewer->GetRenderer());
     m_cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
+    m_cbk->m_cprViewer = m_cprViewer;
     for (int i = 0; i < 3; i++)
     {
         ///------------------

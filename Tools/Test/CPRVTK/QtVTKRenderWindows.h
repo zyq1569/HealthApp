@@ -46,6 +46,7 @@ public Q_SLOTS:
 protected:
   //vtkSmartPointer<vtkResliceImageViewer> riw[3];
   vtkSmartPointer<vtkMPRResliceImageViewer> riw[3];
+  vtkSmartPointer<vtkImageViewer2> m_cprViewer;
 	
   vtkSmartPointer<vtkImagePlaneWidget> planeWidget[3];
   vtkSmartPointer<vtkDistanceWidget> DistanceWidget[3];
