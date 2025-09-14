@@ -274,7 +274,7 @@ public:
             {
                 this->RCW[i]->Render();
             }
-            this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+            //this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
             return;
         }
         //add:20250603
@@ -351,7 +351,6 @@ public:
 
                 vtkNew<vtkSplineDrivenImageSlicer> reslicer;
                 reslicer->SetInputData(0, currentViewer->GetInput());
-                //reslicer->SetInputData(1, spline_filter->GetOutput());
                 reslicer->SetPathConnection(spline_filter->GetOutputPort());
                 reslicer->SetSliceExtent(200,80);
                 reslicer->SetSliceThickness(1);
@@ -387,14 +386,12 @@ public:
                 //
                 append->Update();
                 append3D->Update();
-                double range[2];
-                append->GetOutput()->GetScalarRange(range);
-                std::cout << "CPR scalar range: " << range[0] << "," << range[1] << std::endl;
+                //double range[2];append->GetOutput()->GetScalarRange(range);
+                //std::cout << "CPR scalar range: " << range[0] << "," << range[1] << std::endl;
                 //-----------------------
                 // 获取当前日期时间
-                QDateTime dateTime = QDateTime::currentDateTime();
-                // 将日期时间格式化为字符串
-                QString str = dateTime.toString("/MMddhhmmss.mhd");
+                QDateTime dateTime = QDateTime::currentDateTime();              
+                QString str = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
                 QString DicomDir            =  QCoreApplication::applicationDirPath();
                 vtkImageData * itkImageData = append3D->GetOutput();
                 std::string Input_Name      = qPrintable(DicomDir);
@@ -532,6 +529,7 @@ public:
         }
 
         vtkImagePlaneWidget* ipw = dynamic_cast<vtkImagePlaneWidget*>(caller);
+        /*
         if (ipw)
         {
             double* wl = static_cast<double*>(callData);
@@ -551,7 +549,9 @@ public:
                 this->IPW[0]->SetWindowLevel(wl[0], wl[1], 1);
                 this->IPW[1]->SetWindowLevel(wl[0], wl[1], 1);
             }
-        }
+        }        
+        
+
 
         vtkResliceCursorWidget* rcw = dynamic_cast<vtkResliceCursorWidget*>(caller);
         if (rcw)
@@ -571,13 +571,14 @@ public:
                 this->IPW[i]->UpdatePlacement();
             }
         }
+        */
 
         // Render everything
         for (int i = 0; i < 3; i++)
         {
             this->RCW[i]->Render();
         }
-        this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+        //this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
     }
     vtkResliceCursorCallback()
     {
@@ -585,7 +586,7 @@ public:
 
     }
 public:
-    vtkImagePlaneWidget* IPW[3];
+    //vtkImagePlaneWidget* IPW[3];
     vtkResliceCursorWidget* RCW[3];
     vtkCornerAnnotation *m_cornerAnnotations[3];
     vtkResliceImageViewer *m_riw[3];
@@ -615,11 +616,6 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     reader->GetOutput()->GetDimensions(imageDims);
     g_vtkAlgorithmOutput = reader->GetOutputPort();
     vtkImageData *imageData = reader->GetOutput();
-    //vtkSmartPointer< vtkImageFlip > ImageFlip = vtkSmartPointer< vtkImageFlip >::New();
-    //ImageFlip->SetInputData(reader->GetOutput());
-    //ImageFlip->SetFilteredAxes(0);
-    //ImageFlip->Update();
-    //imageData = ImageFlip->GetOutput();
 
     for (int i = 0; i < 3; i++)
     {
@@ -685,11 +681,12 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     vtkSmartPointer<vtkRenderer> ren = vtkSmartPointer<vtkRenderer>::New();
 
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-    this->ui->view4->setRenderWindow(renderWindow);
-    this->ui->view4->renderWindow()->AddRenderer(ren);
-    vtkRenderWindowInteractor* iren = this->ui->view4->interactor();
-
-    for (int i = 0; i < 3; i++)
+    //this->ui->view4->setRenderWindow(renderWindow);
+    //this->ui->view4->renderWindow()->AddRenderer(ren);
+    //vtkRenderWindowInteractor* iren = this->ui->view4->interactor();
+    vtkRenderWindowInteractor* iren = this->ui->view3->interactor();
+    /**/
+     for (int i = 0; i < 3; i++)
     {
         planeWidget[i] = vtkSmartPointer<vtkImagePlaneWidget>::New();
         planeWidget[i]->SetInteractor(iren);
@@ -703,7 +700,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
         color[1] /= 4.0;
         color[2] /= 4.0;
         double black[3] = { 0, 0, 0 };
-        riw[i]->GetRenderer()->SetBackground(color);// black/*color*/);
+        riw[i]->GetRenderer()->SetBackground(black);// black /color);
 
         planeWidget[i]->SetTexturePlaneProperty(ipwProp);
         planeWidget[i]->TextureInterpolateOff();
@@ -719,7 +716,8 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 
         riw[i]->GetRenderer()->ResetCamera();
         riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
-    }
+    }   
+    
 
     resliceMode(1);
     //double bounds[6];
@@ -733,7 +731,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
         m_cbk->m_cornerAnnotations[i] = m_cornerAnnotations[i];
         m_cbk->m_riw[i] = riw[i];
         ///----------------
-        m_cbk->IPW[i] = planeWidget[i];
+        //m_cbk->IPW[i] = planeWidget[i];
         m_cbk->RCW[i] = riw[i]->GetResliceCursorWidget();
 
         riw[i]->GetResliceCursorWidget()->AddObserver(vtkResliceCursorWidget::ResliceAxesChangedEvent, m_cbk);
@@ -776,7 +774,6 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     connect(this->ui->AddDistance1Button, SIGNAL(pressed()), this, SLOT(AddDistanceMeasurementToView1()));
 
     connect(this->ui->m_pbCPR, SIGNAL(pressed()), this, SLOT(StarCPR()));
-    //resliceMode(2);
 };
 
 void QtVTKRenderWindows::StarCPR()
@@ -940,16 +937,3 @@ void QtVTKRenderWindows::AddDistanceMeasurementToView(int i)
     this->DistanceWidget[i]->CreateDefaultRepresentation();
     this->DistanceWidget[i]->EnabledOn();
 }
-
-//常见人体组织的CT值（HU）
-//
-//组织          CT值            组织        CT值
-//骨组织      ＞400              肝脏      50～70
-//钙值       80～300             脾脏      35～60
-//血块       64～84             胰腺      30～55
-//脑白质     25～34              肾脏      25～50
-//脑灰质     28～44              肌肉      40～55
-//脑脊液      3～8               胆囊      10～30
-//血液       13～32            甲状腺      50～90
-//血浆       3～14              脂肪     －20～－100
-//渗出液      ＞15                水           0
