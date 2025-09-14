@@ -320,16 +320,15 @@ public:
 
                 vtkNew<vtkSplineFilter> spline_filter, spline_filter_line;
                 spline_filter->SetSubdivideToLength();// 按弧长
-                spline_filter->SetLength(5);//spline_filter->SetSubdivideToSpecified(); //
-                //spline_filter->SetNumberOfSubdivisions(50);
-                spline_filter->SetInputData(polyData);//(poly_data);
+                spline_filter->SetLength(0.2);
+                spline_filter->SetInputData(polyData);
                 spline_filter->Update();
 
                 //+++++++++++++++++++++++++++++++++++++++++
                 //绘制样条线
                 
                 spline_filter_line->SetSubdivideToLength();
-                spline_filter_line->SetLength(5);
+                spline_filter_line->SetLength(0.2);
                 spline_filter_line->SetInputData(polyData_line);
                 spline_filter_line->Update();
                 vtkNew<vtkPolyDataMapper> splineMapper;
@@ -338,7 +337,7 @@ public:
                 vtkNew<vtkActor> splineActor;
                 splineActor->SetMapper(splineMapper);
                 splineActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
-                splineActor->GetProperty()->SetLineWidth(3.0);
+                splineActor->GetProperty()->SetLineWidth(1.3);
                 splineActor->GetProperty()->SetOpacity(1);
                 //currentViewer->GetRenderer()->RemoveActor(m_oldActor);
                 currentViewer->GetRenderer()->AddActor(splineActor);
@@ -358,7 +357,7 @@ public:
                 reslicer->SetSliceThickness(1);
                 //reslicer->SetProbeInput(0);
                 //reslicer->SetSliceSpacing(0.1, 0.1);
-                reslicer->SetIncidence(2 * 3.1415926 / 3);
+                //reslicer->SetIncidence(2 * 3.1415926 / 3);
                 double bounds[6];
                 currentViewer->GetInput()->GetBounds(bounds);
                 std::cout << "Volume bounds: "  << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " "
