@@ -353,7 +353,7 @@ public:
                 reslicer->SetInputData(0, currentViewer->GetInput());
                 //reslicer->SetInputData(1, spline_filter->GetOutput());
                 reslicer->SetPathConnection(spline_filter->GetOutputPort());
-                reslicer->SetSliceExtent(100,100);
+                reslicer->SetSliceExtent(200,80);
                 reslicer->SetSliceThickness(1);
                 //reslicer->SetProbeInput(0);
                 //reslicer->SetSliceSpacing(0.1, 0.1);
