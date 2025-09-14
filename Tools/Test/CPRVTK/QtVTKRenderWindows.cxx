@@ -288,7 +288,7 @@ public:
             int pointsize  = m_points.size();           
             if (pointsize > 1)
             {
-                m_curePoints[0][2] = m_curePoints[1][2];
+                m_cprPoints[0][2] = m_cprPoints[1][2];
                 double origin[3], spacing[3];
                 currentViewer->GetInput()->GetOrigin(origin);
                 currentViewer->GetInput()->GetSpacing(spacing);
@@ -297,7 +297,7 @@ public:
                 {
                     points->InsertNextPoint(p[0], p[1], p[2]);
                 }
-                for (const auto&p : m_curePoints)
+                for (const auto&p : m_cprPoints)
                 {
                     points_line->InsertNextPoint(p[0], p[1], p[2]);
                 }
@@ -431,7 +431,7 @@ public:
                 picker->GetPickPosition(pickPos);
             }
             m_points.push_back({ pickPos[0], pickPos[1], pickPos[2] });
-            m_curePoints.push_back({ world[0], world[1], world[2] });          
+            m_cprPoints.push_back({ world[0], world[1], world[2] });
         }
         //end add:20250603
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -774,7 +774,7 @@ void QtVTKRenderWindows::StarCPR()
 {
     m_cbk->m_starSpline = true;
     m_cbk->m_points.clear();
-    m_cbk->m_curePoints.clear(); 
+    m_cbk->m_cprPoints.clear();
 }
 
 void QtVTKRenderWindows::slotExit()
