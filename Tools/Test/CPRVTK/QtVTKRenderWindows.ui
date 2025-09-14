@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1029</width>
+    <width>1244</width>
     <height>923</height>
    </rect>
   </property>
@@ -184,12 +184,25 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="Sagittal">
+    <property name="geometry">
+     <rect>
+      <x>1050</x>
+      <y>590</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Sagittal</string>
+    </property>
+   </widget>
    <widget class="QSplitter" name="splitter">
     <property name="geometry">
      <rect>
       <x>540</x>
       <y>10</y>
-      <width>441</width>
+      <width>371</width>
       <height>23</height>
      </rect>
     </property>
@@ -199,11 +212,6 @@ p, li { white-space: pre-wrap; }
     <widget class="QPushButton" name="pushButton">
      <property name="text">
       <string>DIR</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="Sagittal">
-     <property name="text">
-      <string>Sagittal</string>
      </property>
     </widget>
     <widget class="QPushButton" name="m_pbCPR">
