@@ -42,6 +42,7 @@ public Q_SLOTS:
   virtual void AddDistanceMeasurementToView1();
   virtual void AddDistanceMeasurementToView(int);
   virtual void StarCPR();
+  virtual void initDir();
 
 protected:
   //vtkSmartPointer<vtkResliceImageViewer> riw[3];
@@ -54,7 +55,7 @@ protected:
 
 public:
     void initMPR();
-    void initDir();
+
 
 public:
 	vtkSmartPointer< vtkResliceCursorLineRepresentation > vtkrclp[3];
