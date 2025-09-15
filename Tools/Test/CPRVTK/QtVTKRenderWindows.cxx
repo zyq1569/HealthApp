@@ -405,14 +405,18 @@ public:
                 //auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
                 
                 //viewer->SetInputData(flip_filter->GetOutput());
-                m_cprViewer->SetInputData(append->GetOutput());
+                m_cprViewer->SetInputData(append3D->GetOutput());
+                m_cprViewer->SetInputConnection(append3D->GetOutputPort());
                 m_cprViewer->SetColorWindow(2000); // 根据CT值调
                 m_cprViewer->SetColorLevel(500);
+                m_cprViewer->SetRenderWindow(m_Widget->renderWindow());
+                m_cprViewer->SetSliceOrientationToXY();  // or ToYZ(), ToXZ()
+                m_cprViewer->SetSlice(m_cprViewer->GetSliceMin());  // 初始显示最前面切片
                 auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
                 m_cprViewer->SetupInteractor(interactor);
                 //m_cprViewer->GetRenderWindow()->SetWindowName("Test-CPR");
                 m_cprViewer->Render();
-                interactor->Start();
+                //interactor->Start();
             }
             ///+++++++++++++++         
         }
@@ -592,6 +596,7 @@ public:
     vtkCornerAnnotation *m_cornerAnnotations[3];
     vtkResliceImageViewer *m_riw[3];
     vtkImageViewer2 *m_cprViewer;
+    QVTKRenderWidget *m_Widget;
     vtkActor* m_oldActor;
     ///////////////////
     bool m_starSpline;
@@ -723,9 +728,12 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     //double w = bounds[0] - bounds[0];
     ///
     m_cprViewer = vtkSmartPointer<vtkImageViewer2>::New();
-    ui->view4->renderWindow()->AddRenderer(m_cprViewer->GetRenderer());
+    vtkNew<vtkGenericOpenGLRenderWindow> cprrenderWindow;
+    ui->view4->setRenderWindow(cprrenderWindow);
+    //m_cprViewer->SetRenderWindow(ui->view4->renderWindow());
     m_cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
     m_cbk->m_cprViewer = m_cprViewer;
+    m_cbk->m_Widget = ui->view4;
     for (int i = 0; i < 3; i++)
     {
         ///------------------
