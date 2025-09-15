@@ -209,7 +209,7 @@ p, li { white-space: pre-wrap; }
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="m_Dir">
      <property name="text">
       <string>DIR</string>
      </property>

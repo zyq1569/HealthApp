@@ -53,6 +53,8 @@ protected:
   vtkSmartPointer<vtkResliceImageViewerMeasurements> ResliceMeasurements;
 
 public:
+    void initMPR();
+    void initDir();
 
 public:
 	vtkSmartPointer< vtkResliceCursorLineRepresentation > vtkrclp[3];

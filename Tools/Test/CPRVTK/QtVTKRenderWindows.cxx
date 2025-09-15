@@ -601,21 +601,17 @@ public:
     ///////////////////
     bool m_starSpline;
     std::vector<std::array<double, 3>> m_points,m_cprPoints;
-
-    //
     double m_spacing[3], m_origin[3];
 };
 
-QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
+void QtVTKRenderWindows::initDir()
 {
-
-
-    this->ui = new Ui_QtVTKRenderWindows;
-    this->ui->setupUi(this);
-    
+    initMPR();
+}
+void QtVTKRenderWindows::initMPR()
+{
     vtkNew<vtkMetaImageReader> reader;
-    QString dir = argv[1];
-    dir = "D:/Test_DICOM/INCISIX-Dental_MHD/3DMetaData.mhd";
+    QString dir = "D:/Test_DICOM/INCISIX-Dental_MHD/3DMetaData.mhd";
     //dir = "D:/TEMP/SZDL/test-data/MPR_0408.mhd";
     std::string stddir = qPrintable(dir);
     reader->SetFileName(stddir.c_str());
@@ -685,9 +681,6 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     vtkSmartPointer<vtkRenderer> ren = vtkSmartPointer<vtkRenderer>::New();
 
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-    //this->ui->view4->setRenderWindow(renderWindow);
-    //this->ui->view4->renderWindow()->AddRenderer(ren);
-    //vtkRenderWindowInteractor* iren = this->ui->view4->interactor();
     vtkRenderWindowInteractor* iren = this->ui->view3->interactor();
     /**/
     for (int i = 0; i < 3; i++)
@@ -721,7 +714,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
         riw[i]->GetRenderer()->ResetCamera();
         riw[i]->GetRenderer()->GetActiveCamera()->Zoom(1.6);
     }
-    
+
     resliceMode(1);
     //double bounds[6];
     //imageData->GetCellBounds(imageData->GetNumberOfCells(), bounds);
@@ -768,6 +761,15 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     this->ui->view2->show();
     this->ui->view3->show();
 
+    
+}
+
+QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
+{
+    this->ui = new Ui_QtVTKRenderWindows;
+    this->ui->setupUi(this);
+   
+    
     // Set up action signals and slots
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->ui->resliceModeCheckBox, SIGNAL(stateChanged(int)), this, SLOT(resliceMode(int)));
@@ -783,6 +785,8 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     connect(this->ui->AddDistance1Button, SIGNAL(pressed()), this, SLOT(AddDistanceMeasurementToView1()));
 
     connect(this->ui->m_pbCPR, SIGNAL(pressed()), this, SLOT(StarCPR()));
+
+    connect(this->ui->m_Dir, SIGNAL(pressed()), this, SLOT(initDir()));
 };
 
 void QtVTKRenderWindows::StarCPR()
