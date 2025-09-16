@@ -211,7 +211,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <widget class="QPushButton" name="m_Dir">
      <property name="text">
-      <string>DIR</string>
+      <string>Load</string>
      </property>
     </widget>
     <widget class="QPushButton" name="m_pbCPR">
