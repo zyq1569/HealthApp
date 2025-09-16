@@ -611,7 +611,9 @@ void QtVTKRenderWindows::initDir()
 void QtVTKRenderWindows::initMPR()
 {
     vtkNew<vtkMetaImageReader> reader;
-    QString dir = "D:/Test_DICOM/INCISIX-Dental_MHD/3DMetaData.mhd";
+    //QString dir = "D:/Test_DICOM/INCISIX-Dental_MHD/3DMetaData.mhd";
+    QString dir = QCoreApplication::applicationDirPath() + "/3DMetaData.mhd";
+    ui->m_dcmDIR->setPlainText(dir);
     //dir = "D:/TEMP/SZDL/test-data/MPR_0408.mhd";
     std::string stddir = qPrintable(dir);
     reader->SetFileName(stddir.c_str());
@@ -787,6 +789,8 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     connect(this->ui->m_pbCPR, SIGNAL(pressed()), this, SLOT(StarCPR()));
 
     connect(this->ui->m_Dir, SIGNAL(pressed()), this, SLOT(initDir()));
+    QString dir = QCoreApplication::applicationDirPath() + "/3DMetaData.mhd";
+    ui->m_dcmDIR->setPlainText(dir);
 };
 
 void QtVTKRenderWindows::StarCPR()
