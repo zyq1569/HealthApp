@@ -57,6 +57,7 @@ protected:
 
 public:
     void initMPR();
+    void showCPRimageSlicer(vtkImageData * itkImageData);
     vtkSmartPointer<vtkMetaImageReader> m_mHDreader;
 
 public:

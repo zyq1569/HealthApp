@@ -403,50 +403,7 @@ public:
                 vtkdatawrite->SetFileName(path.c_str());
                 vtkdatawrite->Write();
                 vtkdatawrite->Delete();
-                //-----------------------
-                //auto viewer = vtkSmartPointer<vtkImageViewer2>::New();
-                
-                //viewer->SetInputData(flip_filter->GetOutput());
-                m_cprViewer->SetInputData(append3D->GetOutput());
-                m_cprViewer->SetInputConnection(append3D->GetOutputPort());
-                m_cprViewer->SetColorWindow(2000); // 根据CT值调
-                m_cprViewer->SetColorLevel(500);
-                m_cprViewer->SetRenderWindow(m_Widget->renderWindow());
-                m_cprViewer->SetSliceOrientationToXY();  // or ToYZ(), ToXZ()
-                m_cprViewer->SetSlice(m_cprViewer->GetSliceMin());  // 初始显示最前面切片
-                auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-                vtkSmartPointer<vtkInteractorStyleTrackballCamera> vtkInteractorStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-                m_cprViewer->SetupInteractor(interactor);
-                m_cprViewer->GetRenderer()->GetRenderWindow()->GetInteractor()->SetInteractorStyle(vtkInteractorStyle);
-                //m_cprViewer->GetRenderWindow()->SetWindowName("Test-CPR");
-                vtkSmartPointer<vtkSliderRepresentation2D> sliderRep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
-                sliderRep->SetMinimumValue(m_cprViewer->GetSliceMin());
-                sliderRep->SetMaximumValue(m_cprViewer->GetSliceMax());
-                sliderRep->SetValue(1.0);
-                sliderRep->GetTitleProperty()->SetColor(1, 0, 0);//red
-                sliderRep->GetLabelProperty()->SetColor(1, 0, 0);//red
-                sliderRep->GetPoint1Coordinate()->SetCoordinateSystemToDisplay();
-                sliderRep->GetPoint1Coordinate()->SetValue(40, 40);
-                sliderRep->GetPoint2Coordinate()->SetCoordinateSystemToDisplay();
-                sliderRep->GetPoint2Coordinate()->SetValue(500, 40);
-                vtkSmartPointer<vtkSliderWidget> sliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
-                sliderWidget->SetInteractor(interactor);
-                sliderWidget->SetRepresentation(sliderRep);
-                sliderWidget->SetAnimationModeToAnimate();
-                sliderWidget->EnabledOn();
-
-                sliderWidget->AddObserver(vtkCommand::InteractionEvent, this);
-                //vtkSmartPointer<vtkAxesActor> axes = vtkSmartPointer<vtkAxesActor>::New();
-                //double axesSize[3] = { 100,100,100 };
-                //axes->SetTotalLength(axesSize);
-                //axes->SetConeRadius(0.1);
-                //axes->SetShaftTypeToLine();
-                //axes->SetAxisLabels(false);
-                //m_cprViewer->GetRenderer()->AddActor(axes);
-
-                m_cprViewer->Render();
-                interactor->Start();
-                m_bRunCPR = true;
+                //-----------------------                              
             }
             ///+++++++++++++++         
         }
@@ -618,7 +575,15 @@ public:
         if (this->m_cprViewer && m_bRunCPR)
         {
             vtkSliderWidget *sliderWidget = reinterpret_cast<vtkSliderWidget*>(caller);
-            this->m_cprViewer->SetSlice(static_cast<vtkSliderRepresentation *>(sliderWidget->GetRepresentation())->GetValue());
+            
+            if (sliderWidget )
+            {
+                vtkWidgetRepresentation *rsp = sliderWidget->GetRepresentation();
+
+                vtkSliderRepresentation *sr = static_cast<vtkSliderRepresentation *>(sliderWidget->GetRepresentation());
+                double vl = static_cast<vtkSliderRepresentation *>(sliderWidget->GetRepresentation())->GetValue();
+                this->m_cprViewer->SetSlice(vl);
+            }           
         }
 
     }
@@ -656,6 +621,53 @@ void QtVTKRenderWindows::initDir()
     }
     
 }
+void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)
+{
+    if (!itkImageData)
+    {
+        return;
+    }
+    //viewer->SetInputData(flip_filter->GetOutput());
+    m_cprViewer->SetInputData(itkImageData);
+    //m_cprViewer->SetInputConnection(append3D->GetOutputPort());
+    m_cprViewer->SetColorWindow(2000); // 根据CT值调
+    m_cprViewer->SetColorLevel(500);
+    m_cprViewer->SetRenderWindow(this->ui->view4->renderWindow());
+    m_cprViewer->SetSliceOrientationToXY();  // or ToYZ(), ToXZ()
+    m_cprViewer->SetSlice(m_cprViewer->GetSliceMin());  // 初始显示最前面切片
+    auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+    vtkSmartPointer<vtkInteractorStyleTrackballCamera> vtkInteractorStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+    m_cprViewer->SetupInteractor(interactor);
+    m_cprViewer->GetRenderer()->GetRenderWindow()->GetInteractor()->SetInteractorStyle(vtkInteractorStyle);
+    //m_cprViewer->GetRenderWindow()->SetWindowName("Test-CPR");
+    vtkSmartPointer<vtkSliderRepresentation2D> sliderRep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
+    sliderRep->SetMinimumValue(m_cprViewer->GetSliceMin());
+    sliderRep->SetMaximumValue(m_cprViewer->GetSliceMax());
+    sliderRep->SetValue(1.0);
+    sliderRep->GetTitleProperty()->SetColor(1, 0, 0);//red
+    sliderRep->GetLabelProperty()->SetColor(1, 0, 0);//red
+    sliderRep->GetPoint1Coordinate()->SetCoordinateSystemToDisplay();
+    sliderRep->GetPoint1Coordinate()->SetValue(40, 40);
+    sliderRep->GetPoint2Coordinate()->SetCoordinateSystemToDisplay();
+    sliderRep->GetPoint2Coordinate()->SetValue(500, 40);
+    vtkSmartPointer<vtkSliderWidget> sliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
+    sliderWidget->SetInteractor(interactor);
+    sliderWidget->SetRepresentation(sliderRep);
+    sliderWidget->SetAnimationModeToAnimate();
+    sliderWidget->EnabledOn();
+
+    //sliderWidget->AddObserver(vtkCommand::InteractionEvent, this);
+    //vtkSmartPointer<vtkAxesActor> axes = vtkSmartPointer<vtkAxesActor>::New();
+    //double axesSize[3] = { 100,100,100 };
+    //axes->SetTotalLength(axesSize);
+    //axes->SetConeRadius(0.1);
+    //axes->SetShaftTypeToLine();
+    //axes->SetAxisLabels(false);
+    //m_cprViewer->GetRenderer()->AddActor(axes);
+    m_cprViewer->Render();
+    //interactor->Start();
+}
+
 void QtVTKRenderWindows::initMPR()
 {
     QString dir = ui->m_dcmDIR->toPlainText(); //dir = "D:/test-data/MPR_0408.mhd";
