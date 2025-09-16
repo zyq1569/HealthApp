@@ -606,32 +606,35 @@ public:
 
 void QtVTKRenderWindows::initDir()
 {
-    initMPR();
+    static bool binit = true;
+    if (binit)
+    {
+        binit = false;
+        initMPR();
+    }
+    else
+    {
+
+    }
+    
 }
 void QtVTKRenderWindows::initMPR()
 {
-    vtkNew<vtkMetaImageReader> reader;
     QString dir = ui->m_dcmDIR->toPlainText(); //dir = "D:/test-data/MPR_0408.mhd";
     std::string stddir = qPrintable(dir);
-    reader->SetFileName(stddir.c_str());
-    reader->Update();
+    m_mHDreader->SetFileName(stddir.c_str());
+    m_mHDreader->Update();
     int imageDims[3];
-    reader->GetOutput()->GetDimensions(imageDims);
-    g_vtkAlgorithmOutput = reader->GetOutputPort();
-    vtkImageData *imageData = reader->GetOutput();
+    m_mHDreader->GetOutput()->GetDimensions(imageDims);
+    g_vtkAlgorithmOutput    = m_mHDreader->GetOutputPort();
+    vtkImageData *imageData = m_mHDreader->GetOutput();
 
     for (int i = 0; i < 3; i++)
     {
         riw[i] = vtkSmartPointer<vtkMPRResliceImageViewer>::New();
         //
-        if (i == 1)
-        {
-            riw[i]->init(true);
-        }
-        else
-        {
-            riw[i]->init();
-        }
+        if (i == 1)  { riw[i]->init(true);  }
+        else         { riw[i]->init();      }
         //
         vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
         riw[i]->SetRenderWindow(renderWindow);
@@ -701,7 +704,7 @@ void QtVTKRenderWindows::initMPR()
         planeWidget[i]->SetTexturePlaneProperty(ipwProp);
         planeWidget[i]->TextureInterpolateOff();
         planeWidget[i]->SetResliceInterpolateToLinear();
-        planeWidget[i]->SetInputConnection(reader->GetOutputPort());
+        planeWidget[i]->SetInputConnection(m_mHDreader->GetOutputPort());
         planeWidget[i]->SetPlaneOrientation(i);
         planeWidget[i]->SetSliceIndex(imageDims[i] / 2);
         planeWidget[i]->DisplayTextOn();
@@ -789,6 +792,8 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 
     QString dir = QCoreApplication::applicationDirPath() + "/3DMetaData.mhd";
     ui->m_dcmDIR->setPlainText(dir);
+
+    m_mHDreader = vtkSmartPointer<vtkMetaImageReader>::New();
 };
 
 void QtVTKRenderWindows::StarCPR()

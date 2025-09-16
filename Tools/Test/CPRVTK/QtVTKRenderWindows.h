@@ -14,6 +14,8 @@ class vtkCornerAnnotation;
 class vtkResliceCursorLineRepresentation;
 class vtkMPRResliceImageViewer;
 class vtkResliceCursorCallback;
+class vtkMetaImageReader;
+
 // Forward Qt class declarations
 class Ui_QtVTKRenderWindows;
 
@@ -55,7 +57,7 @@ protected:
 
 public:
     void initMPR();
-
+    vtkSmartPointer<vtkMetaImageReader> m_mHDreader;
 
 public:
 	vtkSmartPointer< vtkResliceCursorLineRepresentation > vtkrclp[3];
