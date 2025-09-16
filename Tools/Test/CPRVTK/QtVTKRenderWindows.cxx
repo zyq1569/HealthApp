@@ -68,6 +68,8 @@
 #include <vtkKochanekSpline.h>
 #include <vtkMatrix3x3.h>
 #include <vtkPropPicker.h>
+#include <vtkSliderRepresentation2D.h>
+#include <vtkSliderWidget.h>
 
 #include "vtkXMLPolyDataReader.h"
 #include "vtkXMLImageDataReader.h"
@@ -413,10 +415,38 @@ public:
                 m_cprViewer->SetSliceOrientationToXY();  // or ToYZ(), ToXZ()
                 m_cprViewer->SetSlice(m_cprViewer->GetSliceMin());  // 初始显示最前面切片
                 auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+                vtkSmartPointer<vtkInteractorStyleTrackballCamera> vtkInteractorStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
                 m_cprViewer->SetupInteractor(interactor);
+                m_cprViewer->GetRenderer()->GetRenderWindow()->GetInteractor()->SetInteractorStyle(vtkInteractorStyle);
                 //m_cprViewer->GetRenderWindow()->SetWindowName("Test-CPR");
+                vtkSmartPointer<vtkSliderRepresentation2D> sliderRep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
+                sliderRep->SetMinimumValue(m_cprViewer->GetSliceMin());
+                sliderRep->SetMaximumValue(m_cprViewer->GetSliceMax());
+                sliderRep->SetValue(1.0);
+                sliderRep->GetTitleProperty()->SetColor(1, 0, 0);//red
+                sliderRep->GetLabelProperty()->SetColor(1, 0, 0);//red
+                sliderRep->GetPoint1Coordinate()->SetCoordinateSystemToDisplay();
+                sliderRep->GetPoint1Coordinate()->SetValue(40, 40);
+                sliderRep->GetPoint2Coordinate()->SetCoordinateSystemToDisplay();
+                sliderRep->GetPoint2Coordinate()->SetValue(500, 40);
+                vtkSmartPointer<vtkSliderWidget> sliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
+                sliderWidget->SetInteractor(interactor);
+                sliderWidget->SetRepresentation(sliderRep);
+                sliderWidget->SetAnimationModeToAnimate();
+                sliderWidget->EnabledOn();
+
+                sliderWidget->AddObserver(vtkCommand::InteractionEvent, this);
+                //vtkSmartPointer<vtkAxesActor> axes = vtkSmartPointer<vtkAxesActor>::New();
+                //double axesSize[3] = { 100,100,100 };
+                //axes->SetTotalLength(axesSize);
+                //axes->SetConeRadius(0.1);
+                //axes->SetShaftTypeToLine();
+                //axes->SetAxisLabels(false);
+                //m_cprViewer->GetRenderer()->AddActor(axes);
+
                 m_cprViewer->Render();
-                //interactor->Start();
+                interactor->Start();
+                m_bRunCPR = true;
             }
             ///+++++++++++++++         
         }
@@ -584,11 +614,19 @@ public:
             this->RCW[i]->Render();
         }
         //this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
+
+        if (this->m_cprViewer && m_bRunCPR)
+        {
+            vtkSliderWidget *sliderWidget = reinterpret_cast<vtkSliderWidget*>(caller);
+            this->m_cprViewer->SetSlice(static_cast<vtkSliderRepresentation *>(sliderWidget->GetRepresentation())->GetValue());
+        }
+
     }
     vtkResliceCursorCallback()
     {
         m_starSpline = false;
-
+        m_cprViewer  = nullptr;
+        m_bRunCPR    = false;
     }
 public:
     //vtkImagePlaneWidget* IPW[3];
@@ -599,7 +637,7 @@ public:
     QVTKRenderWidget *m_Widget;
     vtkActor* m_oldActor;
     ///////////////////
-    bool m_starSpline;
+    bool m_starSpline, m_bRunCPR;
     std::vector<std::array<double, 3>> m_points,m_cprPoints;
     double m_spacing[3], m_origin[3];
 };
