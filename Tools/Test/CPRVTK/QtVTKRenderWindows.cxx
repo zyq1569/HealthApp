@@ -177,6 +177,10 @@ void FitResliceImageToViewer(vtkResliceImageViewer* viewer)
 
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+using namespace std;
+static constexpr double MinimumWindowWidth = 0.0001;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //鼠标滚动翻业重写
@@ -403,7 +407,11 @@ public:
                 vtkdatawrite->SetFileName(path.c_str());
                 vtkdatawrite->Write();
                 vtkdatawrite->Delete();
-                //-----------------------                              
+                //-----------------------   
+                if (m_mainWindows)
+                {
+                    m_mainWindows->showVolumeImageSlicer(itkImageData);
+                }
             }
             ///+++++++++++++++         
         }
@@ -589,9 +597,10 @@ public:
     }
     vtkResliceCursorCallback()
     {
-        m_starSpline = false;
-        m_cprViewer  = nullptr;
-        m_bRunCPR    = false;
+        m_starSpline  = false;
+        m_cprViewer   = nullptr;
+        m_bRunCPR     = false;
+        m_mainWindows = nullptr;
     }
 public:
     //vtkImagePlaneWidget* IPW[3];
@@ -605,6 +614,7 @@ public:
     bool m_starSpline, m_bRunCPR;
     std::vector<std::array<double, 3>> m_points,m_cprPoints;
     double m_spacing[3], m_origin[3];
+    QtVTKRenderWindows *m_mainWindows;
 };
 
 void QtVTKRenderWindows::initDir()
@@ -714,9 +724,55 @@ void QtVTKRenderWindows::showSRVimageSlicer(vtkImageData * itkImageData)
     show3DInteractor = NULL;
 }
 
+#include <vtkSmartVolumeMapper.h>
+#include <vtkImageMarchingCubes.h>
+#include <vtkVolumeProperty.h>
+
+VTK_MODULE_INIT(vtkRenderingOpenGL2);
+VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
+VTK_MODULE_INIT(vtkInteractionStyle);
 void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 {
+    vtkNew<vtkVolumeProperty>     m_volumeProperty;
+    vtkNew<vtkSmartVolumeMapper>  m_volumeMapper;
+    //vtkNew<vtkImageMarchingCubes> m_isosurfaceFilter;
 
+    m_volumeMapper->SetInputData(itkImageData);
+    m_volumeMapper->SetBlendModeToComposite();
+    m_volumeMapper->SetRequestedRenderModeToDefault();
+
+    // force the mapper to compute a sample distance based on data spacing
+    m_volumeMapper->SetSampleDistance(-1.0);
+
+    //m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
+    //m_isosurfaceFilter->SetInputData(itkImageData);
+    vtkNew<vtkVolume> m_vtkVolume;
+    m_vtkVolume->SetProperty(m_volumeProperty);
+    m_vtkVolume->SetMapper(m_volumeMapper);
+
+    vtkNew <vtkRenderer> m_renderer;
+    m_renderer->AddViewProp(m_vtkVolume);
+    m_renderer->AddVolume(m_vtkVolume);
+    m_renderer->SetBackground(0, 0, 0);
+    m_renderer->ResetCamera();
+    m_renderer->GetActiveCamera()->Zoom(1.5);
+    //重设相机的剪切范围；
+    m_renderer->ResetCameraClippingRange();
+
+    //透明度参数
+    m_renderer->SetUseDepthPeeling(1);
+    m_renderer->SetMaximumNumberOfPeels(100);
+    m_renderer->SetOcclusionRatio(0.1);
+
+    ui->view4->renderWindow()->AddRenderer(m_renderer);
+    //
+    vtkNew < vtkRenderWindowInteractor> m_renderWindowInteractor;
+    m_renderWindowInteractor->SetRenderWindow(ui->view4->renderWindow());
+    //设置相机跟踪模式
+    vtkNew < vtkInteractorStyleTrackballCamera> m_interactorstyle;
+    m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
+
+    ui->view4->renderWindow()->Render();
 }
 
 void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)
@@ -877,6 +933,7 @@ void QtVTKRenderWindows::initMPR()
     m_cbk = vtkSmartPointer<vtkResliceCursorCallback>::New();
     m_cbk->m_cprViewer = m_cprViewer;
     m_cbk->m_Widget = ui->view4;
+    m_cbk->m_mainWindows = this;
     for (int i = 0; i < 3; i++)
     {
         ///------------------
@@ -940,8 +997,9 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 
     QString dir = QCoreApplication::applicationDirPath() + "/3DMetaData.mhd";
     ui->m_dcmDIR->setPlainText(dir);
-    vtkImageData * itkImageData;
+    vtkImageData * itkImageData = nullptr;
     showSRVimageSlicer(itkImageData);
+    //showVolumeImageSlicer(itkImageData);
     if (!m_mHDreader)
     {
         m_mHDreader = vtkSmartPointer<vtkMetaImageReader>::New();

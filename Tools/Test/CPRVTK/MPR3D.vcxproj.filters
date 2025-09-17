@@ -13,6 +13,13 @@
     <ClCompile Include="vtkSplineDrivenImageSlicer.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="voilut.cpp" />
+    <ClCompile Include="transferfunction.cpp" />
+    <ClCompile Include="transferfunctionio.cpp" />
+    <ClCompile Include="windowlevel.cpp" />
+    <ClCompile Include="colortransferfunction.cpp" />
+    <ClCompile Include="opacitytransferfunction.cpp" />
+    <ClCompile Include="mathtools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Form">
@@ -42,5 +49,12 @@
     <ClInclude Include="vtkSplineDrivenImageSlicer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="voilut.h" />
+    <ClInclude Include="transferfunction.h" />
+    <ClInclude Include="transferfunctionio.h" />
+    <ClInclude Include="windowlevel.h" />
+    <ClInclude Include="colortransferfunction.h" />
+    <ClInclude Include="opacitytransferfunction.h" />
+    <ClInclude Include="mathtools.h" />
   </ItemGroup>
 </Project>
