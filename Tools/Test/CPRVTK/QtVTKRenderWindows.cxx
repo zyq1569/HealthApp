@@ -621,6 +621,104 @@ void QtVTKRenderWindows::initDir()
     }
     
 }
+
+#include <vtkStripper.h>
+#include <vtkOutlineFilter.h>
+void QtVTKRenderWindows::showSRVimageSlicer(vtkImageData * itkImageData)
+{
+    return;
+    if (!m_mHDreader)
+    {
+        m_mHDreader = vtkSmartPointer<vtkMetaImageReader>::New();
+    }
+    m_mHDreader->SetFileName("F:/temp/HealthApp/Tools/Test/CPRVTK/RelWithDebInfo/0916214701.472116.mhd");
+    m_mHDreader->Update();
+    itkImageData = m_mHDreader->GetOutput();
+    vtkActor *vtkactor = vtkActor::New();
+    vtkMarchingCubes *marchingcube = vtkMarchingCubes::New();
+
+    marchingcube->SetInputData(itkImageData);
+    marchingcube->SetValue(0, 200);//Setting the threshold;
+    marchingcube->ComputeNormalsOn();//计算表面法向量;
+
+    vtkStripper *Stripper = vtkStripper::New();
+    Stripper->SetInputConnection(marchingcube->GetOutputPort());//获取三角片
+    marchingcube->Delete();
+    marchingcube = NULL;
+
+    vtkPolyDataMapper *Mapper = vtkPolyDataMapper::New();//将三角片映射为几何数据；
+    Mapper->SetInputConnection(Stripper->GetOutputPort());
+    Stripper->Delete();
+    Stripper = NULL;
+    Mapper->ScalarVisibilityOff();//
+
+    vtkactor->SetMapper(Mapper);//获得皮肤几何数据
+    Mapper->Delete();
+    Mapper = NULL;
+    vtkactor->GetProperty()->SetDiffuseColor(.50, .50, .50);//设置皮肤颜色；
+    vtkactor->GetProperty()->SetSpecular(0.3);//反射率；
+    vtkactor->GetProperty()->SetOpacity(1.0);//透明度；
+    vtkactor->GetProperty()->SetSpecularPower(20);//反射光强度；
+    vtkactor->GetProperty()->SetColor(0.23, 0.23, 0.23);//设置角的颜色；
+    vtkactor->GetProperty()->SetRepresentationToWireframe();//线框；
+
+    vtkOutlineFilter * outfilterline = vtkOutlineFilter::New();
+    outfilterline->SetInputData(itkImageData);
+
+
+    vtkPolyDataMapper *outmapper = vtkPolyDataMapper::New();
+    outmapper->SetInputConnection(outfilterline->GetOutputPort());
+    outfilterline->Delete();
+    outfilterline = NULL;
+
+    vtkActor *OutlineActor = vtkActor::New();
+    OutlineActor->SetMapper(outmapper);
+    OutlineActor->GetProperty()->SetColor(0, 0, 0);//线框颜色
+
+    outmapper->Delete();
+    outmapper = NULL;
+    OutlineActor->Delete();
+    OutlineActor = NULL;
+
+    vtkRenderer *vtkrenderer     = vtkRenderer::New();
+    vtkRenderWindow* show3DWinow = vtkRenderWindow::New();
+    show3DWinow->AddRenderer(vtkrenderer);
+
+    vtkRenderWindowInteractor *show3DInteractor = vtkRenderWindowInteractor::New();
+    show3DInteractor->SetRenderWindow(show3DWinow);
+
+    vtkrenderer->AddActor(vtkactor);
+
+    vtkrenderer->SetBackground(1, 1, 1);//设置背景颜色；
+
+    show3DWinow->SetSize(500, 500);
+
+    vtkInteractorStyleTrackballCamera *style = vtkInteractorStyleTrackballCamera::New();
+    show3DInteractor->SetInteractorStyle(style);
+
+    show3DWinow->Render();
+    show3DWinow->SetWindowName("Image3D-Viewer");
+
+    show3DInteractor->Initialize();
+    show3DInteractor->Start();
+
+    style->Delete();
+    style = NULL;
+    vtkrenderer->Delete();
+    vtkrenderer = NULL;
+    vtkactor->Delete();
+    vtkactor = NULL;
+    show3DWinow->Delete();
+    show3DWinow = NULL;
+    show3DInteractor->Delete();
+    show3DInteractor = NULL;
+}
+
+void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
+{
+
+}
+
 void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)
 {
     if (!itkImageData)
@@ -820,7 +918,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 {
     this->ui = new Ui_QtVTKRenderWindows;
     this->ui->setupUi(this);
-   
+    m_mHDreader = nullptr;
     
     // Set up action signals and slots
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
@@ -842,8 +940,12 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 
     QString dir = QCoreApplication::applicationDirPath() + "/3DMetaData.mhd";
     ui->m_dcmDIR->setPlainText(dir);
-
-    m_mHDreader = vtkSmartPointer<vtkMetaImageReader>::New();
+    vtkImageData * itkImageData;
+    showSRVimageSlicer(itkImageData);
+    if (!m_mHDreader)
+    {
+        m_mHDreader = vtkSmartPointer<vtkMetaImageReader>::New();
+    }
 };
 
 void QtVTKRenderWindows::StarCPR()
