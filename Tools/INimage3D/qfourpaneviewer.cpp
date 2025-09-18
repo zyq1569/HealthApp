@@ -519,7 +519,12 @@ void QFourpaneviewer::TestAutoeSaveImage()
         }
     }
 }
-//#include <vtkImageMapper3D>
+
+//int dims[3];
+//reslice->GetDimensions(dims);  // dims[0] dims[1]，宽 高   dims[2]通常=1
+//int numComponents = reslice->GetNumberOfScalarComponents();  // 通道数（通常是1或3）
+//int scalarType = reslice->GetScalarType();  // 像素类型，比如 VTK_UNSIGNED_CHAR, VTK_SHORT
+//void* pRaw = reslice->GetScalarPointer();  // 数据首地址
 void QFourpaneviewer::SaveImagePaneBMP()
 {
     QString dir = QCoreApplication::applicationDirPath() + "\\";
