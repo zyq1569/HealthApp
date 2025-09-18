@@ -891,29 +891,36 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 {
     //w:3500 l:500
     double window = 2008, level = 404;
+    window = 3500;
+    level  = 500;
     // 3. 灰度映射（窗宽窗位）
     double minVal = level - window / 2.0;
     double maxVal = level + window / 2.0;
 
     auto colorFunc = vtkSmartPointer<vtkColorTransferFunction>::New();
-    //colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0); // 黑
-    //colorFunc->AddRGBPoint(maxVal, 1.0, 1.0, 1.0); // 白
-    colorFunc->AddRGBPoint(-1024, 1.0, 0.2980392156862745, 0.2156862745098039);
-    colorFunc->AddRGBPoint(236, 1.0, 0.2980392156862745, 0.2156862745098039);
-    colorFunc->AddRGBPoint(287, 1.0, 0.2980392156862745, 0.2156862745098039);
-    colorFunc->AddRGBPoint(535, 1.0, 0.8196078431372549, 0.4196078431372549);
-    colorFunc->AddRGBPoint(769, 1.0, 1.0, 1.0);
-    colorFunc->AddRGBPoint(3071, 1.0, 1.0, 1.0);
-
     auto opacityFunc = vtkSmartPointer<vtkPiecewiseFunction>::New();
-    //opacityFunc->AddPoint(minVal, 0.0);
-    //opacityFunc->AddPoint(maxVal, 1.0);
-    opacityFunc->AddPoint(-1024, 0.0);
-    opacityFunc->AddPoint(236, 1.0);
-    opacityFunc->AddPoint(287, 0.1450980392156863);
-    opacityFunc->AddPoint(535, 0.3725490196078431);
-    opacityFunc->AddPoint(769, 0.7254901960784313);
-    opacityFunc->AddPoint(3071, 0.5176470588235295);
+    if (0)
+    {
+        colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0); // 黑
+        colorFunc->AddRGBPoint(maxVal, 1.0, 1.0, 1.0); // 白
+        opacityFunc->AddPoint(minVal, 0.0);
+        opacityFunc->AddPoint(maxVal, 1.0);
+    }
+    else
+    {
+        colorFunc->AddRGBPoint(-1024, 1.0, 0.2980392156862745, 0.2156862745098039);
+        colorFunc->AddRGBPoint(236,   1.0, 0.2980392156862745, 0.2156862745098039);
+        colorFunc->AddRGBPoint(287,   1.0, 0.2980392156862745, 0.2156862745098039);
+        colorFunc->AddRGBPoint(535,   1.0, 0.8196078431372549, 0.4196078431372549);
+        colorFunc->AddRGBPoint(769,   1.0, 1.0, 1.0);
+        colorFunc->AddRGBPoint(3071,  1.0, 1.0, 1.0); 
+        opacityFunc->AddPoint(-1024, 0.0);
+        opacityFunc->AddPoint(236,   0.0);
+        opacityFunc->AddPoint(287,   0.1450980392156863);
+        opacityFunc->AddPoint(535,   0.3725490196078431);
+        opacityFunc->AddPoint(769,   0.7254901960784313);
+        opacityFunc->AddPoint(3071,  0.5176470588235295);
+    }
 
     vtkNew<vtkVolumeProperty>     m_volumeProperty;
     vtkNew<vtkSmartVolumeMapper>  m_volumeMapper;
