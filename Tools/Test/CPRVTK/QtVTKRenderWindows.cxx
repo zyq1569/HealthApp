@@ -229,6 +229,8 @@ public:
     vtkResliceImageViewer* m_viewer;
     int m_sliceInc;
 };
+
+
 class vtkMPRResliceImageViewer :public vtkResliceImageViewer
 {
 public:
@@ -331,8 +333,7 @@ public:
                 spline_filter->Update();
 
                 //+++++++++++++++++++++++++++++++++++++++++
-                //绘制样条线
-                
+                //绘制样条线               
                 spline_filter_line->SetSubdivideToLength();
                 spline_filter_line->SetLength(0.2);
                 spline_filter_line->SetInputData(polyData_line);
@@ -387,7 +388,6 @@ public:
                         append3D->AddInputData(tempSlice);
                     }
                     //}
-
                 }           
                 //
                 append->Update();
@@ -579,11 +579,9 @@ public:
             this->RCW[i]->Render();
         }
         //this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
-
         if (this->m_cprViewer && m_bRunCPR)
         {
-            vtkSliderWidget *sliderWidget = reinterpret_cast<vtkSliderWidget*>(caller);
-            
+            vtkSliderWidget *sliderWidget = reinterpret_cast<vtkSliderWidget*>(caller);           
             if (sliderWidget )
             {
                 vtkWidgetRepresentation *rsp = sliderWidget->GetRepresentation();
@@ -593,7 +591,6 @@ public:
                 this->m_cprViewer->SetSlice(vl);
             }           
         }
-
     }
     vtkResliceCursorCallback()
     {
@@ -727,12 +724,117 @@ void QtVTKRenderWindows::showSRVimageSlicer(vtkImageData * itkImageData)
 #include <vtkSmartVolumeMapper.h>
 #include <vtkImageMarchingCubes.h>
 #include <vtkVolumeProperty.h>
+#include <vtkColorTransferFunction.h>
+#include <vtkPiecewiseFunction.h>
+
+//鼠标右键设置窗位
+class CustomWLInteractorStyle : public vtkInteractorStyleTrackballCamera
+{
+public:
+    static CustomWLInteractorStyle* New();
+    vtkTypeMacro(CustomWLInteractorStyle, vtkInteractorStyleTrackballCamera);
+
+    void SetVolume(vtkVolume* volume)
+    {
+        this->TargetVolume = volume;
+    }
+
+    // 鼠标事件重载
+    virtual void OnRightButtonDown() override
+    {
+        this->RightButtonPressed = true;
+        this->LastX = this->Interactor->GetEventPosition()[0];
+        this->LastY = this->Interactor->GetEventPosition()[1];
+
+        if (TargetVolume)
+        {
+            auto colorFunc = TargetVolume->GetProperty()->GetRGBTransferFunction();
+            double range[2];
+            colorFunc->GetRange(range);
+            InitialLevel = (range[0] + range[1]) / 2.0;
+            InitialWindow = range[1] - range[0];
+        }
+
+        this->Superclass::OnRightButtonDown();
+    }
+
+    virtual void OnRightButtonUp() override
+    {
+        this->RightButtonPressed = false;
+        this->Superclass::OnRightButtonUp();
+    }
+    virtual void OnMouseMove() override
+    {
+        if (this->RightButtonPressed && TargetVolume)
+        {
+            int x = this->Interactor->GetEventPosition()[0];
+            int y = this->Interactor->GetEventPosition()[1];
+
+            int dx = x - LastX;
+            int dy = y - LastY;
+
+            double newWindow = InitialWindow + dx * 5.0;  // 调整系数可调
+            double newLevel = InitialLevel + dy * 2.0;
+
+            if (newWindow < 1.0)
+                newWindow = 1.0;
+
+            // 重新设置传递函数
+            double minVal = newLevel - newWindow / 2.0;
+            double maxVal = newLevel + newWindow / 2.0;
+
+            auto colorFunc = vtkSmartPointer<vtkColorTransferFunction>::New();
+            colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0);
+            colorFunc->AddRGBPoint(maxVal, 1.0, 1.0, 1.0);
+
+            auto opacityFunc = vtkSmartPointer<vtkPiecewiseFunction>::New();
+            opacityFunc->AddPoint(minVal, 0.0);
+            opacityFunc->AddPoint(maxVal, 1.0);
+
+            TargetVolume->GetProperty()->SetColor(colorFunc);
+            TargetVolume->GetProperty()->SetScalarOpacity(opacityFunc);
+
+            this->Interactor->GetRenderWindow()->Render();
+        }
+
+        this->Superclass::OnMouseMove();
+    }
+
+protected:
+    CustomWLInteractorStyle();
+    ~CustomWLInteractorStyle() override = default;
+
+private:
+    vtkSmartPointer<vtkVolume> TargetVolume;
+
+    bool RightButtonPressed = false;
+    int LastX = 0;
+    int LastY = 0;
+
+    double InitialWindow = 0;
+    double InitialLevel = 0;
+};
+
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
 void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 {
+    //w:3500 l:500
+    double window = 2008, level = 404;
+    // 3. 灰度映射（窗宽窗位）
+    double minVal = level - window / 2.0;
+    double maxVal = level + window / 2.0;
+
+    auto colorFunc = vtkSmartPointer<vtkColorTransferFunction>::New();
+    colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0); // 黑
+    colorFunc->AddRGBPoint(maxVal, 1.0, 1.0, 1.0); // 白
+
+    auto opacityFunc = vtkSmartPointer<vtkPiecewiseFunction>::New();
+    opacityFunc->AddPoint(minVal, 0.0);
+    opacityFunc->AddPoint(maxVal, 1.0);
+
     vtkNew<vtkVolumeProperty>     m_volumeProperty;
     vtkNew<vtkSmartVolumeMapper>  m_volumeMapper;
     //vtkNew<vtkImageMarchingCubes> m_isosurfaceFilter;
@@ -743,6 +845,11 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 
     // force the mapper to compute a sample distance based on data spacing
     m_volumeMapper->SetSampleDistance(-1.0);
+
+    m_volumeProperty->SetColor(colorFunc);
+    m_volumeProperty->SetScalarOpacity(opacityFunc);
+    m_volumeProperty->SetColor(colorFunc);
+    m_volumeProperty->ShadeOff();
 
     //m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
     //m_isosurfaceFilter->SetInputData(itkImageData);
@@ -769,7 +876,8 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
     vtkNew < vtkRenderWindowInteractor> m_renderWindowInteractor;
     m_renderWindowInteractor->SetRenderWindow(ui->view4->renderWindow());
     //设置相机跟踪模式
-    vtkNew < vtkInteractorStyleTrackballCamera> m_interactorstyle;
+    vtkNew < CustomWLInteractorStyle> m_interactorstyle;
+    m_interactorstyle->SetVolume(m_vtkVolume);
     m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
 
     ui->view4->renderWindow()->Render();
