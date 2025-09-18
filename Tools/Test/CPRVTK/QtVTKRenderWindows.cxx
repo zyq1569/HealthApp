@@ -728,6 +728,7 @@ void QtVTKRenderWindows::showSRVimageSlicer(vtkImageData * itkImageData)
 #include <vtkPiecewiseFunction.h>
 
 //鼠标右键设置窗位
+
 class CustomWLInteractorStyle : public vtkInteractorStyleTrackballCamera
 {
 public:
@@ -778,7 +779,7 @@ public:
 
             if (newWindow < 1.0)
                 newWindow = 1.0;
-
+          
             // 重新设置传递函数
             double minVal = newLevel - newWindow / 2.0;
             double maxVal = newLevel + newWindow / 2.0;
@@ -796,8 +797,56 @@ public:
 
             this->Interactor->GetRenderWindow()->Render();
         }
+        else
+        {
+            this->Superclass::OnMouseMove();
+        }
+    }
 
-        this->Superclass::OnMouseMove();
+    void OnMiddleButtonDown()
+    {
+        if (TargetVolume)
+        {
+            static bool inverted = true;
+            if (inverted)
+            {
+                auto volumeProperty = TargetVolume->GetProperty();
+                auto colorFunc = volumeProperty->GetRGBTransferFunction();
+
+                double range[2];
+                colorFunc->GetRange(range);
+                double minVal = range[0];
+                double maxVal = range[1];
+
+                // 创建反色映射
+                auto invertedColorFunc = vtkSmartPointer<vtkColorTransferFunction>::New();
+                if (!oldColorTransferFunction)
+                {
+                    oldColorTransferFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
+                }
+                oldColorTransferFunction = volumeProperty->GetRGBTransferFunction();
+                // 简单处理：线性反转灰度：黑 ↔ 白
+                invertedColorFunc->AddRGBPoint(minVal, 1.0, 1.0, 1.0);  // 原本是黑的变成白的
+                invertedColorFunc->AddRGBPoint(maxVal, 0.0, 0.0, 0.0);  // 原本是白的变成黑的
+
+                // 替换颜色映射
+                volumeProperty->SetColor(invertedColorFunc);
+
+                this->Interactor->GetRenderWindow()->Render();
+                inverted = false;
+            }
+            else
+            {
+                inverted = true;
+                // 替换颜色映射
+                TargetVolume->GetProperty()->SetColor(oldColorTransferFunction);
+            }
+        }
+        else
+        {
+            this->Superclass::OnMiddleButtonDown();
+
+        }
     }
 
 protected:
@@ -806,6 +855,7 @@ protected:
 
 private:
     vtkSmartPointer<vtkVolume> TargetVolume;
+    vtkSmartPointer<vtkColorTransferFunction> oldColorTransferFunction;
 
     bool RightButtonPressed = false;
     int LastX = 0;
@@ -815,10 +865,28 @@ private:
     double InitialLevel = 0;
 };
 
+vtkStandardNewMacro(CustomWLInteractorStyle);
+CustomWLInteractorStyle::CustomWLInteractorStyle() = default;
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
+//color>
+//   <point g = "0.2980392156862745" value = "-1024" r = "1" b = "0.2156862745098039" / >
+//   <point g = "0.2980392156862745" value = "236" r = "1"   b = "0.2156862745098039" / >
+//   <point g = "0.2980392156862745" value = "287" r = "1"   b = "0.2156862745098039" / >
+//   <point g = "0.8196078431372549" value = "535" r = "1"   b = "0.4196078431372549" / >
+//   <point g = "1" value = "769" r = "1" b = "1" / >
+//   <point g = "1" value = "3071" r = "1" b = "1" / >
+//   < / color>
+//   <opacity>
+//   <point value = "-1024" a = "0" / >
+//   <point value = "236" a = "0" / >
+//   <point value = "287"  a = "0.1450980392156863" / >
+//   <point value = "535"  a = "0.3725490196078431" / >
+//   <point value = "769"  a = "0.7254901960784313" / >
+//   <point value = "3071" a = "0.5176470588235295" / >
+//< / opacity>
 void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 {
     //w:3500 l:500
@@ -828,12 +896,24 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
     double maxVal = level + window / 2.0;
 
     auto colorFunc = vtkSmartPointer<vtkColorTransferFunction>::New();
-    colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0); // 黑
-    colorFunc->AddRGBPoint(maxVal, 1.0, 1.0, 1.0); // 白
+    //colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0); // 黑
+    //colorFunc->AddRGBPoint(maxVal, 1.0, 1.0, 1.0); // 白
+    colorFunc->AddRGBPoint(-1024, 1.0, 0.2980392156862745, 0.2156862745098039);
+    colorFunc->AddRGBPoint(236, 1.0, 0.2980392156862745, 0.2156862745098039);
+    colorFunc->AddRGBPoint(287, 1.0, 0.2980392156862745, 0.2156862745098039);
+    colorFunc->AddRGBPoint(535, 1.0, 0.8196078431372549, 0.4196078431372549);
+    colorFunc->AddRGBPoint(769, 1.0, 1.0, 1.0);
+    colorFunc->AddRGBPoint(3071, 1.0, 1.0, 1.0);
 
     auto opacityFunc = vtkSmartPointer<vtkPiecewiseFunction>::New();
-    opacityFunc->AddPoint(minVal, 0.0);
-    opacityFunc->AddPoint(maxVal, 1.0);
+    //opacityFunc->AddPoint(minVal, 0.0);
+    //opacityFunc->AddPoint(maxVal, 1.0);
+    opacityFunc->AddPoint(-1024, 0.0);
+    opacityFunc->AddPoint(236, 1.0);
+    opacityFunc->AddPoint(287, 0.1450980392156863);
+    opacityFunc->AddPoint(535, 0.3725490196078431);
+    opacityFunc->AddPoint(769, 0.7254901960784313);
+    opacityFunc->AddPoint(3071, 0.5176470588235295);
 
     vtkNew<vtkVolumeProperty>     m_volumeProperty;
     vtkNew<vtkSmartVolumeMapper>  m_volumeMapper;
