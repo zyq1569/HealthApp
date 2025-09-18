@@ -596,8 +596,12 @@ void MainWindow::on_pBDir_clicked()
 
 void showImage2D(Input3dImageType::Pointer image)
 {
+    vtkNew<vtkMetaImageReader> m_mHDreader;
+    m_mHDreader->SetFileName("F:/temp/HealthApp/Tools/Test/CPRVTK/RelWithDebInfo/0916165925.591616.mhd");
+    m_mHDreader->Update();
 	vtkSmartPointer<vtkImageViewer2> viewer = vtkSmartPointer<vtkImageViewer2>::New();
-	viewer->SetInputData(ImageDataItkToVtk(image));
+	//viewer->SetInputData(ImageDataItkToVtk(image));
+    viewer->SetInputData(m_mHDreader->GetOutput());
 	//设置基本属性
 	viewer->SetSize(640, 480);
 	viewer->SetColorLevel(500);
