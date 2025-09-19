@@ -351,10 +351,10 @@ public:
                 currentViewer->GetRenderer()->Render();
                 currentViewer->GetRenderer()->GetRenderWindow()->Render();                
                 
-                //+++++++++++++++++++++++++++++++++++++++++
-                vtkNew<vtkImageAppend> append, append3D;
+                //+++++++++++++++++++++++++++++++++++++++++append,
+                vtkNew<vtkImageAppend>  append3D;
                 append3D->SetAppendAxis(2);
-                append->SetAppendAxis(1);
+                //append->SetAppendAxis(1);
 
                 vtkNew<vtkSplineDrivenImageSlicer> reslicer;
                 reslicer->SetInputData(0, currentViewer->GetInput());
@@ -384,17 +384,25 @@ public:
                     {
                         vtkNew<vtkImageData> tempSlice;
                         tempSlice->DeepCopy(reslicer->GetOutput());
-                        append->AddInputData(tempSlice);
+                        //append->AddInputData(tempSlice);
                         append3D->AddInputData(tempSlice);
                     }
                     //}
                 }           
                 //
-                append->Update();
+                //append->Update();
                 append3D->Update();
                 //double range[2];append->GetOutput()->GetScalarRange(range);
                 //std::cout << "CPR scalar range: " << range[0] << "," << range[1] << std::endl;
                 //-----------------------
+                //vtkNew<vtkImagePermute> permute_filter;
+                //permute_filter->SetInputData(append3D->GetOutput());
+                //permute_filter->SetFilteredAxes(2, 0, 1);
+                //permute_filter->Update();
+                //vtkNew<vtkImageFlip> flip_filter;
+                //flip_filter->SetInputData(permute_filter->GetOutput());
+                //flip_filter->SetFilteredAxes(1);
+                //flip_filter->Update();
                 // 获取当前日期时间
                 QDateTime dateTime = QDateTime::currentDateTime();              
                 QString str = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
@@ -404,6 +412,7 @@ public:
                 std::string path            = Input_Name + qPrintable(str);               
                 vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
                 vtkdatawrite->SetInputData(itkImageData);
+                //vtkdatawrite->SetInputData(flip_filter->GetOutput());
                 vtkdatawrite->SetFileName(path.c_str());
                 vtkdatawrite->Write();
                 vtkdatawrite->Delete();
