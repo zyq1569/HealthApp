@@ -898,58 +898,31 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 
 void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<std::array<double, 3>> m_points, int channel)
 {
-    vtkNew<vtkPoints> points, points_line;
+    vtkNew<vtkPoints> points;
     for (const auto&p : m_points)
     {
         points->InsertNextPoint(p[0], p[1], p[2]);
     }
-    for (const auto&p : m_points)
-    {
-        points_line->InsertNextPoint(p[0], p[1], p[2]);
-    }
-    vtkNew<vtkPolyLine> polyLine, polyLine_line;
+
+    vtkNew<vtkPolyLine> polyLine;
     polyLine->GetPointIds()->SetNumberOfIds(points->GetNumberOfPoints());
-    polyLine_line->GetPointIds()->SetNumberOfIds(points_line->GetNumberOfPoints());
     for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++)
     {
         polyLine->GetPointIds()->SetId(i, i);
-        polyLine_line->GetPointIds()->SetId(i, i);
     }
-    vtkNew<vtkCellArray> cells, cells_line;
+    vtkNew<vtkCellArray> cells;
     cells->InsertNextCell(polyLine);
-    cells_line->InsertNextCell(polyLine_line);
-    vtkNew<vtkPolyData> polyData, polyData_line;
+
+    vtkNew<vtkPolyData> polyData;
     polyData->SetPoints(points);
     polyData->SetLines(cells);
-    polyData_line->SetPoints(points_line);
-    polyData_line->SetLines(cells_line);
 
-    vtkNew<vtkSplineFilter> spline_filter, spline_filter_line;
+    vtkNew<vtkSplineFilter> spline_filter;
     spline_filter->SetSubdivideToLength();// 按弧长
     spline_filter->SetLength(0.2);
     spline_filter->SetInputData(polyData);
     spline_filter->Update();
 
-    //+++++++++++++++++++++++++++++++++++++++++
-    //绘制样条线               
-    spline_filter_line->SetSubdivideToLength();
-    spline_filter_line->SetLength(0.2);
-    spline_filter_line->SetInputData(polyData_line);
-    spline_filter_line->Update();
-    vtkNew<vtkPolyDataMapper> splineMapper;
-    splineMapper->SetInputConnection(spline_filter_line->GetOutputPort());
-
-    vtkNew<vtkActor> splineActor;
-    splineActor->SetMapper(splineMapper);
-    splineActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
-    splineActor->GetProperty()->SetLineWidth(1.3);
-    splineActor->GetProperty()->SetOpacity(1);
-    //currentViewer->GetRenderer()->RemoveActor(m_oldActor);
-    viewer->GetRenderer()->AddActor(splineActor);
-    viewer->GetRenderer()->Render();
-    viewer->GetRenderer()->GetRenderWindow()->Render();
-
-    //+++++++++++++++++++++++++++++++++++++++++append,
     vtkNew<vtkImageAppend>  append3D;
     append3D->SetAppendAxis(2);    //append->SetAppendAxis(1);
 
@@ -958,16 +931,11 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
     reslicer->SetPathConnection(spline_filter->GetOutputPort());
     reslicer->SetSliceExtent(200, 80);
     reslicer->SetSliceThickness(1);   //reslicer->SetProbeInput(0);  //reslicer->SetSliceSpacing(0.1, 0.1);   //reslicer->SetIncidence(2 * 3.1415926 / 3);
-    double bounds[6];
-    viewer->GetInput()->GetBounds(bounds);
-    std::cout << "Volume bounds: " << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " "
-        << bounds[4] << " " << bounds[5] << std::endl;
+    //double bounds[6];   viewer->GetInput()->GetBounds(bounds);  //std::cout << "Volume bounds: " << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " " << bounds[4] << " " << bounds[5] << std::endl;
     long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
-
     for (int pt_id = 0; pt_id < nb_points; pt_id++)
     {
-        double p[3]; spline_filter->GetOutput()->GetPoint(pt_id, p);
-        //std::cout << "Centerline point " << pt_id << ": " << p[0] << " " << p[1] << " " << p[2] << std::endl;      //if (p[0] >= bounds[0] && p[0] <= bounds[1]&& p[1] >= bounds[2] && p[1] <= bounds[3]&& p[2] >= bounds[4] && p[2] <= bounds[5])        //{
+        double p[3]; spline_filter->GetOutput()->GetPoint(pt_id, p); //std::cout << "Centerline point " << pt_id << ": " << p[0] << " " << p[1] << " " << p[2] << std::endl;      //if (p[0] >= bounds[0] && p[0] <= bounds[1]&& p[1] >= bounds[2] && p[1] <= bounds[3]&& p[2] >= bounds[4] && p[2] <= bounds[5])        //{
         reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
         reslicer->Update();
         double range[2];
@@ -991,6 +959,7 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
     vtkdatawrite->SetFileName(path.c_str());
     vtkdatawrite->Write();
     vtkdatawrite->Delete();
+    showVolumeImageSlicer(itkImageData);
 }
 
 void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)
