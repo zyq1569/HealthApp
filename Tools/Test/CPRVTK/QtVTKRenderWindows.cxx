@@ -296,42 +296,24 @@ public:
             int pointsize  = m_points.size();           
             if (pointsize > 1)
             {
-                m_cprPoints[0][2] = m_cprPoints[1][2];
-                double origin[3], spacing[3];
-                currentViewer->GetInput()->GetOrigin(origin);
-                currentViewer->GetInput()->GetSpacing(spacing);
                 vtkNew<vtkPoints> points, points_line;
                 for (const auto&p : m_points)
                 {
                     points->InsertNextPoint(p[0], p[1], p[2]);
                 }
-                for (const auto&p : m_cprPoints)
-                {
-                    points_line->InsertNextPoint(p[0], p[1], p[2]);
-                }
-                vtkNew<vtkPolyLine> polyLine, polyLine_line;
-                polyLine->GetPointIds()->SetNumberOfIds(points->GetNumberOfPoints());
+                vtkNew<vtkPolyLine>  polyLine_line;
                 polyLine_line->GetPointIds()->SetNumberOfIds(points_line->GetNumberOfPoints());
                 for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++)
                 {
-                    polyLine->GetPointIds()->SetId(i, i);
                     polyLine_line->GetPointIds()->SetId(i, i);
                 }
                 vtkNew<vtkCellArray> cells, cells_line;
-                cells->InsertNextCell(polyLine);
                 cells_line->InsertNextCell(polyLine_line);
-                vtkNew<vtkPolyData> polyData, polyData_line;
-                polyData->SetPoints(points);
-                polyData->SetLines(cells);
+                vtkNew<vtkPolyData>  polyData_line;
                 polyData_line->SetPoints(points_line);
                 polyData_line->SetLines(cells_line);
 
-                vtkNew<vtkSplineFilter> spline_filter, spline_filter_line;
-                spline_filter->SetSubdivideToLength();// 按弧长
-                spline_filter->SetLength(0.2);
-                spline_filter->SetInputData(polyData);
-                spline_filter->Update();
-
+                vtkNew<vtkSplineFilter> spline_filter_line;
                 //+++++++++++++++++++++++++++++++++++++++++
                 //绘制样条线               
                 spline_filter_line->SetSubdivideToLength();
@@ -349,77 +331,12 @@ public:
                 //currentViewer->GetRenderer()->RemoveActor(m_oldActor);
                 currentViewer->GetRenderer()->AddActor(splineActor);
                 currentViewer->GetRenderer()->Render();
-                currentViewer->GetRenderer()->GetRenderWindow()->Render();                
-                
-                //+++++++++++++++++++++++++++++++++++++++++append,
-                vtkNew<vtkImageAppend>  append3D;
-                append3D->SetAppendAxis(2);
-                //append->SetAppendAxis(1);
-
-                vtkNew<vtkSplineDrivenImageSlicer> reslicer;
-                reslicer->SetInputData(0, currentViewer->GetInput());
-                reslicer->SetPathConnection(spline_filter->GetOutputPort());
-                reslicer->SetSliceExtent(200,80);
-                reslicer->SetSliceThickness(1);
-                //reslicer->SetProbeInput(0);
-                //reslicer->SetSliceSpacing(0.1, 0.1);
-                //reslicer->SetIncidence(2 * 3.1415926 / 3);
-                double bounds[6];
-                currentViewer->GetInput()->GetBounds(bounds);
-                std::cout << "Volume bounds: "  << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " "
-                          << bounds[4] << " " << bounds[5] << std::endl;
-                long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
-                
-                for (int pt_id = 0; pt_id < nb_points; pt_id++)
-                {
-                    double p[3]; spline_filter->GetOutput()->GetPoint(pt_id, p);
-                    //std::cout << "Centerline point " << pt_id << ": " << p[0] << " " << p[1] << " " << p[2] << std::endl;
-                    //if (p[0] >= bounds[0] && p[0] <= bounds[1]&& p[1] >= bounds[2] && p[1] <= bounds[3]&& p[2] >= bounds[4] && p[2] <= bounds[5])
-                    //{
-                    reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
-                    reslicer->Update();
-                    double range[2];
-                    reslicer->GetOutput()->GetScalarRange(range);
-                    if (range[0] != range[1])
-                    {
-                        vtkNew<vtkImageData> tempSlice;
-                        tempSlice->DeepCopy(reslicer->GetOutput());
-                        //append->AddInputData(tempSlice);
-                        append3D->AddInputData(tempSlice);
-                    }
-                    //}
-                }           
-                //
-                //append->Update();
-                append3D->Update();
-                //double range[2];append->GetOutput()->GetScalarRange(range);
-                //std::cout << "CPR scalar range: " << range[0] << "," << range[1] << std::endl;
-                //-----------------------
-                //vtkNew<vtkImagePermute> permute_filter;
-                //permute_filter->SetInputData(append3D->GetOutput());
-                //permute_filter->SetFilteredAxes(2, 0, 1);
-                //permute_filter->Update();
-                //vtkNew<vtkImageFlip> flip_filter;
-                //flip_filter->SetInputData(permute_filter->GetOutput());
-                //flip_filter->SetFilteredAxes(1);
-                //flip_filter->Update();
-                // 获取当前日期时间
-                QDateTime dateTime = QDateTime::currentDateTime();              
-                QString str = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
-                QString DicomDir            =  QCoreApplication::applicationDirPath();
-                vtkImageData * itkImageData = append3D->GetOutput();
-                std::string Input_Name      = qPrintable(DicomDir);
-                std::string path            = Input_Name + qPrintable(str);               
-                vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
-                vtkdatawrite->SetInputData(itkImageData);
-                //vtkdatawrite->SetInputData(flip_filter->GetOutput());
-                vtkdatawrite->SetFileName(path.c_str());
-                vtkdatawrite->Write();
-                vtkdatawrite->Delete();
-                //-----------------------   
+                currentViewer->GetRenderer()->GetRenderWindow()->Render();                                
+                //+++++++++++++++++++++++++++++++++++++++++append,              
                 if (m_mainWindows)
                 {
-                    m_mainWindows->showVolumeImageSlicer(itkImageData);
+                    m_mainWindows->processing(currentViewer, m_cprPoints);
+                    //m_mainWindows->showVolumeImageSlicer(itkImageData);
                 }
             }
             ///+++++++++++++++         
@@ -977,6 +894,103 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
     m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
 
     ui->view4->renderWindow()->Render();
+}
+
+void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<std::array<double, 3>> m_points, int channel)
+{
+    vtkNew<vtkPoints> points, points_line;
+    for (const auto&p : m_points)
+    {
+        points->InsertNextPoint(p[0], p[1], p[2]);
+    }
+    for (const auto&p : m_points)
+    {
+        points_line->InsertNextPoint(p[0], p[1], p[2]);
+    }
+    vtkNew<vtkPolyLine> polyLine, polyLine_line;
+    polyLine->GetPointIds()->SetNumberOfIds(points->GetNumberOfPoints());
+    polyLine_line->GetPointIds()->SetNumberOfIds(points_line->GetNumberOfPoints());
+    for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++)
+    {
+        polyLine->GetPointIds()->SetId(i, i);
+        polyLine_line->GetPointIds()->SetId(i, i);
+    }
+    vtkNew<vtkCellArray> cells, cells_line;
+    cells->InsertNextCell(polyLine);
+    cells_line->InsertNextCell(polyLine_line);
+    vtkNew<vtkPolyData> polyData, polyData_line;
+    polyData->SetPoints(points);
+    polyData->SetLines(cells);
+    polyData_line->SetPoints(points_line);
+    polyData_line->SetLines(cells_line);
+
+    vtkNew<vtkSplineFilter> spline_filter, spline_filter_line;
+    spline_filter->SetSubdivideToLength();// 按弧长
+    spline_filter->SetLength(0.2);
+    spline_filter->SetInputData(polyData);
+    spline_filter->Update();
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    //绘制样条线               
+    spline_filter_line->SetSubdivideToLength();
+    spline_filter_line->SetLength(0.2);
+    spline_filter_line->SetInputData(polyData_line);
+    spline_filter_line->Update();
+    vtkNew<vtkPolyDataMapper> splineMapper;
+    splineMapper->SetInputConnection(spline_filter_line->GetOutputPort());
+
+    vtkNew<vtkActor> splineActor;
+    splineActor->SetMapper(splineMapper);
+    splineActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
+    splineActor->GetProperty()->SetLineWidth(1.3);
+    splineActor->GetProperty()->SetOpacity(1);
+    //currentViewer->GetRenderer()->RemoveActor(m_oldActor);
+    viewer->GetRenderer()->AddActor(splineActor);
+    viewer->GetRenderer()->Render();
+    viewer->GetRenderer()->GetRenderWindow()->Render();
+
+    //+++++++++++++++++++++++++++++++++++++++++append,
+    vtkNew<vtkImageAppend>  append3D;
+    append3D->SetAppendAxis(2);    //append->SetAppendAxis(1);
+
+    vtkNew<vtkSplineDrivenImageSlicer> reslicer;
+    reslicer->SetInputData(0, viewer->GetInput());
+    reslicer->SetPathConnection(spline_filter->GetOutputPort());
+    reslicer->SetSliceExtent(200, 80);
+    reslicer->SetSliceThickness(1);   //reslicer->SetProbeInput(0);  //reslicer->SetSliceSpacing(0.1, 0.1);   //reslicer->SetIncidence(2 * 3.1415926 / 3);
+    double bounds[6];
+    viewer->GetInput()->GetBounds(bounds);
+    std::cout << "Volume bounds: " << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " "
+        << bounds[4] << " " << bounds[5] << std::endl;
+    long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
+
+    for (int pt_id = 0; pt_id < nb_points; pt_id++)
+    {
+        double p[3]; spline_filter->GetOutput()->GetPoint(pt_id, p);
+        //std::cout << "Centerline point " << pt_id << ": " << p[0] << " " << p[1] << " " << p[2] << std::endl;      //if (p[0] >= bounds[0] && p[0] <= bounds[1]&& p[1] >= bounds[2] && p[1] <= bounds[3]&& p[2] >= bounds[4] && p[2] <= bounds[5])        //{
+        reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
+        reslicer->Update();
+        double range[2];
+        reslicer->GetOutput()->GetScalarRange(range);
+        if (range[0] != range[1])
+        {
+            vtkNew<vtkImageData> tempSlice;
+            tempSlice->DeepCopy(reslicer->GetOutput());           //append->AddInputData(tempSlice);
+            append3D->AddInputData(tempSlice);
+        }
+    }
+    append3D->Update();
+    QDateTime dateTime = QDateTime::currentDateTime();
+    QString str = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
+    QString DicomDir = QCoreApplication::applicationDirPath();
+    vtkImageData * itkImageData = append3D->GetOutput();
+    std::string Input_Name = qPrintable(DicomDir);
+    std::string path = Input_Name + qPrintable(str);
+    vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+    vtkdatawrite->SetInputData(itkImageData);    //vtkdatawrite->SetInputData(flip_filter->GetOutput());
+    vtkdatawrite->SetFileName(path.c_str());
+    vtkdatawrite->Write();
+    vtkdatawrite->Delete();
 }
 
 void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)

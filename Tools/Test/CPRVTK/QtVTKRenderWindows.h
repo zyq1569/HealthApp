@@ -60,6 +60,7 @@ public:
     void showCPRimageSlicer(vtkImageData * itkImageData);
     void showSRVimageSlicer(vtkImageData * itkImageData);
     void showVolumeImageSlicer(vtkImageData * itkImageData);
+    void processing( vtkResliceImageViewer *viewer, std::vector<std::array<double, 3>> m_points, int channel = 0);
     vtkSmartPointer<vtkMetaImageReader> m_mHDreader;
 
 public:
