@@ -19,10 +19,10 @@
 #include <QtConcurrent/QtConcurrent>
 #include <vtkStringArray.h>
 
-class DataIno
+class DataInfo
 {
 public:
-    DataIno(QStringList list = QStringList(), int w = 512, int h = 512)
+    DataInfo(QStringList list = QStringList(), int w = 512, int h = 512)
     {
         m_width = w;
         m_height = h;
@@ -48,7 +48,7 @@ public:
     int m_width, m_height;
 };
 
-int vtkReadFiles(DataIno info)
+int vtkReadFiles(DataInfo info)
 {
     vtkSmartPointer<vtkImageReader2> reader = info.m_reader;
     reader->SetFileNames(info.m_array);
@@ -332,9 +332,9 @@ void QtVTKRenderWindows::raw2mhd()
         }
     }
 
-    DataIno info[MAX_THREAD];
+    DataInfo info[MAX_THREAD];
 
-    QList < DataIno > listDatas;
+    QList < DataInfo > listDatas;
     for (int i = 0; i < MAX_THREAD; i++)
     {
         info[i].setInfo(list[i], width, height);
