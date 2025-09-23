@@ -296,18 +296,18 @@ public:
             int pointsize  = m_points.size();           
             if (pointsize > 1)
             {
-                vtkNew<vtkPoints> points, points_line;
+                vtkNew<vtkPoints>  points_line;
                 for (const auto&p : m_points)
                 {
-                    points->InsertNextPoint(p[0], p[1], p[2]);
+                    points_line->InsertNextPoint(p[0], p[1], p[2]);
                 }
                 vtkNew<vtkPolyLine>  polyLine_line;
                 polyLine_line->GetPointIds()->SetNumberOfIds(points_line->GetNumberOfPoints());
-                for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++)
+                for (vtkIdType i = 0; i < points_line->GetNumberOfPoints(); i++)
                 {
                     polyLine_line->GetPointIds()->SetId(i, i);
                 }
-                vtkNew<vtkCellArray> cells, cells_line;
+                vtkNew<vtkCellArray>  cells_line;
                 cells_line->InsertNextCell(polyLine_line);
                 vtkNew<vtkPolyData>  polyData_line;
                 polyData_line->SetPoints(points_line);
