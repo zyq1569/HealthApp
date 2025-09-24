@@ -83,6 +83,7 @@
 #include "vtkPolyLine.h"
 #include <QDateTime>
 #include <qevent.h>
+#include <QtConcurrent>
 
 const double PI = -3.141592653589793238462643383279502884197169399375105820974944;
 vtkAlgorithmOutput *g_vtkAlgorithmOutput = NULL;
@@ -292,6 +293,7 @@ public:
         //http://github.com/jeromevelut/vtkKinship
         else if (ev == vtkCommand::LeftButtonDoubleClickEvent)
         {
+            m_points[0][2] = m_points[1][2];
             m_starSpline   = false;
             int pointsize  = m_points.size();           
             if (pointsize > 1)
@@ -327,8 +329,7 @@ public:
                 splineActor->SetMapper(splineMapper);
                 splineActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
                 splineActor->GetProperty()->SetLineWidth(1.3);
-                splineActor->GetProperty()->SetOpacity(1);
-                //currentViewer->GetRenderer()->RemoveActor(m_oldActor);
+                splineActor->GetProperty()->SetOpacity(1);//currentViewer->GetRenderer()->RemoveActor(m_oldActor);
                 currentViewer->GetRenderer()->AddActor(splineActor);
                 currentViewer->GetRenderer()->Render();
                 currentViewer->GetRenderer()->GetRenderWindow()->Render();                                
@@ -336,7 +337,6 @@ public:
                 if (m_mainWindows)
                 {
                     m_mainWindows->processing(currentViewer, m_cprPoints);
-                    //m_mainWindows->showVolumeImageSlicer(itkImageData);
                 }
             }
             ///+++++++++++++++         
@@ -350,14 +350,15 @@ public:
             coordinate->SetCoordinateSystemToDisplay();
             coordinate->SetValue(clickPos[0], clickPos[1]);
             double* world = coordinate->GetComputedWorldValue(currentViewer->GetRenderer());
+            m_points.push_back({ world[0], world[1], world[2] });
+
             double pickPos[3];
             vtkNew<vtkPropPicker> picker;
             if (picker->Pick(clickPos[0], clickPos[1], 0, currentViewer->GetRenderer()))
             {               
                 picker->GetPickPosition(pickPos);
             }
-            m_points.push_back({ pickPos[0], pickPos[1], pickPos[2] });
-            m_cprPoints.push_back({ world[0], world[1], world[2] });
+            m_cprPoints.push_back({ pickPos[0], pickPos[1], pickPos[2] });
         }
         //end add:20250603
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -896,6 +897,81 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
     ui->view4->renderWindow()->Render();
 }
 
+class DataInfo
+{
+public:
+    DataInfo(vtkSplineDrivenImageSlicer *slicer = nullptr, vtkImageAppend *imageAppend = nullptr, int id[0] = { 0})
+    {
+        m_slicer      = slicer;
+        m_imageAppend = imageAppend;
+        m_id[0]       = id[0];
+        m_id[1]       = id[1];
+        m_id[2]       = id[2];
+    }
+    vtkSplineDrivenImageSlicer *m_slicer;
+    vtkImageAppend *m_imageAppend;
+    int m_id[3];
+};
+
+int threadSplineDrivenImageSlicer(DataInfo info)
+{
+    if (info.m_slicer&&info.m_imageAppend)
+    {
+        if (info.m_id[2] == 0)
+        {
+            int s = info.m_id[0], l = info.m_id[1] + 1;
+            for (int pt_id = s; pt_id < l; pt_id++)
+            {
+                info.m_slicer->SetOffsetPoint(pt_id);
+                info.m_slicer->Update();
+                double range[2];
+                info.m_slicer->GetOutput()->GetScalarRange(range);
+                if (range[0] != range[1])
+                {
+                    vtkSmartPointer<vtkImageData> tempSlice = vtkSmartPointer<vtkImageData>::New();
+                    tempSlice->DeepCopy(info.m_slicer->GetOutput());
+                    info.m_imageAppend->AddInputData(tempSlice);                   
+                }
+            }
+        }
+        else if (info.m_id[2] == 1)
+        {
+            int s = info.m_id[0], l = info.m_id[1] + 1;
+            for (int pt_id = s; pt_id < l; pt_id++)
+            {
+                info.m_slicer->SetOffsetPoint(pt_id);
+                info.m_slicer->Update();
+                double range[2];
+                info.m_slicer->GetOutput()->GetScalarRange(range);
+                if (range[0] != range[1])
+                {                   
+                    vtkSmartPointer<vtkImageData> tempSlice1 = vtkSmartPointer<vtkImageData>::New();
+                    tempSlice1->DeepCopy(info.m_slicer->GetOutput());
+                    info.m_imageAppend->AddInputData(tempSlice1);
+                }
+            }
+        }
+        else if (info.m_id[2] == 2)
+        {
+            int s = info.m_id[0], l = info.m_id[1] + 1;
+            for (int pt_id = s; pt_id < l; pt_id++)
+            {
+                info.m_slicer->SetOffsetPoint(pt_id);
+                info.m_slicer->Update();
+                double range[2];
+                info.m_slicer->GetOutput()->GetScalarRange(range);
+                if (range[0] != range[1])
+                {
+                    vtkSmartPointer<vtkImageData> tempSlice2 = vtkSmartPointer<vtkImageData>::New();
+                    tempSlice2->DeepCopy(info.m_slicer->GetOutput());
+                    info.m_imageAppend->AddInputData(tempSlice2);
+                }
+            }
+        }
+    }
+    return 1;
+}
+
 void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<std::array<double, 3>> m_points, int channel)
 {
     vtkNew<vtkPoints> points;
@@ -925,41 +1001,81 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
 
     vtkNew<vtkImageAppend>  append3D;
     append3D->SetAppendAxis(2);    //append->SetAppendAxis(1);
-
     vtkNew<vtkSplineDrivenImageSlicer> reslicer;
+    vtkImageData * imageData = viewer->GetInput();
     reslicer->SetInputData(0, viewer->GetInput());
     reslicer->SetPathConnection(spline_filter->GetOutputPort());
     reslicer->SetSliceExtent(200, 80);
     reslicer->SetSliceThickness(1);   //reslicer->SetProbeInput(0);  //reslicer->SetSliceSpacing(0.1, 0.1);   //reslicer->SetIncidence(2 * 3.1415926 / 3);
     //double bounds[6];   viewer->GetInput()->GetBounds(bounds);  //std::cout << "Volume bounds: " << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " " << bounds[4] << " " << bounds[5] << std::endl;
+    //---->thread
     long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
-    for (int pt_id = 0; pt_id < nb_points; pt_id++)
+    if (1)
     {
-        double p[3]; spline_filter->GetOutput()->GetPoint(pt_id, p); //std::cout << "Centerline point " << pt_id << ": " << p[0] << " " << p[1] << " " << p[2] << std::endl;      //if (p[0] >= bounds[0] && p[0] <= bounds[1]&& p[1] >= bounds[2] && p[1] <= bounds[3]&& p[2] >= bounds[4] && p[2] <= bounds[5])        //{
-        reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
-        reslicer->Update();
-        double range[2];
-        reslicer->GetOutput()->GetScalarRange(range);
-        if (range[0] != range[1])
+        for (int pt_id = 0; pt_id < nb_points; pt_id++)
         {
-            vtkNew<vtkImageData> tempSlice;
-            tempSlice->DeepCopy(reslicer->GetOutput());           //append->AddInputData(tempSlice);
-            append3D->AddInputData(tempSlice);
+            //double p[3]; spline_filter->GetOutput()->GetPoint(pt_id, p); //std::cout << "Centerline point " << pt_id << ": " << p[0] << " " << p[1] << " " << p[2] << std::endl;      //if (p[0] >= bounds[0] && p[0] <= bounds[1]&& p[1] >= bounds[2] && p[1] <= bounds[3]&& p[2] >= bounds[4] && p[2] <= bounds[5])        //{
+            reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
+            reslicer->Update();
+            double range[2];
+            reslicer->GetOutput()->GetScalarRange(range);
+            if (range[0] != range[1])
+            {
+                vtkNew<vtkImageData> tempSlice;
+                tempSlice->DeepCopy(reslicer->GetOutput());           //append->AddInputData(tempSlice);
+                append3D->AddInputData(tempSlice);
+            }
         }
     }
+    else
+    {
+#define  MAX_THREAD  1 //常规下不要超过  max_n = (CPU核心数的2倍 - 1), 否则可能慢！(服务器自行考虑)
+        vtkSmartPointer<vtkImageAppend> appendTemp[MAX_THREAD];//vtkNew<vtkImageAppend> 
+        vtkSmartPointer<vtkSplineDrivenImageSlicer> reslicerTemp[MAX_THREAD];// ;vtkNew<vtkSplineDrivenImageSlicer> 
+        for (int i = 0; i < MAX_THREAD; i++)
+        {
+            appendTemp[i] = vtkSmartPointer<vtkImageAppend>::New();
+            appendTemp[i]->SetAppendAxis(2);
+            reslicerTemp[i] = vtkSmartPointer<vtkSplineDrivenImageSlicer>::New();
+            reslicerTemp[i]->SetInputData(0, viewer->GetInput());
+            reslicerTemp[i]->SetPathConnection(spline_filter->GetOutputPort());
+            reslicerTemp[i]->SetSliceExtent(200, 80);
+            reslicerTemp[i]->SetSliceThickness(1);
+        }
+        QList<DataInfo> listDatas;
+        for (int i = 0; i < MAX_THREAD; i++)
+        {
+            int id[2];
+            id[0] = i * nb_points / MAX_THREAD;
+            id[1] = (i + 1)*nb_points / MAX_THREAD - 1;
+            id[2] = i;
+            DataInfo info(reslicerTemp[i], appendTemp[i], id);
+            listDatas.push_back(info);
+        }
+        auto listFuture = QtConcurrent::mapped(listDatas, threadSplineDrivenImageSlicer);
+        listFuture.waitForFinished();
+        for (int i = 0; i < MAX_THREAD; i++)
+        {
+            append3D->AddInputData(appendTemp[i]->GetOutput());
+        }  
+    }    
+    ///--->thread
     append3D->Update();
-    QDateTime dateTime = QDateTime::currentDateTime();
-    QString str = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
-    QString DicomDir = QCoreApplication::applicationDirPath();
     vtkImageData * itkImageData = append3D->GetOutput();
-    std::string Input_Name = qPrintable(DicomDir);
-    std::string path = Input_Name + qPrintable(str);
+    showVolumeImageSlicer(itkImageData);
+    //return;
+
+    QDateTime dateTime = QDateTime::currentDateTime();
+    QString str        = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
+    QString DicomDir   = QCoreApplication::applicationDirPath();   
+    std::string Input_Name           = qPrintable(DicomDir);
+    std::string path                 = Input_Name + qPrintable(str);
     vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
     vtkdatawrite->SetInputData(itkImageData);    //vtkdatawrite->SetInputData(flip_filter->GetOutput());
     vtkdatawrite->SetFileName(path.c_str());
     vtkdatawrite->Write();
     vtkdatawrite->Delete();
-    showVolumeImageSlicer(itkImageData);
+
 }
 
 void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)
@@ -996,17 +1112,7 @@ void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)
     sliderWidget->SetRepresentation(sliderRep);
     sliderWidget->SetAnimationModeToAnimate();
     sliderWidget->EnabledOn();
-
-    //sliderWidget->AddObserver(vtkCommand::InteractionEvent, this);
-    //vtkSmartPointer<vtkAxesActor> axes = vtkSmartPointer<vtkAxesActor>::New();
-    //double axesSize[3] = { 100,100,100 };
-    //axes->SetTotalLength(axesSize);
-    //axes->SetConeRadius(0.1);
-    //axes->SetShaftTypeToLine();
-    //axes->SetAxisLabels(false);
-    //m_cprViewer->GetRenderer()->AddActor(axes);
     m_cprViewer->Render();
-    //interactor->Start();
 }
 
 void QtVTKRenderWindows::initMPR()
