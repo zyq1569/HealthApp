@@ -927,8 +927,9 @@ std::vector<vtkSmartPointer<vtkImageData>> threadSplineDrivenImageSlicer(DataInf
             info.m_slicer->GetOutput()->GetScalarRange(range);
             if (range[0] != range[1])
             {
+                vtkImageData *data  = info.m_slicer->GetOutput();
                 vtkSmartPointer<vtkImageData> tempSlice = vtkSmartPointer<vtkImageData>::New();
-                tempSlice->DeepCopy(info.m_slicer->GetOutput());
+                tempSlice->DeepCopy(data);
                 slices.push_back(tempSlice);
             }
         }          
@@ -1027,7 +1028,7 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
     append3D->Update();
     vtkImageData * itkImageData = append3D->GetOutput();
     showVolumeImageSlicer(itkImageData);
-    //return;
+    return;
 
     QDateTime dateTime = QDateTime::currentDateTime();
     QString str        = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串

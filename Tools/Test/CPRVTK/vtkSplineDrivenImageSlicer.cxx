@@ -64,6 +64,8 @@ vtkSplineDrivenImageSlicer::vtkSplineDrivenImageSlicer()
 
     // by default process active point scalars
     this->SetInputArrayToProcess(0, 0, 0, vtkDataObject::FIELD_ASSOCIATION_POINTS, vtkDataSetAttributes::SCALARS);
+
+    m_initFrenetFrames = true;
 }
 
 void vtkSplineDrivenImageSlicer::SetReslicer(vtkImageReslice* reslicer)
@@ -164,23 +166,27 @@ int vtkSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request)
     vtkImageData *input                     = vtkImageData::SafeDownCast( inInfo->Get(vtkDataObject::DATA_OBJECT()));
     vtkSmartPointer<vtkImageData> inputCopy = vtkSmartPointer<vtkImageData>::New();
     inputCopy->ShallowCopy(input);
-    vtkPolyData *inputPath    = vtkPolyData::SafeDownCast( pathInfo->Get(vtkDataObject::DATA_OBJECT()));
-
-    vtkImageData *outputImage = vtkImageData::SafeDownCast( outImageInfo->Get(vtkDataObject::DATA_OBJECT()));
-    vtkPolyData *outputPlane  = vtkPolyData::SafeDownCast( outPlaneInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *inputPath                  = vtkPolyData::SafeDownCast( pathInfo->Get(vtkDataObject::DATA_OBJECT()));
+                                            
+    vtkImageData *outputImage               = vtkImageData::SafeDownCast( outImageInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkPolyData *outputPlane                = vtkPolyData::SafeDownCast( outPlaneInfo->Get(vtkDataObject::DATA_OBJECT()));
 
     vtkSmartPointer<vtkPolyData> pathCopy = vtkSmartPointer<vtkPolyData>::New();
     pathCopy->ShallowCopy(inputPath);
 
-
     // Compute the local normal and tangent to the path
-    this->localFrenetFrames->SetInputData(pathCopy);
-    this->localFrenetFrames->SetViewUp(this->Incidence);
-    this->localFrenetFrames->ComputeBinormalOn();
-    this->localFrenetFrames->Update();
+    if (m_initFrenetFrames)
+    {
+        this->localFrenetFrames->SetInputData(pathCopy);
+        this->localFrenetFrames->SetViewUp(this->Incidence);
+        this->localFrenetFrames->ComputeBinormalOn();
+        this->localFrenetFrames->Update();
+        m_initFrenetFrames = false;
+    }
+
 
     // path will contain PointData array "Tangents" and "Vectors"
-    vtkPolyData* path = static_cast<vtkPolyData*>(this->localFrenetFrames->GetOutputDataObject(0));
+    vtkPolyData* path   = static_cast<vtkPolyData*>(this->localFrenetFrames->GetOutputDataObject(0));
     // Count how many points are used in the cells
     // In case of loop, points may be used several times
     // (note: not using NumberOfPoints because we want only LINES points...)

@@ -113,6 +113,9 @@ private:
 
 public:
     void SetReslicer(vtkImageReslice* reslicer);
+
+public:
+    bool m_initFrenetFrames;
 };
 
 #endif //__vtkSplineDrivenImageSlicer_h__
