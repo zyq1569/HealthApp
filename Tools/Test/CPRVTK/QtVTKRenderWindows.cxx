@@ -905,7 +905,6 @@ public:
         m_id[0]           = id[0];
         m_id[1]           = id[1];
         m_id[2]           = id[2];
-        m_VectorImageData.clear();
     }
     ~DataInfo()
     {
@@ -944,13 +943,12 @@ public:
         m_reslicer->SetSliceThickness(1);
     }
 public:
-    std::vector<vtkSmartPointer<vtkImageData>> m_VectorImageData;
-    vtkSmartPointer<vtkPoints> m_points;
-    vtkSmartPointer<vtkPolyLine> m_polyLine;
-    vtkSmartPointer<vtkCellArray> m_cells;
-    vtkSmartPointer<vtkPolyData> m_polyData;
-    vtkSmartPointer<vtkSplineFilter> m_spline_filter;
-    vtkSmartPointer<vtkSplineDrivenImageSlicer> m_reslicer;
+    vtkSmartPointer<vtkPoints>                    m_points;
+    vtkSmartPointer<vtkPolyLine>                  m_polyLine;
+    vtkSmartPointer<vtkCellArray>                 m_cells;
+    vtkSmartPointer<vtkPolyData>                  m_polyData;
+    vtkSmartPointer<vtkSplineFilter>              m_spline_filter;
+    vtkSmartPointer<vtkSplineDrivenImageSlicer>   m_reslicer;
     int m_id[3];
 };
 
@@ -966,7 +964,7 @@ std::vector<vtkSmartPointer<vtkImageData>> threadSplineDrivenImageSlicer(DataInf
         info.m_reslicer->GetOutput()->GetScalarRange(range);
         if (range[0] != range[1])
         {
-            vtkImageData *data = info.m_reslicer->GetOutput();//  info.m_slicer->GetOutput();
+            vtkImageData *data = info.m_reslicer->GetOutput();
             vtkSmartPointer<vtkImageData> tempSlice = vtkSmartPointer<vtkImageData>::New();
             tempSlice->DeepCopy(data);
             slices.push_back(tempSlice);
@@ -1013,7 +1011,33 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
     //double bounds[6];   viewer->GetInput()->GetBounds(bounds);  //std::cout << "Volume bounds: " << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " " << bounds[4] << " " << bounds[5] << std::endl;
     //---->thread
     long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
-    if (0)
+    bool bThread = ui->m_ckThread->isChecked();
+    if (bThread)
+    {
+#define  MAX_THREAD  4 //常规下不要超过  max_n = (CPU核心数的2倍 - 1), 否则可能慢！(服务器自行考虑)
+        QList<DataInfo> listDatas;
+        for (int i = 0; i < MAX_THREAD; i++)
+        {
+            int id[3];
+            id[0] = i * nb_points / MAX_THREAD;
+            id[1] = (i + 1)*nb_points / MAX_THREAD - 1;
+            id[2] = i;
+            DataInfo info({ id[0], id[1], id[2] });
+            info.SetPoints(m_points, viewer->GetInput());
+            listDatas.push_back(info);
+        }
+        auto listFuture = QtConcurrent::mapped(listDatas, threadSplineDrivenImageSlicer);
+        listFuture.waitForFinished();
+
+        for (const auto& sliceList : listFuture.results())
+        {
+            for (const auto& slice : sliceList)
+            {
+                append3D->AddInputData(slice);
+            }
+        }
+    }
+    else
     {
         for (int pt_id = 0; pt_id < nb_points; pt_id++)
         {
@@ -1029,40 +1053,6 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
                 append3D->AddInputData(tempSlice);
             }
         }
-    }
-    else
-    {
-#define  MAX_THREAD  3 //常规下不要超过  max_n = (CPU核心数的2倍 - 1), 否则可能慢！(服务器自行考虑)
-        //vtkSmartPointer<vtkSplineDrivenImageSlicer> reslicerTemp[MAX_THREAD];// ;vtkNew<vtkSplineDrivenImageSlicer> 
-        //for (int i = 0; i < MAX_THREAD; i++)
-        //{
-        //    reslicerTemp[i] = vtkSmartPointer<vtkSplineDrivenImageSlicer>::New();
-        //    reslicerTemp[i]->SetInputData(0, viewer->GetInput());
-        //    reslicerTemp[i]->SetPathConnection(spline_filter->GetOutputPort());
-        //    reslicerTemp[i]->SetSliceExtent(200, 80);
-        //    reslicerTemp[i]->SetSliceThickness(1);
-        //}
-        QList<DataInfo> listDatas;
-        for (int i = 0; i < MAX_THREAD; i++)
-        {
-            int id[4];
-            id[0] = i * nb_points / MAX_THREAD;
-            id[1] = (i + 1)*nb_points / MAX_THREAD - 1;
-            id[2] = i;
-            DataInfo info({ id[0], id[1], id[2] });
-            info.SetPoints(m_points,viewer->GetInput());
-            listDatas.push_back(info);
-        }
-        auto listFuture = QtConcurrent::mapped(listDatas, threadSplineDrivenImageSlicer);
-        listFuture.waitForFinished();
-        
-        for (const auto& sliceList : listFuture.results())
-        {
-            for (const auto& slice : sliceList)
-            {
-                append3D->AddInputData(slice);
-            }
-        } 
     }  
     ///--->thread
     append3D->Update();

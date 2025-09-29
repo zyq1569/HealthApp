@@ -34,17 +34,17 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="1" column="0">
-      <widget class="QVTKRenderWidget" name="view3" native="true"/>
-     </item>
-     <item row="0" column="1">
-      <widget class="QVTKRenderWidget" name="view2" native="true"/>
-     </item>
      <item row="1" column="1">
       <widget class="QVTKRenderWidget" name="view4" native="true"/>
      </item>
      <item row="0" column="0">
       <widget class="QVTKRenderWidget" name="view1" native="true"/>
+     </item>
+     <item row="0" column="1">
+      <widget class="QVTKRenderWidget" name="view2" native="true"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QVTKRenderWidget" name="view3" native="true"/>
      </item>
     </layout>
    </widget>
@@ -172,7 +172,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>521</width>
+      <width>501</width>
       <height>21</height>
      </rect>
     </property>
@@ -197,18 +197,36 @@ p, li { white-space: pre-wrap; }
      <string>Sagittal</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="resetButton">
+    <property name="geometry">
+     <rect>
+      <x>1060</x>
+      <y>630</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Reset</string>
+    </property>
+   </widget>
    <widget class="QSplitter" name="splitter">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>530</x>
       <y>10</y>
-      <width>371</width>
+      <width>339</width>
       <height>23</height>
      </rect>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
+    <widget class="QCheckBox" name="m_ckThread">
+     <property name="text">
+      <string>Thread</string>
+     </property>
+    </widget>
     <widget class="QPushButton" name="m_Dir">
      <property name="text">
       <string>Load</string>
@@ -217,11 +235,6 @@ p, li { white-space: pre-wrap; }
     <widget class="QPushButton" name="m_pbCPR">
      <property name="text">
       <string>CPR</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="resetButton">
-     <property name="text">
-      <string>Reset</string>
      </property>
     </widget>
     <widget class="QPushButton" name="AddDistance1Button">
