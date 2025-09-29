@@ -226,6 +226,9 @@ p, li { white-space: pre-wrap; }
      <property name="text">
       <string>Thread</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QPushButton" name="m_Dir">
      <property name="text">
