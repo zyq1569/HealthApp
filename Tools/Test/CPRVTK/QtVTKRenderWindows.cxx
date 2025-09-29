@@ -294,8 +294,8 @@ public:
         else if (ev == vtkCommand::LeftButtonDoubleClickEvent)
         {
             m_points[0][2] = m_points[1][2];
-            m_starSpline   = false;
-            int pointsize  = m_points.size();           
+            m_starSpline = false;
+            int pointsize = m_points.size();
             if (pointsize > 1)
             {
                 vtkNew<vtkPoints>  points_line;
@@ -332,7 +332,7 @@ public:
                 splineActor->GetProperty()->SetOpacity(1);//currentViewer->GetRenderer()->RemoveActor(m_oldActor);
                 currentViewer->GetRenderer()->AddActor(splineActor);
                 currentViewer->GetRenderer()->Render();
-                currentViewer->GetRenderer()->GetRenderWindow()->Render();                                
+                currentViewer->GetRenderer()->GetRenderWindow()->Render();
                 //+++++++++++++++++++++++++++++++++++++++++append,              
                 if (m_mainWindows)
                 {
@@ -355,7 +355,7 @@ public:
             double pickPos[3];
             vtkNew<vtkPropPicker> picker;
             if (picker->Pick(clickPos[0], clickPos[1], 0, currentViewer->GetRenderer()))
-            {               
+            {
                 picker->GetPickPosition(pickPos);
             }
             m_cprPoints.push_back({ pickPos[0], pickPos[1], pickPos[2] });
@@ -402,7 +402,7 @@ public:
                 pointsize++;
                 //++
                 vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-                vtkSmartPointer<vtkIdList> ids      = vtkSmartPointer<vtkIdList>::New();
+                vtkSmartPointer<vtkIdList> ids = vtkSmartPointer<vtkIdList>::New();
                 ids->SetNumberOfIds(pointsize);
                 for (int i = 0; i < pointsize; ++i)
                 {
@@ -476,8 +476,8 @@ public:
                 this->IPW[0]->SetWindowLevel(wl[0], wl[1], 1);
                 this->IPW[1]->SetWindowLevel(wl[0], wl[1], 1);
             }
-        }        
-        
+        }
+
 
 
         vtkResliceCursorWidget* rcw = dynamic_cast<vtkResliceCursorWidget*>(caller);
@@ -508,22 +508,22 @@ public:
         //this->IPW[0]->GetInteractor()->GetRenderWindow()->Render();
         if (this->m_cprViewer && m_bRunCPR)
         {
-            vtkSliderWidget *sliderWidget = reinterpret_cast<vtkSliderWidget*>(caller);           
-            if (sliderWidget )
+            vtkSliderWidget *sliderWidget = reinterpret_cast<vtkSliderWidget*>(caller);
+            if (sliderWidget)
             {
                 vtkWidgetRepresentation *rsp = sliderWidget->GetRepresentation();
 
                 vtkSliderRepresentation *sr = static_cast<vtkSliderRepresentation *>(sliderWidget->GetRepresentation());
                 double vl = static_cast<vtkSliderRepresentation *>(sliderWidget->GetRepresentation())->GetValue();
                 this->m_cprViewer->SetSlice(vl);
-            }           
+            }
         }
     }
     vtkResliceCursorCallback()
     {
-        m_starSpline  = false;
-        m_cprViewer   = nullptr;
-        m_bRunCPR     = false;
+        m_starSpline = false;
+        m_cprViewer = nullptr;
+        m_bRunCPR = false;
         m_mainWindows = nullptr;
     }
 public:
@@ -536,7 +536,7 @@ public:
     vtkActor* m_oldActor;
     ///////////////////
     bool m_starSpline, m_bRunCPR;
-    std::vector<std::array<double, 3>> m_points,m_cprPoints;
+    std::vector<std::array<double, 3>> m_points, m_cprPoints;
     double m_spacing[3], m_origin[3];
     QtVTKRenderWindows *m_mainWindows;
 };
@@ -553,7 +553,7 @@ void QtVTKRenderWindows::initDir()
     {
 
     }
-    
+
 }
 
 #include <vtkStripper.h>
@@ -614,7 +614,7 @@ void QtVTKRenderWindows::showSRVimageSlicer(vtkImageData * itkImageData)
     OutlineActor->Delete();
     OutlineActor = NULL;
 
-    vtkRenderer *vtkrenderer     = vtkRenderer::New();
+    vtkRenderer *vtkrenderer = vtkRenderer::New();
     vtkRenderWindow* show3DWinow = vtkRenderWindow::New();
     show3DWinow->AddRenderer(vtkrenderer);
 
@@ -706,7 +706,7 @@ public:
 
             if (newWindow < 1.0)
                 newWindow = 1.0;
-          
+
             // 重新设置传递函数
             double minVal = newLevel - newWindow / 2.0;
             double maxVal = newLevel + newWindow / 2.0;
@@ -819,7 +819,7 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
     //w:3500 l:500
     double window = 2008, level = 404;
     window = 3500;
-    level  = 500;
+    level = 500;
     // 3. 灰度映射（窗宽窗位）
     double minVal = level - window / 2.0;
     double maxVal = level + window / 2.0;
@@ -836,17 +836,17 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
     else
     {
         colorFunc->AddRGBPoint(-1024, 1.0, 0.2980392156862745, 0.2156862745098039);
-        colorFunc->AddRGBPoint(236,   1.0, 0.2980392156862745, 0.2156862745098039);
-        colorFunc->AddRGBPoint(287,   1.0, 0.2980392156862745, 0.2156862745098039);
-        colorFunc->AddRGBPoint(535,   1.0, 0.8196078431372549, 0.4196078431372549);
-        colorFunc->AddRGBPoint(769,   1.0, 1.0, 1.0);
-        colorFunc->AddRGBPoint(3071,  1.0, 1.0, 1.0); 
+        colorFunc->AddRGBPoint(236, 1.0, 0.2980392156862745, 0.2156862745098039);
+        colorFunc->AddRGBPoint(287, 1.0, 0.2980392156862745, 0.2156862745098039);
+        colorFunc->AddRGBPoint(535, 1.0, 0.8196078431372549, 0.4196078431372549);
+        colorFunc->AddRGBPoint(769, 1.0, 1.0, 1.0);
+        colorFunc->AddRGBPoint(3071, 1.0, 1.0, 1.0);
         opacityFunc->AddPoint(-1024, 0.0);
-        opacityFunc->AddPoint(236,   0.0);
-        opacityFunc->AddPoint(287,   0.1450980392156863);
-        opacityFunc->AddPoint(535,   0.3725490196078431);
-        opacityFunc->AddPoint(769,   0.7254901960784313);
-        opacityFunc->AddPoint(3071,  0.5176470588235295);
+        opacityFunc->AddPoint(236, 0.0);
+        opacityFunc->AddPoint(287, 0.1450980392156863);
+        opacityFunc->AddPoint(535, 0.3725490196078431);
+        opacityFunc->AddPoint(769, 0.7254901960784313);
+        opacityFunc->AddPoint(3071, 0.5176470588235295);
     }
 
     vtkNew<vtkVolumeProperty>     m_volumeProperty;
@@ -900,11 +900,11 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 class DataInfo
 {
 public:
-    DataInfo( std::array<int, 3> id = { 0, 0, 0 })
+    DataInfo(std::array<int, 3> id = { 0, 0, 0 })
     {
-        m_id[0]           = id[0];
-        m_id[1]           = id[1];
-        m_id[2]           = id[2];
+        m_id[0] = id[0];
+        m_id[1] = id[1];
+        m_id[2] = id[2];
     }
     ~DataInfo()
     {
@@ -954,7 +954,7 @@ public:
 
 std::vector<vtkSmartPointer<vtkImageData>> threadSplineDrivenImageSlicer(DataInfo info)
 {
-    std::vector<vtkSmartPointer<vtkImageData>> slices;         
+    std::vector<vtkSmartPointer<vtkImageData>> slices;
     int s = info.m_id[0], l = info.m_id[1] + 1;
     for (int pt_id = s; pt_id < l; pt_id++)
     {
@@ -969,7 +969,7 @@ std::vector<vtkSmartPointer<vtkImageData>> threadSplineDrivenImageSlicer(DataInf
             tempSlice->DeepCopy(data);
             slices.push_back(tempSlice);
         }
-    }          
+    }
     return slices;
 }
 
@@ -1007,9 +1007,7 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
     reslicer->SetInputData(0, viewer->GetInput());
     reslicer->SetPathConnection(spline_filter->GetOutputPort());
     reslicer->SetSliceExtent(200, 80);
-    reslicer->SetSliceThickness(1);   //reslicer->SetProbeInput(0);  //reslicer->SetSliceSpacing(0.1, 0.1);   //reslicer->SetIncidence(2 * 3.1415926 / 3);
-    //double bounds[6];   viewer->GetInput()->GetBounds(bounds);  //std::cout << "Volume bounds: " << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " " << bounds[4] << " " << bounds[5] << std::endl;
-    //---->thread
+    reslicer->SetSliceThickness(1);
     long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
     bool bThread = ui->m_ckThread->isChecked();
     if (bThread)
@@ -1053,24 +1051,24 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
                 append3D->AddInputData(tempSlice);
             }
         }
-    }  
+    }
     ///--->thread
     append3D->Update();
     vtkImageData * itkImageData = append3D->GetOutput();
     showVolumeImageSlicer(itkImageData);
-    return;
-
-    QDateTime dateTime = QDateTime::currentDateTime();
-    QString str        = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
-    QString DicomDir   = QCoreApplication::applicationDirPath();   
-    std::string Input_Name           = qPrintable(DicomDir);
-    std::string path                 = Input_Name + qPrintable(str);
-    vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
-    vtkdatawrite->SetInputData(itkImageData);    //vtkdatawrite->SetInputData(flip_filter->GetOutput());
-    vtkdatawrite->SetFileName(path.c_str());
-    vtkdatawrite->Write();
-    vtkdatawrite->Delete();
-
+    if (ui->m_ckSaveData->isChecked())
+    {
+        QDateTime dateTime = QDateTime::currentDateTime();
+        QString str = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
+        QString DicomDir = QCoreApplication::applicationDirPath();
+        std::string Input_Name = qPrintable(DicomDir);
+        std::string path = Input_Name + qPrintable(str);
+        vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+        vtkdatawrite->SetInputData(itkImageData);    //vtkdatawrite->SetInputData(flip_filter->GetOutput());
+        vtkdatawrite->SetFileName(path.c_str());
+        vtkdatawrite->Write();
+        vtkdatawrite->Delete();
+    }
 }
 
 void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)
@@ -1118,15 +1116,15 @@ void QtVTKRenderWindows::initMPR()
     m_mHDreader->Update();
     int imageDims[3];
     m_mHDreader->GetOutput()->GetDimensions(imageDims);
-    g_vtkAlgorithmOutput    = m_mHDreader->GetOutputPort();
+    g_vtkAlgorithmOutput = m_mHDreader->GetOutputPort();
     vtkImageData *imageData = m_mHDreader->GetOutput();
 
     for (int i = 0; i < 3; i++)
     {
         riw[i] = vtkSmartPointer<vtkMPRResliceImageViewer>::New();
         //
-        if (i == 1)  { riw[i]->init(true);  }
-        else         { riw[i]->init();      }
+        if (i == 1) { riw[i]->init(true); }
+        else { riw[i]->init(); }
         //
         vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
         riw[i]->SetRenderWindow(renderWindow);
@@ -1256,7 +1254,7 @@ void QtVTKRenderWindows::initMPR()
     this->ui->view2->show();
     this->ui->view3->show();
 
-    
+
 }
 
 QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
@@ -1264,7 +1262,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     this->ui = new Ui_QtVTKRenderWindows;
     this->ui->setupUi(this);
     m_mHDreader = nullptr;
-    
+
     // Set up action signals and slots
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
     connect(this->ui->resliceModeCheckBox, SIGNAL(stateChanged(int)), this, SLOT(resliceMode(int)));

@@ -172,7 +172,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>501</width>
+      <width>491</width>
       <height>21</height>
      </rect>
     </property>
@@ -213,9 +213,9 @@ p, li { white-space: pre-wrap; }
    <widget class="QSplitter" name="splitter">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>505</x>
       <y>10</y>
-      <width>339</width>
+      <width>421</width>
       <height>23</height>
      </rect>
     </property>
@@ -225,6 +225,14 @@ p, li { white-space: pre-wrap; }
     <widget class="QCheckBox" name="m_ckThread">
      <property name="text">
       <string>Thread</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="m_ckSaveData">
+     <property name="text">
+      <string>SaveData</string>
      </property>
      <property name="checked">
       <bool>true</bool>
