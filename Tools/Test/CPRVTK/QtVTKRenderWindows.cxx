@@ -1001,30 +1001,29 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
     spline_filter->Update();
 
     vtkSmartPointer<vtkImageAppend>  append3D = vtkSmartPointer<vtkImageAppend>::New();
-    append3D->SetAppendAxis(2);    //append->SetAppendAxis(1);
-    vtkSmartPointer<vtkSplineDrivenImageSlicer> reslicer = vtkSmartPointer<vtkSplineDrivenImageSlicer>::New();
-    vtkImageData * imageData = viewer->GetInput();
-    reslicer->SetInputData(0, viewer->GetInput());
-    reslicer->SetPathConnection(spline_filter->GetOutputPort());
-    reslicer->SetSliceExtent(200, 80);
-    reslicer->SetSliceThickness(1);
+    append3D->SetAppendAxis(2);    //append->SetAppendAxis(1); 
     long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
     bool bThread = ui->m_ckThread->isChecked();
     if (bThread)
     {
-#define  MAX_THREAD  4 //常规下不要超过  max_n = (CPU核心数的2倍 - 1), 否则可能慢！(服务器自行考虑)
+#define  MAX_THREAD  3 //常规下不要超过  max_n = (CPU核心数的2倍 - 1), 否则可能慢！(服务器自行考虑)
+        int coreCount = QThread::idealThreadCount();
+        if (coreCount < 1)
+        {
+            coreCount = MAX_THREAD;
+        }
         QList<DataInfo> listDatas;
-        for (int i = 0; i < MAX_THREAD; i++)
+        for (int i = 0; i < coreCount; i++)
         {
             int id[3];
-            id[0] = i * nb_points / MAX_THREAD;
-            id[1] = (i + 1)*nb_points / MAX_THREAD - 1;
+            id[0] = i * nb_points / coreCount;
+            id[1] = (i + 1)*nb_points / coreCount - 1;
             id[2] = i;
             DataInfo info({ id[0], id[1], id[2] });
             info.SetPoints(m_points, viewer->GetInput());
             listDatas.push_back(info);
         }
-        auto listFuture = QtConcurrent::mapped(listDatas, threadSplineDrivenImageSlicer);
+        auto listFuture = QtConcurrent::mapped(listDatas, threadSplineDrivenImageSlicer);//按传参数的顺便返回的.
         listFuture.waitForFinished();
 
         for (const auto& sliceList : listFuture.results())
@@ -1037,17 +1036,22 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
     }
     else
     {
+        vtkSmartPointer<vtkSplineDrivenImageSlicer> reslicer = vtkSmartPointer<vtkSplineDrivenImageSlicer>::New();
+        vtkImageData * imageData = viewer->GetInput();
+        reslicer->SetInputData(0, viewer->GetInput());
+        reslicer->SetPathConnection(spline_filter->GetOutputPort());
+        reslicer->SetSliceExtent(200, 80);
+        reslicer->SetSliceThickness(1);
         for (int pt_id = 0; pt_id < nb_points; pt_id++)
         {
-            //double p[3]; spline_filter->GetOutput()->GetPoint(pt_id, p); //std::cout << "Centerline point " << pt_id << ": " << p[0] << " " << p[1] << " " << p[2] << std::endl;      //if (p[0] >= bounds[0] && p[0] <= bounds[1]&& p[1] >= bounds[2] && p[1] <= bounds[3]&& p[2] >= bounds[4] && p[2] <= bounds[5])        //{
-            reslicer->SetOffsetPoint(pt_id);//double *pt3 = spline_filter->GetOutput()->GetPoint(pt_id);
+            reslicer->SetOffsetPoint(pt_id);
             reslicer->Update();
             double range[2];
             reslicer->GetOutput()->GetScalarRange(range);
             if (range[0] != range[1])
             {
                 vtkNew<vtkImageData> tempSlice;
-                tempSlice->DeepCopy(reslicer->GetOutput());           //append->AddInputData(tempSlice);
+                tempSlice->DeepCopy(reslicer->GetOutput());
                 append3D->AddInputData(tempSlice);
             }
         }
@@ -1064,7 +1068,7 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
         std::string Input_Name = qPrintable(DicomDir);
         std::string path = Input_Name + qPrintable(str);
         vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
-        vtkdatawrite->SetInputData(itkImageData);    //vtkdatawrite->SetInputData(flip_filter->GetOutput());
+        vtkdatawrite->SetInputData(itkImageData);
         vtkdatawrite->SetFileName(path.c_str());
         vtkdatawrite->Write();
         vtkdatawrite->Delete();
