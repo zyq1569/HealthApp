@@ -975,7 +975,7 @@ std::vector<vtkSmartPointer<vtkImageData>> threadSplineDrivenImageSlicer(DataInf
 
 void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<std::array<double, 3>> m_points, int channel)
 {
-    vtkSmartPointer<vtkPoints> points = vtkSmartPointer <vtkPoints>::New();
+    vtkSmartPointer<vtkPoints> points    = vtkSmartPointer <vtkPoints>::New();
     for (const auto&p : m_points)
     {
         points->InsertNextPoint(p[0], p[1], p[2]);
@@ -987,7 +987,7 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
     {
         polyLine->GetPointIds()->SetId(i, i);
     }
-    vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+    vtkSmartPointer<vtkCellArray> cells   = vtkSmartPointer<vtkCellArray>::New();
     cells->InsertNextCell(polyLine);
 
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
