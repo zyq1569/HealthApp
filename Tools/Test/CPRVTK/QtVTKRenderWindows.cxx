@@ -999,9 +999,7 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
     spline_filter->SetLength(0.2);
     spline_filter->SetInputData(polyData);
     spline_filter->Update();
-
-    vtkSmartPointer<vtkImageAppend>  append3D = vtkSmartPointer<vtkImageAppend>::New();
-    append3D->SetAppendAxis(2);    //append->SetAppendAxis(1); 
+ 
     long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
     bool bThread = ui->m_ckThread->isChecked();
     if (bThread)
@@ -1023,19 +1021,56 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
             info.SetPoints(m_points, viewer->GetInput());
             listDatas.push_back(info);
         }
-        auto listFuture = QtConcurrent::mapped(listDatas, threadSplineDrivenImageSlicer);//按传参数的顺便返回的.
-        listFuture.waitForFinished();
-
-        for (const auto& sliceList : listFuture.results())
+        //同步,等待
+        //auto listFuture = QtConcurrent::mapped(listDatas, threadSplineDrivenImageSlicer);//按传参数的顺便返回的.
+        //listFuture.waitForFinished();
+        //
+        //for (const auto& sliceList : listFuture.results())
+        //{
+        //    for (const auto& slice : sliceList)
+        //    {
+        //        append3D->AddInputData(slice);
+        //    }
+        //}
+        //异步执行
+        m_future = QtConcurrent::mapped(listDatas, threadSplineDrivenImageSlicer);
+        // 让 watcher 监控 future
+        m_watcher.setFuture(m_future);
+        connect(&m_watcher, &QFutureWatcher< std::vector< vtkSmartPointer<vtkImageData> > >::finished, this, [this]()
         {
-            for (const auto& slice : sliceList)
+            vtkSmartPointer<vtkImageAppend>  append3D = vtkSmartPointer<vtkImageAppend>::New();
+            append3D->SetAppendAxis(2);
+            for (const auto& sliceList : m_future.results())
             {
-                append3D->AddInputData(slice);
+                for (const auto& slice : sliceList)
+                {
+                    append3D->AddInputData(slice);
+                }
             }
-        }
+            append3D->Update();
+            vtkImageData * itkImageData = append3D->GetOutput();
+            showVolumeImageSlicer(itkImageData);
+
+            if (ui->m_ckSaveData->isChecked())
+            {
+                QDateTime dateTime = QDateTime::currentDateTime();
+                QString str = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
+                QString DicomDir = QCoreApplication::applicationDirPath();
+                std::string Input_Name = qPrintable(DicomDir);
+                std::string path = Input_Name + qPrintable(str);
+                vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+                vtkdatawrite->SetInputData(itkImageData);
+                vtkdatawrite->SetFileName(path.c_str());
+                vtkdatawrite->Write();
+                vtkdatawrite->Delete();
+            }
+            //emit mappingFinished(listFuture);
+        });
     }
     else
     {
+        vtkSmartPointer<vtkImageAppend>  append3D = vtkSmartPointer<vtkImageAppend>::New();
+        append3D->SetAppendAxis(2);    //append->SetAppendAxis(1);
         vtkSmartPointer<vtkSplineDrivenImageSlicer> reslicer = vtkSmartPointer<vtkSplineDrivenImageSlicer>::New();
         vtkImageData * imageData = viewer->GetInput();
         reslicer->SetInputData(0, viewer->GetInput());
@@ -1055,24 +1090,25 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
                 append3D->AddInputData(tempSlice);
             }
         }
+        ///--->thread
+        append3D->Update();
+        vtkImageData * itkImageData = append3D->GetOutput();
+        showVolumeImageSlicer(itkImageData);
+        if (ui->m_ckSaveData->isChecked())
+        {
+            QDateTime dateTime = QDateTime::currentDateTime();
+            QString str = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
+            QString DicomDir = QCoreApplication::applicationDirPath();
+            std::string Input_Name = qPrintable(DicomDir);
+            std::string path = Input_Name + qPrintable(str);
+            vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+            vtkdatawrite->SetInputData(itkImageData);
+            vtkdatawrite->SetFileName(path.c_str());
+            vtkdatawrite->Write();
+            vtkdatawrite->Delete();
+        }
     }
-    ///--->thread
-    append3D->Update();
-    vtkImageData * itkImageData = append3D->GetOutput();
-    showVolumeImageSlicer(itkImageData);
-    if (ui->m_ckSaveData->isChecked())
-    {
-        QDateTime dateTime = QDateTime::currentDateTime();
-        QString str = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
-        QString DicomDir = QCoreApplication::applicationDirPath();
-        std::string Input_Name = qPrintable(DicomDir);
-        std::string path = Input_Name + qPrintable(str);
-        vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
-        vtkdatawrite->SetInputData(itkImageData);
-        vtkdatawrite->SetFileName(path.c_str());
-        vtkdatawrite->Write();
-        vtkdatawrite->Delete();
-    }
+    
 }
 
 void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)

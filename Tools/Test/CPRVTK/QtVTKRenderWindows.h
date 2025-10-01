@@ -9,6 +9,7 @@
 #include "vtkResliceImageViewerMeasurements.h"
 #include "vtkSmartPointer.h"
 #include <QMainWindow>
+#include <QFutureWatcher>
 
 class vtkCornerAnnotation;
 class vtkResliceCursorLineRepresentation;
@@ -62,6 +63,14 @@ public:
     void showVolumeImageSlicer(vtkImageData * itkImageData);
     void processing( vtkResliceImageViewer *viewer, std::vector<std::array<double, 3>> m_points, int channel = 0);
     vtkSmartPointer<vtkMetaImageReader> m_mHDreader;
+
+//signals:
+//    void mappingFinished(const std::vector<vtkSmartPointer<vtkImageData>> &result);
+
+private:
+   QFutureWatcher<std::vector<vtkSmartPointer<vtkImageData>>> m_watcher;
+   QFuture<std::vector<vtkSmartPointer<vtkImageData>>> m_future;
+    //QFutureWatcher<std::vector<vtkSmartPointer<vtkImageData>>> m_watcher;
 
 public:
 	vtkSmartPointer< vtkResliceCursorLineRepresentation > vtkrclp[3];
