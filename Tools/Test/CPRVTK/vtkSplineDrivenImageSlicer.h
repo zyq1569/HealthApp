@@ -115,7 +115,7 @@ public:
     void SetReslicer(vtkImageReslice* reslicer);
 
 public:
-    bool m_initFrenetFrames;
+    vtkPolyData* m_lastPathCopy;
 };
 
 #endif //__vtkSplineDrivenImageSlicer_h__

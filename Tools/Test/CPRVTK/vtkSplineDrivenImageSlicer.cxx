@@ -65,7 +65,7 @@ vtkSplineDrivenImageSlicer::vtkSplineDrivenImageSlicer()
     // by default process active point scalars
     this->SetInputArrayToProcess(0, 0, 0, vtkDataObject::FIELD_ASSOCIATION_POINTS, vtkDataSetAttributes::SCALARS);
 
-    m_initFrenetFrames = true;
+    m_lastPathCopy = nullptr;
 }
 
 void vtkSplineDrivenImageSlicer::SetReslicer(vtkImageReslice* reslicer)
@@ -175,16 +175,14 @@ int vtkSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request)
     pathCopy->ShallowCopy(inputPath);
 
     // Compute the local normal and tangent to the path
-    if (m_initFrenetFrames)
+    if (m_lastPathCopy != pathCopy)
     {
         this->localFrenetFrames->SetInputData(pathCopy);
         this->localFrenetFrames->SetViewUp(this->Incidence);
         this->localFrenetFrames->ComputeBinormalOn();
         this->localFrenetFrames->Update();
-        m_initFrenetFrames = false;
+        m_lastPathCopy = pathCopy;
     }
-
-
     // path will contain PointData array "Tangents" and "Vectors"
     vtkPolyData* path   = static_cast<vtkPolyData*>(this->localFrenetFrames->GetOutputDataObject(0));
     // Count how many points are used in the cells
