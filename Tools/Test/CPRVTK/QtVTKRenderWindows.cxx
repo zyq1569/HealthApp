@@ -1305,16 +1305,7 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
 
     // Set up action signals and slots
     connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
-    connect(this->ui->resliceModeCheckBox, SIGNAL(stateChanged(int)), this, SLOT(resliceMode(int)));
-    connect(this->ui->thickModeCheckBox, SIGNAL(stateChanged(int)), this, SLOT(thickMode(int)));
-    this->ui->thickModeCheckBox->setEnabled(0);
 
-    connect(this->ui->radioButton_Max, SIGNAL(pressed()), this, SLOT(SetBlendModeToMaxIP()));
-    connect(this->ui->radioButton_Min, SIGNAL(pressed()), this, SLOT(SetBlendModeToMinIP()));
-    connect(this->ui->radioButton_Mean, SIGNAL(pressed()), this, SLOT(SetBlendModeToMeanIP()));
-    this->ui->blendModeGroupBox->setEnabled(0);
-
-    connect(this->ui->resetButton, SIGNAL(pressed()), this, SLOT(ResetViews()));
     connect(this->ui->AddDistance1Button, SIGNAL(pressed()), this, SLOT(AddDistanceMeasurementToView1()));
 
     connect(this->ui->m_pbCPR, SIGNAL(pressed()), this, SLOT(StarCPR()));
@@ -1325,7 +1316,6 @@ QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
     ui->m_dcmDIR->setPlainText(dir);
     vtkImageData * itkImageData = nullptr;
     showSRVimageSlicer(itkImageData);
-    //showVolumeImageSlicer(itkImageData);
     if (!m_mHDreader)
     {
         m_mHDreader = vtkSmartPointer<vtkMetaImageReader>::New();
@@ -1346,9 +1336,6 @@ void QtVTKRenderWindows::slotExit()
 
 void QtVTKRenderWindows::resliceMode(int mode)
 {
-    this->ui->thickModeCheckBox->setEnabled(mode ? 1 : 0);
-    this->ui->blendModeGroupBox->setEnabled(mode ? 1 : 0);
-
     for (int i = 0; i < 3; i++)
     {
         riw[i]->SetResliceMode(mode ? 1 : 0);
@@ -1364,9 +1351,6 @@ void QtVTKRenderWindows::thickMode(int mode)
         riw[i]->SetThickMode(mode ? 1 : 0);
         riw[i]->Render();
     }
-    ui->radioButton_Max->setEnabled(mode);
-    ui->radioButton_Min->setEnabled(mode);
-    ui->radioButton_Mean->setEnabled(mode);
 }
 
 void QtVTKRenderWindows::SetBlendMode(int m)
