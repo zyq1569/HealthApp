@@ -84,6 +84,8 @@ private:
   Ui_QtVTKRenderWindows* ui;
 public:
     vtkSmartPointer <vtkResliceCursorCallback> m_cbk;
+private:
+    vtkImageData * m_itkImageData;
 };
 
 #endif // QtVTKRenderWindows_H

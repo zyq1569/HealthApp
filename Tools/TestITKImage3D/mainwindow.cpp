@@ -996,7 +996,6 @@ void MainWindow::free3Dviewer()
 
 void MainWindow::on_pBVolume3D_clicked()
 {
-	//
     QList<void*> list;
     //return test();
     //return testAll(0, list);
@@ -1004,26 +1003,42 @@ void MainWindow::on_pBVolume3D_clicked()
     if (init)
     {
         init = false;
-        ui->pBVolume3D->setText("Close 3DViewer");
-        QString DicomDir = ui->m_dcmDir->toPlainText();
         QDir dir;
-        if (!dir.exists(DicomDir))
+        QString DicomDir,filename = ui->m_dcmDir->toPlainText();
+        vtkSmartPointer<vtkImageData> itkImageData;
+        if (filename.indexOf(".mhd") < 1)
         {
-            QMessageBox::information(NULL, "Dicom3D", "No dicom files!");
-            return;
-        }
+            ui->pBVolume3D->setText("Close 3DViewer");
+            DicomDir = ui->m_dcmDir->toPlainText();
+       
+            if (!dir.exists(DicomDir))
+            {
+                QMessageBox::information(NULL, "Dicom3D", "No dicom files!");
+                return;
+            }
 
-        std::string Input_Name = qPrintable(DicomDir);
-        Input3dImageType::Pointer dicomimage = GdcmRead3dImage(Input_Name, DicomDir);
-        static bool init = true ;
-        //if (init)
-        //{
-        //    vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
-        //    vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
-        //    init = false;
-        //}
+            std::string Input_Name = qPrintable(DicomDir);
+            Input3dImageType::Pointer dicomimage = GdcmRead3dImage(Input_Name, DicomDir);
+            static bool init = true ;
+            //if (init)
+            //{
+            //    vtkObjectFactory::RegisterFactory(vtkRenderingOpenGL2ObjectFactory::New());
+            //    vtkObjectFactory::RegisterFactory(vtkRenderingVolumeOpenGL2ObjectFactory::New());
+            //    init = false;
+            //}
         
-        vtkSmartPointer<vtkImageData> itkImageData = ImageDataItkToVtk(dicomimage);
+            itkImageData = ImageDataItkToVtk(dicomimage);
+        }  
+        else
+        {
+            QString filenamedir = filename;
+            std::string stddir = qPrintable(filenamedir);
+            vtkNew<vtkMetaImageReader> m_mHDreader;// = vtkSmartPointer<>::New();
+            m_mHDreader->SetFileName(stddir.c_str());
+            m_mHDreader->Update();
+            itkImageData = m_mHDreader->GetOutput();
+        }
+        ///////
 
         //定义绘制器；
         m_rendererViewer = vtkRenderer::New();//指向指针；

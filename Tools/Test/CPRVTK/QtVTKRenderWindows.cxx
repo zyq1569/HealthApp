@@ -817,17 +817,18 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 {
     static bool init = true;
-    vtkSmartPointer<vtkColorTransferFunction>  colorFunc;
-    vtkSmartPointer<vtkPiecewiseFunction>      opacityFunc;
-
-    vtkSmartPointer<vtkVolumeProperty>         m_volumeProperty;
-    vtkSmartPointer<vtkSmartVolumeMapper>      m_volumeMapper;
-    vtkSmartPointer<vtkVolume>                 m_vtkVolume;
-    vtkSmartPointer<vtkRenderer>               m_renderer;
-    vtkSmartPointer<vtkRenderWindowInteractor> m_renderWindowInteractor;
-    vtkSmartPointer<CustomWLInteractorStyle>   m_interactorstyle;
+    static vtkSmartPointer<vtkColorTransferFunction>  colorFunc;
+    static vtkSmartPointer<vtkPiecewiseFunction>      opacityFunc;
+     
+    static vtkSmartPointer<vtkVolumeProperty>         m_volumeProperty;
+    static vtkSmartPointer<vtkSmartVolumeMapper>      m_volumeMapper;
+    static vtkSmartPointer<vtkVolume>                 m_vtkVolume;
+    static vtkSmartPointer<vtkRenderer>               m_renderer;
+    static vtkSmartPointer<vtkRenderWindowInteractor> m_renderWindowInteractor;
+    static vtkSmartPointer<CustomWLInteractorStyle>   m_interactorstyle;
     if (init)
     {
+        m_itkImageData = itkImageData;
         init = false;
         colorFunc                = vtkSmartPointer<vtkColorTransferFunction>::New();
         opacityFunc              = vtkSmartPointer<vtkPiecewiseFunction>::New();
@@ -838,83 +839,105 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
         m_renderer               = vtkSmartPointer<vtkRenderer>::New();
         m_renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
         m_interactorstyle        = vtkSmartPointer<CustomWLInteractorStyle>::New();
-    }
-    //w:3500 l:500
-    double window = 2008, level = 404;
-    window = 3500;
-    level = 500;
-    // 3. 灰度映射（窗宽窗位）
-    double minVal = level - window / 2.0;
-    double maxVal = level + window / 2.0;
+
+        //w:3500 l:500
+        double window = 2008, level = 404;
+        window = 3500;
+        level = 500;
+        // 3. 灰度映射（窗宽窗位）
+        double minVal = level - window / 2.0;
+        double maxVal = level + window / 2.0;
 
 
-    if (0)
-    {
-        colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0); // 黑
-        colorFunc->AddRGBPoint(maxVal, 1.0, 1.0, 1.0); // 白
-        opacityFunc->AddPoint(minVal, 0.0);
-        opacityFunc->AddPoint(maxVal, 1.0);
+        if (0)
+        {
+            colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0); // 黑
+            colorFunc->AddRGBPoint(maxVal, 1.0, 1.0, 1.0); // 白
+            opacityFunc->AddPoint(minVal, 0.0);
+            opacityFunc->AddPoint(maxVal, 1.0);
+        }
+        else
+        {
+            colorFunc->AddRGBPoint(-1024, 1.0, 0.2980392156862745, 0.2156862745098039);
+            colorFunc->AddRGBPoint(236, 1.0, 0.2980392156862745, 0.2156862745098039);
+            colorFunc->AddRGBPoint(287, 1.0, 0.2980392156862745, 0.2156862745098039);
+            colorFunc->AddRGBPoint(535, 1.0, 0.8196078431372549, 0.4196078431372549);
+            colorFunc->AddRGBPoint(769, 1.0, 1.0, 1.0);
+            colorFunc->AddRGBPoint(3071, 1.0, 1.0, 1.0);
+            opacityFunc->AddPoint(-1024, 0.0);
+            opacityFunc->AddPoint(236, 0.0);
+            opacityFunc->AddPoint(287, 0.1450980392156863);
+            opacityFunc->AddPoint(535, 0.3725490196078431);
+            opacityFunc->AddPoint(769, 0.7254901960784313);
+            opacityFunc->AddPoint(3071, 0.5176470588235295);
+            //renderingStyle.setAmbientCoefficient(0.1);
+            //renderingStyle.setDiffuseCoefficient(0.7);
+            //renderingStyle.setSpecularCoefficient(1.0);
+            //renderingStyle.setSpecularPower(64.0);
+                //-----一般 环境光系数+散射光系数+反射光系数=1.0,  提供亮度可以大于1.0
+            m_volumeProperty->SetInterpolationType(1);
+            m_volumeProperty->ShadeOn();
+            m_volumeProperty->SetAmbient(1.0);//环境光系数
+            m_volumeProperty->SetDiffuse(0.7);//散射光系数
+            m_volumeProperty->SetSpecular(1.0);//反射光系数
+            m_volumeProperty->SetSpecularPower(10);//高光强度
+        }
+
+
+        //vtkNew<vtkImageMarchingCubes> m_isosurfaceFilter;
+
+        m_volumeMapper->SetInputData(m_itkImageData);
+        m_volumeMapper->SetBlendModeToComposite();
+        m_volumeMapper->SetRequestedRenderModeToDefault();
+
+        // force the mapper to compute a sample distance based on data spacing
+        m_volumeMapper->SetSampleDistance(-1.0);
+
+        m_volumeProperty->SetColor(colorFunc);
+        m_volumeProperty->SetScalarOpacity(opacityFunc);
+        m_volumeProperty->SetColor(colorFunc);
+        m_volumeProperty->ShadeOff();
+
+        //m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
+        //m_isosurfaceFilter->SetInputData(itkImageData);
+
+        m_vtkVolume->SetProperty(m_volumeProperty);
+        m_vtkVolume->SetMapper(m_volumeMapper);
+
+
+        m_renderer->AddViewProp(m_vtkVolume);
+        m_renderer->AddVolume(m_vtkVolume);
+        m_renderer->SetBackground(0, 0, 0);
+        m_renderer->ResetCamera();
+        m_renderer->GetActiveCamera()->Zoom(1.5);
+        //重设相机的剪切范围；
+        m_renderer->ResetCameraClippingRange();
+
+        //透明度参数
+        //m_renderer->SetUseDepthPeeling(1);
+        //m_renderer->SetMaximumNumberOfPeels(100);
+        //m_renderer->SetOcclusionRatio(0.1);
+
+        ui->view4->renderWindow()->AddRenderer(m_renderer);
+        //
+
+        m_renderWindowInteractor->SetRenderWindow(ui->view4->renderWindow());
+        //设置相机跟踪模式
+        m_interactorstyle->SetVolume(m_vtkVolume);
+        m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
+
+        ui->view4->renderWindow()->Render();
     }
     else
     {
-        colorFunc->AddRGBPoint(-1024, 1.0, 0.2980392156862745, 0.2156862745098039);
-        colorFunc->AddRGBPoint(236, 1.0, 0.2980392156862745, 0.2156862745098039);
-        colorFunc->AddRGBPoint(287, 1.0, 0.2980392156862745, 0.2156862745098039);
-        colorFunc->AddRGBPoint(535, 1.0, 0.8196078431372549, 0.4196078431372549);
-        colorFunc->AddRGBPoint(769, 1.0, 1.0, 1.0);
-        colorFunc->AddRGBPoint(3071, 1.0, 1.0, 1.0);
-        opacityFunc->AddPoint(-1024, 0.0);
-        opacityFunc->AddPoint(236, 0.0);
-        opacityFunc->AddPoint(287, 0.1450980392156863);
-        opacityFunc->AddPoint(535, 0.3725490196078431);
-        opacityFunc->AddPoint(769, 0.7254901960784313);
-        opacityFunc->AddPoint(3071, 0.5176470588235295);
+        m_itkImageData = itkImageData;
+        m_volumeMapper->SetInputData(m_itkImageData);
+        //m_vtkVolume->SetMapper(m_volumeMapper);
+        //m_renderer->AddVolume(m_vtkVolume);
+        m_renderer->ResetCamera();
+        ui->view4->renderWindow()->Render();
     }
-
-
-    //vtkNew<vtkImageMarchingCubes> m_isosurfaceFilter;
-
-    m_volumeMapper->SetInputData(itkImageData);
-    m_volumeMapper->SetBlendModeToComposite();
-    m_volumeMapper->SetRequestedRenderModeToDefault();
-
-    // force the mapper to compute a sample distance based on data spacing
-    m_volumeMapper->SetSampleDistance(-1.0);
-
-    m_volumeProperty->SetColor(colorFunc);
-    m_volumeProperty->SetScalarOpacity(opacityFunc);
-    m_volumeProperty->SetColor(colorFunc);
-    m_volumeProperty->ShadeOff();
-
-    //m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
-    //m_isosurfaceFilter->SetInputData(itkImageData);
-
-    m_vtkVolume->SetProperty(m_volumeProperty);
-    m_vtkVolume->SetMapper(m_volumeMapper);
-
-
-    m_renderer->AddViewProp(m_vtkVolume);
-    m_renderer->AddVolume(m_vtkVolume);
-    m_renderer->SetBackground(0, 0, 0);
-    m_renderer->ResetCamera();
-    m_renderer->GetActiveCamera()->Zoom(1.5);
-    //重设相机的剪切范围；
-    m_renderer->ResetCameraClippingRange();
-
-    //透明度参数
-    m_renderer->SetUseDepthPeeling(1);
-    m_renderer->SetMaximumNumberOfPeels(100);
-    m_renderer->SetOcclusionRatio(0.1);
-
-    ui->view4->renderWindow()->AddRenderer(m_renderer);
-    //
-
-    m_renderWindowInteractor->SetRenderWindow(ui->view4->renderWindow());
-    //设置相机跟踪模式
-    m_interactorstyle->SetVolume(m_vtkVolume);
-    m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
-
-    ui->view4->renderWindow()->Render();
+    
 }
 
 class DataInfo
@@ -1314,7 +1337,7 @@ void QtVTKRenderWindows::initMPR()
     this->ui->view2->show();
     this->ui->view3->show();
 
-
+    showVolumeImageSlicer(imageData);
 }
 
 QtVTKRenderWindows::QtVTKRenderWindows(int vtkNotUsed(argc), char* argv[])
