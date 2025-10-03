@@ -847,8 +847,6 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
         // 3. 灰度映射（窗宽窗位）
         double minVal = level - window / 2.0;
         double maxVal = level + window / 2.0;
-
-
         if (0)
         {
             colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0); // 黑
