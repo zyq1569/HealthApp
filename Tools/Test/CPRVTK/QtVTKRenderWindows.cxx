@@ -816,6 +816,29 @@ VTK_MODULE_INIT(vtkInteractionStyle);
 //< / opacity>
 void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 {
+    static bool init = true;
+    vtkSmartPointer<vtkColorTransferFunction>  colorFunc;
+    vtkSmartPointer<vtkPiecewiseFunction>      opacityFunc;
+
+    vtkSmartPointer<vtkVolumeProperty>         m_volumeProperty;
+    vtkSmartPointer<vtkSmartVolumeMapper>      m_volumeMapper;
+    vtkSmartPointer<vtkVolume>                 m_vtkVolume;
+    vtkSmartPointer<vtkRenderer>               m_renderer;
+    vtkSmartPointer<vtkRenderWindowInteractor> m_renderWindowInteractor;
+    vtkSmartPointer<CustomWLInteractorStyle>   m_interactorstyle;
+    if (init)
+    {
+        init = false;
+        colorFunc                = vtkSmartPointer<vtkColorTransferFunction>::New();
+        opacityFunc              = vtkSmartPointer<vtkPiecewiseFunction>::New();
+
+        m_volumeProperty         = vtkSmartPointer<vtkVolumeProperty>::New();
+        m_volumeMapper           = vtkSmartPointer<vtkSmartVolumeMapper>::New();
+        m_vtkVolume              = vtkSmartPointer<vtkVolume>::New();
+        m_renderer               = vtkSmartPointer<vtkRenderer>::New();
+        m_renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+        m_interactorstyle        = vtkSmartPointer<CustomWLInteractorStyle>::New();
+    }
     //w:3500 l:500
     double window = 2008, level = 404;
     window = 3500;
@@ -824,8 +847,7 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
     double minVal = level - window / 2.0;
     double maxVal = level + window / 2.0;
 
-    auto colorFunc = vtkSmartPointer<vtkColorTransferFunction>::New();
-    auto opacityFunc = vtkSmartPointer<vtkPiecewiseFunction>::New();
+
     if (0)
     {
         colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0); // 黑
@@ -849,8 +871,7 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
         opacityFunc->AddPoint(3071, 0.5176470588235295);
     }
 
-    vtkNew<vtkVolumeProperty>     m_volumeProperty;
-    vtkNew<vtkSmartVolumeMapper>  m_volumeMapper;
+
     //vtkNew<vtkImageMarchingCubes> m_isosurfaceFilter;
 
     m_volumeMapper->SetInputData(itkImageData);
@@ -867,11 +888,11 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 
     //m_volumeMapper->SetRequestedRenderModeToGPU(); // 强制使用 GPU
     //m_isosurfaceFilter->SetInputData(itkImageData);
-    vtkNew<vtkVolume> m_vtkVolume;
+
     m_vtkVolume->SetProperty(m_volumeProperty);
     m_vtkVolume->SetMapper(m_volumeMapper);
 
-    vtkNew <vtkRenderer> m_renderer;
+
     m_renderer->AddViewProp(m_vtkVolume);
     m_renderer->AddVolume(m_vtkVolume);
     m_renderer->SetBackground(0, 0, 0);
@@ -887,10 +908,9 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
 
     ui->view4->renderWindow()->AddRenderer(m_renderer);
     //
-    vtkNew < vtkRenderWindowInteractor> m_renderWindowInteractor;
+
     m_renderWindowInteractor->SetRenderWindow(ui->view4->renderWindow());
     //设置相机跟踪模式
-    vtkNew < CustomWLInteractorStyle> m_interactorstyle;
     m_interactorstyle->SetVolume(m_vtkVolume);
     m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
 
