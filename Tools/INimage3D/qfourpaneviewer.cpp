@@ -41,6 +41,7 @@
 #include <vtkCornerAnnotation.h>
 
 #include <vtkExtractVOI.h>
+#include <vtkImageResample.h>
 //-------------showVolume3D
 #include <vtkSmartVolumeMapper.h>
 #include <vtkRayCastImageDisplayHelper.h>
@@ -525,6 +526,8 @@ void QFourpaneviewer::TestAutoeSaveImage()
 //int numComponents = reslice->GetNumberOfScalarComponents();  // 通道数（通常是1或3）
 //int scalarType = reslice->GetScalarType();  // 像素类型，比如 VTK_UNSIGNED_CHAR, VTK_SHORT
 //void* pRaw = reslice->GetScalarPointer();  // 数据首地址
+
+// 保存 vtkImageData，自动根据 spacing 调整显示比例
 void QFourpaneviewer::SaveImagePaneBMP()
 {
     QString dir = QCoreApplication::applicationDirPath() + "\\";
@@ -572,6 +575,19 @@ void QFourpaneviewer::SaveImagePaneBMP()
             {
                 // default background color is the min value of the image scalar range
                 vtkImageData* data    = reslice->GetOutput();
+                ///++++
+                 // 获取 spacing
+                double spacing[3];
+                data->GetSpacing(spacing);
+                // 找最大 spacing 作为统一 spacing（缩放其他方向）
+                double targetSpacing = std::max({ spacing[0], spacing[1]}); //, spacing[2] });
+                // 设置 resample（缩放到各向同性 spacing）
+                vtkSmartPointer<vtkImageResample> resample = vtkSmartPointer<vtkImageResample>::New();
+                resample->SetInputData(data);
+                resample->SetAxisOutputSpacing(0, targetSpacing); // X
+                resample->SetAxisOutputSpacing(1, targetSpacing); // Y
+                resample->Update();
+                ///+++
                 QString imagefileName = fileName;
                 QString insertStr     = "_" + QString::number(i) + ".";
                 imagefileName   = imagefileName.replace(pos, 1, insertStr);
@@ -587,7 +603,7 @@ void QFourpaneviewer::SaveImagePaneBMP()
                     ww = rep->GetWindow();
                     wl = rep->GetLevel();
                     auto shiftScale = vtkSmartPointer<vtkImageShiftScale>::New();
-                    shiftScale->SetInputData(data);
+                    shiftScale->SetInputData(resample->GetOutput());
                     shiftScale->SetShift(-1.0 * (wl - ww / 2.0));
                     shiftScale->SetScale(255.0 / ww);
                     shiftScale->SetOutputScalarTypeToUnsignedChar();
