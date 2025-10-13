@@ -567,25 +567,19 @@ void QFourpaneviewer::SaveImagePaneBMP()
         fileName = dir + QString::number(QDateTime::currentDateTime().toTime_t()) + ".png";
     }
     pos = fileName.length() - pos;
+    double* spacing = m_MainWindow->m_vtkImageData->GetSpacing();
+    int *dims       = m_MainWindow->m_vtkImageData->GetDimensions();
     for (int i = 0; i < 3; i++)
     {
         if (VTKRCP* rep = VTKRCP::SafeDownCast(m_resliceImageViewer[i]->GetResliceCursorWidget()->GetRepresentation()))
         {
             if (vtkImageReslice* reslice = vtkImageReslice::SafeDownCast(rep->GetReslice()))
             {
-                // default background color is the min value of the image scalar range
                 vtkImageData* data    = reslice->GetOutput();
                 ///++++
-                 // 获取 spacing
-                double spacing[3];
-                data->GetSpacing(spacing);
-                // 找最大 spacing 作为统一 spacing（缩放其他方向）
-                double targetSpacing = std::max({ spacing[0], spacing[1]}); //, spacing[2] });
-                // 设置 resample（缩放到各向同性 spacing）
                 vtkSmartPointer<vtkImageResample> resample = vtkSmartPointer<vtkImageResample>::New();
                 resample->SetInputData(data);
-                resample->SetAxisOutputSpacing(0, targetSpacing); // X
-                resample->SetAxisOutputSpacing(1, targetSpacing); // Y
+                resample->SetOutputSpacing(spacing);
                 resample->Update();
                 ///+++
                 QString imagefileName = fileName;
