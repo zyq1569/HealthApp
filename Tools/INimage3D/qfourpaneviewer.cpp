@@ -1215,6 +1215,7 @@ void QFourpaneviewer::ShowImage3D()
     m_renderer->GetActiveCamera()->Zoom(1.5);
     //重设相机的剪切范围；
     m_renderer->ResetCameraClippingRange();
+    m_renderer->GetActiveCamera()->SetRoll(180);//角度调整和XY一致
 
     //透明度参数
     m_renderer->SetUseDepthPeeling(1);
