@@ -1,34 +1,36 @@
 #include "mainwindow.h"
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <algorithm>
-
-
-#include <QApplication>
-/*
-
 #include <vtkSmartPointer.h>
-#include <vtkMetaImageReader.h>
-#include <vtkImageReslice.h>
-#include <vtkImageActor.h>
+#include <vtkImageAlgorithm.h>
+#include <vtkImageData.h>
+#include <vtkObjectFactory.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
+#include <vtkImageSliceMapper.h>
+#include <vtkImageSlice.h>
+#include <vtkImageProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkInformationVector.h>
+#include <vtkInformation.h>
+#include <vtkImageReslice.h>
+#include <vtkImageActor.h>
 #include <vtkInteractorStyleImage.h>
 #include <vtkProperty.h>
 #include <vtkMatrix4x4.h>
-#include <vtkStreamingDemandDrivenPipeline.h>
-#include <vtkInformation.h>
 #include <vtkImageMapper3D.h>
-#include <vtkImageProperty.h>
 #include <vtkCommand.h>
-#include <vtkImageData.h>
+
+#include <fstream>
+#include <vector>
+#include <windows.h>
+#include <sstream>
 #include <iostream>
+#include <string>
+#include <iomanip>
+#include <algorithm>
 
-
+#include <QApplication>
 
 // ====================== 支持 X/Y/Z 方向提取 ======================
 // orientation: 0=X, 1=Y, 2=Z（默认）
@@ -162,8 +164,7 @@ bool ExtractLayersRaw(const std::string& inputMHDPath, const std::string& output
     std::cout << "Success! Saved to:\n" << outputMHDPath << "\n" << outRawPath << std::endl;
     return true;
 }
-*/
-/*
+
 bool ExtractZLayersRaw(const std::string& inputMHDPath, const std::string& outputMHDPath, int zStart = -1, int numLayers = 3)   // -1 表示中心层
 {
     // 1. 读取 .mhd 文件头
@@ -285,34 +286,12 @@ bool ExtractZLayersRaw(const std::string& inputMHDPath, const std::string& outpu
 
     return true;
 }
-*/
 
 
-#include <windows.h>
 
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <iomanip>
 
 //++++++++++++GPT
-#include <vtkSmartPointer.h>
-#include <vtkImageAlgorithm.h>
-#include <vtkImageData.h>
-#include <vtkObjectFactory.h>
-#include <vtkStreamingDemandDrivenPipeline.h>
-#include <vtkImageSliceMapper.h>
-#include <vtkImageSlice.h>
-#include <vtkImageProperty.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkInformationVector.h>
-#include <vtkInformation.h>
-#include <fstream>
-#include <vector>
+
 // ======================
 // 自定义 Streaming Reader
 // ======================
@@ -321,21 +300,73 @@ class RawSliceReader : public vtkImageAlgorithm
 public:
     static RawSliceReader* New();
     vtkTypeMacro(RawSliceReader, vtkImageAlgorithm);
+public:
+    std::string m_rawPath;
+    int m_Dim[3] = { 0,0,0 };// { 18739, 13714, 100 };
+    double m_spacingX = 1.0, m_spacingY = 1.0, m_spacingZ = 1.0;
+public:
+    int SetFileName(std::string filePath)
+    {
+        // ---------- 1. 解析 MHD ----------
+        int dimX = 0, dimY = 0, dimZ = 0;
+        double spacingX = 1.0, spacingY = 1.0, spacingZ = 1.0;
+        std::string elementType, rawFile;
+        std::ifstream in(filePath);
+        if (!in)
+        {
+            std::cerr << "Failed to open MHD file\n";
+            return 0;
+        }
 
-    std::string FilePath;
-    int Dim[3] = { 18739, 13714, 100 }; // 修改为你的数据尺寸
-
+        std::string line;
+        while (std::getline(in, line))
+        {
+            if (line.find("DimSize") != std::string::npos)
+            {
+                sscanf(line.c_str(), "DimSize = %d %d %d", &dimX, &dimY, &dimZ);
+            }
+            else if (line.find("ElementSpacing") != std::string::npos)
+            {
+                sscanf(line.c_str(), "ElementSpacing = %lf %lf %lf", &spacingX, &spacingY, &spacingZ);
+            }
+            else if (line.find("ElementType") != std::string::npos)
+            {
+                elementType = line.substr(line.find("=") + 2);
+            }
+            else if (line.find("ElementDataFile") != std::string::npos)
+            {
+                rawFile = line.substr(line.find("=") + 2);
+            }
+        }
+        m_Dim[0] = dimX;
+        m_Dim[1] = dimY;
+        m_Dim[2] = dimZ;
+        m_spacingX = spacingX, m_spacingY = spacingY, m_spacingZ = spacingZ;
+        // ---------- 2. RAW 文件路径 ----------
+        std::string baseDir, rawPath;
+        size_t pos = rawFile.find_last_of("/\\");
+        if (pos > std::string::npos)// 找到 .mhd 文件的最后一个路径分隔符
+        {
+            m_rawPath = rawFile;
+        }
+        else
+        {
+            baseDir = filePath.substr(0, filePath.find_last_of("/\\") + 1);
+            rawPath = baseDir + rawFile;
+            m_rawPath = rawPath;
+        }
+    }
 protected:
     RawSliceReader()
     {
         this->SetNumberOfInputPorts(0);
     }
 
-    int RequestInformation(vtkInformation*,        vtkInformationVector**,        vtkInformationVector* outputVector) override
+    int RequestInformation(vtkInformation*, vtkInformationVector**, vtkInformationVector* outputVector) override
     {
         vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
-        int extent[6] = { 0, Dim[0] - 1, 0, Dim[1] - 1, 0, Dim[2] - 1 };
+        int extent[6] = { 0, m_Dim[0] - 1, 0, m_Dim[1] - 1, 0, m_Dim[2] - 1 };
 
         outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent, 6);
         outInfo->Set(vtkDataObject::SPACING(), 1.0, 1.0, 1.0);
@@ -361,10 +392,8 @@ protected:
         int yMin = extent[2], yMax = extent[3];
         int zMin = extent[4], zMax = extent[5];
 
-        std::ifstream file(FilePath, std::ios::binary);
-
-        size_t sliceSize = Dim[0] * Dim[1];
-
+        std::ifstream file(m_rawPath, std::ios::binary);
+        size_t sliceSize = m_Dim[0] * m_Dim[1];
         for (int z = zMin; z <= zMax; ++z)
         {
             size_t offset = (size_t)z * sliceSize * sizeof(unsigned short);
@@ -377,16 +406,14 @@ protected:
             {
                 for (int x = xMin; x <= xMax; ++x)
                 {
-                    unsigned short* pixel =
-                        static_cast<unsigned short*>(output->GetScalarPointer(x, y, z));
-
-                    *pixel = buffer[y * Dim[0] + x];
+                    unsigned short* pixel = static_cast<unsigned short*>(output->GetScalarPointer(x, y, z));
+                    *pixel = buffer[y * m_Dim[0] + x];
                 }
             }
         }
-
         return 1;
     }
+
 };
 
 vtkStandardNewMacro(RawSliceReader);
@@ -396,15 +423,17 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    MainWindow w0;
-    w0.show();
-    return a.exec();
+    if (0)// MHD--->dicom
+    {
+        MainWindow w0;
+        w0.show();
+        return a.exec();
+    }
 
-    /*
     
     //++GPT
     auto reader = vtkSmartPointer<RawSliceReader>::New();
-    reader->FilePath = "E:\\Temp_down\\CT-2026-04-04-11-54-12\\Volume.raw"; // 修改路径
+    reader->SetFileName("E:/Temp_down/CT-2026-04-04-11-54-12/Volume.mhd"); // 修改路径
 
     // ---------- XY ----------
     auto mapperXY = vtkSmartPointer<vtkImageSliceMapper>::New();
@@ -461,89 +490,6 @@ int main(int argc, char *argv[])
     window->Render();
     interactor->Start();
 
-
-    //++++
-
-    // ==================== 1. 打开大 .mhd 文件 ====================
-    /*
-        QString datafile = "E:\\Temp_down\\CT-2026-04-04-11-54-12\\N3\\Volume.mhd_newData.mhd";
-        MHD_To_DICOM_CT_Stream("E:\\Temp_down\\CT-2026-04-04-11-54-12\\Volume.mhd","E:\\Temp_down\\CT-2026-04-04-11-54-12\\dicom");
-        // ==================== 请修改这里 ====================
-        std::string rawFilePath = "E:\\Temp_down\\CT-2026-04-04-11-54-12\\N3\\Volume.mhd_newData.raw";   // ← 改成你成功拆分出的 .raw 文件路径
-
-        int dimX = 18739;
-        int dimY = 13714;
-        int dimZ = 3;
-        double spacing[3] = { 0.025, 0.025, 0.025 };
-
-        int currentZ = dimZ / 2;
-
-        // ==================== 1. 读取当前切片（普通流式读取，稳定） ====================
-        size_t bytesPerSlice = static_cast<size_t>(dimX) * dimY * 2ULL;
-
-        std::ifstream rawIn(rawFilePath, std::ios::binary);
-        if (!rawIn.is_open()) {
-            std::cerr << "Cannot open raw file: " << rawFilePath << std::endl;
-            return -1;
-        }
-
-        size_t offset = static_cast<size_t>(currentZ) * bytesPerSlice;
-        rawIn.seekg(offset);
-
-        std::vector<unsigned short> buffer(dimX * dimY);
-        rawIn.read(reinterpret_cast<char*>(buffer.data()), bytesPerSlice);
-        rawIn.close();
-
-        std::cout << "Loaded slice Z = " << currentZ << "  (" << (bytesPerSlice / (1024 * 1024)) << " MB)" << std::endl;
-
-        // ==================== 2. 构建 vtkImageData ====================
-        auto imageData = vtkSmartPointer<vtkImageData>::New();
-        imageData->SetDimensions(dimX, dimY, 1);
-        imageData->SetSpacing(spacing);
-        imageData->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
-
-        unsigned short* ptr = static_cast<unsigned short*>(imageData->GetScalarPointer());
-        std::copy(buffer.begin(), buffer.end(), ptr);
-
-        // ==================== 3. Reslice + Actor ====================
-        auto reslice = vtkSmartPointer<vtkImageReslice>::New();
-        reslice->SetInputData(imageData);
-        reslice->SetOutputDimensionality(2);
-        reslice->SetInterpolationModeToLinear();
-
-        auto matrix = vtkSmartPointer<vtkMatrix4x4>::New();
-        matrix->Identity();
-        reslice->SetResliceAxes(matrix);
-
-        auto actor = vtkSmartPointer<vtkImageActor>::New();
-        actor->GetMapper()->SetInputConnection(reslice->GetOutputPort());
-
-        actor->GetProperty()->SetColorWindow(4096.0);
-        actor->GetProperty()->SetColorLevel(2048.0);
-
-        auto renderer = vtkSmartPointer<vtkRenderer>::New();
-        renderer->AddActor(actor);
-        renderer->SetBackground(0.1, 0.1, 0.1);
-
-        auto renWin = vtkSmartPointer<vtkRenderWindow>::New();
-        renWin->AddRenderer(renderer);
-        renWin->SetSize(1200, 900);
-
-        auto iren = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-        iren->SetRenderWindow(renWin);
-
-        auto style = vtkSmartPointer<vtkInteractorStyleImage>::New();
-        iren->SetInteractorStyle(style);
-
-        renderer->ResetCamera();
-        renWin->Render();
-
-        std::cout << "Display started.\nRight mouse drag = adjust window/level\n";
-
-        iren->Start();
-
-        ///++++++++++++++++++++++++++++++++++    
-    */
     
     MainWindow w;
     w.show();
