@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1032</width>
+    <width>1012</width>
     <height>708</height>
    </rect>
   </property>
@@ -17,10 +17,10 @@
    <widget class="QSplitter" name="m_SplitterLR">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>60</y>
-      <width>1011</width>
-      <height>621</height>
+      <x>0</x>
+      <y>40</y>
+      <width>1021</width>
+      <height>641</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -263,44 +263,38 @@ QSplitter::handle {
      </widget>
     </widget>
    </widget>
-   <widget class="QPushButton" name="m_selectPB">
+   <widget class="QSplitter" name="splitter">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>75</width>
+      <width>421</width>
       <height>23</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Select...</string>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
-   </widget>
-   <widget class="QPushButton" name="m_rawPB">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>10</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Raw-&gt;</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="m_Message">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>17</y>
-      <width>101</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>数据待转</string>
-    </property>
+    <widget class="QPushButton" name="m_selectPB">
+     <property name="text">
+      <string>Select...</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="m_showImages">
+     <property name="text">
+      <string>ShowImages</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="m_rawPB">
+     <property name="text">
+      <string>Raw-&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="m_Message">
+     <property name="text">
+      <string>数据待转</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

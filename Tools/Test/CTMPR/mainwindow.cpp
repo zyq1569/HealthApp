@@ -8,16 +8,7 @@
 #include <dcmtk/dcmdata/dctk.h>
 #include <dcmtk/dcmdata/dcuid.h>
 
-
-
-MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
-
-    connect(ui->m_selectPB, SIGNAL(clicked()), SLOT(SelectRaw()));
-    connect(ui->m_rawPB, SIGNAL(clicked()), SLOT(Mhd2Stream()));
-}
-
+///+++
 #include <string>
 #include <iostream>
 #include <sys/stat.h>
@@ -29,6 +20,215 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 #include <direct.h>   // Windows: _mkdir
 #define mkdir(dir, mode) _mkdir(dir)   // Windows 不需要权限参数
 #endif
+///
+
+// ++++++++++++GPT
+// ======================
+// 自定义 Streaming Reader
+// ======================
+class RawSliceReader : public vtkImageAlgorithm
+{
+public:
+    static RawSliceReader* New();
+    vtkTypeMacro(RawSliceReader, vtkImageAlgorithm);
+public:
+    std::string m_rawPath;
+    int m_Dim[3] = { 0,0,0 };// { 18739, 13714, 100 };
+    double m_spacingX = 1.0, m_spacingY = 1.0, m_spacingZ = 1.0;
+public:
+    int SetFileName(std::string filePath)
+    {
+        // ---------- 1. 解析 MHD ----------
+        int dimX = 0, dimY = 0, dimZ = 0;
+        double spacingX = 1.0, spacingY = 1.0, spacingZ = 1.0;
+        std::string elementType, rawFile;
+        std::ifstream in(filePath);
+        if (!in)
+        {
+            std::cerr << "Failed to open MHD file\n";
+            return 0;
+        }
+
+        std::string line;
+        while (std::getline(in, line))
+        {
+            if (line.find("DimSize") != std::string::npos)
+            {
+                sscanf(line.c_str(), "DimSize = %d %d %d", &dimX, &dimY, &dimZ);
+            }
+            else if (line.find("ElementSpacing") != std::string::npos)
+            {
+                sscanf(line.c_str(), "ElementSpacing = %lf %lf %lf", &spacingX, &spacingY, &spacingZ);
+            }
+            else if (line.find("ElementType") != std::string::npos)
+            {
+                elementType = line.substr(line.find("=") + 2);
+            }
+            else if (line.find("ElementDataFile") != std::string::npos)
+            {
+                rawFile = line.substr(line.find("=") + 2);
+            }
+        }
+        m_Dim[0] = dimX;
+        m_Dim[1] = dimY;
+        m_Dim[2] = dimZ;
+        m_spacingX = spacingX, m_spacingY = spacingY, m_spacingZ = spacingZ;
+        // ---------- 2. RAW 文件路径 ----------
+        std::string baseDir, rawPath;
+        size_t pos = rawFile.find_last_of("/\\");
+        if (pos > std::string::npos)// 找到 .mhd 文件的最后一个路径分隔符
+        {
+            m_rawPath = rawFile;
+        }
+        else
+        {
+            baseDir = filePath.substr(0, filePath.find_last_of("/\\") + 1);
+            rawPath = baseDir + rawFile;
+            m_rawPath = rawPath;
+        }
+        return 1;
+    }
+protected:
+    RawSliceReader()
+    {
+        this->SetNumberOfInputPorts(0);
+    }
+
+    int RequestInformation(vtkInformation*, vtkInformationVector**, vtkInformationVector* outputVector) override
+    {
+        vtkInformation* outInfo = outputVector->GetInformationObject(0);
+
+        int extent[6] = { 0, m_Dim[0] - 1, 0, m_Dim[1] - 1, 0, m_Dim[2] - 1 };
+
+        outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent, 6);
+        outInfo->Set(vtkDataObject::SPACING(), m_spacingX, m_spacingY, m_spacingZ);
+        outInfo->Set(vtkDataObject::ORIGIN(), 0.0, 0.0, 0.0);
+
+        vtkDataObject::SetPointDataActiveScalarInfo(outInfo, VTK_UNSIGNED_SHORT, 1);
+
+        return 1;
+    }
+
+    int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector* outputVector) override
+    {
+        vtkInformation* outInfo = outputVector->GetInformationObject(0);
+        vtkImageData* output = vtkImageData::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
+        int extent[6];
+        outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), extent);
+
+        output->SetExtent(extent);
+        output->AllocateScalars(VTK_UNSIGNED_SHORT, 1);
+
+        int xMin = extent[0], xMax = extent[1];
+        int yMin = extent[2], yMax = extent[3];
+        int zMin = extent[4], zMax = extent[5];
+
+        std::ifstream file(m_rawPath, std::ios::binary);
+        if (!file)
+        {
+            std::cerr << "open raw failed\n";
+            return 0;
+        }
+        size_t slicePixels = (size_t)m_Dim[0] * m_Dim[1];
+        size_t bytesPerSlice = slicePixels * 2ULL;
+        if (file)
+        {
+            //优化 XY（Z方向连续）
+            if (xMin == 0 && xMax == m_Dim[0] - 1 && yMin == 0 && yMax == m_Dim[1] - 1 && zMin == zMax)
+            {
+                size_t bytesPerSlice = static_cast<size_t>(m_Dim[0]) * m_Dim[1] * 2ULL;  // unsigned short
+                size_t readOffset = static_cast<size_t>(zMin) * bytesPerSlice;
+                size_t bytesToRead = bytesPerSlice * 1;
+                // ---------- 1. 定位 ----------
+                size_t offset = (size_t)zMin * bytesPerSlice;
+                file.seekg(offset, std::ios::beg);
+                // ---------- 2. 直接读 ----------
+                unsigned short* outPtr = static_cast<unsigned short*>(output->GetScalarPointer());
+                file.read(reinterpret_cast<char*>(outPtr), bytesPerSlice);
+                if (file.gcount() != (std::streamsize)bytesPerSlice)
+                {
+                    std::cerr << "Read incomplete!" << std::endl;
+                    return 0;
+                }
+                return 1;
+            }
+            //XZ
+            // ================= XZ =================
+            else if (xMin == 0 && xMax == m_Dim[0] - 1 &&  zMin == 0 && zMax == m_Dim[2] - 1 &&  yMin == yMax)
+            {
+                int ySlice = yMin;
+                unsigned short* outPtr =  static_cast<unsigned short*>(output->GetScalarPointer());
+                int outWidth = m_Dim[0];   // x
+                size_t rowBytes = (size_t)m_Dim[0] * sizeof(unsigned short);
+                for (int z = 0; z < m_Dim[2]; ++z)
+                {
+                    // ✅ 【关键优化1】直接定位到该行
+                    size_t offset = (size_t)z * bytesPerSlice + (size_t)ySlice * rowBytes;  // 第 z 个 slice  + 第 y 行
+                    file.seekg(offset, std::ios::beg);
+
+                    // ✅ 【关键优化2】直接读一整行
+                    unsigned short* dst = outPtr + z * outWidth;
+                    file.read(reinterpret_cast<char*>(dst), rowBytes);
+                    if (file.gcount() != (std::streamsize)rowBytes)
+                    {
+                        std::cerr << "XZ row read incomplete\n";
+                        return 0;
+                    }
+                }
+                return 1;
+            }           
+            // ================= YZ ================= >>>>>>多存储一组数据 .需要将YZ的切面旋转90度存储，保证和XZ切面至少可以连续一行加载速度快
+            else
+            {
+                int xSlice = xMin;
+                unsigned short* outPtr = static_cast<unsigned short*>(output->GetScalarPointer());
+                int outWidth = m_Dim[1];   // y
+                size_t rowStride = (size_t)m_Dim[0] * sizeof(unsigned short);
+                for (int z = 0; z < m_Dim[2]; ++z)
+                {
+                    for (int y = 0; y < m_Dim[1]; ++y)
+                    {
+                        size_t offset = (size_t)z * bytesPerSlice + (size_t)y * rowStride + (size_t)xSlice * sizeof(unsigned short);
+                        file.seekg(offset, std::ios::beg);
+                        unsigned short val;
+                        file.read((char*)&val, sizeof(unsigned short));
+                        outPtr[z * outWidth + y] = val;
+                    }
+                }
+                return 1;
+            }
+        }
+        return 1;
+    }
+
+};
+
+vtkStandardNewMacro(RawSliceReader);
+
+
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    m_rendererXY = m_rendererXZ = m_rendererYZ = nullptr;
+
+    m_rendererXY = vtkRenderer::New();
+
+    m_mapperXY =  m_mapperYZ  =  m_mapperXZ = nullptr;
+    m_mapperXY = vtkImageSliceMapper::New();
+
+    m_imageSliceXY = m_imageSliceXZ = m_imageSliceYZ = nullptr;
+    m_imageSliceXY = vtkImageSlice::New();
+
+    m_vtkRWInteractor = nullptr;
+    m_vtkRWInteractor = vtkRenderWindowInteractor::New();
+
+    m_sliceReader = RawSliceReader::New();
+
+    connect(ui->m_selectPB, SIGNAL(clicked()), SLOT(SelectRaw()));
+    connect(ui->m_rawPB, SIGNAL(clicked()), SLOT(Mhd2Stream()));
+    connect(ui->m_showImages, SIGNAL(clicked()), SLOT(ShowImages()));
+}
 
 // 创建目录（支持多级，类似 mkdir -p）
 bool EnsureDirectoryExists(const std::string& dir)
@@ -292,6 +492,33 @@ bool MainWindow::Mhd2Stream()
     return 1;
 }
 
+
+bool MainWindow::ShowImages()
+{
+    m_sliceReader->SetFileName(qPrintable(m_Mhdfilename));
+    m_mapperXY->SetInputConnection(m_sliceReader->GetOutputPort());
+    m_mapperXY->SetOrientationToY();
+    m_mapperXY->SetSliceNumber(50);
+    m_mapperXY->StreamingOn();
+    m_mapperXY->SliceAtFocalPointOff();
+    m_mapperXY->SliceFacesCameraOff();
+
+    m_imageSliceXY->SetMapper(m_mapperXY);
+    m_imageSliceXY->GetProperty()->SetColorWindow(4000);
+    m_imageSliceXY->GetProperty()->SetColorLevel(1000);
+    m_imageSliceXY->GetProperty()->SetInterpolationTypeToNearest();
+    m_rendererXY->AddViewProp(m_imageSliceXY);
+
+    m_vtkRenderWindowXY = ui->m_axial2DView->renderWindow();
+    
+    m_vtkRenderWindowXY->AddRenderer(m_rendererXY);
+    m_vtkRWInteractor->SetRenderWindow(m_vtkRenderWindowXY);
+    m_vtkRenderWindowXY->SetDesiredUpdateRate(30.0);   // 交互帧率优先
+
+    m_vtkRenderWindowXY->Render();
+    //m_vtkRWInteractor->Start();
+    return 1;
+}
 
 bool MainWindow::MHD_To_DICOM_CT_Stream(DataInfo *info)//const std::string& mhdPath, const std::string& outputDir)
 {
