@@ -153,21 +153,20 @@ protected:
                 }
                 return 1;
             }
-            //XZ
             // ================= XZ =================
             else if (xMin == 0 && xMax == m_Dim[0] - 1 &&  zMin == 0 && zMax == m_Dim[2] - 1 &&  yMin == yMax)
             {
                 int ySlice = yMin;
                 unsigned short* outPtr =  static_cast<unsigned short*>(output->GetScalarPointer());
-                int outWidth = m_Dim[0];   // x
-                size_t rowBytes = (size_t)m_Dim[0] * sizeof(unsigned short);
+                int outWidth           = m_Dim[0];   // x
+                size_t rowBytes        = (size_t)m_Dim[0] * sizeof(unsigned short);
                 for (int z = 0; z < m_Dim[2]; ++z)
                 {
-                    // ✅ 【关键优化1】直接定位到该行
+                    //定位到该行
                     size_t offset = (size_t)z * bytesPerSlice + (size_t)ySlice * rowBytes;  // 第 z 个 slice  + 第 y 行
                     file.seekg(offset, std::ios::beg);
 
-                    // ✅ 【关键优化2】直接读一整行
+                    //读一整行
                     unsigned short* dst = outPtr + z * outWidth;
                     file.read(reinterpret_cast<char*>(dst), rowBytes);
                     if (file.gcount() != (std::streamsize)rowBytes)
