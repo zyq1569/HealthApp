@@ -490,88 +490,13 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
   
-    if (0)// MHD--->dicom
-    {
-        //SwapXY_MHD_USHORT("E:/Temp_down/CT-2026-04-04-11-54-12/Volume.mhd", "E:/Temp_down/CT-2026-04-04-11-54-12/YXVolume.mhd");
-        MainWindow w0;
-        w0.show();
-        return a.exec();
-    }
-
-    /*
-     //++GPT
-    auto reader = vtkSmartPointer<RawSliceReader>::New();
-    reader->SetFileName("E:/Temp_down/CT-2026-04-04-11-54-12/Volume.mhd"); // 修改路径
-
-    // ---------- XY ----------
-    auto mapperXY = vtkSmartPointer<vtkImageSliceMapper>::New();
-    mapperXY->SetInputConnection(reader->GetOutputPort());
-    mapperXY->SetOrientationToZ();
-    mapperXY->SetSliceNumber(50);
-    mapperXY->StreamingOn();
-    mapperXY->SliceAtFocalPointOff();
-    mapperXY->SliceFacesCameraOff();
-
-    auto sliceXY = vtkSmartPointer<vtkImageSlice>::New();
-    sliceXY->SetMapper(mapperXY);
-
-    sliceXY->GetProperty()->SetColorWindow(4000);
-    sliceXY->GetProperty()->SetColorLevel(1000);
-    sliceXY->GetProperty()->SetInterpolationTypeToNearest();     
-
-
-    // ---------- XZ ----------
-
-    //auto mapperXZ = vtkSmartPointer<vtkImageSliceMapper>::New();
-    //mapperXZ->SetInputConnection(reader->GetOutputPort());
-    //mapperXZ->SetOrientationToY();
-    //mapperXZ->SetSliceNumber(256);
-    //mapperXZ->StreamingOn();
-    //
-    //
-    //auto sliceXZ = vtkSmartPointer<vtkImageSlice>::New();
-    //sliceXZ->SetMapper(mapperXZ);
-
-    // ---------- YZ ----------
-    //auto mapperYZ = vtkSmartPointer<vtkImageSliceMapper>::New();
-    //mapperYZ->SetInputConnection(reader->GetOutputPort());
-    //mapperYZ->SetOrientationToX();
-    //mapperYZ->SetSliceNumber(256);
-    //mapperYZ->StreamingOn();
-    //
-    //auto sliceYZ = vtkSmartPointer<vtkImageSlice>::New();
-    //sliceYZ->SetMapper(mapperYZ);
-
-    // ---------- Renderer ----------
-    auto ren1 = vtkSmartPointer<vtkRenderer>::New();
-    //auto ren2 = vtkSmartPointer<vtkRenderer>::New();
-    //auto ren3 = vtkSmartPointer<vtkRenderer>::New();
-
-    //ren1->SetViewport(0, 0, 0.33, 1);
-    //ren2->SetViewport(0.33, 0, 0.66, 1);
-    //ren3->SetViewport(0.66, 0, 1, 1);
-
-    ren1->AddViewProp(sliceXY);
-    //ren2->AddViewProp(sliceXZ);
-    //ren3->AddViewProp(sliceYZ);
-
-    auto window = vtkSmartPointer<vtkRenderWindow>::New();
-    window->SetSize(800, 600);
-    window->AddRenderer(ren1);
-    //window->AddRenderer(ren2);
-    //window->AddRenderer(ren3);
-
-    auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-    interactor->SetRenderWindow(window);
-
-    window->SetDesiredUpdateRate(30.0);   // 交互帧率优先
-
-    window->Render();
-    interactor->Start();
-
-    return 1;
-    */
-
+    //if (0)// MHD--->dicom
+    //{
+    //    //SwapXY_MHD_USHORT("E:/Temp_down/CT-2026-04-04-11-54-12/Volume.mhd", "E:/Temp_down/CT-2026-04-04-11-54-12/YXVolume.mhd");
+    //    MainWindow w0;
+    //    w0.show();
+    //    return a.exec();
+    //}
     MainWindow w;
     w.show();
     return a.exec();

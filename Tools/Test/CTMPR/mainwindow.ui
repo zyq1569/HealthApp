@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>967</width>
-    <height>708</height>
+    <width>1026</width>
+    <height>724</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>40</y>
+      <y>30</y>
       <width>1021</width>
-      <height>641</height>
+      <height>681</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -263,51 +263,66 @@ QSplitter::handle {
      </widget>
     </widget>
    </widget>
-   <widget class="QSplitter" name="splitter">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
-      <width>421</width>
-      <height>23</height>
+      <y>6</y>
+      <width>721</width>
+      <height>25</height>
      </rect>
     </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-    <widget class="QPushButton" name="m_selectPB">
-     <property name="text">
-      <string>Select...</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="m_showImages">
-     <property name="text">
-      <string>ShowImages</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="m_rawPB">
-     <property name="text">
-      <string>Raw-&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="m_Message">
-     <property name="text">
-      <string>数据待转</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QCheckBox" name="m_DIcom">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>10</y>
-      <width>111</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>---&gt;Dicom(or YX)</string>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="m_selectPB">
+       <property name="text">
+        <string>Select...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_showImages">
+       <property name="text">
+        <string>ShowImages</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_rawPB">
+       <property name="text">
+        <string>Raw-&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="m_Message">
+       <property name="text">
+        <string>数据待转</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="m_Dicom">
+       <property name="text">
+        <string>---&gt;DIC(or YX)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_Up">
+       <property name="text">
+        <string>上一切面</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_Down">
+       <property name="text">
+        <string>下一切面</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

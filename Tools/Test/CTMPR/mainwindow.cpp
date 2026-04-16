@@ -178,7 +178,6 @@ protected:
             // ================= YZ ================= >>>>>>多存储一组数据 .需要将YZ的切面旋转90度存储，保证和XZ切面至少可以连续一行加载速度快
             else
             {
-                // ================= YZ（基于 yx.raw） =================   
                 std::ifstream fileYZ(m_rawPath+".yx", std::ios::binary);
                 if (!fileYZ)
                 {
@@ -235,10 +234,24 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     m_imageSliceYZ = vtkImageSlice::New();
 
     m_sliceReader = RawSliceReader::New();
+    m_sliceReaderYZ = RawSliceReader::New();
+    m_sliceReaderXZ = RawSliceReader::New();
 
     connect(ui->m_selectPB, SIGNAL(clicked()), SLOT(SelectRaw()));
     connect(ui->m_rawPB, SIGNAL(clicked()), SLOT(Mhd2Stream()));
     connect(ui->m_showImages, SIGNAL(clicked()), SLOT(ShowImages()));
+
+    connect(ui->m_Up, &QPushButton::clicked, [this]
+    {
+        UpdateSliceNumber(1);
+    });
+
+    connect(ui->m_Down, &QPushButton::clicked, [this]
+    {
+        UpdateSliceNumber(-1);
+
+    });
+
 }
 
 // 创建目录（支持多级，类似 mkdir -p）
@@ -710,7 +723,7 @@ bool MainWindow::Mhd2Stream()
     std::string OutputDir;
     std::string inputMHDPath = qPrintable(m_Mhdfilename);
 
-    if (ui->m_DIcom->isChecked())
+    if (ui->m_Dicom->isChecked())
     {
         size_t lastSep = inputMHDPath.find_last_of("\\/");
         if (lastSep != std::string::npos)
@@ -733,12 +746,50 @@ bool MainWindow::Mhd2Stream()
     }
     else
     {
-         return SwapXY_MHD_USHORT(inputMHDPath, inputMHDPath + ".yx");
+        bool flag = SwapXY_MHD_USHORT(inputMHDPath, inputMHDPath + ".yx");
+        return flag;
     }
 
     return 1;
 }
 
+bool  MainWindow::UpdateSliceNumber(int inc)
+{
+    if (m_sliceReader )
+    {
+        if (m_sliceReader->m_Dim[0] != 0)
+        {
+            int z = m_mapperXY->GetSliceNumber();
+            if (z < m_sliceReader->m_Dim[2] && z >= 0)
+            {
+                m_mapperXY->SetSliceNumber(z + inc);
+                //m_mapperXY->Update();
+                //m_imageSliceXY->Update(); 
+                m_vtkRenderWindowXY->Render();
+            }
+
+            int y = m_mapperXZ->GetSliceNumber();
+            if (y < m_sliceReader->m_Dim[1] && y >= 0)
+            {
+                m_mapperXZ->SetSliceNumber(z + inc);
+                //m_mapperXY->Update();
+                //m_imageSliceXZ->Update();
+                m_vtkRenderWindowXZ->Render();
+            }
+
+            int x = m_mapperYZ->GetSliceNumber();
+            if (x < m_sliceReader->m_Dim[0] && x >= 0)
+            {
+                m_mapperYZ->SetSliceNumber(x + inc);
+                //m_mapperXZ->Update();
+                //m_imageSliceYZ->Update();
+                m_vtkRenderWindowYZ->Render();
+            }
+        }
+
+    }
+    return 1;
+}
 
 bool MainWindow::ShowImages()
 {
@@ -757,12 +808,41 @@ bool MainWindow::ShowImages()
     m_rendererXY->AddViewProp(m_imageSliceXY);
     m_vtkRenderWindowXY = ui->m_axial2DView->renderWindow(); 
     m_vtkRenderWindowXY->AddRenderer(m_rendererXY);
+
     ui->m_axial2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXY);
+    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
+    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::RightButtonPressEvent);
+    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
+    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);
+    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MiddleButtonPressEvent);
+    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::CharEvent);
     m_vtkRenderWindowXY->SetDesiredUpdateRate(30.0);   // 交互帧率优先
     m_vtkRenderWindowXY->Render();
-
+       
     ///
-    m_mapperXZ->SetInputConnection(m_sliceReader->GetOutputPort());
+    m_sliceReaderYZ->SetFileName(qPrintable(m_Mhdfilename));
+    m_mapperYZ->SetInputConnection(m_sliceReaderYZ->GetOutputPort());
+    m_mapperYZ->SetOrientationToX();
+    m_mapperYZ->SetSliceNumber(50);
+    m_mapperYZ->StreamingOn();
+    m_mapperYZ->SliceAtFocalPointOff();
+    m_mapperYZ->SliceFacesCameraOff();
+    m_imageSliceYZ->SetMapper(m_mapperYZ);
+    m_imageSliceYZ->GetProperty()->SetColorWindow(4000);
+    m_imageSliceYZ->GetProperty()->SetColorLevel(1000);
+    m_imageSliceYZ->GetProperty()->SetInterpolationTypeToNearest();
+    m_rendererYZ->AddViewProp(m_imageSliceYZ);
+    m_vtkRenderWindowYZ = ui->m_coronal2DView->renderWindow();
+    m_vtkRenderWindowYZ->AddRenderer(m_rendererYZ);
+    //auto interactorYZ = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+    //interactorYZ->SetRenderWindow(m_vtkRenderWindowYZ);
+    ui->m_coronal2DView->interactor()->SetRenderWindow(m_vtkRenderWindowYZ);
+    //m_vtkRenderWindowYZ->SetDesiredUpdateRate(30.0);   // 交互帧率优先
+    m_vtkRenderWindowYZ->Render();    
+    
+    ///++++++++++++++++++++++++++XZ+++++++++++++++++++++++++++++++++++++++++++++++++
+    m_sliceReaderXZ->SetFileName(qPrintable(m_Mhdfilename));
+    m_mapperXZ->SetInputConnection(m_sliceReaderXZ->GetOutputPort());
     m_mapperXZ->SetOrientationToY();
     m_mapperXZ->SetSliceNumber(50);
     m_mapperXZ->StreamingOn();
@@ -773,38 +853,19 @@ bool MainWindow::ShowImages()
     m_imageSliceXZ->GetProperty()->SetColorLevel(1000);
     m_imageSliceXZ->GetProperty()->SetInterpolationTypeToNearest();
     m_rendererXZ->AddViewProp(m_imageSliceXZ);
-
     m_vtkRenderWindowXZ = ui->m_sagital2DView->renderWindow();
-
     m_vtkRenderWindowXZ->AddRenderer(m_rendererXZ);
-    ui->m_sagital2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXZ);
-
-    m_vtkRenderWindowXZ->SetDesiredUpdateRate(30.0);   // 交互帧率优先
-
+    //auto interactorXZ = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+    //interactorXZ->SetRenderWindow(m_vtkRenderWindowXZ);
+    //ui->m_sagital2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXZ);
+    //ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::RightButtonPressEvent);
+    //ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
+    //ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);
+    //ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::MiddleButtonPressEvent);
+    //ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::CharEvent);
+    //m_vtkRenderWindowXZ->SetDesiredUpdateRate(30.0);   // 交互帧率优先
     m_vtkRenderWindowXZ->Render();
-
-    ///
-    m_mapperYZ->SetInputConnection(m_sliceReader->GetOutputPort());
-    m_mapperYZ->SetOrientationToX();
-    m_mapperYZ->SetSliceNumber(50);
-    m_mapperYZ->StreamingOn();
-    m_mapperYZ->SliceAtFocalPointOff();
-    m_mapperYZ->SliceFacesCameraOff();
-
-    m_imageSliceYZ->SetMapper(m_mapperYZ);
-    m_imageSliceYZ->GetProperty()->SetColorWindow(4000);
-    m_imageSliceYZ->GetProperty()->SetColorLevel(1000);
-    m_imageSliceYZ->GetProperty()->SetInterpolationTypeToNearest();
-    m_rendererYZ->AddViewProp(m_imageSliceYZ);
-
-    m_vtkRenderWindowYZ = ui->m_coronal2DView->renderWindow();
-
-    m_vtkRenderWindowYZ->AddRenderer(m_rendererYZ);
-    ui->m_coronal2DView->interactor()->SetRenderWindow(m_vtkRenderWindowYZ);
-
-    m_vtkRenderWindowYZ->SetDesiredUpdateRate(30.0);   // 交互帧率优先
-
-    m_vtkRenderWindowYZ->Render();
+    /// TODO 
 
     return 1;
 }
@@ -815,8 +876,6 @@ bool MainWindow::MHD_To_DICOM_CT_Stream(DataInfo *info)//const std::string& mhdP
 
     return MHD_To_CT_Stream(data);
 }
-
-
 
 MainWindow::~MainWindow()
 {
