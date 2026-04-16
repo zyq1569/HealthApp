@@ -257,6 +257,7 @@ bool ExtractZLayersRaw(const std::string& inputMHDPath, const std::string& outpu
     return true;
 }
 
+/*
 bool SwapXY_MHD_USHORT( const std::string& inputMhdPath,  const std::string& outputMhdPath)
 {
     try
@@ -483,6 +484,7 @@ bool SwapXY_MHD_USHORT( const std::string& inputMhdPath,  const std::string& out
         return false;
     }
 }
+*/
 
 int main(int argc, char *argv[])
 {

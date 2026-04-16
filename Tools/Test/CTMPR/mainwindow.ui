@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1012</width>
+    <width>967</width>
     <height>708</height>
    </rect>
   </property>
@@ -295,6 +295,19 @@ QSplitter::handle {
       <string>数据待转</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QCheckBox" name="m_DIcom">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>10</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>---&gt;Dicom(or YX)</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
