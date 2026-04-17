@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <cstring>   // for strerror
+#include <deque>
 
 #ifdef _WIN32
 #include <direct.h>   // Windows: _mkdir
@@ -26,6 +27,11 @@
 // ======================
 // 自定义 Streaming Reader
 // ======================
+struct SliceCacheBlock
+{
+    int sliceIdx = -1;       // 当前缓存对应的slice序号
+    uint16_t* data = nullptr;
+};
 class RawSliceReader : public vtkImageAlgorithm
 {
 public:
@@ -35,7 +41,211 @@ public:
     std::string m_rawPath;
     int m_Dim[3] = { 0,0,0 };// { 18739, 13714, 100 };
     double m_spacingX = 1.0, m_spacingY = 1.0, m_spacingZ = 1.0;
+    std::deque<SliceCacheBlock> m_cache[3]; // 0:XY 1:XZ 2:YZ
+    int m_center;
 public:
+    uint16_t* AllocateSliceBuffer(int xyz)
+    {
+        if (xyz == 0) // XY
+            return new uint16_t[(size_t)m_Dim[0] * m_Dim[1]];
+        else if (xyz == 1) // XZ
+            return new uint16_t[(size_t)m_Dim[0] * m_Dim[2]];
+        else // YZ
+            return new uint16_t[(size_t)m_Dim[1] * m_Dim[2]];
+    }
+    void LoadSlice(int xyz, int slice, uint16_t* dst)
+    {
+        std::ifstream file(m_rawPath, std::ios::binary);
+
+        size_t xyBytes = (size_t)m_Dim[0] * m_Dim[1] * 2ULL;
+
+        if (xyz == 0) // XY
+        {
+            size_t offset = (size_t)slice * xyBytes;
+            file.seekg(offset, std::ios::beg);
+            file.read((char*)dst, xyBytes);
+        }
+        else if (xyz == 1) // XZ
+        {
+            size_t rowBytes = (size_t)m_Dim[0] * 2ULL;
+
+            for (int z = 0; z < m_Dim[2]; z++)
+            {
+                size_t offset = (size_t)z * xyBytes + (size_t)slice * rowBytes;
+                file.seekg(offset, std::ios::beg);
+                file.read((char*)(dst + z * m_Dim[0]), rowBytes);
+            }
+        }
+        else // YZ
+        {
+            std::ifstream fileYZ(m_rawPath + ".yx", std::ios::binary);
+
+            size_t rowBytes = (size_t)m_Dim[1] * 2ULL;
+
+            for (int z = 0; z < m_Dim[2]; z++)
+            {
+                size_t offset = (size_t)z * xyBytes + (size_t)slice * rowBytes;
+                fileYZ.seekg(offset, std::ios::beg);
+                fileYZ.read((char*)(dst + z * m_Dim[1]), rowBytes);
+            }
+        }
+    }
+
+    bool Cache(int xyz = 0, int startIndex = -1)// -2:Max -1:Mid  0:0
+    {
+        if (m_Dim[0] == 0 || m_Dim[1] == 0 || m_Dim[2] == 0)
+        {
+            return false;
+        }
+
+        auto& cache = m_cache[xyz];
+
+        int dim = (xyz == 0) ? m_Dim[2] : (xyz == 1) ? m_Dim[1] :  m_Dim[0];
+
+        int initStart = 5;
+        if (xyz == 0)//z
+        {
+            if (startIndex <= -2)
+            {
+                initStart = m_Dim[2] - 1;
+            }
+            else if (startIndex == -1)
+            {
+                initStart = m_Dim[2] / 2;
+            }
+            else
+            {
+                if (startIndex >= 0)
+                {
+                    initStart = startIndex;
+                    if (startIndex > m_Dim[2] - 1)
+                    {
+                        initStart = m_Dim[2] - 1;
+                    }                  
+                }              
+            }
+        }
+        else if (xyz == 1)//y
+        {
+            if (startIndex <= -2)
+            {
+                initStart = m_Dim[1] - 1;
+            }
+            else if (startIndex == -1)
+            {
+                initStart = m_Dim[1] / 2;
+            }
+            else
+            {
+                if (startIndex >= 0)
+                {
+                    initStart = startIndex;
+                    if (startIndex > m_Dim[1] - 1)
+                    {
+                        initStart = m_Dim[1] - 1;
+                    }
+                }
+            }
+        }
+        else //z
+        {
+            if (startIndex <= -2)
+            {
+                initStart = m_Dim[0] - 1;
+            }
+            else if (startIndex == -1)
+            {
+                initStart = m_Dim[0] / 2;
+            }
+            else
+            {
+                if (startIndex >= 0)
+                {
+                    initStart = startIndex;
+                    if (startIndex > m_Dim[0] - 1)
+                    {
+                        initStart = m_Dim[0] - 1;
+                    }
+                }
+            }
+        }
+
+        // ========= 1. 初始化（第一次）=========
+        m_center = initStart;
+        if (cache.empty())
+        {
+            int start = m_center - 4;
+            if (start < 0) start = 0;
+            if (start + 9 > dim) start = dim - 9;
+            if (start < 0) start = 0;
+
+            for (int i = 0; i < 9; i++)
+            {
+                SliceCacheBlock block;
+                block.sliceIdx = start + i;
+                block.data = AllocateSliceBuffer(xyz);
+                LoadSlice(xyz, block.sliceIdx, block.data);
+                cache.push_back(block);
+            }
+            return true;
+        }
+
+        int front = cache.front().sliceIdx;
+        int back = cache.back().sliceIdx;
+
+        // ========= 2. 已命中（无需更新）=========
+        if (m_center >= front && m_center <= back)
+        {
+            // 判断是否需要扩展（保证±3）
+            if (m_center <= front + 2 && front > 0)
+            {
+                //前扩展1个
+                SliceCacheBlock block;
+                block.sliceIdx = front - 1;
+                block.data = AllocateSliceBuffer(xyz);
+                LoadSlice(xyz, block.sliceIdx, block.data);
+
+                cache.push_front(block);
+
+                delete[] cache.back().data;
+                cache.pop_back();
+            }
+            else if (m_center >= back - 2 && back < dim - 1)
+            {
+                //向后扩展1个
+                SliceCacheBlock block;
+                block.sliceIdx = back + 1;
+                block.data = AllocateSliceBuffer(xyz);
+                LoadSlice(xyz, block.sliceIdx, block.data);
+
+                cache.push_back(block);
+
+                delete[] cache.front().data;
+                cache.pop_front();
+            }
+
+            return true;
+        }
+
+        // ========= 3. 跳跃（非±1）=========
+        cache.clear();
+
+        int start = m_center - 4;
+        if (start < 0) start = 0;
+        if (start + 9 > dim) start = dim - 9;
+        if (start < 0) start = 0;
+
+        for (int i = 0; i < 9; i++)
+        {
+            SliceCacheBlock block;
+            block.sliceIdx = start + i;
+            block.data = AllocateSliceBuffer(xyz);
+            LoadSlice(xyz, block.sliceIdx, block.data);
+            cache.push_back(block);
+        }
+
+        return 0;
+    }
     int SetFileName(std::string filePath)
     {
         // ---------- 1. 解析 MHD ----------
@@ -111,6 +321,8 @@ protected:
 
     int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector* outputVector) override
     {
+
+        /////++++
         vtkInformation* outInfo = outputVector->GetInformationObject(0);
         vtkImageData* output = vtkImageData::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
@@ -123,6 +335,48 @@ protected:
         int yMin = extent[2], yMax = extent[3];
         int zMin = extent[4], zMax = extent[5];
 
+        ///+++++
+        if (xMin == 0 && xMax == m_Dim[0] - 1 && yMin == 0 && yMax == m_Dim[1] - 1 && zMin == zMax)
+        {
+            Cache(0, zMin);
+            auto& cache = m_cache[0];
+            for (auto& b : cache)
+            {
+                if (b.sliceIdx == zMin)
+                {
+                    memcpy(output->GetScalarPointer(), b.data, (size_t)m_Dim[0] * m_Dim[1] * 2ULL);
+                    return 1;
+                }
+            }
+        }
+        else if (xMin == 0 && xMax == m_Dim[0] - 1 && zMin == 0 && zMax == m_Dim[2] - 1 && yMin == yMax)
+        {
+            Cache(1, yMin);
+            auto& cache = m_cache[1];
+            for (auto& b : cache)
+            {
+                if (b.sliceIdx == yMin)
+                {
+                    memcpy(output->GetScalarPointer(), b.data, (size_t)m_Dim[0] * m_Dim[2] * 2ULL);
+                    return 1;
+                }
+            }
+        }
+        else
+        {
+            Cache(2, xMin);
+            auto& cache = m_cache[2];
+            for (auto& b : cache)
+            {
+                if (b.sliceIdx == xMin)
+                {
+                    memcpy(output->GetScalarPointer(), b.data, (size_t)m_Dim[1] * m_Dim[2] * 2ULL);
+                    return 1;
+                }
+            }
+        }
+
+        ///+++
         std::ifstream file(m_rawPath, std::ios::binary);
         if (!file)
         {
@@ -602,8 +856,7 @@ bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outpu
         pos = outputMhdPath.find_last_of("/\\");
         if (pos != std::string::npos)
         {
-            outputRawPath = outputMhdPath.substr(0, pos + 1) +
-                outputMhdPath.substr(pos + 1, outputMhdPath.rfind('.') - pos - 1) + ".raw";
+            outputRawPath = outputMhdPath.substr(0, pos + 1) + outputMhdPath.substr(pos + 1, outputMhdPath.rfind('.') - pos - 1) + ".raw";
         }
         else
         {
@@ -759,19 +1012,10 @@ bool  MainWindow::UpdateSliceNumber(int inc)
     {
         if (m_sliceReader->m_Dim[0] != 0)
         {
-            int z = m_mapperXY->GetSliceNumber();
-            if (z < m_sliceReader->m_Dim[2] && z >= 0)
-            {
-                m_mapperXY->SetSliceNumber(z + inc);
-                //m_mapperXY->Update();
-                //m_imageSliceXY->Update(); 
-                m_vtkRenderWindowXY->Render();
-            }
-
             int y = m_mapperXZ->GetSliceNumber();
             if (y < m_sliceReader->m_Dim[1] && y >= 0)
             {
-                m_mapperXZ->SetSliceNumber(z + inc);
+                m_mapperXZ->SetSliceNumber(y + inc);
                 //m_mapperXY->Update();
                 //m_imageSliceXZ->Update();
                 m_vtkRenderWindowXZ->Render();
@@ -785,6 +1029,15 @@ bool  MainWindow::UpdateSliceNumber(int inc)
                 //m_imageSliceYZ->Update();
                 m_vtkRenderWindowYZ->Render();
             }
+
+            int z = m_mapperXY->GetSliceNumber();
+            if (z < m_sliceReader->m_Dim[2] && z >= 0)
+            {
+                m_mapperXY->SetSliceNumber(z + inc);
+                //m_mapperXY->Update();
+                //m_imageSliceXY->Update(); 
+                m_vtkRenderWindowXY->Render();
+            }
         }
 
     }
@@ -792,9 +1045,48 @@ bool  MainWindow::UpdateSliceNumber(int inc)
 }
 
 bool MainWindow::ShowImages()
-{
-    m_sliceReader->SetFileName(qPrintable(m_Mhdfilename));
+{       
+    ///{ 18739, 13714, 100 };
+    m_sliceReaderYZ->SetFileName(qPrintable(m_Mhdfilename));
+    m_sliceReaderYZ->Cache(1, -1);
+    m_mapperYZ->SetInputConnection(m_sliceReaderYZ->GetOutputPort());
+    m_mapperYZ->SetOrientationToX();
+    m_mapperYZ->SetSliceNumber(9369);
+    m_mapperYZ->StreamingOn();
+    m_mapperYZ->SliceAtFocalPointOff();
+    m_mapperYZ->SliceFacesCameraOff();
+    m_imageSliceYZ->SetMapper(m_mapperYZ);
+    m_imageSliceYZ->GetProperty()->SetColorWindow(4000);
+    m_imageSliceYZ->GetProperty()->SetColorLevel(1000);
+    m_imageSliceYZ->GetProperty()->SetInterpolationTypeToNearest();
+    m_rendererYZ->AddViewProp(m_imageSliceYZ);
+    m_vtkRenderWindowYZ = ui->m_coronal2DView->renderWindow();
+    m_vtkRenderWindowYZ->AddRenderer(m_rendererYZ);
+    ui->m_coronal2DView->interactor()->SetRenderWindow(m_vtkRenderWindowYZ);
+    m_vtkRenderWindowYZ->Render();    
+    
+    ///++++++++++++++++++++++++++XZ+++++++++++++++++++++++++++++++++++++++++++++++++
+    m_sliceReaderXZ->SetFileName(qPrintable(m_Mhdfilename));
+    m_sliceReaderXZ->Cache(2, -1);
+    m_mapperXZ->SetInputConnection(m_sliceReaderXZ->GetOutputPort());
+    m_mapperXZ->SetOrientationToY();
+    m_mapperXZ->SetSliceNumber(6857);
+    m_mapperXZ->StreamingOn();
+    m_mapperXZ->SliceAtFocalPointOff();
+    m_mapperXZ->SliceFacesCameraOff();
+    m_imageSliceXZ->SetMapper(m_mapperXZ);
+    m_imageSliceXZ->GetProperty()->SetColorWindow(4000);
+    m_imageSliceXZ->GetProperty()->SetColorLevel(1000);
+    m_imageSliceXZ->GetProperty()->SetInterpolationTypeToNearest();
+    m_rendererXZ->AddViewProp(m_imageSliceXZ);
+    m_vtkRenderWindowXZ = ui->m_sagital2DView->renderWindow();
+    m_vtkRenderWindowXZ->AddRenderer(m_rendererXZ);
+    m_vtkRenderWindowXZ->Render();
+    /// TODO 
 
+
+    m_sliceReader->SetFileName(qPrintable(m_Mhdfilename));
+    m_sliceReader->Cache(0, -1);
     m_mapperXY->SetInputConnection(m_sliceReader->GetOutputPort());
     m_mapperXY->SetOrientationToZ();
     m_mapperXY->SetSliceNumber(50);
@@ -806,7 +1098,7 @@ bool MainWindow::ShowImages()
     m_imageSliceXY->GetProperty()->SetColorLevel(1000);
     m_imageSliceXY->GetProperty()->SetInterpolationTypeToNearest();
     m_rendererXY->AddViewProp(m_imageSliceXY);
-    m_vtkRenderWindowXY = ui->m_axial2DView->renderWindow(); 
+    m_vtkRenderWindowXY = ui->m_axial2DView->renderWindow();
     m_vtkRenderWindowXY->AddRenderer(m_rendererXY);
 
     ui->m_axial2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXY);
@@ -818,55 +1110,6 @@ bool MainWindow::ShowImages()
     //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::CharEvent);
     m_vtkRenderWindowXY->SetDesiredUpdateRate(30.0);   // 交互帧率优先
     m_vtkRenderWindowXY->Render();
-       
-    ///
-    m_sliceReaderYZ->SetFileName(qPrintable(m_Mhdfilename));
-    m_mapperYZ->SetInputConnection(m_sliceReaderYZ->GetOutputPort());
-    m_mapperYZ->SetOrientationToX();
-    m_mapperYZ->SetSliceNumber(50);
-    m_mapperYZ->StreamingOn();
-    m_mapperYZ->SliceAtFocalPointOff();
-    m_mapperYZ->SliceFacesCameraOff();
-    m_imageSliceYZ->SetMapper(m_mapperYZ);
-    m_imageSliceYZ->GetProperty()->SetColorWindow(4000);
-    m_imageSliceYZ->GetProperty()->SetColorLevel(1000);
-    m_imageSliceYZ->GetProperty()->SetInterpolationTypeToNearest();
-    m_rendererYZ->AddViewProp(m_imageSliceYZ);
-    m_vtkRenderWindowYZ = ui->m_coronal2DView->renderWindow();
-    m_vtkRenderWindowYZ->AddRenderer(m_rendererYZ);
-    //auto interactorYZ = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-    //interactorYZ->SetRenderWindow(m_vtkRenderWindowYZ);
-    ui->m_coronal2DView->interactor()->SetRenderWindow(m_vtkRenderWindowYZ);
-    //m_vtkRenderWindowYZ->SetDesiredUpdateRate(30.0);   // 交互帧率优先
-    m_vtkRenderWindowYZ->Render();    
-    
-    ///++++++++++++++++++++++++++XZ+++++++++++++++++++++++++++++++++++++++++++++++++
-    m_sliceReaderXZ->SetFileName(qPrintable(m_Mhdfilename));
-    m_mapperXZ->SetInputConnection(m_sliceReaderXZ->GetOutputPort());
-    m_mapperXZ->SetOrientationToY();
-    m_mapperXZ->SetSliceNumber(50);
-    m_mapperXZ->StreamingOn();
-    m_mapperXZ->SliceAtFocalPointOff();
-    m_mapperXZ->SliceFacesCameraOff();
-    m_imageSliceXZ->SetMapper(m_mapperXZ);
-    m_imageSliceXZ->GetProperty()->SetColorWindow(4000);
-    m_imageSliceXZ->GetProperty()->SetColorLevel(1000);
-    m_imageSliceXZ->GetProperty()->SetInterpolationTypeToNearest();
-    m_rendererXZ->AddViewProp(m_imageSliceXZ);
-    m_vtkRenderWindowXZ = ui->m_sagital2DView->renderWindow();
-    m_vtkRenderWindowXZ->AddRenderer(m_rendererXZ);
-    //auto interactorXZ = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-    //interactorXZ->SetRenderWindow(m_vtkRenderWindowXZ);
-    //ui->m_sagital2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXZ);
-    //ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::RightButtonPressEvent);
-    //ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
-    //ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);
-    //ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::MiddleButtonPressEvent);
-    //ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::CharEvent);
-    //m_vtkRenderWindowXZ->SetDesiredUpdateRate(30.0);   // 交互帧率优先
-    m_vtkRenderWindowXZ->Render();
-    /// TODO 
-
     return 1;
 }
 
