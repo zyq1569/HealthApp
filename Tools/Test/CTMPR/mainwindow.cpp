@@ -743,7 +743,7 @@ bool MHD_To_CT_Stream(DataInfo info)
 
     return 1;
 }
-
+//MET_SHORT
 bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outputMhdPath)
 {
     try
@@ -796,7 +796,7 @@ bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outpu
             {
                 iss >> elementType;
             }
-            else if (key == "ElementSpacing")
+            else if (key == "ElementSpacing" )
             {
                 iss >> spacingX >> spacingY >> spacingZ;
             }
@@ -821,9 +821,9 @@ bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outpu
             std::cerr << "无效的维度信息: " << dimX << "x" << dimY << "x" << dimZ << std::endl;
             return false;
         }
-        if (elementType != "MET_USHORT")
+        if (elementType != "MET_USHORT"  && elementType != "MET_SHORT")
         {
-            std::cerr << "错误：当前函数仅支持 MET_USHORT，检测到: " << elementType << std::endl;
+            std::cerr << "错误：当前函数仅支持 MET_USHORT 和 MET_SHORT，检测到: " << elementType << std::endl;
             return false;
         }
         if (rawFileName.empty())
@@ -851,24 +851,24 @@ bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outpu
             return false;
         }
 
-        // 3. 构造输出 .raw 文件路径（与 outputMhdPath 同目录）
+        // 3. raw 文件设置为原始raw同样的名称后面增加.yx
         std::string outputRawPath;
-        pos = outputMhdPath.find_last_of("/\\");
+        pos = inputRawPath.find_last_of("/\\");
         if (pos != std::string::npos)
         {
-            outputRawPath = outputMhdPath.substr(0, pos + 1) + outputMhdPath.substr(pos + 1, outputMhdPath.rfind('.') - pos - 1) + ".raw";
+            outputRawPath = inputRawPath.substr(0, pos + 1) + inputRawPath.substr(pos + 1, outputMhdPath.rfind('.') - pos - 1) + ".raw.yx";
         }
         else
         {
             // 无路径，只有文件名
-            size_t dotPos = outputMhdPath.rfind('.');
+            size_t dotPos = inputRawPath.rfind('.');
             if (dotPos != std::string::npos)
             {
-                outputRawPath = outputMhdPath.substr(0, dotPos) + ".raw";
+                outputRawPath = inputRawPath.substr(0, dotPos) + ".raw.yx";
             }
             else
             {
-                outputRawPath = outputMhdPath + ".raw";
+                outputRawPath = inputRawPath + ".raw.yx";
             }
         }
 
@@ -881,10 +881,13 @@ bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outpu
 
         // 4. 按切片流式处理（内存占用仅一层）
         const size_t slicePixels = static_cast<size_t>(dimX) * dimY;
-        const size_t sliceBytes = slicePixels * sizeof(uint16_t);
+        //const size_t sliceBytes = slicePixels * sizeof(uint16_t);
+        const size_t sliceBytes = slicePixels * sizeof(short);   // ← 修改这里（MET_SHORT 和 MET_USHORT 都是 2 字节）
 
-        std::vector<uint16_t> slice(slicePixels);
-        std::vector<uint16_t> transposedSlice(slicePixels);
+        //std::vector<uint16_t> slice(slicePixels);
+        //std::vector<uint16_t> transposedSlice(slicePixels);
+        std::vector<short> slice(slicePixels);           // ← 修改为 short
+        std::vector<short> transposedSlice(slicePixels); // ← 修改为 short
 
         std::cout << "开始 XY 方向交换转换..." << std::endl;
         std::cout << "原始尺寸: " << dimX << " x " << dimY << " x " << dimZ << std::endl;
@@ -911,8 +914,7 @@ bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outpu
 
             // 写入转置后的一层
             rawOut.write(reinterpret_cast<const char*>(transposedSlice.data()), sliceBytes);
-
-            // 进度提示
+            // 进度
             if ((z + 1) % 500 == 0 || z == dimZ - 1)
             {
                 std::cout << "已处理 " << (z + 1) << " / " << dimZ << " 层" << std::endl;
@@ -942,16 +944,13 @@ bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outpu
             outputRawFileName = outputRawPath;
         }
 
-        mhdOut << "ObjectType = Image\n"
-            << "NDims = 3\n"
-            << "DimSize = " << dimY << " " << dimX << " " << dimZ << "\n"   // X/Y 已交换
-            << "ElementType = MET_USHORT\n"
+        mhdOut << "ObjectType = Image\n"   << "NDims = 3\n"  << "DimSize = " << dimY << " " << dimX << " " << dimZ << "\n"   // X/Y 已交换
+            //<< "ElementType = MET_USHORT\n"   
+            << "ElementType = " << elementType << "\n"          // ← 修改这里：使用原始 elementType
             << "ElementSpacing = " << spacingY << " " << spacingX << " " << spacingZ << "\n"
             << "Offset = " << originX << " " << originY << " " << originZ << "\n"
-            << "ElementByteOrderMSB = " << byteOrder << "\n"
-            << "ElementDataFile = " << outputRawFileName << "\n"
-            << "BinaryData = True\n"
-            << "BinaryDataByteOrderMSB = False\n";
+            << "ElementByteOrderMSB = " << byteOrder << "\n"  << "ElementDataFile = " << outputRawFileName << "\n"
+            << "BinaryData = True\n"   << "BinaryDataByteOrderMSB = False\n";
 
         mhdOut.close();
 
@@ -999,7 +998,17 @@ bool MainWindow::Mhd2Stream()
     }
     else
     {
-        bool flag = SwapXY_MHD_USHORT(inputMHDPath, inputMHDPath + ".yx");
+        // 无路径，只有文件名
+        size_t dotPos = inputMHDPath.rfind('.');
+        if (dotPos != std::string::npos)
+        {
+            OutputDir = inputMHDPath.substr(0, dotPos) + ".yx.mhd";
+        }
+        else
+        {
+            OutputDir = inputMHDPath + ".yx.mhd";
+        }
+        bool flag = SwapXY_MHD_USHORT(inputMHDPath, OutputDir);
         return flag;
     }
 
@@ -1016,8 +1025,6 @@ bool  MainWindow::UpdateSliceNumber(int inc)
             if (y < m_sliceReader->m_Dim[1] && y >= 0)
             {
                 m_mapperXZ->SetSliceNumber(y + inc);
-                //m_mapperXY->Update();
-                //m_imageSliceXZ->Update();
                 m_vtkRenderWindowXZ->Render();
             }
 
@@ -1025,17 +1032,13 @@ bool  MainWindow::UpdateSliceNumber(int inc)
             if (x < m_sliceReader->m_Dim[0] && x >= 0)
             {
                 m_mapperYZ->SetSliceNumber(x + inc);
-                //m_mapperXZ->Update();
-                //m_imageSliceYZ->Update();
                 m_vtkRenderWindowYZ->Render();
             }
 
             int z = m_mapperXY->GetSliceNumber();
             if (z < m_sliceReader->m_Dim[2] && z >= 0)
             {
-                m_mapperXY->SetSliceNumber(z + inc);
-                //m_mapperXY->Update();
-                //m_imageSliceXY->Update(); 
+                m_mapperXY->SetSliceNumber(z + inc); 
                 m_vtkRenderWindowXY->Render();
             }
         }
@@ -1043,6 +1046,8 @@ bool  MainWindow::UpdateSliceNumber(int inc)
     }
     return 1;
 }
+
+#include <vtkCamera.h>
 
 bool MainWindow::ShowImages()
 {       
@@ -1063,6 +1068,10 @@ bool MainWindow::ShowImages()
     m_vtkRenderWindowYZ = ui->m_coronal2DView->renderWindow();
     m_vtkRenderWindowYZ->AddRenderer(m_rendererYZ);
     ui->m_coronal2DView->interactor()->SetRenderWindow(m_vtkRenderWindowYZ);
+    //m_rendererYZ->GetActiveCamera()->SetParallelProjection(true);  // 非常重要！
+    m_rendererYZ->GetActiveCamera()->SetPosition(1, 0, 0);
+    m_rendererYZ->GetActiveCamera()->SetViewUp(0, 0, 1);
+    m_rendererYZ->ResetCamera();                                   // 自动适配图像大小
     m_vtkRenderWindowYZ->Render();    
     
     ///++++++++++++++++++++++++++XZ+++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1081,6 +1090,11 @@ bool MainWindow::ShowImages()
     m_rendererXZ->AddViewProp(m_imageSliceXZ);
     m_vtkRenderWindowXZ = ui->m_sagital2DView->renderWindow();
     m_vtkRenderWindowXZ->AddRenderer(m_rendererXZ);
+    ui->m_sagital2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXZ);
+    //m_rendererXZ->GetActiveCamera()->SetParallelProjection(true);  // 非常重要！
+    m_rendererXZ->GetActiveCamera()->SetPosition(0, -1, 0);
+    m_rendererXZ->GetActiveCamera()->SetViewUp(0, 0, 1);
+    m_rendererXZ->ResetCamera();                                   // 自动适配图像大小
     m_vtkRenderWindowXZ->Render();
     /// TODO 
 
