@@ -263,7 +263,7 @@ QSplitter::handle {
      </widget>
     </widget>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -288,6 +288,20 @@ QSplitter::handle {
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="m_Up">
+       <property name="text">
+        <string>上一切面</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_Down">
+       <property name="text">
+        <string>下一切面</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="m_rawPB">
        <property name="text">
         <string>Raw-&gt;</string>
@@ -305,20 +319,6 @@ QSplitter::handle {
       <widget class="QCheckBox" name="m_Dicom">
        <property name="text">
         <string>---&gt;DIC(or YX)</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="m_Up">
-       <property name="text">
-        <string>上一切面</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="m_Down">
-       <property name="text">
-        <string>下一切面</string>
        </property>
       </widget>
      </item>

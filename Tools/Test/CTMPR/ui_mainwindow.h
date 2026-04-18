@@ -46,15 +46,15 @@ public:
     QWidget *layout91;
     QVBoxLayout *_6;
     QVTKRenderWidget *m_image3DView;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QHBoxLayout *horizontalLayout;
     QPushButton *m_selectPB;
     QPushButton *m_showImages;
+    QPushButton *m_Up;
+    QPushButton *m_Down;
     QPushButton *m_rawPB;
     QLabel *m_Message;
     QCheckBox *m_Dicom;
-    QPushButton *m_Up;
-    QPushButton *m_Down;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -204,46 +204,46 @@ public:
         m_vSplitterR->addWidget(layout91);
         m_horizontalSplitter->addWidget(m_vSplitterR);
         m_SplitterLR->addWidget(m_horizontalSplitter);
-        widget = new QWidget(centralwidget);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(10, 6, 721, 25));
-        horizontalLayout = new QHBoxLayout(widget);
+        layoutWidget = new QWidget(centralwidget);
+        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+        layoutWidget->setGeometry(QRect(10, 6, 721, 25));
+        horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        m_selectPB = new QPushButton(widget);
+        m_selectPB = new QPushButton(layoutWidget);
         m_selectPB->setObjectName(QString::fromUtf8("m_selectPB"));
 
         horizontalLayout->addWidget(m_selectPB);
 
-        m_showImages = new QPushButton(widget);
+        m_showImages = new QPushButton(layoutWidget);
         m_showImages->setObjectName(QString::fromUtf8("m_showImages"));
 
         horizontalLayout->addWidget(m_showImages);
 
-        m_rawPB = new QPushButton(widget);
-        m_rawPB->setObjectName(QString::fromUtf8("m_rawPB"));
-
-        horizontalLayout->addWidget(m_rawPB);
-
-        m_Message = new QLabel(widget);
-        m_Message->setObjectName(QString::fromUtf8("m_Message"));
-
-        horizontalLayout->addWidget(m_Message);
-
-        m_Dicom = new QCheckBox(widget);
-        m_Dicom->setObjectName(QString::fromUtf8("m_Dicom"));
-
-        horizontalLayout->addWidget(m_Dicom);
-
-        m_Up = new QPushButton(widget);
+        m_Up = new QPushButton(layoutWidget);
         m_Up->setObjectName(QString::fromUtf8("m_Up"));
 
         horizontalLayout->addWidget(m_Up);
 
-        m_Down = new QPushButton(widget);
+        m_Down = new QPushButton(layoutWidget);
         m_Down->setObjectName(QString::fromUtf8("m_Down"));
 
         horizontalLayout->addWidget(m_Down);
+
+        m_rawPB = new QPushButton(layoutWidget);
+        m_rawPB->setObjectName(QString::fromUtf8("m_rawPB"));
+
+        horizontalLayout->addWidget(m_rawPB);
+
+        m_Message = new QLabel(layoutWidget);
+        m_Message->setObjectName(QString::fromUtf8("m_Message"));
+
+        horizontalLayout->addWidget(m_Message);
+
+        m_Dicom = new QCheckBox(layoutWidget);
+        m_Dicom->setObjectName(QString::fromUtf8("m_Dicom"));
+
+        horizontalLayout->addWidget(m_Dicom);
 
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
@@ -260,11 +260,11 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         m_selectPB->setText(QApplication::translate("MainWindow", "Select...", nullptr));
         m_showImages->setText(QApplication::translate("MainWindow", "ShowImages", nullptr));
+        m_Up->setText(QApplication::translate("MainWindow", "\344\270\212\344\270\200\345\210\207\351\235\242", nullptr));
+        m_Down->setText(QApplication::translate("MainWindow", "\344\270\213\344\270\200\345\210\207\351\235\242", nullptr));
         m_rawPB->setText(QApplication::translate("MainWindow", "Raw->", nullptr));
         m_Message->setText(QApplication::translate("MainWindow", "\346\225\260\346\215\256\345\276\205\350\275\254", nullptr));
         m_Dicom->setText(QApplication::translate("MainWindow", "--->DIC(or YX)", nullptr));
-        m_Up->setText(QApplication::translate("MainWindow", "\344\270\212\344\270\200\345\210\207\351\235\242", nullptr));
-        m_Down->setText(QApplication::translate("MainWindow", "\344\270\213\344\270\200\345\210\207\351\235\242", nullptr));
     } // retranslateUi
 
 };

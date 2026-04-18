@@ -1068,7 +1068,7 @@ bool MainWindow::ShowImages()
     m_vtkRenderWindowYZ = ui->m_coronal2DView->renderWindow();
     m_vtkRenderWindowYZ->AddRenderer(m_rendererYZ);
     ui->m_coronal2DView->interactor()->SetRenderWindow(m_vtkRenderWindowYZ);
-    //m_rendererYZ->GetActiveCamera()->SetParallelProjection(true);  // 非常重要！
+    ui->m_coronal2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
     m_rendererYZ->GetActiveCamera()->SetPosition(1, 0, 0);
     m_rendererYZ->GetActiveCamera()->SetViewUp(0, 0, 1);
     m_rendererYZ->ResetCamera();                                   // 自动适配图像大小
@@ -1091,7 +1091,7 @@ bool MainWindow::ShowImages()
     m_vtkRenderWindowXZ = ui->m_sagital2DView->renderWindow();
     m_vtkRenderWindowXZ->AddRenderer(m_rendererXZ);
     ui->m_sagital2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXZ);
-    //m_rendererXZ->GetActiveCamera()->SetParallelProjection(true);  // 非常重要！
+    ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
     m_rendererXZ->GetActiveCamera()->SetPosition(0, -1, 0);
     m_rendererXZ->GetActiveCamera()->SetViewUp(0, 0, 1);
     m_rendererXZ->ResetCamera();                                   // 自动适配图像大小
@@ -1116,13 +1116,13 @@ bool MainWindow::ShowImages()
     m_vtkRenderWindowXY->AddRenderer(m_rendererXY);
 
     ui->m_axial2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXY);
-    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
+    ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
     //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::RightButtonPressEvent);
     //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
     //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);
     //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MiddleButtonPressEvent);
     //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::CharEvent);
-    m_vtkRenderWindowXY->SetDesiredUpdateRate(30.0);   // 交互帧率优先
+    //m_vtkRenderWindowXY->SetDesiredUpdateRate(30.0);   // 交互帧率优先
     m_vtkRenderWindowXY->Render();
     return 1;
 }
