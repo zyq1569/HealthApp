@@ -1,12 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QtConcurrent/QtConcurrent>
+
 // DCMTK
 #include <dcmtk/dcmdata/dctk.h>
 #include <dcmtk/dcmdata/dcuid.h>
+
+#include <vtkCamera.h>
 
 ///+++
 #include <string>
@@ -17,12 +17,139 @@
 #include <cstring>   // for strerror
 #include <deque>
 
+#include <QFuture>
+#include <QFutureWatcher>
+#include <functional>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QtConcurrent/QtConcurrent>
+
 #ifdef _WIN32
 #include <direct.h>   // Windows: _mkdir
 #define mkdir(dir, mode) _mkdir(dir)   // Windows 不需要权限参数
 #endif
 ///
 
+// 自定义InteractorStyle，只处理右键窗宽窗位
+class vtkRightClickWindowLevelStyle : public vtkInteractorStyleImage
+{
+public:
+    static vtkRightClickWindowLevelStyle* New();
+    vtkTypeMacro(vtkRightClickWindowLevelStyle, vtkInteractorStyleImage);
+
+    vtkRightClickWindowLevelStyle()
+    {
+        this->ImageSlice = nullptr;
+        this->RightButtonPressed = false;
+        this->LastPos[0] = 0;
+        this->LastPos[1] = 0;
+        this->Label = nullptr;
+    }
+
+    void SetImageSlice(vtkImageSlice* slice)
+    {
+        this->ImageSlice = slice;
+    }
+
+    void SetOverlayLabel(QLabel* label)
+    {
+        this->Label = label;
+        if (this->Label)
+        {
+            this->Label->setVisible(true);
+            // 设置固定位置在左上角
+            this->Label->move(10, 10);
+        }
+    }
+
+    virtual void OnRightButtonDown() override
+    {
+        this->RightButtonPressed = true;
+        this->GetInteractor()->GetEventPosition(this->LastPos);
+    }
+
+    virtual void OnRightButtonUp() override
+    {
+        this->RightButtonPressed = false;
+    }
+
+    virtual void OnMouseMove() override
+    {
+        if (this->RightButtonPressed && this->ImageSlice)
+        {
+            int currPos[2];
+            this->GetInteractor()->GetEventPosition(currPos);
+
+            int dx = currPos[0] - LastPos[0];
+            int dy = currPos[1] - LastPos[1];
+
+            double window = this->ImageSlice->GetProperty()->GetColorWindow();
+            double level = this->ImageSlice->GetProperty()->GetColorLevel();
+
+            double windowStep = 1.0;
+            double levelStep = 1.0;
+
+            window += dx * windowStep;
+            level += dy * levelStep;
+
+            if (window < 1.0) window = 1.0;
+
+            this->ImageSlice->GetProperty()->SetColorWindow(window);
+            this->ImageSlice->GetProperty()->SetColorLevel(level);
+
+            if (Label)
+            {
+                QString text = QString("WW: %1\nWL: %2").arg(window, 0, 'f', 1).arg(level, 0, 'f', 1);
+                Label->setWordWrap(true);
+                Label->setText(text);
+                // 每次更新文字后调用
+                Label->adjustSize();  // 自动调整 QLabel 大小以适应文字
+            }
+
+            this->GetInteractor()->GetRenderWindow()->Render();
+
+            LastPos[0] = currPos[0];
+            LastPos[1] = currPos[1];
+        }
+        else
+        {
+            vtkInteractorStyleImage::OnMouseMove();
+        }
+    }
+
+private:
+    vtkImageSlice* ImageSlice;
+    bool RightButtonPressed;
+    int LastPos[2];
+    QLabel* Label;
+};
+
+vtkStandardNewMacro(vtkRightClickWindowLevelStyle);
+
+
+// 封装函数：绑定右键窗宽窗位
+inline void EnableRightClickWindowLevel(QVTKInteractor* interactor, vtkImageSlice* slice, QWidget* parentWidget)
+{
+    if (!interactor || !slice || !parentWidget) return;
+
+    vtkSmartPointer<vtkRightClickWindowLevelStyle> style =
+        vtkSmartPointer<vtkRightClickWindowLevelStyle>::New();
+    style->SetImageSlice(slice);
+
+    // 创建固定左上角 QLabel
+    QLabel* overlay = new QLabel(parentWidget);
+    overlay->setStyleSheet(
+        "QLabel { background-color: rgba(0,0,0,0); color: white; padding: 2px;font-family: 'Consolas'; border-radius: 3px; }"
+    );
+    overlay->setAttribute(Qt::WA_TransparentForMouseEvents); // 不阻挡鼠标
+    overlay->setVisible(true);  // 固定显示
+    overlay->raise();  // 保证显示在最上层
+    overlay->move(10, 10); // 左上角偏移
+
+    style->SetOverlayLabel(overlay);
+
+    interactor->SetInteractorStyle(style);
+}
 // ++++++++++++GPT
 // ======================
 // 自定义 Streaming Reader
@@ -90,7 +217,6 @@ public:
             }
         }
     }
-
     bool Cache(int xyz = 0, int startIndex = -1)// -2:Max -1:Mid  0:0
     {
         if (m_Dim[0] == 0 || m_Dim[1] == 0 || m_Dim[2] == 0)
@@ -299,6 +425,13 @@ public:
         return 1;
     }
 protected:
+    ~RawSliceReader()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            m_cache[i].clear();
+        }
+    }
     RawSliceReader()
     {
         this->SetNumberOfInputPorts(0);
@@ -307,21 +440,16 @@ protected:
     int RequestInformation(vtkInformation*, vtkInformationVector**, vtkInformationVector* outputVector) override
     {
         vtkInformation* outInfo = outputVector->GetInformationObject(0);
-
         int extent[6] = { 0, m_Dim[0] - 1, 0, m_Dim[1] - 1, 0, m_Dim[2] - 1 };
-
         outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent, 6);
         outInfo->Set(vtkDataObject::SPACING(), m_spacingX, m_spacingY, m_spacingZ);
         outInfo->Set(vtkDataObject::ORIGIN(), 0.0, 0.0, 0.0);
-
         vtkDataObject::SetPointDataActiveScalarInfo(outInfo, VTK_UNSIGNED_SHORT, 1);
-
         return 1;
     }
 
     int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector* outputVector) override
     {
-
         /////++++
         vtkInformation* outInfo = outputVector->GetInformationObject(0);
         vtkImageData* output = vtkImageData::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
@@ -563,7 +691,6 @@ bool EnsureDirectoryExists(const std::string& dir)
 void MainWindow::SelectRaw()
 {
     m_Mhdfilename = QFileDialog::getOpenFileName(this, "mhd|vti file", QString(), "*.mhd;*.vti");
-
 }
 
 class DataInfo
@@ -1047,8 +1174,6 @@ bool  MainWindow::UpdateSliceNumber(int inc)
     return 1;
 }
 
-#include <vtkCamera.h>
-
 bool MainWindow::ShowImages()
 {       
     ///{ 18739, 13714, 100 };
@@ -1069,11 +1194,17 @@ bool MainWindow::ShowImages()
     m_vtkRenderWindowYZ->AddRenderer(m_rendererYZ);
     ui->m_coronal2DView->interactor()->SetRenderWindow(m_vtkRenderWindowYZ);
     ui->m_coronal2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
+
+    // 假设已有 vtkImageSlice* imageSlice
+    EnableRightClickWindowLevel(ui->m_coronal2DView->interactor(), m_imageSliceYZ, ui->m_coronal2DView);
+
     m_rendererYZ->GetActiveCamera()->SetPosition(1, 0, 0);
-    m_rendererYZ->GetActiveCamera()->SetViewUp(0, 0, 1);
+    //m_rendererYZ->GetActiveCamera()->SetViewUp(0, 0, 1);
+    m_rendererYZ->GetActiveCamera()->SetViewUp(0, 1, 0);// 旋转90度
     m_rendererYZ->ResetCamera();                                   // 自动适配图像大小
     m_vtkRenderWindowYZ->Render();    
     
+
     ///++++++++++++++++++++++++++XZ+++++++++++++++++++++++++++++++++++++++++++++++++
     m_sliceReaderXZ->SetFileName(qPrintable(m_Mhdfilename));
     m_sliceReaderXZ->Cache(2, -1);
@@ -1092,12 +1223,13 @@ bool MainWindow::ShowImages()
     m_vtkRenderWindowXZ->AddRenderer(m_rendererXZ);
     ui->m_sagital2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXZ);
     ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
+    // 假设已有 vtkImageSlice* imageSlice
+    EnableRightClickWindowLevel(ui->m_sagital2DView->interactor(), m_imageSliceXZ, ui->m_sagital2DView);
     m_rendererXZ->GetActiveCamera()->SetPosition(0, -1, 0);
     m_rendererXZ->GetActiveCamera()->SetViewUp(0, 0, 1);
     m_rendererXZ->ResetCamera();                                   // 自动适配图像大小
     m_vtkRenderWindowXZ->Render();
     /// TODO 
-
 
     m_sliceReader->SetFileName(qPrintable(m_Mhdfilename));
     m_sliceReader->Cache(0, -1);
@@ -1117,12 +1249,11 @@ bool MainWindow::ShowImages()
 
     ui->m_axial2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXY);
     ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
-    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::RightButtonPressEvent);
-    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
-    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);
-    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MiddleButtonPressEvent);
-    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::CharEvent);
-    //m_vtkRenderWindowXY->SetDesiredUpdateRate(30.0);   // 交互帧率优先
+    EnableRightClickWindowLevel(ui->m_axial2DView->interactor(), m_imageSliceXY, ui->m_axial2DView);
+    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::RightButtonPressEvent);    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
+    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MiddleButtonPressEvent);
+    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::CharEvent);    //m_vtkRenderWindowXY->SetDesiredUpdateRate(30.0);   // 交互帧率优先
+
     m_vtkRenderWindowXY->Render();
     return 1;
 }
@@ -1137,5 +1268,67 @@ bool MainWindow::MHD_To_DICOM_CT_Stream(DataInfo *info)//const std::string& mhdP
 MainWindow::~MainWindow()
 {
     delete ui;
+
+    /*
+    vtkImageSlice *m_imageSliceXY, *m_imageSliceXZ, *m_imageSliceYZ;
+    vtkRenderer *m_rendererXY, *m_rendererXZ, *m_rendererYZ;
+    vtkImageSliceMapper *m_mapperXY, *m_mapperYZ, *m_mapperXZ;
+    RawSliceReader *m_sliceReader, *m_sliceReaderYZ, *m_sliceReaderXZ;
+    */
+    if (m_imageSliceXY)
+    {
+        m_imageSliceXY->Delete();
+    }
+    if (m_imageSliceXZ)
+    {
+        m_imageSliceXZ->Delete();
+    }
+    if (m_imageSliceYZ)
+    {
+        m_imageSliceYZ->Delete();
+    }
+
+    if (m_rendererXY)
+    {
+        m_rendererXY->Delete();
+    }
+    if (m_rendererXZ)
+    {
+        m_rendererXZ->Delete();
+    }
+    if (m_rendererYZ)
+    {
+        m_rendererYZ->Delete();
+    }
+
+    if (m_mapperXY)
+    {
+        m_mapperXY->Delete();
+    }
+    if (m_mapperYZ)
+    {
+        m_mapperYZ->Delete();
+    }
+    if (m_mapperXZ)
+    {
+        m_mapperXZ->Delete();
+    }
+
+    if (m_sliceReader)
+    {
+        m_sliceReader->Delete();
+    }
+    if (m_sliceReaderYZ)
+    {
+        m_sliceReaderYZ->Delete();
+    }
+    if (m_sliceReaderXZ)
+    {
+        m_sliceReaderXZ->Delete();
+    }
+    return;
+    //vtkRenderWindow* m_vtkRenderWindowXY, *m_vtkRenderWindowXZ, *m_vtkRenderWindowYZ;
+    //m_vtkRenderWindowXY = ui->m_axial2DView->renderWindow();
+    
 }
 

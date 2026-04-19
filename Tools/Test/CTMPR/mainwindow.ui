@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1026</width>
-    <height>724</height>
+    <width>1401</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>0</x>
       <y>30</y>
-      <width>1021</width>
-      <height>681</height>
+      <width>1381</width>
+      <height>721</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -325,7 +325,6 @@ QSplitter::handle {
     </layout>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <customwidgets>
   <customwidget>
