@@ -486,10 +486,423 @@ bool SwapXY_MHD_USHORT( const std::string& inputMhdPath,  const std::string& out
 }
 */
 
+////////////+
+// 简单 5x7 点阵字体，只包含 X Y 和数字 0-9
+/*
+std::map<char, std::vector<uint8_t>> font5x7 = {
+    {'X',{0b10001,0b01010,0b00100,0b01010,0b10001,0b00000,0b00000}},
+    {'Y',{0b10001,0b01010,0b00100,0b00100,0b00100,0b00000,0b00000}},
+    {'0',{0b01110,0b10001,0b10011,0b10101,0b11001,0b10001,0b01110}},
+    {'1',{0b00100,0b01100,0b00100,0b00100,0b00100,0b00100,0b01110}},
+    {'2',{0b01110,0b10001,0b00001,0b00110,0b01000,0b10000,0b11111}},
+    {'3',{0b11110,0b00001,0b00001,0b01110,0b00001,0b00001,0b11110}},
+    {'4',{0b00010,0b00110,0b01010,0b10010,0b11111,0b00010,0b00010}},
+    {'5',{0b11111,0b10000,0b10000,0b11110,0b00001,0b00001,0b11110}},
+    {'6',{0b01110,0b10000,0b10000,0b11110,0b10001,0b10001,0b01110}},
+    {'7',{0b11111,0b00001,0b00010,0b00100,0b01000,0b01000,0b01000}},
+    {'8',{0b01110,0b10001,0b10001,0b01110,0b10001,0b10001,0b01110}},
+    {'9',{0b01110,0b10001,0b10001,0b01111,0b00001,0b00001,0b01110}}
+};
+
+// 绘制单字符到图像矩阵
+void DrawChar(std::vector<uint8_t>& image, int imgW, int imgH, char c, int startX, int startY, int scale)
+{
+    if (font5x7.find(c) == font5x7.end()) return;
+    auto bitmap = font5x7[c];
+    for (int row = 0; row < 7; ++row)
+    {
+        for (int col = 0; col < 5; ++col)
+        {
+            if ((bitmap[row] >> (4 - col)) & 1)
+            {
+                for (int dy = 0; dy < scale; ++dy)
+                    for (int dx = 0; dx < scale; ++dx)
+                    {
+                        int x = startX + col * scale + dx;
+                        int y = startY + row * scale + dy;
+                        if (x >= 0 && x < imgW&&y >= 0 && y < imgH)
+                        {
+                            int idx = (y*imgW + x);
+                            image[idx] = 255;
+                        }
+                    }
+            }
+        }
+    }
+}
+
+// 绘制字符串到图像中心
+void DrawString(std::vector<uint8_t>& image, int imgW, int imgH, const std::string& text, int scale)
+{
+    int totalW = text.size() * 5 * scale + (text.size() - 1)*scale;
+    int startX = imgW / 2 - totalW / 2;
+    int startY = imgH / 2 - (7 * scale) / 2;
+    for (size_t i = 0; i < text.size(); ++i)
+    {
+        DrawChar(image, imgW, imgH, text[i], startX + i * 6 * scale, startY, scale);
+    }
+}
+
+// 封装生成体数据函数
+void GenerateVolumeMPR(const std::string& prefix)
+{
+    const int dimX = 800;
+    const int dimY = 600;
+    const int dimZ = 400;
+
+    std::vector<uint8_t> volume(dimX*dimY*dimZ, 0);
+
+    int scale = 10; // 每个点放大10x10像素，可调大以占切片中心1/3
+
+    // XY切片
+    for (int z = 0; z < dimZ; ++z)
+    {
+        std::vector<uint8_t> slice(dimX*dimY, 0);
+        DrawString(slice, dimX, dimY, "XY " + std::to_string(z), scale);
+        std::copy(slice.begin(), slice.end(), volume.begin() + z * dimX*dimY);
+    }
+
+    // XZ切片
+    for (int y = 0; y < dimY; ++y)
+    {
+        std::vector<uint8_t> slice(dimX*dimZ, 0);
+        DrawString(slice, dimX, dimZ, "XZ " + std::to_string(y), scale);
+        for (int z = 0; z < dimZ; ++z)
+            for (int x = 0; x < dimX; ++x)
+                volume[z*dimX*dimY + y * dimX + x] = std::max(volume[z*dimX*dimY + y * dimX + x], slice[z*dimX + x]);
+    }
+
+    // YZ切片
+    for (int x = 0; x < dimX; ++x)
+    {
+        std::vector<uint8_t> slice(dimY*dimZ, 0);
+        DrawString(slice, dimY, dimZ, "YZ " + std::to_string(x), scale);
+        for (int z = 0; z < dimZ; ++z)
+            for (int y = 0; y < dimY; ++y)
+                volume[z*dimX*dimY + y * dimX + x] = std::max(volume[z*dimX*dimY + y * dimX + x], slice[z*dimY + y]);
+    }
+
+    // 写 raw
+    std::ofstream rawFile(prefix + ".raw", std::ios::binary);
+    rawFile.write(reinterpret_cast<char*>(volume.data()), volume.size());
+    rawFile.close();
+
+    // 写 mhd
+    std::ofstream mhdFile(prefix + ".mhd");
+    mhdFile << "ObjectType = Image\n";
+    mhdFile << "NDims = 3\n";
+    mhdFile << "DimSize = " << dimX << " " << dimY << " " << dimZ << "\n";
+    mhdFile << "ElementType = MET_UCHAR\n";
+    mhdFile << "ElementDataFile = " << prefix << ".raw\n";
+    mhdFile << "ElementByteOrderMSB = False\n";
+    mhdFile.close();
+
+    std::cout << "生成完成: " << prefix << ".mhd + .raw\n";
+}
+
+
+*/
+
+
+//////////////////////+++++++++++++++++++++++++++
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <type_traits>
+#include <unordered_map>
+// 根据元素类型返回对应的类型
+template <typename T>
+bool ReadRawLayer(std::ifstream& rawIn, int dimX, int dimY, int z, std::vector<T>& layerData)
+{
+    size_t sliceBytes = dimX * dimY * sizeof(T);
+    layerData.resize(dimX * dimY);
+
+    rawIn.seekg(z * sliceBytes, std::ios::beg);  // 定位到第z层
+    rawIn.read(reinterpret_cast<char*>(layerData.data()), sliceBytes);
+
+    if (rawIn.gcount() != sliceBytes)
+    {
+        std::cerr << "读取第 " << z << " 层数据失败。" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+// 写入一层的 .raw 数据
+template <typename T>
+bool WriteRawLayer(std::ofstream& rawOut, int dimX, int dimY, int z, const std::vector<T>& layerData)
+{
+    size_t sliceBytes = dimX * dimY * sizeof(T);
+    rawOut.seekp(z * sliceBytes, std::ios::beg);  // 定位到第z层
+    rawOut.write(reinterpret_cast<const char*>(layerData.data()), sliceBytes);
+
+    return true;
+}
+
+
+template <typename T>
+void RotateLayerZ(std::vector<T>& layerData, int dimX, int dimY)
+{
+    std::vector<T> rotatedLayer(dimX * dimY);
+    //for (int y = 0; y < dimY; ++y)//newx
+    //{
+    //    for (int x = 0; x < dimX; ++x)//newy
+    //    {
+    //        //[y,x]         [x,y]
+    //        int new_x = y;
+    //        int new_MaxX = dimY;
+    //        int new_y = x;
+    //        int new_MaxY = dimX;
+    //        rotatedLayer[new_x * new_MaxY + new_y] = layerData[(dimY - 1 - x) * dimX + y];
+    //    }
+    //}
+    for (int i = 0; i < dimX; ++i)
+    {
+        for (int j = 0; j < dimY; ++j)
+        {
+            // 将 input[i][j] 转换到 output[j][i] 中
+            //*(output + j * dimX + i) = *(input + i * dimY + j);
+            rotatedLayer[j * dimX + i] = layerData[i * dimY + j];
+        }
+    }
+
+    // 更新数据
+    layerData = rotatedLayer;
+}
+
+// 根据元素类型自动选择对应的数据类型
+using TypeMap = std::unordered_map<std::string, std::function<std::shared_ptr<void>()>>;
+
+// 自动适配所有支持的 MET_* 类型
+std::shared_ptr<void> GetDataTypeByElementType(const std::string& elementType)
+{
+    if (elementType == "MET_USHORT")
+        return std::make_shared<std::vector<unsigned short>>();
+    else if (elementType == "MET_UCHAR")
+        return std::make_shared<std::vector<unsigned char>>();
+    else if (elementType == "MET_INT")
+        return std::make_shared<std::vector<int>>();
+    else if (elementType == "MET_FLOAT")
+        return std::make_shared<std::vector<float>>();
+    // 可以继续添加其他 MET_* 类型
+    else
+    {
+        std::cerr << "不支持的元素类型: " << elementType << std::endl;
+        return nullptr;
+    }
+}
+
+// 读取 MHD 文件
+// 去除字符串两端的空白字符
+std::string trim(const std::string& str)
+{
+    size_t first = str.find_first_not_of(" \t\n\r");
+    if (first == std::string::npos)
+        return "";  // 全部为空格的情况
+    size_t last = str.find_last_not_of(" \t\n\r");
+    return str.substr(first, (last - first + 1));
+}
+
+// 读取 MHD 文件
+bool ReadMhdFile(const std::string& mhdPath, int& dimX, int& dimY, int& dimZ,   double& spacingX, double& spacingY, double& spacingZ,
+    double& originX, double& originY, double& originZ,  std::string& elementType, std::string& rawFileName, std::string& byteOrder)
+{
+    std::ifstream mhdIn(mhdPath);
+    if (!mhdIn.is_open())
+    {
+        std::cerr << "无法打开 MHD 文件: " << mhdPath << std::endl;
+        return false;
+    }
+
+    std::string line;
+    while (std::getline(mhdIn, line))
+    {
+        std::istringstream iss(line);
+        std::string key, token;
+
+        // 提取key并去除空格
+        std::getline(iss, key, '=');
+        key = trim(key);  // 去掉 key 的前后空格
+
+        if (key.empty()) continue;  // 跳过空行
+
+        // 读取等号后的内容
+        std::getline(iss, token);
+        token = trim(token);  // 去掉 token 的前后空格
+
+        if (key == "DimSize")
+        {
+            std::istringstream tokenStream(token);
+            tokenStream >> dimX >> dimY >> dimZ;
+        }
+        else if (key == "ElementType")
+        {
+            elementType = token;
+        }
+        else if (key == "ElementSpacing")
+        {
+            std::istringstream tokenStream(token);
+            tokenStream >> spacingX >> spacingY >> spacingZ;
+        }
+        else if (key == "Origin" || key == "Offset")
+        {
+            std::istringstream tokenStream(token);
+            tokenStream >> originX >> originY >> originZ;
+        }
+        else if (key == "ElementDataFile")
+        {
+            rawFileName = token;
+        }
+        else if (key == "ElementByteOrderMSB")
+        {
+            byteOrder = token;
+        }
+    }
+    // 2. 构造输入 .raw 文件的完整路径（与 .mhd 在同一目录）
+    std::string inputRawPath;
+    size_t pos = mhdPath.find_last_of("/\\");
+    if (pos != std::string::npos)
+    {
+        inputRawPath = mhdPath.substr(0, pos + 1) + rawFileName;
+    }
+    else
+    {
+        inputRawPath = rawFileName;   // 同目录
+    }
+
+    std::ifstream rawIn(inputRawPath, std::ios::binary);
+    if (!rawIn.is_open())
+    {
+        std::cerr << "无法打开 RAW 文件: " << inputRawPath << std::endl;
+        return false;
+    }
+    rawFileName = inputRawPath;
+
+    mhdIn.close();
+    return true;
+}
+// 处理旋转操作
+bool RotateImage(const std::string& inputMhdPath, const std::string& outputMhdPath)
+{
+    int dimX, dimY, dimZ;
+    double spacingX, spacingY, spacingZ;
+    double originX, originY, originZ;
+    std::string elementType, rawFileName, byteOrder;
+
+    // 1. 读取 MHD 文件
+    if (!ReadMhdFile(inputMhdPath, dimX, dimY, dimZ, spacingX, spacingY, spacingZ,
+        originX, originY, originZ, elementType, rawFileName, byteOrder))
+    {
+        return false;
+    }
+
+    // 2. 获取对应的数据类型
+    auto dataType = GetDataTypeByElementType(elementType);
+    if (!dataType)
+    {
+        return false;
+    }
+
+    // 3. 打开输入和输出的 RAW 文件
+    std::ifstream rawIn(rawFileName, std::ios::binary);
+    if (!rawIn.is_open())
+    {
+        std::cerr << "无法打开输入 RAW 文件: " << rawFileName << std::endl;
+        return false;
+    }
+
+    std::ofstream rawOut(outputMhdPath + ".rotated.raw", std::ios::binary);
+    if (!rawOut.is_open())
+    {
+        std::cerr << "无法打开输出 RAW 文件: " << outputMhdPath + ".rotated.raw" << std::endl;
+        return false;
+    }
+
+    // 使用正确类型的读取和写入
+    if (elementType == "MET_USHORT")
+    {
+        auto layerData = std::static_pointer_cast<std::vector<unsigned short>>(dataType);
+        for (int z = 0; z < dimZ; ++z)
+        {
+            if (!ReadRawLayer(rawIn, dimX, dimY, z, *layerData))
+                return false;
+
+            RotateLayerZ(*layerData, dimX, dimY);
+
+            if (!WriteRawLayer(rawOut, dimX, dimY, z, *layerData))
+                return false;
+        }
+    }
+    else if (elementType == "MET_UCHAR")
+    {
+        auto layerData = std::static_pointer_cast<std::vector<unsigned char>>(dataType);
+        for (int z = 0; z < dimZ; ++z)
+        {
+            if (!ReadRawLayer(rawIn, dimX, dimY, z, *layerData))
+                return false;
+
+            RotateLayerZ(*layerData, dimX, dimY);
+
+            if (!WriteRawLayer(rawOut, dimX, dimY, z, *layerData))
+                return false;
+        }
+    }
+    else
+    {
+        std::cerr << "暂时不支持该类型的旋转: " << elementType << std::endl;
+        return false;
+    }
+
+    // 4. 写入新的 MHD 文件
+    std::ofstream mhdOut(outputMhdPath);
+    if (!mhdOut.is_open())
+    {
+        std::cerr << "无法创建 MHD 文件: " << outputMhdPath << std::endl;
+        return false;
+    }
+
+    mhdOut << "ObjectType = Image\n"
+        << "NDims = 3\n"
+        << "DimSize = " << dimY << " " << dimX << " " << dimZ << "\n"  // X, Y 交换
+        << "ElementType = " << elementType << "\n"
+        << "ElementSpacing = " << spacingY << " " << spacingX << " " << spacingZ << "\n"
+        << "Offset = " << originX << " " << originY << " " << originZ << "\n"
+        << "ElementByteOrderMSB = " << byteOrder << "\n"
+        << "ElementDataFile = " << rawFileName + ".rotated.raw\n"
+        << "BinaryData = True\n"
+        << "BinaryDataByteOrderMSB = False\n";
+
+    mhdOut.close();
+    std::cout << "转换成功！输出 MHD 文件：" << outputMhdPath << std::endl;
+    return true;
+}
+
+
+
+
+//////////////////////////++++++++++++++++++++++++++++++++
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
   
+
+    // 输入和输出的 MHD 文件路径
+    //std::string inputMhdPath = "D:/CT_3D/Test_Data/ID/id_ct.mhd";
+    //std::string outputMhdPath = "D:/CT_3D/Test_Data/ID/id_ctyx.mhd";
+    //
+    //// 执行图像旋转
+    //if (!RotateImage(inputMhdPath, outputMhdPath))
+    //{
+    //    std::cerr << "图像旋转失败" << std::endl;
+    //    return -1;
+    //}
+    //GenerateVolumeMPR("D:/CT_3D/Test_Data/ID/id_ct",true);
+
     //if (0)// MHD--->dicom
     //{
     //    //SwapXY_MHD_USHORT("E:/Temp_down/CT-2026-04-04-11-54-12/Volume.mhd", "E:/Temp_down/CT-2026-04-04-11-54-12/YXVolume.mhd");

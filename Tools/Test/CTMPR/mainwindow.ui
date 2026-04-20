@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1401</width>
-    <height>768</height>
+    <width>1235</width>
+    <height>685</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QSplitter" name="m_SplitterLR">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>30</y>
-      <width>1381</width>
-      <height>721</height>
+      <x>10</x>
+      <y>40</y>
+      <width>1221</width>
+      <height>631</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -268,7 +268,7 @@ QSplitter::handle {
      <rect>
       <x>10</x>
       <y>6</y>
-      <width>721</width>
+      <width>821</width>
       <height>25</height>
      </rect>
     </property>
@@ -316,9 +316,39 @@ QSplitter::handle {
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="m_Dicom">
+      <widget class="QRadioButton" name="m_NoAll">
        <property name="text">
-        <string>---&gt;DIC(or YX)</string>
+        <string>Null</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="m_YxRaw">
+       <property name="text">
+        <string>YX- RAW</string>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="m_StandardData">
+       <property name="text">
+        <string>Standard-Data</string>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="m_DicData">
+       <property name="text">
+        <string>Dic-Data</string>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

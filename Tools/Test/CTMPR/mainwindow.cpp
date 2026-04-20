@@ -23,12 +23,170 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QtConcurrent/QtConcurrent>
+#include <QMessageBox>
+#include <QFileInfo>
 
 #ifdef _WIN32
 #include <direct.h>   // Windows: _mkdir
 #define mkdir(dir, mode) _mkdir(dir)   // Windows 不需要权限参数
 #endif
-///
+////////////////////////////////////////////////////////////////////////////////////////////////
+// 点阵字体（X,Y,0-9）
+std::map<char, std::vector<uint8_t>> font5x7 = 
+{
+    {'X',{0b10001,0b01010,0b00100,0b01010,0b10001,0b00000,0b00000}},
+    {'Y',{0b10001,0b01010,0b00100,0b00100,0b00100,0b00000,0b00000}},
+    {'0',{0b01110,0b10001,0b10011,0b10101,0b11001,0b10001,0b01110}},
+    {'1',{0b00100,0b01100,0b00100,0b00100,0b00100,0b00100,0b01110}},
+    {'2',{0b01110,0b10001,0b00001,0b00110,0b01000,0b10000,0b11111}},
+    {'3',{0b11110,0b00001,0b00001,0b01110,0b00001,0b00001,0b11110}},
+    {'4',{0b00010,0b00110,0b01010,0b10010,0b11111,0b00010,0b00010}},
+    {'5',{0b11111,0b10000,0b10000,0b11110,0b00001,0b00001,0b11110}},
+    {'6',{0b01110,0b10000,0b10000,0b11110,0b10001,0b10001,0b01110}},
+    {'7',{0b11111,0b00001,0b00010,0b00100,0b01000,0b01000,0b01000}},
+    {'8',{0b01110,0b10001,0b10001,0b01110,0b10001,0b10001,0b01110}},
+    {'9',{0b01110,0b10001,0b10001,0b01111,0b00001,0b00001,0b01110}}
+};
+
+// 绘制单字符
+template<typename T>
+void DrawChar(std::vector<T>& image, int imgW, int imgH, char c, int startX, int startY, int scale, T val)
+{
+    if (font5x7.find(c) == font5x7.end()) return;
+
+    auto bitmap = font5x7[c];
+    for (int row = 0; row < 7; ++row)
+        for (int col = 0; col < 5; ++col)
+            if ((bitmap[row] >> (4 - col)) & 1)
+                for (int dy = 0; dy < scale; ++dy)
+                    for (int dx = 0; dx < scale; ++dx)
+                    {
+                        int x = startX + col * scale + dx;
+                        int y = startY + row * scale + dy;
+                        if (x >= 0 && x < imgW&&y >= 0 && y < imgH)
+                            image[y*imgW + x] = val;
+                    }
+}
+
+// 绘制字符串到中心
+template<typename T>
+void DrawString(std::vector<T>& image, int imgW, int imgH, const std::string& text, int scale, T val)
+{
+    int totalW = text.size() * 5 * scale + (text.size() - 1)*scale;
+    int startX = imgW / 2 - totalW / 2;
+    int startY = imgH / 2 - 7 * scale / 2;
+    for (size_t i = 0; i < text.size(); ++i)
+        DrawChar(image, imgW, imgH, text[i], startX + i * 6 * scale, startY, scale, val);
+}
+
+// 封装生成体数据函数，增加 useUShort 参数
+void GenerateVolumeMPR(const std::string& prefix, bool useUShort = false)
+{
+    const int dimX = 800;
+    const int dimY = 600;
+    const int dimZ = 400;
+    int scale = 10; // 字符块放大倍数
+
+    if (useUShort)
+    {
+        std::vector<uint16_t> volume(dimX*dimY*dimZ, 0);
+
+        // XY
+        for (int z = 0; z < dimZ; ++z)
+        {
+            std::vector<uint16_t> slice(dimX*dimY, 0);
+            DrawString<uint16_t>(slice, dimX, dimY, "XY " + std::to_string(z), scale, 65535);
+            std::copy(slice.begin(), slice.end(), volume.begin() + z * dimX*dimY);
+        }
+
+        // XZ
+        for (int y = 0; y < dimY; ++y)
+        {
+            std::vector<uint16_t> slice(dimX*dimZ, 0);
+            //DrawString(slice, dimX, dimZ, "XZ " + std::to_string(y), scale, 65535);
+            DrawString<uint16_t>(slice, dimX, dimZ, "XZ " + std::to_string(y), scale, 65535);
+            for (int z = 0; z < dimZ; ++z)
+                for (int x = 0; x < dimX; ++x)
+                    volume[z*dimX*dimY + y * dimX + x] = std::max(volume[z*dimX*dimY + y * dimX + x], slice[z*dimX + x]);
+        }
+
+        // YZ
+        for (int x = 0; x < dimX; ++x)
+        {
+            std::vector<uint16_t> slice(dimY*dimZ, 0);
+            DrawString<uint16_t>(slice, dimY, dimZ, "YZ " + std::to_string(x), scale, 65535);
+            for (int z = 0; z < dimZ; ++z)
+                for (int y = 0; y < dimY; ++y)
+                    volume[z*dimX*dimY + y * dimX + x] = std::max(volume[z*dimX*dimY + y * dimX + x], slice[z*dimY + y]);
+        }
+
+        // 写 raw
+        std::ofstream rawFile(prefix + ".raw", std::ios::binary);
+        rawFile.write(reinterpret_cast<char*>(volume.data()), volume.size() * sizeof(uint16_t));
+        rawFile.close();
+
+        // 写 mhd
+        std::ofstream mhdFile(prefix + ".mhd");
+        mhdFile << "ObjectType = Image\n";
+        mhdFile << "NDims = 3\n";
+        mhdFile << "DimSize = " << dimX << " " << dimY << " " << dimZ << "\n";
+        mhdFile << "ElementType = MET_USHORT\n";
+        mhdFile << "ElementDataFile = " << prefix << ".raw\n";
+        mhdFile << "ElementByteOrderMSB = False\n";
+        mhdFile.close();
+    }
+    else
+    {
+        std::vector<uint8_t> volume(dimX*dimY*dimZ, 0);
+
+        // XY
+        for (int z = 0; z < dimZ; ++z)
+        {
+            std::vector<uint8_t> slice(dimX*dimY, 0);
+            DrawString<uint8_t>(slice, dimX, dimY, "XY " + std::to_string(z), scale, 255);
+            std::copy(slice.begin(), slice.end(), volume.begin() + z * dimX*dimY);
+        }
+
+        // XZ
+        for (int y = 0; y < dimY; ++y)
+        {
+            std::vector<uint8_t> slice(dimX*dimZ, 0);
+            DrawString<uint8_t>(slice, dimX, dimZ, "XZ " + std::to_string(y), scale, 255);
+            for (int z = 0; z < dimZ; ++z)
+                for (int x = 0; x < dimX; ++x)
+                    volume[z*dimX*dimY + y * dimX + x] = std::max(volume[z*dimX*dimY + y * dimX + x], slice[z*dimX + x]);
+        }
+
+        // YZ
+        for (int x = 0; x < dimX; ++x)
+        {
+            std::vector<uint8_t> slice(dimY*dimZ, 0);
+            DrawString<uint8_t>(slice, dimY, dimZ, "YZ " + std::to_string(x), scale, 255);
+            for (int z = 0; z < dimZ; ++z)
+                for (int y = 0; y < dimY; ++y)
+                    volume[z*dimX*dimY + y * dimX + x] = std::max(volume[z*dimX*dimY + y * dimX + x], slice[z*dimY + y]);
+        }
+
+        // 写 raw
+        std::ofstream rawFile(prefix + ".raw", std::ios::binary);
+        rawFile.write(reinterpret_cast<char*>(volume.data()), volume.size());
+        rawFile.close();
+
+        // 写 mhd
+        std::ofstream mhdFile(prefix + ".mhd");
+        mhdFile << "ObjectType = Image\n";
+        mhdFile << "NDims = 3\n";
+        mhdFile << "DimSize = " << dimX << " " << dimY << " " << dimZ << "\n";
+        mhdFile << "ElementType = MET_UCHAR\n";
+        mhdFile << "ElementDataFile = " << prefix << ".raw\n";
+        mhdFile << "ElementByteOrderMSB = False\n";
+        mhdFile.close();
+    }
+
+    std::cout << "生成完成: " << prefix << ".mhd + .raw" << std::endl;
+}
+///+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 // 自定义InteractorStyle，只处理右键窗宽窗位
 class vtkRightClickWindowLevelStyle : public vtkInteractorStyleImage
@@ -595,7 +753,6 @@ protected:
 
 vtkStandardNewMacro(RawSliceReader);
 
-
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -1030,14 +1187,23 @@ bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outpu
                 return false;
             }
 
-            // 执行 X/Y 转置：新(x',y') = 原(y, x)
-            for (int y = 0; y < dimY; ++y)
+            //
+            for (int i = 0; i < dimX; ++i)
             {
-                for (int x = 0; x < dimX; ++x)
+                for (int j = 0; j < dimY; ++j)
                 {
-                    transposedSlice[y * dimX + x] = slice[x * dimY + y];
+                    transposedSlice[j * dimX + i] = slice[i * dimY + j];
                 }
             }
+            //
+            // 执行 X/Y 转置：新(x',y') = 原(y, x)
+            //for (int y = 0; y < dimY; ++y)
+            //{
+            //    for (int x = 0; x < dimX; ++x)
+            //    {
+            //        transposedSlice[y * dimX + x] = slice[x * dimY + y];
+            //    }
+            //}
 
             // 写入转置后的一层
             rawOut.write(reinterpret_cast<const char*>(transposedSlice.data()), sliceBytes);
@@ -1098,11 +1264,14 @@ bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outpu
 
 bool MainWindow::Mhd2Stream()
 {
-
+    if (ui->m_NoAll->isChecked())
+    {
+        return 1;
+    }
     std::string OutputDir;
     std::string inputMHDPath = qPrintable(m_Mhdfilename);
 
-    if (ui->m_Dicom->isChecked())
+    if (ui->m_DicData->isChecked())
     {
         size_t lastSep = inputMHDPath.find_last_of("\\/");
         if (lastSep != std::string::npos)
@@ -1123,8 +1292,25 @@ bool MainWindow::Mhd2Stream()
         QString str = QString::number(ElapsedTimer.elapsed());
         QMessageBox::information(nullptr, "ElapsedTimer", str, QMessageBox::Yes, QMessageBox::Yes);//1384070
     }
-    else
+    else if (ui->m_StandardData->isChecked())
     {
+        QElapsedTimer ElapsedTimer;
+        ElapsedTimer.start();
+        size_t lastSep = inputMHDPath.find_last_of("\\/");
+        if (lastSep != std::string::npos)
+        {
+            OutputDir = inputMHDPath.substr(0, lastSep + 1) + "StandardData";   // 临时写死，实际应解析
+            EnsureDirectoryExists(OutputDir);
+        }
+        GenerateVolumeMPR(OutputDir, true);
+        QString str = QString::number(ElapsedTimer.elapsed());
+        QMessageBox::information(nullptr, "ElapsedTimer", str, QMessageBox::Yes, QMessageBox::Yes);//1384070
+        //GenerateVolumeMPR("D:/CT_3D/Test_Data/ID/id_ct", true);
+    }
+    else if (ui->m_YxRaw->isChecked())
+    {
+        QElapsedTimer ElapsedTimer;
+        ElapsedTimer.start();
         // 无路径，只有文件名
         size_t dotPos = inputMHDPath.rfind('.');
         if (dotPos != std::string::npos)
@@ -1136,6 +1322,8 @@ bool MainWindow::Mhd2Stream()
             OutputDir = inputMHDPath + ".yx.mhd";
         }
         bool flag = SwapXY_MHD_USHORT(inputMHDPath, OutputDir);
+        QString str = QString::number(ElapsedTimer.elapsed());
+        QMessageBox::information(nullptr, "ElapsedTimer", str, QMessageBox::Yes, QMessageBox::Yes);//1384070
         return flag;
     }
 
@@ -1176,18 +1364,32 @@ bool  MainWindow::UpdateSliceNumber(int inc)
 
 bool MainWindow::ShowImages()
 {       
+    std::string YxRawDir, inputMHDPath;
+    inputMHDPath = qPrintable(m_Mhdfilename);
+    size_t dotPos = inputMHDPath.rfind('.');
+    if (dotPos != std::string::npos)
+    {
+        YxRawDir = inputMHDPath.substr(0, dotPos) + ".raw.yx";
+    }
+    QFileInfo fileinfo(YxRawDir.c_str());
+    if (!fileinfo.exists())
+    {       
+        QMessageBox::warning(NULL,"警告!", "缺少YX方向的裸数据文件,退出 选 YX-RAW！");
+        return false;
+    }
     ///{ 18739, 13714, 100 };
     m_sliceReaderYZ->SetFileName(qPrintable(m_Mhdfilename));
     m_sliceReaderYZ->Cache(1, -1);
     m_mapperYZ->SetInputConnection(m_sliceReaderYZ->GetOutputPort());
     m_mapperYZ->SetOrientationToX();
-    m_mapperYZ->SetSliceNumber(9369);
+    //m_mapperYZ->SetSliceNumber(9369);
+    m_mapperYZ->SetSliceNumber(9);
     m_mapperYZ->StreamingOn();
     m_mapperYZ->SliceAtFocalPointOff();
     m_mapperYZ->SliceFacesCameraOff();
     m_imageSliceYZ->SetMapper(m_mapperYZ);
-    m_imageSliceYZ->GetProperty()->SetColorWindow(4000);
-    m_imageSliceYZ->GetProperty()->SetColorLevel(1000);
+    //m_imageSliceYZ->GetProperty()->SetColorWindow(4000);
+    //m_imageSliceYZ->GetProperty()->SetColorLevel(1000);
     m_imageSliceYZ->GetProperty()->SetInterpolationTypeToNearest();
     m_rendererYZ->AddViewProp(m_imageSliceYZ);
     m_vtkRenderWindowYZ = ui->m_coronal2DView->renderWindow();
@@ -1201,7 +1403,7 @@ bool MainWindow::ShowImages()
     m_rendererYZ->GetActiveCamera()->SetPosition(1, 0, 0);
     //m_rendererYZ->GetActiveCamera()->SetViewUp(0, 0, 1);
     m_rendererYZ->GetActiveCamera()->SetViewUp(0, 1, 0);// 旋转90度
-    m_rendererYZ->ResetCamera();                                   // 自动适配图像大小
+    m_rendererYZ->ResetCamera(); // 自动适配图像位置
     m_vtkRenderWindowYZ->Render();    
     
 
@@ -1227,7 +1429,7 @@ bool MainWindow::ShowImages()
     EnableRightClickWindowLevel(ui->m_sagital2DView->interactor(), m_imageSliceXZ, ui->m_sagital2DView);
     m_rendererXZ->GetActiveCamera()->SetPosition(0, -1, 0);
     m_rendererXZ->GetActiveCamera()->SetViewUp(0, 0, 1);
-    m_rendererXZ->ResetCamera();                                   // 自动适配图像大小
+    m_rendererXZ->ResetCamera(); // 自动适配图像位置
     m_vtkRenderWindowXZ->Render();
     /// TODO 
 
@@ -1246,14 +1448,9 @@ bool MainWindow::ShowImages()
     m_rendererXY->AddViewProp(m_imageSliceXY);
     m_vtkRenderWindowXY = ui->m_axial2DView->renderWindow();
     m_vtkRenderWindowXY->AddRenderer(m_rendererXY);
-
     ui->m_axial2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXY);
     ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
     EnableRightClickWindowLevel(ui->m_axial2DView->interactor(), m_imageSliceXY, ui->m_axial2DView);
-    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::RightButtonPressEvent);    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
-    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MiddleButtonPressEvent);
-    //ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::CharEvent);    //m_vtkRenderWindowXY->SetDesiredUpdateRate(30.0);   // 交互帧率优先
-
     m_vtkRenderWindowXY->Render();
     return 1;
 }
@@ -1264,7 +1461,9 @@ bool MainWindow::MHD_To_DICOM_CT_Stream(DataInfo *info)//const std::string& mhdP
 
     return MHD_To_CT_Stream(data);
 }
-
+/*
+VTK9.4；C++；QT5.12.12；VC2017； 使用文件流的方式，创建一个mhd 的体数据数据(VTK9.4支持读取 )；分辨率 xyz -> 800,600,400; 要求XY 切片全部显示 XY 字母，并显示当前XY的切片序列号；同理类推 XZ YZ切片数据一样具体各自切片的标识和序号；尽量一个函数封装完成，纯C++ 方式完成
+*/
 MainWindow::~MainWindow()
 {
     delete ui;
