@@ -1408,10 +1408,11 @@ bool MainWindow::ShowImages()
     m_sliceReaderXZ->SetFileName(qPrintable(m_Mhdfilename));
     m_sliceReader->SetFileName(qPrintable(m_Mhdfilename));
 
-    m_sliceReaderYZ->Cache(1, -1);
-    m_sliceReaderXZ->Cache(2, -1);
-    m_sliceReader->Cache(0, -1);
-
+    //m_sliceReaderYZ->Cache(1, -1);
+    //m_sliceReaderXZ->Cache(2, -1);
+    //m_sliceReader->Cache(0, -1);
+    //Render();
+    
     AsyncThread(
         // 子线程执行
         [](RawSliceReader *reader1, RawSliceReader *reader2, RawSliceReader *reader3, QProgressData* q) -> int
@@ -1429,7 +1430,6 @@ bool MainWindow::ShowImages()
         [&](int result) 
             {
                 //qDebug() << "Back to main thread:" << QThread::currentThread();
-                //
                 if (result == 1)
                 {
                     //qDebug() << "Result =" << result;
@@ -1438,7 +1438,7 @@ bool MainWindow::ShowImages()
             },
             m_sliceReaderYZ, m_sliceReaderXZ, m_sliceReader, m_qProgressBar
         );
-
+    
     return 1;
 }
 
@@ -1463,6 +1463,7 @@ bool MainWindow::Render()
     ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
     ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);
     ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
+
 
     // 假设已有 vtkImageSlice* imageSlice
     EnableRightClickWindowLevel(ui->m_sagital2DView->interactor(), m_imageSliceYZ, ui->m_sagital2DView, m_mapperYZ);
@@ -1517,6 +1518,7 @@ bool MainWindow::Render()
     ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
     ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);
     ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
+
     EnableRightClickWindowLevel(ui->m_axial2DView->interactor(), m_imageSliceXY, ui->m_axial2DView, m_mapperXY);
     m_rendererXY->GetActiveCamera()->SetPosition(0, 0, 1);
     m_rendererXY->GetActiveCamera()->SetViewUp(0, -1, 0);//这里调整和 INimage3D.exe 现在一致
