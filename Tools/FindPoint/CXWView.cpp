@@ -432,6 +432,22 @@ void CCXWView::OnDraw(CDC* /*pDC*/)
         tip = _T("备注:EXCEL文件数据格式.第一个表格,第一行:第一二列分别为X、Y,第二行第三列为圆心到交点距离,第二行开始时对应的数据,否则数据加载失败!");
         dc->TextOut(1, 30, tip);
     }
+    /*
+    int a = 0;
+    OFString message = "计算可能出错，计算超出10000次,强制终止?否则重置计数开始计算";
+    OFLOG_ERROR(findPointLogger, message.c_str());
+    if (MessageBox(NULL, message.c_str(), MB_YESNO) == IDYES)
+    {
+        a = 1;
+        MessageBox(NULL, "yes", MB_YESNO);
+    }
+    else
+    {
+        MessageBox(NULL, "no", MB_YESNO);
+        a = 2;
+    }    
+    */
+
     //int point_number = g_display_Xvalue.size();
     // TODO:  在此处为本机数据添加绘制代码
 }
@@ -707,14 +723,20 @@ void CCXWView::ReadExcelFie(CString pathfilename, CString filename)
             }
             else
             {
-                times++;
-                if (times > 10000)
-                {
-                    OFString message = "计算可能出错，强制终止！，目前计算次数超出10000次";
-                    OFLOG_ERROR(findPointLogger, message.c_str());
-                    MessageBox(message.c_str());
-                    break;
-                }
+               //times++;
+               //if (times > 10000)
+               //{
+               //    OFString message = "计算可能出错，计算超出10000次,强制终止?否则重置计数继续计算";
+               //    OFLOG_ERROR(findPointLogger, message.c_str());
+               //    if (MessageBox(NULL, message.c_str(), MB_YESNO) == IDYES)
+               //    {
+               //        break;
+               //    }
+               //    else
+               //    {
+               //        times = 1;
+               //    }
+               //}
             }
         }
         //对计算的结果保存

@@ -287,6 +287,100 @@ void vtkResliceImageViewerP::IncrementSlice(int inc)
 }
 //--------------
 
+//+++++
+//2026.01.04 鼠标右键设置窗位
+class CustomWLInteractorStyle : public vtkInteractorStyleTrackballCamera
+{
+public:
+    static CustomWLInteractorStyle* New();
+    vtkTypeMacro(CustomWLInteractorStyle, vtkInteractorStyleTrackballCamera);
+
+    void SetVolume(vtkVolume* volume)
+    {
+        this->TargetVolume = volume;
+    }
+
+    // 鼠标事件重载
+    virtual void OnRightButtonDown() override
+    {
+        this->RightButtonPressed = true;
+        this->LastX = this->Interactor->GetEventPosition()[0];
+        this->LastY = this->Interactor->GetEventPosition()[1];
+
+        if (TargetVolume)
+        {
+            auto colorFunc = TargetVolume->GetProperty()->GetRGBTransferFunction();
+            double range[2];
+            colorFunc->GetRange(range);
+            InitialLevel = (range[0] + range[1]) / 2.0;
+            InitialWindow = range[1] - range[0];
+        }
+
+        this->Superclass::OnRightButtonDown();
+    }
+
+    virtual void OnRightButtonUp() override
+    {
+        this->RightButtonPressed = false;
+        this->Superclass::OnRightButtonUp();
+    }
+    virtual void OnMouseMove() override
+    {
+        if (this->RightButtonPressed && TargetVolume)
+        {
+            int x = this->Interactor->GetEventPosition()[0];
+            int y = this->Interactor->GetEventPosition()[1];
+
+            int dx = x - LastX;
+            int dy = y - LastY;
+
+            double newWindow = InitialWindow + dx * 5.0;  // 调整系数可调
+            double newLevel = InitialLevel + dy * 2.0;
+
+            if (newWindow < 1.0)
+                newWindow = 1.0;
+
+            // 重新设置传递函数
+            double minVal = newLevel - newWindow / 2.0;
+            double maxVal = newLevel + newWindow / 2.0;
+
+            auto colorFunc = vtkSmartPointer<vtkColorTransferFunction>::New();
+            colorFunc->AddRGBPoint(minVal, 0.0, 0.0, 0.0);
+            colorFunc->AddRGBPoint(maxVal, 1.0, 1.0, 1.0);
+
+            auto opacityFunc = vtkSmartPointer<vtkPiecewiseFunction>::New();
+            opacityFunc->AddPoint(minVal, 0.0);
+            opacityFunc->AddPoint(maxVal, 1.0);
+
+            TargetVolume->GetProperty()->SetColor(colorFunc);
+            TargetVolume->GetProperty()->SetScalarOpacity(opacityFunc);
+
+            this->Interactor->GetRenderWindow()->Render();
+        }
+        else
+        {
+            this->Superclass::OnMouseMove();
+        }
+    }
+protected:
+    CustomWLInteractorStyle();
+    ~CustomWLInteractorStyle() override = default;
+
+private:
+    vtkSmartPointer<vtkVolume> TargetVolume;
+    vtkSmartPointer<vtkColorTransferFunction> oldColorTransferFunction;
+
+    bool RightButtonPressed = false;
+    int LastX = 0;
+    int LastY = 0;
+
+    double InitialWindow = 0;
+    double InitialLevel = 0;
+};
+vtkStandardNewMacro(CustomWLInteractorStyle);
+CustomWLInteractorStyle::CustomWLInteractorStyle() = default;
+//+++++
+
 QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent), ui(new Ui::QFourpaneviewer)
 {
     ui->setupUi(this);
@@ -392,6 +486,9 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent), ui(new Ui::
     ui->m_editorsWidget->setCurrentIndex(1);//设置坐标系方式选择点,另外一个是具体点坐标输入方式设置颜色及透明度
     ui->m_editorsWidget->setStyleSheet("background-color:rgb(240,240,240)}");
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    m_interactorstyle        = CustomWLInteractorStyle::New();
+    m_renderWindowInteractor = vtkRenderWindowInteractor::New();
 }
 
 void QFourpaneviewer::TestAutoHis()
@@ -1216,6 +1313,11 @@ void QFourpaneviewer::ShowImage3D()
     //重设相机的剪切范围；
     m_renderer->ResetCameraClippingRange();
     m_renderer->GetActiveCamera()->SetRoll(180);//角度调整和XY一致
+
+    //
+    m_renderWindowInteractor->SetRenderWindow(ui->m_image3DView->renderWindow());
+    m_interactorstyle->SetVolume(m_vtkVolume);
+    m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
 
     //透明度参数
     m_renderer->SetUseDepthPeeling(1);
