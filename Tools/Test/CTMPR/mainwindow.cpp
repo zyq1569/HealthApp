@@ -32,6 +32,58 @@
 #define mkdir(dir, mode) _mkdir(dir)   // Windows 不需要权限参数
 #endif
 
+#include <type_traits>
+
+// -------------------- 非 void 版本 --------------------
+template<typename R, typename Callback>
+typename std::enable_if<!std::is_void<R>::value>::type
+handleResult(QFutureWatcher<R>* watcher, Callback onFinished)
+{
+    onFinished(watcher->result());
+}
+
+// -------------------- void 版本 --------------------
+template<typename R, typename Callback>
+typename std::enable_if<std::is_void<R>::value>::type
+handleResult(QFutureWatcher<R>* watcher, Callback onFinished)
+{
+    onFinished();
+}
+
+// -------------------- 主函数 --------------------
+template<typename Func, typename Callback, typename... Args>
+void runAsync(Func task, Callback onFinished, Args&&... args)
+{
+    using ReturnType = typename std::result_of<Func(Args...)>::type;
+
+    QFutureWatcher<ReturnType>* watcher = new QFutureWatcher<ReturnType>();
+
+    QObject::connect(watcher, &QFutureWatcher<ReturnType>::finished,
+        [watcher, onFinished]() {
+        handleResult<ReturnType>(watcher, onFinished);
+        watcher->deleteLater();
+    });
+
+    watcher->setFuture(QtConcurrent::run(task, std::forward<Args>(args)...));
+}
+
+//template<typename Func, typename Callback, typename... Args>
+//void runAsync(Func task, Callback onFinished, Args&&... args)
+//{
+//    using ReturnType = typename std::result_of<
+//        Func(typename std::decay<Args>::type...)
+//    >::type;
+//
+//    QFutureWatcher<ReturnType>* watcher = new QFutureWatcher<ReturnType>();
+//
+//    QObject::connect(watcher, &QFutureWatcher<ReturnType>::finished,
+//        [watcher, onFinished]() {
+//        handleResult<ReturnType>(watcher, onFinished);
+//        watcher->deleteLater();
+//    });
+//
+//    watcher->setFuture(QtConcurrent::run(task, std::forward<Args>(args)...));
+//}
 //////////////+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ////////////////////////////////////////////////////////
 // ---------- 类型映射 ----------
@@ -1333,6 +1385,7 @@ bool  MainWindow::UpdateSliceNumber(int inc)
     return 1;
 }
 
+
 bool MainWindow::ShowImages()
 {       
     std::string YxRawDir, inputMHDPath;
@@ -1351,11 +1404,50 @@ bool MainWindow::ShowImages()
     m_qProgressBar->show();
     ///{ 18739, 13714, 100 };
     m_sliceReaderYZ->SetFileName(qPrintable(m_Mhdfilename));
+    m_sliceReaderXZ->SetFileName(qPrintable(m_Mhdfilename));
+    m_sliceReader->SetFileName(qPrintable(m_Mhdfilename));
+
     m_sliceReaderYZ->Cache(1, -1);
+    m_sliceReaderXZ->Cache(2, -1);
+    m_sliceReader->Cache(0, -1);
+
+    runAsync(
+        // 子线程执行
+        [](RawSliceReader *reader1, RawSliceReader *reader2, RawSliceReader *reader3, QProgressData* q) -> int {
+        //qDebug() << "Worker thread:" << QThread::currentThread();
+        //QThread::sleep(2);
+        reader1->Cache(1, -1);
+        reader2->Cache(2, -1);
+        reader3->Cache(0, -1);
+
+        return 1;
+        },
+
+        //主线程
+        [&](int result) {
+        //qDebug() << "Back to main thread:" << QThread::currentThread();
+        //
+        if (result == 1)
+        {
+            qDebug() << "Result =" << result;
+            Render();
+        }
+        },
+
+        m_sliceReaderYZ, m_sliceReaderXZ, m_sliceReader, m_qProgressBar
+        );
+
+
+    return 1;
+}
+
+bool MainWindow::Render()
+{
+    m_qProgressBar->hide();
     m_mapperYZ->SetInputConnection(m_sliceReaderYZ->GetOutputPort());
     m_mapperYZ->SetOrientationToX();
     //m_mapperYZ->SetSliceNumber(9369);
-    m_mapperYZ->SetSliceNumber(m_sliceReaderYZ->m_Dim[0]/2);
+    m_mapperYZ->SetSliceNumber(m_sliceReaderYZ->m_Dim[0] / 2);
     m_mapperYZ->StreamingOn();
     m_mapperYZ->SliceAtFocalPointOff();
     m_mapperYZ->SliceFacesCameraOff();
@@ -1378,14 +1470,13 @@ bool MainWindow::ShowImages()
     m_rendererYZ->GetActiveCamera()->SetViewUp(0, 0, 1);
     //m_rendererYZ->GetActiveCamera()->SetViewUp(0, 1, 0);// 旋转90度
     m_rendererYZ->ResetCamera(); // 自动适配图像位置
-    m_vtkRenderWindowYZ->Render();    
-    
+    m_vtkRenderWindowYZ->Render();
+
     ///++++++++++++++++++++++++++XZ+++++++++++++++++++++++++++++++++++++++++++++++++
-    m_sliceReaderXZ->SetFileName(qPrintable(m_Mhdfilename));
-    m_sliceReaderXZ->Cache(2, -1);
+
     m_mapperXZ->SetInputConnection(m_sliceReaderXZ->GetOutputPort());
     m_mapperXZ->SetOrientationToY();
-    m_mapperXZ->SetSliceNumber(m_sliceReaderXZ->m_Dim[1]/2);
+    m_mapperXZ->SetSliceNumber(m_sliceReaderXZ->m_Dim[1] / 2);
     m_mapperXZ->StreamingOn();
     m_mapperXZ->SliceAtFocalPointOff();
     m_mapperXZ->SliceFacesCameraOff();
@@ -1408,14 +1499,9 @@ bool MainWindow::ShowImages()
     m_vtkRenderWindowXZ->Render();
     /// TODO 
 
-    m_sliceReader->SetFileName(qPrintable(m_Mhdfilename));
-    m_sliceReader->Cache(0, -1);
-
-    m_qProgressBar->hide();
-
     m_mapperXY->SetInputConnection(m_sliceReader->GetOutputPort());
     m_mapperXY->SetOrientationToZ();
-    m_mapperXY->SetSliceNumber(m_sliceReader->m_Dim[2]/2);
+    m_mapperXY->SetSliceNumber(m_sliceReader->m_Dim[2] / 2);
     m_mapperXY->StreamingOn();
     m_mapperXY->SliceAtFocalPointOff();
     m_mapperXY->SliceFacesCameraOff();
@@ -1436,9 +1522,9 @@ bool MainWindow::ShowImages()
     m_rendererXY->ResetCamera(); // 自动适配图像位置
     m_vtkRenderWindowXY->Render();
 
-    return 1;
-}
+    return true;
 
+}
 bool MainWindow::MHD_To_DICOM_CT_Stream(DataInfo *info)//const std::string& mhdPath, const std::string& outputDir)
 {
     DataInfo data(info->m_inputPath, info->m_outputDir);
