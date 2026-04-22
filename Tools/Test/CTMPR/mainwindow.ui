@@ -289,6 +289,9 @@ QSplitter::handle {
      </item>
      <item>
       <widget class="QPushButton" name="m_Up">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>上一切面</string>
        </property>
@@ -296,6 +299,9 @@ QSplitter::handle {
      </item>
      <item>
       <widget class="QPushButton" name="m_Down">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>下一切面</string>
        </property>
@@ -334,6 +340,9 @@ QSplitter::handle {
      </item>
      <item>
       <widget class="QRadioButton" name="m_StandardData">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Standard-Data</string>
        </property>
@@ -344,6 +353,9 @@ QSplitter::handle {
      </item>
      <item>
       <widget class="QRadioButton" name="m_DicData">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Dic-Data</string>
        </property>
