@@ -52,17 +52,18 @@ handleResult(QFutureWatcher<R>* watcher, Callback onFinished)
 
 // -------------------- 主函数 --------------------
 template<typename Func, typename Callback, typename... Args>
-void runAsync(Func task, Callback onFinished, Args&&... args)
+void AsyncThread(Func task, Callback onFinished, Args&&... args)
 {
     using ReturnType = typename std::result_of<Func(Args...)>::type;
 
     QFutureWatcher<ReturnType>* watcher = new QFutureWatcher<ReturnType>();
 
-    QObject::connect(watcher, &QFutureWatcher<ReturnType>::finished,
-        [watcher, onFinished]() {
-        handleResult<ReturnType>(watcher, onFinished);
-        watcher->deleteLater();
-    });
+    QObject::connect(watcher, &QFutureWatcher<ReturnType>::finished, [watcher, onFinished]()
+            {
+                handleResult<ReturnType>(watcher, onFinished);
+                watcher->deleteLater();
+            }
+    );
 
     watcher->setFuture(QtConcurrent::run(task, std::forward<Args>(args)...));
 }
@@ -1411,32 +1412,32 @@ bool MainWindow::ShowImages()
     m_sliceReaderXZ->Cache(2, -1);
     m_sliceReader->Cache(0, -1);
 
-    runAsync(
+    AsyncThread(
         // 子线程执行
-        [](RawSliceReader *reader1, RawSliceReader *reader2, RawSliceReader *reader3, QProgressData* q) -> int {
-        //qDebug() << "Worker thread:" << QThread::currentThread();
-        //QThread::sleep(2);
-        reader1->Cache(1, -1);
-        reader2->Cache(2, -1);
-        reader3->Cache(0, -1);
+        [](RawSliceReader *reader1, RawSliceReader *reader2, RawSliceReader *reader3, QProgressData* q) -> int
+        {
+            //qDebug() << "Worker thread:" << QThread::currentThread();
+            //QThread::sleep(2);
+            reader1->Cache(1, -1);
+            reader2->Cache(2, -1);
+            reader3->Cache(0, -1);
 
-        return 1;
+            return 1;
         },
 
         //主线程
-        [&](int result) {
-        //qDebug() << "Back to main thread:" << QThread::currentThread();
-        //
-        if (result == 1)
-        {
-            qDebug() << "Result =" << result;
-            Render();
-        }
-        },
-
-        m_sliceReaderYZ, m_sliceReaderXZ, m_sliceReader, m_qProgressBar
+        [&](int result) 
+            {
+                //qDebug() << "Back to main thread:" << QThread::currentThread();
+                //
+                if (result == 1)
+                {
+                    //qDebug() << "Result =" << result;
+                    Render();
+                }
+            },
+            m_sliceReaderYZ, m_sliceReaderXZ, m_sliceReader, m_qProgressBar
         );
-
 
     return 1;
 }
