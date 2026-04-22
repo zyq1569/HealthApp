@@ -886,32 +886,133 @@ bool RotateImage(const std::string& inputMhdPath, const std::string& outputMhdPa
 
 //////////////////////////++++++++++++++++++++++++++++++++
 
+//////////////////////////////////////////////////////////
+
+// BMP 文件头结构体
+#pragma pack(push, 1)
+struct BMPHeader {
+    char signature[2];         // 文件类型 "BM"
+    uint32_t fileSize;         // 文件大小
+    uint32_t reserved;         // 保留字段
+    uint32_t dataOffset;       // 数据偏移量
+};
+
+struct DIBHeader {
+    uint32_t headerSize;       // DIB 头大小
+    int32_t width;             // 图像宽度
+    int32_t height;            // 图像高度
+    uint16_t planes;           // 颜色平面数
+    uint16_t bitsPerPixel;     // 每像素位数
+    uint32_t compression;      // 压缩类型
+    uint32_t imageSize;        // 图像数据大小
+    int32_t xResolution;       // 水平分辨率
+    int32_t yResolution;       // 垂直分辨率
+    uint32_t colorsUsed;       // 调色板颜色数
+    uint32_t importantColors;  // 重要颜色数
+};
+#pragma pack(pop)
+
+void rotateBMP(const std::string& inputFile, const std::string& outputFile) 
+{
+    // 打开输入 BMP 文件
+    std::ifstream inFile(inputFile, std::ios::binary);
+    if (!inFile) 
+    {
+        throw std::runtime_error("无法打开输入文件");
+    }
+
+    // 读取 BMP 文件头
+    BMPHeader bmpHeader;
+    inFile.read(reinterpret_cast<char*>(&bmpHeader), sizeof(BMPHeader));
+
+    if (bmpHeader.signature[0] != 'B' || bmpHeader.signature[1] != 'M') 
+    {
+        throw std::runtime_error("不是有效的 BMP 文件");
+    }
+
+    // 读取 DIB 头
+    DIBHeader dibHeader;
+    inFile.read(reinterpret_cast<char*>(&dibHeader), sizeof(DIBHeader));
+
+    // 读取图像数据
+    int rowSize = (dibHeader.width * dibHeader.bitsPerPixel + 31) / 32 * 4; // 行大小（字节对齐）
+    int dataSize = rowSize * dibHeader.height; // 图像数据大小
+    std::vector<uint8_t> imageData(dataSize);
+    inFile.seekg(bmpHeader.dataOffset, std::ios::beg);
+    inFile.read(reinterpret_cast<char*>(imageData.data()), dataSize);
+    inFile.close();
+
+    // 创建一个新的图像数据（旋转后的图像）
+    std::vector<uint8_t> rotatedData(dataSize);
+    int newRowSize = (dibHeader.height * dibHeader.bitsPerPixel + 31) / 32 * 4; // 旋转后的行大小
+
+    // 旋转图像数据：绕最左下角点 90 度
+    for (int y = 0; y < dibHeader.height; ++y) 
+    {
+        for (int x = 0; x < dibHeader.width; ++x) 
+        {
+            int srcIndex = y * rowSize + x * (dibHeader.bitsPerPixel / 8);
+            int dstIndex = (dibHeader.width - x - 1) * newRowSize + y * (dibHeader.bitsPerPixel / 8);
+            std::memcpy(&rotatedData[dstIndex], &imageData[srcIndex], dibHeader.bitsPerPixel / 8);
+        }
+    }
+
+    // 打开输出文件
+    std::ofstream outFile(outputFile, std::ios::binary);
+    if (!outFile) {
+        throw std::runtime_error("无法创建输出文件");
+    }
+
+    // 写入 BMP 文件头
+    outFile.write(reinterpret_cast<const char*>(&bmpHeader), sizeof(BMPHeader));
+
+    // 更新 DIB 头的宽度和高度
+    dibHeader.width = dibHeader.height;
+    dibHeader.height = dibHeader.width;
+
+    // 写入 DIB 头
+    outFile.write(reinterpret_cast<const char*>(&dibHeader), sizeof(DIBHeader));
+
+    // 写入旋转后的图像数据
+    outFile.write(reinterpret_cast<const char*>(rotatedData.data()), rotatedData.size());
+    outFile.close();
+}
+
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
   
+    //ConvertMHD_XY_To_YX("D:/CT_3D/Test_Data/ID/id_ct.mhd");
+    if (0)
+    {
+        try 
+        {
+            rotateBMP("D:/CT_3D/Test_Data/ID/id.bmp", "D:/CT_3D/Test_Data/ID/output.bmp");
+            std::cout << "图像旋转成功，保存为 output.bmp" << std::endl;
+        }
+        catch (const std::exception& e) 
+        {
+            std::cerr << "错误: " << e.what() << std::endl;
+        }
+    }
+    if (0)
+    {
+        // 输入和输出的 MHD 文件路径
+        std::string inputMhdPath = "D:/CT_3D/Test_Data/Dental/Dental.mhd";
+        std::string outputMhdPath = "D:/CT_3D/Test_Data/Dental/DentalYX";
+    
+        // 执行图像旋转
+        if (!RotateImage(inputMhdPath, outputMhdPath))
+        {
+            std::cerr << "图像旋转失败" << std::endl;
+            return -1;
+        }
+    }
 
-    // 输入和输出的 MHD 文件路径
-    //std::string inputMhdPath = "D:/CT_3D/Test_Data/ID/id_ct.mhd";
-    //std::string outputMhdPath = "D:/CT_3D/Test_Data/ID/id_ctyx.mhd";
-    //
-    //// 执行图像旋转
-    //if (!RotateImage(inputMhdPath, outputMhdPath))
-    //{
-    //    std::cerr << "图像旋转失败" << std::endl;
-    //    return -1;
-    //}
     //GenerateVolumeMPR("D:/CT_3D/Test_Data/ID/id_ct",true);
-
-    //if (0)// MHD--->dicom
-    //{
-    //    //SwapXY_MHD_USHORT("E:/Temp_down/CT-2026-04-04-11-54-12/Volume.mhd", "E:/Temp_down/CT-2026-04-04-11-54-12/YXVolume.mhd");
-    //    MainWindow w0;
-    //    w0.show();
-    //    return a.exec();
-    //}
     MainWindow w;
     w.show();
     return a.exec();
-
 }
+

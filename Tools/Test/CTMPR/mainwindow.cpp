@@ -30,6 +30,147 @@
 #include <direct.h>   // Windows: _mkdir
 #define mkdir(dir, mode) _mkdir(dir)   // Windows 不需要权限参数
 #endif
+
+//////////////+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+////////////////////////////////////////////////////////
+// ---------- 类型映射 ----------
+size_t GetElementSize(const std::string& type)
+{
+    if (type == "MET_UCHAR") return 1;
+    if (type == "MET_CHAR") return 1;
+    if (type == "MET_USHORT") return 2;
+    if (type == "MET_SHORT") return 2;
+    if (type == "MET_UINT") return 4;
+    if (type == "MET_INT") return 4;
+    if (type == "MET_FLOAT") return 4;
+    if (type == "MET_DOUBLE") return 8;
+
+    throw std::runtime_error("Unsupported ElementType");
+}
+
+// ---------- 核心转换 ----------
+template<typename T>
+void ConvertXY_Internal(std::ifstream& in, std::ofstream& out, int dimX, int dimY, int dimZ)
+{
+    const size_t sliceSize = (size_t)dimX * dimY;
+
+    std::vector<T> inBuf(sliceSize);
+    std::vector<T> outBuf(sliceSize);
+
+    for (int z = 0; z < dimZ; ++z)
+    {
+        // 读取一个 XY slice（连续）
+        in.read(reinterpret_cast<char*>(inBuf.data()),
+            sliceSize * sizeof(T));
+
+        if (!in)
+            throw std::runtime_error("Read failed");
+
+        // 转换为 [x][y] 连续
+        for (int y = 0; y < dimY; ++y)
+        {
+            for (int x = 0; x < dimX; ++x)
+            {
+                // 原：y * dimX + x
+                size_t inIdx = (size_t)y * dimX + x;
+
+                // 目标：[x][y]，y 连续
+                size_t outIdx = (size_t)x * dimY + y;
+
+                outBuf[outIdx] = inBuf[inIdx];
+            }
+        }
+
+        out.write(reinterpret_cast<char*>(outBuf.data()), sliceSize * sizeof(T));
+
+        if (!out)
+        {
+            throw std::runtime_error("Write failed");
+        }
+            
+    }
+}
+
+
+struct MHDInfo
+{
+    int dim[3]{ 0,0,0 };
+    std::string elementType;
+    std::string rawFile;
+};
+
+MHDInfo ParseMHD(const std::string& mhdPath)
+{
+    std::ifstream in(mhdPath);
+    if (!in) throw std::runtime_error("open mhd failed");
+
+    MHDInfo info;
+    std::string line;
+
+    while (std::getline(in, line))
+    {
+        if (line.find("DimSize") != std::string::npos)
+        {
+            sscanf(line.c_str(), "DimSize = %d %d %d", &info.dim[0], &info.dim[1], &info.dim[2]);
+        }
+        else if (line.find("ElementType") != std::string::npos)
+        {
+            info.elementType = line.substr(line.find("=") + 2);
+        }
+        else if (line.find("ElementDataFile") != std::string::npos)
+        {
+            info.rawFile = line.substr(line.find("=") + 2);
+        }
+    }
+
+    return info;
+}
+
+bool ConvertMHD_XY_To_YX(const std::string& mhdPath)
+{
+    // ---------- 解析 ----------
+    auto info = ParseMHD(mhdPath);
+
+    std::string baseDir = mhdPath.substr(0, mhdPath.find_last_of("/\\") + 1);
+    std::string rawPath = baseDir + info.rawFile;
+    std::string outPath = rawPath + ".yx";
+
+    std::ifstream in(rawPath, std::ios::binary);
+    std::ofstream out(outPath, std::ios::binary);
+
+    if (!in || !out)
+        throw std::runtime_error("open raw failed");
+
+    int X = info.dim[0];
+    int Y = info.dim[1];
+    int Z = info.dim[2];
+
+    // ---------- 类型分发 ----------
+    if (info.elementType == "MET_UCHAR")
+        ConvertXY_Internal<uint8_t>(in, out, X, Y, Z);
+    else if (info.elementType == "MET_CHAR")
+        ConvertXY_Internal<int8_t>(in, out, X, Y, Z);
+    else if (info.elementType == "MET_USHORT")
+        ConvertXY_Internal<uint16_t>(in, out, X, Y, Z);
+    else if (info.elementType == "MET_SHORT")
+        ConvertXY_Internal<int16_t>(in, out, X, Y, Z);
+    else if (info.elementType == "MET_UINT")
+        ConvertXY_Internal<uint32_t>(in, out, X, Y, Z);
+    else if (info.elementType == "MET_INT")
+        ConvertXY_Internal<int32_t>(in, out, X, Y, Z);
+    else if (info.elementType == "MET_FLOAT")
+        ConvertXY_Internal<float>(in, out, X, Y, Z);
+    else if (info.elementType == "MET_DOUBLE")
+        ConvertXY_Internal<double>(in, out, X, Y, Z);
+    else
+        throw std::runtime_error("Unsupported type");
+
+    std::cout << "Convert done: " << outPath << std::endl;
+    return true;
+}
+
+////////////////////////////////////////////////////////
+/////////////+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 点阵字体（X,Y,0-9）
 std::map<char, std::vector<uint8_t>> font5x7 = 
@@ -187,7 +328,7 @@ void GenerateVolumeMPR(const std::string& prefix, bool useUShort = false)
 }
 ///+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
+#include <vtkCallbackCommand.h>
 // 自定义InteractorStyle，只处理右键窗宽窗位
 class vtkRightClickWindowLevelStyle : public vtkInteractorStyleImage
 {
@@ -197,52 +338,61 @@ public:
 
     vtkRightClickWindowLevelStyle()
     {
-        this->ImageSlice = nullptr;
-        this->RightButtonPressed = false;
-        this->LastPos[0] = 0;
-        this->LastPos[1] = 0;
-        this->Label = nullptr;
+        this->m_ImageSlice = nullptr;
+        this->m_LeftButtonPressed = false;
+        this->m_LastPos[0] = 0;
+        this->m_LastPos[1] = 0;
+        this->m_Label[0] = nullptr;
+        this->m_Label[1] = nullptr;
     }
 
     void SetImageSlice(vtkImageSlice* slice)
     {
-        this->ImageSlice = slice;
+        this->m_ImageSlice = slice;
     }
 
-    void SetOverlayLabel(QLabel* label)
+    void SetOverlayLabel(QLabel* label[])
     {
-        this->Label = label;
-        if (this->Label)
+        this->m_Label[0] = label[0];
+        this->m_Label[1] = label[1];
+        if (this->m_Label[0])
         {
-            this->Label->setVisible(true);
+            this->m_Label[0]->setVisible(true);
             // 设置固定位置在左上角
-            this->Label->move(10, 10);
+            this->m_Label[0]->move(5, 15);
+        }
+        if (this->m_Label[1])
+        {
+            this->m_Label[1]->setVisible(true);
+            // 设置固定位置在左上角
+            this->m_Label[1]->move(5, 3);
         }
     }
 
-    virtual void OnRightButtonDown() override
+    virtual void OnLeftButtonDown() override
     {
-        this->RightButtonPressed = true;
-        this->GetInteractor()->GetEventPosition(this->LastPos);
+        this->m_LeftButtonPressed = true;
+        this->GetInteractor()->GetEventPosition(this->m_LastPos);
     }
 
-    virtual void OnRightButtonUp() override
+    virtual void OnLeftButtonUp() override
     {
-        this->RightButtonPressed = false;
+        this->m_LeftButtonPressed = false;
+        vtkInteractorStyleImage::OnLeftButtonUp();
     }
 
     virtual void OnMouseMove() override
     {
-        if (this->RightButtonPressed && this->ImageSlice)
+        if (this->m_LeftButtonPressed && this->m_ImageSlice)
         {
             int currPos[2];
             this->GetInteractor()->GetEventPosition(currPos);
 
-            int dx = currPos[0] - LastPos[0];
-            int dy = currPos[1] - LastPos[1];
+            int dx = currPos[0] - m_LastPos[0];
+            int dy = currPos[1] - m_LastPos[1];
 
-            double window = this->ImageSlice->GetProperty()->GetColorWindow();
-            double level = this->ImageSlice->GetProperty()->GetColorLevel();
+            double window = this->m_ImageSlice->GetProperty()->GetColorWindow();
+            double level = this->m_ImageSlice->GetProperty()->GetColorLevel();
 
             double windowStep = 1.0;
             double levelStep = 1.0;
@@ -252,22 +402,21 @@ public:
 
             if (window < 1.0) window = 1.0;
 
-            this->ImageSlice->GetProperty()->SetColorWindow(window);
-            this->ImageSlice->GetProperty()->SetColorLevel(level);
+            this->m_ImageSlice->GetProperty()->SetColorWindow(window);
+            this->m_ImageSlice->GetProperty()->SetColorLevel(level);
 
-            if (Label)
+            if (m_Label[0])
             {
                 QString text = QString("WW: %1\nWL: %2").arg(window, 0, 'f', 1).arg(level, 0, 'f', 1);
-                Label->setWordWrap(true);
-                Label->setText(text);
-                // 每次更新文字后调用
-                Label->adjustSize();  // 自动调整 QLabel 大小以适应文字
+                m_Label[0]->setWordWrap(true);
+                m_Label[0]->setText(text);
+                m_Label[0]->adjustSize();  // 自动调整 QLabel 大小以适应文字
             }
 
             this->GetInteractor()->GetRenderWindow()->Render();
 
-            LastPos[0] = currPos[0];
-            LastPos[1] = currPos[1];
+            m_LastPos[0] = currPos[0];
+            m_LastPos[1] = currPos[1];
         }
         else
         {
@@ -275,38 +424,88 @@ public:
         }
     }
 
+    // 鼠标滚轮向前滚动
+    virtual void OnMouseWheelForward() override
+    {
+
+         UpdateSlice();
+
+    }
+
+    // 鼠标滚轮向后滚动
+    virtual void OnMouseWheelBackward() override
+    {
+
+         UpdateSlice(-1);
+
+    }
+    // 更新切片的方法
+    void UpdateSlice(int nc = 1)
+    {
+        if (m_vtkImageSliceMapper)
+        {
+            int max = m_vtkImageSliceMapper->GetSliceNumberMaxValue();
+            int min = m_vtkImageSliceMapper->GetSliceNumberMinValue();
+            int im  = m_vtkImageSliceMapper->GetSliceNumber() + nc;
+            if (im < (max) && im >(min))
+            {
+                // 更新 QLabel 显示的切片序号
+                if (m_Label[1])
+                {
+                    QString text = QString("Slice: %1").arg(im);
+                    m_Label[1]->setText(text);
+                    m_Label[1]->adjustSize();
+                }
+                m_vtkImageSliceMapper->SetSliceNumber(im);
+                // 渲染更新
+                this->GetInteractor()->GetRenderWindow()->Render();
+            }
+
+        }
+    }
+    void SetVtkImageSliceMapper(vtkImageSliceMapper *vtkImageSliceMapper)
+    {
+        m_vtkImageSliceMapper = vtkImageSliceMapper;
+    }
 private:
-    vtkImageSlice* ImageSlice;
-    bool RightButtonPressed;
-    int LastPos[2];
-    QLabel* Label;
+    vtkImageSlice* m_ImageSlice;
+    bool m_LeftButtonPressed;
+    int m_LastPos[2];
+    QLabel* m_Label[2];
+    int m_SliceIndex;  // 当前切片序号
+    vtkImageSliceMapper *m_vtkImageSliceMapper;
 };
 
 vtkStandardNewMacro(vtkRightClickWindowLevelStyle);
 
-
 // 封装函数：绑定右键窗宽窗位
-inline void EnableRightClickWindowLevel(QVTKInteractor* interactor, vtkImageSlice* slice, QWidget* parentWidget)
+inline void EnableRightClickWindowLevel(QVTKInteractor* interactor, vtkImageSlice* slice, QWidget* parentWidget, vtkImageSliceMapper *vtkImageSliceMapper)
 {
     if (!interactor || !slice || !parentWidget) return;
 
-    vtkSmartPointer<vtkRightClickWindowLevelStyle> style =
-        vtkSmartPointer<vtkRightClickWindowLevelStyle>::New();
+    vtkSmartPointer<vtkRightClickWindowLevelStyle> style =  vtkSmartPointer<vtkRightClickWindowLevelStyle>::New();
     style->SetImageSlice(slice);
 
     // 创建固定左上角 QLabel
-    QLabel* overlay = new QLabel(parentWidget);
-    overlay->setStyleSheet(
-        "QLabel { background-color: rgba(0,0,0,0); color: white; padding: 2px;font-family: 'Consolas'; border-radius: 3px; }"
-    );
-    overlay->setAttribute(Qt::WA_TransparentForMouseEvents); // 不阻挡鼠标
-    overlay->setVisible(true);  // 固定显示
-    overlay->raise();  // 保证显示在最上层
-    overlay->move(10, 10); // 左上角偏移
+    QLabel* overlay[2];
+    overlay[0] = new QLabel(parentWidget);
+    overlay[0]->setStyleSheet( "QLabel { background-color: rgba(0,0,0,0); color: white; padding: 2px;font-family: 'Consolas'; border-radius: 3px; }" );
+    overlay[0]->setAttribute(Qt::WA_TransparentForMouseEvents); // 不阻挡鼠标
+    overlay[0]->setVisible(true);  // 固定显示
+    overlay[0]->raise();  // 保证显示在最上层
+    overlay[0]->move(10, 10); // 左上角偏移
+
+    overlay[1] = new QLabel(parentWidget);
+    overlay[1]->setStyleSheet("QLabel { background-color: rgba(0,0,0,0); color: white; padding: 2px;font-family: 'Consolas'; border-radius: 3px; }");
+    overlay[1]->setAttribute(Qt::WA_TransparentForMouseEvents); // 不阻挡鼠标
+    overlay[1]->setVisible(true);  // 固定显示
+    overlay[1]->raise();  // 保证显示在最上层
+    overlay[1]->move(10, 10); // 左上角偏移
 
     style->SetOverlayLabel(overlay);
-
+    style->SetVtkImageSliceMapper(vtkImageSliceMapper);
     interactor->SetInteractorStyle(style);
+
 }
 // ++++++++++++GPT
 // ======================
@@ -512,6 +711,10 @@ public:
         }
 
         // ========= 3. 跳跃（非±1）=========
+        for (auto& b : cache)
+        {
+            delete[] b.data;
+        }
         cache.clear();
 
         int start = m_center - 4;
@@ -587,6 +790,10 @@ protected:
     {
         for (int i = 0; i < 3; i++)
         {
+            for (auto& b : m_cache[i])
+            {
+                delete[] b.data;
+            }
             m_cache[i].clear();
         }
     }
@@ -621,6 +828,8 @@ protected:
         int yMin = extent[2], yMax = extent[3];
         int zMin = extent[4], zMax = extent[5];
 
+        if (0)
+        {
         ///+++++
         if (xMin == 0 && xMax == m_Dim[0] - 1 && yMin == 0 && yMax == m_Dim[1] - 1 && zMin == zMax)
         {
@@ -663,6 +872,8 @@ protected:
         }
 
         ///+++
+        }
+
         std::ifstream file(m_rawPath, std::ios::binary);
         if (!file)
         {
@@ -1140,20 +1351,21 @@ bool SwapXY_MHD_USHORT(const std::string& inputMhdPath, const std::string& outpu
         pos = inputRawPath.find_last_of("/\\");
         if (pos != std::string::npos)
         {
-            outputRawPath = inputRawPath.substr(0, pos + 1) + inputRawPath.substr(pos + 1, outputMhdPath.rfind('.') - pos - 1) + ".raw.yx";
+            outputRawPath = inputRawPath.substr(0, pos + 1) + inputRawPath.substr(pos + 1, outputMhdPath.rfind('.') - pos ) + ".yx";
         }
         else
         {
+            outputRawPath = inputRawPath + ".yx";
             // 无路径，只有文件名
-            size_t dotPos = inputRawPath.rfind('.');
-            if (dotPos != std::string::npos)
-            {
-                outputRawPath = inputRawPath.substr(0, dotPos) + ".raw.yx";
-            }
-            else
-            {
-                outputRawPath = inputRawPath + ".raw.yx";
-            }
+            //size_t dotPos = inputRawPath.rfind('.');
+            //if (dotPos != std::string::npos)
+            //{
+            //    outputRawPath = inputRawPath.substr(0, dotPos) + ".yx";
+            //}
+            //else
+            //{
+            //    outputRawPath = inputRawPath + ".yx";
+            //}
         }
 
         std::ofstream rawOut(outputRawPath, std::ios::binary);
@@ -1312,17 +1524,21 @@ bool MainWindow::Mhd2Stream()
         QElapsedTimer ElapsedTimer;
         ElapsedTimer.start();
         // 无路径，只有文件名
-        size_t dotPos = inputMHDPath.rfind('.');
-        if (dotPos != std::string::npos)
-        {
-            OutputDir = inputMHDPath.substr(0, dotPos) + ".yx.mhd";
-        }
-        else
-        {
-            OutputDir = inputMHDPath + ".yx.mhd";
-        }
-        bool flag = SwapXY_MHD_USHORT(inputMHDPath, OutputDir);
+        //size_t dotPos = inputMHDPath.rfind('.');
+        //if (dotPos != std::string::npos)
+        //{
+        //    OutputDir = inputMHDPath.substr(0, dotPos) + ".yx.mhd";
+        //}
+        //else
+        //{
+        //    OutputDir = inputMHDPath + ".yx.mhd";
+        //}
+        //bool flag = SwapXY_MHD_USHORT(inputMHDPath, OutputDir);
         QString str = QString::number(ElapsedTimer.elapsed());
+
+        ////
+        bool flag = ConvertMHD_XY_To_YX(inputMHDPath);
+        ////
         QMessageBox::information(nullptr, "ElapsedTimer", str, QMessageBox::Yes, QMessageBox::Yes);//1384070
         return flag;
     }
@@ -1383,36 +1599,37 @@ bool MainWindow::ShowImages()
     m_mapperYZ->SetInputConnection(m_sliceReaderYZ->GetOutputPort());
     m_mapperYZ->SetOrientationToX();
     //m_mapperYZ->SetSliceNumber(9369);
-    m_mapperYZ->SetSliceNumber(9);
+    m_mapperYZ->SetSliceNumber(m_sliceReaderYZ->m_Dim[0]/2);
     m_mapperYZ->StreamingOn();
     m_mapperYZ->SliceAtFocalPointOff();
     m_mapperYZ->SliceFacesCameraOff();
     m_imageSliceYZ->SetMapper(m_mapperYZ);
-    //m_imageSliceYZ->GetProperty()->SetColorWindow(4000);
-    //m_imageSliceYZ->GetProperty()->SetColorLevel(1000);
+    m_imageSliceYZ->GetProperty()->SetColorWindow(4000);
+    m_imageSliceYZ->GetProperty()->SetColorLevel(1000);
     m_imageSliceYZ->GetProperty()->SetInterpolationTypeToNearest();
     m_rendererYZ->AddViewProp(m_imageSliceYZ);
-    m_vtkRenderWindowYZ = ui->m_coronal2DView->renderWindow();
+    m_vtkRenderWindowYZ = ui->m_sagital2DView->renderWindow();
     m_vtkRenderWindowYZ->AddRenderer(m_rendererYZ);
-    ui->m_coronal2DView->interactor()->SetRenderWindow(m_vtkRenderWindowYZ);
-    ui->m_coronal2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
+    ui->m_sagital2DView->interactor()->SetRenderWindow(m_vtkRenderWindowYZ);
+    ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
+    ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);
+    ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
 
     // 假设已有 vtkImageSlice* imageSlice
-    EnableRightClickWindowLevel(ui->m_coronal2DView->interactor(), m_imageSliceYZ, ui->m_coronal2DView);
+    EnableRightClickWindowLevel(ui->m_sagital2DView->interactor(), m_imageSliceYZ, ui->m_sagital2DView, m_mapperYZ);
 
     m_rendererYZ->GetActiveCamera()->SetPosition(1, 0, 0);
-    //m_rendererYZ->GetActiveCamera()->SetViewUp(0, 0, 1);
-    m_rendererYZ->GetActiveCamera()->SetViewUp(0, 1, 0);// 旋转90度
+    m_rendererYZ->GetActiveCamera()->SetViewUp(0, 0, 1);
+    //m_rendererYZ->GetActiveCamera()->SetViewUp(0, 1, 0);// 旋转90度
     m_rendererYZ->ResetCamera(); // 自动适配图像位置
     m_vtkRenderWindowYZ->Render();    
     
-
     ///++++++++++++++++++++++++++XZ+++++++++++++++++++++++++++++++++++++++++++++++++
     m_sliceReaderXZ->SetFileName(qPrintable(m_Mhdfilename));
     m_sliceReaderXZ->Cache(2, -1);
     m_mapperXZ->SetInputConnection(m_sliceReaderXZ->GetOutputPort());
     m_mapperXZ->SetOrientationToY();
-    m_mapperXZ->SetSliceNumber(6857);
+    m_mapperXZ->SetSliceNumber(m_sliceReaderXZ->m_Dim[1]/2);
     m_mapperXZ->StreamingOn();
     m_mapperXZ->SliceAtFocalPointOff();
     m_mapperXZ->SliceFacesCameraOff();
@@ -1421,12 +1638,14 @@ bool MainWindow::ShowImages()
     m_imageSliceXZ->GetProperty()->SetColorLevel(1000);
     m_imageSliceXZ->GetProperty()->SetInterpolationTypeToNearest();
     m_rendererXZ->AddViewProp(m_imageSliceXZ);
-    m_vtkRenderWindowXZ = ui->m_sagital2DView->renderWindow();
+    m_vtkRenderWindowXZ = ui->m_coronal2DView->renderWindow();
     m_vtkRenderWindowXZ->AddRenderer(m_rendererXZ);
-    ui->m_sagital2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXZ);
-    ui->m_sagital2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
+    ui->m_coronal2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXZ);
+    ui->m_coronal2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
+    ui->m_coronal2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);
+    ui->m_coronal2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
     // 假设已有 vtkImageSlice* imageSlice
-    EnableRightClickWindowLevel(ui->m_sagital2DView->interactor(), m_imageSliceXZ, ui->m_sagital2DView);
+    EnableRightClickWindowLevel(ui->m_coronal2DView->interactor(), m_imageSliceXZ, ui->m_coronal2DView, m_mapperXZ);
     m_rendererXZ->GetActiveCamera()->SetPosition(0, -1, 0);
     m_rendererXZ->GetActiveCamera()->SetViewUp(0, 0, 1);
     m_rendererXZ->ResetCamera(); // 自动适配图像位置
@@ -1437,7 +1656,7 @@ bool MainWindow::ShowImages()
     m_sliceReader->Cache(0, -1);
     m_mapperXY->SetInputConnection(m_sliceReader->GetOutputPort());
     m_mapperXY->SetOrientationToZ();
-    m_mapperXY->SetSliceNumber(50);
+    m_mapperXY->SetSliceNumber(m_sliceReader->m_Dim[2]/2);
     m_mapperXY->StreamingOn();
     m_mapperXY->SliceAtFocalPointOff();
     m_mapperXY->SliceFacesCameraOff();
@@ -1450,7 +1669,12 @@ bool MainWindow::ShowImages()
     m_vtkRenderWindowXY->AddRenderer(m_rendererXY);
     ui->m_axial2DView->interactor()->SetRenderWindow(m_vtkRenderWindowXY);
     ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::LeftButtonPressEvent);
-    EnableRightClickWindowLevel(ui->m_axial2DView->interactor(), m_imageSliceXY, ui->m_axial2DView);
+    ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent);
+    ui->m_axial2DView->interactor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent);
+    EnableRightClickWindowLevel(ui->m_axial2DView->interactor(), m_imageSliceXY, ui->m_axial2DView, m_mapperXY);
+    m_rendererXY->GetActiveCamera()->SetPosition(0, 0, 1);
+    m_rendererXY->GetActiveCamera()->SetViewUp(0, -1, 0);//这里调整和 INimage3D.exe 现在一致
+    m_rendererXY->ResetCamera(); // 自动适配图像位置
     m_vtkRenderWindowXY->Render();
     return 1;
 }
@@ -1461,13 +1685,10 @@ bool MainWindow::MHD_To_DICOM_CT_Stream(DataInfo *info)//const std::string& mhdP
 
     return MHD_To_CT_Stream(data);
 }
-/*
-VTK9.4；C++；QT5.12.12；VC2017； 使用文件流的方式，创建一个mhd 的体数据数据(VTK9.4支持读取 )；分辨率 xyz -> 800,600,400; 要求XY 切片全部显示 XY 字母，并显示当前XY的切片序列号；同理类推 XZ YZ切片数据一样具体各自切片的标识和序号；尽量一个函数封装完成，纯C++ 方式完成
-*/
+
 MainWindow::~MainWindow()
 {
     delete ui;
-
     /*
     vtkImageSlice *m_imageSliceXY, *m_imageSliceXZ, *m_imageSliceYZ;
     vtkRenderer *m_rendererXY, *m_rendererXZ, *m_rendererYZ;
