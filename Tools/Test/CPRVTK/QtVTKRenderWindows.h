@@ -16,7 +16,13 @@ class vtkResliceCursorLineRepresentation;
 class vtkMPRResliceImageViewer;
 class vtkResliceCursorCallback;
 class vtkMetaImageReader;
-
+struct SRVResult
+{
+    // SRV ”∞œÒ«–∆¨
+    std::vector<vtkSmartPointer<vtkImageData>> slices;
+    // √øèà SRV Slice å¶ë™µƒ PolyData
+    std::vector<vtkSmartPointer<vtkPolyData>> planes;
+};
 // Forward Qt class declarations
 class Ui_QtVTKRenderWindows;
 
@@ -68,8 +74,10 @@ public:
 //    void mappingFinished(const std::vector<vtkSmartPointer<vtkImageData>> &result);
 
 private:
-   QFutureWatcher<std::vector<vtkSmartPointer<vtkImageData>>> m_watcher;
-   QFuture<std::vector<vtkSmartPointer<vtkImageData>>> m_future;
+   //QFutureWatcher<std::vector<vtkSmartPointer<vtkImageData>>> m_watcher;
+   //QFuture<std::vector<vtkSmartPointer<vtkImageData>>> m_future;
+    QFutureWatcher<SRVResult> m_watcher;
+    QFuture<SRVResult> m_future;
     //QFutureWatcher<std::vector<vtkSmartPointer<vtkImageData>>> m_watcher;
 
 public:

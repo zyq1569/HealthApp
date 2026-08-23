@@ -993,8 +993,10 @@ public:
     int m_id[3];
 };
 
-std::vector<vtkSmartPointer<vtkImageData>> threadSplineDrivenImageSlicer(DataInfo info)
+//std::vector<vtkSmartPointer<vtkImageData>> threadSplineDrivenImageSlicer(DataInfo info)
+SRVResult threadSplineDrivenImageSlicer(DataInfo info)
 {
+    SRVResult result;
     std::vector<vtkSmartPointer<vtkImageData>> slices;
     int s = info.m_id[0], l = info.m_id[1] + 1;
     for (int pt_id = s; pt_id < l; pt_id++)
@@ -1005,13 +1007,499 @@ std::vector<vtkSmartPointer<vtkImageData>> threadSplineDrivenImageSlicer(DataInf
         info.m_reslicer->GetOutput()->GetScalarRange(range);
         if (range[0] != range[1])
         {
+           // vtkImageData *data = info.m_reslicer->GetOutput();
+           // vtkSmartPointer<vtkImageData> tempSlice = vtkSmartPointer<vtkImageData>::New();
+           // tempSlice->DeepCopy(data);
+           // slices.push_back(tempSlice);
             vtkImageData *data = info.m_reslicer->GetOutput();
             vtkSmartPointer<vtkImageData> tempSlice = vtkSmartPointer<vtkImageData>::New();
             tempSlice->DeepCopy(data);
-            slices.push_back(tempSlice);
+            //slices.push_back(tempSlice);
+            result.slices.push_back(tempSlice);
+
+            vtkSmartPointer<vtkPolyData> copy = vtkSmartPointer<vtkPolyData>::New();
+            vtkPolyData* plane = vtkPolyData::SafeDownCast(info.m_reslicer->GetOutputDataObject(1));
+            if (plane)
+            {
+                copy->DeepCopy(plane);
+                result.planes.push_back(copy);
+            }
         }
     }
-    return slices;
+    //return slices;
+    return result;
+}
+
+//add .vtkImagingStencil-9.4.lib
+#include <vtkImageStencil.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkPolyDataToImageStencil.h>
+
+#include <vtkCleanPolyData.h>
+#include <vtkFeatureEdges.h>
+#include <map>
+#include <utility>
+#include <vector>
+vtkSmartPointer<vtkImageData> ExtractSRVRegion(vtkImageData* originalVolume, const std::vector< vtkSmartPointer<vtkPolyData>>& srvSlices, double outsideValue = 0.0);
+vtkSmartPointer<vtkImageData> ExtractSRVRegion(vtkImageData* originalVolume, const std::vector< vtkSmartPointer<vtkPolyData>>& srvSlices, double outsideValue)
+{
+    //============================================================
+    // 0. 基本檢查
+    //============================================================
+
+    if (!originalVolume)
+    {
+        return nullptr;
+    }
+
+    if (srvSlices.size() < 2)
+    {
+        return nullptr;
+    }
+
+    vtkPolyData* firstSlice = srvSlices.front();
+
+    if (!firstSlice)
+    {
+        return nullptr;
+    }
+
+    const vtkIdType pointCount = firstSlice->GetNumberOfPoints();
+
+    const vtkIdType cellCount = firstSlice->GetNumberOfCells();
+
+    if (pointCount == 0 || cellCount == 0)
+    {
+        return nullptr;
+    }
+
+
+    //============================================================
+    // 1. 確認所有 SRV Slice 拓撲一致
+    //
+    // 這是本方法最重要的前提
+    //
+    // 所有 Slice 必須：
+    //
+    // NumberOfPoints 相同
+    // NumberOfCells  相同
+    //============================================================
+
+    for (vtkPolyData* slice : srvSlices)
+    {
+        if (!slice)
+        {
+            return nullptr;
+        }
+
+        if (slice->GetNumberOfPoints() != pointCount)
+        {
+            return nullptr;
+        }
+
+        if (slice->GetNumberOfCells() != cellCount)
+        {
+            return nullptr;
+        }
+    }
+
+
+    //============================================================
+    // 2. 找出第一張 Slice 的 Boundary Edges
+    //
+    // 對每個 Cell 的每條 Edge 統計：
+    //
+    // 出現 2 次 -> 內部 Edge
+    // 出現 1 次 -> Boundary Edge
+    //
+    // 因為所有 Slice 拓撲相同，
+    // 所以只需要分析第一張 Slice 一次。
+    //============================================================
+
+    struct EdgeInfo
+    {
+        vtkIdType p1;
+        vtkIdType p2;
+        int count = 0;
+    };
+
+    std::map< std::pair<vtkIdType, vtkIdType>, EdgeInfo > edgeMap;
+
+
+    for (vtkIdType cellId = 0; cellId < cellCount; ++cellId)
+    {
+        vtkCell* cell = firstSlice->GetCell(cellId);
+
+        if (!cell)
+        {
+            continue;
+        }
+
+        const vtkIdType n = cell->GetNumberOfPoints();
+
+        if (n < 3)
+        {
+            continue;
+        }
+
+
+        for (vtkIdType i = 0; i < n; ++i)
+        {
+            vtkIdType p1 = cell->GetPointId(i);
+
+            vtkIdType p2 = cell->GetPointId((i + 1) % n);
+
+            vtkIdType minId = std::min(p1, p2);
+
+            vtkIdType maxId = std::max(p1, p2);
+
+            auto key = std::make_pair(minId, maxId);
+
+            auto iter = edgeMap.find(key);
+
+            if (iter == edgeMap.end())
+            {
+                EdgeInfo edge;
+
+                // 保留原始方向
+                edge.p1 = p1;
+                edge.p2 = p2;
+                edge.count = 1;
+
+                edgeMap[key] = edge;
+            }
+            else
+            {
+                iter->second.count++;
+            }
+        }
+    }
+
+
+    //============================================================
+    // 3. 取得真正的 Boundary Edges
+    //============================================================
+
+    std::vector<EdgeInfo> boundaryEdges;
+
+    for (const auto& item : edgeMap)
+    {
+        const EdgeInfo& edge = item.second;
+
+        if (edge.count == 1)
+        {
+            boundaryEdges.push_back(edge);
+        }
+    }
+
+
+    if (boundaryEdges.empty())
+    {
+        return nullptr;
+    }
+
+
+    //============================================================
+    // 4. 建立 Closed Surface 的所有 Points
+    //
+    // 每一張 Slice 的所有 Points 都加入
+    //
+    // Slice 0:
+    //
+    // [0 ........ pointCount-1]
+    //
+    // Slice 1:
+    //
+    // [pointCount .... 2*pointCount-1]
+    //
+    // ...
+    //============================================================
+
+    const vtkIdType sliceCount = static_cast<vtkIdType>(srvSlices.size());
+
+    vtkNew<vtkPoints> closedPoints;
+
+    closedPoints->SetNumberOfPoints(pointCount * sliceCount);
+
+
+    for (vtkIdType sliceIndex = 0; sliceIndex < sliceCount; ++sliceIndex)
+    {
+        vtkPolyData* slice = srvSlices[sliceIndex];
+
+        for (vtkIdType pointId = 0; pointId < pointCount; ++pointId)
+        {
+            double p[3];
+
+            slice->GetPoint(pointId, p);
+
+            vtkIdType newPointId = sliceIndex * pointCount + pointId;
+
+            closedPoints->SetPoint(newPointId, p);
+        }
+    }
+
+
+    //============================================================
+    // 5. 建立 Closed Surface
+    //
+    // 包含：
+    //
+    // A. 第一張 Slice：起始端蓋
+    // B. 最後一張 Slice：結束端蓋
+    // C. 所有相鄰 Slice 的 Boundary：
+    //    建立側壁
+    //============================================================
+
+    vtkNew<vtkCellArray> closedPolys;
+
+
+    //============================================================
+    // 5A. 第一張 Slice 作為第一個 Cap
+    //
+    // Point 順序反轉
+    //============================================================
+
+    for (vtkIdType cellId = 0; cellId < cellCount; ++cellId)
+    {
+        vtkCell* cell = firstSlice->GetCell(cellId);
+
+        if (!cell)
+        {
+            continue;
+        }
+
+        vtkIdType n = cell->GetNumberOfPoints();
+
+        if (n < 3)
+        {
+            continue;
+        }
+
+        vtkNew<vtkIdList> ids;
+
+        ids->SetNumberOfIds(n);
+
+        for (vtkIdType i = 0; i < n; ++i)
+        {
+            vtkIdType originalId = cell->GetPointId(n - 1 - i);
+
+            ids->SetId(i, originalId);
+        }
+
+        closedPolys->InsertNextCell(ids);
+    }
+
+
+    //============================================================
+    // 5B. 最後一張 Slice 作為第二個 Cap
+    //============================================================
+
+    vtkIdType lastOffset = (sliceCount - 1) * pointCount;
+
+    vtkPolyData* lastSlice = srvSlices.back();
+
+
+    for (vtkIdType cellId = 0; cellId < cellCount; ++cellId)
+    {
+        vtkCell* cell = lastSlice->GetCell(cellId);
+
+        if (!cell)
+        {
+            continue;
+        }
+
+        vtkIdType n = cell->GetNumberOfPoints();
+
+        if (n < 3)
+        {
+            continue;
+        }
+
+        vtkNew<vtkIdList> ids;
+
+        ids->SetNumberOfIds(n);
+
+        for (vtkIdType i = 0; i < n; ++i)
+        {
+            vtkIdType originalId = cell->GetPointId(i);
+
+            ids->SetId(i, lastOffset + originalId);
+        }
+
+        closedPolys->InsertNextCell(ids);
+    }
+
+
+    //============================================================
+    // 5C. 連接所有相鄰 Slice
+    //
+    // 只連接 Boundary Edge
+    //
+    // 例如：
+    //
+    // Slice i:
+    //
+    //     A -------- B
+    //
+    //
+    // Slice i + 1:
+    //
+    //     A' ------- B'
+    //
+    //
+    // 建立：
+    //
+    // A ---- B
+    // |      |
+    // |      |
+    // A'---- B'
+    //============================================================
+
+    for (vtkIdType sliceIndex = 0; sliceIndex < sliceCount - 1; ++sliceIndex)
+    {
+        vtkIdType offset0 = sliceIndex * pointCount;
+
+        vtkIdType offset1 = (sliceIndex + 1) * pointCount;
+
+
+        for (const EdgeInfo& edge : boundaryEdges)
+        {
+            vtkIdType ids[4];
+
+            ids[0] = offset0 + edge.p1;
+
+            ids[1] = offset0 + edge.p2;
+
+            ids[2] = offset1 + edge.p2;
+
+            ids[3] = offset1 + edge.p1;
+
+            closedPolys->InsertNextCell(4, ids);
+        }
+    }
+
+
+    //============================================================
+    // 6. 建立 Closed vtkPolyData
+    //============================================================
+
+    vtkNew<vtkPolyData> closedSurface;
+
+    closedSurface->SetPoints(closedPoints);
+
+    closedSurface->SetPolys(closedPolys);
+
+    closedSurface->BuildCells();
+
+
+    //============================================================
+    // 7. Clean 一次
+    //
+    // 避免數值上存在重複點
+    //============================================================
+
+    vtkNew<vtkCleanPolyData> clean;
+
+    clean->SetInputData(closedSurface);
+
+    clean->PointMergingOn();
+
+    clean->Update();
+
+
+    //============================================================
+    // 8. 可選驗證：
+    //
+    // Closed Surface 不應該再有 Boundary Edge
+    //
+    // 如果這裡仍然有 Boundary Edge，
+    // 說明輸入 Slice 拓撲或連接方式存在問題。
+    //============================================================
+
+    vtkNew<vtkFeatureEdges> checkEdges;
+
+    checkEdges->SetInputConnection(clean->GetOutputPort());
+
+    checkEdges->BoundaryEdgesOn();
+
+    checkEdges->FeatureEdgesOff();
+
+    checkEdges->ManifoldEdgesOff();
+
+    checkEdges->NonManifoldEdgesOff();
+
+    checkEdges->Update();
+
+
+    if (checkEdges->GetOutput()->GetNumberOfCells() != 0)
+    {
+        // Closed Surface 失敗
+        return nullptr;
+    }
+
+
+    //============================================================
+    // 9. Closed Surface -> Image Stencil
+    //
+    // 使用原始 Volume 的幾何資訊
+    //============================================================
+
+    vtkNew<vtkPolyDataToImageStencil>        polyToStencil;
+
+    polyToStencil->SetInputConnection(clean->GetOutputPort());
+
+    /*
+     * 直接使用 originalVolume 的
+     *
+     * Origin
+     * Spacing
+     * WholeExtent
+     *
+     * 作為 stencil 的 image geometry
+     */
+
+    polyToStencil->SetInformationInput(originalVolume);
+
+    polyToStencil->SetTolerance(0.0);
+
+    polyToStencil->Update();
+
+
+    //============================================================
+    // 10. 使用 Stencil 切割原始 Volume
+    //
+    // Closed Surface 內部：
+    //
+    // 保留 originalVolume 原始數據
+    //
+    // Closed Surface 外部：
+    //
+    // outsideValue
+    //============================================================
+
+    vtkNew<vtkImageStencil>        imageStencil;
+
+    imageStencil->SetInputData(originalVolume);
+
+    imageStencil->SetStencilConnection(polyToStencil->GetOutputPort());
+
+    imageStencil->ReverseStencilOff();
+
+    imageStencil->SetBackgroundValue(outsideValue);
+
+    imageStencil->Update();
+
+
+    //============================================================
+    // 11. DeepCopy
+    //============================================================
+
+    vtkSmartPointer<vtkImageData> result = vtkSmartPointer<vtkImageData>::New();
+
+    result->DeepCopy(imageStencil->GetOutput());
+
+
+    return result;
 }
 
 void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<std::array<double, 3>> m_points, int channel)
@@ -1081,11 +1569,20 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
         {
             vtkSmartPointer<vtkImageAppend>  append3D = vtkSmartPointer<vtkImageAppend>::New();
             append3D->SetAppendAxis(2);
+            std::vector< vtkSmartPointer<vtkPolyData> > allPlanes;
             for (const auto& sliceList : m_future.results())
             {
-                for (const auto& slice : sliceList)
+                //for (const auto& slice : sliceList)
+                //{
+                //    append3D->AddInputData(slice);
+                //}
+                for (const auto& slice : sliceList.slices)
                 {
                     append3D->AddInputData(slice);
+                }
+                for (const auto& plane : sliceList.planes)
+                {
+                    allPlanes.push_back(plane);
                 }
             }
             append3D->Update();
