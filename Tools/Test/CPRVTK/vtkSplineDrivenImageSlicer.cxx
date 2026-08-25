@@ -167,7 +167,7 @@ int vtkSplineDrivenImageSlicer::RequestData( vtkInformation *vtkNotUsed(request)
     vtkSmartPointer<vtkImageData> inputCopy = vtkSmartPointer<vtkImageData>::New();
     inputCopy->ShallowCopy(input);
     vtkPolyData *inputPath                  = vtkPolyData::SafeDownCast( pathInfo->Get(vtkDataObject::DATA_OBJECT()));
-                                            
+                                           
     vtkImageData *outputImage               = vtkImageData::SafeDownCast( outImageInfo->Get(vtkDataObject::DATA_OBJECT()));
     vtkPolyData *outputPlane                = vtkPolyData::SafeDownCast( outPlaneInfo->Get(vtkDataObject::DATA_OBJECT()));
 
