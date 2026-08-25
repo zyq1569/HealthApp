@@ -23,8 +23,10 @@ struct SRVResult
     // √øèà SRV Slice å¶ë™µƒ PolyData
     std::vector<vtkSmartPointer<vtkPolyData>> planes;
 };
+
 // Forward Qt class declarations
 class Ui_QtVTKRenderWindows;
+
 
 class QtVTKRenderWindows : public QMainWindow
 {
@@ -70,14 +72,16 @@ public:
     void processing( vtkResliceImageViewer *viewer, std::vector<std::array<double, 3>> m_points, int channel = 0);
     vtkSmartPointer<vtkMetaImageReader> m_mHDreader;
 
+    void ShowVolume(vtkImageData* image);
+
 //signals:
 //    void mappingFinished(const std::vector<vtkSmartPointer<vtkImageData>> &result);
 
 private:
    //QFutureWatcher<std::vector<vtkSmartPointer<vtkImageData>>> m_watcher;
    //QFuture<std::vector<vtkSmartPointer<vtkImageData>>> m_future;
-    QFutureWatcher<SRVResult> m_watcher;
-    QFuture<SRVResult> m_future;
+   QFutureWatcher<SRVResult> m_watcher;
+   QFuture<SRVResult> m_future;
     //QFutureWatcher<std::vector<vtkSmartPointer<vtkImageData>>> m_watcher;
 
 public:

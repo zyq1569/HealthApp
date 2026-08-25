@@ -68,9 +68,9 @@ p, li { white-space: pre-wrap; }
    <widget class="QSplitter" name="splitter">
     <property name="geometry">
      <rect>
-      <x>505</x>
+      <x>515</x>
       <y>10</y>
-      <width>421</width>
+      <width>501</width>
       <height>23</height>
      </rect>
     </property>
@@ -91,6 +91,14 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="checked">
       <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="m_ckOpenApp">
+     <property name="text">
+      <string>3D  App</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QPushButton" name="m_Dir">

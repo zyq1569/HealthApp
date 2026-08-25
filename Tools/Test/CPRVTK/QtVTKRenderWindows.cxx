@@ -819,7 +819,7 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
     static bool init = true;
     static vtkSmartPointer<vtkColorTransferFunction>  colorFunc;
     static vtkSmartPointer<vtkPiecewiseFunction>      opacityFunc;
-     
+
     static vtkSmartPointer<vtkVolumeProperty>         m_volumeProperty;
     static vtkSmartPointer<vtkSmartVolumeMapper>      m_volumeMapper;
     static vtkSmartPointer<vtkVolume>                 m_vtkVolume;
@@ -830,15 +830,15 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
     {
         m_itkImageData = itkImageData;
         init = false;
-        colorFunc                = vtkSmartPointer<vtkColorTransferFunction>::New();
-        opacityFunc              = vtkSmartPointer<vtkPiecewiseFunction>::New();
+        colorFunc = vtkSmartPointer<vtkColorTransferFunction>::New();
+        opacityFunc = vtkSmartPointer<vtkPiecewiseFunction>::New();
 
-        m_volumeProperty         = vtkSmartPointer<vtkVolumeProperty>::New();
-        m_volumeMapper           = vtkSmartPointer<vtkSmartVolumeMapper>::New();
-        m_vtkVolume              = vtkSmartPointer<vtkVolume>::New();
-        m_renderer               = vtkSmartPointer<vtkRenderer>::New();
+        m_volumeProperty = vtkSmartPointer<vtkVolumeProperty>::New();
+        m_volumeMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
+        m_vtkVolume = vtkSmartPointer<vtkVolume>::New();
+        m_renderer = vtkSmartPointer<vtkRenderer>::New();
         m_renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-        m_interactorstyle        = vtkSmartPointer<CustomWLInteractorStyle>::New();
+        m_interactorstyle = vtkSmartPointer<CustomWLInteractorStyle>::New();
 
         //w:3500 l:500
         double window = 2008, level = 404;
@@ -935,9 +935,12 @@ void QtVTKRenderWindows::showVolumeImageSlicer(vtkImageData * itkImageData)
         m_renderer->ResetCamera();
         ui->view4->renderWindow()->Render();
     }
-    
+
 }
 
+
+//std::vector<vtkPolyData*> g_srvVtkPolyData;
+std::vector<vtkSmartPointer<vtkPolyData>>g_srvVtkPolyData;
 class DataInfo
 {
 public:
@@ -997,7 +1000,6 @@ public:
 SRVResult threadSplineDrivenImageSlicer(DataInfo info)
 {
     SRVResult result;
-    std::vector<vtkSmartPointer<vtkImageData>> slices;
     int s = info.m_id[0], l = info.m_id[1] + 1;
     for (int pt_id = s; pt_id < l; pt_id++)
     {
@@ -1007,10 +1009,6 @@ SRVResult threadSplineDrivenImageSlicer(DataInfo info)
         info.m_reslicer->GetOutput()->GetScalarRange(range);
         if (range[0] != range[1])
         {
-           // vtkImageData *data = info.m_reslicer->GetOutput();
-           // vtkSmartPointer<vtkImageData> tempSlice = vtkSmartPointer<vtkImageData>::New();
-           // tempSlice->DeepCopy(data);
-           // slices.push_back(tempSlice);
             vtkImageData *data = info.m_reslicer->GetOutput();
             vtkSmartPointer<vtkImageData> tempSlice = vtkSmartPointer<vtkImageData>::New();
             tempSlice->DeepCopy(data);
@@ -1024,9 +1022,9 @@ SRVResult threadSplineDrivenImageSlicer(DataInfo info)
                 copy->DeepCopy(plane);
                 result.planes.push_back(copy);
             }
+
         }
     }
-    //return slices;
     return result;
 }
 
@@ -1040,495 +1038,252 @@ SRVResult threadSplineDrivenImageSlicer(DataInfo info)
 #include <map>
 #include <utility>
 #include <vector>
-vtkSmartPointer<vtkImageData> ExtractSRVRegion(vtkImageData* originalVolume, const std::vector< vtkSmartPointer<vtkPolyData>>& srvSlices, double outsideValue = 0.0);
-vtkSmartPointer<vtkImageData> ExtractSRVRegion(vtkImageData* originalVolume, const std::vector< vtkSmartPointer<vtkPolyData>>& srvSlices, double outsideValue)
+
+//////////////////////////
+#include <vtkImageData.h>
+#include <vtkPolyData.h>
+#include <vtkPoints.h>
+#include <vtkPointData.h>
+#include <vtkDataArray.h>
+#include <vtkMatrix3x3.h>
+#include <vtkSmartPointer.h>
+
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <cstring>
+
+// ============================================================
+// 點 P 到線段 AB 的最短距離平方
+// ============================================================
+static inline double PointToSegmentDistanceSquared(const double p[3], const double a[3], const double b[3]);
+static inline double PointToSegmentDistanceSquared(const double p[3], const double a[3], const double b[3])
 {
-    //============================================================
-    // 0. 基本檢查
-    //============================================================
+    const double abx = b[0] - a[0];
+    const double aby = b[1] - a[1];
+    const double abz = b[2] - a[2];
 
-    if (!originalVolume)
+    const double apx = p[0] - a[0];
+    const double apy = p[1] - a[1];
+    const double apz = p[2] - a[2];
+
+    const double ab2 = abx * abx + aby * aby + abz * abz;
+
+    // 避免重複點
+    if (ab2 < 1e-12)
     {
-        return nullptr;
+        return apx * apx + apy * apy + apz * apz;
     }
 
-    if (srvSlices.size() < 2)
-    {
-        return nullptr;
-    }
-
-    vtkPolyData* firstSlice = srvSlices.front();
-
-    if (!firstSlice)
-    {
-        return nullptr;
-    }
-
-    const vtkIdType pointCount = firstSlice->GetNumberOfPoints();
-
-    const vtkIdType cellCount = firstSlice->GetNumberOfCells();
-
-    if (pointCount == 0 || cellCount == 0)
-    {
-        return nullptr;
-    }
-
-
-    //============================================================
-    // 1. 確認所有 SRV Slice 拓撲一致
-    //
-    // 這是本方法最重要的前提
-    //
-    // 所有 Slice 必須：
-    //
-    // NumberOfPoints 相同
-    // NumberOfCells  相同
-    //============================================================
-
-    for (vtkPolyData* slice : srvSlices)
-    {
-        if (!slice)
-        {
-            return nullptr;
-        }
-
-        if (slice->GetNumberOfPoints() != pointCount)
-        {
-            return nullptr;
-        }
-
-        if (slice->GetNumberOfCells() != cellCount)
-        {
-            return nullptr;
-        }
-    }
-
-
-    //============================================================
-    // 2. 找出第一張 Slice 的 Boundary Edges
-    //
-    // 對每個 Cell 的每條 Edge 統計：
-    //
-    // 出現 2 次 -> 內部 Edge
-    // 出現 1 次 -> Boundary Edge
-    //
-    // 因為所有 Slice 拓撲相同，
-    // 所以只需要分析第一張 Slice 一次。
-    //============================================================
-
-    struct EdgeInfo
-    {
-        vtkIdType p1;
-        vtkIdType p2;
-        int count = 0;
-    };
-
-    std::map< std::pair<vtkIdType, vtkIdType>, EdgeInfo > edgeMap;
-
-
-    for (vtkIdType cellId = 0; cellId < cellCount; ++cellId)
-    {
-        vtkCell* cell = firstSlice->GetCell(cellId);
-
-        if (!cell)
-        {
-            continue;
-        }
-
-        const vtkIdType n = cell->GetNumberOfPoints();
-
-        if (n < 3)
-        {
-            continue;
-        }
-
-
-        for (vtkIdType i = 0; i < n; ++i)
-        {
-            vtkIdType p1 = cell->GetPointId(i);
-
-            vtkIdType p2 = cell->GetPointId((i + 1) % n);
-
-            vtkIdType minId = std::min(p1, p2);
-
-            vtkIdType maxId = std::max(p1, p2);
-
-            auto key = std::make_pair(minId, maxId);
-
-            auto iter = edgeMap.find(key);
-
-            if (iter == edgeMap.end())
-            {
-                EdgeInfo edge;
-
-                // 保留原始方向
-                edge.p1 = p1;
-                edge.p2 = p2;
-                edge.count = 1;
-
-                edgeMap[key] = edge;
-            }
-            else
-            {
-                iter->second.count++;
-            }
-        }
-    }
-
-
-    //============================================================
-    // 3. 取得真正的 Boundary Edges
-    //============================================================
-
-    std::vector<EdgeInfo> boundaryEdges;
-
-    for (const auto& item : edgeMap)
-    {
-        const EdgeInfo& edge = item.second;
-
-        if (edge.count == 1)
-        {
-            boundaryEdges.push_back(edge);
-        }
-    }
-
-
-    if (boundaryEdges.empty())
-    {
-        return nullptr;
-    }
-
-
-    //============================================================
-    // 4. 建立 Closed Surface 的所有 Points
-    //
-    // 每一張 Slice 的所有 Points 都加入
-    //
-    // Slice 0:
-    //
-    // [0 ........ pointCount-1]
-    //
-    // Slice 1:
-    //
-    // [pointCount .... 2*pointCount-1]
-    //
-    // ...
-    //============================================================
-
-    const vtkIdType sliceCount = static_cast<vtkIdType>(srvSlices.size());
-
-    vtkNew<vtkPoints> closedPoints;
-
-    closedPoints->SetNumberOfPoints(pointCount * sliceCount);
-
-
-    for (vtkIdType sliceIndex = 0; sliceIndex < sliceCount; ++sliceIndex)
-    {
-        vtkPolyData* slice = srvSlices[sliceIndex];
-
-        for (vtkIdType pointId = 0; pointId < pointCount; ++pointId)
-        {
-            double p[3];
-
-            slice->GetPoint(pointId, p);
-
-            vtkIdType newPointId = sliceIndex * pointCount + pointId;
-
-            closedPoints->SetPoint(newPointId, p);
-        }
-    }
-
-
-    //============================================================
-    // 5. 建立 Closed Surface
-    //
-    // 包含：
-    //
-    // A. 第一張 Slice：起始端蓋
-    // B. 最後一張 Slice：結束端蓋
-    // C. 所有相鄰 Slice 的 Boundary：
-    //    建立側壁
-    //============================================================
-
-    vtkNew<vtkCellArray> closedPolys;
-
-
-    //============================================================
-    // 5A. 第一張 Slice 作為第一個 Cap
-    //
-    // Point 順序反轉
-    //============================================================
-
-    for (vtkIdType cellId = 0; cellId < cellCount; ++cellId)
-    {
-        vtkCell* cell = firstSlice->GetCell(cellId);
-
-        if (!cell)
-        {
-            continue;
-        }
-
-        vtkIdType n = cell->GetNumberOfPoints();
-
-        if (n < 3)
-        {
-            continue;
-        }
-
-        vtkNew<vtkIdList> ids;
-
-        ids->SetNumberOfIds(n);
-
-        for (vtkIdType i = 0; i < n; ++i)
-        {
-            vtkIdType originalId = cell->GetPointId(n - 1 - i);
-
-            ids->SetId(i, originalId);
-        }
-
-        closedPolys->InsertNextCell(ids);
-    }
-
-
-    //============================================================
-    // 5B. 最後一張 Slice 作為第二個 Cap
-    //============================================================
-
-    vtkIdType lastOffset = (sliceCount - 1) * pointCount;
-
-    vtkPolyData* lastSlice = srvSlices.back();
-
-
-    for (vtkIdType cellId = 0; cellId < cellCount; ++cellId)
-    {
-        vtkCell* cell = lastSlice->GetCell(cellId);
-
-        if (!cell)
-        {
-            continue;
-        }
-
-        vtkIdType n = cell->GetNumberOfPoints();
-
-        if (n < 3)
-        {
-            continue;
-        }
-
-        vtkNew<vtkIdList> ids;
-
-        ids->SetNumberOfIds(n);
-
-        for (vtkIdType i = 0; i < n; ++i)
-        {
-            vtkIdType originalId = cell->GetPointId(i);
-
-            ids->SetId(i, lastOffset + originalId);
-        }
-
-        closedPolys->InsertNextCell(ids);
-    }
-
-
-    //============================================================
-    // 5C. 連接所有相鄰 Slice
-    //
-    // 只連接 Boundary Edge
-    //
-    // 例如：
-    //
-    // Slice i:
-    //
-    //     A -------- B
-    //
-    //
-    // Slice i + 1:
-    //
-    //     A' ------- B'
-    //
-    //
-    // 建立：
-    //
-    // A ---- B
-    // |      |
-    // |      |
-    // A'---- B'
-    //============================================================
-
-    for (vtkIdType sliceIndex = 0; sliceIndex < sliceCount - 1; ++sliceIndex)
-    {
-        vtkIdType offset0 = sliceIndex * pointCount;
-
-        vtkIdType offset1 = (sliceIndex + 1) * pointCount;
-
-
-        for (const EdgeInfo& edge : boundaryEdges)
-        {
-            vtkIdType ids[4];
-
-            ids[0] = offset0 + edge.p1;
-
-            ids[1] = offset0 + edge.p2;
-
-            ids[2] = offset1 + edge.p2;
-
-            ids[3] = offset1 + edge.p1;
-
-            closedPolys->InsertNextCell(4, ids);
-        }
-    }
-
-
-    //============================================================
-    // 6. 建立 Closed vtkPolyData
-    //============================================================
-
-    vtkNew<vtkPolyData> closedSurface;
-
-    closedSurface->SetPoints(closedPoints);
-
-    closedSurface->SetPolys(closedPolys);
-
-    closedSurface->BuildCells();
-
-
-    //============================================================
-    // 7. Clean 一次
-    //
-    // 避免數值上存在重複點
-    //============================================================
-
-    vtkNew<vtkCleanPolyData> clean;
-
-    clean->SetInputData(closedSurface);
-
-    clean->PointMergingOn();
-
-    clean->Update();
-
-
-    //============================================================
-    // 8. 可選驗證：
-    //
-    // Closed Surface 不應該再有 Boundary Edge
-    //
-    // 如果這裡仍然有 Boundary Edge，
-    // 說明輸入 Slice 拓撲或連接方式存在問題。
-    //============================================================
-
-    vtkNew<vtkFeatureEdges> checkEdges;
-
-    checkEdges->SetInputConnection(clean->GetOutputPort());
-
-    checkEdges->BoundaryEdgesOn();
-
-    checkEdges->FeatureEdgesOff();
-
-    checkEdges->ManifoldEdgesOff();
-
-    checkEdges->NonManifoldEdgesOff();
-
-    checkEdges->Update();
-
-
-    if (checkEdges->GetOutput()->GetNumberOfCells() != 0)
-    {
-        // Closed Surface 失敗
-        return nullptr;
-    }
-
-
-    //============================================================
-    // 9. Closed Surface -> Image Stencil
-    //
-    // 使用原始 Volume 的幾何資訊
-    //============================================================
-
-    vtkNew<vtkPolyDataToImageStencil>        polyToStencil;
-
-    polyToStencil->SetInputConnection(clean->GetOutputPort());
-
-    /*
-     * 直接使用 originalVolume 的
-     *
-     * Origin
-     * Spacing
-     * WholeExtent
-     *
-     * 作為 stencil 的 image geometry
-     */
-
-    polyToStencil->SetInformationInput(originalVolume);
-
-    polyToStencil->SetTolerance(0.0);
-
-    polyToStencil->Update();
-
-
-    //============================================================
-    // 10. 使用 Stencil 切割原始 Volume
-    //
-    // Closed Surface 內部：
-    //
-    // 保留 originalVolume 原始數據
-    //
-    // Closed Surface 外部：
-    //
-    // outsideValue
-    //============================================================
-
-    vtkNew<vtkImageStencil>        imageStencil;
-
-    imageStencil->SetInputData(originalVolume);
-
-    imageStencil->SetStencilConnection(polyToStencil->GetOutputPort());
-
-    imageStencil->ReverseStencilOff();
-
-    imageStencil->SetBackgroundValue(outsideValue);
-
-    imageStencil->Update();
-
-
-    //============================================================
-    // 11. DeepCopy
-    //============================================================
-
-    vtkSmartPointer<vtkImageData> result = vtkSmartPointer<vtkImageData>::New();
-
-    result->DeepCopy(imageStencil->GetOutput());
-
-
-    return result;
+    double t = (apx * abx + apy * aby + apz * abz) / ab2;
+
+    // Clamp 到線段 [A, B]
+    if (t < 0.0)
+        t = 0.0;
+    else if (t > 1.0)
+        t = 1.0;
+
+    const double cx = a[0] + t * abx;
+    const double cy = a[1] + t * aby;
+    const double cz = a[2] + t * abz;
+
+    const double dx = p[0] - cx;
+    const double dy = p[1] - cy;
+    const double dz = p[2] - cz;
+
+    return        dx * dx + dy * dy + dz * dz;
 }
 
+// ============================================================
+//
+// ExtractSRVCurvedVolume
+//
+// 功能：
+//
+//     以 SRV spline centerline 為中心，
+//     提取 radius 範圍內的曲柱體數據。
+//
+// fittedCurve 必須滿足：
+//
+//     P0 -> P1 -> P2 -> P3 -> ...
+//
+// 即 spline_filter->GetOutput()
+//
+// ============================================================
+vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolume(vtkImageData* inputVolume, vtkPolyData* fittedCurve, double radius, double outsideValue = 0.0);
+/////////////////////////
+bool SaveImageDataToMHD(vtkImageData* imageData, const QString& fileName)
+{
+    if (!imageData)
+    {
+        qDebug() << "imageData is nullptr";
+        return false;
+    }
+
+    if (imageData->GetNumberOfPoints() == 0)
+    {
+        qDebug() << "imageData has no data";
+        return false;
+    }
+
+
+    // 確保副檔名為 .mhd
+    QString mhdFileName = fileName;
+
+    if (!mhdFileName.endsWith(".mhd", Qt::CaseInsensitive))
+    {
+        mhdFileName += ".mhd";
+    }
+
+
+    vtkSmartPointer<vtkMetaImageWriter> writer = vtkSmartPointer<vtkMetaImageWriter>::New();
+
+    writer->SetFileName(mhdFileName.toLocal8Bit().constData());
+
+    writer->SetInputData(imageData);
+
+    writer->Write();
+
+
+    // vtkMetaImageWriter 沒有非常直接的
+    // Write() 成功/失敗 bool 返回值，
+    // 所以簡單確認 ErrorCode
+
+    if (writer->GetErrorCode() != 0)
+    {
+        qDebug()
+            << "Save MHD failed:"
+            << mhdFileName
+            << "ErrorCode:"
+            << writer->GetErrorCode();
+
+        return false;
+    }
+
+
+    qDebug()
+        << "Save MHD success:"
+        << mhdFileName;
+
+    return true;
+}
+vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeThread(vtkImageData* inputVolume, vtkPolyData* fittedCurve, double radius, double outsideValue = 0.0);
+void QtVTKRenderWindows::ShowVolume(vtkImageData* image)
+{
+    if (!image)
+    {
+        return;
+    }
+    QDateTime dateTime = QDateTime::currentDateTime();
+    QString str = dateTime.toString("/MMddhhmmss.mhd");// 将日期时间格式化为字符串
+    QString DicomDir = QCoreApplication::applicationDirPath();
+    std::string Input_Name = qPrintable(DicomDir);
+    std::string path = Input_Name + qPrintable(str);
+    vtkMetaImageWriter *vtkdatawrite = vtkMetaImageWriter::New();
+    vtkdatawrite->SetInputData(image);
+    vtkdatawrite->SetFileName(path.c_str());
+    vtkdatawrite->Write();
+    vtkdatawrite->Delete();
+    if (ui->m_ckOpenApp->isChecked())
+    {
+        QString mhdFile = path.c_str();
+        mhdFile += ".mhd";
+        QStringList arg;
+        arg << mhdFile << "2";
+        QString appfile = DicomDir + "/TestITKimage.exe";
+        static QProcess process(this);
+        process.start(appfile, arg);
+        return;
+    }
+    // 1. Volume Mapper
+    vtkNew<vtkSmartVolumeMapper> mapper;
+    mapper->SetInputData(image);
+    // 2. 顏色映射
+    vtkNew<vtkColorTransferFunction> color;
+    double range[2];
+    image->GetScalarRange(range);
+    color->AddRGBPoint(range[0], 0.0, 0.0, 0.0);
+    color->AddRGBPoint(range[0] + (range[1] - range[0]) * 0.3, 0.5, 0.5, 0.5);
+    color->AddRGBPoint(range[1], 1.0, 1.0, 1.0);
+    // 3. 透明度映射
+   //auto opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
+    vtkSmartPointer<vtkPiecewiseFunction> opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
+    ////vtkNew<vtkPiecewiseFunction> opacity;
+    //
+    opacity->AddPoint(range[0], 0.0);
+    //
+    opacity->AddPoint(range[0] + (range[1] - range[0]) * 0.2, 0.0);
+    //
+    opacity->AddPoint(range[0] + (range[1] - range[0]) * 0.6, 0.3);
+    //
+    opacity->AddPoint(range[1], 1.0);
+    // 4. Volume Property
+    vtkNew<vtkVolumeProperty> volumeProperty;
+    volumeProperty->SetColor(color);
+    //volumeProperty->SetScalarOpacity(opacity);
+    volumeProperty->ShadeOn();
+    volumeProperty->SetInterpolationTypeToLinear();
+    // 5. Volume
+    vtkNew<vtkVolume> volume;
+    volume->SetMapper(mapper);
+    volume->SetProperty(volumeProperty);
+    // 6. Renderer
+    vtkNew<vtkRenderer> renderer;
+    renderer->AddVolume(volume);
+    renderer->SetBackground(0.1, 0.1, 0.1);
+    // 7. RenderWindow
+    vtkNew<vtkRenderWindow> renderWindow;
+    renderWindow->AddRenderer(renderer);
+    renderWindow->SetSize(800, 600);
+    // 8. Interactor
+    vtkNew<vtkRenderWindowInteractor> interactor;
+    interactor->SetRenderWindow(renderWindow);
+    // 9. 顯示
+    renderer->ResetCamera();
+    renderWindow->Render();
+    interactor->Start();
+}
 void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<std::array<double, 3>> m_points, int channel)
 {
-    vtkSmartPointer<vtkPoints> points    = vtkSmartPointer <vtkPoints>::New();
+    vtkImageData *orgImageData = viewer->GetInput();
+    vtkSmartPointer<vtkPoints> points = vtkSmartPointer <vtkPoints>::New();
     for (const auto&p : m_points)
     {
         points->InsertNextPoint(p[0], p[1], p[2]);
     }
-
     vtkSmartPointer<vtkPolyLine> polyLine = vtkSmartPointer<vtkPolyLine>::New();
     polyLine->GetPointIds()->SetNumberOfIds(points->GetNumberOfPoints());
     for (vtkIdType i = 0; i < points->GetNumberOfPoints(); i++)
     {
         polyLine->GetPointIds()->SetId(i, i);
     }
-    vtkSmartPointer<vtkCellArray> cells   = vtkSmartPointer<vtkCellArray>::New();
+    vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
     cells->InsertNextCell(polyLine);
-
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
     polyData->SetPoints(points);
     polyData->SetLines(cells);
-
     vtkSmartPointer<vtkSplineFilter> spline_filter = vtkSmartPointer<vtkSplineFilter>::New();
     spline_filter->SetSubdivideToLength();// 按弧长
     spline_filter->SetLength(0.2);
     spline_filter->SetInputData(polyData);
     spline_filter->Update();
- 
+    ///----------
+    //非線程
+    //vtkSmartPointer<vtkImageData> cropImage = ExtractSRVCurvedVolume(orgImageData, spline_filter->GetOutput(), 18);
+    //ShowVolume(cropImage);
+    bool thread = 0;
+    if (thread)
+    {
+        vtkSmartPointer<vtkImageData> cropImage = ExtractSRVCurvedVolumeThread(orgImageData, spline_filter->GetOutput(), 18.0, -1024.0);
+        ShowVolume(cropImage);
+    }
+    else
+    {
+        vtkSmartPointer<vtkImageData> cropImage = ExtractSRVCurvedVolume(orgImageData, spline_filter->GetOutput(), 18.0, -1024.0);
+        ShowVolume(cropImage);
+    }
+    //---------------
+    g_srvVtkPolyData.clear();
     long long nb_points = spline_filter->GetOutput()->GetNumberOfPoints();
     bool bThread = ui->m_ckThread->isChecked();
     if (bThread)
@@ -1565,17 +1320,13 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
         m_future = QtConcurrent::mapped(listDatas, threadSplineDrivenImageSlicer);
         // 让 watcher 监控 future
         m_watcher.setFuture(m_future);
-        connect(&m_watcher, &QFutureWatcher< std::vector< vtkSmartPointer<vtkImageData> > >::finished, this, [this]()
+        connect(&m_watcher, &QFutureWatcher< std::vector< vtkSmartPointer<vtkImageData> > >::finished, this, [this, orgImageData]()
         {
             vtkSmartPointer<vtkImageAppend>  append3D = vtkSmartPointer<vtkImageAppend>::New();
             append3D->SetAppendAxis(2);
             std::vector< vtkSmartPointer<vtkPolyData> > allPlanes;
             for (const auto& sliceList : m_future.results())
             {
-                //for (const auto& slice : sliceList)
-                //{
-                //    append3D->AddInputData(slice);
-                //}
                 for (const auto& slice : sliceList.slices)
                 {
                     append3D->AddInputData(slice);
@@ -1588,7 +1339,20 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
             append3D->Update();
             vtkImageData * itkImageData = append3D->GetOutput();
             showVolumeImageSlicer(itkImageData);
-
+            ///----------------Test!!!!
+            /*
+             if (0)
+            {
+                qDebug() << "Plane Count:" << allPlanes.size();
+                for (size_t i = 0; i < allPlanes.size(); ++i)
+                {
+                    double bounds[6];
+                    allPlanes[i]->GetBounds(bounds);
+                    qDebug() << "Plane" << i << "Y:" << bounds[2] << bounds[3];
+                }
+            }
+            ///
+            */
             if (ui->m_ckSaveData->isChecked())
             {
                 QDateTime dateTime = QDateTime::currentDateTime();
@@ -1646,7 +1410,6 @@ void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<s
             vtkdatawrite->Delete();
         }
     }
-    
 }
 
 void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)
@@ -1667,7 +1430,6 @@ void QtVTKRenderWindows::showCPRimageSlicer(vtkImageData * itkImageData)
     vtkSmartPointer<vtkInteractorStyleTrackballCamera> vtkInteractorStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
     m_cprViewer->SetupInteractor(interactor);
     m_cprViewer->GetRenderer()->GetRenderWindow()->GetInteractor()->SetInteractorStyle(vtkInteractorStyle);
-    //m_cprViewer->GetRenderWindow()->SetWindowName("Test-CPR");
     vtkSmartPointer<vtkSliderRepresentation2D> sliderRep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
     sliderRep->SetMinimumValue(m_cprViewer->GetSliceMin());
     sliderRep->SetMaximumValue(m_cprViewer->GetSliceMax());
@@ -2016,3 +1778,845 @@ void QtVTKRenderWindows::AddDistanceMeasurementToView(int i)
     this->DistanceWidget[i]->CreateDefaultRepresentation();
     this->DistanceWidget[i]->EnabledOn();
 }
+// ============================================================
+// ExtractSRVCurvedVolume
+// 功能：
+//   以 fittedCurve 為中心線，
+//   提取距離曲線 <= radius 的體數據。
+// 多線程策略：
+//   1. 所有 Segment 在線程建立前預處理
+//   2. 每個 Segment 預先保存：//      - P0 / P1//      - 對應 Index Bounding Box
+//   3. 多個 Thread 按 Z Slice 分區
+//   4. 每個 Thread 只寫自己的 Z 範圍
+//   5. 不使用 mutex / atomic
+// ============================================================
+vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeThread(vtkImageData* inputVolume, vtkPolyData* fittedCurve, double radius, double outsideValue)
+{
+    // 0. 參數檢查
+    if (!inputVolume || !fittedCurve || radius <= 0.0)
+    {
+        return nullptr;
+    }
+    vtkPoints* curvePoints = fittedCurve->GetPoints();
+    if (!curvePoints)
+    {
+        return nullptr;
+    }
+    const vtkIdType pointCount = curvePoints->GetNumberOfPoints();
+    if (pointCount < 2)
+    {
+        return nullptr;
+    }
+    // ========================================================
+    // 1. Input Volume 基本資訊
+    // ========================================================
+    int inputExtent[6];
+    inputVolume->GetExtent(inputExtent);
+    double spacing[3];
+    inputVolume->GetSpacing(spacing);
+    double origin[3];
+    inputVolume->GetOrigin(origin);
+    const int scalarType = inputVolume->GetScalarType();
+    const int numComponents = inputVolume->GetNumberOfScalarComponents();
+    // ========================================================
+    // 2. 複製 Direction Matrix
+    //
+    // 後面 Worker 不直接呼叫 VTK Transform 函數
+    // ========================================================
+    double direction[3][3];
+    vtkMatrix3x3* directionMatrix = inputVolume->GetDirectionMatrix();
+    if (directionMatrix)
+    {
+        for (int r = 0; r < 3; ++r)
+        {
+            for (int c = 0; c < 3; ++c)
+            {
+                direction[r][c] = directionMatrix->GetElement(r, c);
+            }
+        }
+    }
+    else
+    {
+        direction[0][0] = 1.0;
+        direction[0][1] = 0.0;
+        direction[0][2] = 0.0;
+
+        direction[1][0] = 0.0;
+        direction[1][1] = 1.0;
+        direction[1][2] = 0.0;
+
+        direction[2][0] = 0.0;
+        direction[2][1] = 0.0;
+        direction[2][2] = 1.0;
+    }
+    // ========================================================
+    // 3. 建立 World -> Continuous Index Matrix
+    // PhysicalPoint =Origin +Direction * Spacing * Index
+    // 所以：Index = inverse(Direction)* (PhysicalPoint - Origin)/ Spacing
+    // ========================================================
+    double inverseDirection[3][3];
+    {
+        vtkNew<vtkMatrix3x3> directionCopy;
+        for (int r = 0; r < 3; ++r)
+        {
+            for (int c = 0; c < 3; ++c)
+            {
+                directionCopy->SetElement(r, c, direction[r][c]);
+            }
+        }
+        vtkNew<vtkMatrix3x3> inverseMatrix;
+        vtkMatrix3x3::Invert(directionCopy, inverseMatrix);
+        for (int r = 0; r < 3; ++r)
+        {
+            for (int c = 0; c < 3; ++c)
+            {
+                inverseDirection[r][c] = inverseMatrix->GetElement(r, c);
+            }
+        }
+    }
+    // ========================================================
+    // Local Lambda World Coordinate ->
+    // Continuous Index 不依賴 VTK Object
+    // ========================================================
+    auto WorldToContinuousIndex = [&origin, &spacing, &inverseDirection](const double worldPoint[3], double continuousIndex[3])
+    {
+        const double dx = worldPoint[0] - origin[0];
+        const double dy = worldPoint[1] - origin[1];
+        const double dz = worldPoint[2] - origin[2];
+        const double localX = inverseDirection[0][0] * dx + inverseDirection[0][1] * dy + inverseDirection[0][2] * dz;
+        const double localY = inverseDirection[1][0] * dx + inverseDirection[1][1] * dy + inverseDirection[1][2] * dz;
+        const double localZ = inverseDirection[2][0] * dx + inverseDirection[2][1] * dy + inverseDirection[2][2] * dz;
+        continuousIndex[0] = localX / spacing[0];
+        continuousIndex[1] = localY / spacing[1];
+        continuousIndex[2] = localZ / spacing[2];
+    };
+    // ========================================================
+    // 4. Curve Bounding Box + Radius
+    // ========================================================
+    double curveBounds[6];
+    fittedCurve->GetBounds(curveBounds);
+    const double worldMin[3] =
+    {
+        curveBounds[0] - radius,
+        curveBounds[2] - radius,
+        curveBounds[4] - radius
+    };
+    const double worldMax[3] =
+    {
+        curveBounds[1] + radius,
+        curveBounds[3] + radius,
+        curveBounds[5] + radius
+    };
+    // ========================================================
+    // 5. Curve Bounding Box
+    // -> Input Index Bounding Box
+    // ========================================================
+    double continuousMin[3] =
+    {
+        VTK_DOUBLE_MAX,
+        VTK_DOUBLE_MAX,
+        VTK_DOUBLE_MAX
+    };
+    double continuousMax[3] =
+    {
+        -VTK_DOUBLE_MAX,
+        -VTK_DOUBLE_MAX,
+        -VTK_DOUBLE_MAX
+    };
+    for (int x = 0; x < 2; ++x)
+    {
+        for (int y = 0; y < 2; ++y)
+        {
+            for (int z = 0; z < 2; ++z)
+            {
+                double worldPoint[3] =
+                {
+                    x ? worldMax[0] : worldMin[0],
+                    y ? worldMax[1] : worldMin[1],
+                    z ? worldMax[2] : worldMin[2]
+                };
+                double continuousIndex[3];
+                WorldToContinuousIndex(worldPoint, continuousIndex);
+                for (int d = 0; d < 3; ++d)
+                {
+                    continuousMin[d] = std::min(continuousMin[d], continuousIndex[d]);
+                    continuousMax[d] = std::max(continuousMax[d], continuousIndex[d]);
+                }
+            }
+        }
+    }
+    // ========================================================
+    // 6. 計算 Output 對應的 Input Region
+    // ========================================================
+    int minIndex[3] =
+    {
+        static_cast<int>(std::floor(continuousMin[0])),
+        static_cast<int>(std::floor(continuousMin[1])),
+        static_cast<int>(std::floor(continuousMin[2]))
+    };
+    int maxIndex[3] =
+    {
+        static_cast<int>(std::ceil(continuousMax[0])),
+        static_cast<int>(std::ceil(continuousMax[1])),
+        static_cast<int>(std::ceil(continuousMax[2]))
+    };
+    // 與 Input Extent 求交集
+    minIndex[0] = std::max(minIndex[0], inputExtent[0]);
+    maxIndex[0] = std::min(maxIndex[0], inputExtent[1]);
+    minIndex[1] = std::max(minIndex[1], inputExtent[2]);
+    maxIndex[1] = std::min(maxIndex[1], inputExtent[3]);
+    minIndex[2] = std::max(minIndex[2], inputExtent[4]);
+    maxIndex[2] = std::min(maxIndex[2], inputExtent[5]);
+    if (minIndex[0] > maxIndex[0] || minIndex[1] > maxIndex[1] || minIndex[2] > maxIndex[2])
+    {
+        return nullptr;
+    }
+    // ========================================================
+    // 7. Output Size
+    // ========================================================
+    const int outputSize[3] =
+    {
+        maxIndex[0] - minIndex[0] + 1,
+        maxIndex[1] - minIndex[1] + 1,
+        maxIndex[2] - minIndex[2] + 1
+    };
+    // ========================================================
+    // 8. 建立 Output
+    // ========================================================
+    vtkSmartPointer<vtkImageData> output = vtkSmartPointer<vtkImageData>::New();
+    output->SetSpacing(spacing);
+    if (directionMatrix)
+    {
+        output->SetDirectionMatrix(directionMatrix);
+    }
+    // Output (0,0,0)
+    // 對應 Input minIndex
+    const double scaledIndexX = static_cast<double>(minIndex[0]) *spacing[0];
+    const double scaledIndexY = static_cast<double>(minIndex[1]) *spacing[1];
+    const double scaledIndexZ = static_cast<double>(minIndex[2]) *spacing[2];
+    double outputOrigin[3];
+    outputOrigin[0] = origin[0] + direction[0][0] * scaledIndexX + direction[0][1] * scaledIndexY + direction[0][2] * scaledIndexZ;
+    outputOrigin[1] = origin[1] + direction[1][0] * scaledIndexX + direction[1][1] * scaledIndexY + direction[1][2] * scaledIndexZ;
+    outputOrigin[2] = origin[2] + direction[2][0] * scaledIndexX + direction[2][1] * scaledIndexY + direction[2][2] * scaledIndexZ;
+    output->SetOrigin(outputOrigin);
+    output->SetExtent(0, outputSize[0] - 1, 0, outputSize[1] - 1, 0, outputSize[2] - 1);
+    output->AllocateScalars(scalarType, numComponents);
+    // ========================================================
+    // 9. 初始化 Output
+   // ========================================================
+    vtkDataArray* outputScalars = output->GetPointData()->GetScalars();
+    const vtkIdType outputVoxelCount = outputScalars->GetNumberOfTuples();
+    for (vtkIdType voxelId = 0; voxelId < outputVoxelCount; ++voxelId)
+    {
+        for (int c = 0; c < numComponents; ++c)
+        {
+            outputScalars->SetComponent(voxelId, c, outsideValue);
+        }
+    }
+    // ========================================================
+    // 10. 預處理所有 Segment
+    //
+    // 所有 VTK Curve Points 在這裡讀完。
+    //
+    // Worker 中只讀 std::vector<Segment>
+    // ========================================================
+    struct Segment
+    {
+        double p0[3];
+        double p1[3];
+        int minIndex[3];
+        int maxIndex[3];
+    };
+    std::vector<Segment> segments;
+    segments.reserve(static_cast<size_t>(pointCount - 1));
+    for (vtkIdType segmentId = 0; segmentId < pointCount - 1; ++segmentId)
+    {
+        Segment segment;
+        // ----------------------------------------------------
+        // 取得曲線點
+        // ----------------------------------------------------
+        curvePoints->GetPoint(segmentId, segment.p0);
+        curvePoints->GetPoint(segmentId + 1, segment.p1);
+        // ----------------------------------------------------
+        // Segment World Bounding Box + Radius
+        // ----------------------------------------------------
+        const double segmentWorldMin[3] =
+        {
+            std::min(segment.p0[0],  segment.p1[0]) - radius,
+            std::min(segment.p0[1], segment.p1[1]) - radius,
+            std::min(segment.p0[2], segment.p1[2]) - radius
+        };
+        const double segmentWorldMax[3] =
+        {
+            std::max(segment.p0[0], segment.p1[0]) + radius,
+            std::max(segment.p0[1], segment.p1[1]) + radius,
+            std::max(segment.p0[2], segment.p1[2]) + radius
+        };
+        // ----------------------------------------------------
+        // Segment Bounding Box
+        // -> Continuous Index
+        // ----------------------------------------------------
+        double segContinuousMin[3] =
+        {
+            VTK_DOUBLE_MAX,
+            VTK_DOUBLE_MAX,
+            VTK_DOUBLE_MAX
+        };
+        double segContinuousMax[3] =
+        {
+            -VTK_DOUBLE_MAX,
+            -VTK_DOUBLE_MAX,
+            -VTK_DOUBLE_MAX
+        };
+        for (int x = 0; x < 2; ++x)
+        {
+            for (int y = 0; y < 2; ++y)
+            {
+                for (int z = 0; z < 2; ++z)
+                {
+                    double worldPoint[3] =
+                    {
+                        x ? segmentWorldMax[0] : segmentWorldMin[0],
+                        y ? segmentWorldMax[1] : segmentWorldMin[1],
+                        z ? segmentWorldMax[2] : segmentWorldMin[2]
+                    };
+                    double continuousIndex[3];
+                    WorldToContinuousIndex(worldPoint, continuousIndex);
+                    for (int d = 0; d < 3; ++d)
+                    {
+                        segContinuousMin[d] = std::min(segContinuousMin[d], continuousIndex[d]);
+                        segContinuousMax[d] = std::max(segContinuousMax[d], continuousIndex[d]);
+                    }
+                }
+            }
+        }
+        // ----------------------------------------------------
+        // Continuous Index -> Integer Index
+        // ----------------------------------------------------
+        segment.minIndex[0] = static_cast<int>(std::floor(segContinuousMin[0]));
+        segment.minIndex[1] = static_cast<int>(std::floor(segContinuousMin[1]));
+        segment.minIndex[2] = static_cast<int>(std::floor(segContinuousMin[2]));
+        segment.maxIndex[0] = static_cast<int>(std::ceil(segContinuousMax[0]));
+        segment.maxIndex[1] = static_cast<int>(std::ceil(segContinuousMax[1]));
+        segment.maxIndex[2] = static_cast<int>(std::ceil(segContinuousMax[2]));
+        // ----------------------------------------------------
+        // 限制在 Output 對應的 Input Region
+        // ----------------------------------------------------
+        for (int d = 0; d < 3; ++d)
+        {
+            segment.minIndex[d] = std::max(segment.minIndex[d], minIndex[d]);
+            segment.maxIndex[d] = std::min(segment.maxIndex[d], maxIndex[d]);
+        }
+        // 如果 Segment 完全不在 Volume 中
+        // 就不加入
+        if (segment.minIndex[0] > segment.maxIndex[0] || segment.minIndex[1] > segment.maxIndex[1] || segment.minIndex[2] > segment.maxIndex[2])
+        {
+            continue;
+        }
+        segments.push_back(segment);
+    }
+    if (segments.empty())
+    {
+        return output;
+    }
+    // ========================================================
+    // 11. 取得 Scalar Memory
+    //
+    // Worker 不再使用 vtkImageData::GetScalarPointer()
+    //
+    // 直接操作 Raw Memory
+    // ========================================================
+    unsigned char* inputBuffer = static_cast<unsigned char*>(inputVolume->GetScalarPointer());
+    unsigned char* outputBuffer = static_cast<unsigned char*>(output->GetScalarPointer());
+    if (!inputBuffer || !outputBuffer)
+    {
+        return nullptr;
+    }
+    const size_t scalarSize = static_cast<size_t>(vtkDataArray::GetDataTypeSize(scalarType));
+    const size_t tupleSize = scalarSize * static_cast<size_t>(numComponents);
+    // ========================================================
+    // Input Extent 對應的實際 Size
+    //
+    // Raw Memory Offset 需要使用完整 Input Extent
+    // ========================================================
+    const vtkIdType inputSizeX = static_cast<vtkIdType>(inputExtent[1] - inputExtent[0] + 1);
+    const vtkIdType inputSizeY = static_cast<vtkIdType>(inputExtent[3] - inputExtent[2] + 1);
+    const vtkIdType outputSizeX = static_cast<vtkIdType>(outputSize[0]);
+    const vtkIdType outputSizeY = static_cast<vtkIdType>(outputSize[1]);
+    // ========================================================
+    // 12. CPU Thread Count - 1
+    //
+    // hardware_concurrency() 為可取得的硬體並行數。
+    // 如果只有 1，則使用 1 Thread。
+    // ========================================================
+    unsigned int hardwareThreads = std::thread::hardware_concurrency();
+    //qDebug() << "NEW CODE 2026-08-24:"<< hardwareThreads;    //unsigned int cpuN = GetLogicalProcessorInformationEx();
+    if (hardwareThreads == 0)
+    {
+        hardwareThreads = 2;
+    }
+    unsigned int threadCount = (hardwareThreads > 1) ? hardwareThreads - 1 : 1;
+    threadCount = std::min(threadCount, static_cast<unsigned int>(outputSize[2]));
+    if (threadCount == 0)
+    {
+        threadCount = 1;
+    }
+    // ========================================================
+    // 13. Radius Squared
+    // ========================================================
+    const double radiusSquared = radius * radius;
+    // ========================================================
+    // 14. 多線程 Worker
+    // 每個 Thread：
+    // 只處理自己的 [ZBegin, ZEnd]
+    // 因此不會出現：
+    // Thread A 寫 Thread B 的 Output Memory
+    // ========================================================
+    auto Worker = [&segments, inputBuffer, outputBuffer, inputSizeX, inputSizeY, outputSizeX, outputSizeY, tupleSize, radiusSquared, minIndex, inputExtent, origin, spacing, direction](int localZBegin, int localZEnd)
+    {
+        // ----------------------------------------------------
+        // 對所有已經預處理好的 Segment
+        // ----------------------------------------------------
+        for (size_t segmentId = 0; segmentId < segments.size(); ++segmentId)
+        {
+            const Segment& segment = segments[segmentId];
+            // ------------------------------------------------
+            // 將 Segment 的 Z 範圍
+            // 限制到當前 Thread
+            // ------------------------------------------------
+            const int threadGlobalZBegin = minIndex[2] + localZBegin;
+            const int threadGlobalZEnd = minIndex[2] + localZEnd;
+            const int zBegin = std::max(segment.minIndex[2], threadGlobalZBegin);
+            const int zEnd = std::min(segment.maxIndex[2], threadGlobalZEnd);
+            if (zBegin > zEnd)
+            {
+                continue;
+            }
+            // =================================================
+            // 遍歷這個 Segment 附近的 Voxel
+            // =================================================
+            for (int k = zBegin; k <= zEnd; ++k)
+            {
+                const int ok = k - minIndex[2];
+                for (int j = segment.minIndex[1]; j <= segment.maxIndex[1]; ++j)
+                {
+                    const int oj = j - minIndex[1];
+                    for (int i = segment.minIndex[0]; i <= segment.maxIndex[0]; ++i)
+                    {
+                        const int oi = i - minIndex[0];
+                        // =====================================
+                        // Index -> World Coordinate
+                        // world =  origin  + direction *(index * spacing)
+                        // =====================================
+                        const double scaledX = static_cast<double>(i) * spacing[0];
+                        const double scaledY = static_cast<double>(j) * spacing[1];
+                        const double scaledZ = static_cast<double>(k) * spacing[2];
+                        double voxelWorldPoint[3];
+                        voxelWorldPoint[0] = origin[0] + direction[0][0] * scaledX + direction[0][1] * scaledY + direction[0][2] * scaledZ;
+                        voxelWorldPoint[1] = origin[1] + direction[1][0] * scaledX + direction[1][1] * scaledY + direction[1][2] * scaledZ;
+                        voxelWorldPoint[2] = origin[2] + direction[2][0] * scaledX + direction[2][1] * scaledY + direction[2][2] * scaledZ;
+                        // =====================================
+                        // 判斷是否在曲柱體內
+                        // =====================================
+                        const double distanceSquared = PointToSegmentDistanceSquared(voxelWorldPoint, segment.p0, segment.p1);
+                        if (distanceSquared > radiusSquared)
+                        {
+                            continue;
+                        }
+                        // =====================================
+                        // Input Raw Memory Offset
+                        // =====================================
+                        const vtkIdType inputI = static_cast<vtkIdType>(i - inputExtent[0]);
+                        const vtkIdType inputJ = static_cast<vtkIdType>(j - inputExtent[2]);
+                        const vtkIdType inputK = static_cast<vtkIdType>(k - inputExtent[4]);
+                        const vtkIdType inputVoxelOffset = inputK * inputSizeY *   inputSizeX + inputJ * inputSizeX + inputI;
+                        // =====================================
+                        // Output Raw Memory Offset
+                        // =====================================
+                        const vtkIdType outputVoxelOffset = static_cast<vtkIdType>(ok) *  outputSizeY *  outputSizeX + static_cast<vtkIdType>(oj) *outputSizeX + static_cast<vtkIdType>(oi);
+                        unsigned char* src = inputBuffer + inputVoxelOffset * tupleSize;
+                        unsigned char* dst = outputBuffer + outputVoxelOffset * tupleSize;
+                        // =====================================
+                        // 每個 Thread 只寫自己的 Z Range
+                        // 所以這裡不需要 mutex
+                        // =====================================
+                        std::memcpy(dst, src, tupleSize);
+                    }
+                }
+            }
+        }
+    };
+    // ========================================================
+    // 15. 按 Z Slice 分配工作
+    // ========================================================
+    const int totalZSlices = outputSize[2];
+    const int baseZSlices = totalZSlices / static_cast<int>(threadCount);
+    const int remainder = totalZSlices % static_cast<int>(threadCount);
+    std::vector<std::thread> workers;
+    workers.reserve(threadCount);
+    int currentZ = 0;
+    for (unsigned int threadId = 0; threadId < threadCount; ++threadId)
+    {
+        int sliceCount = baseZSlices;
+        if (threadId < static_cast<unsigned int>(remainder))
+        {
+            ++sliceCount;
+        }
+        const int zBegin = currentZ;
+        const int zEnd = currentZ + sliceCount - 1;
+        currentZ += sliceCount;
+        workers.emplace_back(Worker, zBegin, zEnd);
+    }
+    // ========================================================
+    // 16. 等待所有線程完成
+    // ========================================================
+    for (size_t i = 0; i < workers.size(); ++i)
+    {
+        if (workers[i].joinable())
+        {
+            workers[i].join();
+        }
+    }
+    output->Modified();
+    return output;
+}
+
+vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolume(vtkImageData* inputVolume, vtkPolyData* fittedCurve, double radius, double outsideValue)
+{
+    // ========================================================
+    // 0. 參數檢查
+    // ========================================================
+    if (!inputVolume || !fittedCurve || radius <= 0.0)
+    {
+        return nullptr;
+    }
+    vtkPoints* curvePoints = fittedCurve->GetPoints();
+    if (!curvePoints)
+    {
+        return nullptr;
+    }
+    const vtkIdType pointCount = curvePoints->GetNumberOfPoints();
+    if (pointCount < 2)
+    {
+        return nullptr;
+    }
+    // ========================================================
+    // 1. 取得 Input Volume 基本資訊
+    // ========================================================
+    int inputExtent[6];
+    inputVolume->GetExtent(inputExtent);
+    double spacing[3];
+    inputVolume->GetSpacing(spacing);
+    const int scalarType = inputVolume->GetScalarType();
+    const int numComponents = inputVolume->GetNumberOfScalarComponents();
+    // ========================================================
+    // 2. 計算整條 Curve 的 World Bounding Box
+    //
+    // 再向四周擴展 radius
+    // ========================================================
+    double curveBounds[6];
+    fittedCurve->GetBounds(curveBounds);
+    const double worldMin[3] =
+    {
+        curveBounds[0] - radius,
+        curveBounds[2] - radius,
+        curveBounds[4] - radius
+    };
+    const double worldMax[3] =
+    {
+        curveBounds[1] + radius,
+        curveBounds[3] + radius,
+        curveBounds[5] + radius
+    };
+    // ========================================================
+// 3. World Bounding Box
+//    -> Input Continuous Index Bounding Box
+//
+// 支援：
+//
+// - Origin
+// - Spacing
+// - Direction Matrix
+// ========================================================
+    double continuousMin[3] =
+    {
+        VTK_DOUBLE_MAX,
+        VTK_DOUBLE_MAX,
+        VTK_DOUBLE_MAX
+    };
+    double continuousMax[3] =
+    {
+        VTK_DOUBLE_MIN,
+        VTK_DOUBLE_MIN,
+        VTK_DOUBLE_MIN
+    };
+    // 計算 Bounding Box 的 8 個 corner
+    for (int x = 0; x < 2; ++x)
+    {
+        for (int y = 0; y < 2; ++y)
+        {
+            for (int z = 0; z < 2; ++z)
+            {
+                double worldPoint[3] =
+                {
+                    x ? worldMax[0] : worldMin[0],
+                    y ? worldMax[1] : worldMin[1],
+                    z ? worldMax[2] : worldMin[2]
+                };
+                double continuousIndex[3];
+                inputVolume->TransformPhysicalPointToContinuousIndex(worldPoint, continuousIndex);
+                for (int d = 0; d < 3; ++d)
+                {
+                    continuousMin[d] = std::min(continuousMin[d], continuousIndex[d]);
+                    continuousMax[d] = std::max(continuousMax[d], continuousIndex[d]);
+                }
+            }
+        }
+    }
+    // ========================================================
+    // 4. 計算真正的 Input Index Region
+    // ========================================================
+    int minIndex[3] =
+    {
+        static_cast<int>(std::floor(continuousMin[0])),
+        static_cast<int>(std::floor(continuousMin[1])),
+        static_cast<int>(std::floor(continuousMin[2]))
+    };
+
+    int maxIndex[3] =
+    {
+        static_cast<int>(std::ceil(continuousMax[0])),
+        static_cast<int>(std::ceil(continuousMax[1])),
+        static_cast<int>(std::ceil(continuousMax[2]))
+    };
+    // 與 Input Extent 相交
+    minIndex[0] = std::max(minIndex[0], inputExtent[0]);
+    maxIndex[0] = std::min(maxIndex[0], inputExtent[1]);
+    minIndex[1] = std::max(minIndex[1], inputExtent[2]);
+    maxIndex[1] = std::min(maxIndex[1], inputExtent[3]);
+    minIndex[2] = std::max(minIndex[2], inputExtent[4]);
+    maxIndex[2] = std::min(maxIndex[2], inputExtent[5]);
+    if (minIndex[0] > maxIndex[0] || minIndex[1] > maxIndex[1] || minIndex[2] > maxIndex[2])
+    {
+        return nullptr;
+    }
+    // ========================================================
+    // 5. 建立輸出 vtkImageData
+    // ========================================================
+    const int outputSize[3] =
+    {
+        maxIndex[0] - minIndex[0] + 1,
+        maxIndex[1] - minIndex[1] + 1,
+        maxIndex[2] - minIndex[2] + 1
+    };
+    vtkSmartPointer<vtkImageData> output = vtkSmartPointer<vtkImageData>::New();
+    // Spacing
+    output->SetSpacing(spacing);
+    // Direction Matrix
+    vtkMatrix3x3* directionMatrix = inputVolume->GetDirectionMatrix();
+    if (directionMatrix)
+    {
+        output->SetDirectionMatrix(directionMatrix);
+    }
+    // ========================================================
+    // Output Origin
+    //
+    // Output(0,0,0)
+    //
+    // 對應 Input(minIndex)
+    // ========================================================
+    int startIndex[3] =
+    {
+        minIndex[0],
+        minIndex[1],
+        minIndex[2]
+    };
+    double outputOrigin[3];
+    inputVolume->TransformIndexToPhysicalPoint(startIndex, outputOrigin);
+    output->SetOrigin(outputOrigin);
+    // Extent
+    output->SetExtent(0, outputSize[0] - 1, 0, outputSize[1] - 1, 0, outputSize[2] - 1);
+    // Allocate
+    output->AllocateScalars(scalarType, numComponents);
+    // ========================================================
+    // 6. 建立 Mask
+    // 0 = 曲柱體外
+    // 1 = 曲柱體內
+    // ========================================================
+    const vtkIdType voxelCount = static_cast<vtkIdType>(outputSize[0]) *  static_cast<vtkIdType>(outputSize[1]) *  static_cast<vtkIdType>(outputSize[2]);
+    std::vector<unsigned char> mask(voxelCount, 0);
+    // Output Local Index -> Mask Index
+    auto GetMaskIndex = [=](int i, int j, int k) -> vtkIdType
+    {
+        return   static_cast<vtkIdType>(k) *  outputSize[1] * outputSize[0] + static_cast<vtkIdType>(j) *  outputSize[0] + i;
+    };
+    const double radiusSquared = radius * radius;
+    // ========================================================
+    // 7. 遍歷每一條 SRV Curve Segment
+    //
+    // P0 ---- P1
+    // P1 ---- P2
+    // P2 ---- P3
+    //
+    // 只檢查：
+    //
+    // Segment BoundingBox + Radius
+    //
+    // 而不是：
+    //
+    // 每個 Voxel × 全部 Curve Segments
+    // ========================================================
+    double p0[3];
+    double p1[3];
+    for (vtkIdType segmentId = 0; segmentId < pointCount - 1; ++segmentId)
+    {
+        curvePoints->GetPoint(segmentId, p0);
+        curvePoints->GetPoint(segmentId + 1, p1);
+        // ----------------------------------------------------
+        // Segment World Bounding Box + Radius
+        // ----------------------------------------------------
+        const double segmentWorldMin[3] =
+        {
+            std::min(p0[0], p1[0]) - radius,
+            std::min(p0[1], p1[1]) - radius,
+            std::min(p0[2], p1[2]) - radius
+        };
+        const double segmentWorldMax[3] = { std::max(p0[0], p1[0]) + radius, std::max(p0[1], p1[1]) + radius, std::max(p0[2], p1[2]) + radius };
+        // ----------------------------------------------------
+        // Segment Bounding Box
+        // -> Input Continuous Index
+        //
+        // 使用 8 個 corner
+        // ----------------------------------------------------
+        double segContinuousMin[3] = { VTK_DOUBLE_MAX,  VTK_DOUBLE_MAX, VTK_DOUBLE_MAX };
+        double segContinuousMax[3] = { VTK_DOUBLE_MIN,  VTK_DOUBLE_MIN, VTK_DOUBLE_MIN };
+        for (int x = 0; x < 2; ++x)
+        {
+            for (int y = 0; y < 2; ++y)
+            {
+                for (int z = 0; z < 2; ++z)
+                {
+                    double worldPoint[3] =
+                    {
+                        x ? segmentWorldMax[0] : segmentWorldMin[0],
+                        y ? segmentWorldMax[1] : segmentWorldMin[1],
+                        z ? segmentWorldMax[2] : segmentWorldMin[2]
+                    };
+                    double continuousIndex[3];
+                    inputVolume->TransformPhysicalPointToContinuousIndex(worldPoint, continuousIndex);
+                    for (int d = 0; d < 3; ++d)
+                    {
+                        segContinuousMin[d] = std::min(segContinuousMin[d], continuousIndex[d]);
+                        segContinuousMax[d] = std::max(segContinuousMax[d], continuousIndex[d]);
+                    }
+                }
+            }
+        }
+        // ----------------------------------------------------
+        // 轉成 Input Index
+        // ----------------------------------------------------
+        int segMinIndex[3] =
+        {
+            static_cast<int>(std::floor(segContinuousMin[0])),
+            static_cast<int>(std::floor(segContinuousMin[1])),
+            static_cast<int>(std::floor(segContinuousMin[2]))
+        };
+        int segMaxIndex[3] =
+        {
+            static_cast<int>(std::ceil(segContinuousMax[0])),
+            static_cast<int>(std::ceil(segContinuousMax[1])),
+            static_cast<int>(std::ceil(segContinuousMax[2]))
+        };
+        // ----------------------------------------------------
+        // 限制在目前 Output 對應的 Input Region
+        // ----------------------------------------------------
+        for (int d = 0; d < 3; ++d)
+        {
+            segMinIndex[d] = std::max(segMinIndex[d], minIndex[d]);
+            segMaxIndex[d] = std::min(segMaxIndex[d], maxIndex[d]);
+        }
+        if (segMinIndex[0] > segMaxIndex[0] || segMinIndex[1] > segMaxIndex[1] || segMinIndex[2] > segMaxIndex[2])
+        {
+            continue;
+        }
+        // ====================================================
+        // 8. 只遍歷當前 Segment 附近的 Voxel
+        // ====================================================
+        for (int k = segMinIndex[2]; k <= segMaxIndex[2]; ++k)
+        {
+            for (int j = segMinIndex[1]; j <= segMaxIndex[1]; ++j)
+            {
+                for (int i = segMinIndex[0]; i <= segMaxIndex[0]; ++i)
+                {
+                    // ----------------------------------------
+                    // Input Index -> World Coordinate
+                    // ----------------------------------------
+                    int inputIndex[3] = { i,  j, k };
+                    double worldPoint[3];
+                    inputVolume->TransformIndexToPhysicalPoint(inputIndex, worldPoint);
+                    // ----------------------------------------
+                    // 計算點到當前 Segment 的距離
+                    // ----------------------------------------
+                    const double distanceSquared = PointToSegmentDistanceSquared(worldPoint, p0, p1);
+                    if (distanceSquared <= radiusSquared)
+                    {
+                        const int oi = i - minIndex[0];
+                        const int oj = j - minIndex[1];
+                        const int ok = k - minIndex[2];
+                        const vtkIdType maskIndex = GetMaskIndex(oi, oj, ok);
+                        mask[maskIndex] = 1;
+                    }
+                }
+            }
+        }
+    }
+    // ========================================================
+    // 9. 初始化 Output 為 outsideValue
+    // ========================================================
+    vtkDataArray* outputScalars = output->GetPointData()->GetScalars();
+    for (vtkIdType voxelId = 0; voxelId < voxelCount; ++voxelId)
+    {
+        for (int c = 0; c < numComponents; ++c)
+        {
+            outputScalars->SetComponent(voxelId, c, outsideValue);
+        }
+    }
+    // ========================================================
+    // 10. Mask == 1
+    //
+    // 從 Input Copy 到 Output
+    // ========================================================
+    const size_t tupleSize = static_cast<size_t>(vtkDataArray::GetDataTypeSize(scalarType))        *        static_cast<size_t>(numComponents);
+    for (int ok = 0; ok < outputSize[2]; ++ok)
+    {
+        for (int oj = 0; oj < outputSize[1]; ++oj)
+        {
+            for (int oi = 0; oi < outputSize[0]; ++oi)
+            {
+                const vtkIdType maskIndex = GetMaskIndex(oi, oj, ok);
+                if (!mask[maskIndex])
+                {
+                    continue;
+                }
+                // Output Local Index
+                int outputIndex[3] = { oi, oj, ok };
+                // 對應 Input Index
+                int inputIndex[3] =
+                {
+                    oi + minIndex[0],
+                    oj + minIndex[1],
+                    ok + minIndex[2]
+                };
+                void* src = inputVolume->GetScalarPointer(inputIndex);
+                void* dst = output->GetScalarPointer(outputIndex);
+                if (src && dst)
+                {
+                    std::memcpy(dst, src, tupleSize);
+                }
+            }
+        }
+    }
+    output->Modified();
+    return output;
+}
+
