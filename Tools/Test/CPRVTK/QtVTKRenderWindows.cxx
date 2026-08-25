@@ -1243,6 +1243,7 @@ void QtVTKRenderWindows::ShowVolume(vtkImageData* image)
     renderWindow->Render();
     interactor->Start();
 }
+
 void QtVTKRenderWindows::processing(vtkResliceImageViewer *viewer, std::vector<std::array<double, 3>> m_points, int channel)
 {
     vtkImageData *orgImageData = viewer->GetInput();
@@ -2311,7 +2312,6 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolume(vtkImageData* inputVolume, 
     const int numComponents = inputVolume->GetNumberOfScalarComponents();
     // ========================================================
     // 2. 計算整條 Curve 的 World Bounding Box
-    //
     // 再向四周擴展 radius
     // ========================================================
     double curveBounds[6];
@@ -2329,15 +2329,13 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolume(vtkImageData* inputVolume, 
         curveBounds[5] + radius
     };
     // ========================================================
-// 3. World Bounding Box
-//    -> Input Continuous Index Bounding Box
-//
-// 支援：
-//
-// - Origin
-// - Spacing
-// - Direction Matrix
-// ========================================================
+    // 3. World Bounding Box
+    //    -> Input Continuous Index Bounding Box
+    // 支援：
+    // - Origin
+    // - Spacing
+    // - Direction Matrix
+    // ========================================================
     double continuousMin[3] =
     {
         VTK_DOUBLE_MAX,
@@ -2420,9 +2418,7 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolume(vtkImageData* inputVolume, 
     }
     // ========================================================
     // Output Origin
-    //
     // Output(0,0,0)
-    //
     // 對應 Input(minIndex)
     // ========================================================
     int startIndex[3] =
@@ -2448,22 +2444,17 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolume(vtkImageData* inputVolume, 
     // Output Local Index -> Mask Index
     auto GetMaskIndex = [=](int i, int j, int k) -> vtkIdType
     {
-        return   static_cast<vtkIdType>(k) *  outputSize[1] * outputSize[0] + static_cast<vtkIdType>(j) *  outputSize[0] + i;
+        return   static_cast<vtkIdType>(k)*outputSize[1] * outputSize[0] + static_cast<vtkIdType>(j)*outputSize[0] + i;
     };
     const double radiusSquared = radius * radius;
     // ========================================================
     // 7. 遍歷每一條 SRV Curve Segment
-    //
     // P0 ---- P1
     // P1 ---- P2
     // P2 ---- P3
-    //
     // 只檢查：
-    //
     // Segment BoundingBox + Radius
-    //
     // 而不是：
-    //
     // 每個 Voxel × 全部 Curve Segments
     // ========================================================
     double p0[3];
@@ -2485,7 +2476,6 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolume(vtkImageData* inputVolume, 
         // ----------------------------------------------------
         // Segment Bounding Box
         // -> Input Continuous Index
-        //
         // 使用 8 個 corner
         // ----------------------------------------------------
         double segContinuousMin[3] = { VTK_DOUBLE_MAX,  VTK_DOUBLE_MAX, VTK_DOUBLE_MAX };
@@ -2583,10 +2573,9 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolume(vtkImageData* inputVolume, 
     }
     // ========================================================
     // 10. Mask == 1
-    //
     // 從 Input Copy 到 Output
     // ========================================================
-    const size_t tupleSize = static_cast<size_t>(vtkDataArray::GetDataTypeSize(scalarType))        *        static_cast<size_t>(numComponents);
+    const size_t tupleSize = static_cast<size_t>(vtkDataArray::GetDataTypeSize(scalarType))*static_cast<size_t>(numComponents);
     for (int ok = 0; ok < outputSize[2]; ++ok)
     {
         for (int oj = 0; oj < outputSize[1]; ++oj)
