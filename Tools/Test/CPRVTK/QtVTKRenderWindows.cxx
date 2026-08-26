@@ -1218,11 +1218,8 @@ void QtVTKRenderWindows::ShowVolume(vtkImageData* image)
     ////vtkNew<vtkPiecewiseFunction> opacity;
     //
     opacity->AddPoint(range[0], 0.0);
-    //
     opacity->AddPoint(range[0] + (range[1] - range[0]) * 0.2, 0.0);
-    //
     opacity->AddPoint(range[0] + (range[1] - range[0]) * 0.6, 0.3);
-    //
     opacity->AddPoint(range[1], 1.0);
     // 4. Volume Property
     vtkNew<vtkVolumeProperty> volumeProperty;
@@ -3640,20 +3637,14 @@ void ExtractSRVCurvedVolumeAsync(QObject* callbackContext, vtkImageData* inputVo
     // =====================================================
     // 基本檢查
     // =====================================================
-
-    if (!callbackContext ||
-        !inputVolume ||
-        !fittedCurve)
+    if (!callbackContext || !inputVolume || !fittedCurve)
     {
         if (callback)
         {
             callback(nullptr);
         }
-
         return;
     }
-
-
     // =====================================================
     // 非常重要：
     //
@@ -3662,22 +3653,12 @@ void ExtractSRVCurvedVolumeAsync(QObject* callbackContext, vtkImageData* inputVo
     // 即使主窗口中的普通指針提前失效，
     // Worker 仍然持有 VTK Reference
     // =====================================================
-
-    vtkSmartPointer<vtkImageData> volumeKeepAlive =
-        inputVolume;
-
-    vtkSmartPointer<vtkPolyData> curveKeepAlive =
-        fittedCurve;
-
-
-    using ResultType =
-        vtkSmartPointer<vtkImageData>;
-
-
+    vtkSmartPointer<vtkImageData> volumeKeepAlive = inputVolume;
+    vtkSmartPointer<vtkPolyData> curveKeepAlive = fittedCurve;
+    using ResultType = vtkSmartPointer<vtkImageData>;
     // =====================================================
     // 1. 啟動 QtConcurrent
     // =====================================================
-
     QFuture<ResultType> future =
         QtConcurrent::run(
             [
@@ -3687,14 +3668,8 @@ void ExtractSRVCurvedVolumeAsync(QObject* callbackContext, vtkImageData* inputVo
                 outsideValue
             ]()
     {
-        return ExtractSRVCurvedVolumeSync(
-            volumeKeepAlive,
-            curveKeepAlive,
-            radius,
-            outsideValue);
+        return ExtractSRVCurvedVolumeSync(volumeKeepAlive, curveKeepAlive, radius, outsideValue);
     });
-
-
     // =====================================================
     // 2. Watcher 綁定到 callbackContext
     //
@@ -3706,41 +3681,22 @@ void ExtractSRVCurvedVolumeAsync(QObject* callbackContext, vtkImageData* inputVo
     //
     // 不會再對已經析構的窗口執行 callback
     // =====================================================
-
-    QFutureWatcher<ResultType>* watcher =
-        new QFutureWatcher<ResultType>(
-            callbackContext);
-
-
-    QObject::connect(
-        watcher,
-        &QFutureWatcher<ResultType>::finished,
-
-        callbackContext,
-
+    QFutureWatcher<ResultType>* watcher = new QFutureWatcher<ResultType>(callbackContext);
+    QObject::connect(watcher, &QFutureWatcher<ResultType>::finished, callbackContext,
         [
             watcher,
             callback
         ]()
     {
-        ResultType result =
-            watcher->result();
-
-
+        ResultType result = watcher->result();
         if (callback)
         {
             callback(result);
         }
-
-
         watcher->deleteLater();
     });
-
-
     // =====================================================
     // 3. 開始監控
     // =====================================================
-
-    watcher->setFuture(
-        future);
+    watcher->setFuture(future);
 }
