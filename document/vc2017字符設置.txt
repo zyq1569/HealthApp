@@ -1,0 +1,29 @@
+如果你的目標是 C++ 工程跨 Windows / Linux / macOS 編譯和使用，現在最推薦的是：
+
+建議：UTF-8
+源碼文件統一保存為：
+
+UTF-8
+
+最好是：
+
+UTF-8 without BOM
+
+也就是不帶 BOM 的 UTF-8。
+
+VS2017 的情況
+如果是新的、準備跨平台的 C++ 工程，我建議：
+
+源文件：UTF-8
+編譯器：/utf-8
+
+在 VS2017：
+
+Project Properties → C/C++ → Command Line → Additional Options
+
+加入：
+
+/utf-8
+
+這樣編譯器明確按照 UTF-8 解讀源碼。
+
