@@ -979,10 +979,96 @@ void rotateBMP(const std::string& inputFile, const std::string& outputFile)
 }
 
 
+//#include <QApplication>
+//#include <QFileDialog>
+//#include <QDebug>
+//#include <QPushButton>
+//#include <QWidget>
+//#include <QGridLayout>
+//QString selectFileOrFolder(QWidget* parent = nullptr)
+//{
+//    QFileDialog dialog(parent, "选择文件或文件夹");
+//    dialog.setFileMode(QFileDialog::ExistingFile); // 默认文件模式
+//    dialog.setOption(QFileDialog::DontUseNativeDialog, true); // 使用 Qt 内置对话框
+//
+//    // 获取对话框的 layout
+//    QGridLayout* layout = dialog.findChild<QGridLayout*>();
+//    if (layout)
+//    {
+//        QPushButton* folderButton = new QPushButton("选择文件夹", &dialog);
+//        layout->addWidget(folderButton, layout->rowCount(), 0, 1, layout->columnCount());
+//
+//        QObject::connect(folderButton, &QPushButton::clicked, [&dialog]() {
+//            dialog.setFileMode(QFileDialog::Directory);
+//            dialog.setOption(QFileDialog::ShowDirsOnly, true);
+//        });
+//    }
+//
+//    if (dialog.exec() == QDialog::Accepted)
+//    {
+//        QStringList selected = dialog.selectedFiles();
+//        if (!selected.isEmpty())
+//            return selected.first();
+//    }
+//    return QString();
+//}
+
+//#include <QApplication>
+//#include <QWidget>
+//#include <QPushButton>
+//#include <QFileDialog>
+//#include <QVBoxLayout>
+//#include <QDebug>
+
+// 函数：弹出窗口让用户选择文件夹或指定类型文件
+QString selectFileOrFolder(QWidget* parent = nullptr)
+{
+    // 创建一个小窗口
+    QDialog dialogWindow(parent);
+    dialogWindow.setWindowTitle("选择文件或文件夹");
+    QVBoxLayout* layout = new QVBoxLayout(&dialogWindow);
+
+    QPushButton* folderButton = new QPushButton("选择文件夹", &dialogWindow);
+    QPushButton* fileButton = new QPushButton("选择文件", &dialogWindow);
+
+    layout->addWidget(folderButton);
+    layout->addWidget(fileButton);
+
+    QString result;
+
+    // 点击文件夹按钮
+    QObject::connect(folderButton, &QPushButton::clicked, [&]() {
+        QString folder = QFileDialog::getExistingDirectory(&dialogWindow, "选择文件夹");
+        if (!folder.isEmpty())
+        {
+            result = folder;
+            dialogWindow.close(); // 关闭窗口
+        }
+    });
+
+    // 点击文件按钮
+    QObject::connect(fileButton, &QPushButton::clicked, [&]() {
+        QString filter = "文本文件 (*.txt);;C++文件 (*.cpp *.h);;所有文件 (*)";
+        QString file = QFileDialog::getOpenFileName(&dialogWindow, "选择文件", QString(), filter);
+        if (!file.isEmpty())
+        {
+            result = file;
+            dialogWindow.close(); // 关闭窗口
+        }
+    });
+
+    dialogWindow.setLayout(layout);
+    dialogWindow.exec(); // 阻塞等待用户操作
+
+    return result; // 返回选择结果
+}
+
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
   
+    QString path = selectFileOrFolder();
     //ConvertMHD_XY_To_YX("D:/CT_3D/Test_Data/ID/id_ct.mhd");
     if (0)
     {
