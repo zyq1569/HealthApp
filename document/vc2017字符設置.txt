@@ -27,3 +27,68 @@ Project Properties → C/C++ → Command Line → Additional Options
 
 這樣編譯器明確按照 UTF-8 解讀源碼。
 
+那為什麼我前面說 UTF-8 with BOM？
+因為你目前是 VC2017 老工程突然出現 C2001。
+
+對這種舊工程，UTF-8 with BOM 有一個好處：VC2017 能非常明確地識別文件是 UTF-8，可以用來快速驗證是不是編碼問題。
+
+但如果你問的是：
+
+從長期跨平台角度，工程應該採用什麼？
+
+我的答案就是：
+
+UTF-8
+
+而且最好整個工程統一，不要混用：
+
+GBK
+GB2312
+ANSI
+UTF-8 BOM
+UTF-8
+
+還有一個容易混淆的地方
+源碼編碼和程序運行時的字符串編碼是兩回事。
+
+例如：
+
+std::cerr << "读取第 " << z << " 层数据失败。" << std::endl;
+
+源文件可以是 UTF-8，但 std::cerr 在 Windows Console 上顯示中文時，還可能涉及 Console code page。
+
+所以可以分成：
+
+        C++ 源文件
+             ↓
+          UTF-8
+             ↓
+       C++ 編譯器
+             ↓
+       執行程序
+             ↓
+       Windows Console
+             ↓
+      Console 編碼
+
+不要為了解決 Console 中文亂碼，又把整個源碼改回 GBK。
+
+如果這是一個老 VC2017 工程
+我會建議你不要一次把全部文件轉碼。
+
+先：
+
+備份/提交 Git
+
+確認目前 .cpp 實際編碼
+
+選定 UTF-8
+
+加上 /utf-8
+
+逐步把源文件統一轉成 UTF-8
+
+再處理 Windows Console 中文顯示問題
+
+這樣風險最低。
+
