@@ -488,7 +488,7 @@ QFourpaneviewer::QFourpaneviewer(QWidget *parent) : QWidget(parent), ui(new Ui::
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     m_interactorstyle        = CustomWLInteractorStyle::New();
-    m_renderWindowInteractor = vtkRenderWindowInteractor::New();
+    //m_renderWindowInteractor = vtkRenderWindowInteractor::New();
 }
 
 void QFourpaneviewer::TestAutoHis()
@@ -1315,9 +1315,10 @@ void QFourpaneviewer::ShowImage3D()
     m_renderer->GetActiveCamera()->SetRoll(180);//角度调整和XY一致
 
     //
-    m_renderWindowInteractor->SetRenderWindow(ui->m_image3DView->renderWindow());
+    //m_renderWindowInteractor->SetRenderWindow(ui->m_image3DView->renderWindow());
+	ui->m_image3DView->renderWindow()->GetInteractor()->SetInteractorStyle(m_interactorstyle);
     m_interactorstyle->SetVolume(m_vtkVolume);
-    m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
+    //m_renderWindowInteractor->SetInteractorStyle(m_interactorstyle);
 
     //透明度参数
     m_renderer->SetUseDepthPeeling(1);
@@ -2230,7 +2231,21 @@ QFourpaneviewer::~QFourpaneviewer()
     if (m_isosurfaceMapper)
     {
         m_isosurfaceMapper->Delete();
+		m_isosurfaceMapper = nullptr;
     }
+
+	//m_interactorstyle = CustomWLInteractorStyle::New();
+	//m_renderWindowInteractor = vtkRenderWindowInteractor::New();
+	if (m_interactorstyle)
+	{
+		m_interactorstyle->Delete();
+		m_interactorstyle = nullptr;
+	}
+	//if (m_renderWindowInteractor)
+	//{
+	//	m_renderWindowInteractor->Delete();
+	//	m_renderWindowInteractor = nullptr;
+	//}
     //----------------------------------
 
     if (m_vtkColorGradient)

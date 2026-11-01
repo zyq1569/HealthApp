@@ -22,7 +22,7 @@
     <ProjectGuid>{9EFF3B7B-44C6-31AA-9277-FA8C7C0E045E}</ProjectGuid>
     <RootNamespace>INimage3D</RootNamespace>
     <Keyword>QtVS_v304</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>10.0.17763.0</WindowsTargetPlatformMinVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
   </PropertyGroup>
@@ -357,6 +357,7 @@
     <ClCompile Include="qfourpaneviewer.cpp" />
     <ClCompile Include="qintervaleditor.cpp" />
     <ClCompile Include="qprogressdata.cpp" />
+    <ClCompile Include="showbounds3d.cpp" />
     <ClCompile Include="volumedataset.cpp" />
     <ClCompile Include="vtkcolorgradient.cpp" />
   </ItemGroup>
@@ -372,6 +373,7 @@
     </QtUic>
     <QtUic Include="qfourpaneviewer.ui" />
     <QtUic Include="qprogressdata.ui" />
+    <QtUic Include="showbounds3d.ui" />
     <QtUic Include="volumedataset.ui" />
     <QtUic Include="vtkcolorgradient.ui" />
   </ItemGroup>
@@ -382,6 +384,7 @@
     <QtMoc Include="qfourpaneviewer.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="showbounds3d.h" />
     <QtMoc Include="volumedataset.h" />
     <QtMoc Include="vtkcolorgradient.h" />
     <QtMoc Include="configForm.h" />

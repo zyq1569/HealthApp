@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "configForm.h"
-
+#include "showbounds3d.h"
 class vtkMetaImageReader;
 class QProgressData;
 class vtkImageData;
@@ -41,7 +41,9 @@ private:
 
 public:
 	QTabWidget *m_workspace;
-	QWidget  *m_image4Plane;
+    QWidget  *m_image4Plane;
+    ShowBounds3D *m_showBounds3D;
+
 
 	QAction *m_openAction, *m_show3D, *m_show4Plane, *m_cfigQA, *m_editor, *m_saveImage,*m_splitImageData;
 	QMenu *m_fileMenu;
@@ -54,6 +56,8 @@ public:
 	QString m_commdFilePath,m_commdParmIniFilePath;
 	int m_index3D, m_index4P;
 	bool m_closeMetaFile;
+
+    //ShowBounds3D m_ShowBounds3D;
 
 
 	ConfigForm *m_configForm;

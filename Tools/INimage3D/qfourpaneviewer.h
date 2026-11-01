@@ -158,7 +158,7 @@ public:
     /// The filter to compute isosurfaces.
     vtkImageMarchingCubes *m_isosurfaceFilter;
     CustomWLInteractorStyle   *m_interactorstyle;
-    vtkRenderWindowInteractor *m_renderWindowInteractor;
+    //vtkRenderWindowInteractor *m_renderWindowInteractor;
     /// The actor for isosurfaces.
     vtkActor *m_isosurfaceActor;
     bool m_bremoveActor;

@@ -15,6 +15,7 @@ SOURCES += \
     q3dviewer.cpp \
     qfourpaneviewer.cpp \
     qprogressdata.cpp \
+    showbounds3d.cpp \
     volumedataset.cpp \
     vtkcolorgradient.cpp
 
@@ -24,6 +25,7 @@ HEADERS += \
     q3dviewer.h \
     qfourpaneviewer.h \
     qprogressdata.h \
+    showbounds3d.h \
     volumedataset.h \
     vtkcolorgradient.h
 
@@ -33,6 +35,7 @@ FORMS += \
     q3dviewer.ui \
     qfourpaneviewer.ui \
     qprogressdata.ui \
+    showbounds3d.ui \
     volumedataset.ui \
     vtkcolorgradient.ui
 

@@ -251,6 +251,17 @@ void MainWindow::initMetaFile()
         m_MetaReader->Update();
         m_vtkImageData = m_MetaReader->GetOutput();
         m_vtkAlgorithmOutput = m_MetaReader->GetOutputPort();
+
+        //Test 202610.30
+        m_showBounds3D = new ShowBounds3D(this);
+        m_qProgressBar->hide();
+        m_index4P = m_workspace->addTab(m_showBounds3D, "image4Plane");
+        m_workspace->setCurrentIndex(m_index4P);
+        //((*ShowBounds3D)m_showBounds3D)->ReadVolumes(m_vtkImageData);
+        m_showBounds3D->ReadVolumes(m_vtkImageData);
+        //__________
+
+        return;
     }
     else
     {
