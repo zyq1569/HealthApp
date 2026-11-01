@@ -605,7 +605,6 @@ void GenerateVolumeMPR(const std::string& prefix)
 
 
 //////////////////////+++++++++++++++++++++++++++
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -1013,13 +1012,14 @@ void rotateBMP(const std::string& inputFile, const std::string& outputFile)
 //    return QString();
 //}
 
-//#include <QApplication>
-//#include <QWidget>
-//#include <QPushButton>
-//#include <QFileDialog>
-//#include <QVBoxLayout>
-//#include <QDebug>
 
+/*
+#include <QApplication>
+#include <QWidget>
+#include <QPushButton>
+#include <QFileDialog>
+#include <QVBoxLayout>
+#include <QDebug>
 // 函数：弹出窗口让用户选择文件夹或指定类型文件
 QString selectFileOrFolder(QWidget* parent = nullptr)
 {
@@ -1062,13 +1062,13 @@ QString selectFileOrFolder(QWidget* parent = nullptr)
 
     return result; // 返回选择结果
 }
-
+*/
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
   
-    QString path = selectFileOrFolder();
+    //QString path = selectFileOrFolder();
     //ConvertMHD_XY_To_YX("D:/CT_3D/Test_Data/ID/id_ct.mhd");
     if (0)
     {

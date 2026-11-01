@@ -517,6 +517,7 @@ HCURSOR MainWindow::QCursorToHCursor(const QCursor &qCursor)
 
     return hCursor;
 }
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -1270,6 +1271,17 @@ void MainWindow::testAll(int n, QList<void *> list)
     renderWindow->Render();
     interactor->Start();
 }
+
+void MainWindow::setFileName(QString fileName)
+{
+    ui->m_dcmDir->setText(fileName);
+}
+
+void MainWindow::showVolume3D()
+{
+    on_pBVolume3D_clicked();
+}
+
 void MainWindow::on_pBRemoveBed_clicked()
 {
     if (m_volumeMapper && m_renderWindow)

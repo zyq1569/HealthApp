@@ -76,6 +76,8 @@ public:
 public:
     void saveHDMdata(vtkImageData *itkImageData, bool read = true);
     void testAll(int n, QList<void *> list);
+    void setFileName(QString fileName);
+    void showVolume3D();
 
 private slots:
     void applyRenderingStyle(const QModelIndex &index);

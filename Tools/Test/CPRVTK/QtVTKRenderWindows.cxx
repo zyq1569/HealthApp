@@ -1062,21 +1062,16 @@ static inline double PointToSegmentDistanceSquared(const double p[3], const doub
     const double abx = b[0] - a[0];
     const double aby = b[1] - a[1];
     const double abz = b[2] - a[2];
-
     const double apx = p[0] - a[0];
     const double apy = p[1] - a[1];
     const double apz = p[2] - a[2];
-
     const double ab2 = abx * abx + aby * aby + abz * abz;
-
     // 避免重複點
     if (ab2 < 1e-12)
     {
         return apx * apx + apy * apy + apz * apz;
     }
-
     double t = (apx * abx + apy * aby + apz * abz) / ab2;
-
     // Clamp 到線段 [A, B]
     if (t < 0.0)
         t = 0.0;
@@ -1086,11 +1081,9 @@ static inline double PointToSegmentDistanceSquared(const double p[3], const doub
     const double cx = a[0] + t * abx;
     const double cy = a[1] + t * aby;
     const double cz = a[2] + t * abz;
-
     const double dx = p[0] - cx;
     const double dy = p[1] - cy;
     const double dz = p[2] - cz;
-
     return        dx * dx + dy * dy + dz * dz;
 }
 
@@ -2313,7 +2306,6 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeThread(vtkImageData* inputVo
     output->Modified();
     return output;
 }
-
 vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolume(vtkImageData* inputVolume, vtkPolyData* fittedCurve, double radius, double outsideValue)
 {
     // ========================================================
@@ -2640,30 +2632,25 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolume(vtkImageData* inputVolume, 
     output->Modified();
     return output;
 }
-
 vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolume, vtkPolyData* fittedCurve, double radius, double outsideValue)
 {
     // =====================================================
     // 1. 基本檢查
     // =====================================================
 
-    if (!inputVolume ||
-        !fittedCurve ||
-        radius <= 0.0)
+    if (!inputVolume || !fittedCurve || radius <= 0.0)
     {
         return nullptr;
     }
 
-    vtkPoints* curvePoints =
-        fittedCurve->GetPoints();
+    vtkPoints* curvePoints = fittedCurve->GetPoints();
 
     if (!curvePoints)
     {
         return nullptr;
     }
 
-    const vtkIdType pointCount =
-        curvePoints->GetNumberOfPoints();
+    const vtkIdType pointCount = curvePoints->GetNumberOfPoints();
 
     if (pointCount < 2)
     {
@@ -2678,28 +2665,16 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolu
     struct ImageGeometry
     {
         int extent[6];
-
         double spacing[3];
-
         double origin[3];
-
         double direction[3][3];
     };
 
     ImageGeometry geometry;
-
-    inputVolume->GetExtent(
-        geometry.extent);
-
-    inputVolume->GetSpacing(
-        geometry.spacing);
-
-    inputVolume->GetOrigin(
-        geometry.origin);
-
-
-    vtkMatrix3x3* directionMatrix =
-        inputVolume->GetDirectionMatrix();
+    inputVolume->GetExtent(geometry.extent);
+    inputVolume->GetSpacing(geometry.spacing);
+    inputVolume->GetOrigin(geometry.origin);
+    vtkMatrix3x3* directionMatrix = inputVolume->GetDirectionMatrix();
 
     if (directionMatrix)
     {
@@ -2707,8 +2682,7 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolu
         {
             for (int c = 0; c < 3; ++c)
             {
-                geometry.direction[r][c] =
-                    directionMatrix->GetElement(r, c);
+                geometry.direction[r][c] = directionMatrix->GetElement(r, c);
             }
         }
     }
@@ -2726,122 +2700,66 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolu
         geometry.direction[2][1] = 0.0;
         geometry.direction[2][2] = 1.0;
     }
-
-
     // =====================================================
     // 3. Direction Inverse
     // =====================================================
 
     double inverseDirection[3][3];
-
     {
         vtkNew<vtkMatrix3x3> directionCopy;
-
         for (int r = 0; r < 3; ++r)
         {
             for (int c = 0; c < 3; ++c)
             {
-                directionCopy->SetElement(
-                    r,
-                    c,
-                    geometry.direction[r][c]);
+                directionCopy->SetElement(r, c, geometry.direction[r][c]);
             }
         }
-
         vtkNew<vtkMatrix3x3> inverseMatrix;
-
-        vtkMatrix3x3::Invert(
-            directionCopy,
-            inverseMatrix);
+        vtkMatrix3x3::Invert(directionCopy, inverseMatrix);
 
         for (int r = 0; r < 3; ++r)
         {
             for (int c = 0; c < 3; ++c)
             {
-                inverseDirection[r][c] =
-                    inverseMatrix->GetElement(r, c);
+                inverseDirection[r][c] = inverseMatrix->GetElement(r, c);
             }
         }
     }
-
-
     // =====================================================
     // 4. World -> Continuous Index
     // =====================================================
-
-    auto WorldToContinuousIndex =
-        [&geometry, &inverseDirection]
-    (
-        const double worldPoint[3],
-        double index[3]
-        )
+    auto WorldToContinuousIndex = [&geometry, &inverseDirection](const double worldPoint[3], double index[3])
     {
-        const double dx =
-            worldPoint[0] - geometry.origin[0];
-
-        const double dy =
-            worldPoint[1] - geometry.origin[1];
-
-        const double dz =
-            worldPoint[2] - geometry.origin[2];
-
-
-        const double localX =
-            inverseDirection[0][0] * dx +
-            inverseDirection[0][1] * dy +
-            inverseDirection[0][2] * dz;
-
-        const double localY =
-            inverseDirection[1][0] * dx +
-            inverseDirection[1][1] * dy +
-            inverseDirection[1][2] * dz;
-
-        const double localZ =
-            inverseDirection[2][0] * dx +
-            inverseDirection[2][1] * dy +
-            inverseDirection[2][2] * dz;
-
-
-        index[0] =
-            localX / geometry.spacing[0];
-
-        index[1] =
-            localY / geometry.spacing[1];
-
-        index[2] =
-            localZ / geometry.spacing[2];
+        const double dx = worldPoint[0] - geometry.origin[0];
+        const double dy = worldPoint[1] - geometry.origin[1];
+        const double dz = worldPoint[2] - geometry.origin[2];
+        const double localX = inverseDirection[0][0] * dx + inverseDirection[0][1] * dy + inverseDirection[0][2] * dz;
+        const double localY = inverseDirection[1][0] * dx + inverseDirection[1][1] * dy + inverseDirection[1][2] * dz;
+        const double localZ = inverseDirection[2][0] * dx + inverseDirection[2][1] * dy + inverseDirection[2][2] * dz;
+        index[0] = localX / geometry.spacing[0];
+        index[1] = localY / geometry.spacing[1];
+        index[2] = localZ / geometry.spacing[2];
     };
-
-
     // =====================================================
     // 5. Curve Bounding Box
     // =====================================================
-
     double curveBounds[6];
-
-    fittedCurve->GetBounds(
-        curveBounds);
-
-
+    fittedCurve->GetBounds(curveBounds);
     double worldMin[3] =
     {
         curveBounds[0] - radius,
         curveBounds[2] - radius,
         curveBounds[4] - radius
     };
-
     double worldMax[3] =
     {
         curveBounds[1] + radius,
         curveBounds[3] + radius,
         curveBounds[5] + radius
     };
-
-
     // =====================================================
     // 6. World Bounding Box -> Index Bounding Box
     // =====================================================
-
     double continuousMin[3] =
     {
         VTK_DOUBLE_MAX,
@@ -2855,8 +2773,6 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolu
         -VTK_DOUBLE_MAX,
         -VTK_DOUBLE_MAX
     };
-
-
     for (int x = 0; x < 2; ++x)
     {
         for (int y = 0; y < 2; ++y)
@@ -2869,100 +2785,43 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolu
                     y ? worldMax[1] : worldMin[1],
                     z ? worldMax[2] : worldMin[2]
                 };
-
                 double index[3];
-
-                WorldToContinuousIndex(
-                    p,
-                    index);
-
-
+                WorldToContinuousIndex(p, index);
                 for (int d = 0; d < 3; ++d)
                 {
-                    continuousMin[d] =
-                        std::min(
-                            continuousMin[d],
-                            index[d]);
-
-                    continuousMax[d] =
-                        std::max(
-                            continuousMax[d],
-                            index[d]);
+                    continuousMin[d] = std::min(continuousMin[d], index[d]);
+                    continuousMax[d] = std::max(continuousMax[d], index[d]);
                 }
             }
         }
     }
-
-
     int minIndex[3] =
     {
-        static_cast<int>(
-            std::floor(continuousMin[0])),
+        static_cast<int>(std::floor(continuousMin[0])),
 
-        static_cast<int>(
-            std::floor(continuousMin[1])),
+        static_cast<int>(std::floor(continuousMin[1])),
 
-        static_cast<int>(
-            std::floor(continuousMin[2]))
+        static_cast<int>(std::floor(continuousMin[2]))
     };
-
-
     int maxIndex[3] =
     {
-        static_cast<int>(
-            std::ceil(continuousMax[0])),
+        static_cast<int>(std::ceil(continuousMax[0])),
 
-        static_cast<int>(
-            std::ceil(continuousMax[1])),
+        static_cast<int>(std::ceil(continuousMax[1])),
 
-        static_cast<int>(
-            std::ceil(continuousMax[2]))
+        static_cast<int>(std::ceil(continuousMax[2]))
     };
-
-
     // 與 Input Volume 相交
-
-    minIndex[0] =
-        std::max(
-            minIndex[0],
-            geometry.extent[0]);
-
-    maxIndex[0] =
-        std::min(
-            maxIndex[0],
-            geometry.extent[1]);
-
-
-    minIndex[1] =
-        std::max(
-            minIndex[1],
-            geometry.extent[2]);
-
-    maxIndex[1] =
-        std::min(
-            maxIndex[1],
-            geometry.extent[3]);
-
-
-    minIndex[2] =
-        std::max(
-            minIndex[2],
-            geometry.extent[4]);
-
-    maxIndex[2] =
-        std::min(
-            maxIndex[2],
-            geometry.extent[5]);
-
-
-    if (minIndex[0] > maxIndex[0] ||
-        minIndex[1] > maxIndex[1] ||
-        minIndex[2] > maxIndex[2])
+    minIndex[0] = std::max(minIndex[0], geometry.extent[0]);
+    maxIndex[0] = std::min(maxIndex[0], geometry.extent[1]);
+    minIndex[1] = std::max(minIndex[1], geometry.extent[2]);
+    maxIndex[1] = std::min(maxIndex[1], geometry.extent[3]);
+    minIndex[2] = std::max(minIndex[2], geometry.extent[4]);
+    maxIndex[2] = std::min(maxIndex[2], geometry.extent[5]);
+    if (minIndex[0] > maxIndex[0] || minIndex[1] > maxIndex[1] || minIndex[2] > maxIndex[2])
     {
         return nullptr;
     }
-
-
     // =====================================================
     // 7. Output Image
     // =====================================================
@@ -2973,114 +2832,38 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolu
         maxIndex[1] - minIndex[1] + 1,
         maxIndex[2] - minIndex[2] + 1
     };
-
-
-    vtkSmartPointer<vtkImageData> output =
-        vtkSmartPointer<vtkImageData>::New();
-
-
-    output->SetSpacing(
-        geometry.spacing);
-
-
+    vtkSmartPointer<vtkImageData> output = vtkSmartPointer<vtkImageData>::New();
+    output->SetSpacing(geometry.spacing);
     if (directionMatrix)
     {
-        output->SetDirectionMatrix(
-            directionMatrix);
+        output->SetDirectionMatrix(directionMatrix);
     }
-
-
     // Output Origin
-
-    const double sx =
-        minIndex[0] * geometry.spacing[0];
-
-    const double sy =
-        minIndex[1] * geometry.spacing[1];
-
-    const double sz =
-        minIndex[2] * geometry.spacing[2];
-
-
+    const double sx = minIndex[0] * geometry.spacing[0];
+    const double sy = minIndex[1] * geometry.spacing[1];
+    const double sz = minIndex[2] * geometry.spacing[2];
     double outputOrigin[3];
-
-    outputOrigin[0] =
-        geometry.origin[0]
-        +
-        geometry.direction[0][0] * sx
-        +
-        geometry.direction[0][1] * sy
-        +
-        geometry.direction[0][2] * sz;
-
-    outputOrigin[1] =
-        geometry.origin[1]
-        +
-        geometry.direction[1][0] * sx
-        +
-        geometry.direction[1][1] * sy
-        +
-        geometry.direction[1][2] * sz;
-
-    outputOrigin[2] =
-        geometry.origin[2]
-        +
-        geometry.direction[2][0] * sx
-        +
-        geometry.direction[2][1] * sy
-        +
-        geometry.direction[2][2] * sz;
-
-
-    output->SetOrigin(
-        outputOrigin);
-
-
-    output->SetExtent(
-        0, outputSize[0] - 1,
-        0, outputSize[1] - 1,
-        0, outputSize[2] - 1);
-
-
-    const int scalarType =
-        inputVolume->GetScalarType();
-
-    const int components =
-        inputVolume->GetNumberOfScalarComponents();
-
-
-    output->AllocateScalars(
-        scalarType,
-        components);
-
-
+    outputOrigin[0] = geometry.origin[0] + geometry.direction[0][0] * sx + geometry.direction[0][1] * sy + geometry.direction[0][2] * sz;
+    outputOrigin[1] = geometry.origin[1] + geometry.direction[1][0] * sx + geometry.direction[1][1] * sy + geometry.direction[1][2] * sz;
+    outputOrigin[2] = geometry.origin[2] + geometry.direction[2][0] * sx + geometry.direction[2][1] * sy + geometry.direction[2][2] * sz;
+    output->SetOrigin(outputOrigin);
+    output->SetExtent(0, outputSize[0] - 1, 0, outputSize[1] - 1, 0, outputSize[2] - 1);
+    const int scalarType = inputVolume->GetScalarType();
+    const int components = inputVolume->GetNumberOfScalarComponents();
+    output->AllocateScalars(scalarType, components);
     // =====================================================
     // 8. 初始化 outsideValue
     // =====================================================
 
-    vtkDataArray* outputScalars =
-        output->GetPointData()->GetScalars();
-
-    const vtkIdType outputTupleCount =
-        outputScalars->GetNumberOfTuples();
-
-
-    for (vtkIdType id = 0;
-        id < outputTupleCount;
-        ++id)
+    vtkDataArray* outputScalars = output->GetPointData()->GetScalars();
+    const vtkIdType outputTupleCount = outputScalars->GetNumberOfTuples();
+    for (vtkIdType id = 0; id < outputTupleCount; ++id)
     {
-        for (int c = 0;
-            c < components;
-            ++c)
+        for (int c = 0; c < components; ++c)
         {
-            outputScalars->SetComponent(
-                id,
-                c,
-                outsideValue);
+            outputScalars->SetComponent(id, c, outsideValue);
         }
     }
-
-
     // =====================================================
     // 9. 預處理 Curve Segment
     //
@@ -3091,80 +2874,40 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolu
     {
         double p0[3];
         double p1[3];
-
         int minIndex[3];
         int maxIndex[3];
     };
-
-
     std::vector<Segment> segments;
-
-    segments.reserve(
-        static_cast<size_t>(pointCount - 1));
-
-
-    for (vtkIdType segmentId = 0;
-        segmentId < pointCount - 1;
-        ++segmentId)
+    segments.reserve(static_cast<size_t>(pointCount - 1));
+    for (vtkIdType segmentId = 0; segmentId < pointCount - 1; ++segmentId)
     {
         Segment segment;
-
-        curvePoints->GetPoint(
-            segmentId,
-            segment.p0);
-
-        curvePoints->GetPoint(
-            segmentId + 1,
-            segment.p1);
-
-
+        curvePoints->GetPoint(segmentId, segment.p0);
+        curvePoints->GetPoint(segmentId + 1, segment.p1);
         double segWorldMin[3] =
         {
-            std::min(
-                segment.p0[0],
-                segment.p1[0]) - radius,
-
-            std::min(
-                segment.p0[1],
-                segment.p1[1]) - radius,
-
-            std::min(
-                segment.p0[2],
-                segment.p1[2]) - radius
+            std::min(segment.p0[0], segment.p1[0]) - radius,
+            std::min(segment.p0[1], segment.p1[1]) - radius,
+            std::min(segment.p0[2], segment.p1[2]) - radius
         };
-
-
         double segWorldMax[3] =
         {
-            std::max(
-                segment.p0[0],
-                segment.p1[0]) + radius,
-
-            std::max(
-                segment.p0[1],
-                segment.p1[1]) + radius,
-
-            std::max(
-                segment.p0[2],
-                segment.p1[2]) + radius
+            std::max(segment.p0[0], segment.p1[0]) + radius,
+            std::max(segment.p0[1], segment.p1[1]) + radius,
+            std::max(segment.p0[2], segment.p1[2]) + radius
         };
-
-
         double segContinuousMin[3] =
         {
             VTK_DOUBLE_MAX,
             VTK_DOUBLE_MAX,
             VTK_DOUBLE_MAX
         };
-
         double segContinuousMax[3] =
         {
             -VTK_DOUBLE_MAX,
             -VTK_DOUBLE_MAX,
             -VTK_DOUBLE_MAX
         };
-
-
         for (int x = 0; x < 2; ++x)
         {
             for (int y = 0; y < 2; ++y)
@@ -3173,185 +2916,82 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolu
                 {
                     double p[3] =
                     {
-                        x ? segWorldMax[0]
-                          : segWorldMin[0],
-
-                        y ? segWorldMax[1]
-                          : segWorldMin[1],
-
-                        z ? segWorldMax[2]
-                          : segWorldMin[2]
+                        x ? segWorldMax[0] : segWorldMin[0],
+                        y ? segWorldMax[1] : segWorldMin[1],
+                        z ? segWorldMax[2] : segWorldMin[2]
                     };
-
                     double index[3];
-
-                    WorldToContinuousIndex(
-                        p,
-                        index);
-
-
+                    WorldToContinuousIndex(p, index);
                     for (int d = 0; d < 3; ++d)
                     {
-                        segContinuousMin[d] =
-                            std::min(
-                                segContinuousMin[d],
-                                index[d]);
-
-                        segContinuousMax[d] =
-                            std::max(
-                                segContinuousMax[d],
-                                index[d]);
+                        segContinuousMin[d] = std::min(segContinuousMin[d], index[d]);
+                        segContinuousMax[d] = std::max(segContinuousMax[d], index[d]);
                     }
                 }
             }
         }
-
-
         for (int d = 0; d < 3; ++d)
         {
-            segment.minIndex[d] =
-                std::max(
-                    static_cast<int>(
-                        std::floor(
-                            segContinuousMin[d])),
-                    minIndex[d]);
-
-
-            segment.maxIndex[d] =
-                std::min(
-                    static_cast<int>(
-                        std::ceil(
-                            segContinuousMax[d])),
-                    maxIndex[d]);
+            segment.minIndex[d] = std::max(static_cast<int>(std::floor(segContinuousMin[d])), minIndex[d]);
+            segment.maxIndex[d] = std::min(static_cast<int>(std::ceil(segContinuousMax[d])), maxIndex[d]);
         }
-
-
-        if (segment.minIndex[0] >
-            segment.maxIndex[0] ||
-
-            segment.minIndex[1] >
-            segment.maxIndex[1] ||
-
-            segment.minIndex[2] >
-            segment.maxIndex[2])
+        if (segment.minIndex[0] > segment.maxIndex[0] || segment.minIndex[1] > segment.maxIndex[1] || segment.minIndex[2] > segment.maxIndex[2])
         {
             continue;
         }
-
-
-        segments.push_back(
-            segment);
+        segments.push_back(segment);
     }
-
-
     if (segments.empty())
     {
         return output;
     }
-
-
     // =====================================================
     // 10. Raw Memory
     // =====================================================
-
-    unsigned char* inputBuffer =
-        static_cast<unsigned char*>(
-            inputVolume->GetScalarPointer());
-
-    unsigned char* outputBuffer =
-        static_cast<unsigned char*>(
-            output->GetScalarPointer());
-
-
-    if (!inputBuffer ||
-        !outputBuffer)
+    unsigned char* inputBuffer = static_cast<unsigned char*>(inputVolume->GetScalarPointer());
+    unsigned char* outputBuffer = static_cast<unsigned char*>(output->GetScalarPointer());
+    if (!inputBuffer || !outputBuffer)
     {
         return nullptr;
     }
-
-
-    const size_t scalarSize =
-        static_cast<size_t>(
-            vtkDataArray::GetDataTypeSize(
-                scalarType));
-
-    const size_t tupleSize =
-        scalarSize *
-        static_cast<size_t>(
-            components);
-
-
-    const vtkIdType inputSizeX =
-        geometry.extent[1] -
-        geometry.extent[0] + 1;
-
-    const vtkIdType inputSizeY =
-        geometry.extent[3] -
-        geometry.extent[2] + 1;
-
-    const vtkIdType outputSizeX =
-        outputSize[0];
-
-    const vtkIdType outputSizeY =
-        outputSize[1];
-
-
-    const double radiusSquared =
-        radius * radius;
-
-
+    const size_t scalarSize = static_cast<size_t>(vtkDataArray::GetDataTypeSize(scalarType));
+    const size_t tupleSize = scalarSize * static_cast<size_t>(components);
+    const vtkIdType inputSizeX = geometry.extent[1] - geometry.extent[0] + 1;
+    const vtkIdType inputSizeY = geometry.extent[3] - geometry.extent[2] + 1;
+    const vtkIdType outputSizeX = outputSize[0];
+    const vtkIdType outputSizeY = outputSize[1];
+    const double radiusSquared = radius * radius;
     // =====================================================
     // 11. CPU Count - 1
     // =====================================================
-
-    unsigned int cpuCount =
-        std::thread::hardware_concurrency();
-
+    unsigned int cpuCount = std::thread::hardware_concurrency();
     if (cpuCount == 0)
     {
         cpuCount = 2;
     }
-
-    unsigned int threadCount =
-        cpuCount > 1
-        ? cpuCount - 1
-        : 1;
-
-
-    threadCount =
-        std::min(
-            threadCount,
-            static_cast<unsigned int>(
-                outputSize[2]));
-
-
+    unsigned int threadCount = cpuCount > 1 ? cpuCount - 1 : 1;
+    threadCount = std::min(threadCount, static_cast<unsigned int>(outputSize[2]));
     if (threadCount == 0)
     {
         threadCount = 1;
     }
-
 
     // =====================================================
     // 12. Worker
     //
     // 每個 Thread 只寫自己的 Z 區域
     // =====================================================
-
     auto Worker =
         [
             &segments,
             &geometry,
             &minIndex,
-
             inputBuffer,
             outputBuffer,
-
             inputSizeX,
             inputSizeY,
-
             outputSizeX,
             outputSizeY,
-
             tupleSize,
             radiusSquared
         ]
@@ -3360,265 +3000,87 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolu
         int localZEnd
         )
     {
-        const int threadGlobalZBegin =
-            minIndex[2] +
-            localZBegin;
-
-        const int threadGlobalZEnd =
-            minIndex[2] +
-            localZEnd;
-
-
-        for (size_t segmentId = 0;
-            segmentId < segments.size();
-            ++segmentId)
+        const int threadGlobalZBegin = minIndex[2] + localZBegin;
+        const int threadGlobalZEnd = minIndex[2] + localZEnd;
+        for (size_t segmentId = 0; segmentId < segments.size(); ++segmentId)
         {
-            const Segment& segment =
-                segments[segmentId];
-
-
-            const int zBegin =
-                std::max(
-                    segment.minIndex[2],
-                    threadGlobalZBegin);
-
-
-            const int zEnd =
-                std::min(
-                    segment.maxIndex[2],
-                    threadGlobalZEnd);
-
-
+            const Segment& segment = segments[segmentId];
+            const int zBegin = std::max(segment.minIndex[2], threadGlobalZBegin);
+            const int zEnd = std::min(segment.maxIndex[2], threadGlobalZEnd);
             if (zBegin > zEnd)
             {
                 continue;
             }
-
-
-            for (int k = zBegin;
-                k <= zEnd;
-                ++k)
+            for (int k = zBegin; k <= zEnd; ++k)
             {
-                const int ok =
-                    k - minIndex[2];
-
-
-                for (int j = segment.minIndex[1];
-                    j <= segment.maxIndex[1];
-                    ++j)
+                const int ok = k - minIndex[2];
+                for (int j = segment.minIndex[1]; j <= segment.maxIndex[1]; ++j)
                 {
-                    const int oj =
-                        j - minIndex[1];
-
-
-                    for (int i = segment.minIndex[0];
-                        i <= segment.maxIndex[0];
-                        ++i)
+                    const int oj = j - minIndex[1];
+                    for (int i = segment.minIndex[0]; i <= segment.maxIndex[0]; ++i)
                     {
-                        const int oi =
-                            i - minIndex[0];
-
-
+                        const int oi = i - minIndex[0];
                         // =====================================
                         // Index -> World
                         // =====================================
-
-                        const double sx =
-                            i * geometry.spacing[0];
-
-                        const double sy =
-                            j * geometry.spacing[1];
-
-                        const double sz =
-                            k * geometry.spacing[2];
-
-
+                        const double sx = i * geometry.spacing[0];
+                        const double sy = j * geometry.spacing[1];
+                        const double sz = k * geometry.spacing[2];
                         double voxelPoint[3];
-
-
-                        voxelPoint[0] =
-                            geometry.origin[0]
-                            +
-                            geometry.direction[0][0] * sx
-                            +
-                            geometry.direction[0][1] * sy
-                            +
-                            geometry.direction[0][2] * sz;
-
-
-                        voxelPoint[1] =
-                            geometry.origin[1]
-                            +
-                            geometry.direction[1][0] * sx
-                            +
-                            geometry.direction[1][1] * sy
-                            +
-                            geometry.direction[1][2] * sz;
-
-
-                        voxelPoint[2] =
-                            geometry.origin[2]
-                            +
-                            geometry.direction[2][0] * sx
-                            +
-                            geometry.direction[2][1] * sy
-                            +
-                            geometry.direction[2][2] * sz;
-
-
-                        const double distanceSquared =
-                            PointToSegmentDistanceSquared(
-                                voxelPoint,
-                                segment.p0,
-                                segment.p1);
-
-
-                        if (distanceSquared >
-                            radiusSquared)
+                        voxelPoint[0] = geometry.origin[0] + geometry.direction[0][0] * sx + geometry.direction[0][1] * sy + geometry.direction[0][2] * sz;
+                        voxelPoint[1] = geometry.origin[1] + geometry.direction[1][0] * sx + geometry.direction[1][1] * sy + geometry.direction[1][2] * sz;
+                        voxelPoint[2] = geometry.origin[2] + geometry.direction[2][0] * sx + geometry.direction[2][1] * sy + geometry.direction[2][2] * sz;
+                        const double distanceSquared = PointToSegmentDistanceSquared(voxelPoint, segment.p0, segment.p1);
+                        if (distanceSquared > radiusSquared)
                         {
                             continue;
                         }
-
-
                         // =====================================
                         // Input Offset
                         // =====================================
 
-                        const vtkIdType inputI =
-                            i - geometry.extent[0];
-
-                        const vtkIdType inputJ =
-                            j - geometry.extent[2];
-
-                        const vtkIdType inputK =
-                            k - geometry.extent[4];
-
-
-                        const vtkIdType inputOffset =
-                            inputK *
-                            inputSizeY *
-                            inputSizeX
-
-                            +
-
-                            inputJ *
-                            inputSizeX
-
-                            +
-
-                            inputI;
-
-
+                        const vtkIdType inputI = i - geometry.extent[0];
+                        const vtkIdType inputJ = j - geometry.extent[2];
+                        const vtkIdType inputK = k - geometry.extent[4];
+                        const vtkIdType inputOffset = inputK * inputSizeY *                            inputSizeX + inputJ * inputSizeX + inputI;
                         // =====================================
                         // Output Offset
                         // =====================================
-
-                        const vtkIdType outputOffset =
-                            static_cast<vtkIdType>(ok)
-                            *
-                            outputSizeY
-                            *
-                            outputSizeX
-
-                            +
-
-                            static_cast<vtkIdType>(oj)
-                            *
-                            outputSizeX
-
-                            +
-
-                            oi;
-
-
-                        unsigned char* src =
-                            inputBuffer
-                            +
-                            inputOffset *
-                            tupleSize;
-
-
-                        unsigned char* dst =
-                            outputBuffer
-                            +
-                            outputOffset *
-                            tupleSize;
-
-
-                        std::memcpy(
-                            dst,
-                            src,
-                            tupleSize);
+                        const vtkIdType outputOffset = static_cast<vtkIdType>(ok) *outputSizeY * outputSizeX + static_cast<vtkIdType>(oj) *  outputSizeX + oi;
+                        unsigned char* src = inputBuffer + inputOffset * tupleSize;
+                        unsigned char* dst = outputBuffer + outputOffset * tupleSize;
+                        std::memcpy(dst, src, tupleSize);
                     }
                 }
             }
         }
     };
 
-
     // =====================================================
     // 13. 建立 Worker Threads
     // =====================================================
-
-    const int totalZ =
-        outputSize[2];
-
-    const int baseCount =
-        totalZ /
-        static_cast<int>(threadCount);
-
-    const int remainder =
-        totalZ %
-        static_cast<int>(threadCount);
-
-
+    const int totalZ = outputSize[2];
+    const int baseCount = totalZ / static_cast<int>(threadCount);
+    const int remainder = totalZ % static_cast<int>(threadCount);
     std::vector<std::thread> workers;
-
-    workers.reserve(
-        threadCount);
-
-
+    workers.reserve(threadCount);
     int currentZ = 0;
-
-
-    for (unsigned int threadId = 0;
-        threadId < threadCount;
-        ++threadId)
+    for (unsigned int threadId = 0; threadId < threadCount; ++threadId)
     {
-        int count =
-            baseCount;
+        int count = baseCount;
 
-        if (threadId <
-            static_cast<unsigned int>(
-                remainder))
+        if (threadId < static_cast<unsigned int>(remainder))
         {
             ++count;
         }
-
-
-        const int zBegin =
-            currentZ;
-
-        const int zEnd =
-            currentZ +
-            count -
-            1;
-
-
+        const int zBegin = currentZ;
+        const int zEnd = currentZ + count - 1;
         currentZ += count;
-
-
-        workers.emplace_back(
-            Worker,
-            zBegin,
-            zEnd);
+        workers.emplace_back(Worker, zBegin, zEnd);
     }
-
-
     // =====================================================
     // 14. 等待所有內部 Worker
     // =====================================================
-
     for (std::thread& worker : workers)
     {
         if (worker.joinable())
@@ -3626,10 +3088,7 @@ vtkSmartPointer<vtkImageData> ExtractSRVCurvedVolumeSync(vtkImageData* inputVolu
             worker.join();
         }
     }
-
-
     output->Modified();
-
     return output;
 }
 void ExtractSRVCurvedVolumeAsync(QObject* callbackContext, vtkImageData* inputVolume, vtkPolyData* fittedCurve, double radius, double outsideValue, SRVVolumeCallback callback)
