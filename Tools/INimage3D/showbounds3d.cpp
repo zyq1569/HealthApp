@@ -1,6 +1,37 @@
 #include "showbounds3d.h"
 #include "ui_showbounds3d.h"
 
+///+++++++++++++++++++++
+#include <vector>
+#include <string>
+#include <memory>
+
+#include <vtkSmartPointer.h>
+#include <vtkImageData.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include <vtkSmartVolumeMapper.h>
+#include <vtkVolumeProperty.h>
+#include <vtkColorTransferFunction.h>
+#include <vtkPiecewiseFunction.h>
+#include <vtkVolume.h>
+#include <vtkCommand.h>
+
+#include <vtkRenderWindow.h>
+#include <vtkSmartVolumeMapper.h>
+#include <vtkVolume.h>
+#include <vtkVolumeProperty.h>
+#include <vtkColorTransferFunction.h>
+#include <vtkPiecewiseFunction.h>
+#include <vtkImageData.h>
+#include <vtkCommand.h>
+#include <vtkPointData.h>
+
+#include <algorithm>
+#include <cmath>
+#include <string>
+
+
 
 #include <vtkSmartPointer.h>
 #include <vtkImageData.h>
@@ -238,19 +269,9 @@ void ShowBounds3D::ShowSegmentedVolumes(vtkImageData* imageData, const std::vect
     const int colorCount = 12;
 
     const double colors[colorCount][3] = {
-        {1.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0},
-        {0.0, 0.0, 1.0},
-        {1.0, 1.0, 0.0},
-        {1.0, 0.0, 1.0},
-        {0.0, 1.0, 1.0},
-        {1.0, 0.5, 0.0},
-        {0.5, 0.0, 1.0},
-        {0.5, 1.0, 0.0},
-        {1.0, 0.5, 0.5},
-        {0.5, 0.5, 1.0},
-        {0.0, 0.8, 0.5}
-    };
+        {1.0, 0.0, 0.0},        {0.0, 1.0, 0.0},        {0.0, 0.0, 1.0},        {1.0, 1.0, 0.0},        {1.0, 0.0, 1.0},
+        {0.0, 1.0, 1.0},        {1.0, 0.5, 0.0},        {0.5, 0.0, 1.0},        {0.5, 1.0, 0.0},        {1.0, 0.5, 0.5},
+        {0.5, 0.5, 1.0},        {0.0, 0.8, 0.5} };
 
     for (size_t i = 0; i < partitions.size(); ++i)
     {
@@ -308,4 +329,590 @@ void ShowBounds3D::ShowSegmentedVolumes(vtkImageData* imageData, const std::vect
 
     renderer->ResetCamera();
     renderer->GetRenderWindow()->Render();
+}
+
+
+enum class VolumeBlendMode
+{
+    Composite,
+    MIP
+};
+
+struct ColorPoint
+{
+    double scalar;
+    double r;
+    double g;
+    double b;
+};
+
+struct OpacityPoint
+{
+    double scalar;
+    double opacity;
+};
+
+struct VolumeRenderParams
+{
+    // 顏色傳輸函數
+    std::vector<ColorPoint> colorPoints;
+
+    // 透明度傳輸函數
+    std::vector<OpacityPoint> opacityPoints;
+
+    // 光照
+    bool shade = true;
+
+    double ambient = 0.3;
+
+    double diffuse = 0.7;
+
+    double specular = 0.2;
+
+    double specularPower = 10.0;
+
+    // 插值
+    bool linearInterpolation = true;
+
+    // 混合模式
+    VolumeBlendMode blendMode = VolumeBlendMode::Composite;
+
+    // 採樣距離
+    double sampleDistance = 1.0;
+
+    // 可見性
+    bool visible = true;
+};
+class VolumeErrorObserver;
+struct VolumeRenderResource
+{
+    int volumeIndex = -1;
+
+    vtkSmartPointer<vtkImageData> imageData;
+
+    vtkSmartPointer<vtkSmartVolumeMapper> mapper;
+
+    vtkSmartPointer<vtkVolumeProperty> property;
+
+    vtkSmartPointer<vtkColorTransferFunction> color;
+
+    vtkSmartPointer<vtkPiecewiseFunction> opacity;
+
+    vtkSmartPointer<vtkVolume> volume;
+
+    vtkSmartPointer<VolumeErrorObserver> observer;
+
+    std::string errorMessage;
+
+    bool valid = false;
+};
+
+class VolumeErrorObserver : public vtkCommand
+{
+public:
+
+    static VolumeErrorObserver* New()
+    {
+        return new VolumeErrorObserver;
+    }
+
+    vtkTypeMacro(VolumeErrorObserver, vtkCommand);
+
+    void SetErrorMessage(std::string* message)
+    {
+        m_message = message;
+    }
+
+    void Execute(vtkObject* caller, unsigned long eventId, void* callData) override
+    {
+        if (!m_message)
+            return;
+
+        if (eventId != vtkCommand::ErrorEvent &&            eventId != vtkCommand::WarningEvent)
+            return;
+
+        std::string message;
+
+        if (callData)
+        {
+            message = static_cast<const char*>(callData);
+        }
+        else
+        {
+            message = "Unknown VTK error.";
+        }
+
+        if (caller)
+        {
+            message = std::string(caller->GetClassName()) + ": " + message;
+        }
+
+        *m_message += message + "\n";
+    }
+private:
+
+    std::string* m_message = nullptr;
+};
+
+static bool CreateOneVolume(int index, vtkImageData* imageData, const VolumeRenderParams& params, vtkRenderer* renderer, std::shared_ptr<VolumeRenderResource>& resource, std::string& errorMessage)
+{
+    try
+    {
+        if (!imageData)
+        {
+            errorMessage = "ImageData is null.";
+            return false;
+        }
+
+        if (!renderer)
+        {
+            errorMessage = "Renderer is null.";
+            return false;
+        }
+
+        if (!imageData->GetPointData() || !imageData->GetPointData()->GetScalars())
+        {
+            errorMessage = "ImageData Scalars are invalid.";
+            return false;
+        }
+
+        if (params.colorPoints.empty() || params.opacityPoints.empty())
+        {
+            errorMessage = "Transfer function points are empty.";
+
+            return false;
+        }
+
+        if (params.sampleDistance <= 0.0 || !std::isfinite(params.sampleDistance))
+        {
+            errorMessage = "Invalid sample distance.";
+
+            return false;
+        }
+
+        if (!std::isfinite(params.ambient) || !std::isfinite(params.diffuse) ||
+            !std::isfinite(params.specular) || !std::isfinite(params.specularPower))
+        {
+            errorMessage = "Invalid lighting parameters.";
+
+            return false;
+        }
+
+        if (params.ambient < 0.0 || params.ambient > 1.0 || params.diffuse < 0.0 || params.diffuse > 1.0 ||
+            params.specular < 0.0 || params.specular > 1.0 || params.specularPower < 0.0)
+        {
+            errorMessage = "Lighting parameters out of range.";
+
+            return false;
+        }
+
+        auto item = std::make_shared<VolumeRenderResource>();
+
+        item->volumeIndex = index;
+
+        item->imageData = imageData;
+
+        item->mapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
+
+        item->property = vtkSmartPointer<vtkVolumeProperty>::New();
+
+        item->color = vtkSmartPointer<vtkColorTransferFunction>::New();
+
+        item->opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
+
+        item->volume = vtkSmartPointer<vtkVolume>::New();
+
+        item->mapper->SetInputData(imageData);
+
+        // 顏色傳輸函數
+        for (const auto& p : params.colorPoints)
+        {
+            if (!std::isfinite(p.scalar) || !std::isfinite(p.r) || !std::isfinite(p.g) || !std::isfinite(p.b) ||
+                p.r < 0.0 || p.r > 1.0 || p.g < 0.0 || p.g > 1.0 || p.b < 0.0 || p.b > 1.0)
+            {
+                errorMessage = "Invalid color transfer point.";
+
+                return false;
+            }
+
+            item->color->AddRGBPoint(p.scalar, p.r, p.g, p.b);
+        }
+
+        // 透明度傳輸函數
+        for (const auto& p : params.opacityPoints)
+        {
+            if (!std::isfinite(p.scalar) || !std::isfinite(p.opacity) || p.opacity < 0.0 || p.opacity > 1.0)
+            {
+                errorMessage = "Invalid opacity transfer point.";
+
+                return false;
+            }
+
+            item->opacity->AddPoint(p.scalar, p.opacity);
+        }
+
+        // Property
+        item->property->SetColor(item->color);
+
+        item->property->SetScalarOpacity(item->opacity);
+
+        item->property->SetInterpolationType(params.linearInterpolation ? VTK_LINEAR_INTERPOLATION : VTK_NEAREST_INTERPOLATION);
+
+        item->property->SetShade(params.shade);
+
+        item->property->SetAmbient(params.ambient);
+
+        item->property->SetDiffuse(params.diffuse);
+
+        item->property->SetSpecular(params.specular);
+
+        item->property->SetSpecularPower(params.specularPower);
+
+        // Mapper
+        item->mapper->SetSampleDistance(params.sampleDistance);
+
+        if (params.blendMode == VolumeBlendMode::Composite)
+        {
+            item->mapper->SetBlendModeToComposite();
+        }
+        else
+        {
+            item->mapper->SetBlendModeToMaximumIntensity();
+        }
+
+        // Volume
+        item->volume->SetMapper(item->mapper);
+
+        item->volume->SetProperty(item->property);
+
+        item->volume->SetVisibility(params.visible);
+
+        // Observer
+        item->observer = vtkSmartPointer<VolumeErrorObserver>::New();
+
+        item->observer->SetErrorMessage(&item->errorMessage);
+
+        item->mapper->AddObserver(vtkCommand::ErrorEvent, item->observer);
+
+        item->mapper->AddObserver(vtkCommand::WarningEvent, item->observer);
+
+        item->valid = true;
+
+        resource = item;
+
+        return true;
+    }
+    catch (const std::exception& e)
+    {
+        errorMessage = e.what();
+        return false;
+    }
+    catch (...)
+    {
+        errorMessage = "Unknown exception while creating Volume.";
+
+        return false;
+    }
+}
+bool RenderAllVolumes(const std::vector<vtkImageData*>& imageDataList, const std::vector<VolumeRenderParams>& paramsList, vtkRenderer* renderer, vtkRenderWindow* renderWindow,
+    std::vector<std::string>& errorMessages);
+
+bool RenderAllVolumes(const std::vector<vtkImageData*>& imageDataList, const std::vector<VolumeRenderParams>& paramsList, vtkRenderer* renderer,
+    vtkRenderWindow* renderWindow, std::vector<std::string>& errorMessages, std::vector<std::shared_ptr<VolumeRenderResource>>& resources)
+{
+    errorMessages.clear();
+    resources.clear();
+    if (!renderer || !renderWindow)
+    {
+        errorMessages.push_back("Renderer or RenderWindow is null.");
+        return false;
+    }
+    if (imageDataList.empty())
+    {
+        errorMessages.push_back("ImageData list is empty.");
+
+        return false;
+    }
+
+    if (imageDataList.size() != paramsList.size())
+    {
+        errorMessages.push_back("ImageData count does not match params count.");
+
+        return false;
+    }
+
+    bool allSuccess = true;
+
+    // 第一階段：獨立創建所有 Volume Pipeline
+    for (size_t i = 0; i < imageDataList.size(); ++i)
+    {
+        std::string error;
+        std::shared_ptr<VolumeRenderResource> resource;
+        bool success = CreateOneVolume(static_cast<int>(i), imageDataList[i], paramsList[i], renderer, resource, error);
+        if (!success)
+        {
+            allSuccess = false;
+            errorMessages.push_back("Volume[" + std::to_string(i) + "] initialization failed: " + error);
+            continue;
+        }
+        resources.push_back(resource);
+    }
+
+    // 第二階段：將成功創建的 Volume 添加到場景
+    for (const auto& resource : resources)
+    {
+        if (!resource || !resource->valid)
+            continue;
+        try
+        {
+            renderer->AddVolume(resource->volume);
+        }
+        catch (const std::exception& e)
+        {
+            allSuccess = false;
+            errorMessages.push_back("Volume[" + std::to_string(resource->volumeIndex) + "] AddVolume failed: " + e.what());
+            resource->valid = false;
+            renderer->RemoveVolume(resource->volume);
+        }
+        catch (...)
+        {
+            allSuccess = false;
+            errorMessages.push_back("Volume[" + std::to_string(resource->volumeIndex) + "] AddVolume unknown exception.");
+            resource->valid = false;
+            renderer->RemoveVolume(resource->volume);
+        }
+    }
+    // 第三階段：統一渲染
+    try
+    {
+        renderWindow->Render();
+    }
+    catch (const std::exception& e)
+    {
+        allSuccess = false;
+        errorMessages.push_back(std::string("Render exception: ") + e.what());
+    }
+    catch (...)
+    {
+        allSuccess = false;
+        errorMessages.push_back("Unknown Render exception.");
+    }
+
+    // 第四階段：檢查每個 Pipeline 的錯誤信息
+    for (const auto& resource : resources)
+    {
+        if (!resource)
+            continue;
+        if (!resource->errorMessage.empty())
+        {
+            allSuccess = false;
+            errorMessages.push_back("Volume[" + std::to_string(resource->volumeIndex) + "] VTK error: " + resource->errorMessage);
+            // 只移除當前異常 Volume
+            if (resource->volume)
+            {
+                renderer->RemoveVolume(resource->volume);
+            }
+            resource->valid = false;
+        }
+    }
+
+    // 最後刷新一次，保留正常 Volume
+    if (!allSuccess)
+    {
+        try
+        {
+            renderWindow->Render();
+        }
+        catch (...)
+        {
+            errorMessages.push_back("Final Render failed.");
+        }
+    }
+    return allSuccess;
+}
+
+bool UpdateOneVolume(    int volumeIndex,    VolumeRenderResource& resource,    const VolumeRenderParams& newParams,    vtkRenderWindow* renderWindow,    std::string& errorMessage)
+{
+    errorMessage.clear();
+
+    // 1. 檢查 Volume 索引
+    if (volumeIndex < 0)
+    {
+        errorMessage = "Invalid volume index.";
+        return false;
+    }
+
+    if (resource.volumeIndex != volumeIndex)
+    {
+        errorMessage = "Volume index does not match resource.";
+        return false;
+    }
+
+    // 2. 檢查資源有效性
+    if (!resource.valid)
+    {
+        errorMessage = "Volume resource is not valid.";
+        return false;
+    }
+
+    if (!resource.imageData ||        !resource.mapper ||        !resource.property ||        !resource.color ||        !resource.opacity ||        !resource.volume)
+    {
+        errorMessage = "Volume resource contains null VTK objects.";
+        return false;
+    }
+
+    if (!renderWindow)
+    {
+        errorMessage = "Render window is null.";
+        return false;
+    }
+
+    // 3. 檢查採樣距離
+    if (!std::isfinite(newParams.sampleDistance) ||        newParams.sampleDistance <= 0.0)
+    {
+        errorMessage = "Invalid sample distance.";
+        return false;
+    }
+
+    // 4. 檢查光照參數
+    if (!std::isfinite(newParams.ambient) ||        !std::isfinite(newParams.diffuse) ||        !std::isfinite(newParams.specular) ||
+        !std::isfinite(newParams.specularPower))
+    {
+        errorMessage = "Invalid lighting parameters.";
+        return false;
+    }
+
+    if (newParams.ambient < 0.0 ||        newParams.diffuse < 0.0 ||        newParams.specular < 0.0 ||        newParams.specularPower < 0.0)
+    {
+        errorMessage = "Lighting parameters cannot be negative.";
+        return false;
+    }
+
+    // 5. 檢查顏色控制點
+    if (newParams.colorPoints.empty())
+    {
+        errorMessage = "Color transfer points are empty.";
+        return false;
+    }
+
+    for (const auto& point : newParams.colorPoints)
+    {
+        if (!std::isfinite(point.scalar) ||            !std::isfinite(point.r) ||            !std::isfinite(point.g) ||            !std::isfinite(point.b))
+        {
+            errorMessage = "Invalid color transfer point.";
+            return false;
+        }
+
+        if (point.r < 0.0 || point.r > 1.0 ||            point.g < 0.0 || point.g > 1.0 ||            point.b < 0.0 || point.b > 1.0)        {
+            errorMessage = "Color values must be in [0, 1].";
+            return false;
+        }
+    }
+
+    // 6. 檢查透明度控制點
+    if (newParams.opacityPoints.empty())
+    {
+        errorMessage = "Opacity transfer points are empty.";
+        return false;
+    }
+
+    for (const auto& point : newParams.opacityPoints)
+    {
+        if (!std::isfinite(point.scalar) ||            !std::isfinite(point.opacity))
+        {
+            errorMessage = "Invalid opacity transfer point.";
+            return false;
+        }
+
+        if (point.opacity < 0.0 || point.opacity > 1.0)
+        {
+            errorMessage = "Opacity must be in [0, 1].";
+            return false;
+        }
+    }
+
+    // 7. 更新顏色傳輸函數
+    resource.color->RemoveAllPoints();
+
+    for (const auto& point : newParams.colorPoints)
+    {
+        resource.color->AddRGBPoint(            point.scalar,            point.r,            point.g,            point.b);
+    }
+
+    // 8. 更新透明度傳輸函數
+    resource.opacity->RemoveAllPoints();
+
+    for (const auto& point : newParams.opacityPoints)
+    {
+        resource.opacity->AddPoint(            point.scalar,            point.opacity);
+    }
+
+    // 9. 更新 Volume Property
+    resource.property->SetColor(resource.color);
+    resource.property->SetScalarOpacity(resource.opacity);
+
+    resource.property->SetShade(        newParams.shade ? 1 : 0);
+
+    resource.property->SetAmbient(        newParams.ambient);
+
+    resource.property->SetDiffuse(        newParams.diffuse);
+
+    resource.property->SetSpecular(        newParams.specular);
+
+    resource.property->SetSpecularPower(        newParams.specularPower);
+
+    // 插值方式
+    if (newParams.linearInterpolation)
+    {
+        resource.property->SetInterpolationTypeToLinear();
+    }
+    else
+    {
+        resource.property->SetInterpolationTypeToNearest();
+    }
+
+    // 10. 更新混合模式
+    switch (newParams.blendMode)
+    {
+    case VolumeBlendMode::Composite:
+        resource.mapper->SetBlendModeToComposite();
+        break;
+
+   // case VolumeBlendMode::MaximumIntensity:
+   //     resource.mapper->SetBlendModeToMaximumIntensity();
+   //     break;
+   //
+   // case VolumeBlendMode::MinimumIntensity:
+   //     resource.mapper->SetBlendModeToMinimumIntensity();
+   //     break;
+   //
+   // case VolumeBlendMode::Additive:
+   //     resource.mapper->SetBlendModeToAdditive();
+   //     break;
+
+    default:
+        errorMessage = "Unsupported volume blend mode.";
+        return false;
+    }
+
+    // 11. 更新採樣距離
+    resource.mapper->SetSampleDistance(        static_cast<float>(newParams.sampleDistance));
+
+    // 12. 更新可見性
+    resource.volume->SetVisibility(        newParams.visible ? 1 : 0);
+
+    // 13. 確保 Volume 使用更新後的 Property
+    resource.volume->SetProperty(resource.property);
+
+    // 14. 標記 VTK 資源修改
+    resource.color->Modified();
+    resource.opacity->Modified();
+    resource.property->Modified();
+    resource.mapper->Modified();
+    resource.volume->Modified();
+
+    // 15. 請求重新渲染
+    renderWindow->Render();
+
+    return true;
 }
