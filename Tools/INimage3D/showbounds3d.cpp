@@ -257,8 +257,7 @@ void ShowBounds3D::ShowSegmentedVolumes(vtkImageData* imageData, const std::vect
         const auto& b = partitions[i];
 
         // ß…½ç™z²é
-        if (b[0] < 0 || b[1] >= dims[0] || b[2] < 0 || b[3] >= dims[1] || b[4] < 0 || b[5] >= dims[2] ||
-            b[0] > b[1] || b[2] > b[3] || b[4] > b[5])
+        if (b[0] < 0 || b[1] >= dims[0] || b[2] < 0 || b[3] >= dims[1] || b[4] < 0 || b[5] >= dims[2] || b[0] > b[1] || b[2] > b[3] || b[4] > b[5])
         {
             throw std::out_of_range("Partition bounds out of image range");
         }

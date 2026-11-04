@@ -237,9 +237,9 @@ void MainWindow::initMetaFile()
         return;
     }
     // ------------------show UI-----------------------------------------
-    m_image4Plane = new QFourpaneviewer(this);
-    m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
-    m_workspace->setCurrentIndex(m_index4P);
+    //m_image4Plane = new QFourpaneviewer(this);
+    //m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
+    //m_workspace->setCurrentIndex(m_index4P);
 
     //----------ProgressBar--start---------------------------------
     m_qProgressBar->show();
@@ -271,6 +271,12 @@ void MainWindow::initMetaFile()
         m_vtkImageData = m_XMLImageDataReader->GetOutput();
         m_vtkAlgorithmOutput = m_XMLImageDataReader->GetOutputPort();
     }
+
+    // ------------------show UI-----------------------------------------
+    m_image4Plane = new QFourpaneviewer(this);
+    m_index4P = m_workspace->addTab(m_image4Plane, "image4Plane");
+    m_workspace->setCurrentIndex(m_index4P);
+
 
     m_openAction->setText("¹Ø±Õ(&C)");
     m_openAction->setShortcut(QKeySequence("Ctrl+C"));
