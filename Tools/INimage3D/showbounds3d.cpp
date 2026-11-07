@@ -347,16 +347,32 @@ void ShowBounds3D::ShowSegmentedVolumes(vtkImageData* imageData, const std::vect
                 throw std::out_of_range("Partition bounds out of image range");
             }
             // Ã·»°∑÷∏ÓÛw
-            auto extract = vtkSmartPointer<vtkExtractVOI>::New();
+            auto extract = vtkExtractVOI::New();// vtkSmartPointer<vtkExtractVOI>::New();
             extract->SetInputData(imageData);
             extract->SetVOI(b[0], b[1], b[2], b[3], b[4], b[5]);
             extract->Update();
             m_imageDataList.push_back(extract->GetOutput());
 
             VolumeRenderParams params;
+            ColorPoint point;
+            point.scalar = 0.0;
+            point.r = point.g = point.b = 0.0;
+            params.colorPoints.push_back(point);
+            point.scalar = 255;
+            point.r = colors[i % colorCount][0];
+            point.g = colors[i % colorCount][1];
+            point.b = colors[i % colorCount][2];
+            params.colorPoints.push_back(point);
+
+            OpacityPoint opacitypoint;
+            opacitypoint.opacity = 0.0;
+            opacitypoint.scalar = 0.0;
+            params.opacityPoints.push_back(opacitypoint);
+
             m_paramsList.push_back(params);
         }
-        RenderAllVolumes(m_imageDataList, m_paramsList, renderer, renderer->GetRenderWindow(), m_errorMessages, m_resources);
+        bool flag =  RenderAllVolumes(m_imageDataList, m_paramsList, renderer, renderer->GetRenderWindow(), m_errorMessages, m_resources);
+        bool f = flag;
         //bool RenderAllVolumes(const std::vector<vtkImageData*>& imageDataList, const std::vector<VolumeRenderParams>& paramsList,
         //    vtkRenderer* renderer, vtkRenderWindow* renderWindow, std::vector<std::string>& errorMessages, std::vector<std::shared_ptr<VolumeRenderResource>>& resources);
     }
