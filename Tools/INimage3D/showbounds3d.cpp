@@ -306,7 +306,7 @@ void ShowBounds3D::ReadVolumes(vtkImageData *imageData)
     DimSize[0] = xyz[0];
     DimSize[1] = xyz[1];
     DimSize[2] = xyz[2];
-    std::vector<Bounds3D> bounds = GenerateRandomPartitions(DimSize, 3, false);
+    std::vector<Bounds3D> bounds = GenerateRandomPartitions(DimSize, 5, false);
     vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     ui->m_bound3DView->renderWindow()->AddRenderer(renderer);
     ShowSegmentedVolumes(imageData, bounds, renderer);
@@ -362,13 +362,19 @@ void ShowBounds3D::ShowSegmentedVolumes(vtkImageData* imageData, const std::vect
             point.b = colors[i % colorCount][2];
             params.colorPoints.push_back(point);
 
-            //opacity->AddPoint(0, 0.0);
-            //opacity->AddPoint(1, 0.0);
-            //opacity->AddPoint(255, 0.35);
+            OpacityPoint opoint;
+            opoint.opacity = 0;
+            opoint.scalar = 0;
 
             OpacityPoint opacitypoint;
             opacitypoint.opacity = 0.0;
             opacitypoint.scalar = 0.0;
+            params.opacityPoints.push_back(opacitypoint);
+            opacitypoint.opacity = 0.0;
+            opacitypoint.scalar = 1.0;
+            params.opacityPoints.push_back(opacitypoint);
+            opacitypoint.opacity = 0.35;
+            opacitypoint.scalar = 255.0;
             params.opacityPoints.push_back(opacitypoint);
 
             m_paramsList.push_back(params);
@@ -490,19 +496,19 @@ bool ShowBounds3D::CreateOneVolume(int index, vtkImageData* imageData, const Vol
             item->color->AddRGBPoint(p.scalar, p.r, p.g, p.b);
         }
         // 透明度傳輸函數
-        //for (const auto& p : params.opacityPoints)
-        //{
-        //    if (!std::isfinite(p.scalar) || !std::isfinite(p.opacity) || p.opacity < 0.0 || p.opacity > 1.0)
-        //    {
-        //        errorMessage = "Invalid opacity transfer point.";
-        //        return false;
-        //    }
-        //    item->opacity->AddPoint(p.scalar, p.opacity);
-        //}
+        for (const auto& p : params.opacityPoints)
+        {
+            if (!std::isfinite(p.scalar) || !std::isfinite(p.opacity) || p.opacity < 0.0 || p.opacity > 1.0)
+            {
+                errorMessage = "Invalid opacity transfer point.";
+                return false;
+            }
+            item->opacity->AddPoint(p.scalar, p.opacity);
+        }
                     // 透明度映射
-        item->opacity->AddPoint(0, 0.0);
-        item->opacity->AddPoint(1, 0.0);
-        item->opacity->AddPoint(255, 0.35);
+        //item->opacity->AddPoint(0, 0.0);
+        //item->opacity->AddPoint(1, 0.0);
+        //item->opacity->AddPoint(255, 0.35);
         // Property
         item->property->SetColor(item->color);
         item->property->SetScalarOpacity(item->opacity);
