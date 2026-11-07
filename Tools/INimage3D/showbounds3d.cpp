@@ -306,7 +306,7 @@ void ShowBounds3D::ReadVolumes(vtkImageData *imageData)
     DimSize[0] = xyz[0];
     DimSize[1] = xyz[1];
     DimSize[2] = xyz[2];
-    std::vector<Bounds3D> bounds = GenerateRandomPartitions(DimSize, 4, false);
+    std::vector<Bounds3D> bounds = GenerateRandomPartitions(DimSize, 3, false);
     vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     ui->m_bound3DView->renderWindow()->AddRenderer(renderer);
     ShowSegmentedVolumes(imageData, bounds, renderer);
@@ -329,9 +329,7 @@ void ShowBounds3D::ShowSegmentedVolumes(vtkImageData* imageData, const std::vect
 
     const double colors[colorCount][3] = {
         {1.0, 0.0, 0.0},        {0.0, 1.0, 0.0},        {0.0, 0.0, 1.0},        {1.0, 1.0, 0.0},        {1.0, 0.0, 1.0},
-        {0.0, 1.0, 1.0},        {1.0, 0.5, 0.0},        {0.5, 0.0, 1.0},        {0.5, 1.0, 0.0},        {1.0, 0.5, 0.5},
-        {0.5, 0.5, 1.0},        {0.0, 0.8, 0.5} };
-
+        {0.0, 1.0, 1.0},        {1.0, 0.5, 0.0},        {0.5, 0.0, 1.0},        {0.5, 1.0, 0.0},        {1.0, 0.5, 0.5},      {0.5, 0.5, 1.0},        {0.0, 0.8, 0.5} };
 
     if (1)
     {
@@ -364,6 +362,10 @@ void ShowBounds3D::ShowSegmentedVolumes(vtkImageData* imageData, const std::vect
             point.b = colors[i % colorCount][2];
             params.colorPoints.push_back(point);
 
+            //opacity->AddPoint(0, 0.0);
+            //opacity->AddPoint(1, 0.0);
+            //opacity->AddPoint(255, 0.35);
+
             OpacityPoint opacitypoint;
             opacitypoint.opacity = 0.0;
             opacitypoint.scalar = 0.0;
@@ -381,48 +383,35 @@ void ShowBounds3D::ShowSegmentedVolumes(vtkImageData* imageData, const std::vect
         for (size_t i = 0; i < partitions.size(); ++i)
         {
             const auto& b = partitions[i];
-
             // 邊界檢查
             if (b[0] < 0 || b[1] >= dims[0] || b[2] < 0 || b[3] >= dims[1] || b[4] < 0 || b[5] >= dims[2] || b[0] > b[1] || b[2] > b[3] || b[4] > b[5])
             {
                 throw std::out_of_range("Partition bounds out of image range");
             }
-
             // 提取分割體
             auto extract = vtkSmartPointer<vtkExtractVOI>::New();
-
             extract->SetInputData(imageData);
-
             extract->SetVOI(b[0], b[1], b[2], b[3], b[4], b[5]);
             extract->Update();
 
             // 體繪製 Mapper
             auto mapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
-
             mapper->SetInputConnection(extract->GetOutputPort());
-
             // 顏色映射
             auto color = vtkSmartPointer<vtkColorTransferFunction>::New();
-
             color->AddRGBPoint(0, 0.0, 0.0, 0.0);
-
             color->AddRGBPoint(255, colors[i % colorCount][0], colors[i % colorCount][1], colors[i % colorCount][2]);
-
             // 透明度映射
             auto opacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
-
             opacity->AddPoint(0, 0.0);
             opacity->AddPoint(1, 0.0);
             opacity->AddPoint(255, 0.35);
-
             // Volume Property
             auto property = vtkSmartPointer<vtkVolumeProperty>::New();
-
             property->SetColor(color);
             property->SetScalarOpacity(opacity);
             property->SetInterpolationTypeToLinear();
             property->ShadeOn();
-
             // Volume
             auto volume = vtkSmartPointer<vtkVolume>::New();
 
@@ -501,15 +490,19 @@ bool ShowBounds3D::CreateOneVolume(int index, vtkImageData* imageData, const Vol
             item->color->AddRGBPoint(p.scalar, p.r, p.g, p.b);
         }
         // 透明度傳輸函數
-        for (const auto& p : params.opacityPoints)
-        {
-            if (!std::isfinite(p.scalar) || !std::isfinite(p.opacity) || p.opacity < 0.0 || p.opacity > 1.0)
-            {
-                errorMessage = "Invalid opacity transfer point.";
-                return false;
-            }
-            item->opacity->AddPoint(p.scalar, p.opacity);
-        }
+        //for (const auto& p : params.opacityPoints)
+        //{
+        //    if (!std::isfinite(p.scalar) || !std::isfinite(p.opacity) || p.opacity < 0.0 || p.opacity > 1.0)
+        //    {
+        //        errorMessage = "Invalid opacity transfer point.";
+        //        return false;
+        //    }
+        //    item->opacity->AddPoint(p.scalar, p.opacity);
+        //}
+                    // 透明度映射
+        item->opacity->AddPoint(0, 0.0);
+        item->opacity->AddPoint(1, 0.0);
+        item->opacity->AddPoint(255, 0.35);
         // Property
         item->property->SetColor(item->color);
         item->property->SetScalarOpacity(item->opacity);
