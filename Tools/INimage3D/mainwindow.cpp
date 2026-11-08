@@ -14,25 +14,23 @@
 #include <QProgressDialog>
 #include <QCloseEvent>
 #pragma execution_character_set("utf-8")
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
     setStatusBar(nullptr);
     setMenuBar(nullptr);
 
-    m_workspace           = nullptr;
-    m_image4Plane         = nullptr;
-    m_MetaReader          = nullptr;
-    m_XMLImageDataReader  = nullptr;
-    m_closeMetaFile       = false;
-                          
-    m_vtkImageData        = nullptr;
-    m_vtkAlgorithmOutput  = nullptr;
+    m_workspace = nullptr;
+    m_image4Plane = nullptr;
+    m_MetaReader = nullptr;
+    m_XMLImageDataReader = nullptr;
+    m_closeMetaFile = false;
 
-    m_configForm          = nullptr;
+    m_vtkImageData = nullptr;
+    m_vtkAlgorithmOutput = nullptr;
+
+    m_configForm = nullptr;
 
     m_index3D = m_index4P = -1;
 
@@ -163,7 +161,7 @@ void MainWindow::autoRun()
         return;
     }
     QFourpaneviewer* viewer = ((QFourpaneviewer*)m_image4Plane);
-    viewer->m_testAutoSave  = true;
+    viewer->m_testAutoSave = true;
     viewer->TestAutoHis();
     viewer->ShowImage3D();
     viewer->ShowImagePlane();
@@ -259,6 +257,7 @@ void MainWindow::initMetaFile()
         m_workspace->setCurrentIndex(m_index4P);
         //((*ShowBounds3D)m_showBounds3D)->ReadVolumes(m_vtkImageData);
         m_showBounds3D->ReadVolumes(m_vtkImageData);
+        volumeParamsUI.show();
         //__________
 
         return;
@@ -315,7 +314,7 @@ MainWindow::~MainWindow()
     {
         delete m_configForm;
     }
-    
+
     delete ui;
 }
 
