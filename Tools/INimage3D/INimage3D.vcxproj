@@ -359,6 +359,7 @@
     <ClCompile Include="qprogressdata.cpp" />
     <ClCompile Include="showbounds3d.cpp" />
     <ClCompile Include="volumedataset.cpp" />
+    <ClCompile Include="volumeparams.cpp" />
     <ClCompile Include="vtkcolorgradient.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -375,6 +376,7 @@
     <QtUic Include="qprogressdata.ui" />
     <QtUic Include="showbounds3d.ui" />
     <QtUic Include="volumedataset.ui" />
+    <QtUic Include="volumeparams.ui" />
     <QtUic Include="vtkcolorgradient.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -384,6 +386,7 @@
     <QtMoc Include="qfourpaneviewer.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="volumeparams.h" />
     <QtMoc Include="showbounds3d.h" />
     <QtMoc Include="volumedataset.h" />
     <QtMoc Include="vtkcolorgradient.h" />

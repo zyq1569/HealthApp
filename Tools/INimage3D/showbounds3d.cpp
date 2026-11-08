@@ -338,7 +338,6 @@ void ShowBounds3D::ShowSegmentedVolumes(vtkImageData* imageData, const std::vect
         for (size_t i = 0; i < partitions.size(); ++i)
         {
             const auto& b = partitions[i];
-
             // 邊界檢查
             if (b[0] < 0 || b[1] >= dims[0] || b[2] < 0 || b[3] >= dims[1] || b[4] < 0 || b[5] >= dims[2] || b[0] > b[1] || b[2] > b[3] || b[4] > b[5])
             {
@@ -379,10 +378,7 @@ void ShowBounds3D::ShowSegmentedVolumes(vtkImageData* imageData, const std::vect
 
             m_paramsList.push_back(params);
         }
-        bool flag =  RenderAllVolumes(m_imageDataList, m_paramsList, renderer, renderer->GetRenderWindow(), m_errorMessages, m_resources);
-        bool f = flag;
-        //bool RenderAllVolumes(const std::vector<vtkImageData*>& imageDataList, const std::vector<VolumeRenderParams>& paramsList,
-        //    vtkRenderer* renderer, vtkRenderWindow* renderWindow, std::vector<std::string>& errorMessages, std::vector<std::shared_ptr<VolumeRenderResource>>& resources);
+        bool flag = RenderAllVolumes(m_imageDataList, m_paramsList, renderer, renderer->GetRenderWindow(), m_errorMessages, m_resources);
     }
     else  //簡單繪製每個小體數據
     {
@@ -505,11 +501,7 @@ bool ShowBounds3D::CreateOneVolume(int index, vtkImageData* imageData, const Vol
             }
             item->opacity->AddPoint(p.scalar, p.opacity);
         }
-                    // 透明度映射
-        //item->opacity->AddPoint(0, 0.0);
-        //item->opacity->AddPoint(1, 0.0);
-        //item->opacity->AddPoint(255, 0.35);
-        // Property
+// Property
         item->property->SetColor(item->color);
         item->property->SetScalarOpacity(item->opacity);
         item->property->SetInterpolationType(params.linearInterpolation ? VTK_LINEAR_INTERPOLATION : VTK_NEAREST_INTERPOLATION);

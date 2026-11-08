@@ -17,6 +17,7 @@ SOURCES += \
     qprogressdata.cpp \
     showbounds3d.cpp \
     volumedataset.cpp \
+    volumeparams.cpp \
     vtkcolorgradient.cpp
 
 HEADERS += \
@@ -27,6 +28,7 @@ HEADERS += \
     qprogressdata.h \
     showbounds3d.h \
     volumedataset.h \
+    volumeparams.h \
     vtkcolorgradient.h
 
 FORMS += \
@@ -37,6 +39,7 @@ FORMS += \
     qprogressdata.ui \
     showbounds3d.ui \
     volumedataset.ui \
+    volumeparams.ui \
     vtkcolorgradient.ui
 
 # Default rules for deployment.
