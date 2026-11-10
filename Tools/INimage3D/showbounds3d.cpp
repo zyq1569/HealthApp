@@ -300,6 +300,9 @@ void ShowBounds3D::ReadVolumes(vtkImageData *imageData)
 
     m_volumeParamsUI.UpdateUI(this, bounds);
     m_volumeParamsUI.show();
+
+    connect(&m_volumeParamsUI, &VolumeParams::Update3D, this, &ShowBounds3D::UpdateParams);
+    //Update3D
 }
 
 //展示自動分割的體數據
@@ -829,10 +832,9 @@ bool ShowBounds3D::UpdateOneVolume(int volumeIndex, VolumeRenderResource& resour
     return true;
 }
 
-bool ShowBounds3D::UpdateParams(Bounds3D *bounds3D, const VolumeRenderParams *newParams)
+bool ShowBounds3D::UpdateParams(Bounds3D *bounds3D, VolumeRenderParams *params)
 {
 
 
     return true;
-
 }

@@ -30,8 +30,9 @@ struct OpacityPoint
     double opacity;
 };
 
-struct VolumeRenderParams
+class VolumeRenderParams
 {
+public:
     // îÉ«‚÷İ”º¯”µ
     std::vector<ColorPoint> colorPoints;
     // Í¸Ã÷¶È‚÷İ”º¯”µ
@@ -76,7 +77,7 @@ public:
     bool UpdateOneVolume(int volumeIndex, VolumeRenderResource& resource, const VolumeRenderParams& newParams, vtkRenderWindow* renderWindow, std::string& errorMessage);
 
 public slots:
-    bool UpdateParams(Bounds3D *bounds3D, const VolumeRenderParams *newParams);
+    bool UpdateParams(Bounds3D *bounds3D, VolumeRenderParams *params);
 public:
     std::vector<vtkImageData*> m_imageDataList;
     std::vector<VolumeRenderParams> m_paramsList;

@@ -1,6 +1,5 @@
 #include "volumeparams.h"
 #include "ui_volumeparams.h"
-#include <array>
 
 #include "showbounds3d.h"
 
@@ -45,5 +44,7 @@ void VolumeParams::UpdateUI(ShowBounds3D *bounds3D, const std::vector<Bounds3D>&
         }
 
         ui->listWidget->addItems(list);
+
+        //connect(ui->listWidget, &QListWidget::itemSelectionChanged, this, &VolumeParams::SlotSelectRow);
     }
 }

@@ -1,10 +1,13 @@
 #ifndef VOLUMEPARAMS_H
 #define VOLUMEPARAMS_H
 
+#include <array>
+
 #include <QWidget>
 
 using Bounds3D = std::array<int, 6>;
 class ShowBounds3D;
+class VolumeRenderParams;
 namespace Ui {
     class VolumeParams;
 }
@@ -24,6 +27,9 @@ public:
 
 public slots:
     void SlotSelectRow();
+
+signals:
+    void Update3D(Bounds3D *bounds3D, VolumeRenderParams *params);
 
 private:
     Ui::VolumeParams *ui;
