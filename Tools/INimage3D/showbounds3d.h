@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "volumeparams.h"
+
 namespace Ui {
     class ShowBounds3D;
 }
@@ -52,7 +54,6 @@ struct VolumeRenderParams
 class VolumeErrorObserver;
 class VolumeRenderResource;
 
-using Bounds3D = std::array<int, 6>;
 class vtkImageData;
 class vtkRenderer;
 class vtkRenderWindow;
@@ -74,11 +75,16 @@ public:
         std::shared_ptr<VolumeRenderResource>& resource, std::string& errorMessage);
     bool UpdateOneVolume(int volumeIndex, VolumeRenderResource& resource, const VolumeRenderParams& newParams, vtkRenderWindow* renderWindow, std::string& errorMessage);
 
+public slots:
+    bool UpdateParams(Bounds3D bounds3D, const VolumeRenderParams& newParams);
 public:
     std::vector<vtkImageData*> m_imageDataList;
     std::vector<VolumeRenderParams> m_paramsList;
     std::vector<std::string> m_errorMessages;
     std::vector<std::shared_ptr<VolumeRenderResource>> m_resources;
+
+public:
+    VolumeParams m_volumeParamsUI;
 private:
     Ui::ShowBounds3D *ui;
 };

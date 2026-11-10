@@ -257,7 +257,6 @@ void MainWindow::initMetaFile()
         m_workspace->setCurrentIndex(m_index4P);
         //((*ShowBounds3D)m_showBounds3D)->ReadVolumes(m_vtkImageData);
         m_showBounds3D->ReadVolumes(m_vtkImageData);
-        volumeParamsUI.show();
         //__________
 
         return;

@@ -2,10 +2,6 @@
 #include "ui_showbounds3d.h"
 
 ///+++++++++++++++++++++
-#include <vector>
-#include <string>
-#include <memory>
-
 #include <vtkSmartPointer.h>
 #include <vtkImageData.h>
 #include <vtkRenderer.h>
@@ -27,12 +23,6 @@
 #include <vtkCommand.h>
 #include <vtkPointData.h>
 
-#include <algorithm>
-#include <cmath>
-#include <string>
-
-
-
 #include <vtkSmartPointer.h>
 #include <vtkImageData.h>
 #include <vtkExtractVOI.h>
@@ -47,17 +37,14 @@
 #include <vtkCamera.h>
 
 #include <vector>
-#include <array>
+#include <memory>
 #include <algorithm>
+#include <cmath>
+#include <string>
 #include <stdexcept>
-
 #include <QColor>
-
-#include <vector>
 #include <array>
 #include <random>
-#include <stdexcept>
-#include <algorithm>
 #include <cstdint>
 
 class VolumeErrorObserver : public vtkCommand
@@ -310,6 +297,9 @@ void ShowBounds3D::ReadVolumes(vtkImageData *imageData)
     vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     ui->m_bound3DView->renderWindow()->AddRenderer(renderer);
     ShowSegmentedVolumes(imageData, bounds, renderer);
+
+    m_volumeParamsUI.UpdateUI(this, bounds);
+    m_volumeParamsUI.show();
 }
 
 //展示自動分割的體數據
@@ -649,6 +639,7 @@ bool ShowBounds3D::RenderAllVolumes(const std::vector<vtkImageData*>& imageDataL
             errorMessages.push_back("Final Render failed.");
         }
     }
+
     return allSuccess;
 }
 
@@ -836,4 +827,12 @@ bool ShowBounds3D::UpdateOneVolume(int volumeIndex, VolumeRenderResource& resour
     renderWindow->Render();
 
     return true;
+}
+
+bool ShowBounds3D::UpdateParams(Bounds3D bounds3D, const VolumeRenderParams& newParams)
+{
+
+
+    return true;
+
 }
