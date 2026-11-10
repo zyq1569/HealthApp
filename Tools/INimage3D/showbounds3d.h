@@ -76,7 +76,7 @@ public:
     bool UpdateOneVolume(int volumeIndex, VolumeRenderResource& resource, const VolumeRenderParams& newParams, vtkRenderWindow* renderWindow, std::string& errorMessage);
 
 public slots:
-    bool UpdateParams(Bounds3D bounds3D, const VolumeRenderParams& newParams);
+    bool UpdateParams(Bounds3D *bounds3D, const VolumeRenderParams *newParams);
 public:
     std::vector<vtkImageData*> m_imageDataList;
     std::vector<VolumeRenderParams> m_paramsList;

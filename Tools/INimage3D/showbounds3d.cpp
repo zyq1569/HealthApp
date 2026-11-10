@@ -829,7 +829,7 @@ bool ShowBounds3D::UpdateOneVolume(int volumeIndex, VolumeRenderResource& resour
     return true;
 }
 
-bool ShowBounds3D::UpdateParams(Bounds3D bounds3D, const VolumeRenderParams& newParams)
+bool ShowBounds3D::UpdateParams(Bounds3D *bounds3D, const VolumeRenderParams *newParams)
 {
 
 
